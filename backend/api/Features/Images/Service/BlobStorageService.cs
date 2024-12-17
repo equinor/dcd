@@ -133,7 +133,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         await stream.CopyToAsync(memoryStream);
         var bytes = memoryStream.ToArray();
 
-        return Convert.ToBase64String(bytes);
+        return "data:image/jpeg;base64, " + Convert.ToBase64String(bytes);
     }
 
     private static string GetBlobName(Guid? caseId, Guid projectId, Guid imageId)

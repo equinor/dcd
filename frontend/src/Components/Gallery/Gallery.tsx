@@ -120,14 +120,14 @@ const Gallery = () => {
                         key={`menu-item-${index + 1}`}
                     >
                         <ImageWithHover>
-                            <img src={"data:image/jpeg;base64, " + image.imageData} alt={`upload #${index + 1}`} />
+                            <img src={image.imageData} alt={`upload #${index + 1}`} />
                             <GalleryControls>
                                 {editMode && (
                                     <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.imageId)}>
                                         <Icon size={18} data={delete_to_trash} />
                                     </Button>
                                 )}
-                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.imageId)}>
+                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.imageData)}>
                                     <Icon size={18} data={expand_screen} />
                                 </Button>
                             </GalleryControls>
