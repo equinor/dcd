@@ -7,7 +7,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
-    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot azureConfig, IConfigurationRoot localConfig)
+    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot azureConfig)
     {
         if (DcdEnvironments.IsLocal())
         {
@@ -16,7 +16,7 @@ public static class DcdDatabaseConfiguration
             return;
         }
 
-        SetupAzureDatabase(builder, azureConfig, localConfig);
+        SetupAzureDatabase(builder, azureConfig);
     }
 
     private static void SetupSqliteDatabase(WebApplicationBuilder builder)
@@ -48,7 +48,7 @@ public static class DcdDatabaseConfiguration
             lifetime: ServiceLifetime.Scoped);
     }
 
-    private static void SetupAzureDatabase(WebApplicationBuilder builder, IConfigurationRoot azureConfig, IConfigurationRoot localConfig)
+    private static void SetupAzureDatabase(WebApplicationBuilder builder, IConfigurationRoot azureConfig)
     {
         var sqlServerConnectionString = azureConfig["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 
@@ -60,7 +60,7 @@ public static class DcdDatabaseConfiguration
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
 
-        if (!ShouldMigrateDatabase(localConfig))
+        if (!DcdEnvironments.AllowMigrationsToBeApplied)
         {
             return;
         }
@@ -70,25 +70,5 @@ public static class DcdDatabaseConfiguration
         using var context = new DcdDbContext(dbBuilder.Options, null);
 
         context.Database.Migrate();
-    }
-
-    private static bool ShouldMigrateDatabase(IConfigurationRoot localConfig)
-    {
-        if (DcdEnvironments.IsQa() || DcdEnvironments.IsProd())
-        {
-            return true;
-        }
-
-        if (DcdEnvironments.IsLocal())
-        {
-            return false;
-        }
-
-        if (localConfig["AllowMigrationsToBeApplied"] == "false")
-        {
-            return false;
-        }
-
-        return true;
     }
 }
