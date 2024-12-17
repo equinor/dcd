@@ -2760,7 +2760,6 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
             }
             export interface RequestBody {
-                projectName?: string;
                 image?: string; // binary
             }
             namespace Responses {
@@ -3517,7 +3516,6 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
             }
             export interface RequestBody {
-                projectName?: string;
                 image?: string; // binary
             }
             namespace Responses {
