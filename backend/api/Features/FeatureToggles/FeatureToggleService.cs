@@ -8,10 +8,8 @@ public static class FeatureToggleService
     {
         return new FeatureToggleDto
         {
-            RevisionEnabled = RevisionEnabled,
+            RevisionEnabled = DcdEnvironments.RevisionEnabled,
             EnvironmentName = DcdEnvironments.CurrentEnvironment
         };
     }
-
-    public static readonly bool RevisionEnabled = DcdEnvironments.IsLocal() || DcdEnvironments.IsCi() || DcdEnvironments.IsDev() || DcdEnvironments.IsQa();
 }
