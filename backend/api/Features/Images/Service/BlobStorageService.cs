@@ -78,6 +78,31 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         return images.Select(MapToDto).ToList();
     }
 
+    public async Task<byte[]> GetImageRaw(Guid projectId, Guid imageId)
+    {
+        var image = await context.Images.FindAsync(imageId);
+        if (image == null)
+        {
+            throw new NotFoundInDBException("Image not found.");
+        }
+
+        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+
+        var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
+        var blobName = image.CaseId.HasValue
+            ? $"{sanitizedProjectName}/cases/{image.CaseId}/{image.Id}"
+            : $"{sanitizedProjectName}/projects/{projectId}/{image.Id}";
+
+        var blobClient = containerClient.GetBlobClient(blobName);
+
+        var response = await blobClient.DownloadAsync();
+        var stream = response.Value.Content;
+
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
+
     public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
     {
         var images = await context.Images
