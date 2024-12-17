@@ -10,14 +10,14 @@ public static class DcdEnvironments
     public const string RadixQa = "radix-qa";
     public const string RadixProd = "radix-prod";
 
-    public static bool IsLocal() => CurrentEnvironment is LocalDev;
-    public static bool IsCi() => CurrentEnvironment is Ci;
-    public static bool IsDev() => CurrentEnvironment is RadixDev;
-    public static bool IsQa() => CurrentEnvironment is RadixQa;
-    public static bool IsProd() => CurrentEnvironment is RadixProd;
-
-    public static bool EnableVerboseEntityFrameworkLogging => false; // IsLocal() || IsCi();
-    public static bool DisplayAllFusionUsersAsPmt => IsLocal() || IsCi() || IsDev() || IsQa();
-    public static bool ReturnExceptionDetails => IsLocal() || IsCi() || IsDev() || IsQa();
+    public static bool EnableVerboseEntityFrameworkLogging => false; // CurrentEnvironment is LocalDev or Ci;
+    public static bool UseSqlite => CurrentEnvironment is LocalDev;
+    public static bool DisplaySwagger => CurrentEnvironment is LocalDev or Ci;
+    public static bool ReturnExceptionDetails => CurrentEnvironment is LocalDev or Ci or RadixDev or RadixQa;
     public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
+    public static bool RunProjectMasterBackgroundServiceHourly => CurrentEnvironment is LocalDev or Ci or RadixDev;
+
+    // Feature toggles likely to change frequently go below this comment.
+    public static bool RevisionEnabled => CurrentEnvironment is LocalDev or Ci or RadixDev or RadixQa;
+    public static bool DisplayAllFusionUsersAsPmt => CurrentEnvironment is LocalDev or Ci or RadixDev or RadixQa;
 }

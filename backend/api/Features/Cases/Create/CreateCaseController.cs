@@ -1,6 +1,6 @@
+using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.FeatureToggles;
 using api.Features.ProjectData;
 using api.Features.ProjectData.Dtos;
 
@@ -17,7 +17,7 @@ public class CreateCaseController(CreateCaseService createCaseService, GetProjec
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<ProjectDataDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
-        if (FeatureToggleService.RevisionEnabled)
+        if (DcdEnvironments.RevisionEnabled)
         {
             CreateCaseDtoValidator.Validate(caseDto);
         }
