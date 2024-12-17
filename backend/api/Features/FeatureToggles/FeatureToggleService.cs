@@ -13,5 +13,5 @@ public static class FeatureToggleService
         };
     }
 
-    public static readonly bool RevisionEnabled = DcdEnvironments.IsLocal() || DcdEnvironments.IsCi() || DcdEnvironments.IsQa();
+    public static readonly bool RevisionEnabled = DcdEnvironments.IsLocal() || DcdEnvironments.IsCi() || DcdEnvironments.IsDev() || DcdEnvironments.IsQa();
 }
