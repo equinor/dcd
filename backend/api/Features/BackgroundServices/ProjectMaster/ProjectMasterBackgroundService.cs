@@ -53,7 +53,7 @@ public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, I
     private static (TimeSpan timeOfDayUtcStart, TimeSpan timeOfDayUtcEnd) GetWindowWhenJobShouldRun()
     {
         return DcdEnvironments.RunProjectMasterBackgroundServiceHourly
-            ? (TimeSpan.FromHours(13), TimeSpan.FromHours(14))
-            : (TimeSpan.FromHours(0), TimeSpan.FromHours(23));
+            ? (TimeSpan.FromHours(0), TimeSpan.FromHours(23))
+            : (TimeSpan.FromHours(13), TimeSpan.FromHours(14));
     }
 }
