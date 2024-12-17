@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Logging;
 
+using Serilog;
+
 var cultureInfo = new CultureInfo("en-US");
 
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
@@ -26,7 +28,7 @@ builder.ConfigureDcdDatabase(azureConfig);
 builder.Services.AddDcdFusionConfiguration(azureConfig, builder.Configuration);
 builder.Services.AddDcdAppInsights(azureConfig);
 builder.ConfigureDcdLogging(azureConfig);
-builder.AddDcdBlogStorage(azureConfig);
+builder.AddDcdBlobStorage(azureConfig);
 
 builder.Services.AddDcdCorsPolicy();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -44,11 +46,9 @@ builder.Services.AddResponseCompression(options =>
 builder.AddDcdAuthentication();
 
 builder.Services.AddAutoMapper(typeof(CaseProfile));
-builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new DcdApiEndpointTransformer())));
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.ConfigureDcdSwagger();
-builder.AddDcdBloBStorage(config);
-builder.Host.UseSerilog();
+builder.Services.AddDcdIocConfiguration();
+
+builder.Services.AddHostedService<ProjectMasterBackgroundService>();
 
 var app = builder.Build();
 

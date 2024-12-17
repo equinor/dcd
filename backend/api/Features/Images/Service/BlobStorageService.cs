@@ -70,42 +70,42 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         return MapToDto(imageEntity);
     }
 
-    public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
-    {
-        Console.WriteLine("GetCaseImages");
-        var sasToken = configuration["CI-blob-storage-sas-token"];
-        if (sasToken != null)
-        {
-            var images = await context.Images
-                .Where(img => img.CaseId == caseId)
-                .ToListAsync();
-            Console.WriteLine("images.Count: " + images.Count);
+    // public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
+    // {
+    //     Console.WriteLine("GetCaseImages");
+    //     var sasToken = configuration["CI-blob-storage-sas-token"];
+    //     if (sasToken != null)
+    //     {
+    //         var images = await context.Images
+    //             .Where(img => img.CaseId == caseId)
+    //             .ToListAsync();
+    //         Console.WriteLine("images.Count: " + images.Count);
 
-            return images.Select(img => MapToDto(img)).ToList();
-        }
-        else
-        {
-            throw new InvalidOperationException("SAS Token not found in configuration.");
-        }
-    }
+    //         return images.Select(img => MapToDto(img)).ToList();
+    //     }
+    //     else
+    //     {
+    //         throw new InvalidOperationException("SAS Token not found in configuration.");
+    //     }
+    // }
 
-    public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
-    {
-        Console.WriteLine("GetProjectImages");
-        var sasToken = configuration["CI-blob-storage-sas-token"];
-        if (sasToken != null)
-        {
-            var images = await context.Images
-                .Where(img => img.ProjectId == projectId && img.CaseId == null)
-                .ToListAsync();
-            Console.WriteLine("images.Count: " + images.Count);
-            return images.Select(img => MapToDto(img)).ToList();
-        }
-        else
-        {
-            throw new InvalidOperationException("SAS Token not found in configuration.");
-        }
-    }
+    // public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
+    // {
+    //     Console.WriteLine("GetProjectImages");
+    //     var sasToken = configuration["CI-blob-storage-sas-token"];
+    //     if (sasToken != null)
+    //     {
+    //         var images = await context.Images
+    //             .Where(img => img.ProjectId == projectId && img.CaseId == null)
+    //             .ToListAsync();
+    //         Console.WriteLine("images.Count: " + images.Count);
+    //         return images.Select(img => MapToDto(img)).ToList();
+    //     }
+    //     else
+    //     {
+    //         throw new InvalidOperationException("SAS Token not found in configuration.");
+    //     }
+    // }
 
 
     public async Task DeleteImage(Guid imageId)
@@ -139,7 +139,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             throw new NotFoundInDBException("Image not found.");
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
 
         var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
         var blobName = image.CaseId.HasValue
