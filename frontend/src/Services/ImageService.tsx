@@ -67,12 +67,20 @@ export class ImageService extends __BaseService {
         if (caseId) {
             response = await fetch(`/api/projects/${projectId}/cases/${caseId}/images/${imageId}/raw`)
         } else {
-            response = await fetch(`/api/projects/${projectId}/images/${imageId}`)
+            response = await fetch(`/api/projects/${projectId}/images/${imageId}/raw`)
         }
         if (!response.ok) {
             throw new Error("Failed to fetch image")
         }
-        const blob = await response.blob()
+        const base64String = await response.text()
+        console.log("base64String:", base64String)
+        const byteCharacters = atob(base64String)
+        const byteNumbers = new Array(byteCharacters.length)
+        for (let i = 0; i < byteCharacters.length; i += 1) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i)
+        }
+        const byteArray = new Uint8Array(byteNumbers)
+        const blob = new Blob([byteArray], { type: "image/jpeg" }) // Adjust the MIME type as needed
         return URL.createObjectURL(blob)
     }
 }

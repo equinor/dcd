@@ -56,7 +56,7 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
 `
 
 const Gallery = () => {
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const [gallery, setGallery] = useState<Components.Schemas.ImageDto[]>([])
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
@@ -70,18 +70,17 @@ const Gallery = () => {
                 try {
                     const imageService = await getImageService()
                     let imageDtos
-                    console.log("caseId:", caseId)
-                    console.log("projectId:", projectId)
                     if (caseId) {
                         imageDtos = await imageService.getCaseImages(projectId, caseId)
+                        setGallery(imageDtos)
                     } else {
-                        console.log("project fetch")
                         imageDtos = await imageService.getProjectImages(projectId)
+                        setGallery(imageDtos)
                     }
 
                     const imageUrls = await Promise.all(
                         imageDtos.map(async (image) => {
-                            const imageUrl = await imageService.fetchImage(projectId, caseId ?? "", image.id)
+                            const imageUrl = await imageService.fetchImage(projectId, caseId ?? null, image.id)
                             return { ...image, url: imageUrl }
                         }),
                     )
@@ -89,12 +88,13 @@ const Gallery = () => {
                     setGallery(imageUrls)
                 } catch (error) {
                     console.error("Error loading images:", error)
+                    setSnackBarMessage("Error loading images")
                 }
             }
         }
 
         loadImages()
-    }, [projectId, caseId])
+    }, [projectId, caseId, setSnackBarMessage])
 
     const handleDelete = async (imageUrl: string) => {
         try {
@@ -123,6 +123,7 @@ const Gallery = () => {
         setModalOpen(true)
     }
 
+    // image.url må endres
     return gallery.length > 0 || editMode ? (
         <Grid item xs={12}>
             <ImageModal image={expandedImage} modalOpen={modalOpen} setModalOpen={setModalOpen} />

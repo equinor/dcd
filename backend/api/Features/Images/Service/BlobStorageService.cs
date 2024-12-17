@@ -157,7 +157,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         await context.SaveChangesAsync();
     }
 
-    public async Task<byte[]> GetImageRaw(Guid projectId, Guid imageId)
+    public async Task<string> GetImageRaw(Guid projectId, Guid imageId)
     {
         var image = await context.Images.FindAsync(imageId);
         if (image == null)
@@ -179,7 +179,8 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream);
-        return memoryStream.ToArray();
+        var bytes = memoryStream.ToArray();
+        return Convert.ToBase64String(bytes);
     }
 
     private static ImageDto MapToDto(Image imageEntity)
