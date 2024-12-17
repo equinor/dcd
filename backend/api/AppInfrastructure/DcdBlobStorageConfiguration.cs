@@ -18,19 +18,11 @@ public static class DcdBlobStorageConfiguration
     {
         var containerKey = DcdEnvironments.CurrentEnvironment switch
         {
-            DcdEnvironments.LocalDev => "AzureStorageAccountImageContainerCI",
-            DcdEnvironments.Ci => "AzureStorageAccountImageContainerCI",
-
-            DcdEnvironments.Dev => "AzureStorageAccountImageContainerCI",
             DcdEnvironments.RadixDev => "AzureStorageAccountImageContainerCI",
-
-            DcdEnvironments.Qa => "AzureStorageAccountImageContainerQA",
             DcdEnvironments.RadixQa => "AzureStorageAccountImageContainerQA",
-
-            DcdEnvironments.Prod => "AzureStorageAccountImageContainerProd",
             DcdEnvironments.RadixProd => "AzureStorageAccountImageContainerProd",
 
-            _ => throw new InvalidOperationException($"Unknown fusion environment: {DcdEnvironments.CurrentEnvironment}")
+            _ => "AzureStorageAccountImageContainerCI"
         };
 
         return configuration[containerKey]
