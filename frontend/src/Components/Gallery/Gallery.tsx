@@ -55,6 +55,16 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
 
+// type imageWithData = {
+//     imageId: string;
+//     createTime: string;
+//     description?: string | null;
+//     caseId: string;
+//     projectName: string;
+//     projectId: string;
+//     imageData: string;
+// }
+
 const Gallery = () => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const [gallery, setGallery] = useState<Components.Schemas.ImageDto[]>([])
@@ -72,16 +82,14 @@ const Gallery = () => {
                     let imageDtos
                     if (caseId) {
                         imageDtos = await imageService.getCaseImages(projectId, caseId)
-                        setGallery(imageDtos)
                     } else {
                         imageDtos = await imageService.getProjectImages(projectId)
-                        setGallery(imageDtos)
                     }
 
                     const imageUrls = await Promise.all(
                         imageDtos.map(async (image) => {
-                            const imageUrl = await imageService.fetchImage(projectId, caseId ?? null, image.id)
-                            return { ...image, url: imageUrl }
+                            const imageData = await imageService.fetchImage(projectId, caseId ?? null, image.imageId)
+                            return { ...image, imageData }
                         }),
                     )
 
@@ -96,21 +104,21 @@ const Gallery = () => {
         loadImages()
     }, [projectId, caseId, setSnackBarMessage])
 
-    const handleDelete = async (imageUrl: string) => {
+    const handleDelete = async (imageId: string) => {
         try {
             if (projectId) {
                 const imageService = await getImageService()
-                const image = gallery.find((img) => img.url === imageUrl)
+                const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
                     if (caseId) {
-                        await imageService.deleteImage(projectId, image.id, caseId)
+                        await imageService.deleteImage(projectId, image.imageId, caseId)
                     } else {
-                        await imageService.deleteImage(projectId, image.id)
+                        await imageService.deleteImage(projectId, image.imageId)
                     }
-                    setGallery(gallery.filter((img) => img.url !== imageUrl))
+                    setGallery(gallery.filter((img) => img.imageId !== imageId))
                     setExeededLimit(false)
                 } else {
-                    console.error("Image not found for the provided URL:", imageUrl)
+                    console.error("Image not found for the provided URL:", imageId)
                 }
             }
         } catch (error) {
@@ -137,14 +145,14 @@ const Gallery = () => {
                         key={`menu-item-${index + 1}`}
                     >
                         <ImageWithHover>
-                            <img src={image.url} alt={`upload #${index + 1}`} />
+                            <img src={image.imageData} alt={`upload #${index + 1}`} />
                             <GalleryControls>
                                 {editMode && (
-                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
+                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.imageId)}>
                                         <Icon size={18} data={delete_to_trash} />
                                     </Button>
                                 )}
-                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
+                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.imageId)}>
                                     <Icon size={18} data={expand_screen} />
                                 </Button>
                             </GalleryControls>

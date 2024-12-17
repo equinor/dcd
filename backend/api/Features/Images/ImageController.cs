@@ -17,19 +17,19 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
         return await UploadImage(projectId, projectName, caseId, image);
     }
 
-    // [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
-    // [ActionType(ActionType.Read)]
-    // [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    // public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
-    // {
-    //     var imageDtos = await blobStorageService.GetCaseImages(caseId);
-    //     return Ok(imageDtos);
-    // }
+    [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
+    [ActionType(ActionType.Read)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
+    {
+        var imageDtos = await blobStorageService.GetCaseImages(caseId);
+        return Ok(imageDtos);
+    }
 
     [HttpGet("projects/{projectId:guid}/images/{imageId:guid}/raw")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    public async Task<string> DownloadImage(Guid projectId, Guid imageId)
+    public async Task<ImageContentDto> DownloadImage(Guid projectId, Guid imageId)
     {
        return await blobStorageService.GetImageRaw(projectId, imageId);
     }
@@ -52,14 +52,14 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
     }
 
 
-    // [HttpGet("projects/{projectId:guid}/images")]
-    // [ActionType(ActionType.Read)]
-    // [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    // public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
-    // {
-    //     var imageDtos = await blobStorageService.GetProjectImages(projectId);
-    //     return Ok(imageDtos);
-    // }
+    [HttpGet("projects/{projectId:guid}/images")]
+    [ActionType(ActionType.Read)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
+    {
+        var imageDtos = await blobStorageService.GetProjectImages(projectId);
+        return Ok(imageDtos);
+    }
 
 
     private async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, string projectName, Guid? caseId, IFormFile image)

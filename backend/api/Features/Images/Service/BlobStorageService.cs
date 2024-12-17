@@ -45,7 +45,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
 
-        var imageUrl = blobClient.Uri.ToString();
+        var imageUrl = blobClient.Uri.ToString().Split('?')[0];
         var createTime = DateTimeOffset.UtcNow;
 
         var imageEntity = new Image
@@ -70,42 +70,24 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         return MapToDto(imageEntity);
     }
 
-    // public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
-    // {
-    //     Console.WriteLine("GetCaseImages");
-    //     var sasToken = configuration["CI-blob-storage-sas-token"];
-    //     if (sasToken != null)
-    //     {
-    //         var images = await context.Images
-    //             .Where(img => img.CaseId == caseId)
-    //             .ToListAsync();
-    //         Console.WriteLine("images.Count: " + images.Count);
+    public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
+    {
+        var images = await context.Images
+            .Where(img => img.CaseId == caseId)
+            .ToListAsync();
+        Console.WriteLine("images.Count: " + images.Count);
 
-    //         return images.Select(img => MapToDto(img)).ToList();
-    //     }
-    //     else
-    //     {
-    //         throw new InvalidOperationException("SAS Token not found in configuration.");
-    //     }
-    // }
+        return images.Select(img => MapToDto(img)).ToList();
+    }
 
-    // public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
-    // {
-    //     Console.WriteLine("GetProjectImages");
-    //     var sasToken = configuration["CI-blob-storage-sas-token"];
-    //     if (sasToken != null)
-    //     {
-    //         var images = await context.Images
-    //             .Where(img => img.ProjectId == projectId && img.CaseId == null)
-    //             .ToListAsync();
-    //         Console.WriteLine("images.Count: " + images.Count);
-    //         return images.Select(img => MapToDto(img)).ToList();
-    //     }
-    //     else
-    //     {
-    //         throw new InvalidOperationException("SAS Token not found in configuration.");
-    //     }
-    // }
+    public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
+    {
+        var images = await context.Images
+            .Where(img => img.ProjectId == projectId && img.CaseId == null)
+            .ToListAsync();
+        Console.WriteLine("images.Count: " + images.Count);
+        return images.Select(img => MapToDto(img)).ToList();
+    }
 
 
     public async Task DeleteImage(Guid imageId)
@@ -131,7 +113,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         await context.SaveChangesAsync();
     }
 
-    public async Task<string> GetImageRaw(Guid projectId, Guid imageId)
+    public async Task<ImageContentDto> GetImageRaw(Guid projectId, Guid imageId)
     {
         var image = await context.Images.FindAsync(imageId);
         if (image == null)
@@ -154,20 +136,29 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream);
         var bytes = memoryStream.ToArray();
-        return Convert.ToBase64String(bytes);
+        return new ImageContentDto
+        {
+            Base64EncodedData = Convert.ToBase64String(bytes)
+        };
     }
 
     private static ImageDto MapToDto(Image imageEntity)
     {
         return new ImageDto
         {
-            Id = imageEntity.Id,
-            Url = imageEntity.Url,
+            ImageId = imageEntity.Id,
+            // Url = imageEntity.Url,
             CreateTime = imageEntity.CreateTime,
             Description = imageEntity.Description,
             CaseId = imageEntity.CaseId,
             ProjectName = imageEntity.ProjectName,
             ProjectId = imageEntity.ProjectId
+
         };
     }
+}
+
+public class ImageContentDto
+{
+    public required string Base64EncodedData { get; set; }
 }

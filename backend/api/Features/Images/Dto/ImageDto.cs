@@ -4,9 +4,9 @@ namespace api.Features.Images.Dto;
 
 public class ImageDto
 {
-    [Required] public Guid Id { get; set; }
+    [Required] public Guid ImageId { get; set; }
 
-    [Required][Url] public string Url { get; set; } = null!;
+    // [Required][Url] public string Url { get; set; } = null!;
 
     [Required] public DateTimeOffset CreateTime { get; set; }
 
@@ -17,4 +17,5 @@ public class ImageDto
     [Required] public string ProjectName { get; set; } = null!;
 
     [Required] public Guid ProjectId { get; set; }
+    [Required] public string? ImageData { get; set; }
 }

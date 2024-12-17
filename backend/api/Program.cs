@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Logging;
 
-using Serilog;
-
 var cultureInfo = new CultureInfo("en-US");
 
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;

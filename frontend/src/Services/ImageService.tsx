@@ -61,26 +61,28 @@ export class ImageService extends __BaseService {
         throw new Error("Upload project image response data is undefined")
     }
 
+    public async getImageData(url: string): Promise<Components.Schemas.ImageContentDto> {
+        const response = await this.get(url)
+        return response
+    }
+
     // eslint-disable-next-line class-methods-use-this
     public async fetchImage(projectId: string, caseId: string | null, imageId: string): Promise<string> {
-        let response: Response
+        let ImageContent: Components.Schemas.ImageContentDto
         if (caseId) {
-            response = await fetch(`/api/projects/${projectId}/cases/${caseId}/images/${imageId}/raw`)
+            ImageContent = await this.getImageData(`/api/projects/${projectId}/cases/${caseId}/images/${imageId}/raw`)
         } else {
-            response = await fetch(`/api/projects/${projectId}/images/${imageId}/raw`)
+            ImageContent = await this.getImageData(`/api/projects/${projectId}/images/${imageId}/raw`)
         }
-        if (!response.ok) {
-            throw new Error("Failed to fetch image")
-        }
-        const base64String = await response.text()
-        console.log("base64String:", base64String)
-        const byteCharacters = atob(base64String)
+
+        const base64String = ImageContent.base64EncodedData
+        const byteCharacters = atob(base64String!)
         const byteNumbers = new Array(byteCharacters.length)
         for (let i = 0; i < byteCharacters.length; i += 1) {
             byteNumbers[i] = byteCharacters.charCodeAt(i)
         }
         const byteArray = new Uint8Array(byteNumbers)
-        const blob = new Blob([byteArray], { type: "image/jpeg" }) // Adjust the MIME type as needed
+        const blob = new Blob([byteArray], { type: "image/jpeg" })
         return URL.createObjectURL(blob)
     }
 }
