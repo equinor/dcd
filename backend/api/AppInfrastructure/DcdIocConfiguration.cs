@@ -135,7 +135,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
         services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
         services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
-        services.AddScoped<ICalculateNPVService, CalculateNPVService>();
+        services.AddScoped<ICalculateNpvService, CalculateNpvService>();
         services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
 
         /* Auth */

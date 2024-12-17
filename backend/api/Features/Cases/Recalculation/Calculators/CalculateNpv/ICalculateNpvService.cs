@@ -1,8 +1,8 @@
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 
-public interface ICalculateNPVService
+public interface ICalculateNpvService
 {
-    Task CalculateNPV(Guid caseId);
+    Task CalculateNpv(Guid caseId);
 }
 

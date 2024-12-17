@@ -24,7 +24,7 @@ public class CalculateTotalIncomeService(ICaseService caseService, IDrainageStra
 
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
-        var exchangeRateUSDToNOK = caseItem.Project.ExchangeRateUSDToNOK;
+        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
         var cubicMetersToBarrelsFactor = 6.29;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
@@ -38,7 +38,7 @@ public class CalculateTotalIncomeService(ICaseService caseService, IDrainageStra
         var oilIncome = new TimeSeries<double>
         {
             StartYear = totalOilProductionInMegaCubics.StartYear,
-            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUSDToNOK).ToArray(),
+            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUsdToNok).ToArray(),
         };
 
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(

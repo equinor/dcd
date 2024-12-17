@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 
-public class CalculateNPVService(ICaseService caseService) : ICalculateNPVService
+public class CalculateNpvService(ICaseService caseService) : ICalculateNpvService
 {
     private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
     {
@@ -16,7 +16,7 @@ public class CalculateNPVService(ICaseService caseService) : ICalculateNPVServic
         return EconomicsHelper.CalculateCashFlow(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile);
     }
 
-    public async Task CalculateNPV(Guid caseId)
+    public async Task CalculateNpv(Guid caseId)
     {
         var caseItem = await caseService.GetCaseWithIncludes(
             caseId,

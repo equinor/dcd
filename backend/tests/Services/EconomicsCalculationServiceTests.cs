@@ -41,7 +41,7 @@ public class EconomicsCalculationServiceTests
     private readonly CalculateTotalIncomeService _calculateTotalIncomeService;
     private readonly CalculateBreakEvenOilPriceService _calculateBreakEvenOilPriceService;
     private readonly CalculateTotalCostService _calculateTotalCostService;
-    private readonly CalculateNPVService _calculateNpvService;
+    private readonly CalculateNpvService _calculateNpvService;
 
     public EconomicsCalculationServiceTests()
     {
@@ -78,7 +78,7 @@ public class EconomicsCalculationServiceTests
             _wellProjectService,
             _explorationService
         );
-        _calculateNpvService = new CalculateNPVService(_caseService);
+        _calculateNpvService = new CalculateNpvService(_caseService);
     }
 
 
@@ -594,7 +594,7 @@ public class EconomicsCalculationServiceTests
         _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>[]>())
             .Returns(caseItem);
 
-        await _calculateNpvService.CalculateNPV(caseId);
+        await _calculateNpvService.CalculateNpv(caseId);
 
         var actualNpvValue = 1081.62;
         Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);

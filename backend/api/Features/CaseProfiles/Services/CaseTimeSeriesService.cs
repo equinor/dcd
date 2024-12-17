@@ -90,7 +90,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<TotalFEEDStudiesOverrideDto> UpdateTotalFEEDStudiesOverride(
+    public async Task<TotalFEEDStudiesOverrideDto> UpdateTotalFeedStudiesOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
@@ -266,7 +266,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFEEDStudiesOverride(
+    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFeedStudiesOverride(
         Guid projectId,
         Guid caseId,
         CreateTotalFEEDStudiesOverrideDto createProfileDto
@@ -341,7 +341,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOPEXCostProfile(
+    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOpexCostProfile(
         Guid projectId,
         Guid caseId,
         CreateAdditionalOPEXCostProfileDto createProfileDto
@@ -356,7 +356,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOPEXCostProfile(
+    public async Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOpexCostProfile(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,

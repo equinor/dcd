@@ -25,8 +25,8 @@ public class CalculateBreakEvenOilPriceService(
 
         var discountRate = caseItem.Project.DiscountRate;
         var defaultOilPrice = caseItem.Project.OilPriceUSD;
-        var gasPriceNOK = caseItem.Project.GasPriceNOK;
-        var exchangeRateUSDToNOK = caseItem.Project.ExchangeRateUSDToNOK;
+        var gasPriceNok = caseItem.Project.GasPriceNOK;
+        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
             drainageStrategy.ProductionProfileOil,
@@ -64,16 +64,16 @@ public class CalculateBreakEvenOilPriceService(
         if (discountedOilVolume == 0 || discountedGasVolume == 0) { return; }
 
         var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
-            caseItem?.CalculatedTotalCostCostProfile?.Values ?? [],
+            caseItem.CalculatedTotalCostCostProfile?.Values ?? [],
             discountRate,
-            (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year)
+            (caseItem.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year)
         );
 
-        var GOR = discountedGasVolume / discountedOilVolume;
+        var gor = discountedGasVolume / discountedOilVolume;
 
-        var PA = gasPriceNOK > 0 ? gasPriceNOK * 1000 / (exchangeRateUSDToNOK * 6.29 * defaultOilPrice) : 0;
+        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * 6.29 * defaultOilPrice) : 0;
 
-        var breakEvenPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29;
+        var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / 6.29;
 
         if (caseItem != null)
         {

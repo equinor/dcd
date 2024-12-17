@@ -22,7 +22,6 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
 {
     private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
-    // TODO: This is not pretty, need to move this logic out of the context
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
     {
         await Semaphore.WaitAsync(cancellationToken);
@@ -85,7 +84,7 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var rerunCo2Emissions = CalculateCo2Emissions();
         var rerunTotalIncome = CalculateTotalIncome();
         var rerunTotalCost = CalculateTotalCost();
-        var rerunCalculateNPV = CalculateNPV();
+        var rerunCalculateNpv = CalculateNpv();
         var rerunCalculateBreakEven = CalculateBreakEvenOilPrice();
 
         await context.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
@@ -146,10 +145,10 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             await calculateCostHelper.CalculateTotalCost(caseId);
         }
 
-        if (rerunTotalIncome || rerunTotalCost || rerunCalculateNPV)
+        if (rerunTotalIncome || rerunTotalCost || rerunCalculateNpv)
         {
-            var calculateNPVHelper = serviceProvider.GetRequiredService<ICalculateNPVService>();
-            await calculateNPVHelper.CalculateNPV(caseId);
+            var calculateNpvHelper = serviceProvider.GetRequiredService<ICalculateNpvService>();
+            await calculateNpvHelper.CalculateNpv(caseId);
         }
 
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
@@ -963,10 +962,10 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
                       ));
 
 
-        var totalFEEDChanges = context.ChangeTracker.Entries<TotalFEEDStudies>()
+        var totalFeedChanges = context.ChangeTracker.Entries<TotalFEEDStudies>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var totalFEEDOverrideChanges = context.ChangeTracker.Entries<TotalFEEDStudiesOverride>()
+        var totalFeedOverrideChanges = context.ChangeTracker.Entries<TotalFEEDStudiesOverride>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var totalOtherStudiesChanges = context.ChangeTracker.Entries<TotalOtherStudiesCostProfile>()
@@ -987,10 +986,10 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var offshoreFacilitiesOperationsOverrideChanges = context.ChangeTracker.Entries<OffshoreFacilitiesOperationsCostProfileOverride>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var onshoreRelatedOPEXChanges = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
+        var onshoreRelatedOpexChanges = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var additionalOPEXChanges = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
+        var additionalOpexChanges = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var cessationWellsChanges = context.ChangeTracker.Entries<CessationWellsCost>()
@@ -1086,16 +1085,16 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         return
             totalFeasibilityAdded
             || totalFeasibilityOverrideChanges
-            || totalFEEDChanges
-            || totalFEEDOverrideChanges
+            || totalFeedChanges
+            || totalFeedOverrideChanges
             || totalOtherStudiesChanges
             || historicCostChanges
             || wellInterventionChanges
             || wellInterventionOverrideChanges
             || offshoreFacilitiesOperationsChanges
             || offshoreFacilitiesOperationsOverrideChanges
-            || onshoreRelatedOPEXChanges
-            || additionalOPEXChanges
+            || onshoreRelatedOpexChanges
+            || additionalOpexChanges
             || cessationWellsChanges
             || cessationWellsOverrideChanges
             || cessationOffshoreFacilitiesChanges
@@ -1128,7 +1127,7 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             || sidetrackChanges;
     }
 
-    private bool CalculateNPV()
+    private bool CalculateNpv()
     {
         var projectChanges = context.ChangeTracker.Entries<Project>()
             .Any(e => e.State == EntityState.Modified &&

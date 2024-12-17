@@ -160,11 +160,9 @@ public class CalculateTotalCostService(
                 StartYear = totalCost.StartYear
             };
         }
-
-        return;
     }
 
-    public TimeSeries<double> CalculateStudyCost(Case caseItem)
+    private TimeSeries<double> CalculateStudyCost(Case caseItem)
     {
         TimeSeries<double> feasibilityProfile = UseOverrideOrProfile(
             caseItem.TotalFeasibilityAndConceptStudies,
@@ -187,7 +185,7 @@ public class CalculateTotalCostService(
         return totalStudyCost;
     }
 
-    public TimeSeries<double> CalculateOpexCost(Case caseItem)
+    private TimeSeries<double> CalculateOpexCost(Case caseItem)
     {
         TimeSeries<double> wellInterventionProfile = UseOverrideOrProfile(
             caseItem.WellInterventionCostProfile,
@@ -216,7 +214,7 @@ public class CalculateTotalCostService(
         return totalOpexCost;
     }
 
-    public TimeSeries<double> CalculateCessationCost(Case caseItem)
+    private TimeSeries<double> CalculateCessationCost(Case caseItem)
     {
         TimeSeries<double> cessationWellsProfile = UseOverrideOrProfile(
             caseItem.CessationWellsCost,
@@ -238,7 +236,7 @@ public class CalculateTotalCostService(
         return totalCessationCost;
     }
 
-    public static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
+    private static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
         Substructure? substructure,
         Surf? surf,
         Topside? topside,
@@ -278,8 +276,7 @@ public class CalculateTotalCostService(
         return totalOffshoreFacilityCost;
     }
 
-
-    public static TimeSeries<double> CalculateTotalDevelopmentCost(WellProject wellProject)
+    private static TimeSeries<double> CalculateTotalDevelopmentCost(WellProject wellProject)
     {
         TimeSeries<double> oilProducerProfile = UseOverrideOrProfile(
             wellProject.OilProducerCostProfile,
@@ -330,7 +327,7 @@ public class CalculateTotalCostService(
         TimeSeries<double> sidetrackCostProfile = exploration?.SidetrackCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        var totalexploration = TimeSeriesCost.MergeCostProfilesList(
+        var totalExploration = TimeSeriesCost.MergeCostProfilesList(
         [
             gAndGAdminCostProfile,
             seismicAcquisitionAndProcessingProfile,
@@ -340,7 +337,7 @@ public class CalculateTotalCostService(
             sidetrackCostProfile
         ]);
 
-        return totalexploration;
+        return totalExploration;
     }
 
     private static TimeSeries<double> UseOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
@@ -354,7 +351,8 @@ public class CalculateTotalCostService(
                 Values = profileOverride.Values ?? []
             };
         }
-        else if (profile != null)
+
+        if (profile != null)
         {
             return new TimeSeries<double>
             {
@@ -362,6 +360,7 @@ public class CalculateTotalCostService(
                 Values = profile.Values ?? []
             };
         }
+
         return new TimeSeries<double> { StartYear = 0, Values = [] };
     }
 }

@@ -98,7 +98,7 @@ public class CessationCostProfileService(
             .Select(well => well.DrillingSchedule?.Values.Sum() ?? 0)
             .Sum();
 
-        var totalCost = sumDrilledWells * (double)pluggingAndAbandonment;
+        var totalCost = sumDrilledWells * pluggingAndAbandonment;
         cessationWells.StartYear = lastYear;
         cessationWells.Values = [totalCost / 2, totalCost / 2];
 
@@ -110,7 +110,7 @@ public class CessationCostProfileService(
         var surfCessationCost = surf.CessationCost;
 
         cessationOffshoreFacilities.StartYear = lastYear + 1;
-        cessationOffshoreFacilities.Values = [(double)surfCessationCost / 2, (double)surfCessationCost / 2];
+        cessationOffshoreFacilities.Values = [surfCessationCost / 2, surfCessationCost / 2];
         return cessationOffshoreFacilities;
     }
 }

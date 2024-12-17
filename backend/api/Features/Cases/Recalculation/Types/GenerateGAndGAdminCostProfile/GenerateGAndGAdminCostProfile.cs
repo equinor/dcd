@@ -37,7 +37,7 @@ public class GenerateGAndGAdminCostProfile(
         if (linkedWells.Count > 0)
         {
             var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
-            var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
+            var earliestYear = drillingSchedules.Select(ds => ds?.StartYear).Min() + caseItem.DG4Date.Year;
             var dG1Date = caseItem.DG1Date;
             if (earliestYear != null && dG1Date.Year >= earliestYear)
             {
