@@ -6,20 +6,10 @@ public static class DcdFusionConfiguration
     {
         services.AddFusionIntegration(options =>
         {
-            var fusionEnvironment = DcdEnvironments.CurrentEnvironment switch
-            {
-                DcdEnvironments.RadixDev => "CI",
-                DcdEnvironments.RadixQa => "FQA",
-                DcdEnvironments.RadixProd => "FPRD",
-
-                _ => "CI"
-            };
-
-            Console.WriteLine("Fusion environment: " + fusionEnvironment);
-            options.UseServiceInformation("ConceptApp", fusionEnvironment);
+            options.UseServiceInformation("ConceptApp", DcdEnvironments.FusionEnvironment);
 
             options.UseMsalTokenProvider();
-            options.UseDefaultEndpointResolver(fusionEnvironment);
+            options.UseDefaultEndpointResolver(DcdEnvironments.FusionEnvironment);
             options.UseDefaultTokenProvider(opts =>
             {
                 opts.ClientId = azureConfig["AzureAd:ClientId"] ?? localConfig["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");

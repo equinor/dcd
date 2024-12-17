@@ -1,3 +1,4 @@
+using api.AppInfrastructure;
 using api.Context;
 using api.Exceptions;
 using api.Features.CaseProfiles.Repositories;
@@ -16,11 +17,9 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
     DcdDbContext context)
     : IBlobStorageService
 {
-    public static string ContainerName { get; set; } = null!;
-
     public async Task<ImageDto> SaveImage(Guid projectId, IFormFile image, Guid? caseId = null)
     {
-        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(DcdEnvironments.BlobStorageContainerName);
 
         var imageId = Guid.NewGuid();
 
@@ -106,7 +105,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             throw new NotFoundInDBException("Image not found.");
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(DcdEnvironments.BlobStorageContainerName);
 
         var blobName = GetBlobName(image.CaseId, image.ProjectId, image.Id);
 
@@ -120,7 +119,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 
     private async Task<string> GetImageContent(Image image)
     {
-        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(DcdEnvironments.BlobStorageContainerName);
 
         var blobName = GetBlobName(image.CaseId, image.ProjectId, image.Id);
 
