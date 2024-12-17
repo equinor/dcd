@@ -23,7 +23,6 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 
         revision.RevisionDetails = new RevisionDetails
         {
-            OriginalProjectId = projectPk,
             RevisionName = createRevisionDto.Name,
             Mdqc = createRevisionDto.Mdqc,
             Arena = createRevisionDto.Arena,

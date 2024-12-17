@@ -1597,7 +1597,7 @@ namespace api.Migrations
                     b.ToTable("ProductionProfileGas");
                 });
 
-            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+            modelBuilder.Entity("api.Models.ProductionProfileNgl", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1618,7 +1618,7 @@ namespace api.Migrations
                     b.HasIndex("DrainageStrategy.Id")
                         .IsUnique();
 
-                    b.ToTable("ProductionProfileNGL");
+                    b.ToTable("ProductionProfileNgl");
                 });
 
             modelBuilder.Entity("api.Models.ProductionProfileOil", b =>
@@ -1802,8 +1802,7 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FusionProjectId")
-                        .HasDatabaseName("IX_Project_FusionProjectId");
+                    b.HasIndex("FusionProjectId");
 
                     b.HasIndex("OriginalProjectId");
 
@@ -1853,9 +1852,6 @@ namespace api.Migrations
                     b.Property<bool>("Mdqc")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("OriginalProjectId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("RevisionDate")
                         .HasColumnType("datetimeoffset");
 
@@ -1866,9 +1862,6 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OriginalProjectId")
-                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
 
                     b.HasIndex("RevisionId")
                         .IsUnique();
@@ -3560,11 +3553,11 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
-            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+            modelBuilder.Entity("api.Models.ProductionProfileNgl", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
-                        .WithOne("ProductionProfileNGL")
-                        .HasForeignKey("api.Models.ProductionProfileNGL", "DrainageStrategy.Id")
+                        .WithOne("ProductionProfileNgl")
+                        .HasForeignKey("api.Models.ProductionProfileNgl", "DrainageStrategy.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -4051,7 +4044,7 @@ namespace api.Migrations
 
                     b.Navigation("ProductionProfileGas");
 
-                    b.Navigation("ProductionProfileNGL");
+                    b.Navigation("ProductionProfileNgl");
 
                     b.Navigation("ProductionProfileOil");
 

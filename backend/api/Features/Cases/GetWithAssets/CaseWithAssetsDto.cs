@@ -58,7 +58,7 @@ public class CaseWithAssetsDto
     public NetSalesGasOverrideDto? NetSalesGasOverride { get; set; }
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public Co2EmissionsOverrideDto? Co2EmissionsOverride { get; set; }
-    public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
+    public ProductionProfileNglDto? ProductionProfileNgl { get; set; }
     public ImportedElectricityDto? ImportedElectricity { get; set; }
     public ImportedElectricityOverrideDto? ImportedElectricityOverride { get; set; }
     public Co2IntensityDto? Co2Intensity { get; set; }

@@ -1,4 +1,4 @@
-// import { useMemo } from "react"
+import { useMemo } from "react"
 import {
     delete_to_trash, edit, swap_horizontal, visibility,
 } from "@equinor/eds-icons"
@@ -11,7 +11,6 @@ import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./Acc
 import { UserRole } from "@/Models/AccessManagement"
 import { useAppContext } from "@/Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { useMemo } from "react"
 
 interface RolePanelProps {
     isSmallScreen: boolean;
@@ -28,8 +27,8 @@ const RolePanel = ({
     const { editMode } = useAppContext()
     const { accessRights } = useProjectContext()
 
-    const orgChartPeople = useMemo(() => people?.filter(person => person.isPmt === true), [people])
-    const manuallyAddedPeople = useMemo(() => people?.filter(person => person.isPmt === false), [people])
+    const orgChartPeople = useMemo(() => people?.filter((person) => person.isPmt === true), [people])
+    const manuallyAddedPeople = useMemo(() => people?.filter((person) => person.isPmt === false), [people])
 
     return (
         <EditorViewerContent $right={isViewers} $isSmallScreen={isSmallScreen}>
@@ -47,7 +46,7 @@ const RolePanel = ({
                 )}
                 {manuallyAddedPeople && manuallyAddedPeople.length > 0 ? (
                     <PeopleContainer>
-                        {manuallyAddedPeople.filter(p => !p.isPmt).map((person) => (
+                        {manuallyAddedPeople.filter((p) => !p.isPmt).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
                                 {editMode && accessRights?.canEdit && (
                                     <>

@@ -8,8 +8,14 @@ using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.CaseProfiles.Services;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
+using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
+using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.Calculators.Helpers;
+using api.Features.Cases.Recalculation.Types.CessationCostProfile;
+using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Models;
 
 using NSubstitute;
@@ -35,7 +41,7 @@ public class EconomicsCalculationServiceTests
     private readonly CalculateTotalIncomeService _calculateTotalIncomeService;
     private readonly CalculateBreakEvenOilPriceService _calculateBreakEvenOilPriceService;
     private readonly CalculateTotalCostService _calculateTotalCostService;
-    private readonly CalculateNPVService _calculateNpvService;
+    private readonly CalculateNpvService _calculateNpvService;
 
     public EconomicsCalculationServiceTests()
     {
@@ -72,7 +78,7 @@ public class EconomicsCalculationServiceTests
             _wellProjectService,
             _explorationService
         );
-        _calculateNpvService = new CalculateNPVService(_caseService);
+        _calculateNpvService = new CalculateNpvService(_caseService);
     }
 
 
@@ -588,7 +594,7 @@ public class EconomicsCalculationServiceTests
         _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>[]>())
             .Returns(caseItem);
 
-        await _calculateNpvService.CalculateNPV(caseId);
+        await _calculateNpvService.CalculateNpv(caseId);
 
         var actualNpvValue = 1081.62;
         Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);

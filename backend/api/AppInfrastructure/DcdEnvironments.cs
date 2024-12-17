@@ -25,4 +25,5 @@ public static class DcdEnvironments
     public static bool EnableVerboseEntityFrameworkLogging => false; // IsLocal() || IsCi();
     public static bool DisplayAllFusionUsersAsPmt => IsLocal() || IsCi() || IsQa();
     public static bool ReturnExceptionDetails => IsLocal() || IsCi() || IsQa();
+    public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
 }

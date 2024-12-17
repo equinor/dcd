@@ -2,7 +2,6 @@
 
 using System.Linq.Expressions;
 
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 public interface IOnshorePowerSupplyRepository

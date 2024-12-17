@@ -1,4 +1,3 @@
-using api.AppInfrastructure;
 using api.Context;
 using api.Exceptions;
 using api.Features.CaseProfiles.Repositories;
@@ -14,35 +13,10 @@ namespace api.Features.Images.Service;
 
 public class BlobStorageService(BlobServiceClient blobServiceClient,
     ICaseRepository caseRepository,
-    IConfiguration configuration,
     DcdDbContext context)
     : IBlobStorageService
 {
-    private readonly string _containerName = GetContainerName(configuration);
-
-    private static string GetContainerName(IConfiguration configuration)
-    {
-        var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
-
-        var containerKey = environment switch
-        {
-            DcdEnvironments.LocalDev => "AzureStorageAccountImageContainerCI",
-            DcdEnvironments.Ci => "AzureStorageAccountImageContainerCI",
-
-            DcdEnvironments.Dev => "AzureStorageAccountImageContainerCI",
-            DcdEnvironments.RadixDev => "AzureStorageAccountImageContainerCI",
-
-            DcdEnvironments.Qa => "AzureStorageAccountImageContainerQA",
-            DcdEnvironments.RadixQa => "AzureStorageAccountImageContainerQA",
-
-            DcdEnvironments.Prod => "AzureStorageAccountImageContainerProd",
-            DcdEnvironments.RadixProd => "AzureStorageAccountImageContainerProd",
-            _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
-        };
-
-        return configuration[containerKey]
-               ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
-    }
+    public static string ContainerName { get; set; } = null!;
 
     private static string SanitizeBlobName(string name)
     {
@@ -53,7 +27,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
     {
         // var sasToken = configuration["CI-blob-storage-sas-token"] ?? string.Empty;
         var sanitizedProjectName = SanitizeBlobName(projectName);
-        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
 
         var imageId = Guid.NewGuid();
 
@@ -142,7 +116,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             throw new NotFoundInDBException("Image not found.");
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
 
         var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
         var blobName = image.CaseId.HasValue

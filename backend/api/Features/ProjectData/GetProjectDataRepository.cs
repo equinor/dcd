@@ -32,17 +32,14 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<RevisionDetailsDto>> GetRevisionDetailsList(Guid projectId)
     {
         return await context.RevisionDetails
-            .Where(r => r.OriginalProjectId == projectId)
+            .Where(r => r.Revision.OriginalProjectId == projectId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
-                OriginalProjectId = x.OriginalProjectId,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
                 Arena = x.Arena,
-                Mdqc = x.Mdqc,
-                Classification = x.Classification
+                Mdqc = x.Mdqc
             })
             .ToListAsync();
     }
@@ -53,14 +50,11 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.RevisionId == revisionId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
-                OriginalProjectId = x.OriginalProjectId,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
                 Arena = x.Arena,
-                Mdqc = x.Mdqc,
-                Classification = x.Classification
+                Mdqc = x.Mdqc
             })
             .SingleAsync();
     }
