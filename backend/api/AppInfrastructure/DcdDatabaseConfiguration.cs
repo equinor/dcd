@@ -9,7 +9,7 @@ public static class DcdDatabaseConfiguration
 {
     public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot azureConfig)
     {
-        if (DcdEnvironments.IsLocal())
+        if (DcdEnvironments.UseSqlite)
         {
             SetupSqliteDatabase(builder);
 

@@ -1,6 +1,6 @@
+using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.FeatureToggles;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -15,7 +15,7 @@ public class UpdateCaseController(UpdateCaseService updateCaseService) : Control
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task UpdateCase([FromRoute] Guid projectId, [FromRoute] Guid caseId, [FromBody] UpdateCaseDto caseDto)
     {
-        if (FeatureToggleService.RevisionEnabled)
+        if (DcdEnvironments.RevisionEnabled)
         {
             UpdateCaseDtoValidator.Validate(caseDto);
         }

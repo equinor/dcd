@@ -61,7 +61,7 @@ app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
 app.UseResponseCompression();
 
-if (DcdEnvironments.IsLocal() || DcdEnvironments.IsCi())
+if (DcdEnvironments.EnableSwagger)
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
