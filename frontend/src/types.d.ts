@@ -217,7 +217,7 @@ declare namespace Components {
             netSalesGasOverride?: NetSalesGasOverrideDto;
             co2Emissions?: Co2EmissionsDto;
             co2EmissionsOverride?: Co2EmissionsOverrideDto;
-            productionProfileNGL?: ProductionProfileNGLDto;
+            productionProfileNgl?: ProductionProfileNglDto;
             importedElectricity?: ImportedElectricityDto;
             importedElectricityOverride?: ImportedElectricityOverrideDto;
             co2Intensity?: Co2IntensityDto;
@@ -954,7 +954,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
-        export interface ProductionProfileNGLDto {
+        export interface ProductionProfileNglDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;

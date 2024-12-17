@@ -138,7 +138,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredGasProduction)
                     )
                     ));
-        CreateMap<ProductionProfileNGL, ProductionProfileNGLDto>();
+        CreateMap<ProductionProfileNgl, ProductionProfileNglDto>();
         CreateMap<ImportedElectricity, ImportedElectricityDto>();
         CreateMap<ImportedElectricityOverride, ImportedElectricityOverrideDto>();
         CreateMap<Co2Intensity, Co2IntensityDto>();
@@ -380,7 +380,7 @@ public class DrainageStrategyProfile : Profile
     {
         { nameof(Co2Emissions), 1_000_000 },
         { nameof(Co2EmissionsOverride), 1_000_000 },
-        { nameof(ProductionProfileNGL), 1_000_000 },
+        { nameof(ProductionProfileNgl), 1_000_000 },
         { nameof(ProductionProfileOil), 1_000_000 },
         { nameof(AdditionalProductionProfileOil), 1_000_000 },
         { nameof(ProductionProfileWater), 1_000_000 },

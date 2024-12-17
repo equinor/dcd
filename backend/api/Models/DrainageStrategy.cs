@@ -32,7 +32,7 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable
     public virtual NetSalesGasOverride? NetSalesGasOverride { get; set; }
     public virtual Co2Emissions? Co2Emissions { get; set; }
     public virtual Co2EmissionsOverride? Co2EmissionsOverride { get; set; }
-    public virtual ProductionProfileNGL? ProductionProfileNGL { get; set; }
+    public virtual ProductionProfileNgl? ProductionProfileNgl { get; set; }
     public virtual ImportedElectricity? ImportedElectricity { get; set; }
     public virtual ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
     public virtual DeferredOilProduction? DeferredOilProduction { get; set; }
@@ -120,7 +120,7 @@ public class Co2EmissionsOverride : TimeSeriesMass, ITimeSeriesOverride, IDraina
     public bool Override { get; set; }
 }
 
-public class ProductionProfileNGL : TimeSeriesVolume, IDrainageStrategyTimeSeries
+public class ProductionProfileNgl : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
