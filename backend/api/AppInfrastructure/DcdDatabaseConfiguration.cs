@@ -52,11 +52,6 @@ public static class DcdDatabaseConfiguration
     {
         var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
 
-        if (!sqlServerConnectionString.Contains("MultipleActiveResultSets"))
-        {
-            sqlServerConnectionString += ";MultipleActiveResultSets=True;";
-        }
-
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
