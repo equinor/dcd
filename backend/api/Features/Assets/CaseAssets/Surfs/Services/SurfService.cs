@@ -26,7 +26,7 @@ public class SurfService(
     public async Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
     {
         return await repository.GetSurfWithIncludes(surfId, includes)
-            ?? throw new NotFoundInDBException($"Topside with id {surfId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {surfId} not found.");
     }
 
     public async Task<SurfDto> UpdateSurf<TDto>(

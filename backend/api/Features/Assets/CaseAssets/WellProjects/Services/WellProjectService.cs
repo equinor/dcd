@@ -27,7 +27,7 @@ public class WellProjectService(
     public async Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes)
     {
         return await repository.GetWellProjectWithIncludes(wellProjectId, includes)
-            ?? throw new NotFoundInDBException($"WellProject with id {wellProjectId} not found.");
+            ?? throw new NotFoundInDbException($"WellProject with id {wellProjectId} not found.");
     }
 
     public async Task<WellProjectDto> UpdateWellProject(
@@ -41,7 +41,7 @@ public class WellProjectService(
         await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var existingWellProject = await repository.GetWellProject(wellProjectId)
-            ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
+            ?? throw new NotFoundInDbException($"Well project with id {wellProjectId} not found.");
 
         mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
 
@@ -70,13 +70,13 @@ public class WellProjectService(
     )
     {
         var existingWellProject = await repository.GetWellProjectWithDrillingSchedule(drillingScheduleId)
-            ?? throw new NotFoundInDBException($"No wellproject connected to {drillingScheduleId} found.");
+            ?? throw new NotFoundInDbException($"No wellproject connected to {drillingScheduleId} found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<WellProject>(projectId, existingWellProject.Id);
 
         var existingDrillingSchedule = existingWellProject.WellProjectWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
-            ?? throw new NotFoundInDBException($"Drilling schedule with {drillingScheduleId} not found.");
+            ?? throw new NotFoundInDbException($"Drilling schedule with {drillingScheduleId} not found.");
 
         mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
 
@@ -109,10 +109,10 @@ public class WellProjectService(
         await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var existingWellProject = await repository.GetWellProject(wellProjectId)
-            ?? throw new NotFoundInDBException($"Well project with {wellProjectId} not found.");
+            ?? throw new NotFoundInDbException($"Well project with {wellProjectId} not found.");
 
         var existingWell = await repository.GetWell(wellId)
-            ?? throw new NotFoundInDBException($"Well with {wellId} not found.");
+            ?? throw new NotFoundInDbException($"Well with {wellId} not found.");
 
         DrillingSchedule drillingSchedule = new();
         var newDrillingSchedule = mapperService.MapToEntity(updatedWellProjectWellDto, drillingSchedule, wellProjectId);

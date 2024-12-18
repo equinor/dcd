@@ -24,7 +24,7 @@ public class OnshorePowerSupplyService(
     public async Task<OnshorePowerSupply> GetOnshorePowerSupplyWithIncludes(Guid onshorePowerSupplyId, params Expression<Func<OnshorePowerSupply, object>>[] includes)
     {
         return await onshorePowerSupplyRepository.GetOnshorePowerSupplyWithIncludes(onshorePowerSupplyId, includes)
-            ?? throw new NotFoundInDBException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
     }
 
     public async Task<OnshorePowerSupplyDto> UpdateOnshorePowerSupply<TDto>(Guid projectId, Guid caseId, Guid onshorePowerSupplyId, TDto updatedOnshorePowerSupplyDto)
@@ -33,7 +33,7 @@ public class OnshorePowerSupplyService(
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
         var existing = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
-            ?? throw new NotFoundInDBException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
 
         mapperService.MapToEntity(updatedOnshorePowerSupplyDto, existing, onshorePowerSupplyId);
         existing.LastChangedDate = DateTimeOffset.UtcNow;

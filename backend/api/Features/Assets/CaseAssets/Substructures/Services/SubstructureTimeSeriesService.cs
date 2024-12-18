@@ -34,7 +34,7 @@ public class SubstructureTimeSeriesService(
         await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
         var substructure = await substructureRepository.GetSubstructureWithCostProfile(substructureId)
-            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         if (substructure.CostProfile != null)
         {
@@ -107,7 +107,7 @@ public class SubstructureTimeSeriesService(
         await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
         var substructure = await substructureRepository.GetSubstructure(substructureId)
-            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         var resourceHasProfile = await substructureRepository.SubstructureHasCostProfileOverride(substructureId);
 
@@ -173,7 +173,7 @@ public class SubstructureTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Substructure>(projectId, existingProfile.Substructure.Id);

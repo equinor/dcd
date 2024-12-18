@@ -22,7 +22,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
 
         if (entity == null)
         {
-            throw new NotFoundInDBException($"Entity of type {typeof(T)} with id {entityId} not found.");
+            throw new NotFoundInDbException($"Entity of type {typeof(T)} with id {entityId} not found.");
         }
 
         if (entity.ProjectId != projectIdFromUrl)

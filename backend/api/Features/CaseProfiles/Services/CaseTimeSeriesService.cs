@@ -387,7 +387,7 @@ public class CaseTimeSeriesService(
     {
 
         var existingProfile = await getProfile(costProfileId)
-            ?? throw new NotFoundInDBException($"Production profile with id {costProfileId} not found.");
+            ?? throw new NotFoundInDbException($"Production profile with id {costProfileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Case>(projectId, existingProfile.Case.Id);
@@ -426,7 +426,7 @@ public class CaseTimeSeriesService(
         await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
         var caseEntity = await caseRepository.GetCase(caseId)
-            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
+            ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
 
         var resourceHasProfile = await caseRepository.CaseHasProfile(caseId, profileName);
 

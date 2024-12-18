@@ -144,7 +144,7 @@ public class ExplorationTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.Id);
@@ -185,7 +185,7 @@ public class ExplorationTimeSeriesService(
         await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
         var exploration = await explorationRepository.GetExploration(explorationId)
-            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+            ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
 
         var resourceHasProfile = await explorationRepository.ExplorationHasProfile(explorationId, profileName);
 

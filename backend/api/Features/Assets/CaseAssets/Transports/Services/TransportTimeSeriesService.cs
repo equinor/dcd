@@ -34,7 +34,7 @@ public class TransportTimeSeriesService(
         await projectAccessService.ProjectExists<Transport>(projectId, transportId);
 
         var transport = await transportRepository.GetTransport(transportId)
-            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
 
         var resourceHasProfile = await transportRepository.TransportHasCostProfileOverride(transportId);
 
@@ -93,7 +93,7 @@ public class TransportTimeSeriesService(
     )
     {
         var transport = await transportRepository.GetTransportWithCostProfile(transportId)
-            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
 
         if (transport.CostProfile != null)
         {
@@ -171,7 +171,7 @@ public class TransportTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);

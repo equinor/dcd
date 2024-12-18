@@ -31,7 +31,7 @@ public class DrainageStrategyService(
         )
     {
         return await repository.GetDrainageStrategyWithIncludes(drainageStrategyId, includes)
-            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
     }
 
     public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
@@ -45,7 +45,7 @@ public class DrainageStrategyService(
         await projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
 
         var existingDrainageStrategy = await repository.GetDrainageStrategy(drainageStrategyId)
-            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
 
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 

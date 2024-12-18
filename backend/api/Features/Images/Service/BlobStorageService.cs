@@ -102,7 +102,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         var image = await context.Images.FindAsync(imageId);
         if (image == null)
         {
-            throw new NotFoundInDBException("Image not found.");
+            throw new NotFoundInDbException("Image not found.");
         }
 
         var containerClient = blobServiceClient.GetBlobContainerClient(DcdEnvironments.BlobStorageContainerName);

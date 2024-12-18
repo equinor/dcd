@@ -182,7 +182,7 @@ public class WellProjectTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
@@ -221,7 +221,7 @@ public class WellProjectTimeSeriesService(
         await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var wellProject = await wellProjectRepository.GetWellProject(wellProjectId)
-            ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
+            ?? throw new NotFoundInDbException($"Well project with id {wellProjectId} not found.");
 
         var resourceHasProfile = await wellProjectRepository.WellProjectHasProfile(wellProjectId, profileName);
 

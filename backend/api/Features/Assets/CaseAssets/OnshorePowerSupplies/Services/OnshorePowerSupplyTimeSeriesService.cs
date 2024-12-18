@@ -33,7 +33,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
         var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
-            ?? throw new NotFoundInDBException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
 
         var resourceHasProfile = await onshorePowerSupplyRepository.OnshorePowerSupplyHasCostProfileOverride(onshorePowerSupplyId);
 
@@ -92,7 +92,7 @@ public class OnshorePowerSupplyTimeSeriesService(
     )
     {
         var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupplyWithCostProfile(onshorePowerSupplyId)
-            ?? throw new NotFoundInDBException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
 
         if (onshorePowerSupply.CostProfile != null)
         {
@@ -170,7 +170,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
 

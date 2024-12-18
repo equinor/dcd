@@ -51,7 +51,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
-            .SingleOrDefaultAsync() ?? throw new NotFoundInDBException($"Case {caseId} not found.");
+            .SingleOrDefaultAsync() ?? throw new NotFoundInDbException($"Case {caseId} not found.");
     }
 
     private async Task LoadDrainageStrategies(Guid drainageStrategyLink)

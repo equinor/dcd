@@ -16,7 +16,7 @@ public class DeleteProjectMemberService(DcdDbContext context)
 
         if (projectMember == null)
         {
-            throw new NotFoundInDBException("Project member not found");
+            throw new NotFoundInDbException("Project member not found");
         }
 
         context.ProjectMembers.Remove(projectMember);
