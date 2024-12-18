@@ -2,7 +2,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdFusionConfiguration
 {
-    public static void AddDcdFusionConfiguration(this IServiceCollection services, IConfigurationRoot azureConfig, IConfigurationRoot localConfig)
+    public static void AddDcdFusionConfiguration(this IServiceCollection services, IConfigurationRoot config)
     {
         services.AddFusionIntegration(options =>
         {
@@ -12,8 +12,8 @@ public static class DcdFusionConfiguration
             options.UseDefaultEndpointResolver(DcdEnvironments.FusionEnvironment);
             options.UseDefaultTokenProvider(opts =>
             {
-                opts.ClientId = azureConfig["AzureAd:ClientId"] ?? localConfig["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
-                opts.ClientSecret = azureConfig["AzureAd:ClientSecret"] ?? localConfig["AzureAd:ClientSecret"];
+                opts.ClientId = config["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
+                opts.ClientSecret = config["AzureAd:ClientSecret"];
             });
             options.AddFusionRoles();
             options.ApplicationMode = true;

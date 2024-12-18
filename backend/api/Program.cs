@@ -23,7 +23,7 @@ var azureConfig = builder.CreateDcdConfigurationRoot();
 
 builder.Configuration.AddConfiguration(azureConfig);
 builder.ConfigureDcdDatabase(azureConfig);
-builder.Services.AddDcdFusionConfiguration(azureConfig, builder.Configuration);
+builder.Services.AddDcdFusionConfiguration(azureConfig);
 builder.Services.AddDcdAppInsights(azureConfig);
 builder.ConfigureDcdLogging(azureConfig);
 builder.AddDcdBlobStorage(azureConfig);
