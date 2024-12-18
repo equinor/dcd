@@ -17,7 +17,7 @@ public class CreateCaseController(CreateCaseService createCaseService, GetProjec
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<ProjectDataDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
-        if (DcdEnvironments.RevisionEnabled)
+        if (DcdEnvironments.FeatureToggles.RevisionEnabled)
         {
             CreateCaseDtoValidator.Validate(caseDto);
         }

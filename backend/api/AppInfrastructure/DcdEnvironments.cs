@@ -17,25 +17,23 @@ public static class DcdEnvironments
     public static bool ReturnExceptionDetails => CurrentEnvironment is not RadixProd;
     public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
 
-    // Feature toggles go here
-    public static bool RevisionEnabled => CurrentEnvironment is not RadixProd;
-    public static bool DisplayAllFusionUsersAsPmt => CurrentEnvironment is not RadixProd;
-
     public static string FusionEnvironment => CurrentEnvironment switch
     {
-        RadixDev => "CI",
-        RadixQa => "FQA",
         RadixProd => "FPRD",
-
+        RadixQa => "FQA",
         _ => "CI"
     };
 
     public static string BlobStorageContainerName => CurrentEnvironment switch
     {
-        RadixDev => "ci-image-storage",
-        RadixQa => "qa-image-storage",
         RadixProd => "prod-image-storage",
-
+        RadixQa => "qa-image-storage",
         _ => "ci-image-storage"
     };
+
+    public static class FeatureToggles
+    {
+        public static bool RevisionEnabled => CurrentEnvironment is not RadixProd;
+        public static bool DisplayAllFusionUsersAsPmt => CurrentEnvironment is not RadixProd;
+    }
 }

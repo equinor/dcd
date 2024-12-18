@@ -8,7 +8,7 @@ public static class FeatureToggleService
     {
         return new FeatureToggleDto
         {
-            RevisionEnabled = DcdEnvironments.RevisionEnabled,
+            RevisionEnabled = DcdEnvironments.FeatureToggles.RevisionEnabled,
             EnvironmentName = DcdEnvironments.CurrentEnvironment
         };
     }

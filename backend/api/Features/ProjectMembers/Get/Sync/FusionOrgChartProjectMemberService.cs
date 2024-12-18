@@ -125,7 +125,7 @@ public class FusionOrgChartProjectMemberService(DcdDbContext context,
                     continue;
                 }
 
-                if (projectPosition.Project!.IsProjectManagementTeam == true || DcdEnvironments.DisplayAllFusionUsersAsPmt)
+                if (projectPosition.Project!.IsProjectManagementTeam == true || DcdEnvironments.FeatureToggles.DisplayAllFusionUsersAsPmt)
                 {
                     if (pmtUsersForProject.Any(x => x.AzureUniqueId == fusionPerson.AzureUniqueId))
                     {

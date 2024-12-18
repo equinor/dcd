@@ -15,7 +15,7 @@ public class UpdateCaseController(UpdateCaseService updateCaseService) : Control
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task UpdateCase([FromRoute] Guid projectId, [FromRoute] Guid caseId, [FromBody] UpdateCaseDto caseDto)
     {
-        if (DcdEnvironments.RevisionEnabled)
+        if (DcdEnvironments.FeatureToggles.RevisionEnabled)
         {
             UpdateCaseDtoValidator.Validate(caseDto);
         }
