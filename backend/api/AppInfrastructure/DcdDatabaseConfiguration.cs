@@ -7,7 +7,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
-    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot azureConfig)
+    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder)
     {
         if (DcdEnvironments.UseSqlite)
         {
@@ -16,7 +16,7 @@ public static class DcdDatabaseConfiguration
             return;
         }
 
-        SetupAzureDatabase(builder, azureConfig);
+        SetupAzureDatabase(builder);
     }
 
     private static void SetupSqliteDatabase(WebApplicationBuilder builder)
@@ -48,9 +48,9 @@ public static class DcdDatabaseConfiguration
             lifetime: ServiceLifetime.Scoped);
     }
 
-    private static void SetupAzureDatabase(WebApplicationBuilder builder, IConfigurationRoot azureConfig)
+    private static void SetupAzureDatabase(WebApplicationBuilder builder)
     {
-        var sqlServerConnectionString = azureConfig["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
+        var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()

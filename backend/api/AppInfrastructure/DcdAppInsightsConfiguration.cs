@@ -4,13 +4,13 @@ namespace api.AppInfrastructure;
 
 public static class DcdAppInsightsConfiguration
 {
-    public static void AddDcdAppInsights(this IServiceCollection services, IConfigurationRoot config)
+    public static void AddDcdAppInsights(this WebApplicationBuilder builder)
     {
         var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
         {
-            ConnectionString = config["ApplicationInsightInstrumentationConnectionString"]
+            ConnectionString = builder.Configuration["ApplicationInsightInstrumentationConnectionString"]
         };
 
-        services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
+        builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
     }
 }

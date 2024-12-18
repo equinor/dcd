@@ -19,14 +19,12 @@ var builder = WebApplication.CreateBuilder(args);
 DcdEnvironments.CurrentEnvironment = builder.Configuration["AppConfiguration:Environment"] ?? "CI";
 Console.WriteLine($"Loading config for: {DcdEnvironments.CurrentEnvironment}");
 
-var azureConfig = builder.CreateDcdConfigurationRoot();
-
-builder.Configuration.AddConfiguration(azureConfig);
-builder.ConfigureDcdDatabase(azureConfig);
-builder.Services.AddDcdFusionConfiguration(azureConfig);
-builder.Services.AddDcdAppInsights(azureConfig);
-builder.ConfigureDcdLogging(azureConfig);
-builder.AddDcdBlobStorage(azureConfig);
+builder.AddDcdAzureAppConfiguration();
+builder.ConfigureDcdDatabase();
+builder.AddDcdFusionConfiguration();
+builder.AddDcdAppInsights();
+builder.ConfigureDcdLogging();
+builder.AddDcdBlobStorage();
 
 builder.Services.AddDcdCorsPolicy();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);

@@ -2,9 +2,9 @@ namespace api.AppInfrastructure;
 
 public static class DcdFusionConfiguration
 {
-    public static void AddDcdFusionConfiguration(this IServiceCollection services, IConfigurationRoot config)
+    public static void AddDcdFusionConfiguration(this WebApplicationBuilder builder)
     {
-        services.AddFusionIntegration(options =>
+        builder.Services.AddFusionIntegration(options =>
         {
             options.UseServiceInformation("ConceptApp", DcdEnvironments.FusionEnvironment);
 
@@ -12,8 +12,8 @@ public static class DcdFusionConfiguration
             options.UseDefaultEndpointResolver(DcdEnvironments.FusionEnvironment);
             options.UseDefaultTokenProvider(opts =>
             {
-                opts.ClientId = config["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
-                opts.ClientSecret = config["AzureAd:ClientSecret"];
+                opts.ClientId = builder.Configuration["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
+                opts.ClientSecret = builder.Configuration["AzureAd:ClientSecret"];
             });
             options.AddFusionRoles();
             options.ApplicationMode = true;

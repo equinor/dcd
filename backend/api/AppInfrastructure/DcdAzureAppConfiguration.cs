@@ -6,15 +6,15 @@ namespace api.AppInfrastructure;
 
 public static class DcdAzureAppConfiguration
 {
-    public static IConfigurationRoot CreateDcdConfigurationRoot(this WebApplicationBuilder builder)
+    public static void AddDcdAzureAppConfiguration(this WebApplicationBuilder builder)
     {
         var azureAppConfigConnectionString = builder.Configuration["AppConfiguration:ConnectionString"];
 
-        return new ConfigurationBuilder().AddAzureAppConfiguration(options =>
+        builder.Configuration.AddConfiguration(new ConfigurationBuilder().AddAzureAppConfiguration(options =>
             options.Connect(azureAppConfigConnectionString)
                 .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential()))
                 .Select(KeyFilter.Any)
                 .Select(KeyFilter.Any, DcdEnvironments.CurrentEnvironment)
-        ).Build();
+        ).Build());
     }
 }
