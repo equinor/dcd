@@ -1,12 +1,12 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Images.Service;
+using api.Features.Images.Delete;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Delete;
 
-public class DeleteCaseService(DcdDbContext context, IBlobStorageService blobStorageService)
+public class DeleteCaseService(DcdDbContext context, DeleteImageService deleteImageService)
 {
     public async Task DeleteCase(Guid projectId, Guid caseId)
     {
@@ -19,18 +19,13 @@ public class DeleteCaseService(DcdDbContext context, IBlobStorageService blobSto
 
         foreach (var imageId in imageIds)
         {
-            await blobStorageService.DeleteImage(imageId);
+            await deleteImageService.DeleteImage(projectPk, imageId);
         }
 
         var caseItem = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
-            .SingleOrDefaultAsync();
-
-        if (caseItem == null)
-        {
-            return;
-        }
+            .SingleAsync();
 
         context.Cases.Remove(caseItem);
 
