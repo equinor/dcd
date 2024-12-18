@@ -66,7 +66,7 @@ public class CaseWithAssetsService(
             NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, NetSalesGasOverrideDto>(drainageStrategy.NetSalesGasOverride, drainageStrategy.NetSalesGasOverride?.Id, project.PhysicalUnit),
             Co2Emissions = ConversionMapToDto<Co2Emissions, Co2EmissionsDto>(drainageStrategy.Co2Emissions, drainageStrategy.Co2Emissions?.Id, project.PhysicalUnit),
             Co2EmissionsOverride = ConversionMapToDto<Co2EmissionsOverride, Co2EmissionsOverrideDto>(drainageStrategy.Co2EmissionsOverride, drainageStrategy.Co2EmissionsOverride?.Id, project.PhysicalUnit),
-            ProductionProfileNGL = ConversionMapToDto<ProductionProfileNGL, ProductionProfileNGLDto>(drainageStrategy.ProductionProfileNGL, drainageStrategy.ProductionProfileNGL?.Id, project.PhysicalUnit),
+            ProductionProfileNgl = ConversionMapToDto<ProductionProfileNgl, ProductionProfileNglDto>(drainageStrategy.ProductionProfileNgl, drainageStrategy.ProductionProfileNgl?.Id, project.PhysicalUnit),
             ImportedElectricity = ConversionMapToDto<ImportedElectricity, ImportedElectricityDto>(drainageStrategy.ImportedElectricity, drainageStrategy.ImportedElectricity?.Id, project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<ImportedElectricityOverride, ImportedElectricityOverrideDto>(drainageStrategy.ImportedElectricityOverride, drainageStrategy.ImportedElectricityOverride?.Id, project.PhysicalUnit),
             DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, DeferredOilProductionDto>(drainageStrategy.DeferredOilProduction, drainageStrategy.DeferredOilProduction?.Id, project.PhysicalUnit),

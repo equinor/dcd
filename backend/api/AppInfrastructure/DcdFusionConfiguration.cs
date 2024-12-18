@@ -2,33 +2,18 @@ namespace api.AppInfrastructure;
 
 public static class DcdFusionConfiguration
 {
-    public static void AddDcdFusionConfiguration(this IServiceCollection services, string environment, IConfigurationRoot config)
+    public static void AddDcdFusionConfiguration(this WebApplicationBuilder builder)
     {
-        services.AddFusionIntegration(options =>
+        builder.Services.AddFusionIntegration(options =>
         {
-            var fusionEnvironment = environment switch
-            {
-                DcdEnvironments.Dev => "CI",
-                DcdEnvironments.RadixDev => "CI",
-
-                DcdEnvironments.Qa => "FQA",
-                DcdEnvironments.RadixQa => "FQA",
-
-                DcdEnvironments.Prod => "FPRD",
-                DcdEnvironments.RadixProd => "FPRD",
-
-                _ => "CI"
-            };
-
-            Console.WriteLine("Fusion environment: " + fusionEnvironment);
-            options.UseServiceInformation("ConceptApp", fusionEnvironment);
+            options.UseServiceInformation("ConceptApp", DcdEnvironments.FusionEnvironment);
 
             options.UseMsalTokenProvider();
-            options.UseDefaultEndpointResolver(fusionEnvironment);
+            options.UseDefaultEndpointResolver(DcdEnvironments.FusionEnvironment);
             options.UseDefaultTokenProvider(opts =>
             {
-                opts.ClientId = config["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
-                opts.ClientSecret = config["AzureAd:ClientSecret"];
+                opts.ClientId = builder.Configuration["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
+                opts.ClientSecret = builder.Configuration["AzureAd:ClientSecret"];
             });
             options.AddFusionRoles();
             options.ApplicationMode = true;

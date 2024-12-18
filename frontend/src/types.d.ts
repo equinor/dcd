@@ -217,7 +217,7 @@ declare namespace Components {
             netSalesGasOverride?: NetSalesGasOverrideDto;
             co2Emissions?: Co2EmissionsDto;
             co2EmissionsOverride?: Co2EmissionsOverrideDto;
-            productionProfileNGL?: ProductionProfileNGLDto;
+            productionProfileNgl?: ProductionProfileNglDto;
             importedElectricity?: ImportedElectricityDto;
             importedElectricityOverride?: ImportedElectricityOverrideDto;
             co2Intensity?: Co2IntensityDto;
@@ -811,13 +811,12 @@ declare namespace Components {
             "@odata.type"?: string | null;
         }
         export interface ImageDto {
-            id: string; // uuid
-            url: string; // uri
+            imageId: string; // uuid
             createTime: string; // date-time
-            description?: string | null;
+            description: string | null;
             caseId: string; // uuid
-            projectName: string;
             projectId: string; // uuid
+            imageData: string;
         }
         export interface ImportedElectricityDto {
             id: string; // uuid
@@ -954,7 +953,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
-        export interface ProductionProfileNGLDto {
+        export interface ProductionProfileNglDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
@@ -1022,7 +1021,6 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
-            onshorePowerSupply?: boolean;
             sharePointFileId?: string | null;
             sharePointFileName?: string | null;
             sharePointFileUrl?: string | null;
@@ -1171,9 +1169,6 @@ declare namespace Components {
             source: Source /* int32 */;
         }
         export interface TechnicalInputDto {
-            developmentOperationalWellCostsDto?: DevelopmentOperationalWellCostsDto;
-            explorationOperationalWellCostsDto?: ExplorationOperationalWellCostsDto;
-            wellDtos?: WellDto[] | null;
             projectData?: ProjectDataDto;
             explorationDto?: ExplorationWithProfilesDto;
             wellProjectDto?: WellProjectWithProfilesDto;
@@ -1353,11 +1348,6 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
         }
-        export interface UpdateAppraisalWellCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
         export interface UpdateCaseDto {
             name: string;
             description: string;
@@ -1454,22 +1444,6 @@ declare namespace Components {
             explorationProjectDrillingCosts?: number; // double
             appraisalRigMobDemob?: number; // double
             appraisalProjectDrillingCosts?: number; // double
-        }
-        export interface UpdateExplorationWellCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateExplorationWithProfilesDto {
-            name?: string | null;
-            rigMobDemob?: number; // double
-            currency?: Currency /* int32 */;
-            gAndGAdminCostOverride?: UpdateGAndGAdminCostOverrideDto;
-            seismicAcquisitionAndProcessing?: UpdateSeismicAcquisitionAndProcessingDto;
-            countryOfficeCost?: UpdateCountryOfficeCostDto;
-            explorationWellCostProfile?: UpdateExplorationWellCostProfileDto;
-            appraisalWellCostProfile?: UpdateAppraisalWellCostProfileDto;
-            sidetrackCostProfile?: UpdateSidetrackCostProfileDto;
         }
         export interface UpdateFuelFlaringAndLossesOverrideDto {
             startYear?: number; // int32
@@ -1586,11 +1560,6 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
         }
-        export interface UpdateSidetrackCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
         export interface UpdateSubstructureCostProfileOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1610,8 +1579,6 @@ declare namespace Components {
             createWellDtos?: CreateWellDto[] | null;
             deleteWellDtos?: DeleteWellDto[] | null;
             projectDto?: UpdateProjectDto;
-            explorationDto?: UpdateExplorationWithProfilesDto;
-            wellProjectDto?: UpdateWellProjectWithProfilesDto;
         }
         export interface UpdateTopsideCostProfileOverrideDto {
             startYear?: number; // int32
@@ -1665,15 +1632,6 @@ declare namespace Components {
         }
         export interface UpdateWellProjectDto {
             name?: string | null;
-            artificialLift?: ArtificialLift /* int32 */;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateWellProjectWithProfilesDto {
-            name?: string | null;
-            oilProducerCostProfileOverride?: UpdateOilProducerCostProfileOverrideDto;
-            gasProducerCostProfileOverride?: UpdateGasProducerCostProfileOverrideDto;
-            waterInjectorCostProfileOverride?: UpdateWaterInjectorCostProfileOverrideDto;
-            gasInjectorCostProfileOverride?: UpdateGasInjectorCostProfileOverrideDto;
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
         }
@@ -2802,29 +2760,10 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
             }
             export interface RequestBody {
-                projectName?: string;
                 image?: string; // binary
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
-        namespace Delete {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ImageId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                imageId: Parameters.ImageId /* uuid */;
-            }
-            namespace Responses {
-                export interface $200 {
-                }
             }
         }
     }
@@ -3577,7 +3516,6 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
             }
             export interface RequestBody {
-                projectName?: string;
                 image?: string; // binary
             }
             namespace Responses {

@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -26,7 +26,7 @@ public class TopsideService(
     public async Task<Topside> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes)
     {
         return await repository.GetTopsideWithIncludes(topsideId, includes)
-            ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
     }
 
     public async Task<TopsideDto> UpdateTopside<TDto>(
@@ -41,7 +41,7 @@ public class TopsideService(
         await projectAccessService.ProjectExists<Topside>(projectId, topsideId);
 
         var existingTopside = await repository.GetTopside(topsideId)
-            ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
 
         mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
         existingTopside.LastChangedDate = DateTimeOffset.UtcNow;

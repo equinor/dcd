@@ -42,7 +42,7 @@ public class CaseService(
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleOrDefaultAsync(c => c.Id == caseId)
-        ?? throw new NotFoundInDBException($"Case {caseId} not found.");
+        ?? throw new NotFoundInDbException($"Case {caseId} not found.");
 
         return caseItem;
     }
@@ -50,7 +50,7 @@ public class CaseService(
     public async Task<Case> GetCaseWithIncludes(Guid caseId, params Expression<Func<Case, object>>[] includes)
     {
         return await repository.GetCaseWithIncludes(caseId, includes)
-            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
+            ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
     }
 
     // TODO: Delete this method

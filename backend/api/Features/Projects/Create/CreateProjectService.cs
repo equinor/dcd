@@ -28,6 +28,7 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
 
         var project = new Project
         {
+            Name = projectMaster.Name ?? projectMaster.Description ?? "",
             FusionProjectId = projectMaster.Identity,
             Description = projectMaster.Description ?? "",
             ProjectPhase = ProjectPhaseEnumConverter.ConvertPhase(projectMaster.Phase),

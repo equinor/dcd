@@ -1,5 +1,4 @@
 using api.AppInfrastructure.Authorization;
-using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
@@ -22,12 +21,25 @@ using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Cases.Recalculation;
+using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
+using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.Types.CessationCostProfile;
+using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
+using api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
+using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
+using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
+using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
+using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.StudyCostProfile;
+using api.Features.Cases.Recalculation.Types.WellCostProfile;
 using api.Features.Cases.Update;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
@@ -60,18 +72,93 @@ public static class DcdIocConfiguration
 {
     public static void AddDcdIocConfiguration(this IServiceCollection services)
     {
-        services.AddScoped<IProjectAccessService, ProjectAccessService>();
+        /* Projects / revisions */
+        services.AddScoped<GetProjectDataService>();
         services.AddScoped<GetProjectDataRepository>();
         services.AddScoped<CreateProjectService>();
         services.AddScoped<UpdateProjectService>();
 
-        services.AddScoped<IFusionService, FusionService>();
-        services.AddScoped<FusionOrgChartProjectMemberService>();
+        services.AddScoped<CreateRevisionService>();
+        services.AddScoped<CreateRevisionRepository>();
+        services.AddScoped<UpdateRevisionService>();
 
-        services.AddScoped<ICaseService, CaseService>();
+        services.AddScoped<TechnicalInputService>();
+
+        /* Project members */
+        services.AddScoped<GetProjectMemberService>();
+        services.AddScoped<DeleteProjectMemberService>();
+        services.AddScoped<CreateProjectMemberService>();
+        services.AddScoped<UpdateProjectMemberService>();
+
+        /* Wells */
+        services.AddScoped<GetWellService>();
+        services.AddScoped<CreateWellService>();
+        services.AddScoped<UpdateWellService>();
+        services.AddScoped<DeleteWellService>();
+        services.AddScoped<GetIsWellInUseService>();
+
+        /* Cases */
         services.AddScoped<CreateCaseService>();
         services.AddScoped<UpdateCaseService>();
         services.AddScoped<DeleteCaseService>();
+
+        services.AddScoped<DuplicateCaseService>();
+        services.AddScoped<DuplicateCaseRepository>();
+
+        services.AddScoped<CaseComparisonService>();
+        services.AddScoped<CaseComparisonRepository>();
+
+        services.AddScoped<CaseWithAssetsService>();
+        services.AddScoped<CaseWithAssetsRepository>();
+
+        /* Mapping */
+        services.AddScoped<IMapperService, MapperService>();
+        services.AddScoped<IConversionMapperService, ConversionMapperService>();
+
+        /* Background jobs */
+        services.AddScoped<UpdateProjectFromProjectMasterService>();
+
+        /* Project assets */
+        services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();
+        services.AddScoped<UpdateExplorationOperationalWellCostsService>();
+
+        /* Recalculation services */
+        services.AddScoped<IRecalculationService, RecalculationService>();
+        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
+        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
+        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
+        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
+        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
+        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
+        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
+        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
+        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
+        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
+        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
+        services.AddScoped<ICalculateNpvService, CalculateNpvService>();
+        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
+
+        /* Auth */
+        services.AddScoped<CurrentUser>();
+        services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
+        services.AddScoped<IProjectAccessService, ProjectAccessService>();
+
+        /* Prosp / Excel import */
+        services.AddScoped<ProspExcelImportService>();
+        services.AddScoped<ProspSharepointImportService>();
+
+        /* Stea / Excel export */
+        services.AddScoped<SteaService>();
+
+        /* Integrations / external systems */
+        services.AddScoped<IFusionService, FusionService>();
+        services.AddScoped<FusionOrgChartProjectMemberService>();
+        services.AddScoped<IBlobStorageService, BlobStorageService>();
+
+        /* Misc */
+        services.AddScoped<ICaseService, CaseService>();
+        services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
 
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();
@@ -94,29 +181,9 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
         services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
-        services.AddScoped<TechnicalInputService>();
-
         services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
         services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
-        services.AddScoped<CaseComparisonService>();
-        services.AddScoped<CaseComparisonRepository>();
         services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
-
-        services.AddScoped<SteaService>();
-
-        services.AddScoped<GetProjectDataService>();
-
-        services.AddScoped<GetProjectMemberService>();
-        services.AddScoped<DeleteProjectMemberService>();
-        services.AddScoped<CreateProjectMemberService>();
-        services.AddScoped<UpdateProjectMemberService>();
-
-        services.AddScoped<DuplicateCaseService>();
-        services.AddScoped<DuplicateCaseRepository>();
-
-        services.AddScoped<CreateRevisionService>();
-        services.AddScoped<CreateRevisionRepository>();
-        services.AddScoped<UpdateRevisionService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();
         services.AddScoped<ISubstructureRepository, SubstructureRepository>();
@@ -137,48 +204,5 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
         services.AddScoped<IOnshorePowerSupplyTimeSeriesRepository, OnshorePowerSupplyTimeSeriesRepository>();
-
-        services.AddScoped<GetWellService>();
-        services.AddScoped<CreateWellService>();
-        services.AddScoped<UpdateWellService>();
-        services.AddScoped<DeleteWellService>();
-        services.AddScoped<GetIsWellInUseService>();
-
-        services.AddScoped<CaseWithAssetsRepository>();
-        services.AddScoped<CaseWithAssetsService>();
-
-        services.AddScoped<IMapperService, MapperService>();
-        services.AddScoped<IConversionMapperService, ConversionMapperService>();
-
-        services.AddScoped<ProspExcelImportService>();
-        services.AddScoped<ProspSharepointImportService>();
-        services.AddScoped<CurrentUser>();
-        services.AddScoped<UpdateProjectFromProjectMasterService>();
-        services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
-
-        services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
-        services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
-
-        services.AddScoped<IBlobStorageService, BlobStorageService>();
-
-        // Project assets
-        services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();
-        services.AddScoped<UpdateExplorationOperationalWellCostsService>();
-
-        /* Recalculation services */
-        services.AddScoped<IRecalculationService, RecalculationService>();
-        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
-        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
-        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
-        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
-        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
-        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
-        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
-        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
-        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
-        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
-        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
-        services.AddScoped<ICalculateNPVService, CalculateNPVService>();
-        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
     }
 }

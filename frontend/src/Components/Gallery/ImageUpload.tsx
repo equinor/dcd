@@ -10,6 +10,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { getImageService } from "../../Services/ImageService"
 import { useAppContext } from "../../Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -50,13 +51,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     const revisionAndProjectData = useDataFetch()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     useEffect(() => {
         const loadImages = async () => {
             if (revisionAndProjectData && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(revisionAndProjectData.projectId, caseId)
+                    const imageDtos = caseId
+                        ? await imageService.getCaseImages(projectId, caseId)
+                        : await imageService.getProjectImages(projectId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -65,7 +69,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         }
         loadImages()
-    }, [setGallery, revisionAndProjectData, caseId])
+    }, [setGallery, revisionAndProjectData, projectId, caseId])
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4

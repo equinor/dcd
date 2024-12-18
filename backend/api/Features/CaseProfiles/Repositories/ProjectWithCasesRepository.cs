@@ -146,7 +146,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
-            .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)
             .Include(c => c.DeferredOilProduction)

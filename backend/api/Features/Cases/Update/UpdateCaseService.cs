@@ -1,6 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Context.Recalculation;
+using api.Features.Cases.Recalculation;
 
 using Microsoft.EntityFrameworkCore;
 

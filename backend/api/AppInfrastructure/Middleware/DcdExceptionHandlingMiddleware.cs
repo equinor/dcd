@@ -46,7 +46,7 @@ public class DcdExceptionHandlingMiddleware(
         {
             case FusionOrgNotFoundException:
             case KeyNotFoundException:
-            case NotFoundInDBException:
+            case NotFoundInDbException:
                 statusCode = HttpStatusCode.NotFound;
                 errorInformation.Add("message", exception.Message);
                 break;

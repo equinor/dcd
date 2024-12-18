@@ -8,6 +8,10 @@ namespace api.Features.FusionIntegration.ProjectMaster.Models;
 public class FusionProjectMaster
 {
     [DataMember]
+    [JsonPropertyName("name")]
+    public string? Name { get; init; }
+
+    [DataMember]
     [JsonPropertyName("identity")]
     public Guid Identity { get; init; }
 

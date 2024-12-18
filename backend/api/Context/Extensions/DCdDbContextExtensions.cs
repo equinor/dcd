@@ -24,7 +24,7 @@ public static class DCdDbContextExtensions
             throw new Exception($"Found more than one matching project for project id {projectId}.");
         }
 
-        throw new NotFoundInDBException($"Could not find project with id {projectId}.");
+        throw new NotFoundInDbException($"Could not find project with id {projectId}.");
     }
 
     public static async Task<Guid> GetPrimaryKeyForProjectIdOrRevisionId(this DcdDbContext context, Guid projectId)
@@ -56,7 +56,7 @@ public static class DCdDbContextExtensions
             return matchingPrimaryKeysForRevisions.Single();
         }
 
-        throw new NotFoundInDBException($"Project id {projectId} not found in db for project or revision.");
+        throw new NotFoundInDbException($"Project id {projectId} not found in db for project or revision.");
     }
 
     public static async Task<Guid> GetPrimaryKeyForRevisionId(this DcdDbContext context, Guid revisionId)
@@ -72,6 +72,6 @@ public static class DCdDbContextExtensions
             return matchingPrimaryKeysForRevisions.Single();
         }
 
-        throw new NotFoundInDBException($"Could not find revision with id {revisionId}.");
+        throw new NotFoundInDbException($"Could not find revision with id {revisionId}.");
     }
 }

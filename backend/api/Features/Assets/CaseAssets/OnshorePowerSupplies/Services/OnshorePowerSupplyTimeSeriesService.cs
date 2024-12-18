@@ -1,4 +1,3 @@
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
@@ -6,6 +5,7 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -33,7 +33,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
         var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
-            ?? throw new NotFoundInDBException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
 
         var resourceHasProfile = await onshorePowerSupplyRepository.OnshorePowerSupplyHasCostProfileOverride(onshorePowerSupplyId);
 
@@ -92,7 +92,7 @@ public class OnshorePowerSupplyTimeSeriesService(
     )
     {
         var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupplyWithCostProfile(onshorePowerSupplyId)
-            ?? throw new NotFoundInDBException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
 
         if (onshorePowerSupply.CostProfile != null)
         {
@@ -170,7 +170,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
 

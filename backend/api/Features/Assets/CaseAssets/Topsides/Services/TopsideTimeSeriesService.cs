@@ -1,10 +1,10 @@
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -34,7 +34,7 @@ public class TopsideTimeSeriesService(
         await projectAccessService.ProjectExists<Topside>(projectId, topsideId);
 
         var topside = await topsideRepository.GetTopside(topsideId)
-            ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
 
         var resourceHasProfile = await topsideRepository.TopsideHasCostProfileOverride(topsideId);
 
@@ -97,7 +97,7 @@ public class TopsideTimeSeriesService(
         await projectAccessService.ProjectExists<Topside>(projectId, topsideId);
 
         var topside = await topsideRepository.GetTopsideWithCostProfile(topsideId)
-            ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
 
         if (topside.CostProfile != null)
         {
@@ -173,7 +173,7 @@ public class TopsideTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Topside>(projectId, existingProfile.Topside.Id);

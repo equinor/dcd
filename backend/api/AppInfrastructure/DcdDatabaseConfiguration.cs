@@ -7,16 +7,16 @@ namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
-    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot config)
+    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder)
     {
-        if (DcdEnvironments.IsLocal())
+        if (DcdEnvironments.UseSqlite)
         {
             SetupSqliteDatabase(builder);
 
             return;
         }
 
-        SetupAzureDatabase(builder, config);
+        SetupAzureDatabase(builder);
     }
 
     private static void SetupSqliteDatabase(WebApplicationBuilder builder)
@@ -48,13 +48,9 @@ public static class DcdDatabaseConfiguration
             lifetime: ServiceLifetime.Scoped);
     }
 
-    private static void SetupAzureDatabase(WebApplicationBuilder builder, IConfigurationRoot config)
+    private static void SetupAzureDatabase(WebApplicationBuilder builder)
     {
-        var sqlServerConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
-
-        var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
-        dbBuilder.UseSqlServer(sqlServerConnectionString);
-        using var context = new DcdDbContext(dbBuilder.Options, null);
+        var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
 
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()
@@ -63,5 +59,16 @@ public static class DcdDatabaseConfiguration
         builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
+
+        if (!DcdEnvironments.AllowMigrationsToBeApplied)
+        {
+            return;
+        }
+
+        var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        dbBuilder.UseSqlServer(sqlServerConnectionString);
+        using var context = new DcdDbContext(dbBuilder.Options, null);
+
+        context.Database.Migrate();
     }
 }

@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -26,7 +26,7 @@ public class SurfService(
     public async Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
     {
         return await repository.GetSurfWithIncludes(surfId, includes)
-            ?? throw new NotFoundInDBException($"Topside with id {surfId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {surfId} not found.");
     }
 
     public async Task<SurfDto> UpdateSurf<TDto>(

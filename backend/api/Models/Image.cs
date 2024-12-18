@@ -17,9 +17,6 @@ public class Image : IHasProjectId, IChangeTrackable
     public Guid? CaseId { get; set; }
 
     [Required]
-    public string ProjectName { get; set; } = null!;
-
-    [Required]
     public string Url { get; set; } = null!;
     public DateTimeOffset CreateTime { get; set; }
     public string? Description { get; set; }

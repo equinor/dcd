@@ -12,9 +12,9 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/images")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, IFormFile image)
+    public async Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, Guid caseId, IFormFile image)
     {
-        return UploadImage(projectId, projectName, caseId, image);
+        return await UploadImage(projectId, caseId, image);
     }
 
     [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
@@ -26,10 +26,10 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
         return Ok(imageDtos);
     }
 
-    [HttpDelete("projects/{projectId:guid}/cases/{caseId:guid}/images/{imageId:guid}")]
+    [HttpDelete("projects/{projectId:guid}/images/{imageId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<ActionResult> DeleteCaseImage(Guid projectId, Guid caseId, Guid imageId)
+    public async Task<ActionResult> DeleteImage(Guid projectId, Guid imageId)
     {
         await blobStorageService.DeleteImage(imageId);
         return NoContent();
@@ -38,9 +38,9 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
     [HttpPost("projects/{projectId:guid}/images")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public Task<ActionResult<ImageDto>> UploadProjectImage(Guid projectId, [FromForm] string projectName, IFormFile image)
+    public Task<ActionResult<ImageDto>> UploadProjectImage(Guid projectId, IFormFile image)
     {
-        return UploadImage(projectId, projectName, null, image);
+        return UploadImage(projectId, null, image);
     }
 
     [HttpGet("projects/{projectId:guid}/images")]
@@ -52,16 +52,7 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
         return Ok(imageDtos);
     }
 
-    [HttpDelete("projects/{projectId:guid}/images/{imageId:guid}")]
-    [ActionType(ActionType.Edit)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<ActionResult> DeleteProjectImage(Guid projectId, Guid imageId)
-    {
-        await blobStorageService.DeleteImage(imageId);
-        return NoContent();
-    }
-
-    private async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, string projectName, Guid? caseId, IFormFile image)
+    private async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, Guid? caseId, IFormFile image)
     {
         const int maxFileSize = 5 * 1024 * 1024; // 5MB
         string[] permittedExtensions = [".jpg", ".jpeg", ".png", ".gif"];
@@ -83,6 +74,6 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
             return BadRequest($"File {image.FileName} has an invalid extension. Only image files are allowed.");
         }
 
-        return Ok(await blobStorageService.SaveImage(projectId, projectName, image, caseId));
+        return Ok(await blobStorageService.SaveImage(projectId, image, caseId));
     }
 }

@@ -1,10 +1,10 @@
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -469,7 +469,7 @@ public class DrainageStrategyTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(productionProfileId)
-            ?? throw new NotFoundInDBException($"Production profile with id {productionProfileId} not found.");
+            ?? throw new NotFoundInDbException($"Production profile with id {productionProfileId} not found.");
 
         var projectPk = await caseRepository.GetPrimaryKeyForProjectId(projectId);
 
@@ -514,7 +514,7 @@ public class DrainageStrategyTimeSeriesService(
         await projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
 
         var drainageStrategy = await drainageStrategyTimeSeriesRepository.GetDrainageStrategy(drainageStrategyId)
-            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
 
         var resourceHasProfile = await drainageStrategyTimeSeriesRepository.DrainageStrategyHasProfile(drainageStrategyId, profileName);
 
@@ -524,7 +524,7 @@ public class DrainageStrategyTimeSeriesService(
         }
 
         var project = await caseRepository.GetProject(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+            ?? throw new NotFoundInDbException($"Project with id {projectId} not found.");
 
         TProfile profile = new()
         {

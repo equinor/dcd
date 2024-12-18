@@ -51,7 +51,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
-            .SingleOrDefaultAsync() ?? throw new NotFoundInDBException($"Case {caseId} not found.");
+            .SingleOrDefaultAsync() ?? throw new NotFoundInDbException($"Case {caseId} not found.");
     }
 
     private async Task LoadDrainageStrategies(Guid drainageStrategyLink)
@@ -69,7 +69,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
-            .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)
             .Include(c => c.DeferredOilProduction)

@@ -1,4 +1,3 @@
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Substructures.Repositories;

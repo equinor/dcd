@@ -1,10 +1,10 @@
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -90,7 +90,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<TotalFEEDStudiesOverrideDto> UpdateTotalFEEDStudiesOverride(
+    public async Task<TotalFEEDStudiesOverrideDto> UpdateTotalFeedStudiesOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
@@ -266,7 +266,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFEEDStudiesOverride(
+    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFeedStudiesOverride(
         Guid projectId,
         Guid caseId,
         CreateTotalFEEDStudiesOverrideDto createProfileDto
@@ -341,7 +341,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOPEXCostProfile(
+    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOpexCostProfile(
         Guid projectId,
         Guid caseId,
         CreateAdditionalOPEXCostProfileDto createProfileDto
@@ -356,7 +356,7 @@ public class CaseTimeSeriesService(
         );
     }
 
-    public async Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOPEXCostProfile(
+    public async Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOpexCostProfile(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
@@ -387,7 +387,7 @@ public class CaseTimeSeriesService(
     {
 
         var existingProfile = await getProfile(costProfileId)
-            ?? throw new NotFoundInDBException($"Production profile with id {costProfileId} not found.");
+            ?? throw new NotFoundInDbException($"Production profile with id {costProfileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Case>(projectId, existingProfile.Case.Id);
@@ -426,7 +426,7 @@ public class CaseTimeSeriesService(
         await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
         var caseEntity = await caseRepository.GetCase(caseId)
-            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
+            ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
 
         var resourceHasProfile = await caseRepository.CaseHasProfile(caseId, profileName);
 

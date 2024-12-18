@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 
-using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -26,7 +26,7 @@ public class TransportService(
     public async Task<Transport> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
     {
         return await transportRepository.GetTransportWithIncludes(transportId, includes)
-            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
     }
 
     public async Task<TransportDto> UpdateTransport<TDto>(Guid projectId, Guid caseId, Guid transportId, TDto updatedTransportDto)
@@ -36,7 +36,7 @@ public class TransportService(
         await projectAccessService.ProjectExists<Transport>(projectId, transportId);
 
         var existing = await transportRepository.GetTransport(transportId)
-            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
 
         mapperService.MapToEntity(updatedTransportDto, existing, transportId);
         existing.LastChangedDate = DateTimeOffset.UtcNow;
