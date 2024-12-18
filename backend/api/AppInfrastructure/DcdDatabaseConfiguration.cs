@@ -50,7 +50,12 @@ public static class DcdDatabaseConfiguration
 
     private static void SetupAzureDatabase(WebApplicationBuilder builder)
     {
-        var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
+        var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
+
+        if (!sqlServerConnectionString.Contains("MultipleActiveResultSets"))
+        {
+            sqlServerConnectionString += ";MultipleActiveResultSets=True;";
+        }
 
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()
