@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { AgCharts } from "ag-charts-react"
 import { Grid } from "@mui/material"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 
-import { ProfileNames } from "@/Models/Interfaces"
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { ProfileNames } from "@/Models/Interfaces"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -32,14 +30,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     enableLegend,
     tableYears,
 }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
@@ -119,7 +110,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
-                    unit: projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD",
+                    unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD",
                     profile: aggregatedProfile,
                     resourceName,
                     resourceId: apiData.case.caseId,
@@ -132,7 +123,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
             setAggregatedTimeSeriesData(newTimeSeriesData)
         }
-    }, [apiData, tableYears, projectData])
+    }, [apiData, tableYears, revisionAndProjectData])
 
     const chartData = useMemo(() => {
         const data: number[] = []

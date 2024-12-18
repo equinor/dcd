@@ -6,8 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { peopleQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
-import { useAppContext } from "@/Context/AppContext"
+import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -22,17 +21,8 @@ const AccessManagementTab = () => {
     const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
-    const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const data = useDataFetch()
-
-    console.log(data)
-
-    const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
@@ -53,7 +43,17 @@ const AccessManagementTab = () => {
 
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
-        if ((!personToAdd || !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
+
+        if (
+            !personToAdd
+            || !projectId
+            || !revisionAndProjectData
+            || (
+                "projectMembers" in revisionAndProjectData
+                && revisionAndProjectData?.projectMembers.some((p) => p.userId === personToAdd))
+        ) {
+            return
+        }
         const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { userId: personToAdd || "", role })
         if (addPerson) {
             queryClient.invalidateQueries(
@@ -87,7 +87,7 @@ const AccessManagementTab = () => {
         })()
     }, [])
 
-    if (!projectApiData) {
+    if (!revisionAndProjectData) {
         return <AccessManagementSkeleton />
     }
 

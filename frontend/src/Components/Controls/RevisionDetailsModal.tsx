@@ -13,7 +13,7 @@ import {
 import {
     checkbox, checkbox_outline, info_circle, close as closeIcon,
 } from "@equinor/eds-icons"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import { useParams } from "react-router-dom"
@@ -22,11 +22,12 @@ import DialogTitle from "@mui/material/DialogTitle"
 import DialogActions from "@mui/material/DialogActions"
 import Dialog from "@mui/material/Dialog"
 import { Grid } from "@mui/material"
-import { formatFullDate, getProjectPhaseName } from "@/Utils/common"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
+
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
+import { formatFullDate, getProjectPhaseName } from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 type RevisionDetailsModalProps = {
     isMenuOpen: boolean;
@@ -65,6 +66,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const externalId = currentContext?.externalId
     const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
+    const revisionAndProjectData = useDataFetch()
     const { revisionId } = useParams()
 
     const [revisionDetails, setRevisionDetails] = useState({
@@ -78,27 +80,17 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const [savedArena, setSavedArena] = useState<boolean>(false)
     const [isRevisionModified, setIsRevisionModified] = useState(false)
 
-    const { data: revisionApiData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId && !!projectId,
-    })
-
-    const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
     useEffect(() => {
-        if (revisionApiData?.revisionDetails) {
-            const { revisionName, mdqc, arena } = revisionApiData.revisionDetails
+        if (revisionAndProjectData
+            && "revisionDetails" in revisionAndProjectData
+            && revisionAndProjectData.revisionDetails) {
+            const { revisionName, mdqc, arena } = revisionAndProjectData.revisionDetails
             setRevisionDetails({ revisionName, mdqc, arena })
             setSavedRevisionName(revisionName || "")
             setSavedMdqc(mdqc || false)
             setSavedArena(arena || false)
         }
-    }, [revisionApiData])
+    }, [revisionAndProjectData])
 
     const closeMenu = () => {
         setIsMenuOpen(false)
@@ -162,12 +154,12 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         )
     }
 
-    if (!revisionApiData || !projectApiData) { return null }
-    const isAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(projectApiData.commonProjectAndRevisionData.projectPhase)
+    if (!revisionAndProjectData) { return null }
+    const isAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(revisionAndProjectData?.commonProjectAndRevisionData.projectPhase)
 
     const displayedPhase = isAfterDG0()
-        ? getProjectPhaseName(projectApiData.commonProjectAndRevisionData.projectPhase)
-        : INTERNAL_PROJECT_PHASE[projectApiData.commonProjectAndRevisionData.internalProjectPhase]?.label ?? "N/A"
+        ? getProjectPhaseName(revisionAndProjectData.commonProjectAndRevisionData.projectPhase)
+        : INTERNAL_PROJECT_PHASE[revisionAndProjectData.commonProjectAndRevisionData.internalProjectPhase]?.label ?? "N/A"
 
     return (
         <Dialog
@@ -212,8 +204,8 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Created date" }}>
                                 <Typography variant="body_short">
-                                    {revisionApiData.revisionDetails?.revisionDate
-                                        ? formatFullDate(revisionApiData.revisionDetails?.revisionDate)
+                                    {"revisionDetails" in revisionAndProjectData && revisionAndProjectData?.revisionDetails?.revisionDate
+                                        ? formatFullDate(revisionAndProjectData.revisionDetails.revisionDate)
                                         : "N/A"}
                                 </Typography>
                             </InputWrapper>
@@ -228,7 +220,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Project classification" }}>
                                 <Typography variant="body_short">
-                                    {PROJECT_CLASSIFICATION[projectApiData?.commonProjectAndRevisionData.classification]?.label ?? "N/A"}
+                                    {PROJECT_CLASSIFICATION[revisionAndProjectData?.commonProjectAndRevisionData.classification]?.label ?? "N/A"}
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>

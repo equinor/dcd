@@ -2,20 +2,19 @@ import { useEffect } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
-import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
-import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
-import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
-import CaseProductionProfilesTab from "../Components/Case/Tabs/CaseProductionProfilesTab"
-import CaseScheduleTab from "../Components/Case/Tabs/CaseScheduleTab"
-import CaseSummaryTab from "../Components/Case/Tabs/CaseSummaryTab"
-import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
-import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
-import { useCaseContext } from "../Context/CaseContext"
-import { caseTabNames } from "../Utils/constants"
-import useEditCase from "../Hooks/useEditCase"
-import { projectQueryFn } from "../Services/QueryFunctions"
+
+import CaseDrillingScheduleTab from "@/Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
+import CaseProductionProfilesTab from "@/Components/Case/Tabs/CaseProductionProfilesTab"
+import CaseDescriptionTab from "@/Components/Case/Tabs/CaseDescriptionTab"
+import CaseFacilitiesTab from "@/Components/Case/Tabs/CaseFacilitiesTab"
+import CaseCO2Tab from "@/Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
+import CaseCostTab from "@/Components/Case/Tabs/CaseCost/CaseCostTab"
+import CaseScheduleTab from "@/Components/Case/Tabs/CaseScheduleTab"
+import CaseSummaryTab from "@/Components/Case/Tabs/CaseSummaryTab"
+import { useCaseContext } from "@/Context/CaseContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import useEditCase from "@/Hooks/useEditCase"
+import { caseTabNames } from "@/Utils/constants"
 
 const Wrapper = styled(Grid)`
     padding: 0 16px;
@@ -23,14 +22,7 @@ const Wrapper = styled(Grid)`
 const CaseView = () => {
     const { caseId, tab } = useParams()
     const { addEdit } = useEditCase()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const {
         activeTabCase,
@@ -53,10 +45,10 @@ const CaseView = () => {
     }, [tab])
 
     useEffect(() => {
-        if (apiData && !apiData?.commonProjectAndRevisionData.cases.find((c: Components.Schemas.CaseOverviewDto) => c.caseId === caseId)) {
+        if (revisionAndProjectData && !revisionAndProjectData?.commonProjectAndRevisionData.cases.find((c: Components.Schemas.CaseOverviewDto) => c.caseId === caseId)) {
             navigate(projectUrl)
         }
-    }, [apiData])
+    }, [revisionAndProjectData])
 
     // navigates to the default tab (description) if none is provided in the url
     useEffect(() => {

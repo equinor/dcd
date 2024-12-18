@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
-import { projectQueryFn, compareCasesQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+
+import { compareCasesQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface TableCompareCase {
     id: string,
@@ -27,28 +28,17 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { projectId, isRevision } = useProjectContext()
-    const { revisionId } = useParams()
-    const [rowData, setRowData] = useState<TableCompareCase[]>()
+    const { projectId } = useProjectContext()
+    const revisionAndProjectData = useDataFetch()
+
     const [compareCasesTotals, setCompareCasesTotals] = useState<Components.Schemas.CompareCasesDto[]>()
-    const [npvChartData, setNpvChartData] = useState<object>()
-    const [breakEvenChartData, setBreakEvenChartData] = useState<object>()
     const [productionProfilesChartData, setProductionProfilesChartData] = useState<object>()
     const [investmentProfilesChartData, setInvestmentProfilesChartData] = useState<object>()
     const [totalCo2EmissionsChartData, setTotalCo2EmissionsChartData] = useState<object>()
     const [co2IntensityChartData, setCo2IntensityChartData] = useState<object>()
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
-    const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!projectId && !!revisionId && isRevision,
-    })
+    const [breakEvenChartData, setBreakEvenChartData] = useState<object>()
+    const [rowData, setRowData] = useState<TableCompareCase[]>()
+    const [npvChartData, setNpvChartData] = useState<object>()
 
     const { data: compareCasesData } = useQuery({
         queryKey: ["compareCasesApiData", projectId],
@@ -56,15 +46,13 @@ export const useProjectChartData = () => {
         enabled: !!projectId,
     })
 
-    const cases = useMemo(() => {
-        if (isRevision) {
-            return apiRevisionData?.commonProjectAndRevisionData.cases.filter((c) => !c.archived) || []
-        }
-        return apiData?.commonProjectAndRevisionData.cases.filter((c) => !c.archived) || []
-    }, [apiData, isRevision, apiRevisionData])
+    const cases = useMemo(
+        () => revisionAndProjectData?.commonProjectAndRevisionData.cases.filter((c) => !c.archived) || [],
+        [revisionAndProjectData],
+    )
 
     const generateAllCharts = () => {
-        if (!compareCasesTotals || !apiData) { return }
+        if (!compareCasesTotals || !revisionAndProjectData) { return }
 
         const npvObject = cases.map((caseItem) => ({
             cases: caseItem.name,
@@ -126,7 +114,7 @@ export const useProjectChartData = () => {
 
     // Convert cases to rowData
     const casesToRowData = () => {
-        if (apiData) {
+        if (revisionAndProjectData) {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
                 cases.forEach((c) => {
@@ -170,11 +158,11 @@ export const useProjectChartData = () => {
     }, [compareCasesData])
 
     useEffect(() => {
-        if (apiData || apiRevisionData) {
+        if (revisionAndProjectData) {
             casesToRowData()
             generateAllCharts()
         }
-    }, [apiData, apiRevisionData, compareCasesTotals])
+    }, [revisionAndProjectData, compareCasesTotals])
 
     return {
         rowData,

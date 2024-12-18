@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 
+import CaseTabTable from "@/Components/Case/Components/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { projectQueryFn } from "@/Services/QueryFunctions"
-import CaseTabTable from "../../../Components/CaseTabTable"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface ExplorationWellCostsProps {
     tableYears: [number, number];
@@ -21,14 +19,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [explorationTimeSeriesData, setExplorationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
@@ -51,7 +42,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         const newExplorationTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "G&G and admin",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: gAndGAdminCostData,
                 resourceName: "gAndGAdminCost",
                 resourceId: exploration.id,
@@ -63,7 +54,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Seismic acquisition and processing",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: seismicAcquisitionAndProcessingData,
                 resourceName: "seismicAcquisitionAndProcessing",
                 resourceId: exploration.id,
@@ -74,7 +65,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Country office",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: countryOfficeCostData,
                 resourceName: "countryOfficeCost",
                 resourceId: exploration.id,
@@ -85,7 +76,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Exploration well",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: explorationWellCostProfileData,
                 resourceName: "explorationWellCostProfile",
                 resourceId: exploration.id,
@@ -96,7 +87,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Appraisal well",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: appraisalWellCostProfileData,
                 resourceName: "appraisalWellCostProfile",
                 resourceId: exploration.id,
@@ -107,7 +98,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Sidetrack well",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: sidetrackCostProfileData,
                 resourceName: "sidetrackCostProfile",
                 resourceId: exploration.id,
@@ -119,7 +110,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         ]
 
         setExplorationTimeSeriesData(newExplorationTimeSeriesData)
-    }, [apiData, projectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears])
 
     return (
         <CaseTabTable

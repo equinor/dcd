@@ -16,14 +16,12 @@ import DialogActions from "@mui/material/DialogActions"
 import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
-import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useRevisions } from "@/Hooks/useRevision"
 import { getProjectPhaseName } from "@/Utils/common"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -48,8 +46,8 @@ type Props = {
 const CreateRevisionModal: FunctionComponent<Props> = ({
     size,
 }) => {
+    const revisionAndProjectData = useDataFetch()
     const { isCreateRevisionModalOpen, setIsCreateRevisionModalOpen } = useProjectContext()
-    const { currentContext } = useModuleCurrentContext()
     const {
         isRevisionsLoading,
         createRevision,
@@ -60,14 +58,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
     const [mdqc, setMdqc] = useState(false)
     const [arena, setArena] = useState(false)
-
-    const externalId = currentContext?.externalId
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setRevisionName(e.currentTarget.value.trimStart())
@@ -87,13 +77,13 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
-    if (!apiData || !isCreateRevisionModalOpen) { return null }
+    if (!revisionAndProjectData || !isCreateRevisionModalOpen) { return null }
 
-    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(apiData.commonProjectAndRevisionData.projectPhase)
+    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(revisionAndProjectData.commonProjectAndRevisionData.projectPhase)
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => {
         if (disableAfterDG0()) {
-            return <option key={key}>{getProjectPhaseName(apiData.commonProjectAndRevisionData.projectPhase)}</option>
+            return <option key={key}>{getProjectPhaseName(revisionAndProjectData.commonProjectAndRevisionData.projectPhase)}</option>
         }
         return <option key={key} value={key}>{value.label}</option>
     })
@@ -170,7 +160,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                     onChange={handleInternalProjectPhaseChange}
                                     value={internalProjectPhase}
                                     disabled={disableAfterDG0()}
-                                    defaultValue={apiData.commonProjectAndRevisionData.internalProjectPhase}
+                                    defaultValue={revisionAndProjectData.commonProjectAndRevisionData.internalProjectPhase}
                                 >
                                     {internalProjectPhaseOptions}
                                 </NativeSelect>
@@ -182,7 +172,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project classification"
                                 onChange={handleClassificationChange}
                                 value={classification}
-                                defaultValue={apiData.commonProjectAndRevisionData.classification}
+                                defaultValue={revisionAndProjectData.commonProjectAndRevisionData.classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>

@@ -2,19 +2,19 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import CaseFasilitiesTabSkeleton from "../../LoadingSkeletons/CaseFacilitiesTabSkeleton"
-import SwitchableStringInput from "../../Input/SwitchableStringInput"
-import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../Context/ProjectContext"
+
+import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilitiesTabSkeleton"
+import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
+    const revisionAndProjectData = useDataFetch()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -47,11 +47,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         12: "Cr13 + PIP",
         13: "HDPE lined CS (Water injection only)",
     }
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
 
     const { data: apiData } = useQuery({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
@@ -67,7 +62,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
 
     if (
         !caseData
-        || !projectData
+        || !revisionAndProjectData
         || !topsideData
         || !surfData
         || !transportData
@@ -113,7 +108,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Facility opex"
                     value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
-                    unit={`${projectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
 
             </Grid>
@@ -127,7 +122,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Cessation cost"
                     value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
-                    unit={`${projectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid item xs={12}>

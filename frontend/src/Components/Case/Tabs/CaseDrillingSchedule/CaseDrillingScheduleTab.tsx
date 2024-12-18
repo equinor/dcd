@@ -7,19 +7,22 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
+
+import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import { SetTableYearsFromProfiles } from "@/Components/Case/Components/CaseTabTableHelper"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useCaseContext } from "@/Context/CaseContext"
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
-import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import { useCaseContext } from "../../../../Context/CaseContext"
-import DateRangePicker from "../../../Input/TableDateRangePicker"
-import CaseProductionProfilesTabSkeleton from "../../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
+    const revisionAndProjectData = useDataFetch()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -46,13 +49,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
-    const wells = projectData?.commonProjectAndRevisionData.wells
+    const wells = revisionAndProjectData?.commonProjectAndRevisionData.wells
 
     useEffect(() => {
         if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {

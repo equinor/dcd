@@ -2,12 +2,10 @@ import { Dispatch, SetStateAction } from "react"
 import { Typography, Button, Icon } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
 import { useAppContext } from "@/Context/AppContext"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const Section = styled.section`
     margin-top: 56px;
@@ -49,22 +47,15 @@ const WellCostsTab = ({
     setExplorationWells,
     setDeletedWells,
 }: Props) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const revisionAndProjectData = useDataFetch()
 
     const { editMode } = useAppContext()
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
 
     const CreateWell = async (wells: any[], setWells: React.Dispatch<React.SetStateAction<any[]>>, category: number) => {
         const newWell: any = {
             wellCategory: category,
             name: "New well",
-            projectId: apiData?.projectId,
+            projectId: revisionAndProjectData?.projectId,
         }
         if (wells) {
             const newWells = [...wells, newWell]

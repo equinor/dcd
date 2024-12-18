@@ -4,13 +4,15 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
-import { projectPath } from "../../Utils/common"
-import { useProjectContext } from "../../Context/ProjectContext"
-import { useAppContext } from "../../Context/AppContext"
-import CaseControls from "./CaseControls"
+
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppContext } from "@/Context/AppContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import { projectPath } from "@/Utils/common"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import ProjectControls from "./ProjectControls"
-import { caseQueryFn, projectQueryFn, revisionQueryFn } from "../../Services/QueryFunctions"
+import CaseControls from "./CaseControls"
 
 const Wrapper = styled(Grid)`
     padding-top: 20px;
@@ -24,6 +26,7 @@ const Controls = () => {
     const { editMode, setEditMode } = useAppContext()
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
+    const revisionAndProjectData = useDataFetch()
 
     const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
@@ -32,18 +35,6 @@ const Controls = () => {
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
-    })
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
-    const { data: revisionData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId && !!projectId,
     })
 
     const cancelEdit = async () => {
@@ -74,12 +65,8 @@ const Controls = () => {
     }, [caseId])
 
     useEffect(() => {
-        if (isRevision && revisionData) {
-            setProjectLastUpdated(revisionData.commonProjectAndRevisionData.modifyTime)
-        } else if (projectData) {
-            setProjectLastUpdated(projectData.commonProjectAndRevisionData.modifyTime)
-        }
-    }, [projectData, isRevision, revisionData])
+        setProjectLastUpdated(revisionAndProjectData?.commonProjectAndRevisionData.modifyTime ?? "")
+    }, [revisionAndProjectData])
 
     useEffect(() => {
         if (apiData && caseData) {
@@ -87,36 +74,13 @@ const Controls = () => {
         }
     }, [caseData])
 
-    /*
-    useEffect(() => {
-        const fetchData = async () => {
-            if (location.pathname.includes("case") && projectData?.id && caseId) {
-                const projectService = await GetProjectService()
-                const data = await projectService.getProject(projectData.id)
-                setProject(data)
-                setProjectLastUpdated(data.modifyTime)
-            }
-        }
-        fetchData()
-    }, [location.pathname, projectData, caseId, setProject])
-    */
-
-    // useEffect(() => {
-    //     if (location.pathname.includes("case")) {
-    //         setCaseLastUpdated(caseData?.modifyTime ?? "")
-    //         setProjectLastUpdated(caseData?.modifyTime ?? "")
-    //     } else {
-    //         setProjectLastUpdated(caseData?.modifyTime ?? "")
-    //     }
-    // }, [location.pathname, caseData, projectData])
-
     return (
         <Wrapper>
             <WhatsNewModal />
-            {projectData && caseId ? (
+            {revisionAndProjectData && caseId ? (
                 <CaseControls
                     backToProject={backToProject}
-                    projectId={projectData.projectId}
+                    projectId={revisionAndProjectData.projectId}
                     caseId={caseId}
                     caseLastUpdated={caseLastUpdated}
                     handleEdit={handleEdit}

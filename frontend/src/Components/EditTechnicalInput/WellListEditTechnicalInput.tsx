@@ -9,15 +9,14 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
-import CustomHeaderForSecondaryHeader from "../../CustomHeaderForSecondaryHeader"
-import { useAppContext } from "../../Context/AppContext"
-import Modal from "../Modal/Modal"
-import { cellStyleRightAlign } from "../../Utils/common"
-import { GetWellService } from "../../Services/WellService"
-import { projectQueryFn } from "../../Services/QueryFunctions"
+
+import CustomHeaderForSecondaryHeader from "@/CustomHeaderForSecondaryHeader"
+import { useAppContext } from "@/Context/AppContext"
+import { cellStyleRightAlign } from "@/Utils/common"
+import { GetWellService } from "@/Services/WellService"
 import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import Modal from "@/Components/Modal/Modal"
 
 interface Props {
     wells: Components.Schemas.WellOverviewDto[] | undefined
@@ -43,21 +42,15 @@ const WellListEditTechnicalInput = ({
     setDeletedWells,
 }: Props) => {
     const { editMode } = useAppContext()
-    const [rowData, setRowData] = useState<TableWell[]>()
-    const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const revisionAndProjectData = useDataFetch()
+    const { isEditDisabled } = useEditDisabled()
     const gridRef = useRef(null)
     const styles = useStyles()
-    const { isEditDisabled } = useEditDisabled()
+
+    const [rowData, setRowData] = useState<TableWell[]>()
+    const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
 
     const onGridReady = (params: any) => { gridRef.current = params.api }
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
 
     const wellsToRowData = () => {
         if (wells) {
@@ -164,8 +157,8 @@ const WellListEditTechnicalInput = ({
             variant="ghost_icon"
             disabled={!editMode || isEditDisabled}
             onClick={async () => {
-                if (!apiData) { return }
-                const isWellInUse = await (await GetWellService()).isWellInUse(apiData.projectId, p.data.id)
+                if (!revisionAndProjectData) { return }
+                const isWellInUse = await (await GetWellService()).isWellInUse(revisionAndProjectData.projectId, p.data.id)
                 if (isWellInUse) {
                     setWellStagedForDeletion(p)
                 } else {
@@ -209,12 +202,12 @@ const WellListEditTechnicalInput = ({
         },
         {
             field: "wellCost",
-            headerName: `Cost (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
+            headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
             flex: 1,
             headerComponent: CustomHeaderForSecondaryHeader,
             headerComponentParams: {
                 columnHeader: "Cost",
-                unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
+                unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
             },
             cellStyle: cellStyleRightAlign,
             editable: editMode,

@@ -13,16 +13,15 @@ import {
     unarchive,
 } from "@equinor/eds-icons"
 import { useMemo, useState } from "react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
 import { ResourceObject } from "@/Models/Interfaces"
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "../../Modal/Modal"
-import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -43,21 +42,15 @@ const CasesDropMenu = ({
     const { addProjectEdit } = useEditProject()
     const navigate = useNavigate()
     const { updateCase } = useSubmitToApi()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
     const { isEditDisabled } = useEditDisabled()
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
-    const selectedCase = useMemo(() => projectData?.commonProjectAndRevisionData.cases.find((c) => c.caseId === selectedCaseId), [projectData, selectedCaseId])
-
-    if (!projectData) { return <p>project not found</p> }
+    const selectedCase = useMemo(
+        () => revisionAndProjectData?.commonProjectAndRevisionData.cases.find((c) => c.caseId === selectedCaseId),
+        [revisionAndProjectData, selectedCaseId],
+    )
 
     const openCase = async () => {
         try {
@@ -70,23 +63,26 @@ const CasesDropMenu = ({
     }
 
     const handleDelete = () => {
+        if (!revisionAndProjectData) { return }
         setConfirmDelete(false)
 
         if (selectedCaseId) {
-            deleteCase(selectedCaseId, projectData.projectId, addProjectEdit)
+            deleteCase(selectedCaseId, revisionAndProjectData?.projectId, addProjectEdit)
         }
     }
 
     const archiveCase = async (isArchived: boolean) => {
-        if (!selectedCase || selectedCaseId === undefined || !projectData.projectId) { return }
+        if (!selectedCase || selectedCaseId === undefined || !revisionAndProjectData?.projectId) { return }
         const newResourceObject = { ...selectedCase, archived: isArchived } as ResourceObject
-        const result = await updateCase({ projectId: projectData.projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
+        const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
         if (result) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", projectData.commonProjectAndRevisionData.fusionProjectId] },
+                { queryKey: ["projectApiData", revisionAndProjectData.projectId] },
             )
         }
     }
+
+    if (!revisionAndProjectData) { return <p>project not found</p> }
 
     return (
         <>
@@ -124,7 +120,7 @@ const CasesDropMenu = ({
                 </Menu.Item>
                 <Menu.Item
                     disabled={selectedCase?.archived || isEditDisabled}
-                    onClick={() => (projectData && selectedCaseId) && duplicateCase(selectedCaseId, projectData.projectId, addProjectEdit)}
+                    onClick={() => (revisionAndProjectData && selectedCaseId) && duplicateCase(selectedCaseId, revisionAndProjectData.projectId, addProjectEdit)}
                 >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -171,11 +167,11 @@ const CasesDropMenu = ({
                         Delete
                     </Typography>
                 </Menu.Item>
-                {projectData.commonProjectAndRevisionData.referenceCaseId === selectedCaseId
+                {revisionAndProjectData.commonProjectAndRevisionData.referenceCaseId === selectedCaseId
                     ? (
                         <Menu.Item
                             disabled={selectedCase?.archived || isEditDisabled}
-                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
+                            onClick={() => revisionAndProjectData && setCaseAsReference(selectedCaseId, revisionAndProjectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -186,7 +182,7 @@ const CasesDropMenu = ({
                     : (
                         <Menu.Item
                             disabled={selectedCase?.archived || isEditDisabled}
-                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
+                            onClick={() => revisionAndProjectData && setCaseAsReference(selectedCaseId, revisionAndProjectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
