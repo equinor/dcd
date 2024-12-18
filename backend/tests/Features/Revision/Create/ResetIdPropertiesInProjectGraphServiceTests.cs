@@ -46,7 +46,9 @@ public class ResetIdPropertiesInProjectGraphServiceTests
             }
         };
 
-        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(project);
+        var caseIdMapping = project.Cases.ToDictionary(x => x.Id, _ => Guid.NewGuid());
+
+        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(project, caseIdMapping);
 
         Assert.Equal(Guid.Empty, project.ReferenceCaseId);
         Assert.Equal(Guid.Empty, project.FusionProjectId);

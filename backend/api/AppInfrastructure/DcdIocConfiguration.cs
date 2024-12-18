@@ -42,6 +42,7 @@ using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
 using api.Features.Cases.Update;
 using api.Features.FusionIntegration.ProjectMaster;
+using api.Features.Images.Copy;
 using api.Features.Images.Delete;
 using api.Features.Images.Get;
 using api.Features.Images.Upload;
@@ -117,6 +118,7 @@ public static class DcdIocConfiguration
         services.AddScoped<GetImageService>();
         services.AddScoped<DeleteImageService>();
         services.AddScoped<UploadImageService>();
+        services.AddScoped<CopyImageService>();
 
         /* Mapping */
         services.AddScoped<IMapperService, MapperService>();
