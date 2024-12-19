@@ -45,6 +45,7 @@ using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Copy;
 using api.Features.Images.Delete;
 using api.Features.Images.Get;
+using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
@@ -119,6 +120,7 @@ public static class DcdIocConfiguration
         services.AddScoped<DeleteImageService>();
         services.AddScoped<UploadImageService>();
         services.AddScoped<CopyImageService>();
+        services.AddScoped<UpdateImageService>();
 
         /* Mapping */
         services.AddScoped<IMapperService, MapperService>();
