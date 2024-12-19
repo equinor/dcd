@@ -9,19 +9,23 @@ import {
 import { clear } from "@equinor/eds-icons"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
+import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { GetProjectService } from "@/Services/ProjectService"
-import { useAppContext } from "@/Context/AppContext"
-import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { useModalContext } from "@/Context/ModalContext"
+
+import { useFeatureContext } from "@/Context/FeatureContext"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useModalContext } from "@/Context/ModalContext"
+import { useAppContext } from "@/Context/AppContext"
+import { GetProjectService } from "@/Services/ProjectService"
+import { peopleQueryFn } from "@/Services/QueryFunctions"
+import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import NoAccessErrorView from "@/Views/NoAccessErrorView"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
-import { useFeatureContext } from "@/Context/FeatureContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -62,6 +66,7 @@ const Overview = () => {
         editMode,
     } = useAppContext()
     const {
+        projectId,
         setProjectId,
         isRevision,
         setIsCreateRevisionModalOpen,
@@ -73,6 +78,12 @@ const Overview = () => {
     const [canCreateRevision, setCanCreateRevision] = useState<boolean>(false)
     const { Features } = useFeatureContext()
     const revisionAndProjectData = useDataFetch()
+
+    const { data: peopleApiData } = useQuery({
+        queryKey: ["peopleApiData", projectId],
+        queryFn: () => peopleQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     async function userCanCreateRevision() {
         if (!externalId) { return }
@@ -177,9 +188,20 @@ const Overview = () => {
         }
     }, [revisionAndProjectData, currentUserId, warnedProjects, featuresModalIsOpen])
 
-    if (isCreating || isLoading) {
+    if (isCreating || isLoading || !revisionAndProjectData || !peopleApiData || !currentUser) {
         return (
             <ProjectSkeleton />
+        )
+    }
+
+    const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
+    const projectIsNotOpen = revisionAndProjectData.commonProjectAndRevisionData.classification !== 0
+
+    if (projectIsNotOpen && !userIsPartOfProject) {
+        return (
+            <NoAccessErrorView
+                projectClassification={revisionAndProjectData.commonProjectAndRevisionData.classification}
+            />
         )
     }
 
