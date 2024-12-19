@@ -15,7 +15,7 @@ import { GetProjectService } from "@/Services/ProjectService"
 import { useAppContext } from "@/Context/AppContext"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { useModalContext } from "@/Context/ModalContext"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, peopleQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
@@ -23,6 +23,7 @@ import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { useFeatureContext } from "@/Context/FeatureContext"
+import NoAccessErrorView from "../Views/NoAccessErrorView"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -73,11 +74,18 @@ const Overview = () => {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
     const [canCreateRevision, setCanCreateRevision] = useState<boolean>(false)
     const { Features } = useFeatureContext()
+    const { projectId } = useProjectContext()
 
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
+    })
+
+    const { data: peopleApiData } = useQuery({
+        queryKey: ["peopleApiData", projectId],
+        queryFn: () => peopleQueryFn(projectId),
+        enabled: !!projectId,
     })
 
     async function userCanCreateRevision() {
@@ -179,9 +187,20 @@ const Overview = () => {
         }
     }, [apiData, currentUserId, warnedProjects, featuresModalIsOpen])
 
-    if (isCreating || isLoading) {
+    if (isCreating || isLoading || !apiData || !peopleApiData || !currentUser) {
         return (
             <ProjectSkeleton />
+        )
+    }
+
+    const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
+    const projectIsNotOpen = apiData.commonProjectAndRevisionData.classification !== 0
+
+    if (projectIsNotOpen && !userIsPartOfProject) {
+        return (
+            <NoAccessErrorView
+                projectClassification={apiData.commonProjectAndRevisionData.classification}
+            />
         )
     }
 
