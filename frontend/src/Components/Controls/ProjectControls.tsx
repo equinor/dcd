@@ -40,7 +40,6 @@ const Header = styled.div`
 
     & div {
         display: flex;
-        align-items: center;
         gap: 10px;
     }
 `
@@ -89,7 +88,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
 
     const { Features } = useFeatureContext()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<HTMLElement | null>(null)
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
@@ -100,6 +99,16 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
             return index + leftTabs.length
         }
         return index
+    }
+
+    const handleMenuToggle = (event: React.MouseEvent<HTMLElement>) => {
+        if (isMenuOpen) {
+            setRevisionMenuAnchorEl(null)
+            setIsMenuOpen(false)
+        } else {
+            setRevisionMenuAnchorEl(event.currentTarget)
+            setIsMenuOpen(true)
+        }
     }
     useEffect(() => {
         if (isRevision) {
@@ -174,7 +183,10 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         && (
                             <div>
                                 <Tooltip title="This is a revision">
-                                    <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={handleMenuToggle}
+                                    >
                                         <Icon data={history} />
                                         {!isSmallScreen && "Project revisions"}
                                     </Button>
