@@ -7,6 +7,8 @@ namespace api.Features.ProjectData.Dtos;
 public class ProjectDataDto
 {
     [Required] public required Guid ProjectId { get; set; }
+    [Required] public required string DataType { get; set; }
+
     [Required] public required List<ProjectMemberDto> ProjectMembers { get; set; }
     [Required] public required List<RevisionDetailsDto> RevisionDetailsList { get; set; }
 

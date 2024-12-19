@@ -156,9 +156,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     ? (
                         <Menu.Item
                             disabled={isArchived || isEditDisabled}
-                            onClick={() => revisionAndProjectData
-                                && "projectMembers" in revisionAndProjectData
-                                && setCaseAsReference(caseId, revisionAndProjectData, addProjectEdit)}
+                            onClick={() => setCaseAsReference(caseId, revisionAndProjectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -170,7 +168,6 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         <Menu.Item
                             disabled={isArchived || isEditDisabled}
                             onClick={() => revisionAndProjectData
-                                && "projectMembers" in revisionAndProjectData
                                 && setCaseAsReference(caseId, revisionAndProjectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />

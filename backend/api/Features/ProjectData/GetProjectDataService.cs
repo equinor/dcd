@@ -15,6 +15,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         return new ProjectDataDto
         {
             ProjectId = projectPk,
+            DataType = "project",
             ProjectMembers = projectMembers,
             RevisionDetailsList = revisionDetailsList.OrderBy(x => x.RevisionDate).ToList(),
             CommonProjectAndRevisionData = commonProjectAndRevisionData
@@ -30,6 +31,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         {
             ProjectId = projectId,
             RevisionId = revisionId,
+            DataType = "revision",
             RevisionDetails = revisionDetails,
             CommonProjectAndRevisionData = commonProjectAndRevisionData
         };

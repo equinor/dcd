@@ -41,16 +41,17 @@ const AccessManagementTab = () => {
         })
     }
 
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
+        : null
+
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
 
         if (
             !personToAdd
             || !projectId
-            || !revisionAndProjectData
-            || (
-                "projectMembers" in revisionAndProjectData
-                && revisionAndProjectData?.projectMembers.some((p) => p.userId === personToAdd))
+            || projectData?.projectMembers.some((p) => p.userId === personToAdd)
         ) {
             return
         }

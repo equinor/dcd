@@ -88,14 +88,18 @@ const Overview = () => {
         setShowRevisionReminder(false)
     }
 
-    function checkIfNewRevisionIsRecommended() {
-        if (!revisionAndProjectData || !("revisionDetailsList" in revisionAndProjectData)) { return }
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
+        : null
 
-        const lastModified = new Date(revisionAndProjectData.commonProjectAndRevisionData.modifyTime)
+    function checkIfNewRevisionIsRecommended() {
+        if (!projectData) { return }
+
+        const lastModified = new Date(projectData.commonProjectAndRevisionData.modifyTime)
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = revisionAndProjectData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)

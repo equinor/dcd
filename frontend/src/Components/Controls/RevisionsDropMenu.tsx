@@ -53,16 +53,20 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     const [revisions, setRevisions] = useState<Revision[]>([])
 
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
+        : null
+
     useEffect(() => {
-        if (revisionAndProjectData && "revisionDetailsList" in revisionAndProjectData) {
-            const revisionsResult = revisionAndProjectData.revisionDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
+        if (projectData) {
+            const revisionsResult = projectData.revisionDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
                 revisionId: r.revisionId,
                 name: r.revisionName,
                 date: r.revisionDate,
             }))
             setRevisions(revisionsResult)
         }
-    }, [revisionAndProjectData])
+    }, [projectData])
 
     const navToRevision = (revision: Revision) => {
         setIsMenuOpen(false)

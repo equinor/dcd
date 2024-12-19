@@ -982,6 +982,7 @@ declare namespace Components {
         export type ProjectClassification = 0 | 1 | 2 | 3; // int32
         export interface ProjectDataDto {
             projectId: string; // uuid
+            dataType: string;
             projectMembers: ProjectMemberDto[];
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
@@ -997,6 +998,7 @@ declare namespace Components {
         export interface RevisionDataDto {
             projectId: string; // uuid
             revisionId: string; // uuid
+            dataType: string;
             revisionDetails: RevisionDetailsDto;
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }

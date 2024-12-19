@@ -75,16 +75,18 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         arena: false,
     })
 
+    const revisionData = revisionAndProjectData?.dataType === "revision"
+        ? (revisionAndProjectData as Components.Schemas.RevisionDataDto)
+        : null
+
     const [savedRevisionName, setSavedRevisionName] = useState<string>("")
     const [savedMdqc, setSavedMdqc] = useState<boolean>(false)
     const [savedArena, setSavedArena] = useState<boolean>(false)
     const [isRevisionModified, setIsRevisionModified] = useState(false)
 
     useEffect(() => {
-        if (revisionAndProjectData
-            && "revisionDetails" in revisionAndProjectData
-            && revisionAndProjectData.revisionDetails) {
-            const { revisionName, mdqc, arena } = revisionAndProjectData.revisionDetails
+        if (revisionData?.revisionDetails) {
+            const { revisionName, mdqc, arena } = revisionData.revisionDetails
             setRevisionDetails({ revisionName, mdqc, arena })
             setSavedRevisionName(revisionName || "")
             setSavedMdqc(mdqc || false)
@@ -204,8 +206,8 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Created date" }}>
                                 <Typography variant="body_short">
-                                    {"revisionDetails" in revisionAndProjectData && revisionAndProjectData?.revisionDetails?.revisionDate
-                                        ? formatFullDate(revisionAndProjectData.revisionDetails.revisionDate)
+                                    {revisionData?.revisionDetails?.revisionDate
+                                        ? formatFullDate(revisionData.revisionDetails.revisionDate)
                                         : "N/A"}
                                 </Typography>
                             </InputWrapper>
