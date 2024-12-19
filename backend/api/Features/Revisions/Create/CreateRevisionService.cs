@@ -43,14 +43,15 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
         existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase ?? existingProject.InternalProjectPhase;
         existingProject.Classification = createRevisionDto.Classification ?? existingProject.Classification;
 
-        await CopyImages(projectPk, revision.Id);
+        await CopyProjectImages(projectPk, revision.Id);
+        await CopyCaseImages(projectPk, revision.Id, caseIdMapping);
 
         await context.SaveChangesAsync();
 
         return revision.Id;
     }
 
-    private async Task CopyImages(Guid projectPk, Guid revisionId)
+    private async Task CopyProjectImages(Guid projectPk, Guid revisionId)
     {
         var images = await context.Images
             .Where(x => x.ProjectId == projectPk && x.CaseId == null)
@@ -63,7 +64,7 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
             var sourceUrl = ImageHelper.GetBlobName(null, image.ProjectId, image.Id);
             var destinationUrl = ImageHelper.GetBlobName(null, revisionId, newImageId);
 
-            var imageCopy = new Image
+            context.Images.Add(new Image
             {
                 Id = newImageId,
                 ProjectId = revisionId,
@@ -71,9 +72,34 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
                 CreateTime = DateTimeOffset.UtcNow,
                 Description = image.Description,
                 Url = destinationUrl
-            };
+            });
 
-            context.Images.Add(imageCopy);
+            await copyImageService.Copy(sourceUrl, destinationUrl);
+        }
+    }
+
+    private async Task CopyCaseImages(Guid projectPk, Guid revisionId, Dictionary<Guid, Guid> caseIdMapping)
+    {
+        var images = await context.Images
+            .Where(x => x.ProjectId == projectPk && x.CaseId != null)
+            .ToListAsync();
+
+        foreach (var image in images)
+        {
+            var newImageId = Guid.NewGuid();
+
+            var sourceUrl = ImageHelper.GetBlobName(image.CaseId, image.ProjectId, image.Id);
+            var destinationUrl = ImageHelper.GetBlobName(caseIdMapping[image.CaseId!.Value], revisionId, newImageId);
+
+            context.Images.Add(new Image
+            {
+                Id = newImageId,
+                ProjectId = revisionId,
+                CaseId = caseIdMapping[image.CaseId!.Value],
+                CreateTime = DateTimeOffset.UtcNow,
+                Description = image.Description,
+                Url = destinationUrl
+            });
 
             await copyImageService.Copy(sourceUrl, destinationUrl);
         }
