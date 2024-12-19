@@ -8,18 +8,18 @@ import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
-import InputSwitcher from "../../Input/Components/InputSwitcher"
-import DateRangePicker from "../../Input/TableDateRangePicker"
-import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
-import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
+import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useCaseContext } from "@/Context/CaseContext"
 import { defaultAxesData } from "@/Utils/common"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
+import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId, revisionId } = useParams()
@@ -135,7 +135,6 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     if (!drainageStrategyData || !caseData || !apiData) {
-        console.log("loading")
         return (<CaseProductionProfilesTabSkeleton />)
     }
     return (

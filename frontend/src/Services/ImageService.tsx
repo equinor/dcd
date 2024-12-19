@@ -35,7 +35,6 @@ export class ImageService extends __BaseService {
         if (response) {
             return response
         }
-        
         throw new Error("Upload image response data is undefined")
     }
 }

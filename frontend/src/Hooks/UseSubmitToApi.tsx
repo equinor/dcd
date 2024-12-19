@@ -1,19 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { ResourceObject } from "../Models/Interfaces"
-import { GetCaseService } from "../Services/CaseService"
-import { GetTopsideService } from "../Services/TopsideService"
-import { GetSurfService } from "../Services/SurfService"
-import { GetSubstructureService } from "../Services/SubstructureService"
-import { GetTransportService } from "../Services/TransportService"
-import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
-import { useAppContext } from "../Context/AppContext"
-import { GetWellProjectService } from "../Services/WellProjectService"
-import { GetExplorationService } from "../Services/ExplorationService"
+
+import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
+import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
+import { GetSubstructureService } from "@/Services/SubstructureService"
+import { GetExplorationService } from "@/Services/ExplorationService"
+import { GetWellProjectService } from "@/Services/WellProjectService"
+import { GetTransportService } from "@/Services/TransportService"
+import { GetTopsideService } from "@/Services/TopsideService"
+import { GetSurfService } from "@/Services/SurfService"
+import { GetCaseService } from "@/Services/CaseService"
+import { useAppContext } from "@/Context/AppContext"
+import { ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
-} from "../Utils/constants"
-import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
+} from "@/Utils/constants"
 
 interface UpdateResourceParams {
     projectId: string;

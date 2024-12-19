@@ -2,11 +2,9 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 
 import { useAppContext } from "@/Context/AppContext"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
@@ -60,23 +58,16 @@ export const TimelineElement = styled(Button)`
 
 const Sidebar = () => {
     const { sidebarOpen, setSidebarOpen } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseOverviewDto[]>([])
 
     useEffect(() => {
-        if (!projectData) { return }
-        setArchivedCases(projectData.commonProjectAndRevisionData.cases.filter((c) => c.archived))
-    }, [projectData])
+        if (!revisionAndProjectData) { return }
+        setArchivedCases(revisionAndProjectData.commonProjectAndRevisionData.cases.filter((c) => c.archived))
+    }, [revisionAndProjectData])
 
-    if (!projectData) { return null }
+    if (!revisionAndProjectData) { return null }
 
     return (
         <Wrapper>

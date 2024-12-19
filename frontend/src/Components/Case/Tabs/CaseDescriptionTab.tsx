@@ -4,13 +4,13 @@ import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
-import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import Gallery from "../../Gallery/Gallery"
-import { useAppContext } from "../../../Context/AppContext"
-import CaseDescriptionTabSkeleton from "../../LoadingSkeletons/CaseDescriptionTabSkeleton"
-import { caseQueryFn } from "../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
+import Gallery from "@/Components/Gallery/Gallery"
+import { useAppContext } from "@/Context/AppContext"
+import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppContext()
@@ -44,7 +44,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
         if (apiData && apiData.case.description !== undefined) {
             setDescription(apiData.case.description)
         }
-    }, [apiData])
+    }, [apiData, isRevision])
 
     if (!apiData || !projectId) {
         return <CaseDescriptionTabSkeleton />

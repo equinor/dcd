@@ -9,21 +9,23 @@ import {
 import { clear } from "@equinor/eds-icons"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-import { GetProjectService } from "@/Services/ProjectService"
-import { useAppContext } from "@/Context/AppContext"
-import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { useModalContext } from "@/Context/ModalContext"
-import { projectQueryFn, peopleQueryFn } from "@/Services/QueryFunctions"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+
+import { useFeatureContext } from "@/Context/FeatureContext"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useModalContext } from "@/Context/ModalContext"
+import { useAppContext } from "@/Context/AppContext"
+import { GetProjectService } from "@/Services/ProjectService"
+import { peopleQueryFn } from "@/Services/QueryFunctions"
+import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import NoAccessErrorView from "@/Views/NoAccessErrorView"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
-import { useFeatureContext } from "@/Context/FeatureContext"
-import NoAccessErrorView from "../Views/NoAccessErrorView"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -64,6 +66,7 @@ const Overview = () => {
         editMode,
     } = useAppContext()
     const {
+        projectId,
         setProjectId,
         isRevision,
         setIsCreateRevisionModalOpen,
@@ -74,13 +77,7 @@ const Overview = () => {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
     const [canCreateRevision, setCanCreateRevision] = useState<boolean>(false)
     const { Features } = useFeatureContext()
-    const { projectId } = useProjectContext()
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
@@ -102,14 +99,18 @@ const Overview = () => {
         setShowRevisionReminder(false)
     }
 
-    function checkIfNewRevisionIsRecommended() {
-        if (!apiData) { return }
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
+        : null
 
-        const lastModified = new Date(apiData.commonProjectAndRevisionData.modifyTime)
+    function checkIfNewRevisionIsRecommended() {
+        if (!projectData) { return }
+
+        const lastModified = new Date(projectData.commonProjectAndRevisionData.modifyTime)
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = apiData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)
@@ -117,13 +118,13 @@ const Overview = () => {
     }
 
     function addVisitedProject() {
-        if (apiData && currentUserId) {
+        if (revisionAndProjectData && currentUserId) {
             if (warnedProjects && warnedProjects[currentUserId]) {
                 const wp = { ...warnedProjects }
-                wp[currentUserId].push(apiData.projectId)
+                wp[currentUserId].push(revisionAndProjectData.projectId)
                 setWarnedProjects(wp)
             } else {
-                setWarnedProjects({ [currentUserId]: [apiData.projectId] })
+                setWarnedProjects({ [currentUserId]: [revisionAndProjectData.projectId] })
             }
         }
     }
@@ -155,24 +156,24 @@ const Overview = () => {
     }, [warnedProjects])
 
     useEffect(() => {
-        if (apiData) {
-            setProjectId(apiData.projectId)
+        if (revisionAndProjectData) {
+            setProjectId(revisionAndProjectData.projectId)
         }
-    }, [apiData])
+    }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (apiData) {
+        if (revisionAndProjectData) {
             checkIfNewRevisionIsRecommended()
         }
-    }, [apiData, editMode])
+    }, [revisionAndProjectData, editMode])
 
     useEffect(() => {
-        if (apiData && currentUserId) {
+        if (revisionAndProjectData && currentUserId) {
             if (
                 !projectClassificationWarning
-                && PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].warn
+                && PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].warn
                 && (
-                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === apiData.projectId))
+                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === revisionAndProjectData.projectId))
                     || (warnedProjects && !warnedProjects[currentUserId])
                     || !warnedProjects
                 )
@@ -181,25 +182,25 @@ const Overview = () => {
                     setProjectClassificationWarning(true)
                 }
             }
-            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === apiData.projectId)) {
+            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === revisionAndProjectData.projectId)) {
                 setProjectClassificationWarning(false)
             }
         }
-    }, [apiData, currentUserId, warnedProjects, featuresModalIsOpen])
+    }, [revisionAndProjectData, currentUserId, warnedProjects, featuresModalIsOpen])
 
-    if (isCreating || isLoading || !apiData || !peopleApiData || !currentUser) {
+    if (isCreating || isLoading || !revisionAndProjectData || !peopleApiData || !currentUser) {
         return (
             <ProjectSkeleton />
         )
     }
 
     const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
-    const projectIsNotOpen = apiData.commonProjectAndRevisionData.classification !== 0
+    const projectIsNotOpen = revisionAndProjectData.commonProjectAndRevisionData.classification !== 0
 
     if (projectIsNotOpen && !userIsPartOfProject) {
         return (
             <NoAccessErrorView
-                projectClassification={apiData.commonProjectAndRevisionData.classification}
+                projectClassification={revisionAndProjectData.commonProjectAndRevisionData.classification}
             />
         )
     }
@@ -237,14 +238,14 @@ const Overview = () => {
             <ContentWrapper>
                 <Sidebar />
                 <MainView className="ag-theme-alpine-fusion ">
-                    {apiData && (
+                    {revisionAndProjectData && (
                         <Modal
                             isOpen={projectClassificationWarning}
                             size="sm"
-                            title={`Attention - ${PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].label} project`}
+                            title={`Attention - ${PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].label} project`}
                             content={(
                                 <Typography key="text">
-                                    {PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].description}
+                                    {PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].description}
                                 </Typography>
                             )}
                             actions={

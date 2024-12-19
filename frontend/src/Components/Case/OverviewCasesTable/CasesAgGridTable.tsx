@@ -18,7 +18,6 @@ import {
 } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { useQuery } from "@tanstack/react-query"
 
 import {
     productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId,
@@ -26,10 +25,10 @@ import {
 } from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const AgTableContainer = styled.div`
     overflow: auto;
@@ -75,7 +74,7 @@ const CasesAgGridTable = ({
     setIsMenuOpen,
     isMenuOpen,
 }: CasesAgGridTableProps): JSX.Element => {
-    const { isRevision, projectId } = useProjectContext()
+    const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const gridRef = useRef<AgGridReact>(null)
     const [activeCases, setActiveCases] = useState<TableCase[]>()
@@ -84,7 +83,7 @@ const CasesAgGridTable = ({
     const { currentContext } = useModuleCurrentContext()
     const { setShowRevisionReminder } = useAppContext()
     const navigate = useNavigate()
-    const externalId = currentContext?.externalId
+    const revisionAndProjectData = useDataFetch()
 
     const defaultColumnDefinition = useMemo(() => ({
         sortable: true,
@@ -92,18 +91,6 @@ const CasesAgGridTable = ({
         resizable: true,
         suppressHeaderMenuButton: true,
     }), [])
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
-    const { data: revisionData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!projectId && !!revisionId && !!externalId && isRevision,
-    })
 
     const navigateToCase = (caseData: any) => {
         if (!currentContext || !caseData.node.data) {
@@ -201,11 +188,11 @@ const CasesAgGridTable = ({
 
     useEffect(() => {
         setColumnDefinitions(getColumnDefinitions())
-    }, [isRevision, revisionData, projectData])
+    }, [isRevision, revisionAndProjectData])
 
-    const mapCasesToTableData = (data: Components.Schemas.RevisionDataDto | Components.Schemas.ProjectDataDto, isArchived: boolean) => {
-        if (!data?.commonProjectAndRevisionData?.cases) { return [] }
-        return data.commonProjectAndRevisionData.cases
+    const mapCasesToTableData = (isArchived: boolean) => {
+        if (!revisionAndProjectData?.commonProjectAndRevisionData?.cases) { return [] }
+        return revisionAndProjectData.commonProjectAndRevisionData.cases
             .filter((c) => c.archived === isArchived)
             .map((c) => ({
                 id: c.caseId!,
@@ -216,35 +203,40 @@ const CasesAgGridTable = ({
                 waterInjectorCount: c.waterInjectorCount ?? 0,
                 gasInjectorCount: c.gasInjectorCount ?? 0,
                 createdAt: c.createTime?.substring(0, 10),
-                referenceCaseId: data.commonProjectAndRevisionData.referenceCaseId,
+                referenceCaseId: revisionAndProjectData.commonProjectAndRevisionData.referenceCaseId,
             }))
     }
 
     useEffect(() => {
-        const data = isRevision && revisionData ? revisionData : projectData
-        if (!data) { return }
+        if (!revisionAndProjectData) { return }
 
-        const mappedActiveCases = mapCasesToTableData(data, false)
-        const mappedArchivedCases = mapCasesToTableData(data, true)
+        const mappedActiveCases = mapCasesToTableData(false)
+        const mappedArchivedCases = mapCasesToTableData(true)
 
         setActiveCases(mappedActiveCases)
         setArchivedCases(mappedArchivedCases)
-    }, [isRevision, revisionData, projectData])
+    }, [isRevision, revisionAndProjectData])
 
-    if (!projectData) {
+    if (!revisionAndProjectData && !isRevision) {
         return <p>Project not found</p>
     }
-    if (isRevision && !revisionData) {
+    if (!revisionAndProjectData && isRevision) {
         return <p>Revision not found</p>
     }
 
     const handleSTEAExport = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        if (projectData) {
+        if (!revisionAndProjectData) {
             try {
                 setShowRevisionReminder(true)
-                const unwrappedProjectId = unwrapProjectId(projectData.projectId)
+                if (!revisionAndProjectData) {
+                    return
+                }
+                const projectOrRevisionId = isRevision
+                    ? (revisionAndProjectData as { revisionId: string }).revisionId
+                    : (revisionAndProjectData as { projectId: string }).projectId
+                const unwrappedProjectId = unwrapProjectId(projectOrRevisionId)
                 const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
             } catch (error) {

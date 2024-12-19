@@ -1,22 +1,13 @@
 import React from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface InvestmentProfilesProps {
     investmentProfilesChartData?: object
 }
 
 const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfilesChartData }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     if (!investmentProfilesChartData) { return <div>No data available</div> }
 
@@ -32,7 +23,7 @@ const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfi
                 "Development well costs",
                 "Exploration well costs",
             ]}
-            unit={`${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"}`}
+            unit={`${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"}`}
         />
     )
 }

@@ -16,21 +16,22 @@ import Tab from "@mui/material/Tab"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { useAppContext } from "@/Context/AppContext"
-import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
+import CaseDropMenu from "@/Components/Case/Components/CaseDropMenu"
+import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
-import { useCaseContext } from "@/Context/CaseContext"
-import useEditCase from "@/Hooks/useEditCase"
+import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/common"
-import UndoControls from "./UndoControls"
-import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
-import useEditProject from "@/Hooks/useEditProject"
-import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
-import CaseDropMenu from "../Case/Components/CaseDropMenu"
-import useEditDisabled from "@/Hooks/useEditDisabled"
-import Classification from "./ClassificationChip"
-import RevisionChip from "./RevisionChip"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useCaseContext } from "@/Context/CaseContext"
+import { useAppContext } from "@/Context/AppContext"
+import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import useEditProject from "@/Hooks/useEditProject"
+import useEditCase from "@/Hooks/useEditCase"
+import Classification from "./ClassificationChip"
+import UndoControls from "./UndoControls"
+import RevisionChip from "./RevisionChip"
 
 const Header = styled.div`
     display: flex;
@@ -95,6 +96,7 @@ const CaseControls: React.FC<props> = ({
     const { activeTabCase } = useCaseContext()
     const location = useLocation()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const revisionAndProjectData = useDataFetch()
 
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
@@ -106,12 +108,6 @@ const CaseControls: React.FC<props> = ({
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
         refetchInterval: 20000,
-    })
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
     })
 
     if (error) {
@@ -148,9 +144,9 @@ const CaseControls: React.FC<props> = ({
     }
 
     const handleReferenceCaseChange = async (referenceCaseId: string) => {
-        if (projectData) {
+        if (revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = {
-                ...projectData.commonProjectAndRevisionData,
+                ...revisionAndProjectData.commonProjectAndRevisionData,
             }
             if (newProject.referenceCaseId === referenceCaseId) {
                 newProject.referenceCaseId = EMPTY_GUID
@@ -186,11 +182,11 @@ const CaseControls: React.FC<props> = ({
                         <Button onClick={backToProject} variant="ghost_icon">
                             <Icon data={arrow_back} />
                         </Button>
-                        <div>
+                        <CenteringContainer>
                             {editMode ? (
                                 <CaseTitleEdit>
                                     <ChooseReferenceCase
-                                        projectRefCaseId={projectData?.commonProjectAndRevisionData.referenceCaseId}
+                                        projectRefCaseId={revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId}
                                         projectCaseId={caseId}
                                         handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
                                     />
@@ -205,11 +201,11 @@ const CaseControls: React.FC<props> = ({
                                 </CaseTitleEdit>
                             ) : (
                                 <>
-                                    {projectData?.commonProjectAndRevisionData.referenceCaseId === caseId && <ReferenceCaseIcon />}
+                                    {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === caseId && <ReferenceCaseIcon />}
                                     <Typography variant="h4">{caseData.name}</Typography>
                                 </>
                             )}
-                        </div>
+                        </CenteringContainer>
                     </CenteringContainer>
                 </ProjectAndCaseContainer>
                 <CenteringContainer>

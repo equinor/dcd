@@ -3,15 +3,13 @@ import {
     Menu, Typography, Icon,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
 
 import { useProjectContext } from "@/Context/ProjectContext"
-import { projectQueryFn } from "@/Services/QueryFunctions"
 import { formatFullDate, truncateText } from "@/Utils/common"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useRevisions } from "@/Hooks/useRevision"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean
@@ -50,29 +48,25 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
         exitRevisionView,
         disableCurrentRevision,
     } = useRevisions()
+    const revisionAndProjectData = useDataFetch()
     const { isEditDisabled } = useEditDisabled()
-
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
 
     const [revisions, setRevisions] = useState<Revision[]>([])
 
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
+        : null
 
     useEffect(() => {
-        if (apiData) {
-            const revisionsResult = apiData.revisionDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
+        if (projectData) {
+            const revisionsResult = projectData.revisionDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
                 revisionId: r.revisionId,
                 name: r.revisionName,
                 date: r.revisionDate,
             }))
             setRevisions(revisionsResult)
         }
-    }, [apiData])
+    }, [projectData])
 
     const navToRevision = (revision: Revision) => {
         setIsMenuOpen(false)

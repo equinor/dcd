@@ -13,16 +13,15 @@ import {
 } from "@ag-grid-community/core"
 import { external_link } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
-import SharePointImport from "./SharePointImport"
-import { DriveItem } from "../../Models/sharepoint/DriveItem"
-import { ImportStatusEnum } from "./ImportStatusEnum"
-import { GetProspService } from "../../Services/ProspService"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
-import { useAppContext } from "@/Context/AppContext"
+
+import { DriveItem } from "@/Models/sharepoint/DriveItem"
+import { GetProspService } from "@/Services/ProspService"
+import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useAppContext } from "@/Context/AppContext"
+import { ImportStatusEnum } from "./ImportStatusEnum"
+import SharePointImport from "./SharePointImport"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface Props {
     driveItems: DriveItem[] | undefined
@@ -52,32 +51,25 @@ const PROSPCaseList = ({
 }: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
-    const { currentContext } = useModuleCurrentContext()
+    const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
-    const externalId = currentContext?.externalId
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { isEditDisabled } = useEditDisabled()
     const { editMode } = useAppContext()
 
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
     const casesToRowData = () => {
-        if (apiData && apiData.commonProjectAndRevisionData.cases) {
+        if (revisionAndProjectData && revisionAndProjectData.commonProjectAndRevisionData.cases) {
             const tableCases: RowData[] = []
-            apiData.commonProjectAndRevisionData.cases.forEach((c) => {
+            revisionAndProjectData.commonProjectAndRevisionData.cases.forEach((c) => {
                 const tableCase: RowData = {
                     id: c.caseId!,
                     name: c.name ?? "",
-                    surfState: SharePointImport.surfStatus(c, apiData.commonProjectAndRevisionData),
-                    substructureState: SharePointImport.substructureStatus(c, apiData.commonProjectAndRevisionData),
-                    topsideState: SharePointImport.topsideStatus(c, apiData.commonProjectAndRevisionData),
-                    transportState: SharePointImport.transportStatus(c, apiData.commonProjectAndRevisionData),
+                    surfState: SharePointImport.surfStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
+                    substructureState: SharePointImport.substructureStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
+                    topsideState: SharePointImport.topsideStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
+                    transportState: SharePointImport.transportStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
                     sharePointFileId: c.sharepointFileId,
                     sharePointFileName: c.sharepointFileName,
                     sharepointFileUrl: c.sharepointFileUrl,
@@ -125,23 +117,23 @@ const PROSPCaseList = ({
     }
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
-        if (apiData && apiData.commonProjectAndRevisionData.cases) {
-            const projectCase = apiData.commonProjectAndRevisionData.cases.find((el: any) => p.data.id && p.data.id === el.id)
+        if (revisionAndProjectData && revisionAndProjectData.commonProjectAndRevisionData.cases) {
+            const projectCase = revisionAndProjectData.commonProjectAndRevisionData.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (projectCase) {
                 switch (p.column.colId) {
                 case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
                     break
                 case "substructureState":
                     rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
+                        SharePointImport.substructureStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
                     break
                 case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
                     break
                 case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
                     break
                 default:
                     break
@@ -352,7 +344,7 @@ const PROSPCaseList = ({
         return dtos
     }
 
-    const save = useCallback(async (p: Components.Schemas.ProjectDataDto) => {
+    const save = useCallback(async (p: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto) => {
         const dtos = gridDataToDtos(p.commonProjectAndRevisionData)
         if (dtos.length > 0) {
             setIsApplying(true)
@@ -385,7 +377,7 @@ const PROSPCaseList = ({
         if (gridRef.current.redrawRows) {
             gridRef.current.redrawRows()
         }
-    }, [apiData, driveItems])
+    }, [revisionAndProjectData, driveItems])
 
     return (
         <Grid container spacing={1}>
@@ -415,9 +407,9 @@ const PROSPCaseList = ({
                 </div>
             </Grid>
             <Grid item>
-                {!isApplying && apiData ? (
+                {!isApplying && revisionAndProjectData ? (
                     <Button
-                        onClick={() => save(apiData)}
+                        onClick={() => save(revisionAndProjectData)}
                         color="secondary"
                         disabled={isEditDisabled || !editMode}
                     >

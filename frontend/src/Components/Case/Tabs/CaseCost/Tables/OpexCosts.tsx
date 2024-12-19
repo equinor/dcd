@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { projectQueryFn } from "@/Services/QueryFunctions"
 import CaseTabTable from "../../../Components/CaseTabTable"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -17,15 +15,9 @@ interface OpexCostsProps {
 const OpexCosts: React.FC<OpexCostsProps> = ({
     tableYears, opexGridRef, alignedGridsRef, apiData, addEdit,
 }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const revisionAndProjectData = useDataFetch()
     const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
     useEffect(() => {
         const historicCostCostProfileData = apiData.historicCostCostProfile
         const wellInterventionCostProfileData = apiData.wellInterventionCostProfile
@@ -39,7 +31,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Historic cost",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
                 resourceName: "historicCostCostProfile",
                 resourceId: caseData.caseId,
@@ -50,7 +42,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Well intervention",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
                 resourceName: "wellInterventionCostProfileOverride",
                 resourceId: caseData.caseId,
@@ -62,7 +54,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Offshore facilities operations",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
                 resourceName: "offshoreFacilitiesOperationsCostProfileOverride",
                 resourceId: caseData.caseId,
@@ -74,7 +66,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Onshore related OPEX (input req.)",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOPEXCostProfileData,
                 resourceName: "onshoreRelatedOPEXCostProfile",
                 resourceId: caseData.caseId,
@@ -85,7 +77,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Additional OPEX (input req.)",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: additionalOPEXCostProfileData,
                 resourceName: "additionalOPEXCostProfile",
                 resourceId: caseData.caseId,
@@ -97,7 +89,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         ]
 
         setOpexTimeSeriesData(newOpexTimeSeriesData)
-    }, [apiData, projectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears])
 
     return (
         <CaseTabTable

@@ -4,14 +4,13 @@ import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
-import { useQuery } from "@tanstack/react-query"
 
-import { useAppContext } from "@/Context/AppContext"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { productionStrategyOverviewToString, casePath, truncateText } from "@/Utils/common"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
+import { useAppContext } from "@/Context/AppContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import { TimelineElement } from "../Sidebar"
-import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -22,15 +21,9 @@ const SideBarRefCaseWrapper = styled.div`
 const ArchivedCasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
+    const revisionAndProjectData = useDataFetch()
 
-    const externalId = currentContext?.externalId
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
-    if (!projectData || !currentContext) { return null }
+    if (!revisionAndProjectData || !currentContext) { return null }
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -42,8 +35,8 @@ const ArchivedCasesList: React.FC = () => {
     }
 
     const archivedCases = useMemo(
-        () => projectData.commonProjectAndRevisionData.cases.filter((c) => c.archived),
-        [projectData.commonProjectAndRevisionData.cases],
+        () => revisionAndProjectData.commonProjectAndRevisionData.cases.filter((c) => c.archived),
+        [revisionAndProjectData.commonProjectAndRevisionData.cases],
     )
 
     return (
@@ -64,14 +57,14 @@ const ArchivedCasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.caseId)}>
-                            {projectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
+                            {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {projectData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.caseId && (
+                                        {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.caseId && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

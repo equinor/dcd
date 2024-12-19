@@ -9,22 +9,19 @@ import {
 } from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import Grid from "@mui/material/Grid"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 
 import { GetProspService } from "@/Services/ProspService"
 import { GetProjectService } from "@/Services/ProjectService"
 import { DriveItem } from "@/Models/sharepoint/DriveItem"
-import { projectQueryFn } from "@/Services/QueryFunctions"
-import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import useEditProject from "@/Hooks/useEditProject"
 import { useAppContext } from "@/Context/AppContext"
 import PROSPCaseList from "./PROSPCaseList"
 
 const PROSPTab = () => {
-    const { currentContext } = useModuleCurrentContext()
+    const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
-    const externalId = currentContext?.externalId
     const { isEditDisabled } = useEditDisabled()
     const { editMode } = useAppContext()
 
@@ -34,12 +31,6 @@ const PROSPTab = () => {
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
 
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setIsRefreshing(true)
         e.preventDefault()
@@ -48,11 +39,11 @@ const PROSPTab = () => {
             setDriveItems(result)
             setErrorMessage("")
 
-            if (apiData && sharepointUrl !== apiData.commonProjectAndRevisionData.sharepointSiteUrl) {
-                const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
+            if (revisionAndProjectData && sharepointUrl !== revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl) {
+                const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
                 newProject.sharepointSiteUrl = sharepointUrl ?? null
-                const projectResult = await (await GetProjectService()).updateProject(apiData.projectId, newProject)
-                addProjectEdit(apiData.projectId, projectResult.commonProjectAndRevisionData)
+                const projectResult = await (await GetProjectService()).updateProject(revisionAndProjectData.projectId, newProject)
+                addProjectEdit(revisionAndProjectData.projectId, projectResult.commonProjectAndRevisionData)
                 setSharepointUrl(projectResult.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
             }
         } catch (error) {
@@ -67,13 +58,13 @@ const PROSPTab = () => {
     }
 
     useEffect(() => {
-        if (apiData && apiData.commonProjectAndRevisionData.sharepointSiteUrl) {
+        if (revisionAndProjectData && revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl) {
             (async () => {
-                setSharepointUrl(apiData.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
-                if (apiData.commonProjectAndRevisionData.sharepointSiteUrl && apiData.commonProjectAndRevisionData.sharepointSiteUrl !== "") {
+                setSharepointUrl(revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
+                if (revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl && revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl !== "") {
                     try {
                         const result = await (await GetProspService())
-                            .getSharePointFileNamesAndId({ url: apiData.commonProjectAndRevisionData.sharepointSiteUrl })
+                            .getSharePointFileNamesAndId({ url: revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl })
                         setDriveItems(result)
                         setErrorMessage("")
                     } catch (error) {
@@ -83,7 +74,7 @@ const PROSPTab = () => {
                 }
             })()
         }
-    }, [apiData?.commonProjectAndRevisionData.sharepointSiteUrl])
+    }, [revisionAndProjectData?.commonProjectAndRevisionData.sharepointSiteUrl])
 
     return (
         <Grid container rowSpacing={3} columnSpacing={2}>

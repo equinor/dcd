@@ -8,48 +8,35 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch, Tooltip } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
-import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useParams } from "react-router"
 
+import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import { cellStyleRightAlign } from "@/Utils/common"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
-    const { projectId, isRevision } = useProjectContext()
-    const { revisionId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const { isRevision } = useProjectContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
-    const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!projectId && !!revisionId && isRevision,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [check, setCheck] = useState(false)
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(
-        apiData?.commonProjectAndRevisionData?.cO2RemovedFromGas ?? 0,
+        revisionAndProjectData?.commonProjectAndRevisionData?.cO2RemovedFromGas ?? 0,
     )
-    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(apiData?.commonProjectAndRevisionData.cO2EmissionFromFuelGas ?? 0)
-    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(apiData?.commonProjectAndRevisionData.flaredGasPerProducedVolume ?? 0)
-    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(apiData?.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas ?? 0)
-    const [cO2Vented, setCO2Vented] = useState<number>(apiData?.commonProjectAndRevisionData.cO2Vented ?? 0)
-    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(apiData?.commonProjectAndRevisionData.averageDevelopmentDrillingDays ?? 0)
-    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(apiData?.commonProjectAndRevisionData.dailyEmissionFromDrillingRig ?? 0)
+    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.cO2EmissionFromFuelGas ?? 0)
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.flaredGasPerProducedVolume ?? 0)
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas ?? 0)
+    const [cO2Vented, setCO2Vented] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.cO2Vented ?? 0)
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(
+        revisionAndProjectData?.commonProjectAndRevisionData.averageDevelopmentDrillingDays ?? 0,
+    )
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(
+        revisionAndProjectData?.commonProjectAndRevisionData.dailyEmissionFromDrillingRig ?? 0,
+    )
     const [rowData, setRowData] = useState([{}])
     const { editMode } = useAppContext()
     const { addProjectEdit } = useEditProject()
@@ -90,57 +77,43 @@ const CO2ListTechnicalInput = () => {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
             set: setCO2RemovedFromGas,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.cO2RemovedFromGas ?? 0) * 100) / 100
-                : Math.round(cO2RemovedFromGas * 100) / 100,
+            value: Math.round(cO2RemovedFromGas * 100) / 100,
         },
         {
             profile: "CO2-emissions from fuel gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFuelGas,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData.commonProjectAndRevisionData.cO2EmissionFromFuelGas ?? 0) * 100) / 100
-                : Math.round(cO2EmissionsFromFuelGas * 100) / 100,
+            value: Math.round(cO2EmissionsFromFuelGas * 100) / 100,
         },
         {
             profile: "Flared gas per produced volume",
             unit: "Sm³/Sm³",
             set: setFlaredGasPerProducedVolume,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.flaredGasPerProducedVolume ?? 0) * 100) / 100
-                : Math.round(flaredGasPerProducedVolume * 100) / 100,
+            value: Math.round(flaredGasPerProducedVolume * 100) / 100,
         },
         {
             profile: "CO2-emissions from flared gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFlaredGas,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas ?? 0) * 100) / 100
-                : Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
+            value: Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
         },
         {
             profile: "CO2 vented",
             unit: "kg CO2/Sm³",
             set: setCO2Vented,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.cO2Vented ?? 0) * 100) / 100
-                : Math.round((cO2Vented ?? 0) * 100) / 100,
+            value: Math.round((cO2Vented ?? 0) * 100) / 100,
         },
         {
             profile: "Average development well drilling days",
             unit: "days/wells",
             set: setAverageDevelopmentWellDrillingDays,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.averageDevelopmentDrillingDays ?? 0) * 100) / 100
-                : Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
+            value: Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
         },
         {
             profile: "Daily emissions from drilling rig",
             unit: "tonnes CO2/day",
             set: setDailyEmissionsFromDrillingRig,
-            value: isRevision && apiRevisionData
-                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.dailyEmissionFromDrillingRig ?? 0) * 100) / 100
-                : Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
+            value: Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
         },
     ]
 
@@ -203,8 +176,8 @@ const CO2ListTechnicalInput = () => {
     useEffect(() => {
         setRowData(co2Data)
 
-        if (apiData && editMode) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
+        if (revisionAndProjectData && editMode) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
             newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume
@@ -212,7 +185,7 @@ const CO2ListTechnicalInput = () => {
             newProject.cO2Vented = cO2Vented
             newProject.averageDevelopmentDrillingDays = averageDevelopmentWellDrillingDays
             newProject.dailyEmissionFromDrillingRig = dailyEmissionsFromDrillingRig
-            addProjectEdit(apiData.projectId, newProject)
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }, [
         cO2RemovedFromGas,
@@ -226,7 +199,7 @@ const CO2ListTechnicalInput = () => {
         isRevision,
     ])
 
-    if (!apiData) { return null }
+    if (!revisionAndProjectData) { return null }
 
     return (
         <Grid container spacing={1} justifyContent="flex-end">

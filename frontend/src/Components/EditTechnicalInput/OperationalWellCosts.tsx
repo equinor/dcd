@@ -6,10 +6,9 @@ import {
     useState,
 } from "react"
 import styled from "styled-components"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
+
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import OperationalWellCost from "./OperationalWellCost"
-import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const {
     Head, Body, Row, Cell,
@@ -49,24 +48,19 @@ const OperationalWellCosts = ({
     setDevelopmentOperationalWellCosts,
     setExplorationOperationalWellCosts,
 }: Props) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const revisionAndProjectData = useDataFetch()
 
     const [developmentRigUpgrading, setDevelopmentRigUpgrading] = useState<number | undefined>(developmentOperationalWellCosts?.rigUpgrading)
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
-    const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)
+    const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(
+        developmentOperationalWellCosts?.annualWellInterventionCostPerWell,
+    )
     const [developmentPluggingAndAbandonment, setDevelopmentPluggingAndAbandonment] = useState<number | undefined>(developmentOperationalWellCosts?.pluggingAndAbandonment)
     const [explorationRigUpgrading, setExplorationRigUpgrading] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigUpgrading)
     const [explorationRigMobDemob, setExplorationRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigMobDemob)
     const [explorationProjectDrillingCosts, setExplorationProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.explorationProjectDrillingCosts)
     const [appraisalRigMobDemob, setAppraisalRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalRigMobDemob)
     const [appraisalProjectDrillingCosts, setAppraisalProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalProjectDrillingCosts)
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
 
     useEffect(() => {
         if (developmentRigUpgrading === undefined
@@ -117,7 +111,7 @@ const OperationalWellCosts = ({
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${apiData?.commonProjectAndRevisionData.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

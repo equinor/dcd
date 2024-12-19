@@ -1,11 +1,10 @@
 import Grid from "@mui/material/Grid"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
+
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
-import DateRangePicker from "../../../Input/TableDateRangePicker"
-import { projectQueryFn } from "../../../../Services/QueryFunctions"
 
 interface HeaderProps {
     startYear: number;
@@ -28,29 +27,22 @@ const Header: React.FC<HeaderProps> = ({
     surfData,
     addEdit,
 }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
 
     const datePickerValue = (() => {
-        if (apiData?.commonProjectAndRevisionData.currency === 1) {
+        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === 1) {
             return "MNOK"
-        } if (apiData?.commonProjectAndRevisionData.currency === 2) {
+        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === 2) {
             return "MUSD"
         }
         return ""
     })()
 
-    if (!apiData) {
+    if (!revisionAndProjectData) {
         return null
     }
 
@@ -71,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({
             <Grid item xs={12} md={4}>
                 <Maturity
                     surfData={surfData}
-                    projectId={apiData.projectId}
+                    projectId={revisionAndProjectData.projectId}
                     addEdit={addEdit}
                 />
             </Grid>

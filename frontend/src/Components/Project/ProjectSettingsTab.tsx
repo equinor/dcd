@@ -1,118 +1,84 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
-import { useParams } from "react-router"
 import { Input, NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import InputSwitcher from "../Input/Components/InputSwitcher"
+import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const ProjectSettingsTab = () => {
-    const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
-    const { revisionId } = useParams()
-    const { isRevision, projectId } = useProjectContext()
-    const externalId = currentContext?.externalId
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
-    const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!projectId && !!revisionId && isRevision,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [dummyRole] = useState(0) // TODO: Get role from user
-    const [oilPriceUSD, setOilPriceUSD] = useState(apiData?.commonProjectAndRevisionData.oilPriceUSD || 0)
-    const [gasPriceNOK, setGasPriceNOK] = useState(apiData?.commonProjectAndRevisionData.gasPriceNOK || 0)
-    const [discountRate, setDiscountRate] = useState(apiData?.commonProjectAndRevisionData.discountRate || 0)
+    const [oilPriceUSD, setOilPriceUSD] = useState(revisionAndProjectData?.commonProjectAndRevisionData.oilPriceUSD || 0)
+    const [gasPriceNOK, setGasPriceNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.gasPriceNOK || 0)
+    const [discountRate, setDiscountRate] = useState(revisionAndProjectData?.commonProjectAndRevisionData.discountRate || 0)
 
     useEffect(() => {
-        if (apiData && !isRevision) {
-            setOilPriceUSD(apiData.commonProjectAndRevisionData.oilPriceUSD)
-            setGasPriceNOK(apiData.commonProjectAndRevisionData.gasPriceNOK)
-            setDiscountRate(apiData.commonProjectAndRevisionData.discountRate)
+        if (revisionAndProjectData) {
+            setOilPriceUSD(revisionAndProjectData.commonProjectAndRevisionData.oilPriceUSD)
+            setGasPriceNOK(revisionAndProjectData.commonProjectAndRevisionData.gasPriceNOK)
+            setDiscountRate(revisionAndProjectData.commonProjectAndRevisionData.discountRate)
         }
-    }, [apiData, isRevision])
-
-    useEffect(() => {
-        if (apiRevisionData && isRevision) {
-            setOilPriceUSD(apiRevisionData.commonProjectAndRevisionData.oilPriceUSD)
-            setGasPriceNOK(apiRevisionData.commonProjectAndRevisionData.gasPriceNOK)
-            setDiscountRate(apiRevisionData.commonProjectAndRevisionData.discountRate)
-        }
-    }, [isRevision, apiRevisionData, revisionId])
+    }, [revisionAndProjectData])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
+        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.physicalUnit = newPhysicalUnit
-            addProjectEdit(apiData.projectId, newProject)
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
+        if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.currency = newCurrency
-            addProjectEdit(apiData.projectId, newProject)
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
+        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.classification = newClassification
-            addProjectEdit(apiData.projectId, newProject)
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleOilPriceChange = () => {
         const newOilPrice = oilPriceUSD
-        if (!Number.isNaN(newOilPrice) && apiData) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData, oilPriceUSD: newOilPrice }
-            addProjectEdit(apiData.projectId, newProject)
+        if (!Number.isNaN(newOilPrice) && revisionAndProjectData) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, oilPriceUSD: newOilPrice }
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleGasPriceChange = () => {
         const newGasPrice = gasPriceNOK
-        if (!Number.isNaN(newGasPrice) && apiData) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData, gasPriceNOK: newGasPrice }
-            addProjectEdit(apiData.projectId, newProject)
+        if (!Number.isNaN(newGasPrice) && revisionAndProjectData) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, gasPriceNOK: newGasPrice }
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleDiscountRateChange = () => {
         const newDiscountRate = discountRate
-        if (!Number.isNaN(newDiscountRate) && apiData) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData, discountRate: newDiscountRate }
-            addProjectEdit(apiData.projectId, newProject)
+        if (!Number.isNaN(newDiscountRate) && revisionAndProjectData) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, discountRate: newDiscountRate }
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
-    const getPhysicalUnit = () => {
-        const data = isRevision ? apiRevisionData : apiData
-        return data?.commonProjectAndRevisionData.physicalUnit === 0 ? "SI" : "Oil field"
-    }
+    const getPhysicalUnit = () => (revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "SI" : "Oil field")
+    const getCurrency = () => (revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD")
 
-    const getCurrency = () => {
-        const data = isRevision ? apiRevisionData : apiData
-        return data?.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD"
-    }
-
-    if (!apiData) {
+    if (!revisionAndProjectData) {
         return <div>Loading project data...</div>
     }
 
@@ -127,7 +93,7 @@ const ProjectSettingsTab = () => {
                         id="physicalUnit"
                         label=""
                         onChange={handlePhysicalUnitChange}
-                        value={apiData.commonProjectAndRevisionData.physicalUnit}
+                        value={revisionAndProjectData.commonProjectAndRevisionData.physicalUnit}
                     >
                         <option key={0} value={0}>SI</option>
                         <option key={1} value={1}>Oil field</option>
@@ -143,7 +109,7 @@ const ProjectSettingsTab = () => {
                         id="currency"
                         label=""
                         onChange={handleCurrencyChange}
-                        value={apiData.commonProjectAndRevisionData.currency}
+                        value={revisionAndProjectData.commonProjectAndRevisionData.currency}
                     >
                         <option key={1} value={1}>NOK</option>
                         <option key={2} value={2}>USD</option>
@@ -153,17 +119,14 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={isRevision
-                        && !!apiRevisionData?.commonProjectAndRevisionData.classification
-                            ? PROJECT_CLASSIFICATION[apiRevisionData?.commonProjectAndRevisionData.classification].label
-                            : PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].label}
+                        value={PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].label}
                         label="Classification"
                     >
                         <NativeSelect
                             id="classification"
                             label=""
                             onChange={(e) => handleClassificationChange(e)}
-                            value={apiData ? apiData.commonProjectAndRevisionData.classification : undefined}
+                            value={revisionAndProjectData ? revisionAndProjectData.commonProjectAndRevisionData.classification : undefined}
                         >
                             {Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
                                 <option key={key} value={key}>{value.label}</option>

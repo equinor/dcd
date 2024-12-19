@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
+
 import {
     dateFromString,
     defaultDate,
@@ -9,13 +10,13 @@ import {
     isDefaultDateString,
     toMonthDate,
     formatDate,
-} from "../../../Utils/common"
-import { useAppContext } from "../../../Context/AppContext"
-import SwitchableDateInput from "../../Input/SwitchableDateInput"
-import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
-import CaseScheduleTabSkeleton from "../../LoadingSkeletons/CaseScheduleTabSkeleton"
-import { caseQueryFn } from "../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../Context/ProjectContext"
+} from "@/Utils/common"
+import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
+import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
+import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useAppContext } from "@/Context/AppContext"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppContext()

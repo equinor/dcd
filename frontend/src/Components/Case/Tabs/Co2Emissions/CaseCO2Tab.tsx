@@ -8,19 +8,20 @@ import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useCaseContext } from "@/Context/CaseContext"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
+import { SetTableYearsFromProfiles } from "@/Components/Case/Components/CaseTabTableHelper"
+import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import CaseTabTable from "@/Components/Case/Components/CaseTabTable"
+import { AgChartsPie } from "@/Components/AgGrid/AgChartsPie"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
-import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useCaseContext } from "@/Context/CaseContext"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
-import CaseTabTable from "../../Components/CaseTabTable"
-import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
-import DateRangePicker from "../../../Input/TableDateRangePicker"
-import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
-import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
-import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -32,17 +33,12 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { projectId, isRevision } = useProjectContext()
     const { revisionId } = useParams()
+    const revisionAndProjectData = useDataFetch()
 
     const { data: apiData } = useQuery({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
-    })
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
     })
 
     const caseData = apiData?.case
@@ -119,10 +115,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseData && projectData && activeTabCase === 6 && caseData.caseId) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.projectId, caseData.caseId)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.projectId, caseData.caseId)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.projectId, caseData.caseId)
+                if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(revisionAndProjectData.projectId, caseData.caseId)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(revisionAndProjectData.projectId, caseData.caseId)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
@@ -149,7 +145,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Annual CO2 emissions",
-                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
                 profile: co2EmissionsData,
                 overridable: true,
                 editable: true,
@@ -161,7 +157,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             },
             {
                 profileName: "Year-by-year CO2 intensity",
-                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2Intensity,
                 total: co2IntensityTotal?.toString(),
                 overridable: false,

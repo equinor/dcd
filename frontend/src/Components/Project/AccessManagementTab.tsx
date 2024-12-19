@@ -6,8 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { peopleQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
-import { useAppContext } from "@/Context/AppContext"
+import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -16,19 +15,14 @@ import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const AccessManagementTab = () => {
     const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
-    const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-
-    const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
@@ -47,9 +41,20 @@ const AccessManagementTab = () => {
         })
     }
 
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
+        : null
+
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
-        if ((!personToAdd || !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
+
+        if (
+            !personToAdd
+            || !projectId
+            || projectData?.projectMembers.some((p) => p.userId === personToAdd)
+        ) {
+            return
+        }
         const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { userId: personToAdd || "", role })
         if (addPerson) {
             queryClient.invalidateQueries(
@@ -73,7 +78,6 @@ const AccessManagementTab = () => {
     useEffect(() => {
         (async () => {
             if (!projectId || !currentContext) { return }
-            
             const projectMembersService = await GetOrgChartMembersService()
             const syncPmt = await projectMembersService.getOrgChartPeople(projectId, currentContext?.id)
             if (syncPmt) {
@@ -84,7 +88,7 @@ const AccessManagementTab = () => {
         })()
     }, [])
 
-    if (!projectApiData) {
+    if (!revisionAndProjectData) {
         return <AccessManagementSkeleton />
     }
 

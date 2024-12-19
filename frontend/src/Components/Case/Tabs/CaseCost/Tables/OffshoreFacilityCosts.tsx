@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import CaseTabTable from "@/Components/Case/Components/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import CaseTabTable from "../../../Components/CaseTabTable"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
@@ -21,14 +19,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
-
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
@@ -57,7 +48,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         const newCapexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Subsea production system",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: surfCostData,
                 resourceName: "surfCostOverride",
                 resourceId: surf.id,
@@ -69,7 +60,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Topside",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: topsideCostData,
                 resourceName: "topsideCostOverride",
                 resourceId: topside.id,
@@ -81,7 +72,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Substructure",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: substructureCostData,
                 resourceName: "substructureCostOverride",
                 resourceId: substructure.id,
@@ -93,7 +84,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Transport system",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
                 resourceName: "transportCostOverride",
                 resourceId: transport.id,
@@ -105,7 +96,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Onshore (Power from shore)",
-                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: onshorePowerSupplyCostData,
                 resourceName: "onshorePowerSupplyCostOverride",
                 resourceId: onshorePowerSupply.id,
@@ -118,7 +109,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         ]
 
         setCapexTimeSeriesData(newCapexTimeSeriesData)
-    }, [apiData, projectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears])
 
     return (
         <CaseTabTable

@@ -14,20 +14,18 @@ import {
 } from "react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
 import Modal from "./Modal"
+
 import { defaultDate, isDefaultDate, toMonthDate } from "@/Utils/common"
 import { GetCaseService } from "@/Services/CaseService"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 // import useEditProject from "@annehfroyen/Hooks/useEditProject"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const revisionAndProjectData = useDataFetch()
     // const { addProjectEdit } = useEditProject()
 
     const {
@@ -36,12 +34,6 @@ const CreateCaseModal = () => {
         caseModalEditMode,
         modalCaseId,
     } = useModalContext()
-
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
 
     const [caseName, setCaseName] = useState<string>("")
     const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
@@ -63,8 +55,8 @@ const CreateCaseModal = () => {
     }
 
     useEffect(() => {
-        if (apiData) {
-            const selectedCase = apiData.commonProjectAndRevisionData.cases?.find((c) => c.caseId === modalCaseId)
+        if (revisionAndProjectData) {
+            const selectedCase = revisionAndProjectData.commonProjectAndRevisionData.cases?.find((c) => c.caseId === modalCaseId)
 
             if (selectedCase) {
                 setCaseItem(selectedCase)
@@ -79,7 +71,7 @@ const CreateCaseModal = () => {
                 resetForm()
             }
         }
-    }, [apiData, modalCaseId])
+    }, [revisionAndProjectData, modalCaseId])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseName(e.currentTarget.value.trimStart())
@@ -114,7 +106,7 @@ const CreateCaseModal = () => {
 
         try {
             setIsLoading(true)
-            if (!apiData) {
+            if (!revisionAndProjectData) {
                 throw new Error("No project found")
             }
 
@@ -129,14 +121,14 @@ const CreateCaseModal = () => {
                 newCase.productionStrategyOverview = productionStrategy ?? 0
 
                 await (await GetCaseService()).updateCase(
-                    apiData.projectId,
+                    revisionAndProjectData.projectId,
                     projectCase.caseId,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
                 await (await GetCaseService()).create(
-                    apiData.projectId,
+                    revisionAndProjectData.projectId,
                     {
                         name: caseName,
                         description,
@@ -149,7 +141,7 @@ const CreateCaseModal = () => {
                 )
                 setIsLoading(false)
             }
-            // this is probably unnecessary ad the project service is already called to update the project. uncomment if needed
+            // this is probably unnecessary as the project service is already called to update the project. uncomment if needed
             // addProjectEdit(apiData.id, projectResult)
             setCaseModalIsOpen(false)
         } catch (error) {

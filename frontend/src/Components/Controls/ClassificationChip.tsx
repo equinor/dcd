@@ -1,13 +1,9 @@
 import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
-import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
-import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -43,32 +39,12 @@ const SmallTooltip = styled(Tooltip)`
 `
 
 const Classification = () => {
-    const { revisionId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const { isRevision, projectId } = useProjectContext()
-    const externalId = currentContext?.externalId
-
-    const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
-    const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!projectId && !!revisionId && isRevision,
-    })
+    const revisionAndProjectData = useDataFetch()
 
     const getClassification = useMemo(() => {
-        if (isRevision && apiRevisionData) {
-            return PROJECT_CLASSIFICATION[apiRevisionData.commonProjectAndRevisionData.classification]
-        }
-        if (projectApiData) {
-            return PROJECT_CLASSIFICATION[projectApiData?.commonProjectAndRevisionData.classification]
-        }
-        return false
-    }, [isRevision, apiRevisionData, projectApiData])
+        const classification = String(revisionAndProjectData?.commonProjectAndRevisionData.classification)
+        return classification ? PROJECT_CLASSIFICATION[classification as unknown as number] : false
+    }, [revisionAndProjectData])
 
     return (
         getClassification ? (
