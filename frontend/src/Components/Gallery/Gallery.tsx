@@ -62,16 +62,18 @@ const Gallery = () => {
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
     const { caseId } = useParams()
+    const { revisionId } = useParams()
     const { projectId } = useProjectContext()
 
     useEffect(() => {
         const loadImages = async () => {
+            var projectIdOrRevisionId = revisionId || projectId
             if (projectId) {
                 try {
                     const imageService = await getImageService()
                     const imageDtos = caseId ?
-                     await imageService.getCaseImages(projectId, caseId) :
-                     await imageService.getProjectImages(projectId)
+                     await imageService.getCaseImages(projectIdOrRevisionId, caseId) :
+                     await imageService.getProjectImages(projectIdOrRevisionId)
 
                     setGallery(imageDtos)
                 } catch (error) {
