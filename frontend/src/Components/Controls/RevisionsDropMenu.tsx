@@ -37,6 +37,11 @@ const MenuItemContent = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: 5px 0;
+
+    && p {
+        width: 100%;
+        white-space: wrap;
+    }
 `
 
 const MenuControls = styled.div`
