@@ -2,14 +2,19 @@ using api.Context;
 using api.Features.BackgroundServices.ProjectMaster.Dtos;
 using api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
 using api.Features.FusionIntegration.ProjectMaster;
+using api.Features.Images.Copy;
 using api.Features.Revisions.Create;
 using api.Models;
+
+using Azure.Storage.Blobs;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.BackgroundServices.ProjectMaster.Services;
 
-public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContext> contextFactory, IFusionService fusionService)
+public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContext> contextFactory,
+    IFusionService fusionService,
+    BlobServiceClient blobServiceClient)
 {
     public async Task UpdateProjectFromProjectMaster()
     {
@@ -73,7 +78,9 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
             return;
         }
 
-        var createRevisionService = new CreateRevisionService(new CreateRevisionRepository(context), context);
+        var createRevisionService = new CreateRevisionService(new CreateRevisionRepository(context),
+            context,
+            new CopyImageService(blobServiceClient));
 
         await createRevisionService.CreateRevision(project.Id, new CreateRevisionDto
         {

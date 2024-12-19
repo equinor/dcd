@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.Images.Dto;
+namespace api.Features.Images.Get;
 
 public class ImageDto
 {

@@ -9,15 +9,16 @@ public static class ResetIdPropertiesInProjectGraphService
 {
     private const string ProjectNamespacePrefix = "api.";
     private static readonly string[] ProjectEntityNames = ["Project", "ProjectProxy"];
+    private static readonly string[] CaseEntityNames = ["Case", "CaseProxy"];
 
-    public static void ResetPrimaryKeysAndForeignKeysInGraph(Project project)
+    public static void ResetPrimaryKeysAndForeignKeysInGraph(Project project, Dictionary<Guid, Guid> caseIdMapping)
     {
         project.Id = Guid.NewGuid();
 
-        SetIdsToEmptyGuids(project, project.Id, []);
+        SetIdsToEmptyGuids(project, project.Id, [], caseIdMapping);
     }
 
-    private static void SetIdsToEmptyGuids(object? obj, Guid projectId, HashSet<object> visited)
+    private static void SetIdsToEmptyGuids(object? obj, Guid projectId, HashSet<object> visited, Dictionary<Guid, Guid> caseIdMapping)
     {
         if (obj == null || !visited.Add(obj))
         {
@@ -41,6 +42,13 @@ public static class ResetIdPropertiesInProjectGraphService
 
         foreach (var guidProperty in guidProperties)
         {
+            if (CaseEntityNames.Contains(obj.GetType().Name) && guidProperty.Name == "Id")
+            {
+                var caseId = (Guid)guidProperty.GetValue(obj)!;
+                guidProperty.SetValue(obj, caseIdMapping[caseId]);
+                continue;
+            }
+
             if (guidProperty.Name.EndsWith("Id") || guidProperty.Name.EndsWith("Link"))
             {
                 guidProperty.SetValue(obj, Guid.Empty);
@@ -55,12 +63,18 @@ public static class ResetIdPropertiesInProjectGraphService
             {
                 guidProperty.SetValue(obj, projectId);
             }
+
+            if (guidProperty.Name == "CaseId")
+            {
+                var caseId = (Guid)guidProperty.GetValue(obj)!;
+                guidProperty.SetValue(obj, caseIdMapping[caseId]);
+            }
         }
 
         foreach (var instanceProperty in instanceProperties)
         {
             var childObject = instanceProperty.GetValue(obj);
-            SetIdsToEmptyGuids(childObject, projectId, visited);
+            SetIdsToEmptyGuids(childObject, projectId, visited, caseIdMapping);
         }
 
         foreach (var listProperty in listProperties)
@@ -71,7 +85,7 @@ public static class ResetIdPropertiesInProjectGraphService
             {
                 foreach (var item in enumerable)
                 {
-                    SetIdsToEmptyGuids(item, projectId, visited);
+                    SetIdsToEmptyGuids(item, projectId, visited, caseIdMapping);
                 }
             }
         }

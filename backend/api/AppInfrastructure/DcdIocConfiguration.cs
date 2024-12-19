@@ -42,7 +42,10 @@ using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
 using api.Features.Cases.Update;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Images.Service;
+using api.Features.Images.Copy;
+using api.Features.Images.Delete;
+using api.Features.Images.Get;
+using api.Features.Images.Upload;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectMembers.Create;
@@ -111,6 +114,12 @@ public static class DcdIocConfiguration
         services.AddScoped<CaseWithAssetsService>();
         services.AddScoped<CaseWithAssetsRepository>();
 
+        /* Images */
+        services.AddScoped<GetImageService>();
+        services.AddScoped<DeleteImageService>();
+        services.AddScoped<UploadImageService>();
+        services.AddScoped<CopyImageService>();
+
         /* Mapping */
         services.AddScoped<IMapperService, MapperService>();
         services.AddScoped<IConversionMapperService, ConversionMapperService>();
@@ -154,7 +163,6 @@ public static class DcdIocConfiguration
         /* Integrations / external systems */
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartProjectMemberService>();
-        services.AddScoped<IBlobStorageService, BlobStorageService>();
 
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
