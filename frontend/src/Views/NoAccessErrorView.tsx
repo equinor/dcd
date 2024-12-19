@@ -25,8 +25,8 @@ interface Props {
 const ForbiddenAccess: React.FC<Props> = ({ projectClassification }) => {
     const restrictionExplanations = [
         "This project is classified as 'internal', and you can access it two ways: Either by joining an AccessIT group or by joining the project as a project member.",
-        "This project is classified as 'restricted' or 'confidential'. In order to access projects with these classifications, you need to be a project member."
-        + "You can request to join this project by contacting the project's valuation lead / concept architect.",
+        "This project is classified as 'restricted' or 'confidential'. In order to access projects with these classifications, you need to be a project member. " +
+        "You can request to join this project by contacting the project's valuation lead / concept architect.",
     ]
 
     console.log("project classification: ", projectClassification)
