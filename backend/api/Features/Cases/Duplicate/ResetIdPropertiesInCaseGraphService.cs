@@ -10,9 +10,9 @@ public static class ResetIdPropertiesInCaseGraphService
     private const string ProjectNamespacePrefix = "api.";
     private static readonly string[] ProjectEntityNames = ["Case", "CaseProxy"];
 
-    public static void ResetPrimaryKeysAndForeignKeysInGraph(Case caseItem)
+    public static void ResetPrimaryKeysAndForeignKeysInGraph(Case caseItem, Guid duplicateCaseId)
     {
-        caseItem.Id = Guid.NewGuid();
+        caseItem.Id = duplicateCaseId;
 
         SetIdsToEmptyGuids(caseItem, caseItem.Id, []);
     }
