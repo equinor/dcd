@@ -103,7 +103,7 @@ public class ProspSharepointImportService(
             // Basic validation of URL format
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? validatedUri))
             {
-                throw new UriFormatException($"Invalid URL format: {url}");
+                return [];
             }
 
             var hostName = validatedUri.Host;
