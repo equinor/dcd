@@ -22,8 +22,8 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 
         revision.IsRevision = true;
         revision.OriginalProjectId = projectPk;
-        revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase ?? revision.InternalProjectPhase;
-        revision.Classification = createRevisionDto.Classification ?? revision.Classification;
+        revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        revision.Classification = createRevisionDto.Classification;
 
         ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(revision, caseIdMapping);
 
@@ -34,14 +34,14 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
             Arena = createRevisionDto.Arena,
             RevisionDate = DateTimeOffset.UtcNow,
             Revision = revision,
-            Classification = createRevisionDto.Classification ?? revision.Classification
+            Classification = createRevisionDto.Classification
         };
 
         context.Projects.Add(revision);
 
         var existingProject = await context.Projects.SingleAsync(p => p.Id == projectPk);
-        existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase ?? existingProject.InternalProjectPhase;
-        existingProject.Classification = createRevisionDto.Classification ?? existingProject.Classification;
+        existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        existingProject.Classification = createRevisionDto.Classification;
 
         await CopyProjectImages(projectPk, revision.Id);
         await CopyCaseImages(projectPk, revision.Id, caseIdMapping);
