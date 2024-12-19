@@ -94,13 +94,13 @@ public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : Con
     }
 
     [HttpPost("{caseId}/total-feed-studies-override")]
-    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFEEDStudiesOverride(
+    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFeedStudiesOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromBody] CreateTotalFEEDStudiesOverrideDto dto
     )
     {
-        return await caseTimeSeriesService.CreateTotalFEEDStudiesOverride(projectId, caseId, dto);
+        return await caseTimeSeriesService.CreateTotalFeedStudiesOverride(projectId, caseId, dto);
     }
 
     [HttpPost("{caseId}/total-other-studies-cost-profile")]
@@ -160,7 +160,7 @@ public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : Con
         [FromBody] CreateAdditionalOPEXCostProfileDto dto
     )
     {
-        return await caseTimeSeriesService.CreateAdditionalOPEXCostProfile(projectId, caseId, dto);
+        return await caseTimeSeriesService.CreateAdditionalOpexCostProfile(projectId, caseId, dto);
     }
 
     [HttpPut("{caseId}/total-feasibility-and-concept-studies-override/{costProfileId}")]
@@ -182,7 +182,7 @@ public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : Con
         [FromBody] UpdateTotalFEEDStudiesOverrideDto dto
     )
     {
-        return await caseTimeSeriesService.UpdateTotalFEEDStudiesOverride(projectId, caseId, costProfileId, dto);
+        return await caseTimeSeriesService.UpdateTotalFeedStudiesOverride(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/total-other-studies-cost-profile/{costProfileId}")]
@@ -248,6 +248,6 @@ public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : Con
         [FromBody] UpdateAdditionalOPEXCostProfileDto dto
     )
     {
-        return await caseTimeSeriesService.UpdateAdditionalOPEXCostProfile(projectId, caseId, costProfileId, dto);
+        return await caseTimeSeriesService.UpdateAdditionalOpexCostProfile(projectId, caseId, costProfileId, dto);
     }
 }

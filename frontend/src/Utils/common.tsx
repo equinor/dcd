@@ -294,7 +294,7 @@ export const numberValueParser = (
     }
 
     if (valueWithOnlyNumbersCommasAndDots !== newValue) {
-        setSnackBarMessage("Only numbers, commas and dots are allowed. Invalid characters have been removed.")
+        setSnackBarMessage("Only numbers, commas and dates are allowed. Invalid characters have been removed.")
     }
 
     return allCommasTurnedToDots
@@ -409,3 +409,26 @@ export function truncateText(text: string, maxLength: number): string {
 export function isAxiosError(error: unknown): error is AxiosError {
     return (error as AxiosError).isAxiosError !== undefined
 }
+
+export const defaultAxesData = [
+    {
+        type: "category",
+        position: "bottom",
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
+    },
+    {
+        type: "number",
+        position: "left",
+    },
+]

@@ -9,7 +9,6 @@ import {
     useEffect,
     useMemo,
     useRef,
-    MouseEventHandler,
 } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -79,76 +78,84 @@ const CasesAgGridTable = ({
     const { isRevision, projectId } = useProjectContext()
     const { revisionId } = useParams()
     const gridRef = useRef<AgGridReact>(null)
-    const [rowData, setRowData] = useState<TableCase[]>()
-    const [archivedRowData, setArchivedRowData] = useState<TableCase[]>()
-    const [expandList, setExpandList] = useState<boolean>(false)
+    const [activeCases, setActiveCases] = useState<TableCase[]>()
+    const [archivedCases, setArchivedCases] = useState<TableCase[]>()
+    const [isArchivedExpanded, setIsArchivedExpanded] = useState<boolean>(false)
     const { currentContext } = useModuleCurrentContext()
     const { setShowRevisionReminder } = useAppContext()
     const navigate = useNavigate()
     const externalId = currentContext?.externalId
 
-    const defaultColDef = useMemo(() => ({
+    const defaultColumnDefinition = useMemo(() => ({
         sortable: true,
         filter: true,
         resizable: true,
         suppressHeaderMenuButton: true,
     }), [])
 
-    const { data: apiData } = useQuery({
+    const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
 
-    const { data: apiRevisionData } = useQuery({
+    const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!projectId && !!revisionId && !!externalId && isRevision,
     })
 
-    const selectCase = (p: any) => {
-        if (!currentContext || !p.node.data) { return null }
+    const navigateToCase = (caseData: any) => {
+        if (!currentContext || !caseData.node.data) {
+            return
+        }
 
-        navigate(caseRevisionPath(currentContext.id, p.node.data.id, isRevision, revisionId))
-        return null
+        const path = caseRevisionPath(currentContext.id, caseData.node.data.id, isRevision, revisionId)
+        navigate(path)
     }
 
-    const nameWithReferenceCase = (p: any) => (
-        <Tooltip title={p.value} placement="bottom-start">
+    const renderCaseName = (caseData: any) => (
+        <Tooltip title={caseData.value} placement="bottom-start">
             <Wrapper>
-                {p.node.data.referenceCaseId === p.node.data.id && (
+                {caseData.node.data.referenceCaseId === caseData.node.data.id && (
                     <ReferenceCaseIcon iconPlacement="casesTable" />
                 )}
-                <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
+                <Button
+                    as="span"
+                    variant="ghost"
+                    className="GhostButton"
+                    onClick={() => navigateToCase(caseData)}
+                >
+                    {caseData.value}
+                </Button>
             </Wrapper>
         </Tooltip>
     )
 
-    const onMoreClick = (data: TableCase, target: HTMLElement) => {
-        setSelectedCaseId(data.id)
+    const handleMenuClick = (caseData: TableCase, target: HTMLElement) => {
+        setSelectedCaseId(caseData.id)
         setMenuAnchorEl(target)
         setIsMenuOpen(!isMenuOpen)
     }
 
-    const menuButton = (p: any) => (
+    const renderMenuButton = (caseData: any) => (
         <Button
             variant="ghost"
-            onClick={(e) => onMoreClick(p.node.data, e.currentTarget)}
-
+            onClick={(e) => handleMenuClick(caseData.node.data, e.currentTarget)}
         >
             <Icon data={more_vertical} />
         </Button>
     )
 
-    const productionStrategyToString = (p: any) => {
-        const stringValue = productionStrategyOverviewToString(p.value)
-        return <div>{stringValue}</div>
+    const renderProductionStrategy = (caseData: any) => {
+        const strategyString = productionStrategyOverviewToString(caseData.value)
+        return <div>{strategyString}</div>
     }
 
-    const GetColumnDefs = () => [
+    const getColumnDefinitions = () => [
         {
             field: "name",
-            cellRenderer: nameWithReferenceCase,
+            cellRenderer: renderCaseName,
             minWidth: 150,
             maxWidth: 500,
             flex: 1,
@@ -157,7 +164,7 @@ const CasesAgGridTable = ({
             field: "productionStrategyOverview",
             headerName: "Production Strategy Overview",
             headerTooltip: "Production Strategy Overview",
-            cellRenderer: productionStrategyToString,
+            cellRenderer: renderProductionStrategy,
             width: 280,
         },
         {
@@ -185,70 +192,63 @@ const CasesAgGridTable = ({
         },
         {
             field: "Options",
-            cellRenderer: menuButton,
+            cellRenderer: renderMenuButton,
             width: 120,
         },
     ]
 
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
+    const [columnDefinitions, setColumnDefinitions] = useState<ColDef[]>(getColumnDefinitions())
 
     useEffect(() => {
-        setColumnDefs(GetColumnDefs())
-    }, [isRevision])
+        setColumnDefinitions(getColumnDefinitions())
+    }, [isRevision, revisionData, projectData])
 
-    const casesToRowData = (isArchived: boolean) => {
-        let data: Components.Schemas.RevisionDataDto | Components.Schemas.ProjectDataDto | null | undefined = apiData
-        if (isRevision && apiRevisionData) {
-            data = apiRevisionData
-        }
-        if (data && data.commonProjectAndRevisionData.cases) {
-            const cases = isArchived ? data.commonProjectAndRevisionData.cases.filter((c) => !c.archived) : data.commonProjectAndRevisionData.cases.filter((c) => c.archived)
-            const tableCases: TableCase[] = []
-            cases.forEach((c) => {
-                const tableCase: TableCase = {
-                    id: c.caseId!,
-                    name: c.name ?? "",
-                    description: c.description ?? "",
-                    productionStrategyOverview: c.productionStrategyOverview,
-                    producerCount: c.producerCount ?? 0,
-                    waterInjectorCount: c.waterInjectorCount ?? 0,
-                    gasInjectorCount: c.gasInjectorCount ?? 0,
-                    createdAt: c.createTime?.substring(0, 10),
-                    referenceCaseId: data.commonProjectAndRevisionData.referenceCaseId,
-                }
-                tableCases.push(tableCase)
-            })
-            if (isArchived) {
-                setRowData(tableCases)
-            } else {
-                setArchivedRowData(tableCases)
-            }
-        }
+    const mapCasesToTableData = (data: Components.Schemas.RevisionDataDto | Components.Schemas.ProjectDataDto, isArchived: boolean) => {
+        if (!data?.commonProjectAndRevisionData?.cases) { return [] }
+        return data.commonProjectAndRevisionData.cases
+            .filter((c) => c.archived === isArchived)
+            .map((c) => ({
+                id: c.caseId!,
+                name: c.name ?? "",
+                description: c.description ?? "",
+                productionStrategyOverview: c.productionStrategyOverview,
+                producerCount: c.producerCount ?? 0,
+                waterInjectorCount: c.waterInjectorCount ?? 0,
+                gasInjectorCount: c.gasInjectorCount ?? 0,
+                createdAt: c.createTime?.substring(0, 10),
+                referenceCaseId: data.commonProjectAndRevisionData.referenceCaseId,
+            }))
     }
 
     useEffect(() => {
-        casesToRowData(true)
-        casesToRowData(false)
-    }, [apiData, apiRevisionData])
+        const data = isRevision && revisionData ? revisionData : projectData
+        if (!data) { return }
 
-    if (!apiData) {
-        return <p>project not found</p>
+        const mappedActiveCases = mapCasesToTableData(data, false)
+        const mappedArchivedCases = mapCasesToTableData(data, true)
+
+        setActiveCases(mappedActiveCases)
+        setArchivedCases(mappedArchivedCases)
+    }, [isRevision, revisionData, projectData])
+
+    if (!projectData) {
+        return <p>Project not found</p>
     }
-    if (isRevision && !apiRevisionData) {
-        return <p>revision not found</p>
+    if (isRevision && !revisionData) {
+        return <p>Revision not found</p>
     }
 
-    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const handleSTEAExport = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        if (apiData) {
+        if (projectData) {
             try {
                 setShowRevisionReminder(true)
-                const unwrappedProjectId = unwrapProjectId(apiData.projectId)
+                const unwrappedProjectId = unwrapProjectId(projectData.projectId)
                 const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
             } catch (error) {
-                console.error("[ProjectView] error while submitting form data", error)
+                console.error("[ProjectView] Error while submitting form data", error)
             }
         }
     }
@@ -258,51 +258,43 @@ const CasesAgGridTable = ({
             <AgTableContainer>
                 <AgGridReact
                     ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
+                    rowData={activeCases}
+                    columnDefs={columnDefinitions}
+                    defaultColDef={defaultColumnDefinition}
                     animateRows
                     domLayout="autoHeight"
                 />
             </AgTableContainer>
             <DownloadButton>
-                <Button variant="outlined" onClick={submitToSTEA}>
+                <Button variant="outlined" onClick={handleSTEAExport}>
                     <Icon data={archive} size={18} />
                     Download input to STEA
                 </Button>
             </DownloadButton>
-            {archivedRowData && archivedRowData.length > 0 ? (
+            {archivedCases && archivedCases.length > 0 && (
                 <div>
                     <ArchivedTitle>
                         <Typography variant="h3">Archived Cases</Typography>
-                        {!expandList ? (
-                            <Tooltip title="Expand Archived Cases">
-                                <Button variant="ghost_icon" className="GhostButton">
-                                    <Icon data={arrow_drop_down} onClick={() => setExpandList(true)} />
-                                </Button>
-                            </Tooltip>
-                        ) : (
-                            <Tooltip title="Collapse Archived Cases">
-                                <Button variant="ghost_icon" className="GhostButton">
-                                    <Icon data={arrow_drop_up} onClick={() => setExpandList(false)} />
-                                </Button>
-                            </Tooltip>
-                        )}
+                        <Tooltip title={isArchivedExpanded ? "Collapse Archived Cases" : "Expand Archived Cases"}>
+                            <Button variant="ghost_icon" className="GhostButton" onClick={() => setIsArchivedExpanded(!isArchivedExpanded)}>
+                                <Icon data={isArchivedExpanded ? arrow_drop_up : arrow_drop_down} />
+                            </Button>
+                        </Tooltip>
                     </ArchivedTitle>
-                    {expandList && (
+                    {isArchivedExpanded && (
                         <AgTableContainer>
                             <AgGridReact
                                 ref={gridRef}
-                                rowData={archivedRowData}
-                                columnDefs={columnDefs}
-                                defaultColDef={defaultColDef}
+                                rowData={archivedCases}
+                                columnDefs={columnDefinitions}
+                                defaultColDef={defaultColumnDefinition}
                                 animateRows
                                 domLayout="autoHeight"
                             />
                         </AgTableContainer>
                     )}
                 </div>
-            ) : null}
+            )}
         </div>
     )
 }

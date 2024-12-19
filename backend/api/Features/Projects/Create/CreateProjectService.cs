@@ -28,6 +28,7 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
 
         var project = new Project
         {
+            Name = projectMaster.Name ?? projectMaster.Description ?? "",
             FusionProjectId = projectMaster.Identity,
             Description = projectMaster.Description ?? "",
             ProjectPhase = ProjectPhaseEnumConverter.ConvertPhase(projectMaster.Phase),
@@ -42,7 +43,7 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             CO2EmissionsFromFlaredGas = 3.74,
             CO2Vented = 1.96,
             DailyEmissionFromDrillingRig = 100,
-            AverageDevelopmentDrillingDays = 50
+            AverageDevelopmentDrillingDays = 50,
         };
 
         context.Projects.Add(project);

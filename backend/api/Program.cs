@@ -10,45 +10,41 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Logging;
 
-using Serilog;
-
 var cultureInfo = new CultureInfo("en-US");
 
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
-var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment")!;
+DcdEnvironments.CurrentEnvironment = builder.Configuration["AppConfiguration:Environment"] ?? "CI";
+Console.WriteLine($"Loading config for: {DcdEnvironments.CurrentEnvironment}");
 
-Console.WriteLine($"Loading config for: {environment}");
+builder.AddDcdAzureAppConfiguration();
+builder.ConfigureDcdDatabase();
+builder.AddDcdFusionConfiguration();
+builder.AddDcdAppInsights();
+builder.ConfigureDcdLogging();
+builder.AddDcdBlobStorage();
 
-DcdEnvironments.CurrentEnvironment = environment;
-var config = builder.CreateDcdConfigurationRoot(environment);
-builder.Configuration.AddConfiguration(config);
+builder.Services.AddDcdCorsPolicy();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new DcdApiEndpointTransformer())));
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.ConfigureDcdSwagger();
+
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
 });
+
 builder.AddDcdAuthentication();
-builder.ConfigureDcdDatabase(environment, config);
-builder.Services.AddDcdCorsPolicy();
-builder.Services.AddDcdFusionConfiguration(environment, config);
-DcdLogConfiguration.ConfigureDcdLogging(environment, config);
-builder.Services.AddDcdAppInsights(config);
-builder.AddDcdAzureAppConfiguration();
-builder.Services.AddDcdIocConfiguration();
-builder.Services.AddHostedService<ProjectMasterBackgroundService>();
-builder.Services.AddMemoryCache();
-builder.Services.Configure<IConfiguration>(builder.Configuration);
+
 builder.Services.AddAutoMapper(typeof(CaseProfile));
-builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new DcdApiEndpointTransformer())));
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.ConfigureDcdSwagger();
-builder.AddDcdBlogStorage();
-builder.Host.UseSerilog();
+builder.Services.AddDcdIocConfiguration();
+
+builder.Services.AddHostedService<ProjectMasterBackgroundService>();
 
 var app = builder.Build();
 
@@ -63,7 +59,7 @@ app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
 app.UseResponseCompression();
 
-if (app.Environment.IsDevelopment())
+if (DcdEnvironments.EnableSwagger)
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();

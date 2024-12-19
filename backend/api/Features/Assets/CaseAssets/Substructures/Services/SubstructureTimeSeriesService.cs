@@ -4,6 +4,7 @@ using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -18,7 +19,8 @@ public class SubstructureTimeSeriesService(
     ISubstructureTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISubstructureTimeSeriesService
 {
     public async Task<SubstructureCostProfileDto> AddOrUpdateSubstructureCostProfile(
@@ -32,7 +34,7 @@ public class SubstructureTimeSeriesService(
         await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
         var substructure = await substructureRepository.GetSubstructureWithCostProfile(substructureId)
-            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         if (substructure.CostProfile != null)
         {
@@ -82,7 +84,7 @@ public class SubstructureTimeSeriesService(
         {
             repository.CreateSubstructureCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -105,7 +107,7 @@ public class SubstructureTimeSeriesService(
         await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
         var substructure = await substructureRepository.GetSubstructure(substructureId)
-            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         var resourceHasProfile = await substructureRepository.SubstructureHasCostProfileOverride(substructureId);
 
@@ -126,7 +128,7 @@ public class SubstructureTimeSeriesService(
         {
             createdProfile = repository.CreateSubstructureCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -171,7 +173,7 @@ public class SubstructureTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Substructure>(projectId, existingProfile.Substructure.Id);
@@ -188,7 +190,7 @@ public class SubstructureTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

@@ -1,17 +1,17 @@
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { PersonSelectEvent } from "@equinor/fusion-react-person"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMediaQuery } from "@mui/material"
-// import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { peopleQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
-// import { useAppContext } from "@/Context/AppContext"
+import { useAppContext } from "@/Context/AppContext"
 import { UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
-// import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
+import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
 import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
@@ -21,8 +21,8 @@ const AccessManagementTab = () => {
     const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
-    // const { setSnackBarMessage } = useAppContext()
-    // const { currentContext } = useModuleCurrentContext()
+    const { setSnackBarMessage } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
 
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -69,32 +69,20 @@ const AccessManagementTab = () => {
         }
     }
 
-    // The code below is a WIP related to PMT and OrgChart integration
-    // useEffect(() => {
-    //     const fetchOrgChartPeople = async () => {
-    //         if (!currentContext?.id || !projectId) { return }
-    //         const projectMembersService = await GetOrgChartMembersService()
-    //         try {
-    //             const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
-    //             console.log(peopleToAdd)
-
-    //             await Promise.all(
-    //                 peopleToAdd.map(async (person) => {
-    //                     try {
-    //                         return await (await GetProjectMembersService()).addPerson(projectId, { userId: person.azureUniqueId || "", role: UserRole.Viewer })
-    //                     } catch (error) {
-    //                         console.error("Failed to add person from orgchart, with error: ", error)
-    //                         return null // bedre error handling?
-    //                     }
-    //                 }),
-    //             )
-    //         } catch (error) {
-    //             setSnackBarMessage("A problem occurred while fetching OrgChart people")
-    //         }
-    //     }
-
-    //     fetchOrgChartPeople()
-    // }, [currentContext?.id, projectId])
+    // This is used to synchronize PMT members to projects
+    useEffect(() => {
+        (async () => {
+            if (!projectId || !currentContext) { return }
+            
+            const projectMembersService = await GetOrgChartMembersService()
+            const syncPmt = await projectMembersService.getOrgChartPeople(projectId, currentContext?.id)
+            if (syncPmt) {
+                queryClient.invalidateQueries(
+                    { queryKey: ["peopleApiData", projectId] },
+                )
+            }
+        })()
+    }, [])
 
     if (!projectApiData) {
         return <AccessManagementSkeleton />

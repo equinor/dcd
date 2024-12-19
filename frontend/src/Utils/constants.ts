@@ -92,6 +92,7 @@ export const totalStudyCostOverrideResources = [
     "topsideCostOverride",
     "transportCostOverride",
     "substructureCostOverride",
+    "onshorePowerSupplyCostOverride",
     "case",
 ]
 

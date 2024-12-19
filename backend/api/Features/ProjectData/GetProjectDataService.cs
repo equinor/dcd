@@ -6,7 +6,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 {
     public async Task<ProjectDataDto> GetProjectData(Guid projectId)
     {
-        var projectPk = await getProjectDataRepository.GetProjectIdFromFusionId(projectId);
+        var projectPk = await getProjectDataRepository.GetPrimaryKeyForProjectId(projectId);
 
         var projectMembers = await getProjectDataRepository.GetProjectMembers(projectPk);
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(projectPk);
@@ -15,6 +15,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         return new ProjectDataDto
         {
             ProjectId = projectPk,
+            DataType = "project",
             ProjectMembers = projectMembers,
             RevisionDetailsList = revisionDetailsList.OrderBy(x => x.RevisionDate).ToList(),
             CommonProjectAndRevisionData = commonProjectAndRevisionData
@@ -30,6 +31,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         {
             ProjectId = projectId,
             RevisionId = revisionId,
+            DataType = "revision",
             RevisionDetails = revisionDetails,
             CommonProjectAndRevisionData = commonProjectAndRevisionData
         };
@@ -45,8 +47,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         commonProjectAndRevisionData.Substructures = await getProjectDataRepository.GetSubstructures(projectId);
         commonProjectAndRevisionData.Topsides = await getProjectDataRepository.GetTopsides(projectId);
         commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectId);
+        commonProjectAndRevisionData.OnshorePowerSupplies = await getProjectDataRepository.GetOnshorePowerSupplies(projectId);
         commonProjectAndRevisionData.DrainageStrategies = await getProjectDataRepository.GetDrainageStrategies(projectId);
-
         commonProjectAndRevisionData.ModifyTime = commonProjectAndRevisionData.Cases.Select(c => c.ModifyTime).Append(commonProjectAndRevisionData.ModifyTime).Max();
 
         return commonProjectAndRevisionData;

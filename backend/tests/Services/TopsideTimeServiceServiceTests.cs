@@ -3,6 +3,7 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -22,6 +23,7 @@ public class TopsideTimeServiceServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public TopsideTimeServiceServiceTests()
     {
@@ -31,7 +33,8 @@ public class TopsideTimeServiceServiceTests
             _topsideRepository,
             _caseRepository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -63,7 +66,7 @@ public class TopsideTimeServiceServiceTests
 
         // Assert
         Assert.Equal(updatedTopsideCostProfileOverrideDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -95,7 +98,7 @@ public class TopsideTimeServiceServiceTests
 
         // Assert
         Assert.Equal(updatedTopsideCostProfileDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -125,6 +128,6 @@ public class TopsideTimeServiceServiceTests
 
         // Assert
         Assert.Equal(updatedTopsideCostProfileDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 }

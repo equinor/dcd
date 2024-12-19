@@ -6,6 +6,7 @@ using api.Features.Assets.CaseAssets.Explorations.Repositories;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -19,13 +20,14 @@ public class ExplorationService(
     ICaseRepository caseRepository,
     IExplorationRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IExplorationService
 {
     public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
     {
         return await repository.GetExplorationWithIncludes(explorationId, includes)
-            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+            ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
     }
 
     public async Task<ExplorationDto> UpdateExploration(
@@ -39,14 +41,14 @@ public class ExplorationService(
         await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
         var existingExploration = await repository.GetExploration(explorationId)
-            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+            ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
 
         mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
 
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -68,20 +70,20 @@ public class ExplorationService(
     )
     {
         var existingExploration = await repository.GetExplorationWithDrillingSchedule(drillingScheduleId)
-            ?? throw new NotFoundInDBException($"No exploration connected to {drillingScheduleId} found.");
+            ?? throw new NotFoundInDbException($"No exploration connected to {drillingScheduleId} found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Exploration>(projectId, existingExploration.Id);
 
         var existingDrillingSchedule = existingExploration.ExplorationWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
-            ?? throw new NotFoundInDBException($"Drilling schedule with id {drillingScheduleId} not found.");
+            ?? throw new NotFoundInDbException($"Drilling schedule with id {drillingScheduleId} not found.");
 
         mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
 
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -105,10 +107,10 @@ public class ExplorationService(
         await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
         var existingExploration = await repository.GetExploration(explorationId)
-            ?? throw new NotFoundInDBException($"Well project with {explorationId} not found.");
+            ?? throw new NotFoundInDbException($"Well project with {explorationId} not found.");
 
         var existingWell = await repository.GetWell(wellId)
-            ?? throw new NotFoundInDBException($"Well with {wellId} not found.");
+            ?? throw new NotFoundInDbException($"Well with {wellId} not found.");
 
         DrillingSchedule drillingSchedule = new();
         var newDrillingSchedule = mapperService.MapToEntity(updatedExplorationWellDto, drillingSchedule, explorationId);
@@ -125,7 +127,7 @@ public class ExplorationService(
         {
             createdExplorationWell = repository.CreateExplorationWellDrillingSchedule(newExplorationWell);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

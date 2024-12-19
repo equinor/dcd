@@ -5,6 +5,7 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -18,13 +19,14 @@ public class SurfService(
     ISurfRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISurfService
 {
     public async Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
     {
         return await repository.GetSurfWithIncludes(surfId, includes)
-            ?? throw new NotFoundInDBException($"Topside with id {surfId} not found.");
+            ?? throw new NotFoundInDbException($"Topside with id {surfId} not found.");
     }
 
     public async Task<SurfDto> UpdateSurf<TDto>(
@@ -47,7 +49,7 @@ public class SurfService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

@@ -1,9 +1,0 @@
-{
-  "lint-staged": {
-    "*.{j,t}s?(x)": "npx eslint --fix"
-  },
-  "devDependencies": {
-    "husky": "^9.1.7",
-    "lint-staged": "^15.2.10"
-  }
-}

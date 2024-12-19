@@ -1,19 +1,3 @@
 namespace api.Exceptions;
 
-
-public class NotFoundInDBException : Exception
-{
-    public NotFoundInDBException()
-    {
-    }
-
-    public NotFoundInDBException(string message)
-        : base(message)
-    {
-    }
-
-    public NotFoundInDBException(string message, Exception inner)
-        : base(message, inner)
-    {
-    }
-}
+public class NotFoundInDbException(string message) : Exception(message);

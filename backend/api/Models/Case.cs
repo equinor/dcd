@@ -92,6 +92,10 @@ public class Case : IHasProjectId, IChangeTrackable
     [ForeignKey("TransportLink")]
     public virtual Transport? Transport { get; set; }
 
+    public Guid OnshorePowerSupplyLink { get; set; }
+    [ForeignKey("OnshorePowerSupplyLink")]
+    public virtual OnshorePowerSupply? OnshorePowerSupply { get; set; }
+
     public Guid ExplorationLink { get; set; }
     [ForeignKey("ExplorationLink")]
     public virtual Exploration? Exploration { get; set; }

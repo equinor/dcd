@@ -1,5 +1,5 @@
 using api.Context;
-using api.Exceptions;
+using api.Context.Extensions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,14 +8,19 @@ namespace api.Features.Cases.CaseComparison;
 
 public class CaseComparisonRepository(DcdDbContext context)
 {
-    public async Task<Project> LoadProject(Guid projectId)
+    public async Task<Guid> GetPrimaryKeyForProjectIdOrRevisionId(Guid projectId)
+    {
+        return await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
+    }
+
+    public async Task<Project> LoadProject(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id == projectId) ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            .SingleAsync(p => p.Id == projectPk);
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
@@ -55,7 +60,7 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(d => d.FuelFlaringAndLossesOverride)
             .Include(d => d.NetSalesGas)
             .Include(d => d.NetSalesGasOverride)
-            .Include(d => d.ProductionProfileNGL)
+            .Include(d => d.ProductionProfileNgl)
             .Include(d => d.ImportedElectricity)
             .Include(d => d.ImportedElectricityOverride)
             .Include(d => d.DeferredOilProduction)
@@ -118,6 +123,13 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(x => x.CostProfile)
             .Include(x => x.CessationCostProfile)
             .Where(x => transportLinks.Contains(x.Id))
+            .LoadAsync();
+
+        var onshorePowerSupplyLinks = project.Cases.Select(x => x.OnshorePowerSupplyLink).ToList();
+        await context.OnshorePowerSupplies
+            .Include(x => x.CostProfileOverride)
+            .Include(x => x.CostProfile)
+            .Where(x => onshorePowerSupplyLinks.Contains(x.Id))
             .LoadAsync();
 
         return project;

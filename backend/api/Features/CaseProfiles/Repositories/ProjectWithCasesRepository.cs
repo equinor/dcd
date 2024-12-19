@@ -1,5 +1,4 @@
 using api.Context;
-using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,30 +7,23 @@ namespace api.Features.CaseProfiles.Repositories;
 
 public interface IProjectWithAssetsRepository
 {
-    Task<Project> GetProjectWithCases(Guid projectId);
-    Task<Project> GetProjectWithCasesAndAssets(Guid projectId);
+    Task<Project> GetProjectWithCases(Guid projectPk);
+    Task<Project> GetProjectWithCasesAndAssets(Guid projectPk);
 }
 
 public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAssetsRepository
 {
-    public async Task<Project> GetProjectWithCases(Guid projectId)
+    public async Task<Project> GetProjectWithCases(Guid projectPk)
     {
-        var project = await context.Projects
+        return await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
-
-        return project;
+            .SingleAsync(p => p.Id == projectPk);
     }
 
-    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
+    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
@@ -56,12 +48,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
+            .SingleAsync(p => p.Id == projectPk);
 
         project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
 
@@ -78,6 +65,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
         project.Substructures = await GetSubstructures(project.Id);
         project.Topsides = await GetTopsides(project.Id);
         project.Transports = await GetTransports(project.Id);
+        project.OnshorePowerSupplies = await GetOnshorePowerSupplies(project.Id);
         project.Explorations = await GetExplorations(project.Id);
         project.Wells = await GetWells(project.Id);
     }
@@ -134,6 +122,15 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .ToListAsync();
     }
 
+    private async Task<List<OnshorePowerSupply>> GetOnshorePowerSupplies(Guid projectId)
+    {
+        return await context.OnshorePowerSupplies
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Where(c => c.Project.Id.Equals(projectId))
+            .ToListAsync();
+    }
+
     private async Task<List<DrainageStrategy>> GetDrainageStrategies(Guid projectId)
     {
         return await context.DrainageStrategies
@@ -149,7 +146,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
-            .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)
             .Include(c => c.DeferredOilProduction)

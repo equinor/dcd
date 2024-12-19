@@ -4,6 +4,7 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -18,7 +19,8 @@ public class SurfTimeSeriesService(
     ISurfRepository surfRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISurfTimeSeriesService
 {
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
@@ -32,7 +34,7 @@ public class SurfTimeSeriesService(
         await projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
         var surf = await surfRepository.GetSurf(surfId)
-            ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
+            ?? throw new NotFoundInDbException($"Surf with id {surfId} not found.");
 
         var resourceHasProfile = await surfRepository.SurfHasCostProfileOverride(surfId);
 
@@ -53,7 +55,7 @@ public class SurfTimeSeriesService(
         {
             createdProfile = repository.CreateSurfCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -76,7 +78,7 @@ public class SurfTimeSeriesService(
         await projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
         var surf = await surfRepository.GetSurfWithCostProfile(surfId)
-            ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
+            ?? throw new NotFoundInDbException($"Surf with id {surfId} not found.");
 
         if (surf.CostProfile != null)
         {
@@ -128,7 +130,7 @@ public class SurfTimeSeriesService(
         {
             repository.CreateSurfCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -173,7 +175,7 @@ public class SurfTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
@@ -193,7 +195,7 @@ public class SurfTimeSeriesService(
         {
             // updatedProfile = updateProfile(existingProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

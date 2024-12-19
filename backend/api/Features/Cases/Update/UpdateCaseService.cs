@@ -1,15 +1,19 @@
 using api.Context;
+using api.Context.Extensions;
+using api.Features.Cases.Recalculation;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Update;
 
-public class UpdateCaseService(DcdDbContext context)
+public class UpdateCaseService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var existingCase = await context.Cases
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 
@@ -46,6 +50,6 @@ public class UpdateCaseService(DcdDbContext context)
         existingCase.SharepointFileUrl = updateCaseDto.SharepointFileUrl;
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        await context.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

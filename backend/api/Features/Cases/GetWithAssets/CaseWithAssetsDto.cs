@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
@@ -57,7 +58,7 @@ public class CaseWithAssetsDto
     public NetSalesGasOverrideDto? NetSalesGasOverride { get; set; }
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public Co2EmissionsOverrideDto? Co2EmissionsOverride { get; set; }
-    public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
+    public ProductionProfileNglDto? ProductionProfileNgl { get; set; }
     public ImportedElectricityDto? ImportedElectricity { get; set; }
     public ImportedElectricityOverrideDto? ImportedElectricityOverride { get; set; }
     public Co2IntensityDto? Co2Intensity { get; set; }
@@ -85,6 +86,10 @@ public class CaseWithAssetsDto
     public TransportCostProfileOverrideDto? TransportCostProfileOverride { get; set; }
     public TransportCessationCostProfileDto? TransportCessationCostProfile { get; set; }
 
+    [Required]
+    public OnshorePowerSupplyDto OnshorePowerSupply { get; set; } = null!;
+    public OnshorePowerSupplyCostProfileDto? OnshorePowerSupplyCostProfile { get; set; }
+    public OnshorePowerSupplyCostProfileOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
     [Required]
     public ExplorationDto Exploration { get; set; } = null!;

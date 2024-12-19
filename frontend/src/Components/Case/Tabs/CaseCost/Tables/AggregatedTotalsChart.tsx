@@ -92,6 +92,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     (apiData.topsideCostProfileOverride?.override ? apiData.topsideCostProfileOverride : apiData.topsideCostProfile),
                     (apiData.substructureCostProfileOverride?.override ? apiData.substructureCostProfileOverride : apiData.substructureCostProfile),
                     (apiData.transportCostProfileOverride?.override ? apiData.transportCostProfileOverride : apiData.transportCostProfile),
+                    (apiData.onshorePowerSupplyCostProfileOverride?.override ? apiData.onshorePowerSupplyCostProfileOverride : apiData.onshorePowerSupplyCostProfile),
+
                 ],
                 developmentWellCostProfiles: [
                     apiData.oilProducerCostProfileOverride || apiData.oilProducerCostProfile,
@@ -177,7 +179,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     fontSize: 24,
                 },
             },
-            column: { axes: { category: { label: { rotation: -20 } } } },
+            bar: { axes: { category: { label: { rotation: -20 } } } },
         },
     }
 
@@ -198,7 +200,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         theme: figmaTheme,
         series: [
             ...Object.keys(chartData[0] || {}).filter((key) => key !== "year" && key !== "cumulativeSum").map((key, index) => ({
-                type: "column",
+                type: "bar",
                 xKey: "year",
                 yKey: key,
                 yName: key,
@@ -225,6 +227,18 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "category",
                 position: "bottom",
                 title: { text: "Year" },
+                gridLine: {
+                    style: [
+                        {
+                            stroke: "rgba(0, 0, 0, 0.2)",
+                            lineDash: [3, 2],
+                        },
+                        {
+                            stroke: "rgba(0, 0, 0, 0.2)",
+                            lineDash: [3, 2],
+                        },
+                    ],
+                },
             },
             {
                 type: "number",

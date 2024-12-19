@@ -103,7 +103,7 @@ public class ProspSharepointImportService(
             // Basic validation of URL format
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? validatedUri))
             {
-                throw new UriFormatException($"Invalid URL format: {url}");
+                return [];
             }
 
             var hostName = validatedUri.Host;
@@ -211,7 +211,6 @@ public class ProspSharepointImportService(
             {
                 var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside,
                     itemInfo.Transport);
-
                 await prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
@@ -237,7 +236,8 @@ public class ProspSharepointImportService(
             { nameof(Surf), surf },
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
-            { nameof(Transport), transport }
+            { nameof(Transport), transport },
+            { nameof(OnshorePowerSupply), true }
         };
     }
 }

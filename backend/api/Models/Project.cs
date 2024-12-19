@@ -50,6 +50,7 @@ public class Project : IChangeTrackable
     public virtual ICollection<Substructure> Substructures { get; set; } = [];
     public virtual ICollection<Topside> Topsides { get; set; } = [];
     public virtual ICollection<Transport> Transports { get; set; } = [];
+    public virtual ICollection<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = [];
     public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = [];
     public virtual ICollection<WellProject> WellProjects { get; set; } = [];
     public virtual ICollection<Exploration> Explorations { get; set; } = [];
@@ -60,7 +61,6 @@ public class Project : IChangeTrackable
 public class RevisionDetails : IChangeTrackable
 {
     public Guid Id { get; set; }
-    public Guid OriginalProjectId { get; set; }
 
     public virtual Project Revision { get; set; } = null!;
     public Guid RevisionId { get; set; }

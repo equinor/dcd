@@ -4,6 +4,7 @@ using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
 using api.Features.Assets.CaseAssets.WellProjects.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
@@ -19,7 +20,8 @@ public class WellProjectTimeSeriesService(
     IWellProjectRepository wellProjectRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IWellProjectTimeSeriesService
 {
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
@@ -180,7 +182,7 @@ public class WellProjectTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
@@ -190,7 +192,7 @@ public class WellProjectTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -219,7 +221,7 @@ public class WellProjectTimeSeriesService(
         await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var wellProject = await wellProjectRepository.GetWellProject(wellProjectId)
-            ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
+            ?? throw new NotFoundInDbException($"Well project with id {wellProjectId} not found.");
 
         var resourceHasProfile = await wellProjectRepository.WellProjectHasProfile(wellProjectId, profileName);
 
@@ -240,7 +242,7 @@ public class WellProjectTimeSeriesService(
         {
             createdProfile = createProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

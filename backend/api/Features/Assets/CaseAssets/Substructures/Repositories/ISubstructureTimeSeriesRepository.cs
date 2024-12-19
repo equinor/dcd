@@ -1,9 +1,8 @@
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Substructures.Repositories;
 
-public interface ISubstructureTimeSeriesRepository : IBaseRepository
+public interface ISubstructureTimeSeriesRepository
 {
     SubstructureCostProfile CreateSubstructureCostProfile(SubstructureCostProfile substructureCostProfile);
     Task<SubstructureCostProfile?> GetSubstructureCostProfile(Guid substructureCostProfileId);

@@ -6,7 +6,7 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { ChangeEventHandler } from "react"
+import { ChangeEventHandler, useState } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
 import { useModalContext } from "@/Context/ModalContext"
@@ -28,70 +28,81 @@ const ProjectOverviewTab = () => {
     const { addNewCase } = useModalContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
-    const { data: apiData } = useQuery({
+    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
+
+    const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
 
-    const { data: apiRevisionData } = useQuery({
+    const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!projectId && !!revisionId && isRevision,
     })
 
-    const handleBlur = (e: any) => {
-        if (apiData) {
-            // eslint-disable-next-line no-underscore-dangle
-            const newValue = e.target._value
-            const newProjectObject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData, description: newValue }
-            addProjectEdit(apiData.projectId, newProjectObject)
+    const handleDescriptionChange = (e: any) => {
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout)
+        }
+        // eslint-disable-next-line no-underscore-dangle
+        const newDescription = e.target._value
+
+        const timeout = setTimeout(() => {
+            if (projectData) {
+                const updatedProject = {
+                    ...projectData.commonProjectAndRevisionData,
+                    description: newDescription,
+                }
+                addProjectEdit(projectData.projectId, updatedProject)
+            }
+        }, 3000)
+
+        setDebounceTimeout(timeout)
+    }
+
+    const handlePhaseChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
+        const selectedPhase = Number(e.currentTarget.value)
+        if ([0, 1, 2].includes(selectedPhase) && projectData) {
+            const updatedProject = {
+                ...projectData.commonProjectAndRevisionData,
+                internalProjectPhase: selectedPhase as Components.Schemas.InternalProjectPhase,
+            }
+            addProjectEdit(projectData.projectId, updatedProject)
         }
     }
 
-    const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
-            const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
-            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
-            newProject.internalProjectPhase = newInternalProjectPhase
-            addProjectEdit(apiData.projectId, newProject)
-        }
-    }
-
-    if (!apiData) {
+    if (!projectData) {
         return <div>Loading project data...</div>
     }
 
     const renderProjectPhase = () => {
-        if (!apiData) { return null }
-
-        const { projectPhase, internalProjectPhase } = apiData.commonProjectAndRevisionData
-
-        const revisionProjectPhase = apiRevisionData?.commonProjectAndRevisionData.projectPhase
-        const revisionInternalProjectPhase = apiRevisionData?.commonProjectAndRevisionData.internalProjectPhase
+        const { projectPhase, internalProjectPhase } = projectData.commonProjectAndRevisionData
+        const revisionProjectPhase = revisionData?.commonProjectAndRevisionData.projectPhase
+        const revisionInternalPhase = revisionData?.commonProjectAndRevisionData.internalProjectPhase
 
         if ([3, 4, 5, 6, 7, 8].includes(projectPhase)) {
-            if (isRevision) {
-                return getProjectPhaseName(revisionProjectPhase)
-            }
-            return getProjectPhaseName(projectPhase)
+            return getProjectPhaseName(isRevision ? revisionProjectPhase : projectPhase)
         }
 
-        const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
+        const phaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
             <option key={key} value={key}>{value.label}</option>
         ))
 
         return (
             <InputSwitcher
-                value={isRevision && revisionInternalProjectPhase ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? "" : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
+                value={isRevision && revisionInternalPhase
+                    ? INTERNAL_PROJECT_PHASE[revisionInternalPhase].label ?? ""
+                    : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
             >
                 <NativeSelect
                     id="internalProjectPhase"
                     label=""
-                    onChange={handleInternalProjectPhaseChange}
+                    onChange={handlePhaseChange}
                     value={internalProjectPhase}
                 >
-                    {internalProjectPhaseOptions}
+                    {phaseOptions}
                 </NativeSelect>
             </InputSwitcher>
         )
@@ -108,13 +119,17 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
-                        {isRevision ? getProjectCategoryName(apiRevisionData?.commonProjectAndRevisionData.projectCategory) : getProjectCategoryName(apiData.commonProjectAndRevisionData.projectCategory)}
+                        {isRevision
+                            ? getProjectCategoryName(revisionData?.commonProjectAndRevisionData.projectCategory)
+                            : getProjectCategoryName(projectData.commonProjectAndRevisionData.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
-                        {isRevision ? apiRevisionData?.commonProjectAndRevisionData.country ?? "Not defined in Common Library" : apiData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
+                        {isRevision
+                            ? revisionData?.commonProjectAndRevisionData.country ?? "Not defined in Common Library"
+                            : projectData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -124,12 +139,18 @@ const ProjectOverviewTab = () => {
                     ? (
                         <MarkdownEditor
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onBlur={(e) => handleBlur(e)}
+                            onInput={handleDescriptionChange}
                         >
-                            {apiData.commonProjectAndRevisionData.description ?? ""}
+                            {projectData.commonProjectAndRevisionData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={isRevision ? apiRevisionData?.commonProjectAndRevisionData.description ?? "" : apiData.commonProjectAndRevisionData.description ?? ""} />}
+                    : (
+                        <MarkdownViewer
+                            value={isRevision
+                                ? revisionData?.commonProjectAndRevisionData.description ?? ""
+                                : projectData.commonProjectAndRevisionData.description ?? ""}
+                        />
+                    )}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
@@ -139,7 +160,7 @@ const ProjectOverviewTab = () => {
                     <Tooltip title={getEditDisabledText()}>
                         <Button
                             disabled={isEditDisabled}
-                            onClick={() => addNewCase()}
+                            onClick={addNewCase}
                         >
                             <Icon data={add} size={24} />
                             Add new Case

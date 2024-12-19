@@ -3,6 +3,7 @@ using System.Reflection;
 using api.AppInfrastructure.Authorization.Extensions;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Models;
 
@@ -13,15 +14,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.AppInfrastructure.Authorization;
 
 public class ApplicationRoleAuthorizationHandler(
-    DcdDbContext dbContext,
+    IDbContextFactory<DcdDbContext> contextFactory,
     IHttpContextAccessor httpContextAccessor,
     ILogger<ApplicationRoleAuthorizationHandler> logger)
     : AuthorizationHandler<ApplicationRoleRequirement>
 {
-    protected override async Task<Task> HandleRequirementAsync(
-        AuthorizationHandlerContext context,
-        ApplicationRoleRequirement requirement
-    )
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
+        ApplicationRoleRequirement requirement)
     {
         var requestPath = httpContextAccessor.HttpContext?.Request.Path;
 
@@ -39,6 +38,7 @@ public class ApplicationRoleAuthorizationHandler(
         }
 
         var userRoles = context.User.AssignedApplicationRoles();
+
         if (!await IsAuthorized(context, requirement, userRoles))
         {
             HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
@@ -60,20 +60,19 @@ public class ApplicationRoleAuthorizationHandler(
         var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
             as Fusion.Integration.Authentication.FusionIdentity;
 
-        return fusionIdentity?.Profile?.AzureUniqueId ??
+        return fusionIdentity?.Profile.AzureUniqueId ??
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
     }
 
     private async Task<bool> IsAuthorized(
         AuthorizationHandlerContext context,
         ApplicationRoleRequirement roleRequirement,
-        List<ApplicationRole> userRoles
-    )
+        List<ApplicationRole> userRoles)
     {
         var userHasRequiredRole = userRoles.Any(roleRequirement.Roles.Contains);
 
         // TODO: Implement check for classification and project phase
-        var project = await GetCurrentProject(context);
+        var project = await GetCurrentProject();
 
         if (project == null)
         {
@@ -124,7 +123,7 @@ public class ApplicationRoleAuthorizationHandler(
         return actionTypeAttribute?.ActionType;
     }
 
-    private async Task<Project?> GetCurrentProject(AuthorizationHandlerContext context)
+    private async Task<Project?> GetCurrentProject()
     {
         var projectId = httpContextAccessor.HttpContext?.Request.RouteValues["projectId"];
         if (projectId == null)
@@ -134,44 +133,27 @@ public class ApplicationRoleAuthorizationHandler(
 
         if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))
         {
-            // TODO: Should this throw an error?
-            return null;
+            throw new InvalidProjectIdException($"Invalid project id: {projectId}");
         }
 
-        var project = await dbContext.Projects
-            .Include(p => p.ProjectMembers)
-            .FirstOrDefaultAsync(p => p.Id == projectIdGuid || (p.FusionProjectId == projectIdGuid && !p.IsRevision));
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
-        // /*
-        // Some projects have the external id set as the id.
-        // This may cause updates to projects where the external id is the same as the project id
-        // to return a revision with the same external id instead.
-        // Updates to revsions are not allowed and an error is thrown.
-        // Therefore, we split the database call into two separate calls, first looking for the project by project id.
-        // */
-        // if (project == null)
-        // {
-        //     project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
-        // }
+        var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 
-        // TODO: If no project is found, should this throw an error?
-
-        return project;
+        return await dbContext.Projects.Include(p => p.ProjectMembers).SingleAsync(p => p.Id == projectPk);
     }
 
     private void HandleUnauthorizedRequest(
         AuthorizationHandlerContext context,
         PathString? requestPath,
         List<ApplicationRole> requiredAnyOfTheseRoles,
-        List<ApplicationRole> userRoles
-    )
+        List<ApplicationRole> userRoles)
     {
         context.Fail();
-        var username = context.User.Identity!.Name;
+
         logger.LogWarning(
-            "User '{Username}' attempted to access '{RequestPath}' but was not authorized "
-                + "- one of the following roles '{RequiredRoles}' is required , while user has the roles '{UserRoles}'",
-            username,
+            "User '{Username}' attempted to access '{RequestPath}' but was not authorized - one of the following roles '{RequiredRoles}' is required , while user has the roles '{UserRoles}'",
+            context.User.Identity!.Name,
             requestPath,
             string.Join(", ", requiredAnyOfTheseRoles),
             string.Join(", ", userRoles)

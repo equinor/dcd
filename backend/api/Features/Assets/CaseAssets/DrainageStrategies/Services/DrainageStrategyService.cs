@@ -1,9 +1,12 @@
 using System.Linq.Expressions;
 
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -13,11 +16,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 
 public class DrainageStrategyService(
+    DcdDbContext context,
     ILogger<DrainageStrategyService> logger,
     ICaseRepository caseRepository,
     IDrainageStrategyRepository repository,
     IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IDrainageStrategyService
 {
     public async Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
@@ -26,7 +31,7 @@ public class DrainageStrategyService(
         )
     {
         return await repository.GetDrainageStrategyWithIncludes(drainageStrategyId, includes)
-            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
     }
 
     public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
@@ -40,17 +45,18 @@ public class DrainageStrategyService(
         await projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
 
         var existingDrainageStrategy = await repository.GetDrainageStrategy(drainageStrategyId)
-            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
 
-        var project = await caseRepository.GetProject(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
         conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
 
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

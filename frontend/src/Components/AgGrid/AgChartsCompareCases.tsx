@@ -59,11 +59,35 @@ export const AgChartsCompareCases = ({
                 type: "category",
                 position: "bottom",
                 nice: true,
+                gridLine: {
+                    style: [
+                        {
+                            stroke: "rgba(0, 0, 0, 0.2)",
+                            lineDash: [3, 2],
+                        },
+                        {
+                            stroke: "rgba(0, 0, 0, 0.2)",
+                            lineDash: [3, 2],
+                        },
+                    ],
+                },
             },
             {
                 type: "number",
                 position: "left",
                 nice: true,
+                gridLine: {
+                    style: [
+                        {
+                            stroke: "rgba(0, 0, 0, 0.1)",
+                            lineDash: [3, 2],
+                        },
+                        {
+                            stroke: "rgba(0, 0, 0, 0.1)",
+                            lineDash: [3, 2],
+                        },
+                    ],
+                },
             },
         ],
         theme: figmaTheme,

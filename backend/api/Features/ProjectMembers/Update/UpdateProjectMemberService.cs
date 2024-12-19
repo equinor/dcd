@@ -1,6 +1,6 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.ProjectMembers.Get;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +8,12 @@ namespace api.Features.ProjectMembers.Update;
 
 public class UpdateProjectMemberService(DcdDbContext context)
 {
-    public async Task<ProjectMemberDto> UpdateProjectMember(Guid projectId, UpdateProjectMemberDto dto)
+    public async Task UpdateProjectMember(Guid projectId, UpdateProjectMemberDto dto)
     {
-        var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectId && c.UserId == dto.UserId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var existingProjectMember = await context.ProjectMembers
+            .SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == dto.UserId);
 
         if (existingProjectMember == null)
         {
@@ -20,12 +23,5 @@ public class UpdateProjectMemberService(DcdDbContext context)
         existingProjectMember.Role = dto.Role;
 
         await context.SaveChangesAsync();
-
-        return new ProjectMemberDto
-        {
-            ProjectId = existingProjectMember.ProjectId,
-            UserId = existingProjectMember.UserId,
-            Role = existingProjectMember.Role
-        };
     }
 }

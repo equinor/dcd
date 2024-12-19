@@ -8,9 +8,9 @@ namespace api.Features.Cases.Duplicate;
 
 public class DuplicateCaseRepository(DcdDbContext context)
 {
-    public async Task<Case> GetCaseAndAssetsNoTracking(Guid caseId)
+    public async Task<Case> GetCaseAndAssetsNoTracking(Guid projectId, Guid caseId)
     {
-        var caseItem = await LoadCase(caseId);
+        var caseItem = await LoadCase(projectId, caseId);
 
         await LoadDrainageStrategies(caseItem.DrainageStrategyLink);
         await LoadExplorations(caseItem.ExplorationLink);
@@ -19,13 +19,14 @@ public class DuplicateCaseRepository(DcdDbContext context)
         await LoadTopsides(caseItem.TopsideLink);
         await LoadSurfs(caseItem.SurfLink);
         await LoadSubstructures(caseItem.SubstructureLink);
+        await LoadOnshorePowerSupplies(caseItem.OnshorePowerSupplyLink);
 
         DetachEntriesToEnablePrimaryKeyEdits();
 
         return caseItem;
     }
 
-    private async Task<Case> LoadCase(Guid caseId)
+    private async Task<Case> LoadCase(Guid projectId, Guid caseId)
     {
         return await context.Cases
             .Include(c => c.TotalFeasibilityAndConceptStudies)
@@ -48,8 +49,9 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
+            .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
-            .FirstOrDefaultAsync() ?? throw new NotFoundInDBException($"Case {caseId} not found.");
+            .SingleOrDefaultAsync() ?? throw new NotFoundInDbException($"Case {caseId} not found.");
     }
 
     private async Task LoadDrainageStrategies(Guid drainageStrategyLink)
@@ -67,7 +69,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
-            .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)
             .Include(c => c.DeferredOilProduction)
@@ -146,6 +148,15 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == substructureLink)
+            .LoadAsync();
+    }
+
+    private async Task LoadOnshorePowerSupplies(Guid onshorePowerSupplyLink)
+    {
+        await context.OnshorePowerSupplies
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Where(x => x.Id == onshorePowerSupplyLink)
             .LoadAsync();
     }
 

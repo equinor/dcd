@@ -59,7 +59,7 @@ jobs:
     steps:
       - task: NodeTool@0
         inputs:
-          versionSpec: "16.x"
+          versionSpec: "18.x"
       - task: Npm@1
         displayName: "Npm Install"
         inputs:

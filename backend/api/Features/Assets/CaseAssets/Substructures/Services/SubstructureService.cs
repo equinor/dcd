@@ -5,6 +5,7 @@ using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -18,13 +19,14 @@ public class SubstructureService(
     ISubstructureRepository substructureRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISubstructureService
 {
     public async Task<Substructure> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
     {
         return await substructureRepository.GetSubstructureWithIncludes(substructureId, includes)
-            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
     }
 
     public async Task<SubstructureDto> UpdateSubstructure<TDto>(
@@ -39,7 +41,7 @@ public class SubstructureService(
         await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
         var existingSubstructure = await substructureRepository.GetSubstructure(substructureId)
-            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
         existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
@@ -49,7 +51,7 @@ public class SubstructureService(
         {
             // updatedSubstructure = _repository.UpdateSubstructure(existingSubstructure);
             await caseRepository.UpdateModifyTime(caseId);
-            await substructureRepository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

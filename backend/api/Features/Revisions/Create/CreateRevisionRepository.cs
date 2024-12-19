@@ -1,5 +1,4 @@
 using api.Context;
-using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,22 +7,22 @@ namespace api.Features.Revisions.Create;
 
 public class CreateRevisionRepository(DcdDbContext context)
 {
-    public async Task<Project> GetProjectAndAssetsNoTracking(Guid projectId)
+    public async Task<Project> GetProjectAndAssetsNoTracking(Guid projectPk)
     {
         var project = await context.Projects
                           .Include(p => p.ExplorationOperationalWellCosts)
                           .Include(p => p.DevelopmentOperationalWellCosts)
-                          .FirstOrDefaultAsync(p => p.Id == projectId && !p.IsRevision)
-                      ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+                          .SingleAsync(p => p.Id == projectPk);
 
-        await LoadCases(projectId);
-        await LoadDrainageStrategies(projectId);
-        await LoadExplorations(projectId);
-        await LoadWellProjects(projectId);
-        await LoadTransports(projectId);
-        await LoadTopsides(projectId);
-        await LoadSurfs(projectId);
-        await LoadSubstructures(projectId);
+        await LoadCases(projectPk);
+        await LoadDrainageStrategies(projectPk);
+        await LoadExplorations(projectPk);
+        await LoadWellProjects(projectPk);
+        await LoadTransports(projectPk);
+        await LoadTopsides(projectPk);
+        await LoadSurfs(projectPk);
+        await LoadSubstructures(projectPk);
+        await LoadOnshorePowerSupplies(projectPk);
 
         DetachEntriesToEnablePrimaryKeyEdits();
 
@@ -32,7 +31,7 @@ public class CreateRevisionRepository(DcdDbContext context)
         return project;
     }
 
-    private async Task LoadCases(Guid projectId)
+    private async Task LoadCases(Guid projectPk)
     {
         await context.Cases
             .Include(c => c.TotalFeasibilityAndConceptStudies)
@@ -56,11 +55,11 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.WellProject).ThenInclude(wp => wp!.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.Exploration).ThenInclude(wp => wp!.ExplorationWells).ThenInclude(c => c.Well)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadDrainageStrategies(Guid projectId)
+    private async Task LoadDrainageStrategies(Guid projectPk)
     {
         await context.DrainageStrategies
             .Include(c => c.ProductionProfileOil)
@@ -75,16 +74,16 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
-            .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)
             .Include(c => c.DeferredOilProduction)
             .Include(c => c.DeferredGasProduction)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadExplorations(Guid projectId)
+    private async Task LoadExplorations(Guid projectPk)
     {
         await context.Explorations
             .Include(c => c.ExplorationWellCostProfile)
@@ -96,11 +95,11 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(c => c.CountryOfficeCost)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadWellProjects(Guid projectId)
+    private async Task LoadWellProjects(Guid projectPk)
     {
         await context.WellProjects
             .Include(c => c.OilProducerCostProfile)
@@ -113,47 +112,56 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadTransports(Guid projectId)
+    private async Task LoadTransports(Guid projectPk)
     {
         await context.Transports
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadTopsides(Guid projectId)
+    private async Task LoadTopsides(Guid projectPk)
     {
         await context.Topsides
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadSurfs(Guid projectId)
+    private async Task LoadSurfs(Guid projectPk)
     {
         await context.Surfs
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 
-    private async Task LoadSubstructures(Guid projectId)
+    private async Task LoadSubstructures(Guid projectPk)
     {
         await context.Substructures
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
+            .LoadAsync();
+    }
+
+    private async Task LoadOnshorePowerSupplies(Guid projectPk)
+    {
+        await context.OnshorePowerSupplies
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
 

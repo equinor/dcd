@@ -5,6 +5,7 @@ using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -24,6 +25,7 @@ public class DrainageStrategyTimeSeriesServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IConversionMapperService _conversionMapperService = Substitute.For<IConversionMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public DrainageStrategyTimeSeriesServiceTests()
     {
@@ -33,7 +35,8 @@ public class DrainageStrategyTimeSeriesServiceTests
             _repository,
             _drainageStrategyRepository,
             _conversionMapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 

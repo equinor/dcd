@@ -1,31 +1,35 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.CaseProfiles.Dtos;
-using api.Features.ProjectAccess;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsService(
+    DcdDbContext context,
     CaseWithAssetsRepository caseWithAssetsRepository,
     IMapperService mapperService,
-    IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService)
+    IConversionMapperService conversionMapperService)
 {
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
-        await projectAccessService.ProjectExists<Case>(projectId, caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var project = await caseWithAssetsRepository.GetProjectByIdOrExternalId(projectId);
+        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
-        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await caseWithAssetsRepository.GetCaseWithAssetsNoTracking(caseId);
+        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, onshorePowerSupply, wellProject) = await caseWithAssetsRepository.GetCaseWithAssetsNoTracking(caseId);
 
         return new CaseWithAssetsDto
         {
@@ -62,7 +66,7 @@ public class CaseWithAssetsService(
             NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, NetSalesGasOverrideDto>(drainageStrategy.NetSalesGasOverride, drainageStrategy.NetSalesGasOverride?.Id, project.PhysicalUnit),
             Co2Emissions = ConversionMapToDto<Co2Emissions, Co2EmissionsDto>(drainageStrategy.Co2Emissions, drainageStrategy.Co2Emissions?.Id, project.PhysicalUnit),
             Co2EmissionsOverride = ConversionMapToDto<Co2EmissionsOverride, Co2EmissionsOverrideDto>(drainageStrategy.Co2EmissionsOverride, drainageStrategy.Co2EmissionsOverride?.Id, project.PhysicalUnit),
-            ProductionProfileNGL = ConversionMapToDto<ProductionProfileNGL, ProductionProfileNGLDto>(drainageStrategy.ProductionProfileNGL, drainageStrategy.ProductionProfileNGL?.Id, project.PhysicalUnit),
+            ProductionProfileNgl = ConversionMapToDto<ProductionProfileNgl, ProductionProfileNglDto>(drainageStrategy.ProductionProfileNgl, drainageStrategy.ProductionProfileNgl?.Id, project.PhysicalUnit),
             ImportedElectricity = ConversionMapToDto<ImportedElectricity, ImportedElectricityDto>(drainageStrategy.ImportedElectricity, drainageStrategy.ImportedElectricity?.Id, project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<ImportedElectricityOverride, ImportedElectricityOverrideDto>(drainageStrategy.ImportedElectricityOverride, drainageStrategy.ImportedElectricityOverride?.Id, project.PhysicalUnit),
             DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, DeferredOilProductionDto>(drainageStrategy.DeferredOilProduction, drainageStrategy.DeferredOilProduction?.Id, project.PhysicalUnit),
@@ -83,6 +87,9 @@ public class CaseWithAssetsService(
             TransportCostProfile = MapToDto<TransportCostProfile, TransportCostProfileDto>(transport.CostProfile, transport.CostProfile?.Id),
             TransportCostProfileOverride = MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(transport.CostProfileOverride, transport.CostProfileOverride?.Id),
             TransportCessationCostProfile = MapToDto<TransportCessationCostProfile, TransportCessationCostProfileDto>(transport.CessationCostProfile, transport.CessationCostProfile?.Id),
+            OnshorePowerSupply = mapperService.MapToDto<OnshorePowerSupply, OnshorePowerSupplyDto>(onshorePowerSupply, onshorePowerSupply.Id),
+            OnshorePowerSupplyCostProfile = MapToDto<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>(caseItem.OnshorePowerSupply?.CostProfile, caseItem.OnshorePowerSupply?.CostProfile?.Id),
+            OnshorePowerSupplyCostProfileOverride = MapToDto<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>(caseItem.OnshorePowerSupply?.CostProfileOverride, caseItem.OnshorePowerSupply?.CostProfileOverride?.Id),
             Exploration = mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
             ExplorationWells = exploration.ExplorationWells.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList(),
             ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
@@ -145,6 +152,7 @@ public class CaseWithAssetsService(
             SubstructureLink = caseItem.SubstructureLink,
             TopsideLink = caseItem.TopsideLink,
             TransportLink = caseItem.TransportLink,
+            OnshorePowerSupplyLink = caseItem.OnshorePowerSupplyLink,
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,
             SharepointFileUrl = caseItem.SharepointFileUrl

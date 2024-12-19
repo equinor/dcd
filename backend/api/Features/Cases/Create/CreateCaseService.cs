@@ -1,5 +1,5 @@
 using api.Context;
-using api.Exceptions;
+using api.Context.Extensions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,13 +10,13 @@ public class CreateCaseService(DcdDbContext context)
 {
     public async Task CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
-        var project = await context.Projects
-                          .FirstOrDefaultAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision)
-                      ?? throw new NotFoundInDBException($"Project {projectId} does not exist");
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        context.Cases.Add(new Case
+        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
+
+        var createdCase = new Case
         {
-            ProjectId = projectId,
+            ProjectId = projectPk,
             Name = createCaseDto.Name,
             Description = createCaseDto.Description,
             ProductionStrategyOverview = createCaseDto.ProductionStrategyOverview,
@@ -33,8 +33,11 @@ public class CreateCaseService(DcdDbContext context)
             Substructure = CreateSubstructure(project),
             Transport = CreateTransport(project),
             Exploration = CreateExploration(project),
-            WellProject = CreateWellProject(project)
-        });
+            WellProject = CreateWellProject(project),
+            OnshorePowerSupply = CreateOnshorePowerSupply(project)
+        };
+
+        project.Cases.Add(createdCase);
 
         await context.SaveChangesAsync();
     }
@@ -95,6 +98,19 @@ public class CreateCaseService(DcdDbContext context)
             Name = "Transport",
             Project = project,
             CostProfileOverride = new TransportCostProfileOverride
+            {
+                Override = true
+            }
+        };
+    }
+
+    private static OnshorePowerSupply CreateOnshorePowerSupply(Project project)
+    {
+        return new OnshorePowerSupply
+        {
+            Name = "OnshorePowerSupply",
+            Project = project,
+            CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
             {
                 Override = true
             }

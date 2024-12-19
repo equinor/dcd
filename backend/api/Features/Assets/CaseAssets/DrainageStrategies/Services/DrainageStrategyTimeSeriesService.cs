@@ -4,6 +4,7 @@ using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.Cases.Recalculation;
 using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
@@ -18,7 +19,8 @@ public class DrainageStrategyTimeSeriesService(
     IDrainageStrategyTimeSeriesRepository repository,
     IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
     IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IDrainageStrategyTimeSeriesService
 {
     public async Task<ProductionProfileOilDto> CreateProductionProfileOil(
@@ -467,13 +469,14 @@ public class DrainageStrategyTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(productionProfileId)
-            ?? throw new NotFoundInDBException($"Production profile with id {productionProfileId} not found.");
+            ?? throw new NotFoundInDbException($"Production profile with id {productionProfileId} not found.");
+
+        var projectPk = await caseRepository.GetPrimaryKeyForProjectId(projectId);
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<DrainageStrategy>(projectId, existingProfile.DrainageStrategy.Id);
+        await projectAccessService.ProjectExists<DrainageStrategy>(projectPk, existingProfile.DrainageStrategy.Id);
 
-        var project = await caseRepository.GetProject(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+        var project = await caseRepository.GetProject(projectPk);
 
         conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 
@@ -482,7 +485,7 @@ public class DrainageStrategyTimeSeriesService(
         {
             // updatedProfile = updateProfile(existingProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -511,7 +514,7 @@ public class DrainageStrategyTimeSeriesService(
         await projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
 
         var drainageStrategy = await drainageStrategyTimeSeriesRepository.GetDrainageStrategy(drainageStrategyId)
-            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
 
         var resourceHasProfile = await drainageStrategyTimeSeriesRepository.DrainageStrategyHasProfile(drainageStrategyId, profileName);
 
@@ -521,7 +524,7 @@ public class DrainageStrategyTimeSeriesService(
         }
 
         var project = await caseRepository.GetProject(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+            ?? throw new NotFoundInDbException($"Project with id {projectId} not found.");
 
         TProfile profile = new()
         {
@@ -535,7 +538,7 @@ public class DrainageStrategyTimeSeriesService(
         {
             createdProfile = createProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

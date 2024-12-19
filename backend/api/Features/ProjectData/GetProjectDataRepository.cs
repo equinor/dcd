@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.ProjectData.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.ProjectMembers.Get;
@@ -9,12 +10,9 @@ namespace api.Features.ProjectData;
 
 public class GetProjectDataRepository(DcdDbContext context)
 {
-    public async Task<Guid> GetProjectIdFromFusionId(Guid projectId)
+    public async Task<Guid> GetPrimaryKeyForProjectId(Guid projectId)
     {
-        return await context.Projects
-            .Where(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision)
-            .Select(x => x.Id)
-            .FirstAsync();
+        return await context.GetPrimaryKeyForProjectId(projectId);
     }
 
     public async Task<List<ProjectMemberDto>> GetProjectMembers(Guid projectId)
@@ -25,7 +23,8 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 ProjectId = x.ProjectId,
                 UserId = x.UserId,
-                Role = x.Role
+                Role = x.Role,
+                IsPmt = x.FromOrgChart
             })
             .ToListAsync();
     }
@@ -33,17 +32,14 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<RevisionDetailsDto>> GetRevisionDetailsList(Guid projectId)
     {
         return await context.RevisionDetails
-            .Where(r => r.OriginalProjectId == projectId)
+            .Where(r => r.Revision.OriginalProjectId == projectId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
-                OriginalProjectId = x.OriginalProjectId,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
                 Arena = x.Arena,
-                Mdqc = x.Mdqc,
-                Classification = x.Classification
+                Mdqc = x.Mdqc
             })
             .ToListAsync();
     }
@@ -54,14 +50,11 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.RevisionId == revisionId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
-                OriginalProjectId = x.OriginalProjectId,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
                 Arena = x.Arena,
-                Mdqc = x.Mdqc,
-                Classification = x.Classification
+                Mdqc = x.Mdqc
             })
             .SingleAsync();
     }
@@ -117,6 +110,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Substructures = new List<SubstructureOverviewDto>(),
                 Topsides = new List<TopsideOverviewDto>(),
                 Transports = new List<TransportOverviewDto>(),
+                OnshorePowerSupplies = new List<OnshorePowerSupplyOverviewDto>(),
                 DrainageStrategies = new List<DrainageStrategyOverviewDto>()
             })
             .SingleAsync();
@@ -164,6 +158,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SubstructureLink = x.SubstructureLink,
                 TopsideLink = x.TopsideLink,
                 TransportLink = x.TransportLink,
+                OnshorePowerSupplyLink = x.OnshorePowerSupplyLink,
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
                 SharepointFileUrl = x.SharepointFileUrl
@@ -235,6 +230,18 @@ public class GetProjectDataRepository(DcdDbContext context)
         return await context.Transports
             .Where(x => x.ProjectId == projectId)
             .Select(x => new TransportOverviewDto
+            {
+                Id = x.Id,
+                Source = x.Source
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<OnshorePowerSupplyOverviewDto>> GetOnshorePowerSupplies(Guid projectId)
+    {
+        return await context.OnshorePowerSupplies
+            .Where(x => x.ProjectId == projectId)
+            .Select(x => new OnshorePowerSupplyOverviewDto
             {
                 Id = x.Id,
                 Source = x.Source

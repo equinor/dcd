@@ -13,6 +13,7 @@ import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "../Utils/constants"
+import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -90,6 +91,8 @@ export const useSubmitToApi = () => {
     const updateSubstructure = (params: UpdateResourceParams) => updateResource(GetSubstructureService, "updateSubstructure", { ...params })
 
     const updateTransport = (params: UpdateResourceParams) => updateResource(GetTransportService, "updateTransport", { ...params })
+
+    const updateOnshorePowerSupply = (params: UpdateResourceParams) => updateResource(GetOnshorePowerSupplyService, "updateOnshorePowerSupply", { ...params })
 
     const updateDrainageStrategy = (params: UpdateResourceParams) => updateResource(GetDrainageStrategyService, "updateDrainageStrategy", { ...params })
 
@@ -207,6 +210,11 @@ export const useSubmitToApi = () => {
                 break
             case "transport":
                 success = await updateTransport({
+                    projectId, caseId, resourceId, resourceObject,
+                })
+                break
+            case "onshorePowerSupply":
+                success = await updateOnshorePowerSupply({
                     projectId, caseId, resourceId, resourceObject,
                 })
                 break
@@ -762,6 +770,28 @@ export const useSubmitToApi = () => {
                             resourceId!,
                             resourceProfileId!,
                             resourceObject as Components.Schemas.UpdateTransportCostProfileOverrideDto,
+                        ),
+                })
+                break
+            case "onshorePowerSupplyCostOverride":
+                success = await createOrUpdateTimeSeriesProfile({
+                    projectId,
+                    caseId,
+                    resourceId,
+                    resourceProfileId,
+                    createOrUpdateFunction: !resourceProfileId
+                        ? await (await GetOnshorePowerSupplyService()).createOnshorePowerSupplyCostProfileOverride(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            resourceObject as Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto,
+                        )
+                        : await (await GetOnshorePowerSupplyService()).updateOnshorePowerSupplyCostProfileOverride(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            resourceProfileId!,
+                            resourceObject as Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto,
                         ),
                 })
                 break

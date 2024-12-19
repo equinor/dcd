@@ -1,10 +1,9 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Authorization.Extensions;
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Models.Interfaces;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.ProjectAccess;
 
@@ -23,7 +22,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
 
         if (entity == null)
         {
-            throw new NotFoundInDBException($"Entity of type {typeof(T)} with id {entityId} not found.");
+            throw new NotFoundInDbException($"Entity of type {typeof(T)} with id {entityId} not found.");
         }
 
         if (entity.ProjectId != projectIdFromUrl)
@@ -46,8 +45,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
             };
         }
 
-        _ = await context.Projects.FirstOrDefaultAsync(p => p.FusionProjectId == externalId && !p.IsRevision)
-            ?? throw new NotFoundInDBException($"Project with external ID {externalId} not found.");
+        await context.GetPrimaryKeyForProjectId(externalId);
 
         var isAdmin = userRoles.Contains(ApplicationRole.Admin);
         var isUser = userRoles.Contains(ApplicationRole.User);

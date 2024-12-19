@@ -24,7 +24,6 @@ public class ExplorationProfile : Profile
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
         CreateMap<UpdateExplorationDto, Exploration>();
-        CreateMap<UpdateExplorationWithProfilesDto, Exploration>();
         CreateMap<UpdateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
@@ -37,6 +36,5 @@ public class ExplorationProfile : Profile
         CreateMap<CreateCountryOfficeCostDto, CountryOfficeCost>();
 
         CreateMap<CreateExplorationDto, Exploration>();
-        CreateMap<ExplorationWithProfilesDto, UpdateExplorationWithProfilesDto>(); // Temp fix
     }
 }

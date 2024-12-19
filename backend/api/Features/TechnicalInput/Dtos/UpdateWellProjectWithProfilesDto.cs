@@ -1,19 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
-using api.Models;
 
 namespace api.Features.TechnicalInput.Dtos;
-
-public class UpdateWellProjectWithProfilesDto
-{
-    public string Name { get; set; } = string.Empty;
-    public UpdateOilProducerCostProfileOverrideDto? OilProducerCostProfileOverride { get; set; }
-    public UpdateGasProducerCostProfileOverrideDto? GasProducerCostProfileOverride { get; set; }
-    public UpdateWaterInjectorCostProfileOverrideDto? WaterInjectorCostProfileOverride { get; set; }
-    public UpdateGasInjectorCostProfileOverrideDto? GasInjectorCostProfileOverride { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public Currency Currency { get; set; }
-}
 
 public class UpdateOilProducerCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

@@ -1,9 +1,8 @@
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 
-public interface IDrainageStrategyTimeSeriesRepository : IBaseRepository
+public interface IDrainageStrategyTimeSeriesRepository
 {
     ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil);
     Task<ProductionProfileOil?> GetProductionProfileOil(Guid productionProfileOilId);

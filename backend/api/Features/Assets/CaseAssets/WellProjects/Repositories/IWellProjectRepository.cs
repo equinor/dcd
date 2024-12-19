@@ -1,12 +1,11 @@
 using System.Linq.Expressions;
 
 using api.Features.CaseProfiles.Enums;
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.WellProjects.Repositories;
 
-public interface IWellProjectRepository : IBaseRepository
+public interface IWellProjectRepository
 {
     Task<WellProject?> GetWellProject(Guid wellProjectId);
     Task<WellProject?> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes);

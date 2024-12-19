@@ -7,59 +7,68 @@ namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
-    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, string environment, IConfigurationRoot config)
+    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder)
     {
-        var sqlServerConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
-        var sqliteConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
-
-        if (string.IsNullOrEmpty(sqlServerConnectionString) || string.IsNullOrEmpty(sqliteConnectionString))
+        if (DcdEnvironments.UseSqlite)
         {
-            if (environment == DcdEnvironments.LocalDev)
-            {
-                var dbContextOptionsBuilder = new DbContextOptionsBuilder<DcdDbContext>();
-                sqliteConnectionString = new SqliteConnectionStringBuilder
-                {
-                    DataSource = "file::memory:",
-                    Mode = SqliteOpenMode.ReadWriteCreate,
-                    Cache = SqliteCacheMode.Shared
-                }
-                    .ToString();
+            SetupSqliteDatabase(builder);
 
-                var sqliteConnection = new SqliteConnection(sqliteConnectionString);
-                sqliteConnection.Open();
-                dbContextOptionsBuilder.UseSqlite(sqliteConnection);
-
-                using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null, null);
-                context.Database.EnsureCreated();
-            }
-            else
-            {
-                var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
-                dbBuilder.UseSqlServer(sqlServerConnectionString);
-                using var context = new DcdDbContext(dbBuilder.Options, null, null);
-            }
+            return;
         }
 
-        if (environment == DcdEnvironments.LocalDev)
-        {
-            builder.Services.AddDbContext<DcdDbContext>(
-                options => options.UseLazyLoadingProxies()
-                    .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+        SetupAzureDatabase(builder);
+    }
 
-            builder.Services.AddDbContextFactory<DcdDbContext>(
-                options => options.UseLazyLoadingProxies()
-                    .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
-                lifetime: ServiceLifetime.Scoped);
+    private static void SetupSqliteDatabase(WebApplicationBuilder builder)
+    {
+        var dbContextOptionsBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+
+        var sqliteConnectionString = new SqliteConnectionStringBuilder
+        {
+            DataSource = "file::memory:",
+            Mode = SqliteOpenMode.ReadWriteCreate,
+            Cache = SqliteCacheMode.Shared
         }
-        else
-        {
-            builder.Services.AddDbContext<DcdDbContext>(
-                options => options.UseLazyLoadingProxies()
-                    .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+            .ToString();
 
-            builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseLazyLoadingProxies()
+        var sqliteConnection = new SqliteConnection(sqliteConnectionString);
+        sqliteConnection.Open();
+        dbContextOptionsBuilder.UseSqlite(sqliteConnection);
+
+        using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null);
+        context.Database.EnsureCreated();
+
+        builder.Services.AddDbContext<DcdDbContext>(
+            options => options.UseLazyLoadingProxies()
+                .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
+        builder.Services.AddDbContextFactory<DcdDbContext>(
+            options => options.UseLazyLoadingProxies()
+                .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
+            lifetime: ServiceLifetime.Scoped);
+    }
+
+    private static void SetupAzureDatabase(WebApplicationBuilder builder)
+    {
+        var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
+
+        builder.Services.AddDbContext<DcdDbContext>(
+            options => options.UseLazyLoadingProxies()
+                .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
+        builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
-                lifetime: ServiceLifetime.Scoped);
+            lifetime: ServiceLifetime.Scoped);
+
+        if (!DcdEnvironments.AllowMigrationsToBeApplied)
+        {
+            return;
         }
+
+        var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        dbBuilder.UseSqlServer(sqlServerConnectionString);
+        using var context = new DcdDbContext(dbBuilder.Options, null);
+
+        context.Database.Migrate();
     }
 }
