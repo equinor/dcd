@@ -8,6 +8,7 @@ import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { isAxiosError } from "@/Utils/common"
+import IndexView from "@/Views/IndexView"
 
 const RouteCoordinator = (): JSX.Element => {
     const { setIsRevision, setAccessRights, accessRights } = useProjectContext()
@@ -95,16 +96,7 @@ const RouteCoordinator = (): JSX.Element => {
     }, [currentContext?.externalId])
 
     if (!currentContext) {
-        return (
-            <Banner>
-                <Banner.Icon variant="info">
-                    <Icon data={info_circle} />
-                </Banner.Icon>
-                <Banner.Message>
-                    Select a project to view
-                </Banner.Message>
-            </Banner>
-        )
+        return <IndexView />
     }
     if (accessRights?.canView) {
         return (
