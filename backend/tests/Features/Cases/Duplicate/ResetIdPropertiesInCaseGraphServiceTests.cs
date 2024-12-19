@@ -35,7 +35,9 @@ public class ResetIdPropertiesInCaseGraphServiceTests
             }
         };
 
-        ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem);
+        var duplicateCaseId = Guid.NewGuid();
+
+        ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem, duplicateCaseId);
 
         Assert.Equal(Guid.Empty, caseItem.ExplorationLink);
         Assert.Equal(Guid.Empty, caseItem.SubstructureLink);

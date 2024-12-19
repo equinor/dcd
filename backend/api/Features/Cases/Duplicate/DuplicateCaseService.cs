@@ -1,11 +1,14 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Images.Copy;
+using api.Features.Images.Shared;
+using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Duplicate;
 
-public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepository, DcdDbContext context)
+public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepository, DcdDbContext context, CopyImageService copyImageService)
 {
     public async Task DuplicateCase(Guid projectId, Guid caseId)
     {
@@ -19,7 +22,9 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
             .Distinct()
             .ToHashSetAsync();
 
-        ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem);
+        var duplicateCaseId = Guid.NewGuid();
+
+        ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem, duplicateCaseId);
 
         var utcNow = DateTimeOffset.UtcNow;
         caseItem.CreateTime = utcNow;
@@ -27,6 +32,8 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
         caseItem.Name = GetUniqueCopyName(existingCaseNames, caseItem.Name);
 
         context.Cases.Add(caseItem);
+
+        await CopyCaseImages(projectPk, caseId, duplicateCaseId);
 
         await context.SaveChangesAsync();
     }
@@ -50,6 +57,33 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
             {
                 return nameSuggestion;
             }
+        }
+    }
+
+    private async Task CopyCaseImages(Guid projectPk, Guid sourceCaseId, Guid destinationCaseId)
+    {
+        var images = await context.Images
+            .Where(x => x.ProjectId == projectPk && x.CaseId == sourceCaseId)
+            .ToListAsync();
+
+        foreach (var image in images)
+        {
+            var newImageId = Guid.NewGuid();
+
+            var sourceUrl = ImageHelper.GetBlobName(sourceCaseId, image.ProjectId, image.Id);
+            var destinationUrl = ImageHelper.GetBlobName(destinationCaseId, projectPk, newImageId);
+
+            context.Images.Add(new Image
+            {
+                Id = newImageId,
+                ProjectId = projectPk,
+                CaseId = destinationCaseId,
+                CreateTime = DateTimeOffset.UtcNow,
+                Description = image.Description,
+                Url = destinationUrl
+            });
+
+            await copyImageService.Copy(sourceUrl, destinationUrl);
         }
     }
 }
