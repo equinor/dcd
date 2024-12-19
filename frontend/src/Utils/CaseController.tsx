@@ -34,7 +34,7 @@ export const duplicateCase = async (
 
 export const setCaseAsReference = async (
     caseId: string | undefined,
-    project: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto,
+    project: Components.Schemas.ProjectDataDto,
     addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ) => {
     try {

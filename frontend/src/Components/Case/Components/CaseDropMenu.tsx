@@ -78,6 +78,10 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         }
     }
 
+    const projectData = revisionAndProjectData?.dataType === "project"
+        ? revisionAndProjectData as Components.Schemas.ProjectDataDto
+        : null
+        
     return (
         <>
             <Modal
@@ -156,7 +160,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     ? (
                         <Menu.Item
                             disabled={isArchived || isEditDisabled}
-                            onClick={() => setCaseAsReference(caseId, revisionAndProjectData, addProjectEdit)}
+                            onClick={() => projectData && setCaseAsReference(caseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -167,8 +171,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     : (
                         <Menu.Item
                             disabled={isArchived || isEditDisabled}
-                            onClick={() => revisionAndProjectData
-                                && setCaseAsReference(caseId, revisionAndProjectData, addProjectEdit)}
+                            onClick={() => projectData && setCaseAsReference(caseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">

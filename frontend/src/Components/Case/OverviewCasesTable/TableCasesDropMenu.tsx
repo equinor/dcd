@@ -84,6 +84,10 @@ const CasesDropMenu = ({
 
     if (!revisionAndProjectData) { return <p>project not found</p> }
 
+    const projectData = revisionAndProjectData.dataType === "project"
+        ? revisionAndProjectData as Components.Schemas.ProjectDataDto
+        : null
+
     return (
         <>
             <Modal
@@ -171,7 +175,7 @@ const CasesDropMenu = ({
                     ? (
                         <Menu.Item
                             disabled={selectedCase?.archived || isEditDisabled}
-                            onClick={() => revisionAndProjectData && setCaseAsReference(selectedCaseId, revisionAndProjectData, addProjectEdit)}
+                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -182,7 +186,7 @@ const CasesDropMenu = ({
                     : (
                         <Menu.Item
                             disabled={selectedCase?.archived || isEditDisabled}
-                            onClick={() => revisionAndProjectData && setCaseAsReference(selectedCaseId, revisionAndProjectData, addProjectEdit)}
+                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
