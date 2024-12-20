@@ -8,5 +8,4 @@ public class RequestLog
     public required string Verb { get; set; }
     public required long RequestLengthInMilliseconds { get; set; }
     public required DateTime RequestTimestampUtc { get; set; }
-    public string? Username { get; set; }
 }

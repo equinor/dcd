@@ -1,6 +1,5 @@
 using System.Diagnostics;
 
-using api.AppInfrastructure.Authorization;
 using api.Context;
 using api.Models;
 
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Middleware;
 
-public class DcdRequestLogMiddleware(RequestDelegate next, CurrentUser currentUser)
+public class DcdRequestLogMiddleware(RequestDelegate next)
 {
     public Task Invoke(HttpContext context, IServiceScopeFactory serviceScopeFactory)
     {
@@ -38,8 +37,7 @@ public class DcdRequestLogMiddleware(RequestDelegate next, CurrentUser currentUs
                 Url = context.Request.Path,
                 Verb = context.Request.Method,
                 RequestLengthInMilliseconds = stopwatch.ElapsedMilliseconds,
-                RequestTimestampUtc = DateTime.UtcNow,
-                Username = currentUser.Username
+                RequestTimestampUtc = DateTime.UtcNow
             });
 
             await dbContext.SaveChangesAsync();
