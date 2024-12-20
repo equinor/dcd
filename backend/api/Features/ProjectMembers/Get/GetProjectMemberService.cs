@@ -23,9 +23,12 @@ public class GetProjectMemberService(DcdDbContext context)
             .ToListAsync();
     }
 
-    public async Task<ProjectMemberDto> GetProjectMember(Guid projectMemberId)
+    public async Task<ProjectMemberDto> GetProjectMember(Guid projectId, Guid projectMemberId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         return await context.ProjectMembers
+            .Where(x => x.ProjectId == projectPk)
             .Where(c => c.UserId == projectMemberId)
             .Select(x => new ProjectMemberDto
             {

@@ -536,8 +536,8 @@ declare namespace Components {
         }
         export interface CreateRevisionDto {
             name: string;
-            internalProjectPhase?: InternalProjectPhase /* int32 */;
-            classification?: ProjectClassification /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            classification: ProjectClassification /* int32 */;
             arena: boolean;
             mdqc: boolean;
         }
@@ -1474,6 +1474,9 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
+        }
+        export interface UpdateImageDto {
+            description: string | null;
         }
         export interface UpdateImportedElectricityOverrideDto {
             startYear?: number; // int32
@@ -2769,6 +2772,25 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ImageId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                imageId: Parameters.ImageId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateImageDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdOffshoreFacilitiesOperationsCostProfileOverride {
         namespace Post {
             namespace Parameters {
@@ -3535,6 +3557,21 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 imageId: Parameters.ImageId /* uuid */;
             }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type ImageId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                imageId: Parameters.ImageId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateImageDto;
             namespace Responses {
                 export interface $200 {
                 }

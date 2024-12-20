@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241220084417_AddLazyLoadingLogging")]
+    partial class AddLazyLoadingLogging
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1861,13 +1864,10 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("RequestEndUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<long>("RequestLengthInMilliseconds")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("RequestStartUtc")
+                    b.Property<DateTime>("RequestTimestampUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Url")

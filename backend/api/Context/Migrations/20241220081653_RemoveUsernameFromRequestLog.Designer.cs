@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241220081653_RemoveUsernameFromRequestLog")]
+    partial class RemoveUsernameFromRequestLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1254,26 +1257,6 @@ namespace api.Migrations
                     b.ToTable("ImportedElectricityOverride");
                 });
 
-            modelBuilder.Entity("api.Models.LazyLoadingOccurrence", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimestampUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LazyLoadingOccurrences");
-                });
-
             modelBuilder.Entity("api.Models.NetSalesGas", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1861,13 +1844,10 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("RequestEndUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<long>("RequestLengthInMilliseconds")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("RequestStartUtc")
+                    b.Property<DateTime>("RequestTimestampUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Url")

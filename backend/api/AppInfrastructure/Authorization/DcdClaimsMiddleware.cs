@@ -6,9 +6,7 @@ using Fusion.Integration.Profile;
 
 namespace api.AppInfrastructure.Authorization;
 
-public class ClaimsMiddleware(
-    RequestDelegate nextMiddleware,
-    ILogger<ClaimsMiddleware> logger)
+public class DcdClaimsMiddleware(RequestDelegate nextMiddleware, ILogger<DcdClaimsMiddleware> logger)
 {
     public const string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
