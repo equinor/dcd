@@ -7,5 +7,6 @@ public class RequestLog
     public required string Url { get; set; }
     public required string Verb { get; set; }
     public required long RequestLengthInMilliseconds { get; set; }
-    public required DateTime RequestTimestampUtc { get; set; }
+    public required DateTime RequestStartUtc { get; set; }
+    public required DateTime RequestEndUtc { get; set; }
 }

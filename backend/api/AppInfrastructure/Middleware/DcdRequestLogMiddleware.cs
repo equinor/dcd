@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using api.Context;
 using api.Models;
 
@@ -11,7 +9,7 @@ public class DcdRequestLogMiddleware(RequestDelegate next)
 {
     public Task Invoke(HttpContext context, IServiceScopeFactory serviceScopeFactory)
     {
-        var stopwatch = Stopwatch.StartNew();
+        var requestStartUtc = DateTime.UtcNow;
 
         var endpoint = context.GetEndpoint();
         var routeEndpoint = endpoint as RouteEndpoint;
@@ -31,13 +29,15 @@ public class DcdRequestLogMiddleware(RequestDelegate next)
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
+            var requestEndUtc = DateTime.UtcNow;
             dbContext.RequestLogs.Add(new RequestLog
             {
                 UrlPattern = urlPattern,
                 Url = context.Request.Path,
                 Verb = context.Request.Method,
-                RequestLengthInMilliseconds = stopwatch.ElapsedMilliseconds,
-                RequestTimestampUtc = DateTime.UtcNow
+                RequestLengthInMilliseconds = requestEndUtc.Subtract(requestStartUtc).Milliseconds,
+                RequestStartUtc = requestStartUtc,
+                RequestEndUtc = requestEndUtc
             });
 
             await dbContext.SaveChangesAsync();
