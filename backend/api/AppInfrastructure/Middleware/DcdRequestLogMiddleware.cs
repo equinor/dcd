@@ -35,7 +35,7 @@ public class DcdRequestLogMiddleware(RequestDelegate next)
                 UrlPattern = urlPattern,
                 Url = context.Request.Path,
                 Verb = context.Request.Method,
-                RequestLengthInMilliseconds = requestEndUtc.Subtract(requestStartUtc).Milliseconds,
+                RequestLengthInMilliseconds = (int)requestEndUtc.Subtract(requestStartUtc).TotalMilliseconds,
                 RequestStartUtc = requestStartUtc,
                 RequestEndUtc = requestEndUtc
             });
