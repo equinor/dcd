@@ -28,6 +28,8 @@ public class GetImageService(DcdDbContext context, BlobServiceClient blobService
             .Where(img => img.ProjectId == projectPk && img.CaseId == caseId)
             .ToListAsync();
 
+        images = images.OrderBy(x => x.CreateTime).ToList();
+
         var dtos = new List<ImageDto>();
 
         foreach (var image in images)
@@ -46,6 +48,8 @@ public class GetImageService(DcdDbContext context, BlobServiceClient blobService
         var images = await context.Images
             .Where(img => img.ProjectId == projectPk && img.CaseId == null)
             .ToListAsync();
+
+        images = images.OrderBy(x => x.CreateTime).ToList();
 
         var dtos = new List<ImageDto>();
 
