@@ -103,7 +103,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     {
         if (DcdEnvironments.EnableVerboseEntityFrameworkLogging)
         {
-            optionsBuilder.LogTo(Console.WriteLine);
             optionsBuilder.LogTo(WriteLazyLoadingToDatabase);
         }
 
@@ -114,6 +113,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         base.OnConfiguring(optionsBuilder);
     }
 
+    private static bool _isLogging;
     private void WriteLazyLoadingToDatabase(string message)
     {
         if (serviceScopeFactory == null)
@@ -121,10 +121,23 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
             return;
         }
 
-        if (!message.Contains("lazy", StringComparison.InvariantCultureIgnoreCase))
+        const string patternStart = "The navigation";
+        const string patternEnd = "is being lazy-loaded.";
+
+        if (!message.Contains(patternStart) || !message.Contains(patternEnd))
         {
             return;
         }
+
+        if (_isLogging)
+        {
+            return;
+        }
+
+        _isLogging = true;
+
+        message = message[message.IndexOf(patternStart)..];
+        message = message[..(message.IndexOf(patternEnd) + patternEnd.Length)];
 
         using var scope = serviceScopeFactory.CreateScope();
 
@@ -139,6 +152,8 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         });
 
         dbContext.SaveChanges();
+
+        _isLogging = false;
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
