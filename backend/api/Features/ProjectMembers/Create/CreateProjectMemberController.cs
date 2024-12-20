@@ -17,6 +17,6 @@ public class CreateProjectMemberController(CreateProjectMemberService createProj
     {
         var projectMemberId = await createProjectMemberService.CreateProjectMember(projectId, createProjectMemberDto);
 
-        return await getProjectMemberService.GetProjectMember(projectMemberId);
+        return await getProjectMemberService.GetProjectMember(projectId, projectMemberId);
     }
 }
