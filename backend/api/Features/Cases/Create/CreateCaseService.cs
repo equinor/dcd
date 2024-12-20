@@ -2,8 +2,6 @@ using api.Context;
 using api.Context.Extensions;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Create;
 
 public class CreateCaseService(DcdDbContext context)
@@ -11,8 +9,6 @@ public class CreateCaseService(DcdDbContext context)
     public async Task CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
-
-        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
         var createdCase = new Case
         {
@@ -27,14 +23,14 @@ public class CreateCaseService(DcdDbContext context)
             CapexFactorFeasibilityStudies = 0.015,
             CapexFactorFEEDStudies = 0.015,
             CreateTime = DateTimeOffset.UtcNow,
-            DrainageStrategy = CreateDrainageStrategy(project),
-            Topside = CreateTopside(project),
-            Surf = CreateSurf(project),
-            Substructure = CreateSubstructure(project),
-            Transport = CreateTransport(project),
-            Exploration = CreateExploration(project),
-            WellProject = CreateWellProject(project),
-            OnshorePowerSupply = CreateOnshorePowerSupply(project)
+            DrainageStrategy = CreateDrainageStrategy(projectPk),
+            Topside = CreateTopside(projectPk),
+            Surf = CreateSurf(projectPk),
+            Substructure = CreateSubstructure(projectPk),
+            Transport = CreateTransport(projectPk),
+            Exploration = CreateExploration(projectPk),
+            WellProject = CreateWellProject(projectPk),
+            OnshorePowerSupply = CreateOnshorePowerSupply(projectPk)
         };
 
         context.Cases.Add(createdCase);
@@ -42,22 +38,22 @@ public class CreateCaseService(DcdDbContext context)
         await context.SaveChangesAsync();
     }
 
-    private static DrainageStrategy CreateDrainageStrategy(Project project)
+    private static DrainageStrategy CreateDrainageStrategy(Guid projectPk)
     {
         return new DrainageStrategy
         {
             Name = "Drainage Strategy",
             Description = "Drainage Strategy",
-            Project = project
+            ProjectId = projectPk
         };
     }
 
-    private static Topside CreateTopside(Project project)
+    private static Topside CreateTopside(Guid projectPk)
     {
         return new Topside
         {
             Name = "Topside",
-            Project = project,
+            ProjectId = projectPk,
             CostProfileOverride = new TopsideCostProfileOverride
             {
                 Override = true
@@ -65,12 +61,12 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Surf CreateSurf(Project project)
+    private static Surf CreateSurf(Guid projectPk)
     {
         return new Surf
         {
             Name = "Surf",
-            Project = project,
+            ProjectId = projectPk,
             CostProfileOverride = new SurfCostProfileOverride
             {
                 Override = true
@@ -78,12 +74,12 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Substructure CreateSubstructure(Project project)
+    private static Substructure CreateSubstructure(Guid projectPk)
     {
         return new Substructure
         {
             Name = "Substructure",
-            Project = project,
+            ProjectId = projectPk,
             CostProfileOverride = new SubstructureCostProfileOverride
             {
                 Override = true
@@ -91,12 +87,12 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Transport CreateTransport(Project project)
+    private static Transport CreateTransport(Guid projectPk)
     {
         return new Transport
         {
             Name = "Transport",
-            Project = project,
+            ProjectId = projectPk,
             CostProfileOverride = new TransportCostProfileOverride
             {
                 Override = true
@@ -104,12 +100,12 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static OnshorePowerSupply CreateOnshorePowerSupply(Project project)
+    private static OnshorePowerSupply CreateOnshorePowerSupply(Guid projectPk)
     {
         return new OnshorePowerSupply
         {
             Name = "OnshorePowerSupply",
-            Project = project,
+            ProjectId = projectPk,
             CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
             {
                 Override = true
@@ -117,21 +113,21 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Exploration CreateExploration(Project project)
+    private static Exploration CreateExploration(Guid projectPk)
     {
         return new Exploration
         {
             Name = "Exploration",
-            Project = project
+            ProjectId = projectPk
         };
     }
 
-    private static WellProject CreateWellProject(Project project)
+    private static WellProject CreateWellProject(Guid projectPk)
     {
         return new WellProject
         {
             Name = "Well Project",
-            Project = project
+            ProjectId = projectPk
         };
     }
 }
