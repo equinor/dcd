@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace api.Context;
 
-public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser) : DbContext(options)
+public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser, IServiceScopeFactory? serviceScopeFactory) : DbContext(options)
 {
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
@@ -85,6 +85,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile => Set<CalculatedTotalCostCostProfile>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
+    public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -103,6 +104,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         if (DcdEnvironments.EnableVerboseEntityFrameworkLogging)
         {
             optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.LogTo(WriteLazyLoadingToDatabase);
         }
 
         optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
@@ -110,6 +112,33 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         optionsBuilder.EnableSensitiveDataLogging();
 
         base.OnConfiguring(optionsBuilder);
+    }
+
+    private void WriteLazyLoadingToDatabase(string message)
+    {
+        if (serviceScopeFactory == null)
+        {
+            return;
+        }
+
+        if (!message.Contains("lazy", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return;
+        }
+
+        using var scope = serviceScopeFactory.CreateScope();
+
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
+
+        using var dbContext = dbContextFactory.CreateDbContext();
+
+        dbContext.LazyLoadingOccurrences.Add(new LazyLoadingOccurrence
+        {
+            Message = message,
+            TimestampUtc = DateTime.UtcNow
+        });
+
+        dbContext.SaveChanges();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
