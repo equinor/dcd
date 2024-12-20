@@ -37,7 +37,7 @@ public class CreateCaseService(DcdDbContext context)
             OnshorePowerSupply = CreateOnshorePowerSupply(project)
         };
 
-        project.Cases.Add(createdCase);
+        context.Cases.Add(createdCase);
 
         await context.SaveChangesAsync();
     }
