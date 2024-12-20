@@ -4,7 +4,6 @@ using api.AppInfrastructure.Authorization;
 using api.Context;
 using api.Models;
 
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Middleware;
@@ -15,7 +14,10 @@ public class DcdRequestLogMiddleware(RequestDelegate next, CurrentUser currentUs
     {
         var stopwatch = Stopwatch.StartNew();
 
-        var urlPattern = (context.Features.Get<IEndpointFeature>()?.Endpoint as RouteEndpoint)?.RoutePattern.RawText;
+        var endpoint = context.GetEndpoint();
+        var routeEndpoint = endpoint as RouteEndpoint;
+        var routePattern = routeEndpoint?.RoutePattern;
+        var urlPattern = routePattern?.RawText;
 
         if (urlPattern == null)
         {
