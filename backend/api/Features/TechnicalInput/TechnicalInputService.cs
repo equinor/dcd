@@ -9,7 +9,6 @@ using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
 using api.Features.ProjectData;
 using api.Features.Projects.Update;
-using api.Features.Stea.Dtos;
 using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;
@@ -184,14 +183,6 @@ public class TechnicalInputService(
         project.ModifyTime = DateTimeOffset.UtcNow;
 
         await context.SaveChangesAsync();
-
-        var projectDto = mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-
-        if (projectDto == null)
-        {
-            logger.LogError("Failed to map project to dto");
-            throw new Exception("Failed to map project to dto");
-        }
     }
 
     private async Task UpdateExplorationOperationalWellCosts(Project project, UpdateExplorationOperationalWellCostsDto updatedDto)
