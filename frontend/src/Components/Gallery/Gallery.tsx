@@ -49,9 +49,9 @@ const GalleryControls = styled.div`
 `
 
 const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
-    font-size: 0.750rem;
+    font-size: 12px;
     font-weight: 500;
-    line-height: 1.333em;
+    line-height: 21px;
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
 
@@ -69,9 +69,9 @@ const Gallery = () => {
             if (projectId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = caseId ?
-                     await imageService.getCaseImages(projectId, caseId) :
-                     await imageService.getProjectImages(projectId)
+                    const imageDtos = caseId
+                        ? await imageService.getCaseImages(projectId, caseId)
+                        : await imageService.getProjectImages(projectId)
 
                     setGallery(imageDtos)
                 } catch (error) {

@@ -16,6 +16,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
+import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 
 const ProjectOverviewTab = () => {
     const { editMode } = useAppContext()
@@ -85,7 +86,7 @@ const ProjectOverviewTab = () => {
     }
 
     if (!revisionAndProjectData) {
-        return <div>Loading project data...</div>
+        return <ProjectSkeleton />
     }
 
     return (

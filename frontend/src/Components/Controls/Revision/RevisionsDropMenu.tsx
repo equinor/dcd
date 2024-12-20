@@ -19,7 +19,7 @@ type RevisionsDropMenuProps = {
 }
 
 interface Revision {
-    id: string
+    revisionId: string
     name: string
     date: string
 }
@@ -69,7 +69,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     useEffect(() => {
         if (dataType === "project") {
             const formattedRevisions = revisionDetailsList.map(({ revisionId, revisionName, revisionDate }: Components.Schemas.RevisionDetailsDto) => ({
-                id: revisionId,
+                revisionId,
                 name: revisionName,
                 date: revisionDate,
             }))
@@ -97,11 +97,11 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
             onClose={() => setIsMenuOpen(false)}
         >
             <StyledMenuContainer>
-                {revisions.map(({ id, name, date }) => (
+                {revisions.map(({ revisionId, name, date }) => (
                     <MenuItem
-                        key={id}
-                        onClick={() => handleRevisionNavigation(id)}
-                        disabled={disableCurrentRevision(id)}
+                        key={revisionId}
+                        onClick={() => handleRevisionNavigation(revisionId)}
+                        disabled={disableCurrentRevision(revisionId)}
                     >
                         <MenuItemContent>
                             <Typography>
