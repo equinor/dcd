@@ -169,6 +169,7 @@ public static class DcdIocConfiguration
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
+        services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();

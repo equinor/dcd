@@ -12,7 +12,7 @@ namespace api.Features.Stea;
 
 public class SteaService(DcdDbContext context,
     ILogger<SteaService> logger,
-    IProjectWithAssetsRepository projectWithAssetsRepository, IMapper mapper)
+    IProjectWithCasesAndAssetsRepository projectWithCasesAndAssetsRepository, IMapper mapper)
 {
     public async Task<(byte[] excelFileContents, string filename)> GetExcelFile(Guid projectId)
     {
@@ -27,7 +27,7 @@ public class SteaService(DcdDbContext context,
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
+        var project = await projectWithCasesAndAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
 
         var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 

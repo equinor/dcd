@@ -22,7 +22,7 @@ namespace api.Features.TechnicalInput;
 
 public class TechnicalInputService(
     DcdDbContext context,
-    IProjectWithAssetsRepository projectWithAssetsRepository,
+    IProjectWithCasesAndAssetsRepository projectWithCasesAndAssetsRepository,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILogger<TechnicalInputService> logger,
     GetProjectDataService getProjectDataService,
@@ -32,7 +32,7 @@ public class TechnicalInputService(
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
+        var project = await projectWithCasesAndAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
 
         await UpdateProject(project, technicalInputDto.ProjectDto);
 
