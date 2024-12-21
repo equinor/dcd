@@ -14,6 +14,7 @@ public class UpdateRevisionController(GetProjectDataService getProjectDataServic
     [HttpPut("projects/{projectId:guid}/revisions/{revisionId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<RevisionDataDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
     {
         await updateRevisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);

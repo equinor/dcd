@@ -12,6 +12,7 @@ public class CaseWithAssetsController(CaseWithAssetsService caseWithAssetsServic
     [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/case-with-assets")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<CaseWithAssetsDto> GetCaseWithAssets([FromRoute] Guid projectId, [FromRoute] Guid caseId)
     {
         return await caseWithAssetsService.GetCaseWithAssetsNoTracking(projectId, caseId);

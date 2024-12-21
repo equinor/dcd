@@ -12,6 +12,7 @@ public class CaseComparisonController(CaseComparisonService caseComparisonServic
     [HttpGet("projects/{projectId:guid}/case-comparison")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
         return await caseComparisonService.Calculate(projectId);

@@ -72,5 +72,6 @@ app.UseMiddleware<DcdClaimsMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<DcdRequestLogMiddleware>();
+app.UseMiddleware<DisableLazyLoadingMiddleware>();
 
 app.Run();

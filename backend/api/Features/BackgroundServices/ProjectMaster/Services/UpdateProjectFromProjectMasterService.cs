@@ -44,6 +44,7 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
     private async Task<Dictionary<Guid, string>> ProjectsInDatabase()
     {
         await using var context = await contextFactory.CreateDbContextAsync();
+        context.ChangeTracker.LazyLoadingEnabled = false;
 
         return await context.Projects
             .Where(x => x.OriginalProjectId == null)
@@ -53,6 +54,7 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
     private async Task<Project> GetProject(Guid projectId)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
+        context.ChangeTracker.LazyLoadingEnabled = false;
 
         return await context.Projects.SingleAsync(x => x.Id == projectId);
     }
@@ -70,6 +72,7 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
     private async Task CreateRevisionIfProjectPhaseHasChanged(UpdatableFieldsFromProjectMasterDto projectDto)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
+        context.ChangeTracker.LazyLoadingEnabled = false;
 
         var project = await context.Projects.SingleAsync(x => x.Id == projectDto.Id);
 
@@ -97,6 +100,7 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
     private async Task UpdateProject(UpdatableFieldsFromProjectMasterDto projectMasterDto)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
+        context.ChangeTracker.LazyLoadingEnabled = false;
 
         var project = await context.Projects.SingleAsync(x => x.Id == projectMasterDto.Id);
 

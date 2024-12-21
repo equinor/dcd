@@ -13,6 +13,7 @@ public class UpdateWellController(UpdateWellService updateWellService, GetWellSe
     [HttpPut("projects/{projectId:guid}/wells/{wellId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<WellDto> UpdateWell([FromRoute] Guid projectId, [FromRoute] Guid wellId, [FromBody] UpdateWellDto wellDto)
     {
         await updateWellService.UpdateWell(projectId, wellId, wellDto);

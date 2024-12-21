@@ -13,6 +13,7 @@ public class CreateWellController(CreateWellService createWellService, GetWellSe
     [HttpPost("projects/{projectId:guid}/wells")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<WellDto> CreateWell([FromRoute] Guid projectId, [FromBody] CreateWellDto wellDto)
     {
         var wellId = await createWellService.CreateWell(projectId, wellDto);
