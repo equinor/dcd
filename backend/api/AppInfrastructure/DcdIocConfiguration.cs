@@ -161,6 +161,7 @@ public static class DcdIocConfiguration
 
         /* Stea / Excel export */
         services.AddScoped<SteaService>();
+        services.AddScoped<SteaRepository>();
 
         /* Integrations / external systems */
         services.AddScoped<IFusionService, FusionService>();

@@ -4,7 +4,7 @@ namespace api.Features.Stea.Dtos;
 
 public static class SteaProjectDtoBuilder
 {
-    public static SteaProjectDto Build(ProjectWithAssetsDto project, List<SteaCaseDto> steaCaseDtos)
+    public static SteaProjectDto Build(string projectName, List<SteaCaseDto> steaCaseDtos)
     {
         var steaCases = new List<SteaCaseDto>();
 
@@ -26,7 +26,7 @@ public static class SteaProjectDtoBuilder
 
         return new SteaProjectDto
         {
-            Name = project.Name,
+            Name = projectName,
             SteaCases = steaCases,
             StartYear = startYear
         };
