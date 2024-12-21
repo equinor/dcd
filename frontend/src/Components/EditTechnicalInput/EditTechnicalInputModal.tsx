@@ -72,7 +72,6 @@ const EditTechnicalInputModal = () => {
             dto.projectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
-
             dto.developmentOperationalWellCostsDto = developmentOperationalWellCosts
 
             const wellDtos = [...explorationWells, ...wellProjectWells]
@@ -82,11 +81,9 @@ const EditTechnicalInputModal = () => {
             dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
 
             // refactor to use react-query?
-            const result = revisionAndProjectData ? await (await GetTechnicalInputService()).update(revisionAndProjectData?.projectId, dto) : undefined
+            const projectData = await (await GetTechnicalInputService()).update(revisionAndProjectData.projectId, dto)
 
-            if (result?.projectData) {
-                addProjectEdit(result?.projectData.projectId, result?.projectData.commonProjectAndRevisionData)
-            }
+            addProjectEdit(projectData.projectId, projectData.commonProjectAndRevisionData)
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)

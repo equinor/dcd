@@ -1,13 +1,10 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
-using api.Features.ProjectData;
 using api.Features.Projects.Update;
 using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
@@ -25,10 +22,9 @@ public class TechnicalInputService(
     IProjectWithCasesAndAssetsRepository projectWithCasesAndAssetsRepository,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILogger<TechnicalInputService> logger,
-    GetProjectDataService getProjectDataService,
     IMapper mapper)
 {
-    public async Task<TechnicalInputDto> UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
+    public async Task UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
@@ -39,8 +35,6 @@ public class TechnicalInputService(
         await UpdateExplorationOperationalWellCosts(project, technicalInputDto.ExplorationOperationalWellCostsDto);
         await UpdateDevelopmentOperationalWellCosts(project, technicalInputDto.DevelopmentOperationalWellCostsDto);
 
-        var returnDto = new TechnicalInputDto();
-
         if (technicalInputDto.DeleteWellDtos?.Length > 0)
         {
             await DeleteWells(technicalInputDto.DeleteWellDtos);
@@ -48,20 +42,10 @@ public class TechnicalInputService(
 
         if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(projectPk, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
-
-            if (wellResult != null)
-            {
-                returnDto.ExplorationDto = wellResult.Value.explorationDto;
-                returnDto.WellProjectDto = wellResult.Value.wellProjectDto;
-            }
+            await CreateAndUpdateWells(projectPk, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
         }
 
         await context.SaveChangesAsync();
-
-        returnDto.ProjectData = await getProjectDataService.GetProjectData(projectPk);
-
-        return returnDto;
     }
 
     private async Task DeleteWells(DeleteWellDto[] deleteWellDtos)
@@ -111,7 +95,7 @@ public class TechnicalInputService(
         }
     }
 
-    private async Task<(ExplorationWithProfilesDto explorationDto, WellProjectWithProfilesDto wellProjectDto)?> CreateAndUpdateWells(
+    private async Task CreateAndUpdateWells(
             Guid projectId,
             CreateWellDto[]? createWellDtos,
             UpdateWellDto[]? updateWellDtos)
@@ -159,8 +143,6 @@ public class TechnicalInputService(
         {
             await costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }
-
-        return null;
     }
 
     private async Task<Well> GetWell(Guid wellId)
