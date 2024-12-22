@@ -87,6 +87,7 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateRevisionService>();
 
         services.AddScoped<TechnicalInputService>();
+        services.AddScoped<UpdateProjectAndOperationalWellsCostService>();
 
         /* Project members */
         services.AddScoped<GetProjectMemberService>();

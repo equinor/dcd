@@ -1,11 +1,8 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
-using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
-using api.Features.Projects.Update;
 using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;
@@ -21,7 +18,6 @@ public class TechnicalInputService(
     DcdDbContext context,
     IProjectWithCasesAndAssetsRepository projectWithCasesAndAssetsRepository,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
-    ILogger<TechnicalInputService> logger,
     IMapper mapper)
 {
     public async Task UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
@@ -29,11 +25,6 @@ public class TechnicalInputService(
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var project = await projectWithCasesAndAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
-
-        await UpdateProject(project, technicalInputDto.ProjectDto);
-
-        await UpdateExplorationOperationalWellCosts(project, technicalInputDto.ExplorationOperationalWellCostsDto);
-        await UpdateDevelopmentOperationalWellCosts(project, technicalInputDto.DevelopmentOperationalWellCostsDto);
 
         if (technicalInputDto.DeleteWellDtos?.Length > 0)
         {
@@ -158,64 +149,5 @@ public class TechnicalInputService(
         }
 
         return well;
-    }
-    private async Task UpdateProject(Project project, UpdateProjectDto updatedDto)
-    {
-        mapper.Map(updatedDto, project);
-        project.ModifyTime = DateTimeOffset.UtcNow;
-
-        await context.SaveChangesAsync();
-    }
-
-    private async Task UpdateExplorationOperationalWellCosts(Project project, UpdateExplorationOperationalWellCostsDto updatedDto)
-    {
-        if (project.ExplorationOperationalWellCosts == null)
-        {
-            logger.LogError("Exploration operational well costs not found");
-            throw new Exception("Exploration operational well costs not found");
-        }
-
-        var item = await context.ExplorationOperationalWellCosts
-                       .Include(eowc => eowc.Project)
-                       .FirstOrDefaultAsync(o => o.Id == project.ExplorationOperationalWellCosts.Id)
-                   ?? new ExplorationOperationalWellCosts();
-        mapper.Map(updatedDto, item);
-
-        var updatedItem = context.ExplorationOperationalWellCosts.Update(item);
-        await context.SaveChangesAsync();
-
-        var explorationOperationalWellCostsDto = mapper.Map<ExplorationOperationalWellCostsDto>(updatedItem.Entity);
-
-        if (explorationOperationalWellCostsDto == null)
-        {
-            logger.LogError("Failed to map exploration operational well costs to dto");
-            throw new Exception("Failed to map exploration operational well costs to dto");
-        }
-    }
-
-    private async Task UpdateDevelopmentOperationalWellCosts(Project project, UpdateDevelopmentOperationalWellCostsDto updatedDto)
-    {
-        if (project.DevelopmentOperationalWellCosts == null)
-        {
-            logger.LogError("Development operational well costs not found");
-            throw new Exception("Development operational well costs not found");
-        }
-
-        var item = await context.DevelopmentOperationalWellCosts
-                       .Include(dowc => dowc.Project)
-                       .FirstOrDefaultAsync(o => o.Id == project.DevelopmentOperationalWellCosts.Id)
-                   ?? new DevelopmentOperationalWellCosts();
-        mapper.Map(updatedDto, item);
-
-        var updatedItem = context.DevelopmentOperationalWellCosts.Update(item);
-        await context.SaveChangesAsync();
-
-        var developmentOperationalWellCostsDto = mapper.Map<DevelopmentOperationalWellCostsDto>(updatedItem.Entity);
-
-        if (developmentOperationalWellCostsDto == null)
-        {
-            logger.LogError("Failed to map development operational well costs to dto");
-            throw new Exception("Failed to map development operational well costs to dto");
-        }
     }
 }

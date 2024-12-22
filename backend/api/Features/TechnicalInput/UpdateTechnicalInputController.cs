@@ -10,13 +10,16 @@ using Microsoft.Identity.Web.Resource;
 namespace api.Features.TechnicalInput;
 
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class UpdateTechnicalInputController(TechnicalInputService technicalInputService, GetProjectDataService getProjectDataService) : ControllerBase
+public class UpdateTechnicalInputController(TechnicalInputService technicalInputService,
+    UpdateProjectAndOperationalWellsCostService updateProjectAndOperationalWellsCostService,
+    GetProjectDataService getProjectDataService) : ControllerBase
 {
     [HttpPut("projects/{projectId:guid}/technical-input")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<ProjectDataDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] UpdateTechnicalInputDto dto)
     {
+        await updateProjectAndOperationalWellsCostService.UpdateProjectAndOperationalWellsCosts(projectId, dto);
         await technicalInputService.UpdateTechnicalInput(projectId, dto);
         return await getProjectDataService.GetProjectData(projectId);
     }
