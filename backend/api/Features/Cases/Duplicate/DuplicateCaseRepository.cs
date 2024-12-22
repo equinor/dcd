@@ -8,7 +8,7 @@ namespace api.Features.Cases.Duplicate;
 
 public class DuplicateCaseRepository(DcdDbContext context)
 {
-    public async Task<Case> GetCaseAndAssetsNoTracking(Guid projectId, Guid caseId)
+    public async Task<Case> GetDetachedCaseGraph(Guid projectId, Guid caseId)
     {
         var caseItem = await LoadCase(projectId, caseId);
 
