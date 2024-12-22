@@ -88,6 +88,8 @@ public static class DcdIocConfiguration
 
         services.AddScoped<TechnicalInputService>();
         services.AddScoped<UpdateProjectAndOperationalWellsCostService>();
+        services.AddScoped<UpdateExplorationWellCostProfilesService>();
+        services.AddScoped<UpdateWellProjectCostProfilesService>();
 
         /* Project members */
         services.AddScoped<GetProjectMemberService>();
@@ -181,8 +183,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
         services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
-
-        services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();

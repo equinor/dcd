@@ -1558,12 +1558,12 @@ declare namespace Components {
             override?: boolean;
         }
         export interface UpdateTechnicalInputDto {
-            developmentOperationalWellCostsDto?: UpdateDevelopmentOperationalWellCostsDto;
-            explorationOperationalWellCostsDto?: UpdateExplorationOperationalWellCostsDto;
-            updateWellDtos?: UpdateWellDto[] | null;
-            createWellDtos?: CreateWellDto[] | null;
-            deleteWellDtos?: DeleteWellDto[] | null;
-            projectDto?: UpdateProjectDto;
+            projectDto: UpdateProjectDto;
+            developmentOperationalWellCostsDto: UpdateDevelopmentOperationalWellCostsDto;
+            explorationOperationalWellCostsDto: UpdateExplorationOperationalWellCostsDto;
+            updateWellDtos: UpdateWellDto[];
+            createWellDtos: CreateWellDto[];
+            deleteWellDtos: DeleteWellDto[];
         }
         export interface UpdateTopsideCostProfileOverrideDto {
             startYear?: number; // int32

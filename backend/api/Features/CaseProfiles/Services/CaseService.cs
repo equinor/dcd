@@ -52,10 +52,4 @@ public class CaseService(
         return await repository.GetCaseWithIncludes(caseId, includes)
             ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
     }
-
-    // TODO: Delete this method
-    public async Task<IEnumerable<Case>> GetAll()
-    {
-        return await context.Cases.ToListAsync();
-    }
 }
