@@ -50,9 +50,9 @@ const GalleryControls = styled.div`
 `
 
 const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
-    font-size: 0.750rem;
+    font-size: 12px;
     font-weight: 500;
-    line-height: 1.333em;
+    line-height: 21px;
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
 

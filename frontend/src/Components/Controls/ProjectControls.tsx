@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import styled from "styled-components"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Typography,
     Icon,
@@ -13,39 +12,31 @@ import {
     visibility,
     check_circle_outlined,
     history,
-    settings,
-    users_circle,
-} from "@equinor/eds-icons"
-import Tabs from "@mui/material/Tabs"
-import Tab from "@mui/material/Tab"
-import { useMediaQuery, Box } from "@mui/material"
 
+} from "@equinor/eds-icons"
+import { useMediaQuery } from "@mui/material"
 import { useProjectContext } from "@/Context/ProjectContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useAppContext } from "@/Context/AppContext"
 import { formatDateAndTime } from "@/Utils/common"
-import { projectTabNames } from "@/Utils/constants"
-import RevisionsDropMenu from "./RevisionsDropMenu"
-import Classification from "./ClassificationChip"
+import RevisionsDropMenu from "./Revision/RevisionsDropMenu"
 import FullPageLoading from "../fullPageLoading"
-import RevisionChip from "./RevisionChip"
 import { useFeatureContext } from "@/Context/FeatureContext"
+import ProjectTabs from "./TabNavigators/ProjectTabs"
 
 const Header = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    grid-area: top-right;
     padding: 0 13px;
 
     & div {
         display: flex;
-        align-items: center;
+        justify-content: end;
         gap: 10px;
     }
 `
 
 const TabContainer = styled.div`
+    grid-area: bottom;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -55,11 +46,9 @@ const TabContainer = styled.div`
 
 const LastUpdated = styled.div`
     flex-direction: column;
-    gap: 0!important;
-`
-
-const ChipsContainer = styled.div<{ $isSmallScreen: boolean }>`
-    flex-direction: ${({ $isSmallScreen }) => ($isSmallScreen ? "column" : "row")};
+    && {
+        gap: 0;
+    }
 `
 
 const Status = styled.div`
@@ -74,33 +63,30 @@ interface props {
 }
 
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
-    const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
     const {
         activeTabProject,
         setActiveTabProject,
         isRevision,
     } = useProjectContext()
-    const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
-    const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
-    const { isSaving, showEditHistory } = useAppContext()
+    const { isSaving } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const isSmallScreen = useMediaQuery("(max-width: 968px)")
 
     const { Features } = useFeatureContext()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<HTMLElement | null>(null)
 
-    const handleTabChange = (index: number) => {
-        setActiveTabProject(index)
-    }
-
-    const getTabIndex = (index: number, isRightTabs: boolean) => {
-        if (isRightTabs) {
-            return index + leftTabs.length
+    const handleMenuToggle = (event: React.MouseEvent<HTMLElement>) => {
+        if (isMenuOpen) {
+            setRevisionMenuAnchorEl(null)
+            setIsMenuOpen(false)
+        } else {
+            setRevisionMenuAnchorEl(event.currentTarget)
+            setIsMenuOpen(true)
         }
-        return index
     }
+
     useEffect(() => {
         if (isRevision) {
             setEditMode(false)
@@ -111,17 +97,6 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
         <>
             {isSaving && <FullPageLoading />}
             <Header>
-                <div>
-                    <Typography variant="h4">
-                        {currentContext?.title}
-                    </Typography>
-                    <ChipsContainer $isSmallScreen={isSmallScreen}>
-                        <Classification />
-                        {isRevision && (
-                            <RevisionChip />
-                        )}
-                    </ChipsContainer>
-                </div>
                 <div>
                     {!editMode
                         && (
@@ -174,7 +149,10 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         && (
                             <div>
                                 <Tooltip title="This is a revision">
-                                    <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={handleMenuToggle}
+                                    >
                                         <Icon data={history} />
                                         {!isSmallScreen && "Project revisions"}
                                     </Button>
@@ -193,24 +171,10 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                 </div>
             </Header>
             <TabContainer>
-                <Tabs
-                    value={typeof activeTabProject === "number" && activeTabProject < leftTabs.length ? activeTabProject : false}
-                    onChange={(_, index) => handleTabChange(getTabIndex(index, false))}
-                    variant="scrollable"
-                >
-                    {leftTabs.filter((tabName) => showEditHistory || tabName !== "Case edit history").map((tabName) => <Tab key={tabName} label={tabName} />)}
-                </Tabs>
-                <Box flexGrow={1} />
-                <Tabs
-                    sx={{ marginRight: "5px" }}
-                    value={typeof activeTabProject === "number" && activeTabProject >= leftTabs.length ? activeTabProject - leftTabs.length : false}
-                    onChange={(_, index) => handleTabChange(getTabIndex(index, true))}
-                    variant="scrollable"
-                >
-                    {rightTabs.map((tabName) => (
-                        <Tab key={tabName} sx={{ minWidth: "48px" }} icon={tabName === "Access Management" ? <Icon data={users_circle} /> : <Icon data={settings} />} />
-                    ))}
-                </Tabs>
+                <ProjectTabs
+                    activeTabProject={activeTabProject}
+                    setActiveTabProject={setActiveTabProject}
+                />
             </TabContainer>
         </>
     )

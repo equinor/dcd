@@ -10,17 +10,14 @@ import {
     visibility,
     edit,
 } from "@equinor/eds-icons"
-import { useNavigate, useLocation, useParams } from "react-router-dom"
-import Tabs from "@mui/material/Tabs"
-import Tab from "@mui/material/Tab"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
 import CaseDropMenu from "@/Components/Case/Components/CaseDropMenu"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
-import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
+import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/common"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useCaseContext } from "@/Context/CaseContext"
@@ -29,9 +26,8 @@ import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditCase from "@/Hooks/useEditCase"
-import Classification from "./ClassificationChip"
 import UndoControls from "./UndoControls"
-import RevisionChip from "./RevisionChip"
+import CaseTabs from "./TabNavigators/CaseTabs"
 
 const Header = styled.div`
     display: flex;
@@ -57,18 +53,10 @@ const DropButton = styled(Icon)`
     padding: 0 5px;
 `
 
-const ProjectAndCaseContainer = styled.div`
+const CaseContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
-`
-
-const Project = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    margin-left: 25px;
 `
 
 interface props {
@@ -86,15 +74,12 @@ const CaseControls: React.FC<props> = ({
     caseLastUpdated,
     handleEdit,
 }) => {
-    const { currentContext } = useModuleCurrentContext()
     const { isRevision } = useProjectContext()
     const nameInputRef = useRef<HTMLInputElement>(null)
     const { addProjectEdit } = useEditProject()
     const { setSnackBarMessage, editMode } = useAppContext()
     const { addEdit } = useEditCase()
-    const navigate = useNavigate()
     const { activeTabCase } = useCaseContext()
-    const location = useLocation()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()
 
@@ -160,24 +145,10 @@ const CaseControls: React.FC<props> = ({
         }
     }
 
-    const handleTabChange = (index: number) => {
-        const projectUrl = location.pathname.split("/case")[0]
-        navigate(`${projectUrl}/case/${caseId}/${caseTabNames[index]}`)
-    }
-
     return (
         <>
             <Header>
-                <ProjectAndCaseContainer>
-                    <Project>
-                        <Typography variant="h6" color="var(--text-static-icons-tertiary, #6F6F6F);">
-                            {currentContext?.title}
-                        </Typography>
-                        <Classification />
-                        {isRevision && (
-                            <RevisionChip />
-                        )}
-                    </Project>
+                <CaseContainer>
                     <CenteringContainer>
                         <Button onClick={backToProject} variant="ghost_icon">
                             <Icon data={arrow_back} />
@@ -207,7 +178,7 @@ const CaseControls: React.FC<props> = ({
                             )}
                         </CenteringContainer>
                     </CenteringContainer>
-                </ProjectAndCaseContainer>
+                </CaseContainer>
                 <CenteringContainer>
                     {!editMode
                         ? (
@@ -258,14 +229,10 @@ const CaseControls: React.FC<props> = ({
                     />
                 </CenteringContainer>
             </Header>
-            <Tabs
-                value={activeTabCase}
-                onChange={(_, index) => handleTabChange(index)}
-                variant="scrollable"
-            >
-                {caseTabNames.map((tabName) => <Tab key={tabName} label={tabName} />)}
-            </Tabs>
-
+            <CaseTabs
+                activeTabCase={activeTabCase}
+                caseId={caseId}
+            />
         </>
     )
 }

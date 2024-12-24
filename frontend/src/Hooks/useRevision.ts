@@ -20,12 +20,12 @@ export const useRevisions = () => {
 
     const [isRevisionsLoading, setIsRevisionsLoading] = useState(false)
 
-    const navigateToRevision = (
-        currentRevisionId: string,
-    ) => {
-        setIsRevision(true)
-        queryClient.invalidateQueries({ queryKey: ["projectApiData", projectId] })
-        queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
+    const navigateToRevision = async (currentRevisionId: string) => {
+        if (revisionId !== currentRevisionId) {
+            setIsRevision(true)
+            await queryClient.invalidateQueries({ queryKey: ["projectApiData", projectId] })
+            await queryClient.invalidateQueries({ queryKey: ["revisionApiData", currentRevisionId] })
+        }
         navigate(`revision/${currentRevisionId}`)
     }
 

@@ -7,10 +7,9 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
-    font-size: 1rem;
-    line-height: 1.8rem;
+    font-size: 16px;
     height: auto;
-    padding: 0 0.7rem 0 0.5rem;
+    padding: 5px 12px;
     cursor: help;
     &.active {
         background-color: #a1daa01a;
@@ -28,16 +27,6 @@ const StyledChip = styled(Chip)`
     }
 `
 
-const SmallTooltip = styled(Tooltip)`
-    white-space: pre-wrap !important;
-    max-width: 300px !important;
-    font-size: 1rem !important;
-    text-align: center !important;
-    div[class*="Arrow"] {
-        top: -10px !important;
-    }
-`
-
 const Classification = () => {
     const revisionAndProjectData = useDataFetch()
 
@@ -48,7 +37,7 @@ const Classification = () => {
 
     return (
         getClassification ? (
-            <SmallTooltip placement="bottom-start" title={getClassification.description}>
+            <Tooltip placement="bottom-start" title={getClassification.description}>
                 <StyledChip
                     variant={getClassification.color}
                     className={`classification ${getClassification.color}`}
@@ -56,7 +45,7 @@ const Classification = () => {
                     <Icon data={getClassification.icon} />
                     {getClassification.label}
                 </StyledChip>
-            </SmallTooltip>
+            </Tooltip>
         ) : null
     )
 }

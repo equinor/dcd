@@ -29,8 +29,6 @@ const ForbiddenAccess: React.FC<Props> = ({ projectClassification }) => {
         "You can request to join this project by contacting the project's valuation lead / concept architect.",
     ]
 
-    console.log("project classification: ", projectClassification)
-
     return (
         <Container>
             <Header>

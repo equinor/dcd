@@ -10,7 +10,7 @@ import Grid from "@mui/material/Grid"
 
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
-import CasesList from "../Components/CasesList"
+import CasesList from "./CasesList"
 import { sharedTimelineStyles } from "../sharedStyles"
 import { Header } from "../Sidebar"
 import useEditDisabled from "@/Hooks/useEditDisabled"

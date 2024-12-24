@@ -38,7 +38,13 @@ All components should follow this common structure:
 - **Destructure props** for clarity and simplicity.
 - Use **ternary expressions** for conditional rendering (`condition ? true : false`), but avoid nested ternary expressions.
 - Remove any **unused components, variables, functions, or imports**.
+
+## Styling rules
+- Use **styled-components** for styling.
 - Refrain from using **inline styling** to keep styling separate and maintainable.
+- Use **Equinor tokens** for colors
+- Always use **px** for spacing (e.g. `10px` instead of `1rem`)
+- Avoid using **!important**
 
 ## Prop Drilling Rules
 

@@ -12,8 +12,8 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.5rem;
-    margin-bottom: -0.2rem;
+    margin-right: 8;
+    margin-bottom: -4px;
 `
 
 interface props {
