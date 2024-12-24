@@ -20,33 +20,12 @@ public class GetImageService(DcdDbContext context, BlobServiceClient blobService
         return MapToDto(image, imageContent);
     }
 
-    public async Task<List<ImageDto>> GetCaseImages(Guid projectId, Guid caseId)
+    public async Task<List<ImageDto>> GetImages(Guid projectId, Guid? caseId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
         var images = await context.Images
             .Where(img => img.ProjectId == projectPk && img.CaseId == caseId)
-            .ToListAsync();
-
-        images = images.OrderBy(x => x.CreateTime).ToList();
-
-        var dtos = new List<ImageDto>();
-
-        foreach (var image in images)
-        {
-            var imageContent = await GetImageContent(image);
-            dtos.Add(MapToDto(image, imageContent));
-        }
-
-        return dtos;
-    }
-
-    public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
-    {
-        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
-
-        var images = await context.Images
-            .Where(img => img.ProjectId == projectPk && img.CaseId == null)
             .ToListAsync();
 
         images = images.OrderBy(x => x.CreateTime).ToList();

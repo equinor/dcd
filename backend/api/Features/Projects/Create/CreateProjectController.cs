@@ -14,6 +14,7 @@ public class CreateProjectController(CreateProjectService createProjectService, 
     [HttpPost("projects")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<ProjectDataDto> CreateProject([FromQuery] Guid contextId)
     {
         var projectId = await createProjectService.CreateProject(contextId);

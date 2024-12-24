@@ -14,6 +14,7 @@ public class GetProjectController(GetProjectDataService getProjectDataService) :
     [HttpGet("projects/{projectId:guid}")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<ProjectDataDto> GetProjectData(Guid projectId)
     {
         return await getProjectDataService.GetProjectData(projectId);

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Context.Extensions;
 
-public static class DCdDbContextExtensions
+public static class DcdDbContextExtensions
 {
     public static async Task<Guid> GetPrimaryKeyForProjectId(this DcdDbContext context, Guid projectId)
     {

@@ -12,18 +12,20 @@ public class UpdateImageController(UpdateImageService updateImageService) : Cont
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/images/{imageId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<ActionResult> UpdateImage(Guid projectId, Guid caseId, Guid imageId, [FromBody] UpdateImageDto dto)
+    [DisableLazyLoading]
+    public async Task<ActionResult> UpdateCaseImage(Guid projectId, Guid caseId, Guid imageId, [FromBody] UpdateImageDto dto)
     {
-        await updateImageService.UpdateCaseImage(projectId, caseId, imageId, dto);
+        await updateImageService.UpdateImage(projectId, caseId, imageId, dto);
         return NoContent();
     }
 
     [HttpPut("projects/{projectId:guid}/images/{imageId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<ActionResult> UpdateImage(Guid projectId, Guid imageId, [FromBody] UpdateImageDto dto)
+    [DisableLazyLoading]
+    public async Task<ActionResult> UpdateProjectImage(Guid projectId, Guid imageId, [FromBody] UpdateImageDto dto)
     {
-        await updateImageService.UpdateProjectImage(projectId, imageId, dto);
+        await updateImageService.UpdateImage(projectId, null, imageId, dto);
         return NoContent();
     }
 }

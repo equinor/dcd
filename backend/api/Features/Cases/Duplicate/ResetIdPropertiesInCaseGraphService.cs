@@ -31,8 +31,8 @@ public static class ResetIdPropertiesInCaseGraphService
             .ToList();
 
         var listProperties = properties
-            .Where(x => x.PropertyType.IsGenericType &&
-                        x.PropertyType.GetGenericArguments().Any(y => y.Namespace?.StartsWith(ProjectNamespacePrefix) == true))
+            .Where(x => x.PropertyType.IsGenericType)
+            .Where(x => x.PropertyType.GetGenericArguments().Any(y => y.Namespace?.StartsWith(ProjectNamespacePrefix) == true))
             .ToList();
 
         var instanceProperties = properties

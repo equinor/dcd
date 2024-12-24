@@ -7,7 +7,7 @@ namespace api.Features.Revisions.Create;
 
 public class CreateRevisionRepository(DcdDbContext context)
 {
-    public async Task<Project> GetProjectAndAssetsNoTracking(Guid projectPk)
+    public async Task<Project> GetDetachedProjectGraph(Guid projectPk)
     {
         var project = await context.Projects
                           .Include(p => p.ExplorationOperationalWellCosts)
@@ -25,8 +25,6 @@ public class CreateRevisionRepository(DcdDbContext context)
         await LoadOnshorePowerSupplies(projectPk);
 
         DetachEntriesToEnablePrimaryKeyEdits();
-
-        project.ProjectMembers = [];
 
         return project;
     }

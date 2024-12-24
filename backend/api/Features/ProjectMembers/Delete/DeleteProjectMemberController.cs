@@ -12,6 +12,7 @@ public class DeleteProjectMemberController(DeleteProjectMemberService deleteProj
     [HttpDelete("projects/{projectId:guid}/members/{userId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task DeleteProjectMember(Guid projectId, Guid userId)
     {
         await deleteProjectMemberService.DeleteProjectMember(projectId, userId);

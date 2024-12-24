@@ -15,6 +15,7 @@ public class DuplicateCaseController(DuplicateCaseService duplicateCaseService, 
     [HttpPost("projects/{projectId:guid}/cases/copy")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<ProjectDataDto> DuplicateCase([FromRoute] Guid projectId, [FromQuery] Guid copyCaseId)
     {
         await duplicateCaseService.DuplicateCase(projectId, copyCaseId);

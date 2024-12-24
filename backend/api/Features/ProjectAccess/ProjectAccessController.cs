@@ -12,6 +12,7 @@ public class ProjectAccessController(IProjectAccessService projectAccessService)
     [HttpGet("projects/{projectId:guid}/access")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<AccessRightsDto> GetAccess(Guid projectId)
     {
         return await projectAccessService.GetUserProjectAccess(projectId);

@@ -227,7 +227,7 @@ const CasesAgGridTable = ({
     const handleSTEAExport = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        if (!revisionAndProjectData) {
+        if (revisionAndProjectData) {
             try {
                 setShowRevisionReminder(true)
                 if (!revisionAndProjectData) {

@@ -705,21 +705,6 @@ declare namespace Components {
             explorationId: string; // uuid
             wellId: string; // uuid
         }
-        export interface ExplorationWithProfilesDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            name: string;
-            explorationWellCostProfile: ExplorationWellCostProfileDto;
-            appraisalWellCostProfile: AppraisalWellCostProfileDto;
-            sidetrackCostProfile: SidetrackCostProfileDto;
-            gAndGAdminCost: GAndGAdminCostDto;
-            gAndGAdminCostOverride: GAndGAdminCostOverrideDto;
-            seismicAcquisitionAndProcessing: SeismicAcquisitionAndProcessingDto;
-            countryOfficeCost: CountryOfficeCostDto;
-            rigMobDemob: number; // double
-            currency: Currency /* int32 */;
-            explorationWells: ExplorationWellDto[];
-        }
         export interface FeatureToggleDto {
             revisionEnabled?: boolean;
             environmentName?: string | null;
@@ -1170,11 +1155,6 @@ declare namespace Components {
             maturity: Maturity /* int32 */;
             source: Source /* int32 */;
         }
-        export interface TechnicalInputDto {
-            projectData?: ProjectDataDto;
-            explorationDto?: ExplorationWithProfilesDto;
-            wellProjectDto?: WellProjectWithProfilesDto;
-        }
         export interface TimeSeriesCostDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1578,12 +1558,12 @@ declare namespace Components {
             override?: boolean;
         }
         export interface UpdateTechnicalInputDto {
-            developmentOperationalWellCostsDto?: UpdateDevelopmentOperationalWellCostsDto;
-            explorationOperationalWellCostsDto?: UpdateExplorationOperationalWellCostsDto;
-            updateWellDtos?: UpdateWellDto[] | null;
-            createWellDtos?: CreateWellDto[] | null;
-            deleteWellDtos?: DeleteWellDto[] | null;
-            projectDto?: UpdateProjectDto;
+            projectDto: UpdateProjectDto;
+            developmentOperationalWellCostsDto: UpdateDevelopmentOperationalWellCostsDto;
+            explorationOperationalWellCostsDto: UpdateExplorationOperationalWellCostsDto;
+            updateWellDtos: UpdateWellDto[];
+            createWellDtos: CreateWellDto[];
+            deleteWellDtos: DeleteWellDto[];
         }
         export interface UpdateTopsideCostProfileOverrideDto {
             startYear?: number; // int32
@@ -1706,22 +1686,6 @@ declare namespace Components {
             drillingSchedule: DrillingScheduleDto;
             wellProjectId: string; // uuid
             wellId: string; // uuid
-        }
-        export interface WellProjectWithProfilesDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            name: string;
-            oilProducerCostProfile: OilProducerCostProfileDto;
-            oilProducerCostProfileOverride: OilProducerCostProfileOverrideDto;
-            gasProducerCostProfile: GasProducerCostProfileDto;
-            gasProducerCostProfileOverride: GasProducerCostProfileOverrideDto;
-            waterInjectorCostProfile: WaterInjectorCostProfileDto;
-            waterInjectorCostProfileOverride: WaterInjectorCostProfileOverrideDto;
-            gasInjectorCostProfile: GasInjectorCostProfileDto;
-            gasInjectorCostProfileOverride: GasInjectorCostProfileOverrideDto;
-            artificialLift: ArtificialLift /* int32 */;
-            currency: Currency /* int32 */;
-            wellProjectWells: WellProjectWellDto[];
         }
     }
 }
@@ -3699,7 +3663,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateTechnicalInputDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TechnicalInputDto;
+                export type $200 = Components.Schemas.ProjectDataDto;
             }
         }
     }

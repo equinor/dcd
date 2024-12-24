@@ -51,8 +51,6 @@ public class ResetIdPropertiesInProjectGraphServiceTests
         ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(project, caseIdMapping);
 
         Assert.Equal(Guid.Empty, project.ReferenceCaseId);
-        Assert.Equal(Guid.Empty, project.FusionProjectId);
-        Assert.Equal(Guid.Empty, project.CommonLibraryId);
         Assert.Equal(originalProjectId, project.OriginalProjectId);
 
         Assert.Equal(Guid.Empty, project.Cases.First().ExplorationLink);
@@ -65,6 +63,8 @@ public class ResetIdPropertiesInProjectGraphServiceTests
         var newProjectId = project.Id;
 
         Assert.NotEqual(newProjectId, projectId);
+        Assert.NotEqual(Guid.Empty, project.FusionProjectId);
+        Assert.NotEqual(Guid.Empty, project.CommonLibraryId);
 
         Assert.Equal(newProjectId, project.Cases.First().ProjectId);
         Assert.Equal(newProjectId, project.Cases.First().Substructure!.ProjectId);

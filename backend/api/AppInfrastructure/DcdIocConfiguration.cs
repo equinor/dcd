@@ -87,6 +87,9 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateRevisionService>();
 
         services.AddScoped<TechnicalInputService>();
+        services.AddScoped<UpdateProjectAndOperationalWellsCostService>();
+        services.AddScoped<UpdateExplorationWellCostProfilesService>();
+        services.AddScoped<UpdateWellProjectCostProfilesService>();
 
         /* Project members */
         services.AddScoped<GetProjectMemberService>();
@@ -161,6 +164,7 @@ public static class DcdIocConfiguration
 
         /* Stea / Excel export */
         services.AddScoped<SteaService>();
+        services.AddScoped<SteaRepository>();
 
         /* Integrations / external systems */
         services.AddScoped<IFusionService, FusionService>();
@@ -169,6 +173,7 @@ public static class DcdIocConfiguration
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
+        services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();
@@ -178,8 +183,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
         services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
-
-        services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();

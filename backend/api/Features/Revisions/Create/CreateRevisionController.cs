@@ -14,6 +14,7 @@ public class CreateRevisionController(CreateRevisionService createRevisionServic
     [HttpPost("projects/{projectId:guid}/revisions")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<RevisionDataDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
     {
         CreateRevisionDtoValidator.Validate(createRevisionDto);

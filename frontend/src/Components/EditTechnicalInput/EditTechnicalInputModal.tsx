@@ -67,26 +67,25 @@ const EditTechnicalInputModal = () => {
     const handleSave = async () => {
         if (!revisionAndProjectData) { return }
         try {
-            const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
-            dto.projectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
-
-            dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
-
-            dto.developmentOperationalWellCostsDto = developmentOperationalWellCosts
 
             const wellDtos = [...explorationWells, ...wellProjectWells]
 
-            dto.createWellDtos = wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === "")
-            dto.updateWellDtos = wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== "")
-            dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
+            const updateTechnicalInputDto = {
+                projectDto: { ...revisionAndProjectData.commonProjectAndRevisionData },
+
+                explorationOperationalWellCostsDto: explorationOperationalWellCosts || {},
+                developmentOperationalWellCostsDto: developmentOperationalWellCosts || {},
+
+                createWellDtos: wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === ""),
+                updateWellDtos: wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== ""),
+                deleteWellDtos: deletedWells.map((id) => ({ id }))
+            }
 
             // refactor to use react-query?
-            const result = revisionAndProjectData ? await (await GetTechnicalInputService()).update(revisionAndProjectData?.projectId, dto) : undefined
+            const projectData = await (await GetTechnicalInputService()).update(revisionAndProjectData.projectId, updateTechnicalInputDto)
 
-            if (result?.projectData) {
-                addProjectEdit(result?.projectData.projectId, result?.projectData.commonProjectAndRevisionData)
-            }
+            addProjectEdit(projectData.projectId, projectData.commonProjectAndRevisionData)
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)

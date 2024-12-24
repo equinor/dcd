@@ -13,6 +13,7 @@ public class UpdateCaseController(UpdateCaseService updateCaseService) : Control
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task UpdateCase([FromRoute] Guid projectId, [FromRoute] Guid caseId, [FromBody] UpdateCaseDto caseDto)
     {
         if (DcdEnvironments.FeatureToggles.RevisionEnabled)
