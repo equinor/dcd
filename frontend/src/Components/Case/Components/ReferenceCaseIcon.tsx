@@ -5,18 +5,18 @@ import styled from "styled-components"
 
 const CaseViewIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.2rem;
+    margin-right: 4px;
 `
 
 const CasesTableIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: -0.5rem;
-    margin-left: -0.5rem;
+    margin-right: -8px;
+    margin-left: -8px;
 `
 
 const SideBarIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-left: 0.4rem;
+    margin-left: 6px;
 `
 
 interface PropsChooseRefCase {

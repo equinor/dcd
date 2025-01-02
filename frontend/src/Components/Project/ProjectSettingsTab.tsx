@@ -6,6 +6,7 @@ import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import useEditProject from "@/Hooks/useEditProject"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 
 const ProjectSettingsTab = () => {
     const { addProjectEdit } = useEditProject()
@@ -79,7 +80,7 @@ const ProjectSettingsTab = () => {
     const getCurrency = () => (revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD")
 
     if (!revisionAndProjectData) {
-        return <div>Loading project data...</div>
+        return <ProjectSkeleton />
     }
 
     return (
