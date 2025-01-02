@@ -1254,6 +1254,26 @@ namespace api.Migrations
                     b.ToTable("ImportedElectricityOverride");
                 });
 
+            modelBuilder.Entity("api.Models.LazyLoadingOccurrence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LazyLoadingOccurrences");
+                });
+
             modelBuilder.Entity("api.Models.NetSalesGas", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1831,6 +1851,40 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("ProjectMembers");
+                });
+
+            modelBuilder.Entity("api.Models.RequestLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("RequestEndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("RequestLengthInMilliseconds")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("RequestStartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlPattern")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Verb")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestLogs");
                 });
 
             modelBuilder.Entity("api.Models.RevisionDetails", b =>

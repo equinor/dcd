@@ -24,6 +24,25 @@ export class ImageService extends __BaseService {
         }
     }
 
+    public async updateProjectImage(
+        projectId: string,
+        imageId: string,
+        dto: Components.Schemas.UpdateImageDto
+        ): Promise<Components.Schemas.ImageDto> {
+        const response: Components.Schemas.ImageDto = await this.put(`projects/${projectId}/images/${imageId}`, { body: dto })
+        return response
+    }
+    
+    public async updateCaseImage(
+        projectId: string,
+        caseId: string,
+        imageId: string,
+        dto: Components.Schemas.UpdateImageDto
+        ): Promise<Components.Schemas.ImageDto> {
+        const response: Components.Schemas.ImageDto = await this.put(`projects/${projectId}/cases/${caseId}/images/${imageId}`, { body: dto })
+        return response
+    }
+
     public async uploadImage(projectId: string, projectName: string, file: File, caseId?: string): Promise<Components.Schemas.ImageDto> {
         const formData = new FormData()
         formData.append("image", file)

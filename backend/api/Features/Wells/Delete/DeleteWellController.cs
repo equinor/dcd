@@ -12,6 +12,7 @@ public class DeleteWellController(DeleteWellService deleteWellService) : Control
     [HttpDelete("projects/{projectId:guid}/wells/{wellId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task DeleteWell([FromRoute] Guid projectId, [FromRoute] Guid wellId)
     {
         await deleteWellService.DeleteWell(projectId, wellId);

@@ -54,10 +54,10 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseMiddleware<DcdResponseTimerMiddleware>();
-app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
 app.UseResponseCompression();
+app.UseMiddleware<DcdResponseTimerMiddleware>();
+app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 
 if (DcdEnvironments.EnableSwagger)
 {
@@ -68,8 +68,10 @@ if (DcdEnvironments.EnableSwagger)
 
 app.UseCors(DcdCorsPolicyConfiguration.AccessControlPolicyName);
 app.UseAuthentication();
-app.UseMiddleware<ClaimsMiddleware>();
+app.UseMiddleware<DcdClaimsMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<DcdRequestLogMiddleware>();
+app.UseMiddleware<DisableLazyLoadingMiddleware>();
 
 app.Run();

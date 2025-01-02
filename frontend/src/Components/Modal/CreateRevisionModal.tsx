@@ -54,8 +54,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     } = useRevisions()
 
     const [revisionName, setRevisionName] = useState<string>("")
-    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
-    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
+    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>(revisionAndProjectData?.commonProjectAndRevisionData.classification ?? 0)
+    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>(revisionAndProjectData?.commonProjectAndRevisionData.internalProjectPhase ?? 0)
     const [mdqc, setMdqc] = useState(false)
     const [arena, setArena] = useState(false)
 

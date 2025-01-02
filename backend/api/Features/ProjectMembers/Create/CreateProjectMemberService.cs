@@ -32,6 +32,6 @@ public class CreateProjectMemberService(DcdDbContext context)
 
         await context.SaveChangesAsync();
 
-        return projectMember.Id;
+        return projectMember.UserId;
     }
 }

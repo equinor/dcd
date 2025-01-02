@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
@@ -9,10 +11,10 @@ namespace api.Features.TechnicalInput.Dtos;
 
 public class UpdateTechnicalInputDto
 {
-    public UpdateDevelopmentOperationalWellCostsDto DevelopmentOperationalWellCostsDto { get; set; } = null!;
-    public UpdateExplorationOperationalWellCostsDto ExplorationOperationalWellCostsDto { get; set; } = null!;
-    public UpdateWellDto[]? UpdateWellDtos { get; set; }
-    public CreateWellDto[]? CreateWellDtos { get; set; }
-    public DeleteWellDto[]? DeleteWellDtos { get; set; }
-    public UpdateProjectDto ProjectDto { get; set; } = null!;
+    [Required] public required UpdateProjectDto ProjectDto { get; set; }
+    [Required] public required UpdateDevelopmentOperationalWellCostsDto DevelopmentOperationalWellCostsDto { get; set; }
+    [Required] public required UpdateExplorationOperationalWellCostsDto ExplorationOperationalWellCostsDto { get; set; }
+    [Required] public required List<UpdateWellDto> UpdateWellDtos { get; set; }
+    [Required] public required List<CreateWellDto> CreateWellDtos { get; set; }
+    [Required] public required List<DeleteWellDto> DeleteWellDtos { get; set; }
 }

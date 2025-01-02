@@ -1,18 +1,23 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.CaseProfiles.Dtos;
-using api.Features.CaseProfiles.Repositories;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
+using api.Features.Assets.CaseAssets.Substructures.Dtos;
+using api.Features.Assets.CaseAssets.Surfs.Dtos;
+using api.Features.Assets.CaseAssets.Topsides.Dtos;
+using api.Features.Assets.CaseAssets.Transports.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Stea.Dtos;
 using api.Features.Stea.ExcelExport;
+using api.Features.Wells.Get;
 using api.Models;
 
 using AutoMapper;
 
 namespace api.Features.Stea;
 
-public class SteaService(DcdDbContext context,
-    ILogger<SteaService> logger,
-    IProjectWithAssetsRepository projectWithAssetsRepository, IMapper mapper)
+public class SteaService(DcdDbContext context, SteaRepository steaRepository, IMapper mapper)
 {
     public async Task<(byte[] excelFileContents, string filename)> GetExcelFile(Guid projectId)
     {
@@ -27,36 +32,38 @@ public class SteaService(DcdDbContext context,
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
+        var project = await steaRepository.GetProjectWithCasesAndAssets(projectPk);
 
-        var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var drainageStrategies = await steaRepository.GetDrainageStrategies(projectPk);
+        var explorations = await steaRepository.GetExplorations(projectPk);
+        var onshorePowerSupplies = await steaRepository.GetOnshorePowerSupplies(projectPk);
+        var substructures = await steaRepository.GetSubstructures(projectPk);
+        var surfs = await steaRepository.GetSurfs(projectPk);
+        var topsides = await steaRepository.GetTopsides(projectPk);
+        var transports = await steaRepository.GetTransports(projectPk);
+        var wellProjects = await steaRepository.GetWellProjects(projectPk);
+        var wells = await steaRepository.GetWells(projectPk);
 
-        if (projectDto == null)
+        var data = new ProjectWithAssetsWrapperDto
         {
-            logger.LogError("Failed to map project to dto");
-            throw new Exception("Failed to map project to dto");
-        }
+            Project = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString()),
+            DrainageStrategies = mapper.Map<List<DrainageStrategyWithProfilesDto>>(drainageStrategies, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString()),
+            Explorations = mapper.Map<List<ExplorationWithProfilesDto>>(explorations),
+            OnshorePowerSupplies = mapper.Map<List<OnshorePowerSupplyWithProfilesDto>>(onshorePowerSupplies),
+            Substructures = mapper.Map<List<SubstructureWithProfilesDto>>(substructures),
+            Surfs = mapper.Map<List<SurfWithProfilesDto>>(surfs),
+            Topsides = mapper.Map<List<TopsideWithProfilesDto>>(topsides),
+            Transports = mapper.Map<List<TransportWithProfilesDto>>(transports),
+            WellProjects = mapper.Map<List<WellProjectWithProfilesDto>>(wellProjects),
+            Wells = mapper.Map<List<WellDto>>(wells)
+        };
 
-        var steaCaseDtos = new List<SteaCaseDto>();
+        var steaCaseDtos = data.Project
+            .Cases
+            .Where(x => !x.Archived)
+            .Select(x => SteaCaseDtoBuilder.Build(x, data))
+            .ToList();
 
-        foreach (var c in project.Cases)
-        {
-            if (c.Archived)
-            {
-                continue;
-            }
-
-            var caseDto = mapper.Map<CaseWithProfilesDto>(c);
-
-            if (caseDto == null)
-            {
-                logger.LogError("Failed to map case to dto");
-                throw new Exception("Failed to map case to dto");
-            }
-
-            steaCaseDtos.Add(SteaCaseDtoBuilder.Build(caseDto, projectDto));
-        }
-
-        return SteaProjectDtoBuilder.Build(projectDto, steaCaseDtos);
+        return SteaProjectDtoBuilder.Build(project.Name, steaCaseDtos);
     }
 }

@@ -58,46 +58,46 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .SingleAsync(c => c.Id == caseId);
     }
 
-    private async Task<Transport> GetTransportNoTracking(Guid TransportLink)
+    private async Task<Transport> GetTransportNoTracking(Guid transportLink)
     {
         return await context.Transports
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == TransportLink);
+            .SingleAsync(o => o.Id == transportLink);
     }
 
-    private async Task<OnshorePowerSupply> GetOnshorePowerSupplyNoTracking(Guid OnshorePowerSupplyLink)
+    private async Task<OnshorePowerSupply> GetOnshorePowerSupplyNoTracking(Guid onshorePowerSupplyLink)
     {
         return await context.OnshorePowerSupplies
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == OnshorePowerSupplyLink);
+            .FirstAsync(o => o.Id == onshorePowerSupplyLink);
     }
 
-    private async Task<Surf> GetSurfNoTracking(Guid SurfLink)
+    private async Task<Surf> GetSurfNoTracking(Guid surfLink)
     {
         return await context.Surfs
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == SurfLink);
+            .SingleAsync(o => o.Id == surfLink);
     }
 
-    private async Task<Substructure> GetSubstructureNoTracking(Guid SubstructureLink)
+    private async Task<Substructure> GetSubstructureNoTracking(Guid substructureLink)
     {
         return await context.Substructures
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == SubstructureLink);
+            .SingleAsync(o => o.Id == substructureLink);
     }
 
-    private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid DrainageStrategyLink)
+    private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid drainageStrategyLink)
     {
         return await context.DrainageStrategies
             .Include(c => c.ProductionProfileOil)
@@ -118,20 +118,20 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.DeferredOilProduction)
             .Include(c => c.DeferredGasProduction)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == DrainageStrategyLink);
+            .SingleAsync(o => o.Id == drainageStrategyLink);
     }
 
-    private async Task<Topside> GetTopsideNoTracking(Guid TopsideLink)
+    private async Task<Topside> GetTopsideNoTracking(Guid topsideLink)
     {
         return await context.Topsides
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == TopsideLink);
+            .SingleAsync(o => o.Id == topsideLink);
     }
 
-    private async Task<WellProject> GetWellProjectNoTracking(Guid WellProjectLink)
+    private async Task<WellProject> GetWellProjectNoTracking(Guid wellProjectLink)
     {
         return await context.WellProjects
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
@@ -144,10 +144,10 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.GasInjectorCostProfile)
             .Include(c => c.GasInjectorCostProfileOverride)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == WellProjectLink);
+            .SingleAsync(o => o.Id == wellProjectLink);
     }
 
-    private async Task<Exploration> GetExplorationNoTracking(Guid ExplorationLink)
+    private async Task<Exploration> GetExplorationNoTracking(Guid explorationLink)
     {
         return await context.Explorations
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
@@ -159,6 +159,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
             .AsNoTracking()
-            .SingleAsync(o => o.Id == ExplorationLink);
+            .SingleAsync(o => o.Id == explorationLink);
     }
 }

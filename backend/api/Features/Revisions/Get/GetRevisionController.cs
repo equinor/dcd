@@ -14,6 +14,7 @@ public class GetRevisionController(GetProjectDataService getProjectDataService) 
     [HttpGet("projects/{projectId:guid}/revisions/{revisionId:guid}")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<RevisionDataDto> Get(Guid projectId, Guid revisionId)
     {
         return await getProjectDataService.GetRevisionData(projectId, revisionId);

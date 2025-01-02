@@ -7,7 +7,7 @@ namespace api.Features.Stea.Dtos;
 
 public static class SteaCaseDtoBuilder
 {
-    public static SteaCaseDto Build(CaseWithProfilesDto caseDto, ProjectWithAssetsDto projectDto)
+    public static SteaCaseDto Build(CaseWithProfilesDto caseDto, ProjectWithAssetsWrapperDto projectWithAssetsWrapperDto)
     {
         var steaCaseDto = new SteaCaseDto
         {
@@ -16,10 +16,10 @@ public static class SteaCaseDtoBuilder
 
         AddStudyCost(steaCaseDto, caseDto);
         AddOpexCost(steaCaseDto, caseDto);
-        AddCapex(projectDto, steaCaseDto, caseDto);
+        AddCapex(projectWithAssetsWrapperDto, steaCaseDto, caseDto);
         AddCessationCost(steaCaseDto, caseDto);
-        AddExploration(projectDto, steaCaseDto, caseDto);
-        AddProductionSalesAndVolumes(projectDto, steaCaseDto, caseDto);
+        AddExploration(projectWithAssetsWrapperDto, steaCaseDto, caseDto);
+        AddProductionSalesAndVolumes(projectWithAssetsWrapperDto, steaCaseDto, caseDto);
 
         var startYearsCase = new[]
         {
@@ -160,7 +160,7 @@ public static class SteaCaseDtoBuilder
         steaCaseDto.Capex.CessationCost.StartYear += caseDto.DG4Date.Year;
     }
 
-    private static void AddCapex(ProjectWithAssetsDto p, SteaCaseDto steaCaseDto, CaseWithProfilesDto c)
+    private static void AddCapex(ProjectWithAssetsWrapperDto projectWithAssetsWrapperDto, SteaCaseDto steaCaseDto, CaseWithProfilesDto c)
     {
         steaCaseDto.Capex = new CapexDto
         {
@@ -171,7 +171,7 @@ public static class SteaCaseDtoBuilder
 
         if (c.WellProjectLink != Guid.Empty)
         {
-            var wellProjectDto = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+            var wellProjectDto = projectWithAssetsWrapperDto.WellProjects!.First(l => l.Id == c.WellProjectLink);
 
             var costProfileDtos = new List<TimeSeriesCostDto>();
 
@@ -221,7 +221,7 @@ public static class SteaCaseDtoBuilder
         steaCaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
         if (c.SubstructureLink != Guid.Empty)
         {
-            var substructureDto = p.Substructures.First(l => l.Id == c.SubstructureLink);
+            var substructureDto = projectWithAssetsWrapperDto.Substructures.First(l => l.Id == c.SubstructureLink);
 
             if (substructureDto.CostProfileOverride?.Override == true)
             {
@@ -239,7 +239,7 @@ public static class SteaCaseDtoBuilder
 
         if (c.SurfLink != Guid.Empty)
         {
-            var surfDto = p.Surfs.First(l => l.Id == c.SurfLink);
+            var surfDto = projectWithAssetsWrapperDto.Surfs.First(l => l.Id == c.SurfLink);
 
             if (surfDto.CostProfileOverride?.Override == true)
             {
@@ -257,7 +257,7 @@ public static class SteaCaseDtoBuilder
 
         if (c.TopsideLink != Guid.Empty)
         {
-            var topsideDto = p.Topsides.First(l => l.Id == c.TopsideLink);
+            var topsideDto = projectWithAssetsWrapperDto.Topsides.First(l => l.Id == c.TopsideLink);
 
             if (topsideDto.CostProfileOverride?.Override == true)
             {
@@ -275,7 +275,7 @@ public static class SteaCaseDtoBuilder
 
         if (c.TransportLink != Guid.Empty)
         {
-            var transportDto = p.Transports.First(l => l.Id == c.TransportLink);
+            var transportDto = projectWithAssetsWrapperDto.Transports.First(l => l.Id == c.TransportLink);
 
             if (transportDto.CostProfileOverride?.Override == true)
             {
@@ -293,7 +293,7 @@ public static class SteaCaseDtoBuilder
 
         if (c.OnshorePowerSupplyLink != Guid.Empty)
         {
-            var onshorePowerSupplyDto = p.OnshorePowerSupplies.First(l => l.Id == c.OnshorePowerSupplyLink);
+            var onshorePowerSupplyDto = projectWithAssetsWrapperDto.OnshorePowerSupplies.First(l => l.Id == c.OnshorePowerSupplyLink);
 
             if (onshorePowerSupplyDto.CostProfileOverride?.Override == true)
             {
@@ -313,7 +313,7 @@ public static class SteaCaseDtoBuilder
 
     }
 
-    private static void AddProductionSalesAndVolumes(ProjectWithAssetsDto p, SteaCaseDto steaCaseDto, CaseWithProfilesDto c)
+    private static void AddProductionSalesAndVolumes(ProjectWithAssetsWrapperDto projectWithAssetsWrapperDto, SteaCaseDto steaCaseDto, CaseWithProfilesDto c)
     {
         steaCaseDto.ProductionAndSalesVolumes = new ProductionAndSalesVolumesDto
         {
@@ -328,7 +328,7 @@ public static class SteaCaseDtoBuilder
 
         if (c.DrainageStrategyLink != Guid.Empty)
         {
-            var drainageStrategyDto = p.DrainageStrategies.First(d => d.Id == c.DrainageStrategyLink);
+            var drainageStrategyDto = projectWithAssetsWrapperDto.DrainageStrategies.First(d => d.Id == c.DrainageStrategyLink);
             var startYearsProductionSalesAndVolumes = new List<int>();
 
             if (drainageStrategyDto.ProductionProfileOil != null || drainageStrategyDto.AdditionalProductionProfileOil != null)
@@ -435,13 +435,13 @@ public static class SteaCaseDtoBuilder
         }
     }
 
-    private static void AddExploration(ProjectWithAssetsDto p, SteaCaseDto steaCaseDto, CaseWithProfilesDto caseDto)
+    private static void AddExploration(ProjectWithAssetsWrapperDto projectWithAssetsWrapperDto, SteaCaseDto steaCaseDto, CaseWithProfilesDto caseDto)
     {
         steaCaseDto.Exploration = new TimeSeriesCostDto();
 
         if (caseDto.ExplorationLink != Guid.Empty)
         {
-            var exploration = p.Explorations.First(e => e.Id == caseDto.ExplorationLink);
+            var exploration = projectWithAssetsWrapperDto.Explorations.First(e => e.Id == caseDto.ExplorationLink);
 
             if (exploration != null)
             {

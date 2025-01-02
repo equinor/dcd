@@ -18,14 +18,14 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
             .Where(x => x.ProjectId == projectPk)
             .ToDictionaryAsync(x => x.Id, _ => Guid.NewGuid());
 
-        var revision = await createRevisionRepository.GetProjectAndAssetsNoTracking(projectPk);
+        var revision = await createRevisionRepository.GetDetachedProjectGraph(projectPk);
+
+        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(revision, caseIdMapping);
 
         revision.IsRevision = true;
         revision.OriginalProjectId = projectPk;
-        revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase ?? revision.InternalProjectPhase;
-        revision.Classification = createRevisionDto.Classification ?? revision.Classification;
-
-        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(revision, caseIdMapping);
+        revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        revision.Classification = createRevisionDto.Classification;
 
         revision.RevisionDetails = new RevisionDetails
         {
@@ -33,15 +33,14 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
             Mdqc = createRevisionDto.Mdqc,
             Arena = createRevisionDto.Arena,
             RevisionDate = DateTimeOffset.UtcNow,
-            Revision = revision,
-            Classification = createRevisionDto.Classification ?? revision.Classification
+            Classification = createRevisionDto.Classification
         };
 
         context.Projects.Add(revision);
 
         var existingProject = await context.Projects.SingleAsync(p => p.Id == projectPk);
-        existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase ?? existingProject.InternalProjectPhase;
-        existingProject.Classification = createRevisionDto.Classification ?? existingProject.Classification;
+        existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        existingProject.Classification = createRevisionDto.Classification;
 
         await CopyProjectImages(projectPk, revision.Id);
         await CopyCaseImages(projectPk, revision.Id, caseIdMapping);

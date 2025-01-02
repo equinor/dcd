@@ -14,7 +14,7 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var caseItem = await duplicateCaseRepository.GetCaseAndAssetsNoTracking(projectPk, caseId);
+        var caseItem = await duplicateCaseRepository.GetDetachedCaseGraph(projectPk, caseId);
 
         var existingCaseNames = await context.Cases
             .Where(x => x.ProjectId == projectPk)

@@ -15,6 +15,7 @@ public class CreateCaseController(CreateCaseService createCaseService, GetProjec
     [HttpPost("projects/{projectId:guid}/cases")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [DisableLazyLoading]
     public async Task<ProjectDataDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
         if (DcdEnvironments.FeatureToggles.RevisionEnabled)

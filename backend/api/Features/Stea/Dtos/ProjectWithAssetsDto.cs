@@ -17,20 +17,25 @@ using api.Models;
 
 namespace api.Features.Stea.Dtos;
 
-public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
+public class ProjectWithAssetsWrapperDto
+{
+    public required ProjectWithAssetsDto Project { get; set; }
+    public required List<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; }
+    public required List<ExplorationWithProfilesDto> Explorations { get; set; }
+    public required List<OnshorePowerSupplyWithProfilesDto> OnshorePowerSupplies { get; set; }
+    public required List<SubstructureWithProfilesDto> Substructures { get; set; }
+    public required List<SurfWithProfilesDto> Surfs { get; set; }
+    public required List<TopsideWithProfilesDto> Topsides { get; set; }
+    public required List<TransportWithProfilesDto> Transports { get; set; }
+    public required List<WellDto> Wells { get; set; }
+    public required List<WellProjectWithProfilesDto>? WellProjects { get; set; }
+}
+
+public class ProjectWithAssetsDto
 {
     [Required] public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new();
     [Required] public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new();
     [Required] public List<CaseWithProfilesDto> Cases { get; set; } = [];
-    [Required] public List<WellDto> Wells { get; set; } = [];
-    [Required] public List<ExplorationWithProfilesDto> Explorations { get; set; } = [];
-    [Required] public List<SurfWithProfilesDto> Surfs { get; set; } = [];
-    [Required] public List<SubstructureWithProfilesDto> Substructures { get; set; } = [];
-    [Required] public List<TopsideWithProfilesDto> Topsides { get; set; } = [];
-    [Required] public List<TransportWithProfilesDto> Transports { get; set; } = [];
-    [Required] public List<OnshorePowerSupplyWithProfilesDto> OnshorePowerSupplies { get; set; } = [];
-    [Required] public List<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; } = [];
-    [Required] public List<WellProjectWithProfilesDto>? WellProjects { get; set; } = [];
     [Required] public DateTimeOffset ModifyTime { get; set; }
     [Required] public List<RevisionDetailsDto> RevisionsDetailsList { get; set; } = [];
 
@@ -63,16 +68,4 @@ public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
     [Required] public double GasPriceNOK { get; set; }
     [Required] public double DiscountRate { get; set; }
     [Required] public double ExchangeRateUSDToNOK { get; set; }
-
-    public bool Equals(ProjectWithAssetsDto? projectDto)
-    {
-        return Name == projectDto?.Name &&
-               CommonLibraryName == projectDto?.CommonLibraryName &&
-               FusionProjectId == projectDto?.FusionProjectId &&
-               Country == projectDto?.Country &&
-               Id == projectDto?.Id &&
-               ProjectCategory == projectDto?.ProjectCategory &&
-               ProjectPhase == projectDto?.ProjectPhase &&
-               InternalProjectPhase == projectDto?.InternalProjectPhase;
-    }
 }

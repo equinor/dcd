@@ -10,6 +10,7 @@ public static class ResetIdPropertiesInProjectGraphService
     private const string ProjectNamespacePrefix = "api.";
     private static readonly string[] ProjectEntityNames = ["Project", "ProjectProxy"];
     private static readonly string[] CaseEntityNames = ["Case", "CaseProxy"];
+    private static readonly string[] PropertiesToIgnore = ["CommonLibraryId", "FusionProjectId"];
 
     public static void ResetPrimaryKeysAndForeignKeysInGraph(Project project, Dictionary<Guid, Guid> caseIdMapping)
     {
@@ -29,11 +30,12 @@ public static class ResetIdPropertiesInProjectGraphService
 
         var guidProperties = properties
             .Where(x => x.PropertyType == typeof(Guid))
+            .Where(x => !PropertiesToIgnore.Contains(x.Name))
             .ToList();
 
         var listProperties = properties
-            .Where(x => x.PropertyType.IsGenericType &&
-                        x.PropertyType.GetGenericArguments().Any(y => y.Namespace?.StartsWith(ProjectNamespacePrefix) == true))
+            .Where(x => x.PropertyType.IsGenericType)
+            .Where(x => x.PropertyType.GetGenericArguments().Any(y => y.Namespace?.StartsWith(ProjectNamespacePrefix) == true))
             .ToList();
 
         var instanceProperties = properties
@@ -49,25 +51,27 @@ public static class ResetIdPropertiesInProjectGraphService
                 continue;
             }
 
-            if (guidProperty.Name.EndsWith("Id") || guidProperty.Name.EndsWith("Link"))
+            if (guidProperty.Name == "CaseId")
             {
-                guidProperty.SetValue(obj, Guid.Empty);
-            }
-
-            if (ProjectEntityNames.Contains(obj.GetType().Name) && guidProperty.Name == "Id")
-            {
-                guidProperty.SetValue(obj, projectId);
+                var caseId = (Guid)guidProperty.GetValue(obj)!;
+                guidProperty.SetValue(obj, caseIdMapping[caseId]);
+                continue;
             }
 
             if (guidProperty.Name == "ProjectId")
             {
                 guidProperty.SetValue(obj, projectId);
+                continue;
             }
 
-            if (guidProperty.Name == "CaseId")
+            if (ProjectEntityNames.Contains(obj.GetType().Name) && guidProperty.Name == "Id")
             {
-                var caseId = (Guid)guidProperty.GetValue(obj)!;
-                guidProperty.SetValue(obj, caseIdMapping[caseId]);
+                continue;
+            }
+
+            if (guidProperty.Name.EndsWith("Id") || guidProperty.Name.EndsWith("Link"))
+            {
+                guidProperty.SetValue(obj, Guid.Empty);
             }
         }
 

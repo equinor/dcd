@@ -16,6 +16,12 @@ public class ProspSharepointImportService(
     public async Task<List<DriveItemDto>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
         var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
+
+        if (!siteIdAndParentRef.Any())
+        {
+            return [];
+        }
+
         var siteId = siteIdAndParentRef[0];
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
 
@@ -26,8 +32,8 @@ public class ProspSharepointImportService(
 
         try
         {
-            var documentLibraryName = parentRefPath?.Split('/')[3];
-            var itemPath = string.Join('/', parentRefPath?.Split('/').Skip(4) ?? Array.Empty<string>());
+            var documentLibraryName = parentRefPath.Split('/')[3];
+            var itemPath = string.Join('/', parentRefPath.Split('/').Skip(4));
             var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
 
             return await GetDeltaDriveItemCollectionFromSite(itemPath, siteId, driveId);
@@ -101,7 +107,7 @@ public class ProspSharepointImportService(
                 throw new ArgumentException("URL cannot be null or empty.", nameof(url));
             }
             // Basic validation of URL format
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? validatedUri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var validatedUri))
             {
                 return [];
             }
@@ -171,7 +177,7 @@ public class ProspSharepointImportService(
             await prospExcelImportService.ClearImportedProspData(caseId, projectId);
         }
 
-        var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
+        var siteId = (await GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)).FirstOrDefault();
         if (siteId == null)
         {
             return;
