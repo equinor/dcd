@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
@@ -15,27 +15,40 @@ const RouteCoordinator = (): JSX.Element => {
         setIsCreating, setIsLoading, setSnackBarMessage, isLoading,
     } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-
     const navigate = useNavigate()
     const location = useLocation()
+    const previousContextRef = useRef(currentContext?.id)
 
     useEffect(() => {
-        const getPathToNavigate = () => {
+        const handleProjectChange = () => {
             if (!currentContext?.externalId) {
                 return "/"
             }
+
+            const isProjectChange = previousContextRef.current !== currentContext.id
+            previousContextRef.current = currentContext.id
+
+            if (isProjectChange) {
+                setIsRevision(false)
+                // If we're changing projects, always go to the base project URL
+                return `/${currentContext.id}`
+            }
+
             if (location.pathname.includes("/revision")) {
                 setIsRevision(true)
                 return location.pathname
             }
-            return location.pathname.includes("/case") ? location.pathname : `/${currentContext.id}`
+
+            return location.pathname.includes("/case")
+                ? location.pathname
+                : `/${currentContext.id}`
         }
 
-        const pathToNavigate = getPathToNavigate()
+        const pathToNavigate = handleProjectChange()
         if (location.pathname !== pathToNavigate) {
             navigate(pathToNavigate)
         }
-    }, [currentContext, location.pathname, navigate])
+    }, [currentContext, location.pathname, navigate, setIsRevision])
 
     const handleError = (message: string, error: unknown) => {
         console.error(message, error)
