@@ -7,7 +7,9 @@ export const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     padding: 15px;
     margin-top: 35px;
     min-height: 500px;
-    flex-direction: ${(props) => (props.$isSmallScreen ? "column" : "row")}!important;
+    && {
+        flex-direction: ${(props) => (props.$isSmallScreen ? "column" : "row")};
+    }
 `
 
 export const EditorViewerContent = styled.div<{ $right?: boolean; $isSmallScreen?: boolean; }>`

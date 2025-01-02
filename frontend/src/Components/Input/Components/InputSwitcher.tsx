@@ -5,7 +5,7 @@ import { useAppContext } from "@/Context/AppContext"
 
 const ViewValue = styled(Typography)`
     margin-top: 10px;
-    font-size: 1rem;
+    font-size: 16px;
 `
 interface InputSwitcherProps {
     label?: string;

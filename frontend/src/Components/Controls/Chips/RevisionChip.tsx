@@ -1,6 +1,10 @@
-import { Chip, Tooltip, Icon } from "@equinor/eds-core-react"
+import {
+    Chip,
+    Tooltip,
+    Icon,
+    Typography,
+} from "@equinor/eds-core-react"
 import { useState } from "react"
-import { Typography } from "@mui/material"
 import { close } from "@equinor/eds-icons"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
@@ -9,8 +13,13 @@ import styled from "styled-components"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { revisionQueryFn } from "@/Services/QueryFunctions"
 import { truncateText } from "@/Utils/common"
-import RevisionDetailsModal from "./RevisionDetailsModal"
+import RevisionDetailsModal from "../Revision/RevisionDetailsModal"
 import { useRevisions } from "@/Hooks/useRevision"
+
+const RevisionChipContainer = styled(Chip)`
+    height: auto;
+    padding: 5px 12px;
+`
 
 const CloseRevision = styled.div`
     cursor: pointer;
@@ -19,11 +28,16 @@ const CloseRevision = styled.div`
     align-items: center;
 `
 
+const StyledTypography = styled(Typography)`
+    text-decoration: underline;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 500;
+`
+
 const RevisionChip = () => {
     const { projectId } = useProjectContext()
-    const {
-        exitRevisionView,
-    } = useRevisions()
+    const { exitRevisionView } = useRevisions()
     const { revisionId } = useParams()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -36,20 +50,16 @@ const RevisionChip = () => {
     const revisionName = revisionApiData?.revisionDetails.revisionName
 
     const revisionNameDisplay = () => (
-        <Tooltip title={`View details for ${truncateText(revisionName ?? "", 120)}`}>
-            <Typography
-                onClick={() => setIsMenuOpen(true)}
-                variant="body2"
-                sx={{ textDecoration: "underline", cursor: "pointer", whiteSpace: "nowrap" }}
-            >
-                {truncateText(revisionName ?? "", 12)}
-            </Typography>
+        <Tooltip title={`View details for ${revisionName}`}>
+            <StyledTypography onClick={() => setIsMenuOpen(true)} color="primary">
+                {truncateText(revisionName ?? "", 25)}
+            </StyledTypography>
         </Tooltip>
     )
 
     return (
         <>
-            <Chip>
+            <RevisionChipContainer>
                 <CloseRevision>
                     {revisionNameDisplay()}
                     <Tooltip title="Exit revision">
@@ -60,7 +70,7 @@ const RevisionChip = () => {
                         />
                     </Tooltip>
                 </CloseRevision>
-            </Chip>
+            </RevisionChipContainer>
             <RevisionDetailsModal isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         </>
     )

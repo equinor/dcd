@@ -28,7 +28,7 @@ const RouteCoordinator = (): JSX.Element => {
                 setIsRevision(true)
                 return location.pathname
             }
-            return location.pathname.includes("/case") ? location.pathname : currentContext.id
+            return location.pathname.includes("/case") ? location.pathname : `/${currentContext.id}`
         }
 
         const pathToNavigate = getPathToNavigate()

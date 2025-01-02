@@ -23,7 +23,7 @@ import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
-import Sidebar from "./Controls/Sidebar/Sidebar"
+import Sidebar from "./Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 
