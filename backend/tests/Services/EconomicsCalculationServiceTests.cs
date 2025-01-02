@@ -111,22 +111,22 @@ public class EconomicsCalculationServiceTests
             ProductionProfileOil = new ProductionProfileOil
             {
                 StartYear = 2020,
-                Values = new[] { 1000000.0, 2000000.0, 3000000.0 } // SM³
+                Values = [1000000.0, 2000000.0, 3000000.0] // SM³
             },
             AdditionalProductionProfileOil = new AdditionalProductionProfileOil
             {
                 StartYear = 2020,
-                Values = new[] { 1000000.0, 2000000.0 } // SM³
+                Values = [1000000.0, 2000000.0] // SM³
             },
             ProductionProfileGas = new ProductionProfileGas
             {
                 StartYear = 2020,
-                Values = new[] { 1000000000.0, 2000000000.0, 3000000000.0 } // SM³
+                Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
             },
             AdditionalProductionProfileGas = new AdditionalProductionProfileGas
             {
                 StartYear = 2020,
-                Values = new[] { 1000000000.0, 2000000000.0 } // SM³
+                Values = [1000000000.0, 2000000000.0] // SM³
             }
         };
 
@@ -215,12 +215,12 @@ public class EconomicsCalculationServiceTests
             ProductionProfileOil = new ProductionProfileOil
             {
                 StartYear = 2020,
-                Values = new double[] { 0.0, 0.0, 0.0 }
+                Values = [0.0, 0.0, 0.0]
             },
             ProductionProfileGas = new ProductionProfileGas
             {
                 StartYear = 2020,
-                Values = new double[] { 0.0, 0.0, 0.0 }
+                Values = [0.0, 0.0, 0.0]
             }
         };
 
@@ -272,17 +272,17 @@ public class EconomicsCalculationServiceTests
             TotalOtherStudiesCostProfile = new TotalOtherStudiesCostProfile
             {
                 StartYear = 2020,
-                Values = new[] { 1000.0, 1500.0, 2000.0 }
+                Values = [1000.0, 1500.0, 2000.0]
             },
             OnshoreRelatedOPEXCostProfile = new OnshoreRelatedOPEXCostProfile
             {
                 StartYear = 2020,
-                Values = new[] { 500.0, 600.0, 700.0 }
+                Values = [500.0, 600.0, 700.0]
             },
             CessationWellsCost = new CessationWellsCost
             {
                 StartYear = 2020,
-                Values = new[] { 300.0, 400.0, 500.0 }
+                Values = [300.0, 400.0, 500.0]
             }
         };
 
@@ -296,7 +296,7 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 70.0, 110.0, 150.0 }
+                Values = [70.0, 110.0, 150.0]
             }
         };
 
@@ -306,7 +306,7 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 30.0, 60.0, 90.0 }
+                Values = [30.0, 60.0, 90.0]
             }
         };
 
@@ -316,7 +316,7 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 50.0, 80.0, 120.0 }
+                Values = [50.0, 80.0, 120.0]
             }
         };
 
@@ -326,7 +326,7 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 50.0, 70.0, 100.0 }
+                Values = [50.0, 70.0, 100.0]
             }
         };
 
@@ -337,7 +337,7 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 50.0, 70.0, 100.0 }
+                Values = [50.0, 70.0, 100.0]
             }
         };
 
@@ -347,25 +347,25 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 100.0, 150.0, 200.0 }
+                Values = [100.0, 150.0, 200.0]
             },
             GasProducerCostProfileOverride = new GasProducerCostProfileOverride
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 50.0, 80.0, 120.0 }
+                Values = [50.0, 80.0, 120.0]
             },
             WaterInjectorCostProfileOverride = new WaterInjectorCostProfileOverride
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 100.0, 100.0, 130.0 }
+                Values = [100.0, 100.0, 130.0]
             },
             GasInjectorCostProfileOverride = new GasInjectorCostProfileOverride
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 50.0, 80.0, 120.0 }
+                Values = [50.0, 80.0, 120.0]
             },
         };
 
@@ -375,32 +375,32 @@ public class EconomicsCalculationServiceTests
             {
                 Override = true,
                 StartYear = 2020,
-                Values = new[] { 100.0, 200.0, 300.0 }
+                Values = [100.0, 200.0, 300.0]
             },
             SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
             {
                 StartYear = 2020,
-                Values = new[] { 150.0, 250.0, 350.0 }
+                Values = [150.0, 250.0, 350.0]
             },
             CountryOfficeCost = new CountryOfficeCost
             {
                 StartYear = 2020,
-                Values = new[] { 50.0, 100.0 }
+                Values = [50.0, 100.0]
             },
             ExplorationWellCostProfile = new ExplorationWellCostProfile
             {
                 StartYear = 2020,
-                Values = new[] { 100.0, 100.0 }
+                Values = [100.0, 100.0]
             },
             AppraisalWellCostProfile = new AppraisalWellCostProfile
             {
                 StartYear = 2020,
-                Values = new[] { 100.0, 100.0 }
+                Values = [100.0, 100.0]
             },
             SidetrackCostProfile = new SidetrackCostProfile
             {
                 StartYear = 2020,
-                Values = new[] { 100.0, 100.0 }
+                Values = [100.0, 100.0]
             }
         };
 
@@ -577,17 +577,17 @@ public class EconomicsCalculationServiceTests
         {
             Id = caseId,
             Project = project,
-            DG4Date = new DateTime(2030, 1, 1),
+            DG4Date = new DateTime(DateTime.Now.Year + 6, 1, 1),
             DrainageStrategyLink = Guid.NewGuid(),
             CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
             {
                 StartYear = -3,
-                Values = new[] { 2000.0, 4000.0, 1000.0, 1000.0 }
+                Values = [2000.0, 4000.0, 1000.0, 1000.0]
             },
             CalculatedTotalIncomeCostProfile = new CalculatedTotalIncomeCostProfile
             {
                 StartYear = 0,
-                Values = new[] { 6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75 }
+                Values = [6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75]
             },
         };
 
@@ -623,7 +623,7 @@ public class EconomicsCalculationServiceTests
             CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
             {
                 StartYear = 2027,
-                Values = new[] { 2000.0, 4000.0, 1000.0, 1000.0 }
+                Values = [2000.0, 4000.0, 1000.0, 1000.0]
             },
         };
 
@@ -634,12 +634,12 @@ public class EconomicsCalculationServiceTests
             ProductionProfileOil = new ProductionProfileOil
             {
                 StartYear = 2030,
-                Values = new[] { 1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0 }
+                Values = [1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0]
             },
             ProductionProfileGas = new ProductionProfileGas
             {
                 StartYear = 2030,
-                Values = new[] { 500000000.0, 500000000.0, 500000000.0, 500000000.0, 200000000.0, 200000000.0 }
+                Values = [500000000.0, 500000000.0, 500000000.0, 500000000.0, 200000000.0, 200000000.0]
             },
         };
 
