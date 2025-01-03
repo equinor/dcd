@@ -46,6 +46,9 @@ All components should follow this common structure:
 - Always use **px** for spacing (e.g. `10px` instead of `1rem`)
 - Avoid using **!important**
 
+## Navigation
+- Do not use **react-router-dom** for navigation. Use the useAppNavigation hook instead, which is located in the @/Hooks/useNavigate.ts file.
+
 ## Prop Drilling Rules
 
 Prop drilling can be acceptable under these conditions:
