@@ -5,6 +5,7 @@ import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
 import Header from "./Components/Header"
+import UserGuideView from "./Components/Guide/UserGuide"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 
 const routes: RouteObject[] = [
@@ -23,6 +24,10 @@ const routes: RouteObject[] = [
                     { path: "case/:caseId", element: <CaseView /> },
                     { path: "case/:caseId/:tab", element: <CaseView /> },
                 ],
+            },
+            {
+                path: "guide",
+                element: <UserGuideView />,
             },
         ],
     },
