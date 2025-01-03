@@ -32,12 +32,9 @@ stages:
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        DBContext: $(DbConnectionStringDev)
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DynatraceToken: $(dynatracePreProdToken)
-        DynatraceTenantId: $(dynatracePreProdTenantId)
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
