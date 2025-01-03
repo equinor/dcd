@@ -15,7 +15,7 @@ public class MapperService(IMapper mapper, ILogger<MapperService> logger) : IMap
         {
             var entityType = typeof(T).Name;
             logger.LogError("Mapping of {EntityType} with id {Id} resulted in a null DTO.", entityType, id);
-            throw new MappingException($"Mapping of {entityType} resulted in a null DTO.", id);
+            throw new MappingException($"Mapping of {entityType} resulted in a null DTO for id {id}");
         }
         return dto;
     }
@@ -29,7 +29,7 @@ public class MapperService(IMapper mapper, ILogger<MapperService> logger) : IMap
         {
             var entityType = typeof(T).Name;
             logger.LogError("Mapping of {EntityType} with id {Id} resulted in a null entity.", entityType, id);
-            throw new MappingException($"Mapping of {entityType} resulted in a null entity.", id);
+            throw new MappingException($"Mapping of {entityType} resulted in a null entity for id {id}.");
         }
         return entity;
     }

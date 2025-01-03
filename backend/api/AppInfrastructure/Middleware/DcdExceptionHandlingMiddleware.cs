@@ -54,20 +54,29 @@ public class DcdExceptionHandlingMiddleware(
 
         if (DcdEnvironments.ReturnExceptionDetails)
         {
-            AppendDebugInfo(errorInformation,
-                exception,
-                context.Request.GetDisplayUrl(),
-                context.Request.Method,
-                await GetBody(context.Request.Body),
-                context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            AddIfNotNull(errorInformation, "Environment", DcdEnvironments.CurrentEnvironment);
+            AddIfNotNull(errorInformation, "ExceptionStackTrace", exception.StackTrace);
+            AddIfNotNull(errorInformation, "ExceptionMessage", exception.Message);
+            AddIfNotNull(errorInformation, "InnerExceptionStackTrace", exception.InnerException?.StackTrace);
+            AddIfNotNull(errorInformation, "InnerExceptionMessage", exception.InnerException?.Message);
+            AddIfNotNull(errorInformation, "Url", context.Request.GetDisplayUrl());
+            AddIfNotNull(errorInformation, "Method", context.Request.Method);
+            AddIfNotNull(errorInformation, "Body", await GetBody(context.Request.Body));
+            AddIfNotNull(errorInformation, "User", context.User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)httpStatusCode;
 
-        var jsonResponse = JsonSerializer.Serialize(errorInformation);
+        await context.Response.WriteAsync(JsonSerializer.Serialize(errorInformation));
+    }
 
-        await context.Response.WriteAsync(jsonResponse);
+    private static void AddIfNotNull(Dictionary<string, string> errorInformation, string key, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            errorInformation.Add(key, value);
+        }
     }
 
     private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext)
@@ -93,11 +102,10 @@ public class DcdExceptionHandlingMiddleware(
         await dbContext.SaveChangesAsync();
     }
 
-    private static (HttpStatusCode, string exceptionMessage) GetHttpStatusCodeAndExceptionMessage(Exception exception)
+    private static (HttpStatusCode httpStatusCode, string exceptionMessage) GetHttpStatusCodeAndExceptionMessage(Exception exception)
     {
         switch (exception)
         {
-            case FusionOrgNotFoundException:
             case KeyNotFoundException:
             case NotFoundInDbException:
                 return (HttpStatusCode.NotFound, exception.Message);
@@ -114,8 +122,6 @@ public class DcdExceptionHandlingMiddleware(
                 return (HttpStatusCode.UnprocessableContent, exception.Message);
 
             case ProjectAccessMismatchException:
-            case ProjectClassificationException:
-            case ProjectMembershipException:
             case ModifyRevisionException:
                 return (HttpStatusCode.Forbidden, exception.Message);
 
@@ -128,54 +134,10 @@ public class DcdExceptionHandlingMiddleware(
         }
     }
 
-    private static void AppendDebugInfo(Dictionary<string, string> errorInformation, Exception exception, string? url, string? method, string? body, string? user)
-    {
-        errorInformation.Add("Environment", DcdEnvironments.CurrentEnvironment);
-
-        if (exception.StackTrace != null)
-        {
-            errorInformation.Add("stacktrace", exception.StackTrace);
-        }
-
-        errorInformation.Add("ExceptionMessage", exception.Message);
-
-        if (exception.InnerException != null)
-        {
-            errorInformation.Add("InnerExceptionMessage", exception.InnerException.Message);
-
-            if (exception.InnerException.StackTrace != null)
-            {
-                errorInformation.Add("InnerExceptionStacktrace", exception.InnerException.StackTrace);
-            }
-        }
-
-        if (url != null)
-        {
-            errorInformation.Add("Url", url);
-        }
-
-        if (method != null)
-        {
-            errorInformation.Add("Method", method);
-        }
-
-        if (!string.IsNullOrEmpty(body))
-        {
-            errorInformation.Add("Body", body);
-        }
-
-        if (user != null)
-        {
-            errorInformation.Add("User", user);
-        }
-    }
-
     private static async Task<string> GetBody(Stream requestStream)
     {
         requestStream.Position = 0;
         using var reader = new StreamReader(requestStream, Encoding.UTF8);
-        var body = await reader.ReadToEndAsync();
-
-        return body;
+        return await reader.ReadToEndAsync();
     }
 }

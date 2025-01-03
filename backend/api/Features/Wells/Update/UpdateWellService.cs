@@ -23,12 +23,12 @@ public class UpdateWellService(DcdDbContext context)
 
         if (InvalidWellCategory(updatedWellDto))
         {
-            throw new InvalidInputException("Invalid well category", wellId);
+            throw new InvalidInputException($"Invalid well category for wellId {wellId}");
         }
 
         if (UpdateChangesWellType(well, updatedWellDto))
         {
-            throw new WellChangeTypeException("Cannot change well type", wellId);
+            throw new WellChangeTypeException($"Cannot change well type for wellId {wellId}");
         }
 
         well.Name = updatedWellDto.Name;
