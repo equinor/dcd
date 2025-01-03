@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `
 
-const CustomHeaderForSecondaryHeader = ({ unit, columnHeader }: CustomHeaderProps) => (
+const SecondaryTableHeader = ({ unit, columnHeader }: CustomHeaderProps) => (
     <Wrapper>
         <Typography group="table" variant="cell_header">
             {columnHeader}
@@ -27,4 +27,4 @@ const CustomHeaderForSecondaryHeader = ({ unit, columnHeader }: CustomHeaderProp
     </Wrapper>
 )
 
-export default CustomHeaderForSecondaryHeader
+export default SecondaryTableHeader
