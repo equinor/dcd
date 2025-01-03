@@ -15,7 +15,8 @@ namespace api.Migrations
                 name: "ChangeLogs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     EntityName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PropertyName = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
