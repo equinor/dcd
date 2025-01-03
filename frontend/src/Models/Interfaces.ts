@@ -150,3 +150,15 @@ export interface EditEntry {
     caseId: string;
     currentEditId: string;
 }
+
+export interface TableCase {
+    id: string
+    name: string
+    description: string
+    productionStrategyOverview: Components.Schemas.ProductionStrategyOverview | undefined
+    producerCount: number
+    waterInjectorCount: number
+    gasInjectorCount: number
+    createdAt?: string
+    referenceCaseId?: string
+}

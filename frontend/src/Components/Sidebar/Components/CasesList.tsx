@@ -1,12 +1,11 @@
 import React, { useMemo } from "react"
 import { Grid } from "@mui/material"
 import { Tooltip } from "@equinor/eds-core-react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 
 import {
-    productionStrategyOverviewToString, truncateText, caseRevisionPath,
+    productionStrategyOverviewToString, truncateText,
 } from "@/Utils/common"
 import { ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -14,6 +13,7 @@ import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { TimelineElement } from "../Sidebar"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -23,17 +23,20 @@ const SideBarRefCaseWrapper = styled.div`
 
 const CasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
     const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()
+    const { navigateToCase, navigateToRevisionCase } = useAppNavigation()
 
     const location = useLocation()
-    const navigate = useNavigate()
 
     const selectCase = (caseId: string) => {
-        if (!currentContext || !caseId) { return null }
-        navigate(caseRevisionPath(currentContext.id, caseId, isRevision, revisionId))
+        if (!caseId) { return null }
+        if (isRevision && revisionId) {
+            navigateToRevisionCase(revisionId, caseId)
+        } else {
+            navigateToCase(caseId)
+        }
         return null
     }
 
@@ -45,7 +48,7 @@ const CasesList: React.FC = () => {
         [revisionAndProjectData],
     )
 
-    if ((!revisionAndProjectData && !currentContext)) {
+    if (!revisionAndProjectData) {
         return null
     }
 
@@ -71,7 +74,6 @@ const CasesList: React.FC = () => {
                             {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
-
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}

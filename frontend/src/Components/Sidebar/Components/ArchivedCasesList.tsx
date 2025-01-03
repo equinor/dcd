@@ -1,81 +1,96 @@
-import React, { useMemo } from "react"
 import { Grid } from "@mui/material"
 import { Tooltip } from "@equinor/eds-core-react"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
+import { useMemo } from "react"
 
 import { EMPTY_GUID } from "@/Utils/constants"
-import { productionStrategyOverviewToString, casePath, truncateText } from "@/Utils/common"
+import { productionStrategyOverviewToString, truncateText } from "@/Utils/common"
 import { ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
-import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useAppContext } from "@/Context/AppContext"
 import { TimelineElement } from "../Sidebar"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
-    align-items: center;
-    display: inline-flex;
 `
 
-const ArchivedCasesList: React.FC = () => {
+interface ArchivedCase extends Components.Schemas.CaseOverviewDto { isReferenceCase: boolean}
+
+const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
+
+const getTooltipText = (
+    caseName: string | undefined,
+    strategy: Components.Schemas.ProductionStrategyOverview | undefined,
+) => `${caseName || "Untitled"} - Strategy: ${productionStrategyOverviewToString(strategy)}`
+
+const getCaseDisplayName = (caseName: string | undefined, index: number, isSidebarOpen: boolean) => {
+    if (!isSidebarOpen) { return `#${index + 1}` }
+    return caseName ? truncateText(caseName, 30) : "Untitled"
+}
+
+const ArchivedCasesList = (): JSX.Element | null => {
+    const { revisionId } = useParams()
     const { sidebarOpen } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
-    const revisionAndProjectData = useDataFetch()
-
-    if (!revisionAndProjectData || !currentContext) { return null }
-
     const location = useLocation()
-    const navigate = useNavigate()
-
-    const selectCase = (caseId: string) => {
-        if (!currentContext || !caseId) { return null }
-        navigate(casePath(currentContext.id, caseId))
-        return null
-    }
+    const revisionAndProjectData = useDataFetch()
+    const { navigateToCase, navigateToRevisionCase } = useAppNavigation()
 
     const archivedCases = useMemo(
-        () => revisionAndProjectData.commonProjectAndRevisionData.cases.filter((c) => c.archived),
-        [revisionAndProjectData.commonProjectAndRevisionData.cases],
+        () => {
+            if (!revisionAndProjectData?.commonProjectAndRevisionData.cases) { return [] }
+
+            const { referenceCaseId } = revisionAndProjectData.commonProjectAndRevisionData
+            return revisionAndProjectData.commonProjectAndRevisionData.cases
+                .filter((c) => c.archived)
+                .map((c) => ({
+                    ...c,
+                    isReferenceCase: c.caseId === referenceCaseId,
+                }))
+                .sort(sortCasesByDate)
+        },
+        [revisionAndProjectData?.commonProjectAndRevisionData],
+    )
+
+    if (!archivedCases?.length) { return null }
+
+    const handleCaseClick = (caseId: string) => {
+        const navigate = revisionId ? navigateToRevisionCase : navigateToCase
+        navigate(revisionId ?? "", caseId)
+    }
+
+    const renderCaseContent = (projectCase: ArchivedCase, index: number) => (
+        <>
+            {projectCase.isReferenceCase && (
+                <SideBarRefCaseWrapper>
+                    <ReferenceCaseIcon iconPlacement="sideBar" />
+                </SideBarRefCaseWrapper>
+            )}
+            {projectCase.caseId !== EMPTY_GUID
+                && getCaseDisplayName(projectCase.name, index, sidebarOpen)}
+        </>
     )
 
     return (
         <>
-            {archivedCases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
+            {archivedCases.map((projectCase, index) => (
                 <Grid
                     item
-                    container
-                    justifyContent="space-between"
-                    key={`menu - item - ${index + 1} `}
+                    xs={12}
+                    key={projectCase.caseId}
                     data-timeline-active={location.pathname.includes(projectCase.caseId)}
                 >
                     <Tooltip
-                        title={`
-                            ${projectCase.name
-                    ? truncateText(projectCase.name, 120)
-                    : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                        title={getTooltipText(projectCase.name, projectCase.productionStrategyOverview)}
                         placement="right"
                     >
-                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.caseId)}>
-                            {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
-                                ? (
-                                    <SideBarRefCaseWrapper>
-
-                                        {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
-                                        {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.caseId && (
-                                            <ReferenceCaseIcon iconPlacement="sideBar" />
-                                        )}
-                                    </SideBarRefCaseWrapper>
-                                )
-                                : (
-                                    <>
-                                        {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
-                                        {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                    </>
-                                )}
+                        <TimelineElement
+                            onClick={() => handleCaseClick(projectCase.caseId)}
+                            $isSelected={location.pathname.includes(projectCase.caseId)}
+                            $isArchived
+                        >
+                            {renderCaseContent(projectCase, index)}
                         </TimelineElement>
                     </Tooltip>
                 </Grid>

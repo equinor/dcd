@@ -5,8 +5,7 @@ import {
     Typography,
     Icon,
 } from "@equinor/eds-core-react"
-import { useNavigate, useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     dashboard,
@@ -14,7 +13,6 @@ import {
     compare,
 } from "@equinor/eds-icons"
 
-import { projectPath } from "@/Utils/common"
 import { useAppContext } from "@/Context/AppContext"
 import {
     TimelineElement,
@@ -23,6 +21,7 @@ import {
     StyledDivider,
 } from "../Sidebar"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
@@ -33,29 +32,25 @@ const CenterIcon = styled.div`
 `
 
 const ProjectDetails: React.FC = () => {
-    const { sidebarOpen, showEditHistory } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
+    const { sidebarOpen } = useAppContext()
     const { caseId } = useParams()
     const { setActiveTabProject } = useProjectContext()
-    const navigate = useNavigate()
-    const { isRevision, projectId } = useProjectContext()
+    const { projectId } = useProjectContext()
     const { revisionId } = useParams()
+    const { navigateToProjectTab } = useAppNavigation()
 
-    const navigateToProjectTab = (index: number) => {
+    const handleNavigateToProjectTab = (index: number) => {
         setActiveTabProject(index)
-        if (isRevision && revisionId) {
-            navigate(`${projectPath(projectId)}/revision/${revisionId}`)
-        } else {
-            navigate(projectPath(currentContext?.id!))
-        }
+        navigateToProjectTab(index, revisionId)
     }
+
     return caseId
         ? (
             <>
                 <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
                     <Grid item xs={12} container>
                         <Header>
-                            <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
+                            <ProjectTitle variant="overline">{sidebarOpen ? projectId : "Project"}</ProjectTitle>
                         </Header>
                     </Grid>
 
@@ -64,7 +59,7 @@ const ProjectDetails: React.FC = () => {
                             <TimelineElement
                                 variant="ghost"
                                 className="GhostButton"
-                                onClick={() => navigateToProjectTab(0)}
+                                onClick={() => handleNavigateToProjectTab(0)}
                             >
                                 {sidebarOpen
                                     ? "Overview"
@@ -75,7 +70,7 @@ const ProjectDetails: React.FC = () => {
                             <TimelineElement
                                 variant="ghost"
                                 className="GhostButton"
-                                onClick={() => navigateToProjectTab(1)}
+                                onClick={() => handleNavigateToProjectTab(1)}
                             >
                                 {sidebarOpen
                                     ? "Compare Cases"
@@ -86,29 +81,18 @@ const ProjectDetails: React.FC = () => {
                             <TimelineElement
                                 variant="ghost"
                                 className="GhostButton"
-                                onClick={() => navigateToProjectTab(2)}
+                                onClick={() => handleNavigateToProjectTab(2)}
                             >
                                 {sidebarOpen
                                     ? "Technical input"
                                     : <Tooltip title="Technical input" placement="right"><Icon data={settings} /></Tooltip>}
                             </TimelineElement>
                         </Grid>
-                        {/* <Grid item>
-                            <TimelineElement
-                                variant="ghost"
-                                className="GhostButton"
-                                onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 3 } })}
-                            >
-                                {sidebarOpen
-                                    ? "Case edit history"
-                                    : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
-                            </TimelineElement>
-                        </Grid> */}
                         <Grid item>
                             <TimelineElement
                                 variant="ghost"
                                 className="GhostButton"
-                                onClick={() => navigateToProjectTab(5)}
+                                onClick={() => handleNavigateToProjectTab(5)}
                             >
                                 {sidebarOpen
                                     ? "Settings"
