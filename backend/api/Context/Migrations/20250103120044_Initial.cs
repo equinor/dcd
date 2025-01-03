@@ -45,6 +45,43 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExceptionLogs",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UtcTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HttpStatusCode = table.Column<int>(type: "int", nullable: false),
+                    Method = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestBody = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Environment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StackTrace = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExceptionMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InnerExceptionStackTrace = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InnerExceptionMessage = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExceptionLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LazyLoadingOccurrences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimestampUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LazyLoadingOccurrences", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
@@ -88,6 +125,24 @@ namespace api.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RequestLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UrlPattern = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Verb = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestLengthInMilliseconds = table.Column<long>(type: "bigint", nullable: false),
+                    RequestStartUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RequestEndUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,6 +238,31 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OnshorePowerSupplies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastChangedDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    CostYear = table.Column<int>(type: "int", nullable: false),
+                    Source = table.Column<int>(type: "int", nullable: false),
+                    ProspVersion = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DG3Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DG4Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnshorePowerSupplies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OnshorePowerSupplies_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProjectMembers",
                 columns: table => new
                 {
@@ -208,7 +288,6 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OriginalProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RevisionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RevisionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RevisionDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -680,7 +759,7 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductionProfileNGL",
+                name: "ProductionProfileNgl",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -690,9 +769,9 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductionProfileNGL", x => x.Id);
+                    table.PrimaryKey("PK_ProductionProfileNgl", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductionProfileNGL_DrainageStrategies_DrainageStrategy.Id",
+                        name: "FK_ProductionProfileNgl_DrainageStrategies_DrainageStrategy.Id",
                         column: x => x.DrainageStrategyId,
                         principalTable: "DrainageStrategies",
                         principalColumn: "Id",
@@ -913,6 +992,51 @@ namespace api.Migrations
                         name: "FK_SidetrackCostProfile_Explorations_Exploration.Id",
                         column: x => x.ExplorationId,
                         principalTable: "Explorations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OnshorePowerSupplyCostProfile",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OnshorePowerSupplyId = table.Column<Guid>(name: "OnshorePowerSupply.Id", type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnshorePowerSupplyCostProfile", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OnshorePowerSupplyCostProfile_OnshorePowerSupplies_OnshorePowerSupply.Id",
+                        column: x => x.OnshorePowerSupplyId,
+                        principalTable: "OnshorePowerSupplies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OnshorePowerSupplyCostProfileOverride",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OnshorePowerSupplyId = table.Column<Guid>(name: "OnshorePowerSupply.Id", type: "uniqueidentifier", nullable: false),
+                    Override = table.Column<bool>(type: "bit", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnshorePowerSupplyCostProfileOverride", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OnshorePowerSupplyCostProfileOverride_OnshorePowerSupplies_OnshorePowerSupply.Id",
+                        column: x => x.OnshorePowerSupplyId,
+                        principalTable: "OnshorePowerSupplies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1230,6 +1354,7 @@ namespace api.Migrations
                     SubstructureLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TopsideLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TransportLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OnshorePowerSupplyLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ExplorationLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -1244,6 +1369,11 @@ namespace api.Migrations
                         name: "FK_Cases_Explorations_ExplorationLink",
                         column: x => x.ExplorationLink,
                         principalTable: "Explorations",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Cases_OnshorePowerSupplies_OnshorePowerSupplyLink",
+                        column: x => x.OnshorePowerSupplyLink,
+                        principalTable: "OnshorePowerSupplies",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Cases_Projects_ProjectId",
@@ -1723,7 +1853,6 @@ namespace api.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -2009,6 +2138,11 @@ namespace api.Migrations
                 column: "ExplorationLink");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cases_OnshorePowerSupplyLink",
+                table: "Cases",
+                column: "OnshorePowerSupplyLink");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cases_ProjectId",
                 table: "Cases",
                 column: "ProjectId");
@@ -2264,6 +2398,23 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_OnshorePowerSupplies_ProjectId",
+                table: "OnshorePowerSupplies",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OnshorePowerSupplyCostProfile_OnshorePowerSupply.Id",
+                table: "OnshorePowerSupplyCostProfile",
+                column: "OnshorePowerSupply.Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OnshorePowerSupplyCostProfileOverride_OnshorePowerSupply.Id",
+                table: "OnshorePowerSupplyCostProfileOverride",
+                column: "OnshorePowerSupply.Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OnshoreRelatedOPEXCostProfile_Case.Id",
                 table: "OnshoreRelatedOPEXCostProfile",
                 column: "Case.Id",
@@ -2276,8 +2427,8 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductionProfileNGL_DrainageStrategy.Id",
-                table: "ProductionProfileNGL",
+                name: "IX_ProductionProfileNgl_DrainageStrategy.Id",
+                table: "ProductionProfileNgl",
                 column: "DrainageStrategy.Id",
                 unique: true);
 
@@ -2311,18 +2462,13 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Project_FusionProjectId",
+                name: "IX_Projects_FusionProjectId",
                 table: "Projects",
                 column: "FusionProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_OriginalProjectId",
                 table: "Projects",
-                column: "OriginalProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RevisionDetails_OriginalProjectId",
-                table: "RevisionDetails",
                 column: "OriginalProjectId");
 
             migrationBuilder.CreateIndex(
@@ -2568,6 +2714,9 @@ namespace api.Migrations
                 name: "DevelopmentOperationalWellCosts");
 
             migrationBuilder.DropTable(
+                name: "ExceptionLogs");
+
+            migrationBuilder.DropTable(
                 name: "ExplorationOperationalWellCosts");
 
             migrationBuilder.DropTable(
@@ -2613,6 +2762,9 @@ namespace api.Migrations
                 name: "ImportedElectricityOverride");
 
             migrationBuilder.DropTable(
+                name: "LazyLoadingOccurrences");
+
+            migrationBuilder.DropTable(
                 name: "NetSalesGas");
 
             migrationBuilder.DropTable(
@@ -2631,13 +2783,19 @@ namespace api.Migrations
                 name: "OilProducerCostProfileOverride");
 
             migrationBuilder.DropTable(
+                name: "OnshorePowerSupplyCostProfile");
+
+            migrationBuilder.DropTable(
+                name: "OnshorePowerSupplyCostProfileOverride");
+
+            migrationBuilder.DropTable(
                 name: "OnshoreRelatedOPEXCostProfile");
 
             migrationBuilder.DropTable(
                 name: "ProductionProfileGas");
 
             migrationBuilder.DropTable(
-                name: "ProductionProfileNGL");
+                name: "ProductionProfileNgl");
 
             migrationBuilder.DropTable(
                 name: "ProductionProfileOil");
@@ -2650,6 +2808,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjectMembers");
+
+            migrationBuilder.DropTable(
+                name: "RequestLogs");
 
             migrationBuilder.DropTable(
                 name: "RevisionDetails");
@@ -2740,6 +2901,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Explorations");
+
+            migrationBuilder.DropTable(
+                name: "OnshorePowerSupplies");
 
             migrationBuilder.DropTable(
                 name: "Substructures");
