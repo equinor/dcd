@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20241210124436_OnshorePowerSupply")]
-    partial class OnshorePowerSupply
+    [Migration("20250103123943_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -523,9 +523,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ChangeLog", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
@@ -786,6 +788,57 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DrillingSchedule");
+                });
+
+            modelBuilder.Entity("api.Models.ExceptionLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("DisplayUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Environment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExceptionMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HttpStatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InnerExceptionMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InnerExceptionStackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestBody")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UtcTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionLogs");
                 });
 
             modelBuilder.Entity("api.Models.Exploration", b =>
@@ -1195,10 +1248,6 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1259,6 +1308,26 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("ImportedElectricityOverride");
+                });
+
+            modelBuilder.Entity("api.Models.LazyLoadingOccurrence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LazyLoadingOccurrences");
                 });
 
             modelBuilder.Entity("api.Models.NetSalesGas", b =>
@@ -1600,7 +1669,7 @@ namespace api.Migrations
                     b.ToTable("ProductionProfileGas");
                 });
 
-            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+            modelBuilder.Entity("api.Models.ProductionProfileNgl", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1621,7 +1690,7 @@ namespace api.Migrations
                     b.HasIndex("DrainageStrategy.Id")
                         .IsUnique();
 
-                    b.ToTable("ProductionProfileNGL");
+                    b.ToTable("ProductionProfileNgl");
                 });
 
             modelBuilder.Entity("api.Models.ProductionProfileOil", b =>
@@ -1805,8 +1874,7 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FusionProjectId")
-                        .HasDatabaseName("IX_Project_FusionProjectId");
+                    b.HasIndex("FusionProjectId");
 
                     b.HasIndex("OriginalProjectId");
 
@@ -1841,6 +1909,40 @@ namespace api.Migrations
                     b.ToTable("ProjectMembers");
                 });
 
+            modelBuilder.Entity("api.Models.RequestLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("RequestEndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("RequestLengthInMilliseconds")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("RequestStartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlPattern")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Verb")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestLogs");
+                });
+
             modelBuilder.Entity("api.Models.RevisionDetails", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1856,9 +1958,6 @@ namespace api.Migrations
                     b.Property<bool>("Mdqc")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("OriginalProjectId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("RevisionDate")
                         .HasColumnType("datetimeoffset");
 
@@ -1869,9 +1968,6 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OriginalProjectId")
-                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
 
                     b.HasIndex("RevisionId")
                         .IsUnique();
@@ -3563,11 +3659,11 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
-            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+            modelBuilder.Entity("api.Models.ProductionProfileNgl", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
-                        .WithOne("ProductionProfileNGL")
-                        .HasForeignKey("api.Models.ProductionProfileNGL", "DrainageStrategy.Id")
+                        .WithOne("ProductionProfileNgl")
+                        .HasForeignKey("api.Models.ProductionProfileNgl", "DrainageStrategy.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -4054,7 +4150,7 @@ namespace api.Migrations
 
                     b.Navigation("ProductionProfileGas");
 
-                    b.Navigation("ProductionProfileNGL");
+                    b.Navigation("ProductionProfileNgl");
 
                     b.Navigation("ProductionProfileOil");
 
