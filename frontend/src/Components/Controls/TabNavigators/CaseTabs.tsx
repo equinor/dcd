@@ -1,27 +1,26 @@
-import React from "react"
 import { Tabs, Tab } from "@mui/material"
-import { useNavigate, useLocation } from "react-router-dom"
-
+import { useParams } from "react-router-dom"
 import { caseTabNames } from "@/Utils/constants"
+import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useCaseContext } from "@/Context/CaseContext"
 
-type CaseTabsProps = {
-    activeTabCase: number
+interface CaseTabsProps {
     caseId: string
 }
 
-const CaseTabs: React.FC<CaseTabsProps> = ({ activeTabCase, caseId }) => {
-    const navigate = useNavigate()
-    const location = useLocation()
+const CaseTabs = ({ caseId }: CaseTabsProps) => {
+    const { revisionId } = useParams()
+    const { navigateToCaseTab } = useAppNavigation()
+    const { activeTabCase } = useCaseContext()
 
-    const handleTabChange = (index: number) => {
-        const projectUrl = location.pathname.split("/case")[0]
-        navigate(`${projectUrl}/case/${caseId}/${caseTabNames[index]}`)
+    const handleTabChange = (_: any, index: number) => {
+        navigateToCaseTab(caseId, caseTabNames[index], revisionId)
     }
 
     return (
         <Tabs
             value={activeTabCase}
-            onChange={(_, index) => handleTabChange(index)}
+            onChange={handleTabChange}
             variant="scrollable"
         >
             {caseTabNames.map((tabName) => <Tab key={tabName} label={tabName} />)}

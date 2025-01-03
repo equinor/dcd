@@ -6,7 +6,7 @@ import { bookmark_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
 
-import CustomHeaderForSecondaryHeader from "@/CustomHeaderForSecondaryHeader"
+import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
 import { cellStyleRightAlign } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
@@ -56,7 +56,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: "NPV (mill USD)",
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated NPV",
                             unit: "MUSD",
@@ -68,7 +68,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: "Manually set NPV (mill USD)",
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set NPV",
                             unit: "MUSD",
@@ -80,7 +80,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: "Calculated break even (USD/bbl)",
                         width: 190,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated break even",
                             unit: "USD/bbl",
@@ -92,7 +92,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: "Manually set break even (USD/bbl)",
                         width: 190,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set break even",
                             unit: "USD/bbl",
@@ -109,7 +109,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Oil production (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Oil production",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl",
@@ -121,7 +121,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Additional Oil production (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Additional Oil production",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl",
@@ -133,7 +133,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Rich gas production (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Rich gas production",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf",
@@ -145,7 +145,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Additional rich gas production (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Additional rich gas production",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf",
@@ -157,7 +157,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Total exported volumes (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Total exported volumes",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe",
@@ -174,7 +174,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Study costs + OPEX (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Study costs + OPEX",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
@@ -186,7 +186,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Cessation costs (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Cessation costs",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
@@ -203,7 +203,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Offshore + Onshore facility costs (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 225,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Offshore + Onshore facility costs",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
@@ -215,7 +215,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Development well costs (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Development well costs",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
@@ -227,7 +227,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: `Exploration well costs (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Exploration well costs",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
@@ -244,7 +244,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: "Total CO2 emissions (mill tonnes)",
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Total CO2 emissions",
                             unit: "mill tonnes",
@@ -256,7 +256,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerName: "CO2 intensity (kg CO2/boe)",
                         width: 175,
                         editable: false,
-                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "CO2 intensity",
                             unit: "kg CO2/boe",

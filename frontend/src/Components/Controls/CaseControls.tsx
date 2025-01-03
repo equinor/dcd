@@ -20,7 +20,6 @@ import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/common"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
 import { useAppContext } from "@/Context/AppContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
@@ -63,7 +62,6 @@ interface props {
     backToProject: () => void;
     projectId: string;
     caseId: string;
-    caseLastUpdated: string;
     handleEdit: () => void;
 }
 
@@ -71,7 +69,6 @@ const CaseControls: React.FC<props> = ({
     backToProject,
     projectId,
     caseId,
-    caseLastUpdated,
     handleEdit,
 }) => {
     const { isRevision } = useProjectContext()
@@ -79,14 +76,13 @@ const CaseControls: React.FC<props> = ({
     const { addProjectEdit } = useEditProject()
     const { setSnackBarMessage, editMode } = useAppContext()
     const { addEdit } = useEditCase()
-    const { activeTabCase } = useCaseContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()
+    const { revisionId } = useParams()
 
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const { revisionId } = useParams()
 
     const { data: apiData, error } = useQuery({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
@@ -185,7 +181,7 @@ const CaseControls: React.FC<props> = ({
                             <Typography variant="caption">
                                 Case last updated
                                 {" "}
-                                {formatDateAndTime(caseLastUpdated)}
+                                {formatDateAndTime(caseData.modifyTime)}
                             </Typography>
                         )
                         : <UndoControls />}
@@ -230,7 +226,6 @@ const CaseControls: React.FC<props> = ({
                 </CenteringContainer>
             </Header>
             <CaseTabs
-                activeTabCase={activeTabCase}
                 caseId={caseId}
             />
         </>

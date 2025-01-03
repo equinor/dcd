@@ -1,0 +1,56 @@
+import {
+    Button, Icon, Tooltip, Typography,
+} from "@equinor/eds-core-react"
+import { arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
+import styled from "styled-components"
+import { useState } from "react"
+import { TableCase } from "@/Models/Interfaces"
+import { ActiveCasesTable } from "./ActiveCasesTable"
+
+const ArchivedTitle = styled.div`
+    margin-bottom: 12px;
+    display: flex;
+`
+
+interface Props {
+    cases: TableCase[]
+    isRevision: boolean
+    revisionId?: string
+    onMenuClick: (caseId: string, target: HTMLElement) => void
+}
+
+export const ArchivedCasesTable = ({
+    cases,
+    isRevision,
+    revisionId,
+    onMenuClick,
+}: Props) => {
+    const [isExpanded, setIsExpanded] = useState<boolean>(false)
+
+    if (cases.length === 0) { return null }
+
+    return (
+        <div>
+            <ArchivedTitle>
+                <Typography variant="h3">Archived Cases</Typography>
+                <Tooltip title={isExpanded ? "Collapse Archived Cases" : "Expand Archived Cases"}>
+                    <Button
+                        variant="ghost_icon"
+                        className="GhostButton"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                        <Icon data={isExpanded ? arrow_drop_up : arrow_drop_down} />
+                    </Button>
+                </Tooltip>
+            </ArchivedTitle>
+            {isExpanded && (
+                <ActiveCasesTable
+                    cases={cases}
+                    isRevision={isRevision}
+                    revisionId={revisionId}
+                    onMenuClick={onMenuClick}
+                />
+            )}
+        </div>
+    )
+}

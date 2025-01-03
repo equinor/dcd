@@ -2,53 +2,55 @@ import { useEffect, useRef } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { isAxiosError } from "@/Utils/common"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
-const RouteCoordinator = (): JSX.Element => {
-    const { setIsRevision, setAccessRights, accessRights } = useProjectContext()
+// Banner components
+const SelectProjectBanner = () => (
+    <Banner>
+        <Banner.Icon variant="info">
+            <Icon data={info_circle} />
+        </Banner.Icon>
+        <Banner.Message>Select a project to view</Banner.Message>
+    </Banner>
+)
+
+const LoadingBanner = () => (
+    <Banner>
+        <Banner.Message>Loading project...</Banner.Message>
+    </Banner>
+)
+
+const NoAccessBanner = () => (
+    <Banner>
+        <Banner.Icon variant="info">
+            <Icon data={info_circle} />
+        </Banner.Icon>
+        <Banner.Message>You do not have access to view this project</Banner.Message>
+    </Banner>
+)
+
+const ProjectSelector = (): JSX.Element => {
     const {
-        setIsCreating, setIsLoading, setSnackBarMessage, isLoading,
+        setIsRevision,
+        setAccessRights,
+        accessRights,
+    } = useProjectContext()
+    const {
+        setIsCreating,
+        setIsLoading,
+        setSnackBarMessage,
+        isLoading,
     } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const navigate = useNavigate()
+    const { navigateToProject } = useAppNavigation()
     const location = useLocation()
     const previousContextRef = useRef(currentContext?.id)
-
-    useEffect(() => {
-        const handleProjectChange = () => {
-            if (!currentContext?.externalId) {
-                return "/"
-            }
-
-            const isProjectChange = previousContextRef.current !== currentContext.id
-            previousContextRef.current = currentContext.id
-
-            if (isProjectChange) {
-                setIsRevision(false)
-                // If we're changing projects, always go to the base project URL
-                return `/${currentContext.id}`
-            }
-
-            if (location.pathname.includes("/revision")) {
-                setIsRevision(true)
-                return location.pathname
-            }
-
-            return location.pathname.includes("/case")
-                ? location.pathname
-                : `/${currentContext.id}`
-        }
-
-        const pathToNavigate = handleProjectChange()
-        if (location.pathname !== pathToNavigate) {
-            navigate(pathToNavigate)
-        }
-    }, [currentContext, location.pathname, navigate, setIsRevision])
 
     const handleError = (message: string, error: unknown) => {
         console.error(message, error)
@@ -56,32 +58,61 @@ const RouteCoordinator = (): JSX.Element => {
         setIsLoading(false)
     }
 
-    useEffect(() => {
-        const fetchAndSetProject = async () => {
-            if (!currentContext?.externalId) {
-                console.log("No externalId in context")
-                return
+    const createNewProject = async (projectService: any, externalId: string) => {
+        setIsCreating(true)
+        setSnackBarMessage("No project found for this search. Creating new.")
+        const createdProject = await projectService.createProject(externalId)
+        return projectService.getAccess(createdProject.commonProjectAndRevisionData.fusionProjectId)
+    }
+
+    const getProjectAccess = async (projectService: any, externalId: string) => {
+        try {
+            return await projectService.getAccess(externalId)
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return createNewProject(projectService, externalId)
             }
+            throw error
+        }
+    }
+
+    const fetchProjectData = async (projectService: any, externalId: string) => {
+        const fetchedProject = await projectService.getProject(externalId)
+        if (fetchedProject) {
+            setIsCreating(false)
+            setIsLoading(false)
+        }
+    }
+
+    // Update revision state based on URL changes (including browser navigation)
+    useEffect(() => {
+        const isInRevisionPath = location.pathname.includes("/revision/")
+        setIsRevision(isInRevisionPath)
+    }, [location.pathname])
+
+    // Handle project context changes
+    useEffect(() => {
+        if (!currentContext?.externalId) { return }
+
+        const isProjectChange = previousContextRef.current !== currentContext.id
+        previousContextRef.current = currentContext.id
+
+        if (isProjectChange) {
+            setIsRevision(false)
+            navigateToProject(currentContext.id)
+        }
+    }, [currentContext])
+
+    // Initialize or update project data
+    useEffect(() => {
+        const initializeProject = async () => {
+            if (!currentContext?.externalId) { return }
 
             setIsLoading(true)
             const projectService = await GetProjectService()
 
             try {
-                let access
-                try {
-                    access = await projectService.getAccess(currentContext.externalId)
-                } catch (error) {
-                    if (isAxiosError(error) && error.response?.status === 404) {
-                        // Project not found, attempt to create it
-                        setIsCreating(true)
-                        setSnackBarMessage("No project found for this search. Creating new.")
-                        const createdProject = await projectService.createProject(currentContext.id)
-                        access = await projectService.getAccess(createdProject.commonProjectAndRevisionData.fusionProjectId)
-                    } else {
-                        handleError("Error fetching access rights", error)
-                        return
-                    }
-                }
+                const access = await getProjectAccess(projectService, currentContext.externalId)
                 setAccessRights(access)
 
                 if (!access.canView) {
@@ -90,35 +121,19 @@ const RouteCoordinator = (): JSX.Element => {
                     return
                 }
 
-                try {
-                    const fetchedProject = await projectService.getProject(currentContext.externalId)
-                    if (fetchedProject) {
-                        setIsCreating(false)
-                        setIsLoading(false)
-                    }
-                } catch (error) {
-                    handleError("Error fetching project", error)
-                }
+                await fetchProjectData(projectService, currentContext.externalId)
             } catch (error) {
                 handleError("Error fetching or setting project in context", error)
             }
         }
 
-        fetchAndSetProject()
+        initializeProject()
     }, [currentContext?.externalId])
 
     if (!currentContext) {
-        return (
-            <Banner>
-                <Banner.Icon variant="info">
-                    <Icon data={info_circle} />
-                </Banner.Icon>
-                <Banner.Message>
-                    Select a project to view
-                </Banner.Message>
-            </Banner>
-        )
+        return <SelectProjectBanner />
     }
+
     if (accessRights?.canView) {
         return (
             <>
@@ -127,25 +142,12 @@ const RouteCoordinator = (): JSX.Element => {
             </>
         )
     }
+
     if (isLoading) {
-        return (
-            <Banner>
-                <Banner.Message>
-                    Loading project...
-                </Banner.Message>
-            </Banner>
-        )
+        return <LoadingBanner />
     }
-    return (
-        <Banner>
-            <Banner.Icon variant="info">
-                <Icon data={info_circle} />
-            </Banner.Icon>
-            <Banner.Message>
-                You do not have access to view this project
-            </Banner.Message>
-        </Banner>
-    )
+
+    return <NoAccessBanner />
 }
 
-export default RouteCoordinator
+export default ProjectSelector

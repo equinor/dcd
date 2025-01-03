@@ -1,7 +1,6 @@
 import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
-import { useNavigate } from "react-router-dom"
 import {
     bookmark_filled,
     bookmark_outlined,
@@ -21,7 +20,8 @@ import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import useEditProject from "@/Hooks/useEditProject"
-import Modal from "../../Modal/Modal"
+import Modal from "../../../Modal/Modal"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -40,7 +40,7 @@ const CasesDropMenu = ({
 }: CasesDropMenuProps): JSX.Element => {
     const queryClient = useQueryClient()
     const { addProjectEdit } = useEditProject()
-    const navigate = useNavigate()
+    const { navigateToCase } = useAppNavigation()
     const { updateCase } = useSubmitToApi()
     const { isEditDisabled } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()
@@ -55,7 +55,7 @@ const CasesDropMenu = ({
     const openCase = async () => {
         try {
             if (selectedCaseId) {
-                navigate(`case/${selectedCaseId}`)
+                navigateToCase(selectedCaseId)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -88,6 +88,10 @@ const CasesDropMenu = ({
         ? revisionAndProjectData as Components.Schemas.ProjectDataDto
         : null
 
+    const handleReferenceCaseToggle = () => {
+        if (!projectData || selectedCase?.archived || isEditDisabled) { return }
+        setCaseAsReference(selectedCaseId, projectData, addProjectEdit)
+    }
     return (
         <>
             <Modal
@@ -171,29 +175,15 @@ const CasesDropMenu = ({
                         Delete
                     </Typography>
                 </Menu.Item>
-                {revisionAndProjectData.commonProjectAndRevisionData.referenceCaseId === selectedCaseId
-                    ? (
-                        <Menu.Item
-                            disabled={selectedCase?.archived || isEditDisabled}
-                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
-                        >
-                            <Icon data={bookmark_outlined} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Remove as reference case
-                            </Typography>
-                        </Menu.Item>
-                    )
-                    : (
-                        <Menu.Item
-                            disabled={selectedCase?.archived || isEditDisabled}
-                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
-                        >
-                            <Icon data={bookmark_filled} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Set as reference case
-                            </Typography>
-                        </Menu.Item>
-                    )}
+                <Menu.Item
+                    disabled={selectedCase?.archived || isEditDisabled}
+                    onClick={handleReferenceCaseToggle}
+                >
+                    <Icon data={revisionAndProjectData.commonProjectAndRevisionData.referenceCaseId === selectedCaseId ? bookmark_outlined : bookmark_filled} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        {revisionAndProjectData.commonProjectAndRevisionData.referenceCaseId === selectedCaseId ? "Remove as reference case" : "Set as reference case"}
+                    </Typography>
+                </Menu.Item>
             </Menu>
         </>
     )
