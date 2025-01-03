@@ -3,15 +3,19 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
+using api.Context;
 using api.Exceptions;
+using api.Models;
 
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Middleware;
 
 public class DcdExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,
-    ILogger<DcdExceptionHandlingMiddleware> logger)
+    ILogger<DcdExceptionHandlingMiddleware> logger,
+    IDbContextFactory<DcdDbContext> contextFactory)
 {
     public async Task Invoke(HttpContext context)
     {
@@ -39,48 +43,14 @@ public class DcdExceptionHandlingMiddleware(
     {
         logger.LogError(exception.ToString());
 
-        HttpStatusCode statusCode;
-        var errorInformation = new Dictionary<string, string>();
+        var (httpStatusCode, exceptionMessage) = GetHttpStatusCodeAndExceptionMessage(exception);
 
-        switch (exception)
+        var errorInformation = new Dictionary<string, string>
         {
-            case FusionOrgNotFoundException:
-            case KeyNotFoundException:
-            case NotFoundInDbException:
-                statusCode = HttpStatusCode.NotFound;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case UnauthorizedAccessException:
-                statusCode = HttpStatusCode.Unauthorized;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case WellChangeTypeException:
-            case InvalidInputException:
-            case InvalidProjectIdException:
-                statusCode = HttpStatusCode.BadRequest;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case InputValidationException:
-                statusCode = HttpStatusCode.UnprocessableContent;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case ProjectAccessMismatchException:
-            case ProjectClassificationException:
-            case ProjectMembershipException:
-            case ModifyRevisionException:
-                statusCode = HttpStatusCode.Forbidden;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case ProjectAlreadyExistsException:
-            case ResourceAlreadyExistsException:
-                statusCode = HttpStatusCode.Conflict;
-                errorInformation.Add("message", exception.Message);
-                break;
-            default:
-                statusCode = HttpStatusCode.InternalServerError;
-                errorInformation.Add("message", "An unexpected error occurred");
-                break;
-        }
+            { "message", exceptionMessage }
+        };
+
+        await SaveExceptionToDatabase(exception, httpStatusCode, context);
 
         if (DcdEnvironments.ReturnExceptionDetails)
         {
@@ -93,11 +63,69 @@ public class DcdExceptionHandlingMiddleware(
         }
 
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)statusCode;
+        context.Response.StatusCode = (int)httpStatusCode;
 
         var jsonResponse = JsonSerializer.Serialize(errorInformation);
 
         await context.Response.WriteAsync(jsonResponse);
+    }
+
+    private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext)
+    {
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
+        dbContext.ChangeTracker.LazyLoadingEnabled = false;
+
+        dbContext.ExceptionLogs.Add(new ExceptionLog
+        {
+            Environment = DcdEnvironments.CurrentEnvironment,
+            UtcTimestamp = DateTime.UtcNow,
+            HttpStatusCode = (int)httpStatusCode,
+            DisplayUrl = httpContext.Request.GetDisplayUrl(),
+            RequestUrl = httpContext.Request.Path.Value,
+            Method = httpContext.Request.Method,
+            RequestBody = await GetBody(httpContext.Request.Body),
+            StackTrace = exception.StackTrace,
+            ExceptionMessage = exception.Message,
+            InnerExceptionStackTrace = exception.InnerException?.StackTrace,
+            InnerExceptionMessage = exception.InnerException?.Message
+        });
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static (HttpStatusCode, string exceptionMessage) GetHttpStatusCodeAndExceptionMessage(Exception exception)
+    {
+        switch (exception)
+        {
+            case FusionOrgNotFoundException:
+            case KeyNotFoundException:
+            case NotFoundInDbException:
+                return (HttpStatusCode.NotFound, exception.Message);
+
+            case UnauthorizedAccessException:
+                return (HttpStatusCode.Unauthorized, exception.Message);
+
+            case WellChangeTypeException:
+            case InvalidInputException:
+            case InvalidProjectIdException:
+                return (HttpStatusCode.BadRequest, exception.Message);
+
+            case InputValidationException:
+                return (HttpStatusCode.UnprocessableContent, exception.Message);
+
+            case ProjectAccessMismatchException:
+            case ProjectClassificationException:
+            case ProjectMembershipException:
+            case ModifyRevisionException:
+                return (HttpStatusCode.Forbidden, exception.Message);
+
+            case ProjectAlreadyExistsException:
+            case ResourceAlreadyExistsException:
+                return (HttpStatusCode.Conflict, exception.Message);
+
+            default:
+                return (HttpStatusCode.InternalServerError, "An unexpected error occurred");
+        }
     }
 
     private static void AppendDebugInfo(Dictionary<string, string> errorInformation, Exception exception, string? url, string? method, string? body, string? user)
