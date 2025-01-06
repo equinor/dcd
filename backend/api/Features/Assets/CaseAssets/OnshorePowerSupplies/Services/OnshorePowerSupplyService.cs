@@ -9,11 +9,7 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
-
 public class OnshorePowerSupplyService(
-    ILogger<OnshorePowerSupplyService> logger,
     ICaseRepository caseRepository,
     IOnshorePowerSupplyRepository onshorePowerSupplyRepository,
     IMapperService mapperService,
@@ -38,17 +34,8 @@ public class OnshorePowerSupplyService(
         mapperService.MapToEntity(updatedOnshorePowerSupplyDto, existing, onshorePowerSupplyId);
         existing.LastChangedDate = DateTime.UtcNow;
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateConcurrencyException ex)
-        {
-            logger.LogError(ex, "Failed to update onshorePowerSupply with id {onshorePowerSupplyId} for case id {caseId}.", onshorePowerSupplyId, caseId);
-            throw;
-        }
-
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<OnshorePowerSupply, OnshorePowerSupplyDto>(existing, onshorePowerSupplyId);
         return dto;

@@ -9,12 +9,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Surfs.Services;
 
 public class SurfTimeSeriesService(
-    ILogger<SurfService> logger,
     ISurfTimeSeriesRepository repository,
     ISurfRepository surfRepository,
     ICaseRepository caseRepository,
@@ -50,18 +47,9 @@ public class SurfTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, surfId);
 
-        SurfCostProfileOverride createdProfile;
-        try
-        {
-            createdProfile = repository.CreateSurfCostProfileOverride(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile SurfCostProfileOverride for case id {caseId}.", caseId);
-            throw;
-        }
+        var createdProfile = repository.CreateSurfCostProfileOverride(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
@@ -126,17 +114,9 @@ public class SurfTimeSeriesService(
             newProfile.Surf.CostProfileOverride.Override = false;
         }
 
-        try
-        {
-            repository.CreateSurfCostProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to create cost profile for surf with id {surfId} for case id {caseId}.", surfId, caseId);
-            throw;
-        }
+        repository.CreateSurfCostProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var newDto = mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
@@ -190,19 +170,8 @@ public class SurfTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 
-        // TProfile updatedProfile;
-        try
-        {
-            // updatedProfile = updateProfile(existingProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
