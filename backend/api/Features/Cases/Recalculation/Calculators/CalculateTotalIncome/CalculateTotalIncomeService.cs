@@ -22,6 +22,11 @@ public class CalculateTotalIncomeService(ICaseService caseService, IDrainageStra
             d => d.AdditionalProductionProfileOil!
         );
 
+        CalculateTotalIncome(caseItem, drainageStrategy);
+    }
+
+    public static void CalculateTotalIncome(Case caseItem, DrainageStrategy drainageStrategy)
+    {
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
