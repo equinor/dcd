@@ -1,6 +1,7 @@
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.CaseProfiles.Services;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
+using api.Models;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 
@@ -23,6 +24,11 @@ public class CalculateBreakEvenOilPriceService(
             d => d.AdditionalProductionProfileGas!
         );
 
+        CalculateBreakEvenOilPrice(caseItem, drainageStrategy);
+    }
+
+    public static void CalculateBreakEvenOilPrice(Case caseItem, DrainageStrategy drainageStrategy)
+    {
         var discountRate = caseItem.Project.DiscountRate;
         var defaultOilPrice = caseItem.Project.OilPriceUSD;
         var gasPriceNok = caseItem.Project.GasPriceNOK;
