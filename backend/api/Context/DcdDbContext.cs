@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace api.Context;
 
-public class DcdDbContext(DbContextOptions<DcdDbContext> options, /*CurrentUser? currentUser,*/ IServiceScopeFactory? serviceScopeFactory) : DbContext(options)
+public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser, IServiceScopeFactory? serviceScopeFactory) : DbContext(options)
 {
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
@@ -83,7 +83,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, /*CurrentUser?
     public DbSet<SidetrackCostProfile> SidetrackCostProfile => Set<SidetrackCostProfile>();
     public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile => Set<CalculatedTotalIncomeCostProfile>();
     public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile => Set<CalculatedTotalCostCostProfile>();
-    //public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
+    public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
     public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
@@ -97,7 +97,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, /*CurrentUser?
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
-        //modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
+        modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -161,7 +161,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, /*CurrentUser?
     {
         var utcNow = DateTime.UtcNow;
 
-        //ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
 
         return await base.SaveChangesAsync(cancellationToken);
     }
@@ -170,7 +170,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, /*CurrentUser?
     {
         var utcNow = DateTime.UtcNow;
 
-        //ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
 
         return base.SaveChanges();
     }
