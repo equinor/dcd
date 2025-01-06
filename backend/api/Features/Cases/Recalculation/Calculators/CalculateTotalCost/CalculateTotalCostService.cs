@@ -43,28 +43,6 @@ public class CalculateTotalCostService(
             c => c.CessationOnshoreFacilitiesCostProfile!
         );
 
-        var totalStudyCost = CalculateStudyCost(caseItem);
-
-        var studiesProfile = new TimeSeries<double>
-        {
-            StartYear = totalStudyCost.StartYear,
-            Values = totalStudyCost.Values ?? []
-        };
-
-        var totalOpexCost = CalculateOpexCost(caseItem);
-        var opexProfile = new TimeSeries<double>
-        {
-            StartYear = totalOpexCost.StartYear,
-            Values = totalOpexCost.Values ?? []
-        };
-
-        var totalCessationCost = CalculateCessationCost(caseItem);
-        var cessationProfile = new TimeSeries<double>
-        {
-            StartYear = totalCessationCost.StartYear,
-            Values = totalCessationCost.Values ?? []
-        };
-
         var substructure = await substructureService.GetSubstructureWithIncludes(
             caseItem.SubstructureLink,
             s => s.CostProfileOverride!,
@@ -95,13 +73,6 @@ public class CalculateTotalCostService(
             o => o.CostProfile!
         );
 
-        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport, onshorePowerSupply);
-        var totalOffshoreFacilityProfile = new TimeSeries<double>
-        {
-            StartYear = totalOffshoreFacilityCost.StartYear,
-            Values = totalOffshoreFacilityCost.Values
-        };
-
         var wellProject = await wellProjectService.GetWellProjectWithIncludes(
             caseItem.WellProjectLink,
             w => w.OilProducerCostProfileOverride!,
@@ -114,13 +85,6 @@ public class CalculateTotalCostService(
             w => w.GasInjectorCostProfile!
         );
 
-        var totalDevelopmentCost = CalculateTotalDevelopmentCost(wellProject);
-        var developmentProfile = new TimeSeries<double>
-        {
-            StartYear = totalDevelopmentCost.StartYear,
-            Values = totalDevelopmentCost.Values
-        };
-
         var exploration = await explorationService.GetExplorationWithIncludes(
             caseItem.ExplorationLink,
             e => e.GAndGAdminCost!,
@@ -129,6 +93,54 @@ public class CalculateTotalCostService(
             e => e.ExplorationWellCostProfile!,
             e => e.AppraisalWellCostProfile!,
             e => e.SidetrackCostProfile!);
+
+        CalculateTotalCost(caseItem, substructure, surf, topside, transport, onshorePowerSupply, wellProject, exploration);
+    }
+
+    public static void CalculateTotalCost(Case caseItem,
+        Substructure substructure,
+        Surf surf,
+        Topside topside,
+        Transport transport,
+        OnshorePowerSupply onshorePowerSupply,
+        WellProject wellProject,
+        Exploration exploration)
+    {
+        var totalStudyCost = CalculateStudyCost(caseItem);
+
+        var studiesProfile = new TimeSeries<double>
+        {
+            StartYear = totalStudyCost.StartYear,
+            Values = totalStudyCost.Values ?? []
+        };
+
+        var totalOpexCost = CalculateOpexCost(caseItem);
+        var opexProfile = new TimeSeries<double>
+        {
+            StartYear = totalOpexCost.StartYear,
+            Values = totalOpexCost.Values ?? []
+        };
+
+        var totalCessationCost = CalculateCessationCost(caseItem);
+        var cessationProfile = new TimeSeries<double>
+        {
+            StartYear = totalCessationCost.StartYear,
+            Values = totalCessationCost.Values ?? []
+        };
+
+        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport, onshorePowerSupply);
+        var totalOffshoreFacilityProfile = new TimeSeries<double>
+        {
+            StartYear = totalOffshoreFacilityCost.StartYear,
+            Values = totalOffshoreFacilityCost.Values
+        };
+
+        var totalDevelopmentCost = CalculateTotalDevelopmentCost(wellProject);
+        var developmentProfile = new TimeSeries<double>
+        {
+            StartYear = totalDevelopmentCost.StartYear,
+            Values = totalDevelopmentCost.Values
+        };
 
         var explorationCost = CalculateTotalExplorationCost(exploration);
         var explorationProfile = new TimeSeries<double>
@@ -162,7 +174,7 @@ public class CalculateTotalCostService(
         }
     }
 
-    private TimeSeries<double> CalculateStudyCost(Case caseItem)
+    private static TimeSeries<double> CalculateStudyCost(Case caseItem)
     {
         TimeSeries<double> feasibilityProfile = UseOverrideOrProfile(
             caseItem.TotalFeasibilityAndConceptStudies,
@@ -185,7 +197,7 @@ public class CalculateTotalCostService(
         return totalStudyCost;
     }
 
-    private TimeSeries<double> CalculateOpexCost(Case caseItem)
+    private static TimeSeries<double> CalculateOpexCost(Case caseItem)
     {
         TimeSeries<double> wellInterventionProfile = UseOverrideOrProfile(
             caseItem.WellInterventionCostProfile,
@@ -214,7 +226,7 @@ public class CalculateTotalCostService(
         return totalOpexCost;
     }
 
-    private TimeSeries<double> CalculateCessationCost(Case caseItem)
+    private static TimeSeries<double> CalculateCessationCost(Case caseItem)
     {
         TimeSeries<double> cessationWellsProfile = UseOverrideOrProfile(
             caseItem.CessationWellsCost,

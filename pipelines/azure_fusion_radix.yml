@@ -38,12 +38,9 @@ stages:
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        DBContext: $(DbConnectionStringDev)
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DynatraceToken: $(dynatracePreProdToken)
-        DynatraceTenantId: $(dynatracePreProdTenantId)
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
@@ -57,12 +54,9 @@ stages:
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        DBContext: $(DbConnectionStringQa)
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DynatraceToken: $(dynatracePreProdToken)
-        DynatraceTenantId: $(dynatracePreProdTenantId)
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
@@ -76,12 +70,9 @@ stages:
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        DBContext: $(DbConnectionStringProd)
         FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-prod'
         ContainerTag: "release"
-        DynatraceToken: $(dynatrace-prod-token)
-        DynatraceTenantId: $(dynatrace_tenant)
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)

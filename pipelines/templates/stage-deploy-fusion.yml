@@ -6,12 +6,9 @@ parameters:
     - name: buildId
     - name: radixToken
     - name: branch
-    - name: DBContext
     - name: FusionEnvId
     - name: FusionServiceConnection
     - name: ContainerTag
-    - name: DynatraceTenantId
-    - name: DynatraceToken
     - name: SpAzureClientId
     - name: SpAzureClientSecret
     - name: AzureTenantId
@@ -29,6 +26,7 @@ stages:
                         - task: DownloadPipelineArtifact@2
                           inputs:
                             artifact: ConceptApp
+
                         - task: FusionApp@2
                           displayName: 'Deploying app'
                           inputs:
@@ -38,6 +36,7 @@ stages:
                             fusionCredentials: ${{ parameters.FusionServiceConnection }}
                             tokenResource: ${{ parameters.FusionEnvId }}
                             portalUrl: ${{ parameters.portalUrl }}
+
                         - task: FusionApp@2
                           inputs:
                             fusionCredentials: ${{ parameters.FusionServiceConnection }}
@@ -45,6 +44,7 @@ stages:
                             action: 'Publish'
                             appKey: 'conceptapp'
                             environment: ${{ parameters.FusionEnvId }}
+
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
@@ -62,6 +62,7 @@ stages:
                                   registry: "crdcd.azurecr.io"
                                   repository: "backend"
                                   tag: ${{ parameters.ContainerTag }}
+
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             dependsOn:
                 - Deploy_${{ parameters.envshortname }}_Frontend
@@ -95,6 +96,7 @@ stages:
                           $pipelineName = $result.name                         
                           Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
                           Write-Host "Done. JobName:" $(radixJobName)
+
                 - task: PowerShell@2
                   displayName: "Wait for Radix Build-Deploy job"
                   inputs:
