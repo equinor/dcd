@@ -15,7 +15,7 @@ namespace api.AppInfrastructure.Middleware;
 public class DcdExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,
     ILogger<DcdExceptionHandlingMiddleware> logger,
-    IDbContextFactory<DcdDbContext> contextFactory)
+    IServiceScopeFactory serviceScopeFactory)
 {
     public async Task Invoke(HttpContext context)
     {
@@ -81,7 +81,12 @@ public class DcdExceptionHandlingMiddleware(
 
     private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext)
     {
-        await using var dbContext = await contextFactory.CreateDbContextAsync();
+        using var scope = serviceScopeFactory.CreateScope();
+
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
         dbContext.ChangeTracker.LazyLoadingEnabled = false;
 
         dbContext.ExceptionLogs.Add(new ExceptionLog
