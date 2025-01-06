@@ -86,6 +86,7 @@ const ArchivedCasesList = (): JSX.Element | null => {
                         placement="right"
                     >
                         <TimelineElement
+                            variant="ghost"
                             onClick={() => handleCaseClick(projectCase.caseId)}
                             $isSelected={location.pathname.includes(projectCase.caseId)}
                             $isArchived
