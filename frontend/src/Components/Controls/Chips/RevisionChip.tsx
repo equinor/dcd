@@ -33,6 +33,7 @@ const StyledTypography = styled(Typography)`
     cursor: pointer;
     white-space: nowrap;
     font-weight: 500;
+    margin-right: 5px;
 `
 
 const RevisionChip = () => {

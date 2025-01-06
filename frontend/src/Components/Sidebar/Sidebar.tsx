@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
+import { useMediaQuery } from "@mui/material"
 import Grid from "@mui/material/Grid"
 
 import { useAppContext } from "@/Context/AppContext"
@@ -15,15 +16,15 @@ const { Toggle, Footer } = SideBar
 
 const Wrapper = styled.div`
     position: relative;
+    border-right: 1px solid #DCDCDC;
 `
 
 const Sticky = styled.div`
     position: sticky;
     top: 0;
     background-color: white;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 102px);
     overflow: auto;
-    border-right: 1px solid #DCDCDC;
 `
 
 const StyledSideBar = styled(SideBar)`
@@ -59,6 +60,8 @@ export const TimelineElement = styled(Button)`
 const Sidebar = () => {
     const { sidebarOpen, setSidebarOpen } = useAppContext()
     const revisionAndProjectData = useDataFetch()
+    const isCompactMode = useMediaQuery("(max-height: 697px)")
+    console.log("isCompactMode", isCompactMode)
 
     const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseOverviewDto[]>([])
 

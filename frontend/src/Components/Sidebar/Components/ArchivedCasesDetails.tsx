@@ -15,10 +15,10 @@ import ArchivedCasesList from "./ArchivedCasesList"
 
 const ClickableTitle = styled.div`
     cursor: pointer;
-    `
+`
 
 const ArchivedCasesDetails: React.FC = () => {
-    const [expandList, setExpandList] = useState(false);
+    const [expandList, setExpandList] = useState(false)
     const { sidebarOpen } = useAppContext()
 
     return (

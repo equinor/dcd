@@ -23,8 +23,6 @@ const ArchivedCasesList: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
     const revisionAndProjectData = useDataFetch()
 
-    if (!revisionAndProjectData || !currentContext) { return null }
-
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -35,9 +33,11 @@ const ArchivedCasesList: React.FC = () => {
     }
 
     const archivedCases = useMemo(
-        () => revisionAndProjectData.commonProjectAndRevisionData.cases.filter((c) => c.archived),
-        [revisionAndProjectData.commonProjectAndRevisionData.cases],
+        () => revisionAndProjectData?.commonProjectAndRevisionData.cases.filter((c) => c.archived),
+        [revisionAndProjectData?.commonProjectAndRevisionData.cases],
     )
+
+    if (!revisionAndProjectData || !archivedCases || !currentContext) { return null }
 
     return (
         <>
@@ -52,8 +52,8 @@ const ArchivedCasesList: React.FC = () => {
                     <Tooltip
                         title={`
                             ${projectCase.name
-                    ? truncateText(projectCase.name, 120)
-                    : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                                ? truncateText(projectCase.name, 120)
+                                : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.caseId)}>
