@@ -35,7 +35,7 @@ public static class DcdDatabaseConfiguration
         sqliteConnection.Open();
         dbContextOptionsBuilder.UseSqlite(sqliteConnection);
 
-        using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null, null);
+        using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null);
         context.Database.EnsureCreated();
 
         builder.Services.AddDbContext<DcdDbContext>(
@@ -67,7 +67,7 @@ public static class DcdDatabaseConfiguration
 
         var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
         dbBuilder.UseSqlServer(sqlServerConnectionString);
-        using var context = new DcdDbContext(dbBuilder.Options, null, null);
+        using var context = new DcdDbContext(dbBuilder.Options, null);
 
         context.Database.Migrate();
     }
