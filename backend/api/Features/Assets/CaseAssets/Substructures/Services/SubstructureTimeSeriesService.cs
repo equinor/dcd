@@ -9,12 +9,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Substructures.Services;
 
 public class SubstructureTimeSeriesService(
-    ILogger<SubstructureService> logger,
     ISubstructureRepository substructureRepository,
     ISubstructureTimeSeriesRepository repository,
     ICaseRepository caseRepository,
@@ -80,17 +77,10 @@ public class SubstructureTimeSeriesService(
         {
             newProfile.Substructure.CostProfileOverride.Override = false;
         }
-        try
-        {
-            repository.CreateSubstructureCostProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to create cost profile for substructure with id {substructureId} for case id {caseId}.", substructureId, caseId);
-            throw;
-        }
+
+        repository.CreateSubstructureCostProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var newDto = mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
@@ -123,18 +113,9 @@ public class SubstructureTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, substructureId);
 
-        SubstructureCostProfileOverride createdProfile;
-        try
-        {
-            createdProfile = repository.CreateSubstructureCostProfileOverride(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
-            throw;
-        }
+        var createdProfile = repository.CreateSubstructureCostProfileOverride(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
@@ -187,17 +168,8 @@ public class SubstructureTimeSeriesService(
         }
         mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;

@@ -10,12 +10,9 @@ using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Explorations.Services;
 
 public class ExplorationTimeSeriesService(
-    ILogger<ExplorationService> logger,
     ICaseRepository caseRepository,
     IExplorationTimeSeriesRepository repository,
     IExplorationRepository explorationRepository,
@@ -151,19 +148,9 @@ public class ExplorationTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
-        TProfile updatedProfile;
-        try
-        {
-            updatedProfile = updateProfile(existingProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
+        var updatedProfile = updateProfile(existingProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
@@ -201,18 +188,9 @@ public class ExplorationTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
 
-        TProfile createdProfile;
-        try
-        {
-            createdProfile = createProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
-            throw;
-        }
+        var createdProfile = createProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;

@@ -9,12 +9,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Topsides.Services;
 
 public class TopsideTimeSeriesService(
-    ILogger<TopsideService> logger,
     ITopsideTimeSeriesRepository repository,
     ITopsideRepository topsideRepository,
     ICaseRepository caseRepository,
@@ -50,18 +47,9 @@ public class TopsideTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, topsideId);
 
-        TopsideCostProfileOverride createdProfile;
-        try
-        {
-            createdProfile = repository.CreateTopsideCostProfileOverride(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile TopsideCostProfileOverride for case id {caseId}.", caseId);
-            throw;
-        }
+        var createdProfile = repository.CreateTopsideCostProfileOverride(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
@@ -143,17 +131,10 @@ public class TopsideTimeSeriesService(
         {
             newProfile.Topside.CostProfileOverride.Override = false;
         }
-        try
-        {
-            repository.CreateTopsideCostProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to create cost profile for topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
-            throw;
-        }
+
+        repository.CreateTopsideCostProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var newDto = mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
@@ -188,17 +169,8 @@ public class TopsideTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;

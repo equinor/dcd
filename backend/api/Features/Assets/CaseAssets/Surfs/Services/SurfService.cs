@@ -10,12 +10,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Surfs.Services;
 
 public class SurfService(
-    ILogger<SurfService> logger,
     ISurfRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
@@ -46,17 +43,8 @@ public class SurfService(
         mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update surf with id {surfId} for case id {caseId}.", surfId, caseId);
-            throw;
-        }
-
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<Surf, SurfDto>(existingSurf, surfId);
         return dto;
