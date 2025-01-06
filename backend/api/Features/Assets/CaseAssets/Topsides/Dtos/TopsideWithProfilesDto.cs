@@ -57,14 +57,14 @@ public class TopsideWithProfilesDto
     public double CO2OnMaxWaterInjectionProfile { get; set; }
     [Required]
     public int CostYear { get; set; }
-    public DateTimeOffset? ProspVersion { get; set; }
-    public DateTimeOffset? LastChangedDate { get; set; }
+    public DateTime? ProspVersion { get; set; }
+    public DateTime? LastChangedDate { get; set; }
     [Required]
     public Source Source { get; set; }
     [Required]
     public string ApprovedBy { get; set; } = string.Empty;
-    public DateTimeOffset? DG3Date { get; set; }
-    public DateTimeOffset? DG4Date { get; set; }
+    public DateTime? DG3Date { get; set; }
+    public DateTime? DG4Date { get; set; }
     [Required]
     public double FacilityOpex { get; set; }
     [Required]

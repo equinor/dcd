@@ -19,7 +19,7 @@ public class Project : IChangeTrackable
     public string Country { get; set; } = string.Empty;
     public Currency Currency { get; set; }
     public PhysUnit PhysicalUnit { get; set; }
-    public DateTimeOffset CreateDate { get; set; }
+    public DateTime CreateDate { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
     public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
@@ -33,7 +33,7 @@ public class Project : IChangeTrackable
     public double CO2Vented { get; set; } = 1.96;
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
-    public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime ModifyTime { get; set; } = DateTime.UtcNow;
     public double OilPriceUSD { get; set; }
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
@@ -66,7 +66,7 @@ public class RevisionDetails : IChangeTrackable
     public Guid RevisionId { get; set; }
 
     public string? RevisionName { get; set; }
-    public DateTimeOffset RevisionDate { get; set; }
+    public DateTime RevisionDate { get; set; }
     public bool Arena { get; set; }
     public bool Mdqc { get; set; }
     public ProjectClassification Classification { get; set; }

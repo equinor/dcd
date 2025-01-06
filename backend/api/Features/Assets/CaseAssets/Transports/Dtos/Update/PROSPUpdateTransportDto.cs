@@ -4,7 +4,7 @@ namespace api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 
 public class PROSPUpdateTransportDto : BaseUpdateTransportDto
 {
-    public DateTimeOffset? ProspVersion { get; set; }
+    public DateTime? ProspVersion { get; set; }
 }
 
 public class UpdateTransportCostProfileDto : UpdateTimeSeriesCostDto;

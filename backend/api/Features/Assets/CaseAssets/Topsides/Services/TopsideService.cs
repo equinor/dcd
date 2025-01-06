@@ -44,7 +44,7 @@ public class TopsideService(
             ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
 
         mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
-        existingTopside.LastChangedDate = DateTimeOffset.UtcNow;
+        existingTopside.LastChangedDate = DateTime.UtcNow;
 
         try
         {

@@ -10,7 +10,7 @@ public class UpdateProjectService(DcdDbContext context)
     {
         var existingProject = await context.Projects.SingleAsync(p => p.Id == projectId);
 
-        existingProject.ModifyTime = DateTimeOffset.UtcNow;
+        existingProject.ModifyTime = DateTime.UtcNow;
         existingProject.Name = projectDto.Name;
         existingProject.ReferenceCaseId = projectDto.ReferenceCaseId;
         existingProject.Description = projectDto.Description;

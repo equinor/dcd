@@ -5,7 +5,7 @@ namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 
 public class PROSPUpdateOnshorePowerSupplyDto : BaseUpdateOnshorePowerSupplyDto
 {
-    public DateTimeOffset? ProspVersion { get; set; }
+    public DateTime? ProspVersion { get; set; }
 }
 
 public class UpdateOnshorePowerSupplyCostProfileDto : UpdateTimeSeriesCostDto;

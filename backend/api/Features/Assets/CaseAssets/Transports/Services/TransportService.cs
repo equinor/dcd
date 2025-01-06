@@ -39,7 +39,7 @@ public class TransportService(
             ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
 
         mapperService.MapToEntity(updatedTransportDto, existing, transportId);
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
+        existing.LastChangedDate = DateTime.UtcNow;
 
         // Transport updatedTransport;
         try

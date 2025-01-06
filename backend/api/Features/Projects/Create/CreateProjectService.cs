@@ -35,7 +35,7 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             Country = projectMaster.Country ?? "",
             ProjectCategory = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory),
             CommonLibraryName = "",
-            CreateDate = DateTimeOffset.UtcNow,
+            CreateDate = DateTime.UtcNow,
             ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts(),
             DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts(),
             CO2EmissionFromFuelGas = 2.34,

@@ -36,7 +36,7 @@ public class ProjectWithAssetsDto
     [Required] public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new();
     [Required] public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new();
     [Required] public List<CaseWithProfilesDto> Cases { get; set; } = [];
-    [Required] public DateTimeOffset ModifyTime { get; set; }
+    [Required] public DateTime ModifyTime { get; set; }
     [Required] public List<RevisionDetailsDto> RevisionsDetailsList { get; set; } = [];
 
     [Required] public ProjectClassification Classification { get; set; }
@@ -52,7 +52,7 @@ public class ProjectWithAssetsDto
     [Required] public string Country { get; set; } = null!;
     [Required] public Currency Currency { get; set; }
     [Required] public PhysUnit PhysicalUnit { get; set; }
-    [Required] public DateTimeOffset CreateDate { get; set; }
+    [Required] public DateTime CreateDate { get; set; }
     [Required] public ProjectPhase ProjectPhase { get; set; }
     [Required] public InternalProjectPhase InternalProjectPhase { get; set; }
     [Required] public ProjectCategory ProjectCategory { get; set; }

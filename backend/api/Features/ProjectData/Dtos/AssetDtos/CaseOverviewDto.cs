@@ -26,20 +26,20 @@ public class CaseOverviewDto
     [Required] public required double CapexFactorFEEDStudies { get; set; }
     public required string? Host { get; set; }
 
-    [Required] public required DateTimeOffset DGADate { get; set; }
-    [Required] public required DateTimeOffset DGBDate { get; set; }
-    [Required] public required DateTimeOffset DGCDate { get; set; }
-    [Required] public required DateTimeOffset APBODate { get; set; }
-    [Required] public required DateTimeOffset BORDate { get; set; }
-    [Required] public required DateTimeOffset VPBODate { get; set; }
+    [Required] public required DateTime DGADate { get; set; }
+    [Required] public required DateTime DGBDate { get; set; }
+    [Required] public required DateTime DGCDate { get; set; }
+    [Required] public required DateTime APBODate { get; set; }
+    [Required] public required DateTime BORDate { get; set; }
+    [Required] public required DateTime VPBODate { get; set; }
 
-    [Required] public required DateTimeOffset DG0Date { get; set; }
-    [Required] public required DateTimeOffset DG1Date { get; set; }
-    [Required] public required DateTimeOffset DG2Date { get; set; }
-    [Required] public required DateTimeOffset DG3Date { get; set; }
-    [Required] public required DateTimeOffset DG4Date { get; set; }
-    [Required] public required DateTimeOffset CreateTime { get; set; }
-    [Required] public required DateTimeOffset ModifyTime { get; set; }
+    [Required] public required DateTime DG0Date { get; set; }
+    [Required] public required DateTime DG1Date { get; set; }
+    [Required] public required DateTime DG2Date { get; set; }
+    [Required] public required DateTime DG3Date { get; set; }
+    [Required] public required DateTime DG4Date { get; set; }
+    [Required] public required DateTime CreateTime { get; set; }
+    [Required] public required DateTime ModifyTime { get; set; }
     [Required] public required Guid SurfLink { get; set; }
     [Required] public required Guid SubstructureLink { get; set; }
     [Required] public required Guid TopsideLink { get; set; }
