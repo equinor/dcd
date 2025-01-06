@@ -36,7 +36,7 @@ public class OnshorePowerSupplyService(
             ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
 
         mapperService.MapToEntity(updatedOnshorePowerSupplyDto, existing, onshorePowerSupplyId);
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
+        existing.LastChangedDate = DateTime.UtcNow;
 
         try
         {

@@ -23,17 +23,17 @@ public class UpdateCaseDto
     [Required] public required double BreakEven { get; set; }
     public required double? BreakEvenOverride { get; set; }
     public required string? Host { get; set; }
-    [Required] public required DateTimeOffset DGADate { get; set; }
-    [Required] public required DateTimeOffset DGBDate { get; set; }
-    [Required] public required DateTimeOffset DGCDate { get; set; }
-    [Required] public required DateTimeOffset APBODate { get; set; }
-    [Required] public required DateTimeOffset BORDate { get; set; }
-    [Required] public required DateTimeOffset VPBODate { get; set; }
-    [Required] public required DateTimeOffset DG0Date { get; set; }
-    [Required] public required DateTimeOffset DG1Date { get; set; }
-    [Required] public required DateTimeOffset DG2Date { get; set; }
-    [Required] public required DateTimeOffset DG3Date { get; set; }
-    [Required] public required DateTimeOffset DG4Date { get; set; }
+    [Required] public required DateTime DGADate { get; set; }
+    [Required] public required DateTime DGBDate { get; set; }
+    [Required] public required DateTime DGCDate { get; set; }
+    [Required] public required DateTime APBODate { get; set; }
+    [Required] public required DateTime BORDate { get; set; }
+    [Required] public required DateTime VPBODate { get; set; }
+    [Required] public required DateTime DG0Date { get; set; }
+    [Required] public required DateTime DG1Date { get; set; }
+    [Required] public required DateTime DG2Date { get; set; }
+    [Required] public required DateTime DG3Date { get; set; }
+    [Required] public required DateTime DG4Date { get; set; }
     public required string? SharepointFileId { get; set; }
     public required string? SharepointFileName { get; set; }
     public required string? SharepointFileUrl { get; set; }

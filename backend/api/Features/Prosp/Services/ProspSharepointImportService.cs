@@ -70,13 +70,13 @@ public class ProspSharepointImportService(
             Name = x.Name,
             Id = x.Id,
             SharepointFileUrl = null,
-            CreatedDateTime = x.CreatedDateTime,
+            CreatedDateTime = x.CreatedDateTime?.UtcDateTime,
             Content = x.Content,
             Size = x.Size,
             SharepointIds = x.SharepointIds,
             CreatedBy = x.CreatedBy,
             LastModifiedBy = x.LastModifiedBy,
-            LastModifiedDateTime = x.LastModifiedDateTime
+            LastModifiedDateTime = x.LastModifiedDateTime?.UtcDateTime
         })
             .ToList();
     }

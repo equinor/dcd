@@ -44,7 +44,7 @@ public class SurfService(
             ?? throw new ArgumentException($"Surf with id {surfId} not found.");
 
         mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
-        existingSurf.LastChangedDate = DateTimeOffset.UtcNow;
+        existingSurf.LastChangedDate = DateTime.UtcNow;
 
         try
         {

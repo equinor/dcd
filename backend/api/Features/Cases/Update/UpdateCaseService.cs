@@ -48,7 +48,7 @@ public class UpdateCaseService(DcdDbContext context, IRecalculationService recal
         existingCase.SharepointFileId = updateCaseDto.SharepointFileId;
         existingCase.SharepointFileName = updateCaseDto.SharepointFileName;
         existingCase.SharepointFileUrl = updateCaseDto.SharepointFileUrl;
-        existingCase.ModifyTime = DateTimeOffset.UtcNow;
+        existingCase.ModifyTime = DateTime.UtcNow;
 
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
