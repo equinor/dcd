@@ -18,7 +18,7 @@ const ClickableTitle = styled.div`
     `
 
 const ArchivedCasesDetails: React.FC = () => {
-    const [expandList, setExpandList] = useState(false);
+    const [expandList, setExpandList] = useState(false)
     const { sidebarOpen } = useAppContext()
 
     return (

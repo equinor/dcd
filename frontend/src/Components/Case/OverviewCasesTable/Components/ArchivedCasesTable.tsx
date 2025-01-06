@@ -12,6 +12,10 @@ const ArchivedTitle = styled.div`
     display: flex;
 `
 
+const ClickableTitle = styled.div`
+    cursor: pointer;
+`
+
 interface Props {
     cases: TableCase[]
     isRevision: boolean
@@ -32,7 +36,9 @@ export const ArchivedCasesTable = ({
     return (
         <div>
             <ArchivedTitle>
-                <Typography variant="h3">Archived Cases</Typography>
+                <ClickableTitle onClick={() => setIsExpanded(!isExpanded)}>
+                    <Typography variant="h3">Archived Cases</Typography>
+                </ClickableTitle>
                 <Tooltip title={isExpanded ? "Collapse Archived Cases" : "Expand Archived Cases"}>
                     <Button
                         variant="ghost_icon"

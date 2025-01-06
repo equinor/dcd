@@ -94,10 +94,10 @@ const ProjectSelector = (): JSX.Element => {
     useEffect(() => {
         if (!currentContext?.externalId) { return }
 
-        const isProjectChange = previousContextRef.current !== currentContext.id
+        const isProjectChanged = previousContextRef.current !== currentContext.id
         previousContextRef.current = currentContext.id
 
-        if (isProjectChange) {
+        if (isProjectChanged) {
             setIsRevision(false)
             navigateToProject(currentContext.id)
         }

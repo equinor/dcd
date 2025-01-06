@@ -161,7 +161,7 @@ const useEditCase = () => {
      */
     const processQueue = async () => {
         const uniqueEditsQueue = _.uniqBy(apiQueue.reverse(), (edit) => edit.resourceName + edit.resourceId + (edit.wellId ? edit.wellId : ""))
-        const registedEdits = await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
+        await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
 
         // todo: make sure that when the registered edit method returns an edit with a resourceProfileId,
         // the edit in history tracker is updated with the new resourceProfileId
