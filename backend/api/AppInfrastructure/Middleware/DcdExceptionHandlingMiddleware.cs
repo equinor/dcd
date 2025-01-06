@@ -3,15 +3,19 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
+using api.Context;
 using api.Exceptions;
+using api.Models;
 
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Middleware;
 
 public class DcdExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,
-    ILogger<DcdExceptionHandlingMiddleware> logger)
+    ILogger<DcdExceptionHandlingMiddleware> logger,
+    IServiceScopeFactory serviceScopeFactory)
 {
     public async Task Invoke(HttpContext context)
     {
@@ -46,6 +50,8 @@ public class DcdExceptionHandlingMiddleware(
             { "message", exceptionMessage }
         };
 
+        await SaveExceptionToDatabase(exception, httpStatusCode, context);
+
         if (DcdEnvironments.ReturnExceptionDetails)
         {
             AddIfNotNull(errorInformation, "Environment", DcdEnvironments.CurrentEnvironment);
@@ -71,6 +77,34 @@ public class DcdExceptionHandlingMiddleware(
         {
             errorInformation.Add(key, value);
         }
+    }
+
+    private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext)
+    {
+        using var scope = serviceScopeFactory.CreateScope();
+
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        dbContext.ChangeTracker.LazyLoadingEnabled = false;
+
+        dbContext.ExceptionLogs.Add(new ExceptionLog
+        {
+            Environment = DcdEnvironments.CurrentEnvironment,
+            UtcTimestamp = DateTime.UtcNow,
+            HttpStatusCode = (int)httpStatusCode,
+            DisplayUrl = httpContext.Request.GetDisplayUrl(),
+            RequestUrl = httpContext.Request.Path.Value,
+            Method = httpContext.Request.Method,
+            RequestBody = await GetBody(httpContext.Request.Body),
+            StackTrace = exception.StackTrace,
+            ExceptionMessage = exception.Message,
+            InnerExceptionStackTrace = exception.InnerException?.StackTrace,
+            InnerExceptionMessage = exception.InnerException?.Message
+        });
+
+        await dbContext.SaveChangesAsync();
     }
 
     private static (HttpStatusCode httpStatusCode, string exceptionMessage) GetHttpStatusCodeAndExceptionMessage(Exception exception)
