@@ -53,8 +53,6 @@ const ArchivedCasesList = (): JSX.Element | null => {
         [revisionAndProjectData?.commonProjectAndRevisionData],
     )
 
-    if (!archivedCases?.length) { return null }
-
     const handleCaseClick = (caseId: string) => {
         const navigate = revisionId ? navigateToRevisionCase : navigateToCase
         navigate(revisionId ?? "", caseId)
@@ -72,6 +70,8 @@ const ArchivedCasesList = (): JSX.Element | null => {
         </>
     )
 
+    if (!archivedCases?.length) { return null }
+
     return (
         <>
             {archivedCases.map((projectCase, index) => (
@@ -87,6 +87,7 @@ const ArchivedCasesList = (): JSX.Element | null => {
                     >
                         <TimelineElement
                             variant="ghost"
+                            className="GhostButton"
                             onClick={() => handleCaseClick(projectCase.caseId)}
                             $isSelected={location.pathname.includes(projectCase.caseId)}
                             $isArchived

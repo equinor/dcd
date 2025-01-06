@@ -4,7 +4,7 @@ import { AgnosticRouteObject } from "@remix-run/router"
 import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
-import ProjectSelector from "./Components/Header"
+import ProjectSelector from "./Components/ProjectSelector"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 
 const routes: RouteObject[] = [

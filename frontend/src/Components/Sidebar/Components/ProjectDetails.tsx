@@ -12,8 +12,8 @@ import {
     settings,
     compare,
 } from "@equinor/eds-icons"
-
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+
 import { useAppContext } from "@/Context/AppContext"
 import {
     TimelineElement,
@@ -33,10 +33,10 @@ const CenterIcon = styled.div`
 `
 
 const ProjectDetails: React.FC = () => {
+    const { currentContext } = useModuleCurrentContext()
     const { sidebarOpen } = useAppContext()
     const { caseId } = useParams()
     const { setActiveTabProject } = useProjectContext()
-    const { currentContext } = useModuleCurrentContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
 
