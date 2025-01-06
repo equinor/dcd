@@ -11,12 +11,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.WellProjects.Services;
 
 public class WellProjectService(
-    ILogger<WellProjectService> logger,
     IWellProjectRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
@@ -45,16 +42,8 @@ public class WellProjectService(
 
         mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update well project with id {wellProjectId} for case id {caseId}.", wellProjectId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<WellProject, WellProjectDto>(existingWellProject, wellProjectId);
         return dto;
@@ -80,18 +69,8 @@ public class WellProjectService(
 
         mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        // DrillingSchedule updatedDrillingSchedule;
-        try
-        {
-            // updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(existingDrillingSchedule, drillingScheduleId);
         return dto;
@@ -124,18 +103,9 @@ public class WellProjectService(
             DrillingSchedule = newDrillingSchedule
         };
 
-        WellProjectWell createdWellProjectWell;
-        try
-        {
-            createdWellProjectWell = repository.CreateWellProjectWellDrillingSchedule(newWellProjectWell);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", wellProjectId);
-            throw;
-        }
+        var createdWellProjectWell = repository.CreateWellProjectWellDrillingSchedule(newWellProjectWell);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         if (createdWellProjectWell.DrillingSchedule == null)
         {

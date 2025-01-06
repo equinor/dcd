@@ -9,12 +9,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.CaseProfiles.Services;
 
 public class CaseTimeSeriesService(
-    ILogger<CaseTimeSeriesService> logger,
     ICaseTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
@@ -394,18 +391,8 @@ public class CaseTimeSeriesService(
 
         mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {costProfileId} for case id {caseId}.", profileName, costProfileId, caseId);
-            throw;
-        }
-
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
         return updatedDto;
@@ -442,18 +429,9 @@ public class CaseTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(createProfileDto, profile, caseId);
 
-        TProfile createdProfile;
-        try
-        {
-            createdProfile = createProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
-            throw;
-        }
+        var createdProfile = createProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;

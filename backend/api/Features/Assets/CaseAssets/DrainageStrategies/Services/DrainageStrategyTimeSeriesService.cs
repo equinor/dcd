@@ -9,12 +9,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 
 public class DrainageStrategyTimeSeriesService(
-    ILogger<DrainageStrategyService> logger,
     ICaseRepository caseRepository,
     IDrainageStrategyTimeSeriesRepository repository,
     IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
@@ -480,19 +477,8 @@ public class DrainageStrategyTimeSeriesService(
 
         conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 
-        // TProfile updatedProfile;
-        try
-        {
-            // updatedProfile = updateProfile(existingProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {productionProfileId} for case id {caseId}.", profileName, productionProfileId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = conversionMapperService.MapToDto<TProfile, TDto>(existingProfile, productionProfileId, project.PhysicalUnit);
         return updatedDto;
@@ -533,18 +519,9 @@ public class DrainageStrategyTimeSeriesService(
 
         var newProfile = conversionMapperService.MapToEntity(createProductionProfileDto, profile, drainageStrategyId, project.PhysicalUnit);
 
-        TProfile createdProfile;
-        try
-        {
-            createdProfile = createProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
-            throw;
-        }
+        var createdProfile = createProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = conversionMapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id, project.PhysicalUnit);
         return updatedDto;
