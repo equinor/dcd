@@ -2,7 +2,7 @@ namespace api.Models;
 
 public class ChangeLog
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public required string EntityName { get; set; }
     public string? PropertyName { get; set; }
     public required Guid EntityId { get; set; }
