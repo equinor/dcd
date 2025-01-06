@@ -37,14 +37,14 @@ public class SurfDto
     [Required]
     public Currency Currency { get; set; }
     [Required]
-    public DateTimeOffset LastChangedDate { get; set; }
+    public DateTime LastChangedDate { get; set; }
     [Required]
     public int CostYear { get; set; }
     [Required]
     public Source Source { get; set; }
-    public DateTimeOffset? ProspVersion { get; set; }
+    public DateTime? ProspVersion { get; set; }
     [Required]
     public string ApprovedBy { get; set; } = string.Empty;
-    public DateTimeOffset? DG3Date { get; set; }
-    public DateTimeOffset? DG4Date { get; set; }
+    public DateTime? DG3Date { get; set; }
+    public DateTime? DG4Date { get; set; }
 }

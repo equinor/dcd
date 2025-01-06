@@ -18,6 +18,6 @@ public class Image : IHasProjectId, IChangeTrackable
 
     [Required]
     public string Url { get; set; } = null!;
-    public DateTimeOffset CreateTime { get; set; }
+    public DateTime CreateTime { get; set; }
     public string? Description { get; set; }
 }

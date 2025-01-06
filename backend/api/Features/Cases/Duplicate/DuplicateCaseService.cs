@@ -26,7 +26,7 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
 
         ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem, duplicateCaseId);
 
-        var utcNow = DateTimeOffset.UtcNow;
+        var utcNow = DateTime.UtcNow;
         caseItem.CreateTime = utcNow;
         caseItem.ModifyTime = utcNow;
         caseItem.Name = GetUniqueCopyName(existingCaseNames, caseItem.Name);
@@ -78,7 +78,7 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
                 Id = newImageId,
                 ProjectId = projectPk,
                 CaseId = destinationCaseId,
-                CreateTime = DateTimeOffset.UtcNow,
+                CreateTime = DateTime.UtcNow,
                 Description = image.Description,
                 Url = destinationUrl
             });

@@ -13,7 +13,7 @@ public class CreateWellService(DcdDbContext context)
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
         var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
 
-        project.ModifyTime = DateTimeOffset.UtcNow;
+        project.ModifyTime = DateTime.UtcNow;
 
         var well = new Well
         {

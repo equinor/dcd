@@ -228,7 +228,7 @@ public class StudyCostProfileService(
         return sumWellCost;
     }
 
-    private static bool DateIsEqual(DateTimeOffset date1, DateTimeOffset date2)
+    private static bool DateIsEqual(DateTime date1, DateTime date2)
     {
         return date1.Year == date2.Year && date1.DayOfYear == date2.DayOfYear;
     }

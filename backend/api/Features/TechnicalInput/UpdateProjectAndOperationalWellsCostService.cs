@@ -52,7 +52,7 @@ public class UpdateProjectAndOperationalWellsCostService(DcdDbContext context)
         project.GasPriceNOK = dto.GasPriceNOK;
         project.DiscountRate = dto.DiscountRate;
         project.ExchangeRateUSDToNOK = dto.ExchangeRateUSDToNOK;
-        project.ModifyTime = DateTimeOffset.UtcNow;
+        project.ModifyTime = DateTime.UtcNow;
     }
 
     private void UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCosts item, UpdateDevelopmentOperationalWellCostsDto dto)

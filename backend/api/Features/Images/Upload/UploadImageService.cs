@@ -32,7 +32,7 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
         {
             Id = imageId,
             Url = blobClient.Uri.ToString().Split('?')[0],
-            CreateTime = DateTimeOffset.UtcNow,
+            CreateTime = DateTime.UtcNow,
             CaseId = caseId,
             ProjectId = projectPk
         };
@@ -42,7 +42,7 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
         if (imageEntity.CaseId.HasValue)
         {
             var caseItem = await context.Cases.SingleAsync(c => c.Id == caseId);
-            caseItem.ModifyTime = DateTimeOffset.UtcNow;
+            caseItem.ModifyTime = DateTime.UtcNow;
         }
 
         await context.SaveChangesAsync();

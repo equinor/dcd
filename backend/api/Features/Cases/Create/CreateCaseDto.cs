@@ -12,5 +12,5 @@ public class CreateCaseDto
     [Required] public required int ProducerCount { get; set; }
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }
-    [Required] public required DateTimeOffset DG4Date { get; set; }
+    [Required] public required DateTime DG4Date { get; set; }
 }

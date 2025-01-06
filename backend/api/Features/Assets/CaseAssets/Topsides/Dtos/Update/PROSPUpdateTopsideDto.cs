@@ -4,7 +4,7 @@ namespace api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 
 public class PROSPUpdateTopsideDto : BaseUpdateTopsideDto
 {
-    public DateTimeOffset? ProspVersion { get; set; }
+    public DateTime? ProspVersion { get; set; }
 }
 
 public class UpdateTopsideCostProfileDto : UpdateTimeSeriesCostDto;

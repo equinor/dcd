@@ -44,7 +44,7 @@ public class SubstructureService(
             ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
-        existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
+        existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
         // Substructure updatedSubstructure;
         try

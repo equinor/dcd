@@ -9,7 +9,7 @@ public abstract class BaseUpdateSubstructureDto
     public int CostYear { get; set; }
     public Source Source { get; set; }
     public Concept Concept { get; set; }
-    public DateTimeOffset? DG3Date { get; set; }
-    public DateTimeOffset? DG4Date { get; set; }
+    public DateTime? DG3Date { get; set; }
+    public DateTime? DG4Date { get; set; }
 }
 
