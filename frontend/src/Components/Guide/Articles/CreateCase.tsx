@@ -1,12 +1,11 @@
 import VideoPlayer from "../VideoPlayer"
 import Article from "../Components/Article"
-import HowCreateCase from "../Components/howCreateCase.mp4"
 
 const CreateCase = () => (
     <Article>
         <Article.Header>How to create a case</Article.Header>
         <Article.Body>
-            <VideoPlayer src={HowCreateCase} />
+            <VideoPlayer src="https://dcdstorageaccount.blob.core.windows.net/user-guide/How%20t%20o%20create%20case.mp4" />
             <ol data-spread="true" start={1} data-pm-slice="3 5 []">
                 <li>
                     <p><strong>Go to the Project Overview Page:</strong></p>

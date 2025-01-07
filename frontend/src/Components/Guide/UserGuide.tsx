@@ -82,6 +82,7 @@ const placeholder = (title: string) => {
 const articles: ArticleData[] = [
     { type: "header", title: "Cases", component: () => <Header>Cases</Header> },
     { title: "How to create a case", component: CreateCase },
+    { title: "How to edit data", component: placeholder("Show of autosave and view/edit mode") },
     { title: "How to change the case information/ case page", component: placeholder("How to change the case information/ case page") },
     { title: "How to enter the production profile", component: placeholder("How to enter the production profile") },
     { title: "How to upload Prosp and how it fills out the facilities tab", component: placeholder("How to upload Prosp and how it fills out the facilities tab") },
@@ -93,7 +94,6 @@ const articles: ArticleData[] = [
     { title: "How to make a revision", component: placeholder("How to make a revision") },
 
     { type: "header", title: "Utilities?", component: () => <Header>Utilities?</Header> },
-    { title: "Show of autosave and view/edit mode", component: placeholder("Show of autosave and view/edit mode") },
 ]
 
 const UserGuideView: React.FC = () => {
