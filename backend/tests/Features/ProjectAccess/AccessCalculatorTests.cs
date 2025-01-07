@@ -168,4 +168,66 @@ public class AccessCalculatorTests
         Assert.DoesNotContain(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: true, userIsConnectedToProject: false));
         Assert.DoesNotContain(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: true, userIsConnectedToProject: false));
     }
+
+    [Fact]
+    public void User_should_not_be_able_to_edit_project_data__when_role_is_readonly()
+    {
+        var currentUser = new CurrentUser
+        {
+            Username = "test",
+            UserId = Guid.Empty,
+            Roles = [ApplicationRole.ReadOnly]
+        };
+
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: false, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: false, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: true));
+
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: false, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: false, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: false));
+
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: true, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: true, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: true, userIsConnectedToProject: true));
+
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: true, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: true, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: true, userIsConnectedToProject: false));
+    }
+
+    [Fact]
+    public void User_should_be_able_to_edit_project_data__when_role_is_user()
+    {
+        var currentUser = new CurrentUser
+        {
+            Username = "test",
+            UserId = Guid.Empty,
+            Roles = [ApplicationRole.User]
+        };
+
+        Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: false, userIsConnectedToProject: true));
+        Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: true));
+        Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: false, userIsConnectedToProject: true));
+        Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: true));
+
+        Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: false, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: false, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: false));
+
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: true, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: true, userIsConnectedToProject: true));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: true, userIsConnectedToProject: true));
+
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: true, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: true, userIsConnectedToProject: false));
+        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: true, userIsConnectedToProject: false));
+    }
 }

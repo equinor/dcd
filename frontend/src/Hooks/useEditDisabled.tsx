@@ -1,15 +1,15 @@
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "./useDataFetch"
 
 const useEditDisabled = () => {
-    const { isRevision, accessRights } = useProjectContext()
+    const revisionAndProjectData = useDataFetch()
 
-    const isEditDisabled = isRevision || !accessRights?.canEdit
+    const isEditDisabled = !revisionAndProjectData?.actions.canCreateRevision
 
     const getEditDisabledText = () => {
-        if (isRevision) {
+        if (revisionAndProjectData?.dataType === "revision") {
             return "Project revisions are not editable"
         }
-        if (!accessRights?.canEdit) {
+        if (!revisionAndProjectData?.actions.canEditProjectData) {
             return "You do not have access to edit this project"
         }
         return ""

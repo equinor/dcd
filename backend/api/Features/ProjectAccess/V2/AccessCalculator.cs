@@ -19,6 +19,16 @@ public static class AccessCalculator
             actions.Add(AccessActions.CreateRevision);
         }
 
+        if (CanEditProjectData(currentUser, projectClassification, isRevision, userIsConnectedToProject))
+        {
+            actions.Add(AccessActions.EditProjectData);
+        }
+
+        if (CanEditProjectMembers(currentUser, projectClassification, isRevision, userIsConnectedToProject))
+        {
+            actions.Add(AccessActions.EditProjectMembers);
+        }
+
         return actions.ToList();
     }
 
@@ -58,5 +68,61 @@ public static class AccessCalculator
         }
 
         return projectClassification == ProjectClassification.Open || userIsConnectedToProject;
+    }
+
+    private static bool CanEditProjectData(CurrentUser currentUser, ProjectClassification projectClassification, bool isRevision, bool userIsConnectedToProject)
+    {
+        if (isRevision)
+        {
+            return false;
+        }
+
+        if (currentUser.Roles.Contains(ApplicationRole.Admin))
+        {
+            return true;
+        }
+
+        if (currentUser.Roles.Contains(ApplicationRole.User))
+        {
+            if (userIsConnectedToProject)
+            {
+                return true;
+            }
+
+            if (projectClassification == ProjectClassification.Open)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool CanEditProjectMembers(CurrentUser currentUser, ProjectClassification projectClassification, bool isRevision, bool userIsConnectedToProject)
+    {
+        if (isRevision)
+        {
+            return false;
+        }
+
+        if (currentUser.Roles.Contains(ApplicationRole.Admin))
+        {
+            return true;
+        }
+
+        if (currentUser.Roles.Contains(ApplicationRole.User))
+        {
+            if (userIsConnectedToProject)
+            {
+                return true;
+            }
+
+            if (projectClassification == ProjectClassification.Open)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

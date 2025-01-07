@@ -83,6 +83,8 @@ declare namespace Components {
         export interface ActionsDto {
             canView: boolean;
             canCreateRevision: boolean;
+            canEditProjectData: boolean;
+            canEditProjectMembers: boolean;
         }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid

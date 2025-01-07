@@ -10,7 +10,7 @@ import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
 import { UserRole } from "@/Models/AccessManagement"
 import { useAppContext } from "@/Context/AppContext"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface RolePanelProps {
     isSmallScreen: boolean;
@@ -25,7 +25,7 @@ const RolePanel = ({
     isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson,
 }: RolePanelProps) => {
     const { editMode } = useAppContext()
-    const { accessRights } = useProjectContext()
+    const revisionAndProjectData = useDataFetch()
 
     const orgChartPeople = useMemo(() => people?.filter((person) => person.isPmt === true), [people])
     const manuallyAddedPeople = useMemo(() => people?.filter((person) => person.isPmt === false), [people])
@@ -37,7 +37,7 @@ const RolePanel = ({
                     <Icon data={isViewers ? visibility : edit} />
                     <Typography variant="h6">{isViewers ? "Project viewers" : "Project editors"}</Typography>
                 </EditorViewerHeading>
-                {editMode && accessRights?.canEdit && (
+                {editMode && revisionAndProjectData?.actions.canEditProjectMembers && (
                     <PersonSelect
                         placeholder={`Add new ${isViewers ? "viewer" : "editor"}`}
                         selectedPerson={null}
@@ -48,7 +48,7 @@ const RolePanel = ({
                     <PeopleContainer>
                         {manuallyAddedPeople.filter((p) => !p.isPmt).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && accessRights?.canEdit && (
+                                {editMode && revisionAndProjectData?.actions.canEditProjectMembers && (
                                     <>
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
                                             <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? UserRole.Editor : UserRole.Viewer)}>

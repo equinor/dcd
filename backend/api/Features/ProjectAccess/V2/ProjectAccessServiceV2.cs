@@ -63,7 +63,9 @@ public class ProjectAccessServiceV2(DcdDbContext context, CurrentUser currentUse
         return new ActionsDto
         {
             CanView = accesses.Contains(AccessActions.View),
-            CanCreateRevision = accesses.Contains(AccessActions.CreateRevision)
+            CanEditProjectData = accesses.Contains(AccessActions.EditProjectData),
+            CanCreateRevision = accesses.Contains(AccessActions.CreateRevision),
+            CanEditProjectMembers = accesses.Contains(AccessActions.EditProjectMembers)
         };
     }
 
@@ -86,7 +88,9 @@ public class ProjectAccessServiceV2(DcdDbContext context, CurrentUser currentUse
         return new ActionsDto
         {
             CanView = accesses.Contains(AccessActions.View),
-            CanCreateRevision = accesses.Contains(AccessActions.CreateRevision)
+            CanEditProjectData = accesses.Contains(AccessActions.EditProjectData),
+            CanCreateRevision = accesses.Contains(AccessActions.CreateRevision),
+            CanEditProjectMembers = accesses.Contains(AccessActions.EditProjectMembers)
         };
     }
 }
