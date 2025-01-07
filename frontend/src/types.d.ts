@@ -968,6 +968,7 @@ declare namespace Components {
         export interface ProjectDataDto {
             projectId: string; // uuid
             dataType: string;
+            hasAccess: boolean;
             projectMembers: ProjectMemberDto[];
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
@@ -984,6 +985,7 @@ declare namespace Components {
             projectId: string; // uuid
             revisionId: string; // uuid
             dataType: string;
+            hasAccess: boolean;
             revisionDetails: RevisionDetailsDto;
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }

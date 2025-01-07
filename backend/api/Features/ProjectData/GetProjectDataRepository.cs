@@ -3,6 +3,7 @@ using api.Context.Extensions;
 using api.Features.ProjectData.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.ProjectMembers.Get;
+using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -259,5 +260,24 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Id = x.Id
             })
             .ToListAsync();
+    }
+
+    public async Task<ProjectClassification> GetProjectClassification(Guid projectPk)
+    {
+        return await context.Projects
+            .Where(x => !x.IsRevision)
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.Classification)
+            .SingleAsync();
+    }
+
+    public async Task<ProjectClassification> GetProjectClassification(Guid projectId, Guid revisionId)
+    {
+        return await context.Projects
+            .Where(x => x.IsRevision)
+            .Where(x => x.Id == revisionId)
+            .Where(x => x.OriginalProjectId == projectId)
+            .Select(x => x.Classification)
+            .SingleAsync();
     }
 }

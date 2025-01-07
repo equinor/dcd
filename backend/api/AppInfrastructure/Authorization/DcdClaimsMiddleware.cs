@@ -12,18 +12,17 @@ public class DcdClaimsMiddleware(RequestDelegate nextMiddleware, ILogger<DcdClai
 
     public async Task InvokeAsync(HttpContext httpContext, CurrentUser currentUser)
     {
-        currentUser.Username = httpContext.User.Identity?.Name;
-
-        var userId = httpContext.User.GetAzureUniqueId();
-        if (userId != null)
-        {
-            SetAppRoleClaims(httpContext);
-        }
-        else
+        if (httpContext.User.Identity?.Name == null || httpContext.User.GetAzureUniqueId() == null)
         {
             logger.LogError("Unauthenticated access attempted on: " + httpContext.Request.Path);
+            throw new UnauthorizedAccessException();
         }
 
+        currentUser.Username = httpContext.User.Identity!.Name!;
+        currentUser.UserId = httpContext.User.GetAzureUniqueId()!.Value;
+        currentUser.Roles = RolesFromAzure(httpContext.User.Claims).Where(x => x != ApplicationRole.None).ToHashSet();
+
+        SetAppRoleClaims(httpContext);
         await nextMiddleware(httpContext);
     }
 

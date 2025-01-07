@@ -194,10 +194,7 @@ const Overview = () => {
         )
     }
 
-    const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
-    const projectIsNotOpen = revisionAndProjectData.commonProjectAndRevisionData.classification !== 0
-
-    if (projectIsNotOpen && !userIsPartOfProject) {
+    if (!revisionAndProjectData.hasAccess) {
         return (
             <NoAccessErrorView
                 projectClassification={revisionAndProjectData.commonProjectAndRevisionData.classification}

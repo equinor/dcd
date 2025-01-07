@@ -2,5 +2,7 @@ namespace api.AppInfrastructure.Authorization;
 
 public class CurrentUser
 {
-    public string? Username { get; set; }
+    public required string Username { get; set; }
+    public required Guid UserId { get; set; }
+    public required HashSet<ApplicationRole> Roles { get; set; } = [];
 }
