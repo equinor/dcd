@@ -1,4 +1,5 @@
 using api.Models;
+using api.Models.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

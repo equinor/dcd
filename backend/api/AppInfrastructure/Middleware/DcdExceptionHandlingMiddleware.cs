@@ -6,6 +6,7 @@ using System.Text.Json;
 using api.Context;
 using api.Exceptions;
 using api.Models;
+using api.Models.Infrastructure;
 
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;

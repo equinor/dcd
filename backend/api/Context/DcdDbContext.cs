@@ -1,6 +1,7 @@
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.Models;
+using api.Models.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
