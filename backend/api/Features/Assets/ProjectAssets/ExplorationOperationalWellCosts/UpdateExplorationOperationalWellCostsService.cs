@@ -24,7 +24,7 @@ public class UpdateExplorationOperationalWellCostsService(DcdDbContext context)
         existingExplorationOperationalWellCosts.AppraisalProjectDrillingCosts = dto.AppraisalProjectDrillingCosts;
 
         var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
-        project.ModifyTime = DateTime.UtcNow;
+        project.UpdatedUtc = DateTime.UtcNow;
 
         await context.SaveChangesAsync();
 

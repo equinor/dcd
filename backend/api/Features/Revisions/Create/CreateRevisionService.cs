@@ -32,7 +32,6 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
             RevisionName = createRevisionDto.Name,
             Mdqc = createRevisionDto.Mdqc,
             Arena = createRevisionDto.Arena,
-            RevisionDate = DateTime.UtcNow,
             Classification = createRevisionDto.Classification
         };
 
