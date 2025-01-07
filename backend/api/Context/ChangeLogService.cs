@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Text.Json;
 
 using api.AppInfrastructure.Authorization;
-using api.Models;
 using api.Models.Infrastructure;
 using api.Models.Interfaces;
 
@@ -13,7 +12,7 @@ namespace api.Context;
 
 public static class ChangeLogService
 {
-    private static readonly IReadOnlyList<string> PropertyNamesToIgnore = new List<string> { "ModifyTime" };
+    private static readonly IReadOnlyList<string> PropertyNamesToIgnore = new List<string> { "ModifyTime", "CreatedUtc", "UpdatedUtc" };
 
     public static List<ChangeLog> GenerateChangeLogs(DcdDbContext dbContext, CurrentUser? currentUser, DateTime utcNow)
     {
