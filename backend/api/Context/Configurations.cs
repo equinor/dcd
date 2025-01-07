@@ -16,21 +16,6 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .WithMany(p => p.Revisions)
             .HasForeignKey(p => p.OriginalProjectId)
             .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes
-
-        builder.Property(p => p.Classification)
-            .HasDefaultValue(ProjectClassification.Internal);
-
-        builder.Property(p => p.DiscountRate)
-            .HasDefaultValue(8.0);
-
-        builder.Property(p => p.OilPriceUSD)
-            .HasDefaultValue(75.0);
-
-        builder.Property(p => p.GasPriceNOK)
-            .HasDefaultValue(3.0);
-
-        builder.Property(p => p.ExchangeRateUSDToNOK)
-            .HasDefaultValue(10);
     }
 }
 
