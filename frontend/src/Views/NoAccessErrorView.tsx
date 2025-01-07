@@ -40,6 +40,7 @@ const ForbiddenAccess: React.FC<Props> = ({ projectClassification }) => {
             <Typography>
                 {projectClassification === 1 && restrictionExplanations[0]}
                 {projectClassification === 2 && restrictionExplanations[1]}
+                {projectClassification === 3 && restrictionExplanations[1]}
             </Typography>
             <ExternalAccessInfo />
         </Container>
