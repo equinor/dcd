@@ -186,7 +186,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
 
         foreach (var entry in createdEntries)
         {
-            var entity = (IDateTrackedEntity) entry.Entity;
+            var entity = (IDateTrackedEntity)entry.Entity;
             entity.CreatedUtc = utcNow;
             entity.CreatedBy = currentUser?.Username ?? "SYSTEM";
         }
@@ -196,7 +196,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
 
         foreach (var entry in updatedEntries)
         {
-            var entity = (IDateTrackedEntity) entry.Entity;
+            var entity = (IDateTrackedEntity)entry.Entity;
             entity.UpdatedUtc = utcNow;
             entity.UpdatedBy = currentUser?.Username ?? "SYSTEM";
         }
