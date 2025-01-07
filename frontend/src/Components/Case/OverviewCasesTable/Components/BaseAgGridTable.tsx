@@ -1,7 +1,6 @@
 import { AgGridReact } from "@ag-grid-community/react"
 import { ColDef } from "@ag-grid-community/core"
 import styled from "styled-components"
-import { useRef } from "react"
 import { TableCase } from "@/Models/Interfaces"
 
 const AgTableContainer = styled.div`
