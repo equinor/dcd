@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import Grid2 from "@mui/material/Grid2"
-import { useLocation } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
 import TechnicalInput from "@/Components/Project/CompareCasesTab/Tabs/TechnicalInput"
@@ -10,6 +10,8 @@ import AccessManagementTab from "@/Components/Project/AccessManagementTab"
 // import EditHistoryOverviewTab from "@/Components/Project/EditHistoryOverviewTab"
 import ProjectCompareCasesTab from "@/Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { projectTabNames } from "@/Utils/constants"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 const Wrapper = styled(Grid2)`
     padding: 0 16px;
@@ -17,12 +19,21 @@ const Wrapper = styled(Grid2)`
 
 const ProjectView = () => {
     const { activeTabProject, setActiveTabProject } = useProjectContext()
-    const location = useLocation()
-    const activeTabProjectParam = location?.state?.activeTabProject
+    const { tab, revisionId } = useParams()
+    const { navigateToProjectTab } = useAppNavigation()
 
+    // syncs the active tab with the url
     useEffect(() => {
-        if (activeTabProjectParam) { setActiveTabProject(activeTabProjectParam) }
-    }, [activeTabProjectParam])
+        if (tab) {
+            const tabIndex = projectTabNames.indexOf(tab)
+            if (activeTabProject !== tabIndex) {
+                setActiveTabProject(tabIndex)
+            }
+        } else {
+            // If no tab is specified, navigate to default tab using replace
+            navigateToProjectTab(0, revisionId)
+        }
+    }, [tab, revisionId])
 
     return (
         <Wrapper size={{ xs: 12 }}>

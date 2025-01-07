@@ -1,16 +1,14 @@
-import { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useEffect } from "react"
+import { useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
-import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
-
 import { Typography } from "@equinor/eds-core-react"
-import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { projectPath } from "@/Utils/common"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import ProjectControls from "./ProjectControls"
 import CaseControls from "./CaseControls"
@@ -38,59 +36,35 @@ const ProjectHeader = styled.div`
     padding: 0 15px;
     grid-area: top-left;
 `
+
 const Controls = () => {
-    const navigate = useNavigate()
-    const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
     const { caseId, revisionId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+    const { isRevision } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
-
-    const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
-    const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
-
-    const cancelEdit = async () => {
-        setEditMode(false)
-    }
+    const { navigateToProject, navigateToRevision } = useAppNavigation()
 
     const backToProject = async () => {
-        cancelEdit()
+        setEditMode(false)
         if (isRevision && revisionId) {
-            navigate(`${projectPath(currentContext?.id!)}/revision/${revisionId}`)
+            navigateToRevision(revisionId)
         } else {
-            navigate(projectPath(currentContext?.id!))
+            navigateToProject()
         }
     }
 
     const handleEdit = () => {
         if (editMode) {
-            cancelEdit()
+            setEditMode(false)
         } else {
             setEditMode(true)
         }
     }
 
-    const caseData = apiData?.case
-
     useEffect(() => {
-        cancelEdit()
+        setEditMode(false)
     }, [caseId])
-
-    useEffect(() => {
-        setProjectLastUpdated(revisionAndProjectData?.commonProjectAndRevisionData.modifyTime ?? "")
-    }, [revisionAndProjectData])
-
-    useEffect(() => {
-        if (apiData && caseData) {
-            setCaseLastUpdated(caseData.modifyTime)
-        }
-    }, [caseData])
 
     return (
         <Wrapper>
@@ -107,7 +81,7 @@ const Controls = () => {
                 </ProjectHeader>
                 {revisionAndProjectData && !caseId && (
                     <ProjectControls
-                        projectLastUpdated={projectLastUpdated}
+                        projectLastUpdated={revisionAndProjectData.commonProjectAndRevisionData.modifyTime}
                         handleEdit={handleEdit}
                     />
                 )}
@@ -118,7 +92,6 @@ const Controls = () => {
                     backToProject={backToProject}
                     projectId={revisionAndProjectData.projectId}
                     caseId={caseId}
-                    caseLastUpdated={caseLastUpdated}
                     handleEdit={handleEdit}
                 />
             )}

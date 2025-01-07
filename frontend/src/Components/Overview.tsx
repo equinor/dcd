@@ -19,7 +19,7 @@ import { useAppContext } from "@/Context/AppContext"
 import { GetProjectService } from "@/Services/ProjectService"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import NoAccessErrorView from "@/Views/NoAccessErrorView"
+// import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
@@ -194,8 +194,8 @@ const Overview = () => {
         )
     }
 
-    const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
-    const projectIsNotOpen = revisionAndProjectData.commonProjectAndRevisionData.classification !== 0
+    // const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
+    // const projectIsNotOpen = revisionAndProjectData.commonProjectAndRevisionData.classification !== 0
 
     // if (projectIsNotOpen && !userIsPartOfProject) {
     //     return (

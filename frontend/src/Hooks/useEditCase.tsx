@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
-import { useLocation, useNavigate, useParams } from "react-router"
+import { useParams } from "react-router"
 import _ from "lodash"
 import { useCaseContext } from "../Context/CaseContext"
 import {
@@ -12,6 +12,7 @@ import {
 import { getCurrentEditId } from "../Utils/common"
 import { useAppContext } from "../Context/AppContext"
 import { useSubmitToApi } from "./UseSubmitToApi"
+import { useAppNavigation } from "./useNavigate"
 
 interface AddEditParams {
     inputLabel: string;
@@ -32,12 +33,7 @@ interface AddEditParams {
     inputFieldId?: string;
 }
 
-const useEditCase = (): {
-    addEdit: (params: AddEditParams) => void;
-    undoEdit: () => void;
-    redoEdit: () => void;
-    processQueue: () => void;
-} => {
+const useEditCase = () => {
     const {
         apiQueue,
         setApiQueue,
@@ -51,10 +47,9 @@ const useEditCase = (): {
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
     const { submitToApi } = useSubmitToApi()
+    const { navigateToCaseTab } = useAppNavigation()
 
     const { caseId: caseIdFromParams } = useParams()
-    const location = useLocation()
-    const navigate = useNavigate()
 
     const getActiveEditFromIndexes = () => {
         const storedEditIndexes = localStorage.getItem("editIndexes")
@@ -166,7 +161,7 @@ const useEditCase = (): {
      */
     const processQueue = async () => {
         const uniqueEditsQueue = _.uniqBy(apiQueue.reverse(), (edit) => edit.resourceName + edit.resourceId + (edit.wellId ? edit.wellId : ""))
-        const registedEdits = await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
+        await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
 
         // todo: make sure that when the registered edit method returns an edit with a resourceProfileId,
         // the edit in history tracker is updated with the new resourceProfileId
@@ -309,8 +304,7 @@ const useEditCase = (): {
         updateEditIndex(updatedEdit.uuid)
 
         if (editThatWillBeUndone) {
-            const projectUrl = location.pathname.split("/case")[0]
-            navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
+            navigateToCaseTab(caseId!, editThatWillBeUndone.tabName ?? "")
 
             const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
                 const tabElement = document.getElementById(elementId) as HTMLElement | null
@@ -373,8 +367,7 @@ const useEditCase = (): {
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
-                const projectUrl = location.pathname.split("/case")[0]
-                navigate(`${projectUrl}/case/${caseId}/${lastEdit.tabName ?? ""}`)
+                navigateToCaseTab(caseId!, lastEdit.tabName ?? "")
 
                 const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
                     const tabElement = document.getElementById(elementId) as HTMLElement | null
@@ -428,8 +421,7 @@ const useEditCase = (): {
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
             updateEditIndex(updatedEdit.uuid)
             if (updatedEdit) {
-                const projectUrl = location.pathname.split("/case")[0]
-                navigate(`${projectUrl}/case/${caseId}/${updatedEdit.tabName ?? ""}`)
+                navigateToCaseTab(caseId!, updatedEdit.tabName ?? "")
 
                 const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
                     const tabElement = document.getElementById(elementId) as HTMLElement | null

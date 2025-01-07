@@ -4,20 +4,22 @@ import { AgnosticRouteObject } from "@remix-run/router"
 import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
-import Header from "./Components/Header"
+import ProjectSelector from "./Components/ProjectSelector"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 
 const routes: RouteObject[] = [
     {
         path: "/",
-        element: <Header />,
+        element: <ProjectSelector />,
         children: [
             {
                 path: ":fusionContextId",
                 element: <Overview />,
                 children: [
                     { index: true, element: <ProjectView /> },
+                    { path: ":tab", element: <ProjectView /> },
                     { path: "revision/:revisionId", element: <ProjectView /> },
+                    { path: "revision/:revisionId/:tab", element: <ProjectView /> },
                     { path: "revision/:revisionId/case/:caseId", element: <CaseView /> },
                     { path: "revision/:revisionId/case/:caseId/:tab", element: <CaseView /> },
                     { path: "case/:caseId", element: <CaseView /> },
