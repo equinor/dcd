@@ -5,42 +5,58 @@ namespace api.Features.ProjectAccess.V2;
 
 public static class AccessCalculator
 {
-    private static List<string> AllRevisionAccesses => [AccessActions.View];
-    private static List<string> AllProjectAccesses => [AccessActions.View, AccessActions.CreateRevision];
-
-    private static List<string> AllReadRevisionAccesses => [AccessActions.View];
-    private static List<string> AllReadProjectAccesses => [AccessActions.View];
-
     public static List<string> CalculateAccess(CurrentUser currentUser, ProjectClassification projectClassification, bool isRevision, bool userIsConnectedToProject)
     {
+        var actions = new HashSet<string>();
+
+        if (CanView(currentUser, projectClassification, userIsConnectedToProject))
+        {
+            actions.Add(AccessActions.View);
+        }
+
+        if (CanCreateRevision(currentUser, projectClassification, isRevision, userIsConnectedToProject))
+        {
+            actions.Add(AccessActions.CreateRevision);
+        }
+
+        return actions.ToList();
+    }
+
+    private static bool CanCreateRevision(CurrentUser currentUser, ProjectClassification projectClassification, bool isRevision, bool userIsConnectedToProject)
+    {
+        if (isRevision)
+        {
+            return false;
+        }
+
         if (currentUser.Roles.Contains(ApplicationRole.Admin))
         {
-            return isRevision
-                ? AllRevisionAccesses
-                : AllProjectAccesses;
+            return true;
         }
 
-        if (currentUser.Roles.Count == 1 && currentUser.Roles.Contains(ApplicationRole.ReadOnly))
+        if (currentUser.Roles.Contains(ApplicationRole.User))
         {
-            return isRevision
-                ? AllReadRevisionAccesses
-                : AllReadProjectAccesses;
+            if (userIsConnectedToProject)
+            {
+                return true;
+            }
+
+            if (projectClassification == ProjectClassification.Open)
+            {
+                return true;
+            }
         }
 
-        if (projectClassification == ProjectClassification.Open)
+        return false;
+    }
+
+    private static bool CanView(CurrentUser currentUser, ProjectClassification projectClassification, bool userIsConnectedToProject)
+    {
+        if (currentUser.Roles.Count == 0)
         {
-            return isRevision
-                ? AllRevisionAccesses
-                : AllProjectAccesses;
+            return false;
         }
 
-        if (userIsConnectedToProject)
-        {
-            return isRevision
-                ? AllRevisionAccesses
-                : AllProjectAccesses;
-        }
-
-        return [];
+        return projectClassification == ProjectClassification.Open || userIsConnectedToProject;
     }
 }
