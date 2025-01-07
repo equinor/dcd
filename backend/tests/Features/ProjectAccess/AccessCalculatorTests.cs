@@ -76,7 +76,7 @@ public class AccessCalculatorTests
     }
 
     [Fact]
-    public void User_should_not_be_able_to_create_revision__when_role_is_user_and_has_view_access_to_project_and_not_on_revision()
+    public void User_should_be_able_to_create_revision__when_role_is_user_and_has_view_access_to_project_and_not_on_revision()
     {
         var currentUser = new CurrentUser
         {
@@ -108,7 +108,7 @@ public class AccessCalculatorTests
     }
 
     [Fact]
-    public void User_should_not_be_able_to_create_revision__when_role_is_admin_and_has_view_access_to_project_and_not_on_revision()
+    public void User_should_be_able_to_create_revision__when_role_is_admin_and_has_view_access_to_project_and_not_on_revision()
     {
         var currentUser = new CurrentUser
         {
@@ -139,7 +139,7 @@ public class AccessCalculatorTests
     }
 
     [Fact]
-    public void User_should_not_be_able_to_create_revision__when_role_is_readonly_and_has_view_access_to_project_and_not_on_revision()
+    public void User_should_not_be_able_to_create_revision__when_role_is_readonly()
     {
         var currentUser = new CurrentUser
         {

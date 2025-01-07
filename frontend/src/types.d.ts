@@ -80,6 +80,10 @@ declare namespace Components {
             canView: boolean;
             isAdmin: boolean;
         }
+        export interface ActionsDto {
+            canView: boolean;
+            canCreateRevision: boolean;
+        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -969,6 +973,7 @@ declare namespace Components {
             projectId: string; // uuid
             dataType: string;
             hasAccess: boolean;
+            actions: ActionsDto;
             projectMembers: ProjectMemberDto[];
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
@@ -986,6 +991,7 @@ declare namespace Components {
             revisionId: string; // uuid
             dataType: string;
             hasAccess: boolean;
+            actions: ActionsDto;
             revisionDetails: RevisionDetailsDto;
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }

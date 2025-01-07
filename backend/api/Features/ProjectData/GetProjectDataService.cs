@@ -30,7 +30,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
             HasAccess = hasAccess,
             ProjectMembers = projectMembers,
             RevisionDetailsList = revisionDetailsList,
-            CommonProjectAndRevisionData = commonProjectAndRevisionData
+            CommonProjectAndRevisionData = commonProjectAndRevisionData,
+            Actions = await projectAccessService.GetAccess(projectPk)
         };
     }
 
@@ -54,7 +55,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
             DataType = "revision",
             HasAccess = hasAccess,
             RevisionDetails = revisionDetails,
-            CommonProjectAndRevisionData = commonProjectAndRevisionData
+            CommonProjectAndRevisionData = commonProjectAndRevisionData,
+            Actions = await projectAccessService.GetAccess(projectId, revisionId)
         };
     }
 
@@ -77,14 +79,25 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
     private static ProjectDataDto EmptyProjectDto(Guid projectId, ProjectClassification projectClassification)
     {
-        return new ProjectDataDto
+        var dto = new ProjectDataDto
         {
             ProjectId = projectId,
             DataType = "project",
             HasAccess = false,
             ProjectMembers = [],
             RevisionDetailsList = [],
-            CommonProjectAndRevisionData = DefaultCommonProjectAndRevisionData(projectClassification)
+            CommonProjectAndRevisionData = DefaultCommonProjectAndRevisionData(projectClassification),
+            Actions = GetActions()
+        };
+        return dto;
+    }
+
+    private static ActionsDto GetActions()
+    {
+        return new ActionsDto
+        {
+            CanView = false,
+            CanCreateRevision = false
         };
     }
 
@@ -104,7 +117,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
                 Arena = false,
                 Mdqc = false
             },
-            CommonProjectAndRevisionData = DefaultCommonProjectAndRevisionData(projectClassification)
+            CommonProjectAndRevisionData = DefaultCommonProjectAndRevisionData(projectClassification),
+            Actions = GetActions()
         };
     }
 

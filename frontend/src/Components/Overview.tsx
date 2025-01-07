@@ -16,7 +16,6 @@ import { useFeatureContext } from "@/Context/FeatureContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
-import { GetProjectService } from "@/Services/ProjectService"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
@@ -55,7 +54,6 @@ interface WarnedProjectInterface {
 const Overview = () => {
     const currentUser = useCurrentUser()
     const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
     const {
         isCreating,
         isLoading,
@@ -75,7 +73,6 @@ const Overview = () => {
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
-    const [canCreateRevision, setCanCreateRevision] = useState<boolean>(false)
     const { Features } = useFeatureContext()
     const revisionAndProjectData = useDataFetch()
 
@@ -84,15 +81,6 @@ const Overview = () => {
         queryFn: () => peopleQueryFn(projectId),
         enabled: !!projectId,
     })
-
-    async function userCanCreateRevision() {
-        if (!externalId) { return }
-        const projectService = await GetProjectService()
-        const access = await projectService.getAccess(externalId)
-        if (access?.canEdit || access?.isAdmin) {
-            setCanCreateRevision(true)
-        }
-    }
 
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)
@@ -133,10 +121,6 @@ const Overview = () => {
         setWarnedProjects(JSON.parse(String(localStorage.getItem("pv"))))
         // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
     }
-
-    useEffect(() => {
-        userCanCreateRevision()
-    }, [externalId])
 
     useEffect(() => {
         fetchPV()
@@ -222,7 +206,7 @@ const Overview = () => {
                                     <Button
                                         variant="ghost"
                                         onClick={() => handleCreateRevision()}
-                                        disabled={!canCreateRevision}
+                                        disabled={!revisionAndProjectData.actions.canCreateRevision}
                                     >
                                         Create revision
                                     </Button>
