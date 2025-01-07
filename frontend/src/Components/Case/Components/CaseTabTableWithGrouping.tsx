@@ -33,8 +33,10 @@ const CaseTabTableWithGrouping = ({
     allTimeSeriesData,
     dg4Year,
     tableYears,
-    alignedGridsRef, gridRef,
-    includeFooter, totalRowName,
+    alignedGridsRef,
+    gridRef,
+    includeFooter,
+    totalRowName,
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])

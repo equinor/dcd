@@ -72,7 +72,10 @@ const ProjectSelector = (): JSX.Element => {
             if (isAxiosError(error) && error.response?.status === 404) {
                 return createNewProject(projectService, externalId)
             }
-            throw error
+            console.error("Error fetching project access:", error)
+            setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
+            setIsLoading(false)
+            return null
         }
     }
 

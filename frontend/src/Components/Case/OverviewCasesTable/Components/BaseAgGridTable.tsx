@@ -18,19 +18,14 @@ export const BaseAgGridTable = ({
     cases,
     columnDefinitions,
     defaultColumnDefinition,
-}: Props) => {
-    const gridRef = useRef<AgGridReact>(null)
-
-    return (
-        <AgTableContainer>
-            <AgGridReact
-                ref={gridRef}
-                rowData={cases}
-                columnDefs={columnDefinitions}
-                defaultColDef={defaultColumnDefinition}
-                animateRows
-                domLayout="autoHeight"
-            />
-        </AgTableContainer>
-    )
-}
+}: Props) => (
+    <AgTableContainer>
+        <AgGridReact
+            rowData={cases}
+            columnDefs={columnDefinitions}
+            defaultColDef={defaultColumnDefinition}
+            animateRows
+            domLayout="autoHeight"
+        />
+    </AgTableContainer>
+)
