@@ -15,7 +15,7 @@ namespace api.Migrations
                 name: "ChangeLogs",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EntityName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PropertyName = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -101,7 +101,7 @@ namespace api.Migrations
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProjectPhase = table.Column<int>(type: "int", nullable: false),
                     InternalProjectPhase = table.Column<int>(type: "int", nullable: false),
-                    Classification = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    Classification = table.Column<int>(type: "int", nullable: false),
                     ProjectCategory = table.Column<int>(type: "int", nullable: false),
                     SharepointSiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CO2RemovedFromGas = table.Column<double>(type: "float", nullable: false),
@@ -112,10 +112,10 @@ namespace api.Migrations
                     DailyEmissionFromDrillingRig = table.Column<double>(type: "float", nullable: false),
                     AverageDevelopmentDrillingDays = table.Column<double>(type: "float", nullable: false),
                     ModifyTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OilPriceUSD = table.Column<double>(type: "float", nullable: false, defaultValue: 75.0),
-                    GasPriceNOK = table.Column<double>(type: "float", nullable: false, defaultValue: 3.0),
-                    DiscountRate = table.Column<double>(type: "float", nullable: false, defaultValue: 8.0),
-                    ExchangeRateUSDToNOK = table.Column<double>(type: "float", nullable: false, defaultValue: 10.0)
+                    OilPriceUSD = table.Column<double>(type: "float", nullable: false),
+                    GasPriceNOK = table.Column<double>(type: "float", nullable: false),
+                    DiscountRate = table.Column<double>(type: "float", nullable: false),
+                    ExchangeRateUSDToNOK = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

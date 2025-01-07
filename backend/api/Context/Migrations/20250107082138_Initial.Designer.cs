@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250106133012_Initial")]
+    [Migration("20250107082138_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -523,11 +523,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ChangeLog", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
@@ -1787,9 +1787,7 @@ namespace api.Migrations
                         .HasColumnType("float");
 
                     b.Property<int>("Classification")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CommonLibraryId")
                         .HasColumnType("uniqueidentifier");
@@ -1816,14 +1814,10 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("DiscountRate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(8.0);
+                        .HasColumnType("float");
 
                     b.Property<double>("ExchangeRateUSDToNOK")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(10.0);
+                        .HasColumnType("float");
 
                     b.Property<double>("FlaredGasPerProducedVolume")
                         .HasColumnType("float");
@@ -1832,9 +1826,7 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("GasPriceNOK")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(3.0);
+                        .HasColumnType("float");
 
                     b.Property<int>("InternalProjectPhase")
                         .HasColumnType("int");
@@ -1850,9 +1842,7 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OilPriceUSD")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(75.0);
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("OriginalProjectId")
                         .HasColumnType("uniqueidentifier");
