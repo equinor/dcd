@@ -10,12 +10,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Transports.Services;
 
 public class TransportService(
-    ILogger<TransportService> logger,
     ICaseRepository caseRepository,
     ITransportRepository transportRepository,
     IMapperService mapperService,
@@ -39,21 +36,10 @@ public class TransportService(
             ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
 
         mapperService.MapToEntity(updatedTransportDto, existing, transportId);
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
+        existing.LastChangedDate = DateTime.UtcNow;
 
-        // Transport updatedTransport;
-        try
-        {
-            // updatedTransport = _repository.UpdateTransport(existing);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateConcurrencyException ex)
-        {
-            logger.LogError(ex, "Failed to update transport with id {transportId} for case id {caseId}.", transportId, caseId);
-            throw;
-        }
-
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<Transport, TransportDto>(existing, transportId);
         return dto;

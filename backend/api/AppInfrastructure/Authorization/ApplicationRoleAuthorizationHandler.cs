@@ -83,7 +83,7 @@ public class ApplicationRoleAuthorizationHandler(
 
         if (project.IsRevision && actionType == ActionType.Edit)
         {
-            throw new ModifyRevisionException("Cannot modify a revision", project.Id);
+            throw new ModifyRevisionException($"Cannot modify a revision. Project.Id={project.Id}");
         }
 
         var azureUniqueId = GetAzureUniqueId(context);

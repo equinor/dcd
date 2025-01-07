@@ -11,8 +11,9 @@ import {
     archive,
     unarchive,
 } from "@equinor/eds-icons"
-import { useNavigate, useParams } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useParams } from "react-router-dom"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
@@ -40,7 +41,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     caseId,
     isArchived,
 }) => {
-    const navigate = useNavigate()
+    const { navigateToProject } = useAppNavigation()
     const queryClient = useQueryClient()
     const { addNewCase } = useModalContext()
     const { addProjectEdit } = useEditProject()
@@ -63,7 +64,10 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         if (!caseId || !revisionAndProjectData) { return }
 
         if (await deleteCase(caseId, revisionAndProjectData.projectId, addProjectEdit)) {
-            if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) { navigate(`/${revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId}`) }
+            if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) {
+                const { fusionProjectId } = revisionAndProjectData.commonProjectAndRevisionData
+                navigateToProject(fusionProjectId)
+            }
         }
     }
 
@@ -81,7 +85,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const projectData = revisionAndProjectData?.dataType === "project"
         ? revisionAndProjectData as Components.Schemas.ProjectDataDto
         : null
-        
+
     return (
         <>
             <Modal

@@ -62,7 +62,7 @@ public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICa
         var caseItem = await Context.Cases.SingleOrDefaultAsync(c => c.Id == caseId)
             ?? throw new KeyNotFoundException($"Case with id {caseId} not found.");
 
-        caseItem.ModifyTime = DateTimeOffset.UtcNow;
+        caseItem.ModifyTime = DateTime.UtcNow;
     }
 
     public async Task<Guid> GetPrimaryKeyForProjectId(Guid projectId)

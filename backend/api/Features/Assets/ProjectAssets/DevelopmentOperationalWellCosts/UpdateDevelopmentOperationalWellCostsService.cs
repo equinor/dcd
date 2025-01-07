@@ -23,7 +23,7 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
         existingDevelopmentOperationalWellCosts.PluggingAndAbandonment = dto.PluggingAndAbandonment;
 
         var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
-        project.ModifyTime = DateTimeOffset.UtcNow;
+        project.UpdatedUtc = DateTime.UtcNow;
 
         await context.SaveChangesAsync();
 

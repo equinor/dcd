@@ -46,31 +46,31 @@ public class CaseWithProfilesDto
     public string? Host { get; set; }
 
     [Required]
-    public DateTimeOffset DGADate { get; set; }
+    public DateTime DGADate { get; set; }
     [Required]
-    public DateTimeOffset DGBDate { get; set; }
+    public DateTime DGBDate { get; set; }
     [Required]
-    public DateTimeOffset DGCDate { get; set; }
+    public DateTime DGCDate { get; set; }
     [Required]
-    public DateTimeOffset APBODate { get; set; }
+    public DateTime APBODate { get; set; }
     [Required]
-    public DateTimeOffset BORDate { get; set; }
+    public DateTime BORDate { get; set; }
     [Required]
-    public DateTimeOffset VPBODate { get; set; }
+    public DateTime VPBODate { get; set; }
     [Required]
-    public DateTimeOffset DG0Date { get; set; }
+    public DateTime DG0Date { get; set; }
     [Required]
-    public DateTimeOffset DG1Date { get; set; }
+    public DateTime DG1Date { get; set; }
     [Required]
-    public DateTimeOffset DG2Date { get; set; }
+    public DateTime DG2Date { get; set; }
     [Required]
-    public DateTimeOffset DG3Date { get; set; }
+    public DateTime DG3Date { get; set; }
     [Required]
-    public DateTimeOffset DG4Date { get; set; }
+    public DateTime DG4Date { get; set; }
     [Required]
-    public DateTimeOffset CreateTime { get; set; }
+    public DateTime CreateTime { get; set; }
     [Required]
-    public DateTimeOffset ModifyTime { get; set; }
+    public DateTime ModifyTime { get; set; }
 
     [Required]
     public CessationWellsCostDto CessationWellsCost { get; set; } = null!;

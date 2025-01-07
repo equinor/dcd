@@ -52,7 +52,6 @@ export const StyledDivider = styled(Divider)`
 `
 
 export const TimelineElement = styled(Button)`
-    text-align: left;
     height: 28px;
     padding: 10px 0px 10px 5px;
 `

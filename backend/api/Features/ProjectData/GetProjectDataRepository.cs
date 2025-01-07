@@ -37,10 +37,11 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
-                RevisionDate = x.RevisionDate,
+                RevisionDate = x.CreatedUtc,
                 Arena = x.Arena,
                 Mdqc = x.Mdqc
             })
+            .OrderBy(x => x.RevisionDate)
             .ToListAsync();
     }
 
@@ -52,7 +53,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
-                RevisionDate = x.RevisionDate,
+                RevisionDate = x.CreatedUtc,
                 Arena = x.Arena,
                 Mdqc = x.Mdqc
             })
@@ -65,7 +66,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.Id == projectId)
             .Select(x => new CommonProjectAndRevisionDto
             {
-                ModifyTime = x.ModifyTime,
+                ModifyTime = x.UpdatedUtc,
                 Classification = x.Classification,
                 Name = x.Name,
                 FusionProjectId = x.FusionProjectId,

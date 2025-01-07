@@ -35,7 +35,6 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             Country = projectMaster.Country ?? "",
             ProjectCategory = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory),
             CommonLibraryName = "",
-            CreateDate = DateTimeOffset.UtcNow,
             ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts(),
             DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts(),
             CO2EmissionFromFuelGas = 2.34,
@@ -44,6 +43,11 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             CO2Vented = 1.96,
             DailyEmissionFromDrillingRig = 100,
             AverageDevelopmentDrillingDays = 50,
+            Classification = ProjectClassification.Internal,
+            DiscountRate = 8.0,
+            OilPriceUSD = 75.0,
+            GasPriceNOK = 3.0,
+            ExchangeRateUSDToNOK = 10.0
         };
 
         context.Projects.Add(project);

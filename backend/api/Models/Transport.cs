@@ -15,12 +15,12 @@ public class Transport : IHasProjectId, IChangeTrackable
     public double OilExportPipelineLength { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }
-    public DateTimeOffset? LastChangedDate { get; set; }
+    public DateTime? LastChangedDate { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }
-    public DateTimeOffset? ProspVersion { get; set; }
-    public DateTimeOffset? DG3Date { get; set; }
-    public DateTimeOffset? DG4Date { get; set; }
+    public DateTime? ProspVersion { get; set; }
+    public DateTime? DG3Date { get; set; }
+    public DateTime? DG4Date { get; set; }
 
     public virtual TransportCostProfile? CostProfile { get; set; }
     public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }

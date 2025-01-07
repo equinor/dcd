@@ -9,12 +9,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Transports.Services;
 
 public class TransportTimeSeriesService(
-    ILogger<TransportService> logger,
     ICaseRepository caseRepository,
     ITransportRepository transportRepository,
     ITransportTimeSeriesRepository repository,
@@ -50,18 +47,9 @@ public class TransportTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, transportId);
 
-        TransportCostProfileOverride createdProfile;
-        try
-        {
-            createdProfile = repository.CreateTransportCostProfileOverride(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
-            throw;
-        }
+        var createdProfile = repository.CreateTransportCostProfileOverride(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
@@ -141,17 +129,9 @@ public class TransportTimeSeriesService(
             newProfile.Transport.CostProfileOverride.Override = false;
         }
 
-        try
-        {
-            repository.CreateTransportCostProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to create cost profile for transport with id {transportId} for case id {caseId}.", transportId, caseId);
-            throw;
-        }
+        repository.CreateTransportCostProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var newDto = mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
@@ -186,17 +166,8 @@ public class TransportTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;

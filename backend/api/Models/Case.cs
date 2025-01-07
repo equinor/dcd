@@ -18,19 +18,19 @@ public class Case : IHasProjectId, IChangeTrackable
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-    public DateTimeOffset CreateTime { get; set; }
-    public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
-    public DateTimeOffset DGADate { get; set; }
-    public DateTimeOffset DGBDate { get; set; }
-    public DateTimeOffset DGCDate { get; set; }
-    public DateTimeOffset APBODate { get; set; }
-    public DateTimeOffset BORDate { get; set; }
-    public DateTimeOffset VPBODate { get; set; }
-    public DateTimeOffset DG0Date { get; set; }
-    public DateTimeOffset DG1Date { get; set; }
-    public DateTimeOffset DG2Date { get; set; }
-    public DateTimeOffset DG3Date { get; set; }
-    public DateTimeOffset DG4Date { get; set; }
+    public DateTime CreateTime { get; set; }
+    public DateTime ModifyTime { get; set; } = DateTime.UtcNow;
+    public DateTime DGADate { get; set; }
+    public DateTime DGBDate { get; set; }
+    public DateTime DGCDate { get; set; }
+    public DateTime APBODate { get; set; }
+    public DateTime BORDate { get; set; }
+    public DateTime VPBODate { get; set; }
+    public DateTime DG0Date { get; set; }
+    public DateTime DG1Date { get; set; }
+    public DateTime DG2Date { get; set; }
+    public DateTime DG3Date { get; set; }
+    public DateTime DG4Date { get; set; }
 
     public ArtificialLift ArtificialLift { get; set; }
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }

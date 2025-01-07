@@ -34,7 +34,7 @@ public static class DcdSwaggerConfiguration
                         }
                     },
                     Array.Empty<string>()
-                },
+                }
             });
         });
     }

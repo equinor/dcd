@@ -1,9 +1,7 @@
 import { useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
-
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import CaseDrillingScheduleTab from "@/Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
 import CaseProductionProfilesTab from "@/Components/Case/Tabs/CaseProductionProfilesTab"
 import CaseDescriptionTab from "@/Components/Case/Tabs/CaseDescriptionTab"
@@ -16,7 +14,7 @@ import { useCaseContext } from "@/Context/CaseContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditCase from "@/Hooks/useEditCase"
 import { caseTabNames } from "@/Utils/constants"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 const Wrapper = styled(Grid)`
     padding: 0 16px;
@@ -25,17 +23,13 @@ const CaseView = () => {
     const { caseId, tab } = useParams()
     const { addEdit } = useEditCase()
     const revisionAndProjectData = useDataFetch()
-    const { currentContext } = useModuleCurrentContext()
-    const { isRevision } = useProjectContext()
     const {
         activeTabCase,
         setActiveTabCase,
         caseEdits,
         setCaseEditsBelongingToCurrentCase,
     } = useCaseContext()
-
-    const navigate = useNavigate()
-    const projectUrl = `/${currentContext!.id}`
+    const { navigateToCase, navigateToProject } = useAppNavigation()
 
     // syncs the active tab with the url
     useEffect(() => {
@@ -44,29 +38,20 @@ const CaseView = () => {
             if (activeTabCase !== tabIndex) {
                 setActiveTabCase(tabIndex)
             }
+        } else if (caseId) {
+            // If no tab is specified, navigate to default tab using replace
+            navigateToCase(caseId, caseTabNames[0], { replace: true })
         }
-    }, [tab])
+    }, [tab, caseId])
 
     // navigates to the project page if the case is not found in the revision
     useEffect(() => {
         if (revisionAndProjectData
             && !revisionAndProjectData?.commonProjectAndRevisionData.cases
                 .find((c: Components.Schemas.CaseOverviewDto) => c.caseId === caseId)) {
-            navigate(projectUrl)
+            navigateToProject()
         }
     }, [revisionAndProjectData])
-
-    // navigates to the default tab (description) if none is provided in the url
-    useEffect(() => {
-        if (!tab && caseId && !isRevision) {
-            navigate(`${projectUrl}/case/${caseId}/${caseTabNames[0]}`, { replace: true })
-        } else if (tab) {
-            const tabIndex = caseTabNames.indexOf(tab)
-            if (activeTabCase !== tabIndex) {
-                setActiveTabCase(tabIndex)
-            }
-        }
-    }, [caseId])
 
     useEffect(() => {
         localStorage.setItem("caseEdits", JSON.stringify(caseEdits))

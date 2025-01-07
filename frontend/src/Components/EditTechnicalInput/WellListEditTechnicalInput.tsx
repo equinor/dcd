@@ -10,7 +10,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 
-import CustomHeaderForSecondaryHeader from "@/CustomHeaderForSecondaryHeader"
+import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
 import { useAppContext } from "@/Context/AppContext"
 import { cellStyleRightAlign } from "@/Utils/common"
 import { GetWellService } from "@/Services/WellService"
@@ -204,7 +204,7 @@ const WellListEditTechnicalInput = ({
             field: "wellCost",
             headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
             flex: 1,
-            headerComponent: CustomHeaderForSecondaryHeader,
+            headerComponent: SecondaryTableHeader,
             headerComponentParams: {
                 columnHeader: "Cost",
                 unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",

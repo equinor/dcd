@@ -13,7 +13,7 @@ public class DeleteWellService(DcdDbContext context)
 
         var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
 
-        project.ModifyTime = DateTimeOffset.UtcNow;
+        project.UpdatedUtc = DateTime.UtcNow;
 
         var well = await context.Wells
             .Where(x => x.ProjectId == projectPk)

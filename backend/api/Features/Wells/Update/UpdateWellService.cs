@@ -14,7 +14,7 @@ public class UpdateWellService(DcdDbContext context)
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
-        project.ModifyTime = DateTimeOffset.UtcNow;
+        project.UpdatedUtc = DateTime.UtcNow;
 
         var well = await context.Wells
             .Where(x => x.ProjectId == projectPk)
@@ -23,12 +23,12 @@ public class UpdateWellService(DcdDbContext context)
 
         if (InvalidWellCategory(updatedWellDto))
         {
-            throw new InvalidInputException("Invalid well category", wellId);
+            throw new InvalidInputException($"Invalid well category for wellId {wellId}");
         }
 
         if (UpdateChangesWellType(well, updatedWellDto))
         {
-            throw new WellChangeTypeException("Cannot change well type", wellId);
+            throw new WellChangeTypeException($"Cannot change well type for wellId {wellId}");
         }
 
         well.Name = updatedWellDto.Name;

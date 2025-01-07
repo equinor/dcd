@@ -27,7 +27,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
 
         if (entity.ProjectId != projectIdFromUrl)
         {
-            throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.", projectIdFromUrl, entityId);
+            throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.");
         }
     }
 

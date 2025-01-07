@@ -1,6 +1,8 @@
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.Models;
+using api.Models.Infrastructure;
+using api.Models.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -85,6 +87,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile => Set<CalculatedTotalCostCostProfile>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
+    public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
     public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -161,6 +164,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         var utcNow = DateTime.UtcNow;
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
+        SetCreatedAndUpdatedDates(utcNow);
 
         return await base.SaveChangesAsync(cancellationToken);
     }
@@ -170,7 +174,31 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         var utcNow = DateTime.UtcNow;
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
+        SetCreatedAndUpdatedDates(utcNow);
 
         return base.SaveChanges();
+    }
+
+    private void SetCreatedAndUpdatedDates(DateTime utcNow)
+    {
+        var createdEntries = ChangeTracker.Entries()
+            .Where(x => x is { Entity: IDateTrackedEntity, State: EntityState.Added });
+
+        foreach (var entry in createdEntries)
+        {
+            var entity = (IDateTrackedEntity)entry.Entity;
+            entity.CreatedUtc = utcNow;
+            entity.CreatedBy = currentUser?.Username ?? "SYSTEM";
+        }
+
+        var updatedEntries = ChangeTracker.Entries()
+            .Where(x => x is { Entity: IDateTrackedEntity, State: EntityState.Modified });
+
+        foreach (var entry in updatedEntries)
+        {
+            var entity = (IDateTrackedEntity)entry.Entity;
+            entity.UpdatedUtc = utcNow;
+            entity.UpdatedBy = currentUser?.Username ?? "SYSTEM";
+        }
     }
 }

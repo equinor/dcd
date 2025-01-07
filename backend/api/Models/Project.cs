@@ -2,7 +2,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Project : IChangeTrackable
+public class Project : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; } // If the project is a revision, this is the revision's id
 
@@ -19,7 +19,6 @@ public class Project : IChangeTrackable
     public string Country { get; set; } = string.Empty;
     public Currency Currency { get; set; }
     public PhysUnit PhysicalUnit { get; set; }
-    public DateTimeOffset CreateDate { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
     public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
@@ -33,12 +32,15 @@ public class Project : IChangeTrackable
     public double CO2Vented { get; set; } = 1.96;
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
-    public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
     public double OilPriceUSD { get; set; }
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
 
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
     public virtual DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
@@ -58,18 +60,20 @@ public class Project : IChangeTrackable
     public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = [];
 }
 
-public class RevisionDetails : IChangeTrackable
+public class RevisionDetails : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
     public virtual Project Revision { get; set; } = null!;
     public Guid RevisionId { get; set; }
-
     public string? RevisionName { get; set; }
-    public DateTimeOffset RevisionDate { get; set; }
     public bool Arena { get; set; }
     public bool Mdqc { get; set; }
     public ProjectClassification Classification { get; set; }
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 }
 
 public enum PhysUnit

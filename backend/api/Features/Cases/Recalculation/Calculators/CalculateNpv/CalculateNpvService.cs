@@ -23,9 +23,13 @@ public class CalculateNpvService(ICaseService caseService) : ICalculateNpvServic
             c => c.Project,
             c => c.CalculatedTotalIncomeCostProfile!,
             c => c.CalculatedTotalCostCostProfile!
-
         );
 
+        CalculateNpv(caseItem);
+    }
+
+    public static void CalculateNpv(Case caseItem)
+    {
         var cashflowProfile = GetCashflowProfile(caseItem);
 
         if (cashflowProfile == null)

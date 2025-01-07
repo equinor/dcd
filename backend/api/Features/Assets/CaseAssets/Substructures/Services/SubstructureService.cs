@@ -10,12 +10,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Substructures.Services;
 
 public class SubstructureService(
-    ILogger<SubstructureService> logger,
     ISubstructureRepository substructureRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
@@ -44,20 +41,10 @@ public class SubstructureService(
             ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
 
         mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
-        existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
+        existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
-        // Substructure updatedSubstructure;
-        try
-        {
-            // updatedSubstructure = _repository.UpdateSubstructure(existingSubstructure);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update substructure with id {SubstructureId} for case id {CaseId}.", substructureId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId);
 

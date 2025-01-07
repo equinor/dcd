@@ -4,9 +4,11 @@ import {
 } from "@mui/material"
 import { Icon } from "@equinor/eds-core-react"
 import { users_circle, settings } from "@equinor/eds-icons"
+import { useParams } from "react-router-dom"
 
 import { projectTabNames } from "@/Utils/constants"
 import { useAppContext } from "@/Context/AppContext"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 
 type ProjectTabsProps = {
     activeTabProject: number | boolean
@@ -17,9 +19,12 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
     const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
     const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
     const { showEditHistory } = useAppContext()
+    const { revisionId } = useParams()
+    const { navigateToProjectTab } = useAppNavigation()
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
+        navigateToProjectTab(index, revisionId)
     }
 
     const getTabIndex = (index: number, isRightTabs: boolean) => {

@@ -10,12 +10,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Topsides.Services;
 
 public class TopsideService(
-    ILogger<TopsideService> logger,
     ITopsideRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
@@ -44,18 +41,10 @@ public class TopsideService(
             ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
 
         mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
-        existingTopside.LastChangedDate = DateTimeOffset.UtcNow;
+        existingTopside.LastChangedDate = DateTime.UtcNow;
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId);
         return dto;

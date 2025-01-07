@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20241210124436_OnshorePowerSupply")]
-    partial class OnshorePowerSupply
+    [Migration("20250107082138_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,8 +209,8 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("APBODate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("APBODate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Archived")
                         .HasColumnType("bit");
@@ -218,8 +218,8 @@ namespace api.Migrations
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("BORDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("BORDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("BreakEven")
                         .HasColumnType("float");
@@ -233,32 +233,32 @@ namespace api.Migrations
                     b.Property<double>("CapexFactorFeasibilityStudies")
                         .HasColumnType("float");
 
-                    b.Property<DateTimeOffset>("CreateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DG0Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DG0Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DG1Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DG1Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DG2Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DG2Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DG3Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DG3Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DG4Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DG4Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DGADate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DGADate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DGBDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DGBDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("DGCDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DGCDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -279,8 +279,8 @@ namespace api.Migrations
                     b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("ModifyTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("ModifyTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("NPV")
                         .HasColumnType("float");
@@ -328,8 +328,8 @@ namespace api.Migrations
                     b.Property<Guid>("TransportLink")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("VPBODate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("VPBODate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
@@ -523,9 +523,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ChangeLog", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
@@ -786,6 +788,57 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DrillingSchedule");
+                });
+
+            modelBuilder.Entity("api.Models.ExceptionLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("DisplayUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Environment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExceptionMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HttpStatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InnerExceptionMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InnerExceptionStackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestBody")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UtcTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionLogs");
                 });
 
             modelBuilder.Entity("api.Models.Exploration", b =>
@@ -1186,18 +1239,14 @@ namespace api.Migrations
                     b.Property<Guid?>("CaseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -1259,6 +1308,26 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("ImportedElectricityOverride");
+                });
+
+            modelBuilder.Entity("api.Models.LazyLoadingOccurrence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LazyLoadingOccurrences");
                 });
 
             modelBuilder.Entity("api.Models.NetSalesGas", b =>
@@ -1451,14 +1520,14 @@ namespace api.Migrations
                     b.Property<int>("CostYear")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("DG3Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG3Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("DG4Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG4Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("LastChangedDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LastChangedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1467,8 +1536,8 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("ProspVersion")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("ProspVersion")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
@@ -1600,7 +1669,7 @@ namespace api.Migrations
                     b.ToTable("ProductionProfileGas");
                 });
 
-            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+            modelBuilder.Entity("api.Models.ProductionProfileNgl", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1621,7 +1690,7 @@ namespace api.Migrations
                     b.HasIndex("DrainageStrategy.Id")
                         .IsUnique();
 
-                    b.ToTable("ProductionProfileNGL");
+                    b.ToTable("ProductionProfileNgl");
                 });
 
             modelBuilder.Entity("api.Models.ProductionProfileOil", b =>
@@ -1718,9 +1787,7 @@ namespace api.Migrations
                         .HasColumnType("float");
 
                     b.Property<int>("Classification")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CommonLibraryId")
                         .HasColumnType("uniqueidentifier");
@@ -1733,8 +1800,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CreateDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
@@ -1747,14 +1814,10 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("DiscountRate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(8.0);
+                        .HasColumnType("float");
 
                     b.Property<double>("ExchangeRateUSDToNOK")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(10.0);
+                        .HasColumnType("float");
 
                     b.Property<double>("FlaredGasPerProducedVolume")
                         .HasColumnType("float");
@@ -1763,9 +1826,7 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("GasPriceNOK")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(3.0);
+                        .HasColumnType("float");
 
                     b.Property<int>("InternalProjectPhase")
                         .HasColumnType("int");
@@ -1773,17 +1834,15 @@ namespace api.Migrations
                     b.Property<bool>("IsRevision")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("ModifyTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("ModifyTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OilPriceUSD")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(75.0);
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("OriginalProjectId")
                         .HasColumnType("uniqueidentifier");
@@ -1805,8 +1864,7 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FusionProjectId")
-                        .HasDatabaseName("IX_Project_FusionProjectId");
+                    b.HasIndex("FusionProjectId");
 
                     b.HasIndex("OriginalProjectId");
 
@@ -1841,6 +1899,40 @@ namespace api.Migrations
                     b.ToTable("ProjectMembers");
                 });
 
+            modelBuilder.Entity("api.Models.RequestLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("RequestEndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("RequestLengthInMilliseconds")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("RequestStartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlPattern")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Verb")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestLogs");
+                });
+
             modelBuilder.Entity("api.Models.RevisionDetails", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1856,11 +1948,8 @@ namespace api.Migrations
                     b.Property<bool>("Mdqc")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("OriginalProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("RevisionDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("RevisionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("RevisionId")
                         .HasColumnType("uniqueidentifier");
@@ -1869,9 +1958,6 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OriginalProjectId")
-                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
 
                     b.HasIndex("RevisionId")
                         .IsUnique();
@@ -1963,17 +2049,17 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("DG3Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG3Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("DG4Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG4Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
 
-                    b.Property<DateTimeOffset?>("LastChangedDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LastChangedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -1985,8 +2071,8 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("ProspVersion")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("ProspVersion")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
@@ -2116,11 +2202,11 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("DG3Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG3Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("DG4Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG4Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
@@ -2128,8 +2214,8 @@ namespace api.Migrations
                     b.Property<double>("InfieldPipelineSystemLength")
                         .HasColumnType("float");
 
-                    b.Property<DateTimeOffset?>("LastChangedDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LastChangedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -2147,8 +2233,8 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("ProspVersion")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("ProspVersion")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("RiserCount")
                         .HasColumnType("int");
@@ -2305,11 +2391,11 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("DG3Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG3Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("DG4Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG4Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
@@ -2329,8 +2415,8 @@ namespace api.Migrations
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("LastChangedDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LastChangedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -2351,8 +2437,8 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("ProspVersion")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("ProspVersion")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
@@ -2639,17 +2725,17 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("DG3Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG3Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("DG4Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DG4Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("GasExportPipelineLength")
                         .HasColumnType("float");
 
-                    b.Property<DateTimeOffset?>("LastChangedDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LastChangedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -2664,8 +2750,8 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("ProspVersion")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("ProspVersion")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
@@ -3563,11 +3649,11 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
-            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+            modelBuilder.Entity("api.Models.ProductionProfileNgl", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
-                        .WithOne("ProductionProfileNGL")
-                        .HasForeignKey("api.Models.ProductionProfileNGL", "DrainageStrategy.Id")
+                        .WithOne("ProductionProfileNgl")
+                        .HasForeignKey("api.Models.ProductionProfileNgl", "DrainageStrategy.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -4054,7 +4140,7 @@ namespace api.Migrations
 
                     b.Navigation("ProductionProfileGas");
 
-                    b.Navigation("ProductionProfileNGL");
+                    b.Navigation("ProductionProfileNgl");
 
                     b.Navigation("ProductionProfileOil");
 

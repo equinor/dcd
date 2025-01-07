@@ -22,8 +22,8 @@ public abstract class BaseUpdateTopsideDto
     public double CO2OnMaxGasProfile { get; set; }
     public double CO2OnMaxWaterInjectionProfile { get; set; }
     public int CostYear { get; set; }
-    public DateTimeOffset? DG3Date { get; set; }
-    public DateTimeOffset? DG4Date { get; set; }
+    public DateTime? DG3Date { get; set; }
+    public DateTime? DG4Date { get; set; }
     public double FacilityOpex { get; set; }
     public double PeakElectricityImported { get; set; }
     public Source Source { get; set; }

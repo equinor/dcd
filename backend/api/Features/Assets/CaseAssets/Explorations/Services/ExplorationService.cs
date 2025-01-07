@@ -11,12 +11,9 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Assets.CaseAssets.Explorations.Services;
 
 public class ExplorationService(
-    ILogger<ExplorationService> logger,
     ICaseRepository caseRepository,
     IExplorationRepository repository,
     IMapperService mapperService,
@@ -45,16 +42,8 @@ public class ExplorationService(
 
         mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update exploration with id {explorationId} for case id {caseId}.", explorationId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<Exploration, ExplorationDto>(existingExploration, explorationId);
         return dto;
@@ -80,16 +69,8 @@ public class ExplorationService(
 
         mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var dto = mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(existingDrillingSchedule, drillingScheduleId);
         return dto;
@@ -122,18 +103,9 @@ public class ExplorationService(
             DrillingSchedule = newDrillingSchedule
         };
 
-        ExplorationWell createdExplorationWell;
-        try
-        {
-            createdExplorationWell = repository.CreateExplorationWellDrillingSchedule(newExplorationWell);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", explorationId);
-            throw;
-        }
+        var createdExplorationWell = repository.CreateExplorationWellDrillingSchedule(newExplorationWell);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         if (createdExplorationWell.DrillingSchedule == null)
         {

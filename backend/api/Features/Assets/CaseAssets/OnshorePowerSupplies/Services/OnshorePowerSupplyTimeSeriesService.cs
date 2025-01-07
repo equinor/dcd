@@ -10,11 +10,7 @@ using api.Features.ProjectAccess;
 using api.ModelMapping;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
-
 public class OnshorePowerSupplyTimeSeriesService(
-    ILogger<OnshorePowerSupplyService> logger,
     ICaseRepository caseRepository,
     IOnshorePowerSupplyRepository onshorePowerSupplyRepository,
     IOnshorePowerSupplyTimeSeriesRepository repository,
@@ -49,18 +45,9 @@ public class OnshorePowerSupplyTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, onshorePowerSupplyId);
 
-        OnshorePowerSupplyCostProfileOverride createdProfile;
-        try
-        {
-            createdProfile = repository.CreateOnshorePowerSupplyCostProfileOverride(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to create profile OnshorePowerSupplyCostProfileOverride for case id {caseId}.", caseId);
-            throw;
-        }
+        var createdProfile = repository.CreateOnshorePowerSupplyCostProfileOverride(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
@@ -140,17 +127,9 @@ public class OnshorePowerSupplyTimeSeriesService(
             newProfile.OnshorePowerSupply.CostProfileOverride.Override = false;
         }
 
-        try
-        {
-            repository.CreateOnshorePowerSupplyCostProfile(newProfile);
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to create cost profile for onshorePowerSupply with id {onshorePowerSupplyId} for case id {caseId}.", onshorePowerSupplyId, caseId);
-            throw;
-        }
+        repository.CreateOnshorePowerSupplyCostProfile(newProfile);
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var newDto = mapperService.MapToDto<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
@@ -184,17 +163,8 @@ public class OnshorePowerSupplyTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, onshorePowerSupplyId);
 
-        try
-        {
-            await caseRepository.UpdateModifyTime(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
+        await caseRepository.UpdateModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;

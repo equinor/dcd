@@ -3,15 +3,20 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
+using api.Context;
 using api.Exceptions;
+using api.Models;
+using api.Models.Infrastructure;
 
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Middleware;
 
 public class DcdExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,
-    ILogger<DcdExceptionHandlingMiddleware> logger)
+    ILogger<DcdExceptionHandlingMiddleware> logger,
+    IServiceScopeFactory serviceScopeFactory)
 {
     public async Task Invoke(HttpContext context)
     {
@@ -39,106 +44,101 @@ public class DcdExceptionHandlingMiddleware(
     {
         logger.LogError(exception.ToString());
 
-        HttpStatusCode statusCode;
-        var errorInformation = new Dictionary<string, string>();
+        var (httpStatusCode, exceptionMessage) = GetHttpStatusCodeAndExceptionMessage(exception);
 
-        switch (exception)
+        var errorInformation = new Dictionary<string, string>
         {
-            case FusionOrgNotFoundException:
-            case KeyNotFoundException:
-            case NotFoundInDbException:
-                statusCode = HttpStatusCode.NotFound;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case UnauthorizedAccessException:
-                statusCode = HttpStatusCode.Unauthorized;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case WellChangeTypeException:
-            case InvalidInputException:
-            case InvalidProjectIdException:
-                statusCode = HttpStatusCode.BadRequest;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case InputValidationException:
-                statusCode = HttpStatusCode.UnprocessableContent;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case ProjectAccessMismatchException:
-            case ProjectClassificationException:
-            case ProjectMembershipException:
-            case ModifyRevisionException:
-                statusCode = HttpStatusCode.Forbidden;
-                errorInformation.Add("message", exception.Message);
-                break;
-            case ProjectAlreadyExistsException:
-            case ResourceAlreadyExistsException:
-                statusCode = HttpStatusCode.Conflict;
-                errorInformation.Add("message", exception.Message);
-                break;
-            default:
-                statusCode = HttpStatusCode.InternalServerError;
-                errorInformation.Add("message", "An unexpected error occurred");
-                break;
-        }
+            { "message", exceptionMessage }
+        };
+
+        var body = await GetBody(context.Request.Body);
+
+        await SaveExceptionToDatabase(exception, httpStatusCode, context, body);
 
         if (DcdEnvironments.ReturnExceptionDetails)
         {
-            AppendDebugInfo(errorInformation,
-                exception,
-                context.Request.GetDisplayUrl(),
-                context.Request.Method,
-                await GetBody(context.Request.Body),
-                context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            AddIfNotNull(errorInformation, "Environment", DcdEnvironments.CurrentEnvironment);
+            AddIfNotNull(errorInformation, "ExceptionStackTrace", exception.StackTrace);
+            AddIfNotNull(errorInformation, "ExceptionMessage", exception.Message);
+            AddIfNotNull(errorInformation, "InnerExceptionStackTrace", exception.InnerException?.StackTrace);
+            AddIfNotNull(errorInformation, "InnerExceptionMessage", exception.InnerException?.Message);
+            AddIfNotNull(errorInformation, "Url", context.Request.GetDisplayUrl());
+            AddIfNotNull(errorInformation, "Method", context.Request.Method);
+            AddIfNotNull(errorInformation, "Body", body);
+            AddIfNotNull(errorInformation, "User", context.User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)statusCode;
+        context.Response.StatusCode = (int)httpStatusCode;
 
-        var jsonResponse = JsonSerializer.Serialize(errorInformation);
-
-        await context.Response.WriteAsync(jsonResponse);
+        await context.Response.WriteAsync(JsonSerializer.Serialize(errorInformation));
     }
 
-    private static void AppendDebugInfo(Dictionary<string, string> errorInformation, Exception exception, string? url, string? method, string? body, string? user)
+    private static void AddIfNotNull(Dictionary<string, string> errorInformation, string key, string? value)
     {
-        errorInformation.Add("Environment", DcdEnvironments.CurrentEnvironment);
-
-        if (exception.StackTrace != null)
+        if (!string.IsNullOrWhiteSpace(value))
         {
-            errorInformation.Add("stacktrace", exception.StackTrace);
+            errorInformation.Add(key, value);
         }
+    }
 
-        errorInformation.Add("ExceptionMessage", exception.Message);
+    private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext, string body)
+    {
+        using var scope = serviceScopeFactory.CreateScope();
 
-        if (exception.InnerException != null)
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        dbContext.ChangeTracker.LazyLoadingEnabled = false;
+
+        dbContext.ExceptionLogs.Add(new ExceptionLog
         {
-            errorInformation.Add("InnerExceptionMessage", exception.InnerException.Message);
+            Environment = DcdEnvironments.CurrentEnvironment,
+            UtcTimestamp = DateTime.UtcNow,
+            HttpStatusCode = (int)httpStatusCode,
+            DisplayUrl = httpContext.Request.GetDisplayUrl(),
+            RequestUrl = httpContext.Request.Path.Value,
+            Method = httpContext.Request.Method,
+            RequestBody = body,
+            StackTrace = exception.StackTrace,
+            ExceptionMessage = exception.Message,
+            InnerExceptionStackTrace = exception.InnerException?.StackTrace,
+            InnerExceptionMessage = exception.InnerException?.Message
+        });
 
-            if (exception.InnerException.StackTrace != null)
-            {
-                errorInformation.Add("InnerExceptionStacktrace", exception.InnerException.StackTrace);
-            }
-        }
+        await dbContext.SaveChangesAsync();
+    }
 
-        if (url != null)
+    private static (HttpStatusCode httpStatusCode, string exceptionMessage) GetHttpStatusCodeAndExceptionMessage(Exception exception)
+    {
+        switch (exception)
         {
-            errorInformation.Add("Url", url);
-        }
+            case KeyNotFoundException:
+            case NotFoundInDbException:
+                return (HttpStatusCode.NotFound, exception.Message);
 
-        if (method != null)
-        {
-            errorInformation.Add("Method", method);
-        }
+            case UnauthorizedAccessException:
+                return (HttpStatusCode.Unauthorized, exception.Message);
 
-        if (!string.IsNullOrEmpty(body))
-        {
-            errorInformation.Add("Body", body);
-        }
+            case WellChangeTypeException:
+            case InvalidInputException:
+            case InvalidProjectIdException:
+                return (HttpStatusCode.BadRequest, exception.Message);
 
-        if (user != null)
-        {
-            errorInformation.Add("User", user);
+            case InputValidationException:
+                return (HttpStatusCode.UnprocessableContent, exception.Message);
+
+            case ProjectAccessMismatchException:
+            case ModifyRevisionException:
+                return (HttpStatusCode.Forbidden, exception.Message);
+
+            case ProjectAlreadyExistsException:
+            case ResourceAlreadyExistsException:
+                return (HttpStatusCode.Conflict, exception.Message);
+
+            default:
+                return (HttpStatusCode.InternalServerError, "An unexpected error occurred");
         }
     }
 
@@ -146,8 +146,6 @@ public class DcdExceptionHandlingMiddleware(
     {
         requestStream.Position = 0;
         using var reader = new StreamReader(requestStream, Encoding.UTF8);
-        var body = await reader.ReadToEndAsync();
-
-        return body;
+        return await reader.ReadToEndAsync();
     }
 }
