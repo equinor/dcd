@@ -41,6 +41,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Arena = x.Arena,
                 Mdqc = x.Mdqc
             })
+            .OrderBy(x => x.RevisionDate)
             .ToListAsync();
     }
 

@@ -50,7 +50,9 @@ public class DcdExceptionHandlingMiddleware(
             { "message", exceptionMessage }
         };
 
-        await SaveExceptionToDatabase(exception, httpStatusCode, context);
+        var body = await GetBody(context.Request.Body);
+
+        await SaveExceptionToDatabase(exception, httpStatusCode, context, body);
 
         if (DcdEnvironments.ReturnExceptionDetails)
         {
@@ -61,7 +63,7 @@ public class DcdExceptionHandlingMiddleware(
             AddIfNotNull(errorInformation, "InnerExceptionMessage", exception.InnerException?.Message);
             AddIfNotNull(errorInformation, "Url", context.Request.GetDisplayUrl());
             AddIfNotNull(errorInformation, "Method", context.Request.Method);
-            AddIfNotNull(errorInformation, "Body", await GetBody(context.Request.Body));
+            AddIfNotNull(errorInformation, "Body", body);
             AddIfNotNull(errorInformation, "User", context.User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
@@ -79,7 +81,7 @@ public class DcdExceptionHandlingMiddleware(
         }
     }
 
-    private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext)
+    private async Task SaveExceptionToDatabase(Exception exception, HttpStatusCode httpStatusCode, HttpContext httpContext, string body)
     {
         using var scope = serviceScopeFactory.CreateScope();
 
@@ -97,7 +99,7 @@ public class DcdExceptionHandlingMiddleware(
             DisplayUrl = httpContext.Request.GetDisplayUrl(),
             RequestUrl = httpContext.Request.Path.Value,
             Method = httpContext.Request.Method,
-            RequestBody = await GetBody(httpContext.Request.Body),
+            RequestBody = body,
             StackTrace = exception.StackTrace,
             ExceptionMessage = exception.Message,
             InnerExceptionStackTrace = exception.InnerException?.StackTrace,

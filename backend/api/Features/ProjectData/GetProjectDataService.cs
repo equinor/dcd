@@ -17,7 +17,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
             ProjectId = projectPk,
             DataType = "project",
             ProjectMembers = projectMembers,
-            RevisionDetailsList = revisionDetailsList.OrderBy(x => x.RevisionDate).ToList(),
+            RevisionDetailsList = revisionDetailsList,
             CommonProjectAndRevisionData = commonProjectAndRevisionData
         };
     }
