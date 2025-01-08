@@ -7,25 +7,22 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Models;
 
+using Fusion;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Authorization;
 
-public class ApplicationRoleAuthorizationHandler(
-    IDbContextFactory<DcdDbContext> contextFactory,
-    IHttpContextAccessor httpContextAccessor,
-    ILogger<ApplicationRoleAuthorizationHandler> logger)
+public class ApplicationRoleAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFactory, IHttpContextAccessor httpContextAccessor)
     : AuthorizationHandler<ApplicationRoleRequirement>
 {
-    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
-        ApplicationRoleRequirement requirement)
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
     {
         var requestPath = httpContextAccessor.HttpContext?.Request.Path;
 
-        // Accessing the swagger documentation is always allowed.
-        if (IsAccessingSwagger(requestPath))
+        if (requestPath?.StartsWithSegments(new PathString("/swagger")) == true)
         {
             context.Succeed(requirement);
             return Task.CompletedTask;
@@ -33,15 +30,13 @@ public class ApplicationRoleAuthorizationHandler(
 
         if (context.User.Identity?.IsAuthenticated != true)
         {
-            HandleUnauthenticatedRequest(context, requestPath);
+            context.Fail();
             return Task.CompletedTask;
         }
 
-        var userRoles = context.User.AssignedApplicationRoles();
-
-        if (!await IsAuthorized(context, requirement, userRoles))
+        if (!await IsAuthorized(context, requirement))
         {
-            HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
+            context.Fail();
             return Task.CompletedTask;
         }
 
@@ -49,26 +44,10 @@ public class ApplicationRoleAuthorizationHandler(
         return Task.CompletedTask;
     }
 
-    private static bool IsAccessingSwagger(PathString? requestPath)
+    private async Task<bool> IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement)
     {
-        var swaggerPath = new PathString("/swagger");
-        return requestPath?.StartsWithSegments(swaggerPath) == true;
-    }
+        var userRoles = context.User.DcdParseApplicationRoles();
 
-    private static Guid GetAzureUniqueId(AuthorizationHandlerContext context)
-    {
-        var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
-            as Fusion.Integration.Authentication.FusionIdentity;
-
-        return fusionIdentity?.Profile.AzureUniqueId ??
-            throw new InvalidOperationException("AzureUniqueId not found in user profile");
-    }
-
-    private async Task<bool> IsAuthorized(
-        AuthorizationHandlerContext context,
-        ApplicationRoleRequirement roleRequirement,
-        List<ApplicationRole> userRoles)
-    {
         var userHasRequiredRole = userRoles.Any(roleRequirement.Roles.Contains);
 
         // TODO: Implement check for classification and project phase
@@ -86,8 +65,8 @@ public class ApplicationRoleAuthorizationHandler(
             throw new ModifyRevisionException($"Cannot modify a revision. Project.Id={project.Id}");
         }
 
-        var azureUniqueId = GetAzureUniqueId(context);
-        var userMembershipRole = GetUserMembershipRole(project, azureUniqueId);
+        var userId = context.User.GetAzureUniqueId()!.Value;
+        var userMembershipRole = project.ProjectMembers.FirstOrDefault(pm => pm.UserId == userId)?.Role;
 
         List<ApplicationRole> requiredRolesForEdit = [ApplicationRole.Admin, ApplicationRole.User];
         List<ApplicationRole> requiredRolesForView = [ApplicationRole.Admin, ApplicationRole.User, ApplicationRole.ReadOnly];
@@ -98,12 +77,6 @@ public class ApplicationRoleAuthorizationHandler(
             ActionType.Read => userRoles.Any(requiredRolesForView.Contains) || userMembershipRole == ProjectMemberRole.Editor || userMembershipRole == ProjectMemberRole.Observer,
             _ => userHasRequiredRole
         };
-    }
-
-    private static ProjectMemberRole? GetUserMembershipRole(Project project, Guid azureUniqueId)
-    {
-        var projectMember = project.ProjectMembers.FirstOrDefault(pm => pm.UserId == azureUniqueId);
-        return projectMember?.Role;
     }
 
     private ActionType? GetActionTypeFromEndpoint()
@@ -142,28 +115,5 @@ public class ApplicationRoleAuthorizationHandler(
         var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 
         return await dbContext.Projects.Include(p => p.ProjectMembers).SingleAsync(p => p.Id == projectPk);
-    }
-
-    private void HandleUnauthorizedRequest(
-        AuthorizationHandlerContext context,
-        PathString? requestPath,
-        List<ApplicationRole> requiredAnyOfTheseRoles,
-        List<ApplicationRole> userRoles)
-    {
-        context.Fail();
-
-        logger.LogWarning(
-            "User '{Username}' attempted to access '{RequestPath}' but was not authorized - one of the following roles '{RequiredRoles}' is required , while user has the roles '{UserRoles}'",
-            context.User.Identity!.Name,
-            requestPath,
-            string.Join(", ", requiredAnyOfTheseRoles),
-            string.Join(", ", userRoles)
-        );
-    }
-
-    private void HandleUnauthenticatedRequest(AuthorizationHandlerContext context, PathString? requestPath)
-    {
-        logger.LogWarning("An unauthenticated user attempted to access '{RequestPath}'", requestPath);
-        context.Fail();
     }
 }

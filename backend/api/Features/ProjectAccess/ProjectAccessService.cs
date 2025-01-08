@@ -33,7 +33,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
 
     public async Task<AccessRightsDto> GetUserProjectAccess(Guid externalId)
     {
-        var userRoles = httpContextAccessor.HttpContext?.User.AssignedApplicationRoles();
+        var userRoles = httpContextAccessor.HttpContext?.User.DcdParseApplicationRoles();
 
         if (userRoles == null)
         {
