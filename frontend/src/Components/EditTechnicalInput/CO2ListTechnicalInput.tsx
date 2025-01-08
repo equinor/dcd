@@ -19,6 +19,13 @@ import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
+interface CO2Data {
+    profile: string
+    unit: string
+    set: React.Dispatch<React.SetStateAction<number | undefined>>
+    value: number | undefined
+}
+
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
@@ -42,7 +49,7 @@ const CO2ListTechnicalInput = () => {
 
     let cO2VentedRow = true
 
-    const getColumnDefs = (edit: boolean): ColDef[] => ([
+    const getColumnDefs = useCallback((edit: boolean): ColDef[] => ([
         {
             field: "profile",
             headerName: "CO2 emission",
@@ -63,7 +70,7 @@ const CO2ListTechnicalInput = () => {
             cellClass: edit ? "editableCell" : undefined,
             cellStyle: cellStyleRightAlign,
         },
-    ])
+    ]), [editMode])
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(getColumnDefs(editMode))
 
@@ -91,7 +98,7 @@ const CO2ListTechnicalInput = () => {
     }
 
     useEffect(() => {
-        const co2Data = [
+        const co2Data: CO2Data[] = [
             {
                 profile: "CO2 removed from the gas",
                 unit: "% of design gas rate",
@@ -136,13 +143,15 @@ const CO2ListTechnicalInput = () => {
             },
         ]
         setRowData(co2Data)
-    }, [cO2RemovedFromGas,
+    }, [
+        cO2RemovedFromGas,
         cO2EmissionsFromFuelGas,
         flaredGasPerProducedVolume,
         cO2EmissionsFromFlaredGas,
         cO2Vented,
         averageDevelopmentWellDrillingDays,
-        dailyEmissionsFromDrillingRig])
+        dailyEmissionsFromDrillingRig,
+    ])
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -160,17 +169,12 @@ const CO2ListTechnicalInput = () => {
 
     const doesExternalFilterPass = useCallback(
         (node: any): boolean => {
-            if (node.data) {
-                switch (cO2VentedRow) {
-                case true:
-                    return node.data.profile === "CO2 vented"
-                case false:
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
-                }
+            if (!node.data) { return true }
+
+            if (cO2VentedRow) {
+                return node.data.profile === "CO2 vented"
             }
-            return true
+            return node.data.profile !== "CO2 vented"
         },
         [cO2VentedRow],
     )
@@ -192,12 +196,6 @@ const CO2ListTechnicalInput = () => {
             return externalFilterChanged(true)
         }
         return externalFilterChanged(false)
-    }
-
-    const switchLabel = () => {
-        if (check) { return "CO2 re-injected" }
-
-        return "CO2 vented"
     }
 
     useEffect(() => {
@@ -245,7 +243,7 @@ const CO2ListTechnicalInput = () => {
                         }}
                         onClick={switchRow}
                         checked={check}
-                        label={switchLabel()}
+                        label={check ? "CO2 re-injected" : "CO2 vented"}
                     />
                 </Tooltip>
             </Grid>
