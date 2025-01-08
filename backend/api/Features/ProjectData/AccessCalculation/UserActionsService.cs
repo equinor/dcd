@@ -1,4 +1,5 @@
 using api.AppInfrastructure.Authorization;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
 using api.Features.ProjectData.Dtos;
 using api.Models;
@@ -50,18 +51,11 @@ public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
 
         return new UserActionsDto
         {
-            CanView = accesses.Contains(UserActions.View),
-            CanEditProjectData = accesses.Contains(UserActions.EditProjectData),
-            CanCreateRevision = accesses.Contains(UserActions.CreateRevision),
-            CanEditProjectMembers = accesses.Contains(UserActions.EditProjectMembers)
+            CanView = accesses.Contains(ActionType.Read),
+            CanEditProjectData = accesses.Contains(ActionType.Edit),
+            CanCreateRevision = accesses.Contains(ActionType.CreateRevision),
+            CanEditProjectMembers = accesses.Contains(ActionType.EditProjectMembers)
         };
     }
 }
 
-public static class UserActions
-{
-    public const string View = "View";
-    public const string CreateRevision = "CreateRevision";
-    public const string EditProjectData = "EditProjectData";
-    public const string EditProjectMembers = "EditProjectMembers";
-}

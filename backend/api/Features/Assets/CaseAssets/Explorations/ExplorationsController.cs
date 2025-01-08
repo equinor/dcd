@@ -1,4 +1,3 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
@@ -8,18 +7,12 @@ using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.TechnicalInput.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.Assets.CaseAssets.Explorations;
 
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/explorations")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
+[AuthorizeActionType(ActionType.Edit)]
 public class ExplorationsController(
     IExplorationService explorationService,
     IExplorationTimeSeriesService explorationTimeSeriesService)
