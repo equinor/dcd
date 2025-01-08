@@ -49,6 +49,7 @@ using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
+using api.Features.ProjectData.AccessCalculation;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
@@ -81,6 +82,7 @@ public static class DcdIocConfiguration
         services.AddScoped<GetProjectDataRepository>();
         services.AddScoped<CreateProjectService>();
         services.AddScoped<UpdateProjectService>();
+        services.AddScoped<UserActionsService>();
 
         services.AddScoped<CreateRevisionService>();
         services.AddScoped<CreateRevisionRepository>();
