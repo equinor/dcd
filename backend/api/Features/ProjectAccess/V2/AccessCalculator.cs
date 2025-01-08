@@ -51,7 +51,7 @@ public static class AccessCalculator
                 return true;
             }
 
-            if (projectClassification == ProjectClassification.Open)
+            if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
             {
                 return true;
             }
@@ -67,7 +67,7 @@ public static class AccessCalculator
             return false;
         }
 
-        return projectClassification == ProjectClassification.Open || userIsConnectedToProject;
+        return projectClassification is ProjectClassification.Open or ProjectClassification.Internal || userIsConnectedToProject;
     }
 
     private static bool CanEditProjectData(CurrentUser currentUser, ProjectClassification projectClassification, bool isRevision, bool userIsConnectedToProject)
@@ -89,7 +89,7 @@ public static class AccessCalculator
                 return true;
             }
 
-            if (projectClassification == ProjectClassification.Open)
+            if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
             {
                 return true;
             }
@@ -117,7 +117,7 @@ public static class AccessCalculator
                 return true;
             }
 
-            if (projectClassification == ProjectClassification.Open)
+            if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
             {
                 return true;
             }

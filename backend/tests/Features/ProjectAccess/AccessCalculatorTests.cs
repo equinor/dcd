@@ -35,10 +35,9 @@ public class AccessCalculatorTests
         };
 
         Assert.Contains(AccessActions.View, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: true));
+        Assert.Contains(AccessActions.View, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: false));
         Assert.Contains(AccessActions.View, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: true));
-
-        Assert.DoesNotContain(AccessActions.View, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: true, userIsConnectedToProject: false));
-        Assert.DoesNotContain(AccessActions.View, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
+        Assert.Contains(AccessActions.View, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
     }
 
     [Fact]
@@ -91,8 +90,7 @@ public class AccessCalculatorTests
         Assert.Contains(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: true));
 
         Assert.Contains(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: false, userIsConnectedToProject: false));
-
-        Assert.DoesNotContain(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
+        Assert.Contains(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
         Assert.DoesNotContain(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: false, userIsConnectedToProject: false));
         Assert.DoesNotContain(AccessActions.CreateRevision, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: false));
 
@@ -216,7 +214,7 @@ public class AccessCalculatorTests
         Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: true));
 
         Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Open, isRevision: false, userIsConnectedToProject: false));
-        Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
+        Assert.Contains(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Internal, isRevision: false, userIsConnectedToProject: false));
         Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Restricted, isRevision: false, userIsConnectedToProject: false));
         Assert.DoesNotContain(AccessActions.EditProjectData, AccessCalculator.CalculateAccess(currentUser, ProjectClassification.Confidential, isRevision: false, userIsConnectedToProject: false));
 
