@@ -28,6 +28,9 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
     public async Task<RevisionDataDto> GetRevisionData(Guid projectId, Guid revisionId)
     {
+        var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
+        var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(originalProjectId);
+
         var revisionDetails = await getProjectDataRepository.GetRevisionDetails(revisionId);
         var commonProjectAndRevisionData = await LoadCommonProjectAndRevisionData(revisionId);
 
@@ -40,6 +43,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
             DataType = "revision",
             UserActions = userActions,
             RevisionDetails = revisionDetails,
+            RevisionDetailsList = revisionDetailsList,
             CommonProjectAndRevisionData = commonProjectAndRevisionData
         };
     }

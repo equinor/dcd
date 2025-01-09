@@ -15,6 +15,14 @@ public class GetProjectDataRepository(DcdDbContext context)
         return await context.GetPrimaryKeyForProjectId(projectId);
     }
 
+    public async Task<Guid> GetOriginalProjectIdForRevision(Guid revisionId)
+    {
+        return await context.Projects
+            .Where(x => x.Id == revisionId)
+            .Select(x => x.OriginalProjectId!.Value)
+            .SingleAsync();
+    }
+
     public async Task<List<ProjectMemberDto>> GetProjectMembers(Guid projectId)
     {
         return await context.ProjectMembers

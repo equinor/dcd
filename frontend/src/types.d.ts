@@ -987,6 +987,7 @@ declare namespace Components {
             dataType: string;
             userActions: UserActionsDto;
             revisionDetails: RevisionDetailsDto;
+            revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
         export interface RevisionDetailsDto {
