@@ -11,6 +11,8 @@ import {
     ColDef,
     GridReadyEvent,
     ICellRendererParams,
+    CellClickedEvent,
+    CellDoubleClickedEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
@@ -91,107 +93,21 @@ const CaseTabTable = ({
         gridRef.current?.api?.redrawRows()
     }, [ongoingCalculation])
 
-    const gridRowData = useMemo(() => profilesToRowData(timeSeriesData, dg4Year, tableName, editMode), [timeSeriesData, editMode])
+    const gridRowData = useMemo(
+        () => {
+            if (!timeSeriesData?.length) { return [] }
+            return profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
+        },
+        [timeSeriesData, editMode, dg4Year, tableName, tableYears],
+    )
 
     useEffect(() => {
-        if (gridRef.current?.api) {
+        if (gridRef.current?.api && timeSeriesData?.length > 0) {
             gridRef.current.api.setGridOption("rowData", gridRowData)
         }
-    }, [gridRowData])
+    }, [gridRowData, timeSeriesData])
 
-    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!params.data || !editMode) {
-            return null
-        }
-
-        const isUnlocked = params.data.overrideProfile?.override
-
-        if (
-            !isUnlocked
-            && calculatedFields
-            && calculatedFields.includes(params.data.resourceName)
-            && ongoingCalculation) {
-            return <CircularProgress size={24} />
-        }
-
-        return (
-            <CenterGridIcons>
-                <ClickableLockIcon
-                    isProsp={isProsp}
-                    sharepointFileId={sharepointFileId}
-                    clickedElement={params}
-                    addEdit={addEdit}
-                />
-            </CenterGridIcons>
-        )
-    }
-
-    const generateTableYearColDefs = () => {
-        const columnPinned: any[] = [
-            {
-                field: "profileName",
-                headerName: tableName,
-                cellRenderer: (params: any) => (
-                    profileAndUnitInSameCell(params, profilesToRowData(timeSeriesData, dg4Year, tableName, editMode))
-                ),
-                width: 250,
-                editable: false,
-                pinned: "left",
-                aggFunc: () => totalRowName ?? "Total",
-            },
-            {
-                field: "unit",
-                headerName: "Unit",
-                hide: true,
-                width: 100,
-            },
-            {
-                field: "total",
-                flex: 2,
-                editable: false,
-                pinned: "right",
-                width: 100,
-                aggFunc: formatColumnSum,
-                cellStyle: { fontWeight: "bold", textAlign: "right" },
-            },
-            {
-                headerName: "",
-                width: 70,
-                field: "set",
-                pinned: "right",
-                aggFunc: "",
-                editable: false,
-                cellRenderer: lockIconRenderer,
-            },
-        ]
-
-        const yearDefs: any[] = []
-        for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
-            yearDefs.push({
-                field: index.toString(),
-                flex: 1,
-                editable: (params: any) => tableCellisEditable(params, editMode),
-                minWidth: 100,
-                aggFunc: formatColumnSum,
-                cellRenderer: ErrorCellRenderer,
-                cellRendererParams: (params: any) => ({
-                    value: params.value,
-                    errorMsg: !params.node.footer && validateInput(params, editMode),
-                }),
-                cellStyle: {
-                    padding: "0px",
-                    textAlign: "right",
-                },
-                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
-                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
-            })
-        }
-        return columnPinned.concat([...yearDefs])
-    }
-
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
-
-    const stageEdit = (tableData: any) => {
+    const stageEdit = useCallback((tableData: any) => {
         const rowValues = getValuesFromEntireRow(tableData)
         const existingProfile = tableData.profile ? structuredClone(tableData.profile) : {
             startYear: 0,
@@ -235,37 +151,157 @@ const CaseTabTable = ({
                 tableName,
             })
         }
-    }
+    }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName])
 
     const handleCellValueChange = useCallback((event: any) => {
+        console.log("[DEBUG] handleCellValueChange called", {
+            newValue: event.newValue,
+            oldValue: event.oldValue,
+            profileName: event.data?.profileName,
+            column: event.column?.getColId(),
+        })
         const rule = TABLE_VALIDATION_RULES[event.data.profileName]
         if (rule && (event.newValue < rule.min || event.newValue > rule.max)) {
             setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
             return
         }
 
+        const currentCell = gridRef.current?.api?.getFocusedCell()
+
         stageEdit(event.data)
+
+        if (currentCell) {
+            requestAnimationFrame(() => {
+                gridRef.current?.api?.setFocusedCell(currentCell.rowIndex, currentCell.column)
+            })
+        }
     }, [stageEdit])
 
-    const defaultColDef = useMemo(() => ({
-        sortable: true,
-        filter: true,
-        resizable: true,
-        editable: true,
-        onCellValueChanged: handleCellValueChange,
-        suppressHeaderMenuButton: true,
-        enableCellChangeFlash: editMode,
-    }), [timeSeriesData])
+    const defaultColDef = useMemo(() => {
+        console.log("[DEBUG] defaultColDef updated", { editMode })
+        return {
+            sortable: true,
+            filter: true,
+            resizable: true,
+            editable: true,
+            onCellValueChanged: handleCellValueChange,
+            suppressHeaderMenuButton: true,
+            enableCellChangeFlash: editMode,
+            suppressMovableColumns: true,
+            suppressNavigableTimestamp: true,
+        }
+    }, [editMode, handleCellValueChange])
+
+    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
+        if (!params.data || !editMode) {
+            return null
+        }
+
+        const isUnlocked = params.data.overrideProfile?.override
+
+        if (
+            !isUnlocked
+            && calculatedFields
+            && calculatedFields.includes(params.data.resourceName)
+            && ongoingCalculation) {
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <CenterGridIcons>
+                <ClickableLockIcon
+                    isProsp={isProsp}
+                    sharepointFileId={sharepointFileId}
+                    clickedElement={params}
+                    addEdit={addEdit}
+                />
+            </CenterGridIcons>
+        )
+    }
+
+    const generateTableYearColDefs = useCallback(() => {
+        const columnPinned: any[] = [
+            {
+                field: "profileName",
+                headerName: tableName,
+                cellRenderer: (params: any) => profileAndUnitInSameCell(params, gridRowData),
+                width: 250,
+                editable: false,
+                pinned: "left",
+                aggFunc: () => totalRowName ?? "Total",
+            },
+            {
+                field: "unit",
+                headerName: "Unit",
+                hide: true,
+                width: 100,
+            },
+            {
+                field: "total",
+                flex: 2,
+                editable: false,
+                pinned: "right",
+                width: 100,
+                aggFunc: formatColumnSum,
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
+            },
+            {
+                headerName: "",
+                width: 70,
+                field: "set",
+                pinned: "right",
+                aggFunc: "",
+                editable: false,
+                cellRenderer: lockIconRenderer,
+            },
+        ]
+
+        const yearDefs: any[] = []
+        for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
+            yearDefs.push({
+                field: index.toString(),
+                flex: 1,
+                editable: (params: any) => {
+                    const isEditable = tableCellisEditable(params, editMode)
+                    console.log("[DEBUG] cell editable check", {
+                        year: index,
+                        profileName: params.data?.profileName,
+                        isEditable,
+                        editMode,
+                        params,
+                    })
+                    return isEditable
+                },
+                minWidth: 100,
+                aggFunc: formatColumnSum,
+                cellRenderer: ErrorCellRenderer,
+                cellRendererParams: (params: any) => ({
+                    value: params.value,
+                    errorMsg: !params.node.footer && validateInput(params, editMode),
+                }),
+                cellStyle: {
+                    padding: "0px",
+                    textAlign: "right",
+                },
+                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
+            })
+        }
+        return columnPinned.concat([...yearDefs])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName])
+
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
 
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [tableYears, editMode, ongoingCalculation])
+    }, [generateTableYearColDefs])
 
     const onGridReady = useCallback((gridReadyEvent: GridReadyEvent) => {
-        const generateRowData = profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
-        gridReadyEvent.api.setGridOption("rowData", generateRowData)
-    }, [])
+        if (timeSeriesData?.length > 0) {
+            gridReadyEvent.api.setGridOption("rowData", gridRowData)
+        }
+    }, [gridRowData, timeSeriesData])
 
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
@@ -301,13 +337,51 @@ const CaseTabTable = ({
                     cellSelection
                     suppressMovableColumns
                     enableCharts
+                    onCellEditingStarted={(event) => {
+                        console.log("[DEBUG] cell editing started", {
+                            column: event.column?.getColId(),
+                            profileName: event.data?.profileName,
+                            editMode,
+                            value: event.value,
+                        })
+                    }}
+                    onCellEditingStopped={(event) => {
+                        console.log("[DEBUG] cell editing stopped", {
+                            column: event.column?.getColId(),
+                            profileName: event.data?.profileName,
+                            editMode,
+                            value: event.value,
+                            newValue: event.newValue,
+                        })
+                    }}
+                    singleClickEdit
+                    stopEditingWhenCellsLoseFocus
                     alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
                     grandTotalRow={includeFooter ? "bottom" : undefined}
                     getRowStyle={getCaseRowStyle}
                     suppressLastEmptyLineOnPaste
-                    stopEditingWhenCellsLoseFocus
                     onGridReady={onGridReady}
                     defaultExcelExportParams={defaultExcelExportParams}
+                    onCellClicked={(event: CellClickedEvent) => {
+                        console.log("[DEBUG] cell clicked", {
+                            column: event.column?.getColId(),
+                            profileName: event.data?.profileName,
+                            editMode,
+                            colDef: event.colDef,
+                            editing: event.column?.getColDef()?.editable,
+                            api: event.api.getEditingCells().length > 0,
+                        })
+                    }}
+                    onCellDoubleClicked={(event: CellDoubleClickedEvent) => {
+                        console.log("[DEBUG] cell double clicked", {
+                            column: event.column?.getColId(),
+                            profileName: event.data?.profileName,
+                            editMode,
+                            colDef: event.colDef,
+                            editing: event.column?.getColDef()?.editable,
+                            api: event.api.getEditingCells().length > 0,
+                        })
+                    }}
                 />
             </div>
         </div>
