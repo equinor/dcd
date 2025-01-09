@@ -6,7 +6,7 @@ using Fusion.Integration.Profile;
 
 namespace api.AppInfrastructure.Authorization.Extensions;
 
-public static class ClaimsExtensions
+public static class ClaimsPrincipalExtensions
 {
     public static HashSet<ApplicationRole> DcdParseApplicationRoles(this ClaimsPrincipal principal)
     {

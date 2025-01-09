@@ -1,35 +1,51 @@
 using api.AppInfrastructure.Authorization;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Models;
 
 namespace api.Features.ProjectData.AccessCalculation;
 
 public static class AccessCalculator
 {
-    public static List<string> CalculateAccess(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, bool isRevision, ProjectMemberRole? projectMemberRole)
+    public static HashSet<ActionType> CalculateAccess(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, bool isRevision, ProjectMemberRole? projectMemberRole)
     {
-        var actions = new HashSet<string>();
+        var actions = new HashSet<ActionType>();
 
         if (CanView(userRoles, projectClassification, projectMemberRole))
         {
-            actions.Add(UserActions.View);
+            actions.Add(ActionType.Read);
         }
 
         if (CanCreateRevision(userRoles, projectClassification, isRevision, projectMemberRole))
         {
-            actions.Add(UserActions.CreateRevision);
+            actions.Add(ActionType.CreateRevision);
         }
 
         if (CanEditProjectData(userRoles, projectClassification, isRevision, projectMemberRole))
         {
-            actions.Add(UserActions.EditProjectData);
+            actions.Add(ActionType.Edit);
         }
 
         if (CanEditProjectMembers(userRoles, projectClassification, isRevision, projectMemberRole))
         {
-            actions.Add(UserActions.EditProjectMembers);
+            actions.Add(ActionType.EditProjectMembers);
         }
 
-        return actions.ToList();
+        return actions;
+    }
+
+    private static bool CanView(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, ProjectMemberRole? projectMemberRole)
+    {
+        if (userRoles.Count == 0)
+        {
+            return false;
+        }
+
+        if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
+        {
+            return true;
+        }
+
+        return projectMemberRole != null;
     }
 
     private static bool CanCreateRevision(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, bool isRevision, ProjectMemberRole? projectMemberRole)
@@ -46,7 +62,7 @@ public static class AccessCalculator
 
         if (userRoles.Contains(ApplicationRole.User))
         {
-            if (projectMemberRole != null)
+            if (projectMemberRole == ProjectMemberRole.Editor)
             {
                 return true;
             }
@@ -58,16 +74,6 @@ public static class AccessCalculator
         }
 
         return false;
-    }
-
-    private static bool CanView(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, ProjectMemberRole? projectMemberRole)
-    {
-        if (userRoles.Count == 0)
-        {
-            return false;
-        }
-
-        return projectClassification is ProjectClassification.Open or ProjectClassification.Internal || projectMemberRole != null;
     }
 
     private static bool CanEditProjectData(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, bool isRevision, ProjectMemberRole? projectMemberRole)
@@ -84,7 +90,7 @@ public static class AccessCalculator
 
         if (userRoles.Contains(ApplicationRole.User))
         {
-            if (projectMemberRole != null)
+            if (projectMemberRole == ProjectMemberRole.Editor)
             {
                 return true;
             }
@@ -112,7 +118,7 @@ public static class AccessCalculator
 
         if (userRoles.Contains(ApplicationRole.User))
         {
-            if (projectMemberRole != null)
+            if (projectMemberRole == ProjectMemberRole.Editor)
             {
                 return true;
             }

@@ -1,17 +1,13 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.Images.Get;
 
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class GetImageController(GetImageService getImageService) : ControllerBase
 {
     [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
-    [ActionType(ActionType.Read)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [AuthorizeActionType(ActionType.Read)]
     [DisableLazyLoading]
     public async Task<List<ImageDto>> GetCaseImages(Guid projectId, Guid caseId)
     {
@@ -19,8 +15,7 @@ public class GetImageController(GetImageService getImageService) : ControllerBas
     }
 
     [HttpGet("projects/{projectId:guid}/images")]
-    [ActionType(ActionType.Read)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [AuthorizeActionType(ActionType.Read)]
     [DisableLazyLoading]
     public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
     {

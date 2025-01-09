@@ -1,23 +1,15 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.CaseProfiles;
 
 [ApiController]
 [Route("/projects/{projectId}/cases/{caseId}")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Read)]
+[AuthorizeActionType(ActionType.Read)]
 public class CaseGeneratedProfileController(
     ICo2IntensityProfileService generateCo2IntensityProfile,
     ICo2IntensityTotalService generateCo2IntensityTotal,

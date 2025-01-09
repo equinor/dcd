@@ -182,7 +182,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const toScheduleValue = (date: string | number | boolean | null | undefined) => {
-        const paramString = String(date)
+        const paramString = `${String(date)}Z`
         const dateString = dateFromString(paramString)
         if (isDefaultDate(dateString)) {
             return undefined
