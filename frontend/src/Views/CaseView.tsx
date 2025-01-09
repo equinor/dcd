@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Grid from "@mui/material/Grid"
+import Grid2 from "@mui/material/Grid2"
 import styled from "styled-components"
 import CaseDrillingScheduleTab from "@/Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
 import CaseProductionProfilesTab from "@/Components/Case/Tabs/CaseProductionProfilesTab"
@@ -16,7 +16,7 @@ import useEditCase from "@/Hooks/useEditCase"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
-const Wrapper = styled(Grid)`
+const Wrapper = styled(Grid2)`
     padding: 0 16px;
 `
 const CaseView = () => {
@@ -64,7 +64,7 @@ const CaseView = () => {
     }, [caseId, caseEdits])
 
     return (
-        <Wrapper item xs={12}>
+        <Wrapper size={{ xs: 12 }}>
             <div role="tabpanel" hidden={activeTabCase !== 0}>
                 <CaseDescriptionTab addEdit={addEdit} />
             </div>

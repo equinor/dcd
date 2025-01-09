@@ -48,6 +48,10 @@ export default createGlobalStyle`
             background-color: transparent;
         }
     }
+    
+    .container-padding {
+        padding-bottom: 20px;
+    }
 
     .ag-theme-alpine-fusion .ag-row-odd {
         background-color: var(--ag-background-color);

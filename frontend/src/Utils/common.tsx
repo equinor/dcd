@@ -426,6 +426,9 @@ export const defaultAxesData = [
                 },
             ],
         },
+        label: {
+            formatter: (label: any) => Math.floor(Number(label.value)),
+        },
     },
     {
         type: "number",
