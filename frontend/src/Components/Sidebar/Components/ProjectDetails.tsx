@@ -34,7 +34,7 @@ const CenterIcon = styled.div`
 
 const ProjectDetails: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, setShowEditHistory, showEditHistory } = useAppContext()
     const { setActiveTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
@@ -60,7 +60,12 @@ const ProjectDetails: React.FC = () => {
             <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
                 <Grid item xs={12} container>
                     <Header>
-                        <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
+                        <ProjectTitle
+                            variant="overline"
+                            onClick={handleTitleClick}
+                        >
+                            {sidebarOpen ? currentContext?.title : "Project"}
+                        </ProjectTitle>
                     </Header>
                 </Grid>
 
