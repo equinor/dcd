@@ -60,6 +60,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const [revisions, setRevisions] = useState<Revision[]>([])
 
     useEffect(() => {
+        console.log(revisionAndProjectData)
         if (dataType === "project") {
             const formattedRevisions = revisionDetailsList.map(({ revisionId, revisionName, revisionDate }: Components.Schemas.RevisionDetailsDto) => ({
                 revisionId,

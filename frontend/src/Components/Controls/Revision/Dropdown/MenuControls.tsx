@@ -9,11 +9,11 @@ import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useRevisions } from "@/Hooks/useRevision"
 
 interface MenuControlsContainerProps {
-    hasRevisions: boolean
+    $hasRevisions: boolean
 }
 
 const MenuControlsContainer = styled.div<MenuControlsContainerProps>`
-    ${({ hasRevisions }) => hasRevisions && `
+    ${({ $hasRevisions }) => $hasRevisions && `
         margin-top: 10px;
         border-top: 1px solid #dfd0d0;
     `}
@@ -55,7 +55,7 @@ const MenuControls: React.FC<MenuControlsProps> = ({
     }
 
     return (
-        <MenuControlsContainer hasRevisions={hasRevisions}>
+        <MenuControlsContainer $hasRevisions={hasRevisions}>
             <StyledMenuItem
                 onClick={() => setIsCreateRevisionModalOpen(true)}
                 disabled={isEditDisabled}
