@@ -13,7 +13,7 @@ public class UpdateRevisionController(GetProjectDataService getProjectDataServic
     [DisableLazyLoading]
     public async Task<RevisionDataDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
     {
-        await updateRevisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
+        await updateRevisionService.UpdateRevision(revisionId, updateRevisionDto);
 
         return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }
