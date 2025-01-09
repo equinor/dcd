@@ -19,7 +19,7 @@ import { useProjectContext } from "@/Context/ProjectContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useAppContext } from "@/Context/AppContext"
 import { formatDateAndTime } from "@/Utils/common"
-import RevisionsDropMenu from "./Revision/Dropdown/RevisionsDropMenu"
+import RevisionsControl from "./Revision/RevisionsControl"
 import FullPageLoading from "../fullPageLoading"
 import { useFeatureContext } from "@/Context/FeatureContext"
 import ProjectTabs from "./TabNavigators/ProjectTabs"
@@ -158,7 +158,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                                     </Button>
                                 </Tooltip>
                                 {isMenuOpen && (
-                                    <RevisionsDropMenu
+                                    <RevisionsControl
                                         isMenuOpen={isMenuOpen}
                                         setIsMenuOpen={setIsMenuOpen}
                                         menuAnchorEl={revisionMenuAnchorEl}

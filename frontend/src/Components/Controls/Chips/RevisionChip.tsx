@@ -50,7 +50,7 @@ const RevisionChip = () => {
     const revisionName = revisionApiData?.revisionDetails.revisionName
 
     const revisionNameDisplay = () => (
-        <Tooltip title={`View details for ${revisionName}`}>
+        <Tooltip title={`View properties for ${revisionName}`}>
             <StyledTypography onClick={() => setIsMenuOpen(true)} color="primary">
                 {truncateText(revisionName ?? "", 25)}
             </StyledTypography>

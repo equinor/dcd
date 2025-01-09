@@ -9,11 +9,12 @@ import { useRevisions } from "@/Hooks/useRevision"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import MenuControls from "./MenuControls"
 
-type RevisionsDropMenuProps = {
+interface RevisionsDropMenuProps {
     isMenuOpen: boolean
     setIsMenuOpen: (isOpen: boolean) => void
     menuAnchorEl: HTMLElement | null
     isCaseMenu: boolean
+    onOpenRevisionDetails: () => void
 }
 
 interface Revision {
@@ -48,7 +49,7 @@ const MenuItemContent = styled.div`
 `
 
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
-    isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu,
+    isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu, onOpenRevisionDetails,
 }) => {
     const { navigateToRevision, disableCurrentRevision } = useRevisions()
 
@@ -60,7 +61,6 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const [revisions, setRevisions] = useState<Revision[]>([])
 
     useEffect(() => {
-        console.log(revisionAndProjectData)
         if (dataType === "project") {
             const formattedRevisions = revisionDetailsList.map(({ revisionId, revisionName, revisionDate }: Components.Schemas.RevisionDetailsDto) => ({
                 revisionId,
@@ -105,6 +105,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 isCaseMenu={isCaseMenu}
                 setIsMenuOpen={setIsMenuOpen}
                 hasRevisions={revisions.length > 0}
+                onOpenRevisionDetails={onOpenRevisionDetails}
             />
         </Menu>
     )
