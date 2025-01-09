@@ -1,18 +1,14 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Stea.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.Stea;
 
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class SteaController(SteaService steaService) : ControllerBase
 {
     [HttpPost("stea/{projectId:guid}")]
-    [ActionType(ActionType.Read)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [AuthorizeActionType(ActionType.Read)]
     [DisableLazyLoading]
     public async Task<FileResult> ExportSteaToExcel(Guid projectId)
     {
@@ -21,8 +17,7 @@ public class SteaController(SteaService steaService) : ControllerBase
     }
 
     [HttpGet("stea/{projectId:guid}")]
-    [ActionType(ActionType.Read)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    [AuthorizeActionType(ActionType.Read)]
     [DisableLazyLoading]
     public async Task<SteaProjectDto> GetInputToStea(Guid projectId)
     {

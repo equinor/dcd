@@ -1,4 +1,3 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
@@ -6,18 +5,12 @@ using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.Assets.CaseAssets.Transports;
 
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/transports")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
+[AuthorizeActionType(ActionType.Edit)]
 public class TransportsController(
     ITransportService transportService,
     ITransportTimeSeriesService transportTimeSeriesService) : ControllerBase

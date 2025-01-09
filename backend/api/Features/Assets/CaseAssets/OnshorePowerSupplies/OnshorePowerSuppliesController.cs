@@ -1,6 +1,3 @@
-
-
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
@@ -8,16 +5,12 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
+
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/onshorePowerSupplys")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
+[AuthorizeActionType(ActionType.Edit)]
 public class OnshorePowerSuppliesController(
     IOnshorePowerSupplyService onshorePowerSupplyService,
     IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService) : ControllerBase

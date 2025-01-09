@@ -1,7 +1,6 @@
 using System.Globalization;
 
 using api.AppInfrastructure;
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
 using api.Features.BackgroundServices.ProjectMaster;
 using api.ModelMapping.AutoMapperProfiles;

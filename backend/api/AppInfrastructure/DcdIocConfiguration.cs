@@ -156,8 +156,7 @@ public static class DcdIocConfiguration
 
         /* Auth */
         services.AddScoped<CurrentUser>();
-        services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
-        services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
+        services.AddScoped<IAuthorizationHandler, DcdAuthorizationHandler>();
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
         /* Prosp / Excel import */
