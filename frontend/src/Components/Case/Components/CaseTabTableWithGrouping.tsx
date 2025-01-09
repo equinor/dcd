@@ -17,7 +17,7 @@ import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { useAppContext } from "@/Context/AppContext"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
-import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
+import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
 import { gridRefArrayToAlignedGrid } from "@/Components/AgGrid/AgGridHelperFunctions"
 
 interface Props {

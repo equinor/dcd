@@ -29,8 +29,8 @@ import {
 import { useAppContext } from "@/Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
-import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import ErrorCellRenderer from "./ErrorCellRenderer"
+import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
+import ErrorCellRenderer from "./CellRenderers/ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import {
     ITimeSeriesTableDataOverrideWithSet,

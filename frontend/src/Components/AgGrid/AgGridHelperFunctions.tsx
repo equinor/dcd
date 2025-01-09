@@ -1,5 +1,5 @@
 import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
-import { isExplorationWell } from "@/Utils/common"
+import { generateProfile, isExplorationWell } from "@/Utils/common"
 
 interface IAssetWell {
     assetId: string
@@ -200,3 +200,24 @@ export const profilesToRowData = (
 
     return tableRows
 }
+
+export const getExistingProfile = (tableData: any, resourceId: string) => (tableData.profile ? structuredClone(tableData.profile) : {
+    startYear: 0,
+    values: [],
+    id: resourceId,
+})
+
+export const generateNewProfile = (rowValues: any[], existingProfile: any, dg4Year: number, tableData: any) => {
+    if (rowValues.length === 0) {
+        const emptyProfile = structuredClone(existingProfile)
+        emptyProfile.values = []
+        return emptyProfile
+    }
+
+    const firstYear = rowValues[0].year
+    const lastYear = rowValues[rowValues.length - 1].year
+    const startYear = firstYear - dg4Year
+    return generateProfile(rowValues, tableData.profile, startYear, firstYear, lastYear)
+}
+
+export const getProfileDataFromTimeSeriesData = (timeSeriesData: ITimeSeriesTableData[], profileName: string) => timeSeriesData.find((v) => v.profileName === profileName)
