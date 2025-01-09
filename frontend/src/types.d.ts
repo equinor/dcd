@@ -968,6 +968,7 @@ declare namespace Components {
         export interface ProjectDataDto {
             projectId: string; // uuid
             dataType: string;
+            userActions: UserActionsDto;
             projectMembers: ProjectMemberDto[];
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
@@ -984,7 +985,9 @@ declare namespace Components {
             projectId: string; // uuid
             revisionId: string; // uuid
             dataType: string;
+            userActions: UserActionsDto;
             revisionDetails: RevisionDetailsDto;
+            revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
         export interface RevisionDetailsDto {
@@ -1622,6 +1625,12 @@ declare namespace Components {
         }
         export interface UrlDto {
             url?: string | null;
+        }
+        export interface UserActionsDto {
+            canView: boolean;
+            canCreateRevision: boolean;
+            canEditProjectData: boolean;
+            canEditProjectMembers: boolean;
         }
         export interface WaterInjectorCostProfileDto {
             id: string; // uuid

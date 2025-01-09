@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Grid } from "@mui/material"
 import {
     Tooltip,
@@ -38,6 +38,17 @@ const ProjectDetails: React.FC = () => {
     const { setActiveTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
+    const [titleClicks, setTitleClicks] = useState(0)
+
+    const handleTitleClick = () => {
+        const newClickCount = titleClicks + 1
+        setTitleClicks(newClickCount)
+
+        if (newClickCount === 5) {
+            setShowEditHistory(!showEditHistory)
+            setTitleClicks(0)
+        }
+    }
 
     const handleNavigateToProjectTab = (index: number) => {
         setActiveTabProject(index)

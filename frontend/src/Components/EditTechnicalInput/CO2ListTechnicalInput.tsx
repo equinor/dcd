@@ -1,7 +1,10 @@
-import {
-    ChangeEvent,
+import React, {
+    useEffect,
+    useState,
+    useRef,
+    useMemo,
     useCallback,
-    useEffect, useMemo, useRef, useState,
+    ChangeEvent,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -16,6 +19,13 @@ import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
+interface CO2Data {
+    profile: string
+    unit: string
+    set: React.Dispatch<React.SetStateAction<number | undefined>>
+    value: number | undefined
+}
+
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
@@ -24,26 +34,22 @@ const CO2ListTechnicalInput = () => {
     const revisionAndProjectData = useDataFetch()
 
     const [check, setCheck] = useState(false)
-    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(
-        revisionAndProjectData?.commonProjectAndRevisionData?.cO2RemovedFromGas ?? 0,
-    )
-    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.cO2EmissionFromFuelGas ?? 0)
-    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.flaredGasPerProducedVolume ?? 0)
-    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas ?? 0)
-    const [cO2Vented, setCO2Vented] = useState<number>(revisionAndProjectData?.commonProjectAndRevisionData.cO2Vented ?? 0)
-    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(
-        revisionAndProjectData?.commonProjectAndRevisionData.averageDevelopmentDrillingDays ?? 0,
-    )
-    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(
-        revisionAndProjectData?.commonProjectAndRevisionData.dailyEmissionFromDrillingRig ?? 0,
-    )
+
+    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>()
+    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>()
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>()
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>()
+    const [cO2Vented, setCO2Vented] = useState<number>()
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>()
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>()
+
     const [rowData, setRowData] = useState([{}])
     const { editMode } = useAppContext()
     const { addProjectEdit } = useEditProject()
 
     let cO2VentedRow = true
 
-    const getColumnDefs = (edit: boolean): ColDef[] => ([
+    const getColumnDefs = useCallback((edit: boolean): ColDef[] => ([
         {
             field: "profile",
             headerName: "CO2 emission",
@@ -64,7 +70,7 @@ const CO2ListTechnicalInput = () => {
             cellClass: edit ? "editableCell" : undefined,
             cellStyle: cellStyleRightAlign,
         },
-    ])
+    ]), [editMode])
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(getColumnDefs(editMode))
 
@@ -72,50 +78,80 @@ const CO2ListTechnicalInput = () => {
         setColumnDefs(getColumnDefs(editMode))
     }, [editMode])
 
-    const co2Data = [
-        {
-            profile: "CO2 removed from the gas",
-            unit: "% of design gas rate",
-            set: setCO2RemovedFromGas,
-            value: Math.round(cO2RemovedFromGas * 100) / 100,
-        },
-        {
-            profile: "CO2-emissions from fuel gas",
-            unit: "kg CO2/Sm³",
-            set: setCO2EmissionsFromFuelGas,
-            value: Math.round(cO2EmissionsFromFuelGas * 100) / 100,
-        },
-        {
-            profile: "Flared gas per produced volume",
-            unit: "Sm³/Sm³",
-            set: setFlaredGasPerProducedVolume,
-            value: Math.round(flaredGasPerProducedVolume * 100) / 100,
-        },
-        {
-            profile: "CO2-emissions from flared gas",
-            unit: "kg CO2/Sm³",
-            set: setCO2EmissionsFromFlaredGas,
-            value: Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
-        },
-        {
-            profile: "CO2 vented",
-            unit: "kg CO2/Sm³",
-            set: setCO2Vented,
-            value: Math.round((cO2Vented ?? 0) * 100) / 100,
-        },
-        {
-            profile: "Average development well drilling days",
-            unit: "days/wells",
-            set: setAverageDevelopmentWellDrillingDays,
-            value: Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
-        },
-        {
-            profile: "Daily emissions from drilling rig",
-            unit: "tonnes CO2/day",
-            set: setDailyEmissionsFromDrillingRig,
-            value: Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
-        },
-    ]
+    useEffect(() => {
+        if (revisionAndProjectData) {
+            setCO2RemovedFromGas(revisionAndProjectData.commonProjectAndRevisionData.cO2RemovedFromGas)
+            setCO2EmissionsFromFuelGas(revisionAndProjectData.commonProjectAndRevisionData.cO2EmissionFromFuelGas)
+            setFlaredGasPerProducedVolume(revisionAndProjectData.commonProjectAndRevisionData.flaredGasPerProducedVolume)
+            setCO2EmissionsFromFlaredGas(revisionAndProjectData.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas)
+            setCO2Vented(revisionAndProjectData.commonProjectAndRevisionData.cO2Vented)
+            setAverageDevelopmentWellDrillingDays(revisionAndProjectData.commonProjectAndRevisionData.averageDevelopmentDrillingDays)
+            setDailyEmissionsFromDrillingRig(revisionAndProjectData.commonProjectAndRevisionData.dailyEmissionFromDrillingRig)
+        }
+    }, [revisionAndProjectData])
+
+    const toRowValue = (value: number | undefined) => {
+        if (value !== undefined) {
+            return Math.round(value * 100) / 100
+        }
+        return value
+    }
+
+    useEffect(() => {
+        const co2Data: CO2Data[] = [
+            {
+                profile: "CO2 removed from the gas",
+                unit: "% of design gas rate",
+                set: setCO2RemovedFromGas,
+                value: toRowValue(cO2RemovedFromGas),
+            },
+            {
+                profile: "CO2-emissions from fuel gas",
+                unit: "kg CO2/Sm³",
+                set: setCO2EmissionsFromFuelGas,
+                value: toRowValue(cO2EmissionsFromFuelGas),
+            },
+            {
+                profile: "Flared gas per produced volume",
+                unit: "Sm³/Sm³",
+                set: setFlaredGasPerProducedVolume,
+                value: toRowValue(flaredGasPerProducedVolume),
+            },
+            {
+                profile: "CO2-emissions from flared gas",
+                unit: "kg CO2/Sm³",
+                set: setCO2EmissionsFromFlaredGas,
+                value: toRowValue(cO2EmissionsFromFlaredGas),
+            },
+            {
+                profile: "CO2 vented",
+                unit: "kg CO2/Sm³",
+                set: setCO2Vented,
+                value: toRowValue(cO2Vented),
+            },
+            {
+                profile: "Average development well drilling days",
+                unit: "days/wells",
+                set: setAverageDevelopmentWellDrillingDays,
+                value: toRowValue(averageDevelopmentWellDrillingDays),
+            },
+            {
+                profile: "Daily emissions from drilling rig",
+                unit: "tonnes CO2/day",
+                set: setDailyEmissionsFromDrillingRig,
+                value: toRowValue(dailyEmissionsFromDrillingRig),
+            },
+        ]
+        setRowData(co2Data)
+    }, [
+        cO2RemovedFromGas,
+        cO2EmissionsFromFuelGas,
+        flaredGasPerProducedVolume,
+        cO2EmissionsFromFlaredGas,
+        cO2Vented,
+        averageDevelopmentWellDrillingDays,
+        dailyEmissionsFromDrillingRig,
+    ])
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -133,17 +169,12 @@ const CO2ListTechnicalInput = () => {
 
     const doesExternalFilterPass = useCallback(
         (node: any): boolean => {
-            if (node.data) {
-                switch (cO2VentedRow) {
-                case true:
-                    return node.data.profile === "CO2 vented"
-                case false:
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
-                }
+            if (!node.data) { return true }
+
+            if (cO2VentedRow) {
+                return node.data.profile === "CO2 vented"
             }
-            return true
+            return node.data.profile !== "CO2 vented"
         },
         [cO2VentedRow],
     )
@@ -153,8 +184,8 @@ const CO2ListTechnicalInput = () => {
     }
 
     const defaultColDef = useMemo(() => ({
-        sortable: true,
-        filter: true,
+        sortable: false,
+        filter: false,
         resizable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
@@ -167,16 +198,17 @@ const CO2ListTechnicalInput = () => {
         return externalFilterChanged(false)
     }
 
-    const switchLabel = () => {
-        if (check) { return "CO2 re-injected" }
-
-        return "CO2 vented"
-    }
-
     useEffect(() => {
-        setRowData(co2Data)
-
-        if (revisionAndProjectData && editMode) {
+        if (revisionAndProjectData
+            && editMode
+            && cO2RemovedFromGas !== undefined
+            && cO2EmissionsFromFlaredGas !== undefined
+            && cO2EmissionsFromFuelGas !== undefined
+            && cO2Vented !== undefined
+            && averageDevelopmentWellDrillingDays !== undefined
+            && dailyEmissionsFromDrillingRig !== undefined
+            && flaredGasPerProducedVolume !== undefined
+        ) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
@@ -195,7 +227,6 @@ const CO2ListTechnicalInput = () => {
         cO2Vented,
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
-        editMode,
         isRevision,
     ])
 
@@ -212,7 +243,7 @@ const CO2ListTechnicalInput = () => {
                         }}
                         onClick={switchRow}
                         checked={check}
-                        label={switchLabel()}
+                        label={check ? "CO2 re-injected" : "CO2 vented"}
                     />
                 </Tooltip>
             </Grid>

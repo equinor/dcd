@@ -1,22 +1,15 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/drainage-strategies")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
+[AuthorizeActionType(ActionType.Edit)]
 public class DrainageStrategiesController(
     IDrainageStrategyService drainageStrategyService,
     IDrainageStrategyTimeSeriesService drainageStrategyTimeSeriesService)

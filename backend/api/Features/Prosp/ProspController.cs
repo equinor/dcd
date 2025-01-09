@@ -1,4 +1,3 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.ProjectData;
 using api.Features.ProjectData.Dtos;
@@ -17,8 +16,7 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     : ControllerBase
 {
     [HttpPost("prosp/sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    [ActionType(ActionType.Edit)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [AuthorizeActionType(ActionType.Edit)]
     public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] UrlDto urlDto)
     {
         if (string.IsNullOrWhiteSpace(urlDto.Url))
@@ -44,8 +42,7 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     }
 
     [HttpPost("prosp/{projectId:guid}/sharepoint")]
-    [ActionType(ActionType.Edit)]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [AuthorizeActionType(ActionType.Edit)]
     [DisableRequestSizeLimit]
     public async Task<ActionResult<ProjectDataDto>> ImportFilesFromSharepointAsync(Guid projectId, [FromBody] SharePointImportDto[] dtos)
     {

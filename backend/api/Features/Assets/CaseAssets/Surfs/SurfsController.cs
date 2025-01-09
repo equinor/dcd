@@ -1,4 +1,3 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
@@ -6,18 +5,12 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.Assets.CaseAssets.Surfs;
 
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/surfs")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
+[AuthorizeActionType(ActionType.Edit)]
 public class SurfsController(
     ISurfService surfService,
     ISurfTimeSeriesService surfTimeSeriesService) : ControllerBase

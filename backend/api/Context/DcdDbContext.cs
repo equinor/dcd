@@ -188,7 +188,9 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         {
             var entity = (IDateTrackedEntity)entry.Entity;
             entity.CreatedUtc = utcNow;
+            entity.UpdatedUtc = utcNow;
             entity.CreatedBy = currentUser?.Username ?? "SYSTEM";
+            entity.UpdatedBy = currentUser?.Username ?? "SYSTEM";
         }
 
         var updatedEntries = ChangeTracker.Entries()

@@ -1,4 +1,3 @@
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
@@ -6,18 +5,12 @@ using api.Features.CaseProfiles.Dtos.Update;
 using api.Features.CaseProfiles.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.CaseProfiles;
 
 [ApiController]
 [Route("projects/{projectId}/cases")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
+[AuthorizeActionType(ActionType.Edit)]
 public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : ControllerBase
 {
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]

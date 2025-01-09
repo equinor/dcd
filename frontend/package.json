@@ -109,7 +109,8 @@
         "typescript": "^5.4.5"
     },
     "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "^4.28.1"
+        "@rollup/rollup-linux-x64-gnu": "^4.28.1",
+        "@rollup/rollup-win32-x64-msvc": "^4.28.1"
     },
     "manifest": {
         "name": "Concept App",
@@ -119,15 +120,15 @@
         "type": "standalone",
         "owners": [
             "eriei@equinor.com",
-            "ahmab@equinor.com",
             "toaus@equinor.com",
-            "dboh@equinor.com"
+            "frak@equinor.com",
+            "agars@equinor.com"
         ],
         "admins": [
             "eriei@equinor.com",
-            "ahmab@equinor.com",
             "toaus@equinor.com",
-            "dboh@equinor.com"
+            "frak@equinor.com",
+            "agars@equinor.com"
         ]
     }
 }
