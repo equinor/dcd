@@ -1,5 +1,5 @@
 import { AgCharts } from "ag-charts-react"
-import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
+import { insertIf, separateProfileObjects } from "./AgGridHelperFunctions"
 
 interface Props {
     data: any

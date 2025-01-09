@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Grid } from "@mui/material"
 import {
     Tooltip,
@@ -34,11 +34,22 @@ const CenterIcon = styled.div`
 
 const ProjectDetails: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, setShowEditHistory, showEditHistory } = useAppContext()
     const { caseId } = useParams()
     const { setActiveTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
+    const [titleClicks, setTitleClicks] = useState(0)
+
+    const handleTitleClick = () => {
+        const newClickCount = titleClicks + 1
+        setTitleClicks(newClickCount)
+
+        if (newClickCount === 5) {
+            setShowEditHistory(!showEditHistory)
+            setTitleClicks(0)
+        }
+    }
 
     const handleNavigateToProjectTab = (index: number) => {
         setActiveTabProject(index)
@@ -51,7 +62,12 @@ const ProjectDetails: React.FC = () => {
                 <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
                     <Grid item xs={12} container>
                         <Header>
-                            <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
+                            <ProjectTitle
+                                variant="overline"
+                                onClick={handleTitleClick}
+                            >
+                                {sidebarOpen ? currentContext?.title : "Project"}
+                            </ProjectTitle>
                         </Header>
                     </Grid>
 

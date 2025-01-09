@@ -2,25 +2,25 @@ import {
     useMemo,
     useState,
     useEffect,
-    useRef,
     useCallback,
 } from "react"
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { CellKeyDownEvent, ColDef } from "@ag-grid-community/core"
+import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import isEqual from "lodash/isEqual"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     isExplorationWell,
     cellStyleRightAlign,
-    extractTableTimeSeriesValues,
+    getValuesFromEntireRow,
     generateProfile,
+    roundToFourDecimalsAndJoin,
     numberValueParser,
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
+import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 
 interface Props {
     dg4Year: number
@@ -33,16 +33,6 @@ interface Props {
     resourceId: string
     isExplorationTable: boolean
     addEdit: any
-}
-
-interface IAssetWell {
-    assetId: string
-    wellId: string
-    drillingSchedule: {
-        id?: string
-        startYear: number
-        values: number[]
-    }
 }
 
 const CaseDrillingScheduleTabTable = ({
@@ -65,9 +55,7 @@ const CaseDrillingScheduleTabTable = ({
     const [rowData, setRowData] = useState<any[]>([])
     const [stagedEdit, setStagedEdit] = useState<any>()
 
-    const firstTriggerRef = useRef<boolean>(true)
-    const timerRef = useRef<NodeJS.Timeout | null>(null)
-
+    /*
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
         const newAssetWells: (IAssetWell)[] = assetWell.map((w) => ({
             assetId: w.explorationId || w.wellProjectId,
@@ -138,6 +126,7 @@ const CaseDrillingScheduleTabTable = ({
             setRowData(tableWells.filter((tw) => tw !== undefined))
         }
     }
+    */
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -175,7 +164,7 @@ const CaseDrillingScheduleTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const stageEdit = (params: any) => {
-        const tableTimeSeriesValues = extractTableTimeSeriesValues(params.data)
+        const rowValues = getValuesFromEntireRow(params.data)
         const existingProfile = params.data.drillingSchedule ? structuredClone(params.data.drillingSchedule) : {
             startYear: 0,
             values: [],
@@ -183,17 +172,17 @@ const CaseDrillingScheduleTabTable = ({
         }
 
         let newProfile
-        if (tableTimeSeriesValues.length > 0) {
-            const firstYear = tableTimeSeriesValues[0].year
-            const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
+        if (rowValues.length > 0) {
+            const firstYear = rowValues[0].year
+            const lastYear = rowValues[rowValues.length - 1].year
             const startYear = firstYear - dg4Year
-            newProfile = generateProfile(tableTimeSeriesValues, params.data.drillingSchedule, startYear, firstYear, lastYear)
+            newProfile = generateProfile(rowValues, params.data.drillingSchedule, startYear, firstYear, lastYear)
         } else {
             newProfile = structuredClone(existingProfile)
             newProfile.values = []
         }
 
-        if (!caseId || projectId === "" || !newProfile) { return }
+        if (!caseId || !newProfile) { return }
 
         const rowWells = params.data.assetWells
         if (rowWells) {
@@ -207,8 +196,8 @@ const CaseDrillingScheduleTabTable = ({
 
                 if (!isEqual(newProfile.values, existingProfile.values)) {
                     setStagedEdit({
-                        newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
-                        previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                        newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
+                        previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
                         inputLabel: params.data.name,
                         projectId,
                         resourceName,
@@ -228,19 +217,8 @@ const CaseDrillingScheduleTabTable = ({
     }
 
     const handleCellValueChange = useCallback((params: any) => {
-        if (firstTriggerRef.current) {
-            firstTriggerRef.current = false
-            stageEdit(params)
-
-            if (timerRef.current) {
-                clearTimeout(timerRef.current)
-            }
-
-            timerRef.current = setTimeout(() => {
-                firstTriggerRef.current = true
-            }, 0) // TODO: Can this be removed?
-        }
-    }, [stageEdit, dg4Year, projectId, isExplorationTable])
+        stageEdit(params)
+    }, [stageEdit])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -252,23 +230,9 @@ const CaseDrillingScheduleTabTable = ({
         suppressHeaderMenuButton: true,
     }), [assetWells])
 
-    const gridRefArrayToAlignedGrid = () => {
-        if (alignedGridsRef && alignedGridsRef.length > 0) {
-            const refArray: any[] = []
-            alignedGridsRef.forEach((agr: any) => {
-                if (agr && agr.current) {
-                    refArray.push(agr.current)
-                }
-            })
-            if (refArray.length > 0) {
-                return refArray
-            }
-        }
-        return undefined
-    }
-
     useEffect(() => {
-        wellsToRowData()
+        const newRowData = wellsToRowData(assetWells, wells, dg4Year, editMode, resourceId, isExplorationTable)
+        setRowData(newRowData)
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
     }, [assetWells, tableYears, wells, editMode])
@@ -278,52 +242,6 @@ const CaseDrillingScheduleTabTable = ({
             addEdit(stagedEdit)
         }
     }, [stagedEdit])
-
-    const clearCellsInRange = (start: number, end: number, columns: any[]) => {
-        for (let rowIndex = start; rowIndex <= end; rowIndex += 1) {
-            const rowNode = gridRef.current?.api.getRowNode(rowIndex)
-            if (rowNode) {
-                columns.forEach((col: any) => {
-                    rowNode.setDataValue(col, "")
-                })
-            }
-        }
-    }
-
-    const handleDeleteOnRange = useCallback(
-        (e: CellKeyDownEvent) => {
-            const keyboardEvent = e.event as unknown as KeyboardEvent
-            const { key } = keyboardEvent
-
-            const cellRanges = e.api.getCellRanges()
-
-            if (key === "Backspace") {
-                if (!cellRanges || cellRanges.length === 0) {
-                    return
-                }
-
-                cellRanges.forEach((range: any) => {
-                    const { startRow, endRow, columns } = range
-                    const startRowIndex = Math.min(startRow.rowIndex, endRow.rowIndex)
-                    const endRowIndex = Math.max(startRow.rowIndex, endRow.rowIndex)
-
-                    const colIds = columns.map((col: any) => col.getColId())
-
-                    if (startRowIndex === endRowIndex && colIds.length === 1) {
-                        const colId = colIds[0]
-                        const cellValue = e.api.getValue(colId, e.node)
-                        if (cellValue !== undefined && cellValue !== null && typeof cellValue === "string") {
-                            const newValue = cellValue.slice(0, -1)
-                            e.node.setDataValue(colId, newValue)
-                        }
-                    } else {
-                        clearCellsInRange(startRowIndex, endRowIndex, colIds)
-                    }
-                })
-            }
-        },
-        [clearCellsInRange],
-    )
 
     return (
         <div className={styles.root}>
@@ -350,10 +268,9 @@ const CaseDrillingScheduleTabTable = ({
                     cellSelection
                     suppressMovableColumns
                     enableCharts
-                    alignedGrids={gridRefArrayToAlignedGrid()}
+                    alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
                     stopEditingWhenCellsLoseFocus
                     suppressLastEmptyLineOnPaste
-                    onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                 />
             </div>
         </div>

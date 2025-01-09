@@ -351,26 +351,27 @@ export const formatColumnSum = (params: { values: any[] }) => {
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
 }
 
-export const extractTableTimeSeriesValues = (data: any) => {
-    const tableTimeSeriesValues: { year: number, value: number }[] = []
+export const getValuesFromEntireRow = (tableData: any) => {
+    const valuePerYear: { year: number, value: number }[] = []
 
-    Object.keys(data).forEach((prop) => {
-        const value = data[prop]
+    Object.keys(tableData).forEach((columnName) => {
+        const cellValue = tableData[columnName]
 
         if (
-            isInteger(prop)
-            && value !== ""
-            && value !== null
-            && !Number.isNaN(Number(value.toString().replace(/,/g, ".")))
+            isInteger(columnName)
+            && cellValue !== ""
+            && cellValue !== null
+            && !Number.isNaN(Number(cellValue.toString().replace(/,/g, ".")))
         ) {
-            tableTimeSeriesValues.push({
-                year: parseInt(prop, 10),
-                value: Number(value.toString().replace(/,/g, ".")),
+            valuePerYear.push({
+                year: parseInt(columnName, 10),
+                value: Number(cellValue.toString().replace(/,/g, ".")),
             })
         }
     })
 
-    return tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+    console.log(valuePerYear.sort((a, b) => a.year - b.year))
+    return valuePerYear.sort((a, b) => a.year - b.year)
 }
 
 export const generateProfile = (
@@ -432,3 +433,5 @@ export const defaultAxesData = [
         position: "left",
     },
 ]
+
+export const roundToFourDecimalsAndJoin = (values: string[]): string => values.map((value) => Math.floor(Number(value) * 10000) / 10000).join(" - ")
