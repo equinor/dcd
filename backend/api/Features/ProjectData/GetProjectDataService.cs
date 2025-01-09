@@ -13,7 +13,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(projectPk);
         var commonProjectAndRevisionData = await LoadCommonProjectAndRevisionData(projectPk);
 
-        var userActions = await userActionsService.CalculateActions(projectPk);
+        var userActions = await userActionsService.CalculateActionsForProject(projectPk);
 
         return new ProjectDataDto
         {
@@ -31,7 +31,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         var revisionDetails = await getProjectDataRepository.GetRevisionDetails(revisionId);
         var commonProjectAndRevisionData = await LoadCommonProjectAndRevisionData(revisionId);
 
-        var userActions = await userActionsService.CalculateActions(projectId, revisionId);
+        var userActions = await userActionsService.CalculateActionsForRevision(revisionId);
 
         return new RevisionDataDto
         {

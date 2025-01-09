@@ -10,7 +10,7 @@ namespace api.Features.ProjectData.AccessCalculation;
 
 public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
 {
-    public async Task<UserActionsDto> CalculateActions(Guid projectPk)
+    public async Task<UserActionsDto> CalculateActionsForProject(Guid projectPk)
     {
         var projectClassification = await context.Projects
             .Where(x => !x.IsRevision)
@@ -24,30 +24,33 @@ public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 
-        return Calculate(projectClassification, projectMemberRole);
+        return Calculate(projectClassification, projectMemberRole, false);
     }
 
-    public async Task<UserActionsDto> CalculateActions(Guid projectId, Guid revisionId)
+    public async Task<UserActionsDto> CalculateActionsForRevision(Guid primaryKeyValue)
     {
-        var projectClassification = await context.Projects
+        var revisionData = await context.Projects
             .Where(x => x.IsRevision)
-            .Where(x => x.OriginalProjectId == projectId)
-            .Where(x => x.Id == revisionId)
-            .Select(x => x.Classification)
+            .Where(x => x.Id == primaryKeyValue)
+            .Select(x => new
+            {
+                x.Classification,
+                OriginalProjectId = x.OriginalProjectId!.Value
+            })
             .SingleAsync();
 
         var projectMemberRole = await context.ProjectMembers
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Id == revisionData.OriginalProjectId)
             .Where(x => x.UserId == currentUser.UserId)
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 
-        return Calculate(projectClassification, projectMemberRole);
+        return Calculate(revisionData.Classification, projectMemberRole, true);
     }
 
-    private UserActionsDto Calculate(ProjectClassification projectClassification, ProjectMemberRole? projectMemberRole)
+    private UserActionsDto Calculate(ProjectClassification projectClassification, ProjectMemberRole? projectMemberRole, bool isRevision)
     {
-        var accesses = AccessCalculator.CalculateAccess(currentUser.ApplicationRoles, projectClassification, false, projectMemberRole);
+        var accesses = AccessCalculator.CalculateAccess(currentUser.ApplicationRoles, projectClassification, isRevision, projectMemberRole);
 
         return new UserActionsDto
         {
