@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react"
-import { Typography, Icon } from "@equinor/eds-core-react"
-import { add, exit_to_app } from "@equinor/eds-icons"
+import { Typography } from "@equinor/eds-core-react"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import styled from "styled-components"
 
-import { useProjectContext } from "@/Context/ProjectContext"
 import { formatFullDate, truncateText } from "@/Utils/common"
-import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useRevisions } from "@/Hooks/useRevision"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import MenuControls from "./MenuControls"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean
@@ -28,15 +26,20 @@ const StyledMenuContainer = styled.div`
     width: 300px;
     flex-direction: column;
     max-height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
     display: flex;
+`
+
+const StyledMenuItem = styled(MenuItem)`
+    && {
+        padding: 12px 16px;
+    }
 `
 
 const MenuItemContent = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 5px 0;
 
     && p {
         width: 100%;
@@ -44,20 +47,10 @@ const MenuItemContent = styled.div`
     }
 `
 
-const MenuControls = styled.div`
-    margin-top: 10px;
-    border-top: 1px solid #dfd0d0;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-`
-
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu,
 }) => {
-    const { isRevision, setIsCreateRevisionModalOpen } = useProjectContext()
-    const { navigateToRevision, exitRevisionView, disableCurrentRevision } = useRevisions()
-    const { isEditDisabled } = useEditDisabled()
+    const { navigateToRevision, disableCurrentRevision } = useRevisions()
 
     const revisionAndProjectData = useDataFetch()
     const { dataType, revisionDetailsList } = revisionAndProjectData?.dataType === "project"
@@ -82,13 +75,6 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
         await navigateToRevision(revisionId)
     }
 
-    const handleExitRevision = () => {
-        if (isCaseMenu) {
-            setIsMenuOpen(false)
-        }
-        exitRevisionView()
-    }
-
     return (
         <Menu
             id="revisions-menu"
@@ -98,7 +84,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
         >
             <StyledMenuContainer>
                 {revisions.map(({ revisionId, name, date }) => (
-                    <MenuItem
+                    <StyledMenuItem
                         key={revisionId}
                         onClick={() => handleRevisionNavigation(revisionId)}
                         disabled={disableCurrentRevision(revisionId)}
@@ -111,30 +97,14 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                                 {formatFullDate(date)}
                             </Typography>
                         </MenuItemContent>
-                    </MenuItem>
-
+                    </StyledMenuItem>
                 ))}
             </StyledMenuContainer>
-            <MenuControls>
-                <MenuItem
-                    onClick={() => setIsCreateRevisionModalOpen(true)}
-                    disabled={isEditDisabled}
-                >
-                    <Icon data={add} size={16} />
-                    <Typography>
-                        Create new revision
-                    </Typography>
-                </MenuItem>
-                <MenuItem
-                    onClick={handleExitRevision}
-                    disabled={!isRevision}
-                >
-                    <Icon data={exit_to_app} size={16} />
-                    <Typography>
-                        Exit revision view
-                    </Typography>
-                </MenuItem>
-            </MenuControls>
+            <MenuControls
+                isCaseMenu={isCaseMenu}
+                setIsMenuOpen={setIsMenuOpen}
+                hasRevisions={revisions.length > 0}
+            />
         </Menu>
     )
 }
