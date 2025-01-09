@@ -54,9 +54,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const { navigateToRevision, disableCurrentRevision } = useRevisions()
 
     const revisionAndProjectData = useDataFetch()
-    const { revisionDetailsList } = revisionAndProjectData
-        ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
-        : { revisionDetailsList: [] }
+    const revisionDetailsList = revisionAndProjectData?.revisionDetailsList ?? []
 
     const [revisions, setRevisions] = useState<Revision[]>([])
 
