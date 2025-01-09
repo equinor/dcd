@@ -11,16 +11,15 @@ public static class DcdCorsPolicyConfiguration
             options.AddPolicy(AccessControlPolicyName,
                 builder =>
                 {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .WithExposedHeaders("Location")
-                        .WithOrigins(
-                            "http://localhost:3000",
-                            "https://fusion.equinor.com",
-                            "https://fusion.ci.fusion-dev.net",
-                            "https://fusion.fqa.fusion-dev.net"
-                        ).SetIsOriginAllowedToAllowWildcardSubdomains();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.WithExposedHeaders("Location");
+                    builder.WithOrigins(
+                        "http://localhost:3000",
+                        "https://fusion.equinor.com",
+                        "https://fusion.ci.fusion-dev.net",
+                        "https://fusion.fqa.fusion-dev.net"
+                    ).SetIsOriginAllowedToAllowWildcardSubdomains();
                 });
         });
     }
