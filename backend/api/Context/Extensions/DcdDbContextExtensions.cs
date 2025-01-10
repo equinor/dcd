@@ -58,20 +58,4 @@ public static class DcdDbContextExtensions
 
         throw new NotFoundInDbException($"Project id {projectId} not found in db for project or revision.");
     }
-
-    public static async Task<Guid> GetPrimaryKeyForRevisionId(this DcdDbContext context, Guid projectId, Guid revisionId)
-    {
-        var matchingPrimaryKeysForRevisions = await context.Projects
-            .Where(x => x.IsRevision)
-            .Where(x => x.Id == revisionId)
-            .Select(x => x.Id)
-            .ToListAsync();
-
-        if (matchingPrimaryKeysForRevisions.Count == 1)
-        {
-            return matchingPrimaryKeysForRevisions.Single();
-        }
-
-        throw new NotFoundInDbException($"Could not find revision with id {revisionId}.");
-    }
 }
