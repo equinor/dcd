@@ -2,10 +2,12 @@ import React, { ChangeEventHandler, useState } from "react"
 import { Input, InputWrapper } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import {
-    formatDate,
     dateFromString,
     isDefaultDate,
     toMonthDate,
+    formatDate,
+} from "@/Utils/DateUtils"
+import {
     isWithinRange,
 } from "../../Utils/common"
 import { ResourcePropertyKey } from "../../Models/Interfaces"

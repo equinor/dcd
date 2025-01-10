@@ -16,7 +16,7 @@ import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import Modal from "./Modal"
 
-import { defaultDate, isDefaultDate, toMonthDate } from "@/Utils/common"
+import { defaultDate, isDefaultDate, toMonthDate } from "@/Utils/DateUtils"
 import { GetCaseService } from "@/Services/CaseService"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
