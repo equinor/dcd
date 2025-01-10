@@ -3,7 +3,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation } from "react-router-dom"
-import { __ProjectService, GetProjectService } from "../Services/ProjectService"
+import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
@@ -77,19 +77,19 @@ const ProjectSelector = (): JSX.Element => {
 
             try {
                 const projectService = await GetProjectService()
-                const projectExists = await projectService.projectExists(currentContext.externalId);
+                const results = await projectService.projectExists(currentContext.externalId)
 
-                setProjectExists(projectExists.projectExists)
+                setProjectExists(results.projectExists)
 
-                if (projectExists.projectExists) {
+                if (results.projectExists) {
                     setIsLoading(false)
                     return
                 }
 
-                if (!projectExists.projectExists && projectExists.canCreateProject) {
+                if (!results.projectExists && results.canCreateProject) {
                     setSnackBarMessage("No project found for this search. Creating new.")
                     setIsCreating(true)
-                    const projectService = await GetProjectService()
+
                     await projectService.createProject(currentContext.externalId)
                     setProjectExists(true)
                     setIsCreating(false)
@@ -97,12 +97,10 @@ const ProjectSelector = (): JSX.Element => {
                     return
                 }
 
-                if (!projectExists.projectExists) {
+                if (!results.projectExists) {
                     setSnackBarMessage("You do not have access to view this project")
                     setIsLoading(false)
-                    return
                 }
-
             } catch (error) {
                 setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
                 setIsLoading(false)

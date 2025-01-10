@@ -15,7 +15,7 @@ export class __ProjectService extends __BaseService {
     }
 
     public async projectExists(projectId: string): Promise<Components.Schemas.ProjectExistsDto> {
-        return await this.get(`exists?contextId=${projectId}`)
+        return this.get(`exists?contextId=${projectId}`)
     }
 
     public async createProject(contextId: string): Promise<Components.Schemas.ProjectDataDto> {
