@@ -17,11 +17,8 @@ export const dateStringToDateUtc = (dateString: string): Date => {
     return new Date(dateString)
 }
 
-export const getYearFromDateString = (dateString: string | undefined): number => {
-    if (!dateString) { return 2030 }
-    // eslint-disable-next-line no-restricted-syntax
-    return new Date(dateString).getFullYear()
-}
+// eslint-disable-next-line no-restricted-syntax
+export const getYearFromDateString = (dateString: string): number => new Date(dateString).getFullYear()
 
 export const sortUtcDateStrings = (a: string, b: string): number => {
     const dateA = dateStringToDateUtc(a)
@@ -52,9 +49,7 @@ export const isDefaultDateString = (dateString?: string | null): boolean => {
     return false
 }
 
-export const dateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
-
-export const defaultDate = () => new Date("0001-01-01")
+export const defaultDate = () => dateStringToDateUtc("0001-01-01T00:00:00+00:00")
 
 export function formatDate(isoDateString: string): string {
     if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {

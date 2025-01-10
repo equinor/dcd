@@ -9,7 +9,6 @@ import {
     formatDate,
     isDefaultDate,
     toMonthDate,
-    dateFromString,
     dateStringToDateUtc,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
@@ -183,8 +182,8 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const toScheduleValue = (date: string | number | boolean | null | undefined) => {
-        const paramString = `${String(date)}Z`
-        const dateString = dateFromString(paramString)
+        const paramString = String(date)
+        const dateString = dateStringToDateUtc(paramString)
         if (isDefaultDate(dateString)) {
             return undefined
         }
