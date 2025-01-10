@@ -17,7 +17,7 @@ import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-//import NoAccessErrorView from "@/Views/NoAccessErrorView"
+// import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
@@ -31,10 +31,14 @@ const ControlsWrapper = styled.div`
     z-index: 3;
 `
 
+const ContainerReset = styled.div`
+    height: 100%;
+    display: flex;
+`
+
 const ContentWrapper = styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
 `
 
 const MainView = styled.div`
@@ -189,7 +193,7 @@ const Overview = () => {
     // }
 
     return (
-        <>
+        <ContainerReset>
             <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
                 {snackBarMessage}
             </Snackbar>
@@ -242,7 +246,7 @@ const Overview = () => {
                     <Outlet />
                 </MainView>
             </ContentWrapper>
-        </>
+        </ContainerReset>
     )
 }
 

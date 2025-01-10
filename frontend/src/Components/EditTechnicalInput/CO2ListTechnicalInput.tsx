@@ -12,7 +12,6 @@ import { Switch, Tooltip } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 
-import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import { cellStyleRightAlign } from "@/Utils/common"
 import useEditProject from "@/Hooks/useEditProject"
@@ -29,7 +28,6 @@ interface CO2Data {
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
-    const { isRevision } = useProjectContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()
 
@@ -180,7 +178,42 @@ const CO2ListTechnicalInput = () => {
     )
 
     const handleCellValueChange = (p: any) => {
-        p.data.set(Number(p.data.value.toString().replace(/,/g, ".")))
+        const newValue = Number(p.data.value.toString().replace(/,/g, "."))
+        p.data.set(newValue)
+
+        if (revisionAndProjectData && !Number.isNaN(newValue)) {
+            const newProject: Components.Schemas.UpdateProjectDto = {
+                ...revisionAndProjectData.commonProjectAndRevisionData,
+            }
+
+            switch (p.data.profile) {
+            case "CO2 removed from the gas":
+                newProject.cO2RemovedFromGas = newValue
+                break
+            case "CO2-emissions from fuel gas":
+                newProject.cO2EmissionFromFuelGas = newValue
+                break
+            case "Flared gas per produced volume":
+                newProject.flaredGasPerProducedVolume = newValue
+                break
+            case "CO2-emissions from flared gas":
+                newProject.cO2EmissionsFromFlaredGas = newValue
+                break
+            case "CO2 vented":
+                newProject.cO2Vented = newValue
+                break
+            case "Average development well drilling days":
+                newProject.averageDevelopmentDrillingDays = newValue
+                break
+            case "Daily emissions from drilling rig":
+                newProject.dailyEmissionFromDrillingRig = newValue
+                break
+            default:
+                break
+            }
+
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
+        }
     }
 
     const defaultColDef = useMemo(() => ({
@@ -197,38 +230,6 @@ const CO2ListTechnicalInput = () => {
         }
         return externalFilterChanged(false)
     }
-
-    useEffect(() => {
-        if (revisionAndProjectData
-            && editMode
-            && cO2RemovedFromGas !== undefined
-            && cO2EmissionsFromFlaredGas !== undefined
-            && cO2EmissionsFromFuelGas !== undefined
-            && cO2Vented !== undefined
-            && averageDevelopmentWellDrillingDays !== undefined
-            && dailyEmissionsFromDrillingRig !== undefined
-            && flaredGasPerProducedVolume !== undefined
-        ) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
-            newProject.cO2RemovedFromGas = cO2RemovedFromGas
-            newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
-            newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume
-            newProject.cO2EmissionsFromFlaredGas = cO2EmissionsFromFlaredGas
-            newProject.cO2Vented = cO2Vented
-            newProject.averageDevelopmentDrillingDays = averageDevelopmentWellDrillingDays
-            newProject.dailyEmissionFromDrillingRig = dailyEmissionsFromDrillingRig
-            addProjectEdit(revisionAndProjectData.projectId, newProject)
-        }
-    }, [
-        cO2RemovedFromGas,
-        cO2EmissionsFromFlaredGas,
-        flaredGasPerProducedVolume,
-        cO2EmissionsFromFuelGas,
-        cO2Vented,
-        averageDevelopmentWellDrillingDays,
-        dailyEmissionsFromDrillingRig,
-        isRevision,
-    ])
 
     if (!revisionAndProjectData) { return null }
 

@@ -36,6 +36,7 @@ export const useProjectEdits = () => {
         projectId: string,
         projectEdit: Components.Schemas.UpdateProjectDto,
     ) => {
+        console.log("projectEdit", projectEdit)
         setIsSaving(true)
         mutation.mutate({ projectId, body: projectEdit })
     }

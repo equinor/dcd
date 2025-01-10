@@ -79,7 +79,7 @@ const EditTechnicalInputModal = () => {
 
                 createWellDtos: wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === ""),
                 updateWellDtos: wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== ""),
-                deleteWellDtos: deletedWells.map((id) => ({ id }))
+                deleteWellDtos: deletedWells.map((id) => ({ id })),
             }
 
             // refactor to use react-query?

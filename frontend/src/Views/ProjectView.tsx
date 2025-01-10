@@ -14,7 +14,7 @@ import { projectTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
 const Wrapper = styled(Grid2)`
-    padding: 0 16px;
+    padding: 0 16px 16px;
 `
 
 const ProjectView = () => {
