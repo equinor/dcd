@@ -33,7 +33,8 @@ const ControlsWrapper = styled.div`
 
 const ContentWrapper = styled.div`
     display: flex;
-    padding-bottom: 20px;
+    width: 100%;
+    height: 100%;
 `
 
 const MainView = styled.div`
@@ -219,7 +220,7 @@ const Overview = () => {
                 )}
             <ContentWrapper>
                 <Sidebar />
-                <MainView className="ag-theme-alpine-fusion ">
+                <MainView className="ag-theme-alpine-fusion container-padding">
                     {revisionAndProjectData && (
                         <Modal
                             isOpen={projectClassificationWarning}

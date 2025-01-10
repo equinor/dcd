@@ -174,6 +174,27 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         },
     }
 
+    const axesConfig = {
+        type: "category",
+        position: "bottom",
+        title: { text: "Year" },
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
+        label: {
+            formatter: (label: any) => Math.floor(Number(label.value)),
+        },
+    }
+
     const barChartOptions: object = {
         data: chartData,
         title: {
@@ -214,23 +235,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         axes: [
-            {
-                type: "category",
-                position: "bottom",
-                title: { text: "Year" },
-                gridLine: {
-                    style: [
-                        {
-                            stroke: "rgba(0, 0, 0, 0.2)",
-                            lineDash: [3, 2],
-                        },
-                        {
-                            stroke: "rgba(0, 0, 0, 0.2)",
-                            lineDash: [3, 2],
-                        },
-                    ],
-                },
-            },
+            axesConfig,
             {
                 type: "number",
                 position: "left",

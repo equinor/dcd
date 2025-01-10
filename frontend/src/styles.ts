@@ -48,6 +48,10 @@ export default createGlobalStyle`
             background-color: transparent;
         }
     }
+    
+    .container-padding {
+        padding-bottom: 20px;
+    }
 
     .ag-theme-alpine-fusion .ag-row-odd {
         background-color: var(--ag-background-color);
@@ -71,11 +75,11 @@ export default createGlobalStyle`
     }
 
     .ag-center-cols-viewport {
-    min-height: 42px !important;
+        min-height: 42px !important;
     }
 
     .highlighted {
-    border: 2px solid rgb(0, 79, 85);
-    transition: background-color 0.5s ease;
+        border: 2px solid rgb(0, 79, 85);
+        transition: background-color 0.5s ease;
     }
 `

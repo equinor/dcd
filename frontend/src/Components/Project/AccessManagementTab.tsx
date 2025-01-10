@@ -102,7 +102,7 @@ const AccessManagementTab = () => {
                     On this page the project admins can add and remove members to the project.
                     If the project classification is set to “restricted” or “confidential”,
                     only the project members and the application admin can access it.
-                    {/* Project members from Org chart with “PMT” are automatically added as project viewers after DG0. External users can also be added here. */}
+                    Project members from Org chart with “PMT” are automatically added as project viewers after DG0. External users can also be added here.
                 </Typography>
             </Grid>
             <EditorViewerContainer $isSmallScreen={isSmallScreen}>

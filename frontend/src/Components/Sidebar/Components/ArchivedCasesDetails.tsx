@@ -15,7 +15,7 @@ import ArchivedCasesList from "./ArchivedCasesList"
 
 const ClickableTitle = styled.div`
     cursor: pointer;
-    `
+`
 
 const ArchivedCasesDetails: React.FC = () => {
     const [expandList, setExpandList] = useState(false)
@@ -26,7 +26,9 @@ const ArchivedCasesDetails: React.FC = () => {
             <Grid item container alignItems="start" justifyContent={sidebarOpen ? "space-between" : "start"}>
                 <Header>
                     {sidebarOpen ? (
-                        <Typography variant="overline">Archived Cases</Typography>
+                        <ClickableTitle onClick={() => setExpandList(!expandList)}>
+                            <Typography variant="overline">Archived Cases</Typography>
+                        </ClickableTitle>
                     ) : (
                         <Tooltip placement="right" title="Expand Archived Cases">
                             <ClickableTitle onClick={() => setExpandList(!expandList)}>
