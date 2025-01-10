@@ -24,7 +24,7 @@ public class ProjectIntegrityService(DcdDbContext context) : IProjectIntegritySe
 
         if (entity.ProjectId != projectIdFromUrl)
         {
-            throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.");
+            throw new ProjectIntegrityException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.");
         }
     }
 }
