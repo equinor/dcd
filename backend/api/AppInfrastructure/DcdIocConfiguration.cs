@@ -56,6 +56,7 @@ using api.Features.ProjectMembers.Get;
 using api.Features.ProjectMembers.Get.Sync;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
+using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
@@ -83,6 +84,7 @@ public static class DcdIocConfiguration
         services.AddScoped<CreateProjectService>();
         services.AddScoped<UpdateProjectService>();
         services.AddScoped<UserActionsService>();
+        services.AddScoped<ProjectExistsService>();
 
         services.AddScoped<CreateRevisionService>();
         services.AddScoped<CreateRevisionRepository>();
