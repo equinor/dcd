@@ -1,14 +1,13 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation } from "react-router-dom"
 import { __ProjectService, GetProjectService } from "../Services/ProjectService"
-import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { isAxiosError } from "@/Utils/common"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import CreateCaseModal from "./Modal/CreateCaseModal"
 
 // Banner components
 const SelectProjectBanner = () => (
@@ -36,11 +35,9 @@ const NoAccessBanner = () => (
 )
 
 const ProjectSelector = (): JSX.Element => {
-    const {
-        setIsRevision,
-        setAccessRights,
-        accessRights,
-    } = useProjectContext()
+    const [projectExists, setProjectExists] = useState<boolean>(false)
+
+    const { setIsRevision } = useProjectContext()
     const {
         setIsCreating,
         setIsLoading,
@@ -51,47 +48,6 @@ const ProjectSelector = (): JSX.Element => {
     const { navigateToProject } = useAppNavigation()
     const location = useLocation()
     const previousContextRef = useRef(currentContext?.id)
-
-    const handleError = (message: string, error: unknown) => {
-        console.error(message, error)
-        setSnackBarMessage(message)
-        setIsLoading(false)
-    }
-
-    const createNewProject = async (externalId: string) => {
-        setIsCreating(true)
-        setSnackBarMessage("No project found for this search. Creating new.")
-
-        const projectService = await GetProjectService()
-        const createdProject = await projectService.createProject(externalId)
-        return projectService.getAccess(createdProject.commonProjectAndRevisionData.fusionProjectId)
-    }
-
-    const getProjectAccess = async (externalId: string) => {
-        try {
-
-            const projectService = await GetProjectService()
-            return await projectService.getAccess(externalId)
-        } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return createNewProject(externalId)
-            }
-            console.error("Error fetching project access:", error)
-            setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
-            setIsLoading(false)
-            return undefined
-        }
-    }
-
-    const fetchProjectData = async (externalId: string) => {
-
-        const projectService = await GetProjectService()
-        const fetchedProject = await projectService.getProject(externalId)
-        if (fetchedProject) {
-            setIsCreating(false)
-            setIsLoading(false)
-        }
-    }
 
     // Update revision state based on URL changes (including browser navigation)
     useEffect(() => {
@@ -107,12 +63,12 @@ const ProjectSelector = (): JSX.Element => {
         previousContextRef.current = currentContext.id
 
         if (isProjectChanged) {
+            setProjectExists(false)
             setIsRevision(false)
             navigateToProject(currentContext.id)
         }
     }, [currentContext])
 
-    // Initialize or update project data
     useEffect(() => {
         const initializeProject = async () => {
             if (!currentContext?.externalId) { return }
@@ -120,18 +76,37 @@ const ProjectSelector = (): JSX.Element => {
             setIsLoading(true)
 
             try {
-                const access = await getProjectAccess(currentContext.externalId)
-                setAccessRights(access)
+                const projectService = await GetProjectService()
+                const projectExists = await projectService.projectExists(currentContext.externalId);
 
-                if (!access?.canView) {
+                setProjectExists(projectExists.projectExists)
+
+                if (projectExists.projectExists) {
+                    setIsLoading(false)
+                    return
+                }
+
+                if (!projectExists.projectExists && projectExists.canCreateProject) {
+                    setSnackBarMessage("No project found for this search. Creating new.")
+                    setIsCreating(true)
+                    const projectService = await GetProjectService()
+                    await projectService.createProject(currentContext.externalId)
+                    setProjectExists(true)
+                    setIsCreating(false)
+                    setIsLoading(false)
+                    return
+                }
+
+                if (!projectExists.projectExists) {
                     setSnackBarMessage("You do not have access to view this project")
                     setIsLoading(false)
                     return
                 }
 
-                await fetchProjectData(currentContext.externalId)
             } catch (error) {
-                handleError("Error fetching or setting project in context", error)
+                setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
+                setIsLoading(false)
+                setIsCreating(false)
             }
         }
 
@@ -142,17 +117,17 @@ const ProjectSelector = (): JSX.Element => {
         return <SelectProjectBanner />
     }
 
-    if (accessRights?.canView) {
+    if (isLoading) {
+        return <LoadingBanner />
+    }
+
+    if (projectExists) {
         return (
             <>
                 <CreateCaseModal />
                 <Outlet />
             </>
         )
-    }
-
-    if (isLoading) {
-        return <LoadingBanner />
     }
 
     return <NoAccessBanner />

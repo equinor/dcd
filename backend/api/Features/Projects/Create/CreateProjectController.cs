@@ -3,6 +3,7 @@ using api.AppInfrastructure.ControllerAttributes;
 using api.Features.ProjectData;
 using api.Features.ProjectData.Dtos;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Projects.Create;
@@ -11,6 +12,7 @@ public class CreateProjectController(CreateProjectService createProjectService, 
 {
     [HttpPost("projects")]
     [DisableLazyLoading]
+    [Authorize]
     public async Task<ActionResult<ProjectDataDto>> CreateProject([FromQuery] Guid contextId)
     {
         if (!currentUser.ApplicationRoles.Contains(ApplicationRole.Admin) && !currentUser.ApplicationRoles.Contains(ApplicationRole.User))

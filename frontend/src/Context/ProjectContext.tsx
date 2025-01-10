@@ -12,8 +12,6 @@ import {
 interface ProjectContextType {
     activeTabProject: number | boolean;
     setActiveTabProject: Dispatch<SetStateAction<number | boolean>>
-    accessRights: Components.Schemas.AccessRightsDto | undefined;
-    setAccessRights: Dispatch<SetStateAction<Components.Schemas.AccessRightsDto | undefined>>
     projectId: string
     setProjectId: Dispatch<SetStateAction<string>>
     isRevision: boolean
@@ -26,14 +24,11 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [activeTabProject, setActiveTabProject] = useState<number | boolean>(0)
-    const [accessRights, setAccessRights] = useState<Components.Schemas.AccessRightsDto>()
     const [isCreateRevisionModalOpen, setIsCreateRevisionModalOpen] = useState<boolean>(false)
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
     const value = useMemo(() => ({
-        accessRights,
-        setAccessRights,
         activeTabProject,
         setActiveTabProject,
         projectId,
@@ -43,8 +38,6 @@ const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         isCreateRevisionModalOpen,
         setIsCreateRevisionModalOpen,
     }), [
-        accessRights,
-        setAccessRights,
         activeTabProject,
         setActiveTabProject,
         projectId,

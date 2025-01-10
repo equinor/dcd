@@ -1,13 +1,10 @@
-using api.AppInfrastructure.Authorization;
-using api.AppInfrastructure.Authorization.Extensions;
 using api.Context;
-using api.Context.Extensions;
 using api.Exceptions;
 using api.Models.Interfaces;
 
 namespace api.Features.ProjectAccess;
 
-public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor httpContextAccessor) : IProjectAccessService
+public class ProjectAccessService(DcdDbContext context) : IProjectAccessService
 {
     /// <summary>
     /// Checks whether the project with the specified project ID exists on the entity with the given entity ID.
@@ -29,29 +26,5 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
         {
             throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.");
         }
-    }
-
-    public async Task<AccessRightsDto> GetUserProjectAccess(Guid externalId)
-    {
-        var userRoles = httpContextAccessor.HttpContext?.User.DcdParseApplicationRoles();
-
-        if (userRoles == null)
-        {
-            return new AccessRightsDto
-            {
-                CanView = false
-            };
-        }
-
-        await context.GetPrimaryKeyForProjectId(externalId);
-
-        var isAdmin = userRoles.Contains(ApplicationRole.Admin);
-        var isUser = userRoles.Contains(ApplicationRole.User);
-        var isReadOnly = userRoles.Contains(ApplicationRole.ReadOnly);
-
-        return new AccessRightsDto
-        {
-            CanView = isAdmin || isUser || isReadOnly
-        };
     }
 }
