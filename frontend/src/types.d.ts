@@ -76,9 +76,7 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
         }
         export interface AccessRightsDto {
-            canEdit: boolean;
             canView: boolean;
-            isAdmin: boolean;
         }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid

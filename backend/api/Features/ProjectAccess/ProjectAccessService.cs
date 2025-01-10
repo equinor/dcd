@@ -39,9 +39,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
         {
             return new AccessRightsDto
             {
-                CanEdit = false,
-                CanView = false,
-                IsAdmin = false
+                CanView = false
             };
         }
 
@@ -53,9 +51,7 @@ public class ProjectAccessService(DcdDbContext context, IHttpContextAccessor htt
 
         return new AccessRightsDto
         {
-            CanEdit = isAdmin || isUser,
-            CanView = isAdmin || isUser || isReadOnly,
-            IsAdmin = isAdmin
+            CanView = isAdmin || isUser || isReadOnly
         };
     }
 }
