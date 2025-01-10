@@ -19,6 +19,7 @@ import { mergeTimeseriesList } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { dateStringToDateUtc, getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
@@ -141,24 +142,30 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
             const caseData = apiData?.case
-            SetTableYearsFromProfiles([
-                handleTotalExplorationCost(),
-                handleDrilling(),
-                handleOffshoreFacilitiesCost(),
-                apiData.cessationOffshoreFacilitiesCostOverride,
-                apiData.cessationOffshoreFacilitiesCost,
-                apiData.cessationOnshoreFacilitiesCostProfile,
-                apiData.totalFeasibilityAndConceptStudiesOverride,
-                apiData.totalFeasibilityAndConceptStudies,
-                apiData.totalFEEDStudiesOverride,
-                apiData.totalFEEDStudies,
-                apiData.totalOtherStudiesCostProfile,
-                apiData.historicCostCostProfile,
-                handleOffshoreOpexPlussWellIntervention(),
-                apiData.onshoreRelatedOPEXCostProfile,
-                apiData.additionalOPEXCostProfile,
-                apiData.onshorePowerSupplyCostProfile,
-            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            SetTableYearsFromProfiles(
+                [
+                    handleTotalExplorationCost(),
+                    handleDrilling(),
+                    handleOffshoreFacilitiesCost(),
+                    apiData.cessationOffshoreFacilitiesCostOverride,
+                    apiData.cessationOffshoreFacilitiesCost,
+                    apiData.cessationOnshoreFacilitiesCostProfile,
+                    apiData.totalFeasibilityAndConceptStudiesOverride,
+                    apiData.totalFeasibilityAndConceptStudies,
+                    apiData.totalFEEDStudiesOverride,
+                    apiData.totalFEEDStudies,
+                    apiData.totalOtherStudiesCostProfile,
+                    apiData.historicCostCostProfile,
+                    handleOffshoreOpexPlussWellIntervention(),
+                    apiData.onshoreRelatedOPEXCostProfile,
+                    apiData.additionalOPEXCostProfile,
+                    apiData.onshorePowerSupplyCostProfile,
+                ],
+                getYearFromDateString(caseData.dG4Date),
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
             setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase, apiData, revisionAndProjectData])
@@ -349,7 +356,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid item xs={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}
-                    dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
+                    dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableYears={tableYears}
                     includeFooter={false}
                 />

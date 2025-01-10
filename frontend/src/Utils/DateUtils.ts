@@ -1,3 +1,34 @@
+/**
+ * Converts a UTC date string to a UTC Date object.
+ * All dates stored in the database is in UTC. We need to make sure the Date objects we create are also in UTC.
+ * If we ever need to work with non-UTC dates, we should create a new function for that.
+ * @param dateString - The UTC date string to convert.
+ * @returns The Date object representing the UTC date.
+ */
+export const dateStringToDateUtc = (dateString: string): Date => {
+    // TODO: Make sure the string is a valid date string.
+
+    // Ensure the date string ends with "Z" or "+00:00" to create the Date object as UTC.
+    if (!dateString.endsWith("Z") && !dateString.endsWith("+00:00")) {
+        // eslint-disable-next-line no-restricted-syntax
+        return new Date(`${dateString}Z`)
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    return new Date(dateString)
+}
+
+export const getYearFromDateString = (dateString: string | undefined): number => {
+    if (!dateString) { return 2030 }
+    // eslint-disable-next-line no-restricted-syntax
+    return new Date(dateString).getFullYear()
+}
+
+export const sortUtcDateStrings = (a: string, b: string): number => {
+    const dateA = dateStringToDateUtc(a)
+    const dateB = dateStringToDateUtc(b)
+    return dateA.getTime() - dateB.getTime()
+}
+
 export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
@@ -29,7 +60,7 @@ export function formatDate(isoDateString: string): string {
     if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
         return "_"
     }
-    const date = new Date(isoDateString)
+    const date = dateStringToDateUtc(isoDateString)
     const options: Intl.DateTimeFormatOptions = {
         month: "long",
         year: "numeric",
@@ -39,7 +70,7 @@ export function formatDate(isoDateString: string): string {
 
 export const formatDateAndTime = (dateString: string | undefined | null) => {
     if (!dateString) { return "" }
-    const date = new Date(dateString)
+    const date = dateStringToDateUtc(dateString)
     const options: Intl.DateTimeFormatOptions = {
         day: "2-digit",
         month: "short",
@@ -55,7 +86,7 @@ export const formatDateAndTime = (dateString: string | undefined | null) => {
 
 export const formatFullDate = (dateString: string | undefined | null) => {
     if (!dateString) { return "" }
-    const date = new Date(dateString)
+    const date = dateStringToDateUtc(dateString)
     const options: Intl.DateTimeFormatOptions = {
         day: "2-digit",
         month: "short",

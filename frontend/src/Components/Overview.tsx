@@ -19,13 +19,14 @@ import { useAppContext } from "@/Context/AppContext"
 import { GetProjectService } from "@/Services/ProjectService"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-//import NoAccessErrorView from "@/Views/NoAccessErrorView"
+// import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -106,11 +107,11 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!projectData) { return }
 
-        const lastModified = new Date(projectData.commonProjectAndRevisionData.modifyTime)
-        const currentTime = new Date()
+        const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
+        const currentTime = new Date() // TODO: Check this
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)

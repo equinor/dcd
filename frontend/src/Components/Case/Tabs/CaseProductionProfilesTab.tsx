@@ -20,6 +20,7 @@ import { useCaseContext } from "@/Context/CaseContext"
 import { defaultAxesData } from "@/Utils/common"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId, revisionId } = useParams()
@@ -77,7 +78,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     apiData.deferredOilProduction,
                     apiData.deferredGasProduction,
                 ],
-                apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : endYear,
+                getYearFromDateString(apiData.case.dG4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -111,11 +112,11 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
-                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
-                additionalOilProduction: setValueToCorrespondingYear(additionalOilProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
-                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
-                additionalGasProduction: setValueToCorrespondingYear(additionalGasProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
-                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
+                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
+                additionalOilProduction: setValueToCorrespondingYear(additionalOilProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
+                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
+                additionalGasProduction: setValueToCorrespondingYear(additionalGasProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
+                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
             })
         }
         return dataArray
@@ -128,7 +129,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
             dataArray.push({
                 year: i,
                 waterInjection:
-                    setValueToCorrespondingYear(waterInjectionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
+                    setValueToCorrespondingYear(waterInjectionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
             })
         }
         return dataArray

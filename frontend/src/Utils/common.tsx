@@ -257,7 +257,7 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
 }
 
 export const formatTime = (timestamp: number): string => {
-    const date = new Date(timestamp)
+    const date = new Date(timestamp) // TODO: Check this
     const hours = date.getHours()
     const minutes = date.getMinutes()
 

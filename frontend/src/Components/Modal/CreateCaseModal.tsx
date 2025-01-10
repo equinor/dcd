@@ -16,7 +16,7 @@ import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import Modal from "./Modal"
 
-import { defaultDate, isDefaultDate, toMonthDate } from "@/Utils/DateUtils"
+import { dateStringToDateUtc, defaultDate, isDefaultDate, toMonthDate } from "@/Utils/DateUtils"
 import { GetCaseService } from "@/Services/CaseService"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
@@ -61,7 +61,7 @@ const CreateCaseModal = () => {
             if (selectedCase) {
                 setCaseItem(selectedCase)
                 setCaseName(selectedCase.name)
-                setDG4Date(selectedCase.dG4Date ? new Date(selectedCase.dG4Date) : defaultDate())
+                setDG4Date(dateStringToDateUtc(selectedCase.dG4Date))
                 setDescription(selectedCase.description)
                 setProductionStrategy(selectedCase.productionStrategyOverview ?? 0)
                 setProducerWells(selectedCase.producerCount ?? 0)
@@ -85,11 +85,11 @@ const CreateCaseModal = () => {
     }
 
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        let newDate = new Date(e.target.value)
+        let newDate = dateStringToDateUtc(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
             newDate = defaultDate()
         } else {
-            newDate = new Date(e.target.value)
+            newDate = dateStringToDateUtc(e.target.value)
         }
         setDG4Date(newDate)
     }
@@ -98,7 +98,7 @@ const CreateCaseModal = () => {
         if (!isDefaultDate(dG4Date)) {
             return toMonthDate(dG4Date)
         }
-        return toMonthDate(new Date("2030-01-01"))
+        return toMonthDate(dateStringToDateUtc("2030-01-01T00:00:00Z")) // TODO: Fix this
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {

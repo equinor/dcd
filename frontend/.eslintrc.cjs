@@ -42,6 +42,13 @@ module.exports = {
         "no-console": process.env.NODE_ENV === "production"
             ? "warn"
             : "off",
+        "no-restricted-syntax": [
+            "error",
+            {
+                selector: "NewExpression[callee.name=\"Date\"][arguments.length > 0]",
+                message: "Do not use new Date(xyz). Use a date utility function instead.",
+            },
+        ],
     },
     overrides: [
         {
