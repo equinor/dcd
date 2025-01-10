@@ -3,7 +3,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation } from "react-router-dom"
-import { GetProjectService } from "../Services/ProjectService"
+import { __ProjectService, GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -58,28 +58,34 @@ const ProjectSelector = (): JSX.Element => {
         setIsLoading(false)
     }
 
-    const createNewProject = async (projectService: any, externalId: string) => {
+    const createNewProject = async (externalId: string) => {
         setIsCreating(true)
         setSnackBarMessage("No project found for this search. Creating new.")
+
+        const projectService = await GetProjectService()
         const createdProject = await projectService.createProject(externalId)
         return projectService.getAccess(createdProject.commonProjectAndRevisionData.fusionProjectId)
     }
 
-    const getProjectAccess = async (projectService: any, externalId: string) => {
+    const getProjectAccess = async (externalId: string) => {
         try {
+
+            const projectService = await GetProjectService()
             return await projectService.getAccess(externalId)
         } catch (error) {
             if (isAxiosError(error) && error.response?.status === 404) {
-                return createNewProject(projectService, externalId)
+                return createNewProject(externalId)
             }
             console.error("Error fetching project access:", error)
             setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
             setIsLoading(false)
-            return null
+            return undefined
         }
     }
 
-    const fetchProjectData = async (projectService: any, externalId: string) => {
+    const fetchProjectData = async (externalId: string) => {
+
+        const projectService = await GetProjectService()
         const fetchedProject = await projectService.getProject(externalId)
         if (fetchedProject) {
             setIsCreating(false)
@@ -112,19 +118,18 @@ const ProjectSelector = (): JSX.Element => {
             if (!currentContext?.externalId) { return }
 
             setIsLoading(true)
-            const projectService = await GetProjectService()
 
             try {
-                const access = await getProjectAccess(projectService, currentContext.externalId)
+                const access = await getProjectAccess(currentContext.externalId)
                 setAccessRights(access)
 
-                if (!access.canView) {
+                if (!access?.canView) {
                     setSnackBarMessage("You do not have access to view this project")
                     setIsLoading(false)
                     return
                 }
 
-                await fetchProjectData(projectService, currentContext.externalId)
+                await fetchProjectData(currentContext.externalId)
             } catch (error) {
                 handleError("Error fetching or setting project in context", error)
             }

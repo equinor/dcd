@@ -4,13 +4,13 @@ import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
 import {
-    dateFromString,
-    defaultDate,
-    isDefaultDate,
     isDefaultDateString,
-    toMonthDate,
+    defaultDate,
     formatDate,
-} from "@/Utils/common"
+    isDefaultDate,
+    toMonthDate,
+    dateFromString,
+} from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
