@@ -36,6 +36,10 @@ const Header = styled.div`
     padding: 0 5px;
 `
 
+const BackButton = styled(Button)`
+    min-width: 40px;
+`
+
 const TabContainer = styled.div`
     display: flex;
     margin-top: 8px;
@@ -152,9 +156,9 @@ const CaseControls: React.FC<props> = ({
             <Header>
                 <CaseContainer>
                     <CenteringContainer>
-                        <Button onClick={backToProject} variant="ghost_icon">
+                        <BackButton onClick={backToProject} variant="ghost_icon">
                             <Icon data={arrow_back} />
-                        </Button>
+                        </BackButton>
                         <CenteringContainer>
                             {editMode ? (
                                 <CaseTitleEdit>

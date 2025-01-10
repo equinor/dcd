@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react"
 import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
-import { Icon, Button, Typography, Input } from "@equinor/eds-core-react"
+import {
+    Icon,
+    Button,
+    Typography,
+    Input,
+} from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
+
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
-import { useAppContext } from "../../Context/AppContext"
-import { getImageService } from "../../Services/ImageService"
-import { useProjectContext } from "../../Context/ProjectContext"
-import InputSwitcher from "../Input/Components/InputSwitcher"
+import { useAppContext } from "@/Context/AppContext"
+import { getImageService } from "@/Services/ImageService"
+import { useProjectContext } from "@/Context/ProjectContext"
+import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,19 +71,18 @@ const Gallery = () => {
     const { caseId } = useParams()
     const { revisionId } = useParams()
     const { projectId } = useProjectContext()
-    
+
     const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         const loadImages = async () => {
-            var projectIdOrRevisionId = revisionId || projectId
+            const projectIdOrRevisionId = revisionId || projectId
             if (projectId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = caseId ?
-                     await imageService.getCaseImages(projectIdOrRevisionId, caseId) :
-                     await imageService.getProjectImages(projectIdOrRevisionId)
-
+                    const imageDtos = caseId
+                        ? await imageService.getCaseImages(projectIdOrRevisionId, caseId)
+                        : await imageService.getProjectImages(projectIdOrRevisionId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -90,11 +95,9 @@ const Gallery = () => {
     }, [projectId, caseId, setSnackBarMessage])
 
     const handleDescriptionChange = async (imageId: string, newDescription: string) => {
-        
         if (debounceTimeout) {
             clearTimeout(debounceTimeout)
         }
-        
         setGallery((prevGallery) => prevGallery.map((image) => (image.imageId === imageId ? { ...image, description: newDescription } : image)))
 
         const timeout = setTimeout(async () => {
@@ -103,7 +106,7 @@ const Gallery = () => {
                 const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
                     const updateImageDto = {
-                        description: newDescription
+                        description: newDescription,
                     }
 
                     if (caseId) {
