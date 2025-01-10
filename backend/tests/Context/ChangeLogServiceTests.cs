@@ -2,7 +2,7 @@ using api.Context;
 
 using Xunit;
 
-namespace tests.Services;
+namespace tests.Context;
 
 public class ChangeLogServiceTests
 {
