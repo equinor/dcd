@@ -1,9 +1,10 @@
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const useEditDisabled = () => {
+    const { isRevision } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
 
-    const isRevision = revisionAndProjectData?.dataType === "revision"
     const isEditDisabled = !revisionAndProjectData?.userActions.canEditProjectData
 
     const getEditDisabledText = () => {
