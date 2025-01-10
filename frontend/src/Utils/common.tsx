@@ -218,7 +218,6 @@ export const numberValueParser = (
     params: { newValue: any, oldValue: any, data: any },
 ) => {
     const { oldValue, newValue } = params
-    console.log("[DEBUG] numberValueParser", { oldValue, newValue })
     const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
     const allCommasTurnedToDots = valueWithOnlyNumbersCommasAndDots.replace(/,/g, ".")
 
@@ -226,9 +225,6 @@ export const numberValueParser = (
         setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
         return oldValue
     }
-
-    // log the type of valueWithOnlyNumbersCommasAndDots and newValue
-    console.log("[DEBUG] numberValueParser", { valueWithOnlyNumbersCommasAndDots: typeof valueWithOnlyNumbersCommasAndDots, newValue: typeof newValue })
 
     if (valueWithOnlyNumbersCommasAndDots.toString() !== newValue.toString()) {
         setSnackBarMessage("Only numbers, commas and dates are allowed. Invalid characters have been removed.")

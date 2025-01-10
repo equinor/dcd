@@ -77,6 +77,8 @@ const CaseTabTable = ({
     isProsp,
     sharepointFileId,
 }: Props) => {
+    console.log(`[${tableName}] Component rendering`, { timeSeriesData, dg4Year, tableYears })
+
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { caseId, tab } = useParams()
@@ -85,25 +87,37 @@ const CaseTabTable = ({
 
     useEffect(() => {
         if (stagedEdit) {
+            console.log(`[${tableName}] Staged edit changed:`, stagedEdit)
             addEdit(stagedEdit)
         }
     }, [stagedEdit])
 
     useEffect(() => {
-        gridRef.current?.api?.redrawRows()
+        if (ongoingCalculation !== undefined) {
+            console.log(`[${tableName}] Ongoing calculation changed, triggering redraw:`, ongoingCalculation)
+            gridRef.current?.api?.redrawRows()
+        }
     }, [ongoingCalculation])
 
     const gridRowData = useMemo(
         () => {
+            console.log(`[${tableName}] Recalculating grid row data`)
             if (!timeSeriesData?.length) { return [] }
-            return profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
+            const data = profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
+            console.log(`[${tableName}] New grid row data:`, data)
+            return data
         },
         [timeSeriesData, editMode, dg4Year, tableName, tableYears],
     )
 
     useEffect(() => {
-        if (gridRef.current?.api && timeSeriesData?.length > 0) {
-            gridRef.current.api.setGridOption("rowData", gridRowData)
+        if (gridRef.current?.api && timeSeriesData?.length > 0 && gridRowData.length > 0) {
+            const currentNodes = gridRef.current.api.getRenderedNodes()
+            const currentRowData = currentNodes.map((node: { data: any }) => node.data)
+            if (!isEqual(currentRowData, gridRowData)) {
+                console.log(`[${tableName}] Setting new grid row data`)
+                gridRef.current.api.setGridOption("rowData", gridRowData)
+            }
         }
     }, [gridRowData, timeSeriesData])
 
@@ -154,12 +168,6 @@ const CaseTabTable = ({
     }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName])
 
     const handleCellValueChange = useCallback((event: any) => {
-        console.log("[DEBUG] handleCellValueChange called", {
-            newValue: event.newValue,
-            oldValue: event.oldValue,
-            profileName: event.data?.profileName,
-            column: event.column?.getColId(),
-        })
         const rule = TABLE_VALIDATION_RULES[event.data.profileName]
         if (rule && (event.newValue < rule.min || event.newValue > rule.max)) {
             setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
@@ -177,20 +185,16 @@ const CaseTabTable = ({
         }
     }, [stageEdit])
 
-    const defaultColDef = useMemo(() => {
-        console.log("[DEBUG] defaultColDef updated", { editMode })
-        return {
-            sortable: true,
-            filter: true,
-            resizable: true,
-            editable: true,
-            onCellValueChanged: handleCellValueChange,
-            suppressHeaderMenuButton: true,
-            enableCellChangeFlash: editMode,
-            suppressMovableColumns: true,
-            suppressNavigableTimestamp: true,
-        }
-    }, [editMode, handleCellValueChange])
+    const defaultColDef = useMemo(() => ({
+        sortable: true,
+        filter: true,
+        resizable: true,
+        editable: true,
+        onCellValueChanged: handleCellValueChange,
+        suppressHeaderMenuButton: true,
+        enableCellChangeFlash: editMode,
+        suppressMovable: true,
+    }), [editMode, handleCellValueChange])
 
     const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (!params.data || !editMode) {
@@ -263,13 +267,6 @@ const CaseTabTable = ({
                 flex: 1,
                 editable: (params: any) => {
                     const isEditable = tableCellisEditable(params, editMode)
-                    console.log("[DEBUG] cell editable check", {
-                        year: index,
-                        profileName: params.data?.profileName,
-                        isEditable,
-                        editMode,
-                        params,
-                    })
                     return isEditable
                 },
                 minWidth: 100,
@@ -298,7 +295,9 @@ const CaseTabTable = ({
     }, [generateTableYearColDefs])
 
     const onGridReady = useCallback((gridReadyEvent: GridReadyEvent) => {
+        console.log(`[${tableName}] Grid ready event triggered`)
         if (timeSeriesData?.length > 0) {
+            console.log(`[${tableName}] Setting initial grid data`)
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
     }, [gridRowData, timeSeriesData])
@@ -321,6 +320,8 @@ const CaseTabTable = ({
                 }}
             >
                 <AgGridReact
+                    onFirstDataRendered={(params) => console.log(`[${tableName}] First data rendered`)}
+                    onRowDataUpdated={(params) => console.log(`[${tableName}] Row data updated`)}
                     ref={gridRef}
                     rowData={gridRowData}
                     columnDefs={columnDefs}
@@ -335,25 +336,7 @@ const CaseTabTable = ({
                         enableClickSelection: true,
                     }}
                     cellSelection
-                    suppressMovableColumns
                     enableCharts
-                    onCellEditingStarted={(event) => {
-                        console.log("[DEBUG] cell editing started", {
-                            column: event.column?.getColId(),
-                            profileName: event.data?.profileName,
-                            editMode,
-                            value: event.value,
-                        })
-                    }}
-                    onCellEditingStopped={(event) => {
-                        console.log("[DEBUG] cell editing stopped", {
-                            column: event.column?.getColId(),
-                            profileName: event.data?.profileName,
-                            editMode,
-                            value: event.value,
-                            newValue: event.newValue,
-                        })
-                    }}
                     singleClickEdit
                     stopEditingWhenCellsLoseFocus
                     alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
@@ -362,26 +345,6 @@ const CaseTabTable = ({
                     suppressLastEmptyLineOnPaste
                     onGridReady={onGridReady}
                     defaultExcelExportParams={defaultExcelExportParams}
-                    onCellClicked={(event: CellClickedEvent) => {
-                        console.log("[DEBUG] cell clicked", {
-                            column: event.column?.getColId(),
-                            profileName: event.data?.profileName,
-                            editMode,
-                            colDef: event.colDef,
-                            editing: event.column?.getColDef()?.editable,
-                            api: event.api.getEditingCells().length > 0,
-                        })
-                    }}
-                    onCellDoubleClicked={(event: CellDoubleClickedEvent) => {
-                        console.log("[DEBUG] cell double clicked", {
-                            column: event.column?.getColId(),
-                            profileName: event.data?.profileName,
-                            editMode,
-                            colDef: event.colDef,
-                            editing: event.column?.getColDef()?.editable,
-                            api: event.api.getEditingCells().length > 0,
-                        })
-                    }}
                 />
             </div>
         </div>
