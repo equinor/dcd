@@ -11,19 +11,19 @@ public static class UploadImageValidator
     {
         if (image.Length == 0)
         {
-            throw new InputValidationException("No image provided or the file is empty.");
+            throw new UnprocessableContentException("No image provided or the file is empty.");
         }
 
         if (image.Length > MaxFileSize)
         {
-            throw new InputValidationException($"File {image.FileName} exceeds the maximum allowed size of 5MB.");
+            throw new UnprocessableContentException($"File {image.FileName} exceeds the maximum allowed size of 5MB.");
         }
 
         var ext = Path.GetExtension(image.FileName).ToLower();
 
         if (string.IsNullOrEmpty(ext) || !PermittedExtensions.Contains(ext))
         {
-            throw new InputValidationException($"File {image.FileName} has an invalid extension. Only image files are allowed.");
+            throw new UnprocessableContentException($"File {image.FileName} has an invalid extension. Only image files are allowed.");
         }
     }
 }

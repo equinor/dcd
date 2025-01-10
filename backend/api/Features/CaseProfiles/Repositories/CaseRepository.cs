@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 
 using api.Context;
 using api.Context.Extensions;
+using api.Exceptions;
 using api.Features.CaseProfiles.Enums;
 using api.Models;
 
@@ -60,7 +61,7 @@ public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICa
         }
 
         var caseItem = await Context.Cases.SingleOrDefaultAsync(c => c.Id == caseId)
-            ?? throw new KeyNotFoundException($"Case with id {caseId} not found.");
+            ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
 
         caseItem.ModifyTime = DateTime.UtcNow;
     }

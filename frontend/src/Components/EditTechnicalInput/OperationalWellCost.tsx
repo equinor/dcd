@@ -3,14 +3,19 @@ import {
     ChangeEventHandler,
     Dispatch, SetStateAction,
 } from "react"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
+import styled from "styled-components"
+
+import { useAppContext } from "@/Context/AppContext"
 
 interface Props {
     title: string
     setValue: Dispatch<SetStateAction<number | undefined>>
     value: number
 }
+
+const StyledTypography = styled(Typography)`
+    text-align: right;
+`
 
 const OperationalWellCost = ({
     title, setValue, value,
@@ -34,7 +39,7 @@ const OperationalWellCost = ({
                             onChange={onValueChange}
                         />
                     )
-                    : <Typography>{value}</Typography>}
+                    : <StyledTypography>{value}</StyledTypography>}
             </Table.Cell>
         </Table.Row>
     )

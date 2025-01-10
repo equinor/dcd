@@ -113,26 +113,21 @@ public class DcdExceptionHandlingMiddleware(
     {
         switch (exception)
         {
-            case KeyNotFoundException:
             case NotFoundInDbException:
                 return (HttpStatusCode.NotFound, exception.Message);
 
             case UnauthorizedAccessException:
                 return (HttpStatusCode.Unauthorized, exception.Message);
 
-            case WellChangeTypeException:
             case InvalidInputException:
-            case InvalidProjectIdException:
                 return (HttpStatusCode.BadRequest, exception.Message);
 
-            case InputValidationException:
+            case UnprocessableContentException:
                 return (HttpStatusCode.UnprocessableContent, exception.Message);
 
             case ProjectAccessMismatchException:
-            case ModifyRevisionException:
                 return (HttpStatusCode.Forbidden, exception.Message);
 
-            case ProjectAlreadyExistsException:
             case ResourceAlreadyExistsException:
                 return (HttpStatusCode.Conflict, exception.Message);
 

@@ -88,6 +88,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     },
                 ],
             },
+            label: {
+                formatter: (label: any) => Math.floor(Number(label.value)),
+            },
         },
         {
             type: "number",

@@ -15,15 +15,15 @@ const { Toggle, Footer } = SideBar
 
 const Wrapper = styled.div`
     position: relative;
+    border-right: 1px solid #DCDCDC;
 `
 
 const Sticky = styled.div`
     position: sticky;
     top: 0;
     background-color: white;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 102px);
     overflow: auto;
-    border-right: 1px solid #DCDCDC;
 `
 
 const StyledSideBar = styled(SideBar)`

@@ -74,7 +74,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
 
         if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))
         {
-            throw new InvalidProjectIdException($"Invalid project id: {projectId}");
+            throw new InvalidInputException($"Invalid project id: {projectId}");
         }
 
         await using var dbContext = await contextFactory.CreateDbContextAsync();

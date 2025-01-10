@@ -36,6 +36,12 @@ const Header = styled.div`
     padding: 0 5px;
 `
 
+const TabContainer = styled.div`
+    display: flex;
+    margin-top: 8px;
+    border-bottom: 1px solid #DCDCDC;
+`
+
 const CenteringContainer = styled.div`
     display: flex;
     align-items: center;
@@ -225,9 +231,11 @@ const CaseControls: React.FC<props> = ({
                     />
                 </CenteringContainer>
             </Header>
-            <CaseTabs
-                caseId={caseId}
-            />
+            <TabContainer>
+                <CaseTabs
+                    caseId={caseId}
+                />
+            </TabContainer>
         </>
     )
 }

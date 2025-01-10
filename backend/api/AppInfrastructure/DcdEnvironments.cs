@@ -16,6 +16,7 @@ public static class DcdEnvironments
     public static bool EnableVerboseEntityFrameworkLogging => CurrentEnvironment is Ci or RadixDev;
     public static bool ReturnExceptionDetails => CurrentEnvironment is not RadixProd;
     public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
+    public static bool DisplayAllFusionUsersAsPmt => CurrentEnvironment is not RadixProd;
 
     public static string FusionEnvironment => CurrentEnvironment switch
     {
@@ -34,6 +35,5 @@ public static class DcdEnvironments
     public static class FeatureToggles
     {
         public static bool RevisionEnabled => CurrentEnvironment is not RadixProd;
-        public static bool DisplayAllFusionUsersAsPmt => CurrentEnvironment is not RadixProd;
     }
 }
