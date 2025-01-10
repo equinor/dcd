@@ -47,9 +47,9 @@ using api.Features.Images.Delete;
 using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
-using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectData.AccessCalculation;
+using api.Features.ProjectIntegrity;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
@@ -159,7 +159,7 @@ public static class DcdIocConfiguration
         /* Auth */
         services.AddScoped<CurrentUser>();
         services.AddScoped<IAuthorizationHandler, DcdAuthorizationHandler>();
-        services.AddScoped<IProjectAccessService, ProjectAccessService>();
+        services.AddScoped<IProjectIntegrityService, ProjectIntegrityService>();
 
         /* Prosp / Excel import */
         services.AddScoped<ProspExcelImportService>();

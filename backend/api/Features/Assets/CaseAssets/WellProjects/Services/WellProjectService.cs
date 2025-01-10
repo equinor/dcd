@@ -7,7 +7,7 @@ using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -17,7 +17,7 @@ public class WellProjectService(
     IWellProjectRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IWellProjectService
 {
@@ -35,7 +35,7 @@ public class WellProjectService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
+        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
 
         var existingWellProject = await repository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDbException($"Well project with id {wellProjectId} not found.");
@@ -62,7 +62,7 @@ public class WellProjectService(
             ?? throw new NotFoundInDbException($"No wellproject connected to {drillingScheduleId} found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<WellProject>(projectId, existingWellProject.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, existingWellProject.Id);
 
         var existingDrillingSchedule = existingWellProject.WellProjectWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
             ?? throw new NotFoundInDbException($"Drilling schedule with {drillingScheduleId} not found.");
@@ -85,7 +85,7 @@ public class WellProjectService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
+        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
 
         var existingWellProject = await repository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDbException($"Well project with {wellProjectId} not found.");

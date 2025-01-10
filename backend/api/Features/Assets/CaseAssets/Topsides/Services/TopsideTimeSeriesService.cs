@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,7 +16,7 @@ public class TopsideTimeSeriesService(
     ITopsideRepository topsideRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ITopsideTimeSeriesService
 {
@@ -28,7 +28,7 @@ public class TopsideTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Topside>(projectId, topsideId);
+        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
         var topside = await topsideRepository.GetTopside(topsideId)
             ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
@@ -82,7 +82,7 @@ public class TopsideTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Topside>(projectId, topsideId);
+        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
         var topside = await topsideRepository.GetTopsideWithCostProfile(topsideId)
             ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
@@ -157,7 +157,7 @@ public class TopsideTimeSeriesService(
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Topside>(projectId, existingProfile.Topside.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, existingProfile.Topside.Id);
 
         if (existingProfile.Topside.ProspVersion == null)
         {

@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.Explorations.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
 using api.Models;
@@ -17,7 +17,7 @@ public class ExplorationTimeSeriesService(
     IExplorationTimeSeriesRepository repository,
     IExplorationRepository explorationRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IExplorationTimeSeriesService
 {
@@ -144,7 +144,7 @@ public class ExplorationTimeSeriesService(
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, existingProfile.Exploration.Id);
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
@@ -169,7 +169,7 @@ public class ExplorationTimeSeriesService(
             where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 
         var exploration = await explorationRepository.GetExploration(explorationId)
             ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
