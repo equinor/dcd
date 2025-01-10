@@ -28,7 +28,7 @@ public class UpdateWellService(DcdDbContext context)
 
         if (UpdateChangesWellType(well, updatedWellDto))
         {
-            throw new WellChangeTypeException($"Cannot change well type for wellId {wellId}");
+            throw new InvalidInputException($"Cannot change well type for wellId {wellId}");
         }
 
         well.Name = updatedWellDto.Name;

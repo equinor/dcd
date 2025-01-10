@@ -8,7 +8,7 @@ public static class CreateCaseDtoValidator
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
         {
-            throw new InputValidationException($"{nameof(CreateCaseDto)}.{nameof(dto.Name)} is required and cannot be white space only.");
+            throw new UnprocessableContentException($"{nameof(CreateCaseDto)}.{nameof(dto.Name)} is required and cannot be white space only.");
         }
     }
 }

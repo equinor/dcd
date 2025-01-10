@@ -16,14 +16,14 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
 
         if (projectMaster == null)
         {
-            throw new KeyNotFoundException($"Project with context ID {contextId} not found in the external API.");
+            throw new NotFoundInDbException($"Project with context ID {contextId} not found in the external API.");
         }
 
         var existingProject = await context.Projects.FirstOrDefaultAsync(p => p.FusionProjectId == projectMaster.Identity);
 
         if (existingProject != null)
         {
-            throw new ProjectAlreadyExistsException($"Project with externalId {projectMaster.Identity} already exists");
+            throw new ResourceAlreadyExistsException($"Project with externalId {projectMaster.Identity} already exists");
         }
 
         var project = new Project
