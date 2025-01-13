@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 
-public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IDrainageStrategyTimeSeriesRepository
+public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRepository(context)
 {
     public ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil)
     {
@@ -96,7 +96,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
         return await GetWithIncludes<ProductionProfileWaterInjection>(productionProfileId, d => d.DrainageStrategy);
     }
 
-
     public ProductionProfileWaterInjection UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile)
     {
         return Update(productionProfile);
@@ -112,7 +111,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
     {
         return await GetWithIncludes<FuelFlaringAndLossesOverride>(profileId, d => d.DrainageStrategy);
     }
-
 
     public FuelFlaringAndLossesOverride UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profile)
     {
@@ -130,7 +128,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
         return await GetWithIncludes<NetSalesGasOverride>(profileId, d => d.DrainageStrategy);
     }
 
-
     public NetSalesGasOverride UpdateNetSalesGasOverride(NetSalesGasOverride profile)
     {
         return Update(profile);
@@ -146,7 +143,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
     {
         return await GetWithIncludes<Co2EmissionsOverride>(profileId, d => d.DrainageStrategy);
     }
-
 
     public Co2EmissionsOverride UpdateCo2EmissionsOverride(Co2EmissionsOverride profile)
     {
@@ -164,7 +160,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
         return await GetWithIncludes<ImportedElectricityOverride>(profileId, d => d.DrainageStrategy);
     }
 
-
     public ImportedElectricityOverride UpdateImportedElectricityOverride(ImportedElectricityOverride profile)
     {
         return Update(profile);
@@ -181,7 +176,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
         return await GetWithIncludes<DeferredOilProduction>(productionProfileId, d => d.DrainageStrategy);
     }
 
-
     public DeferredOilProduction UpdateDeferredOilProduction(DeferredOilProduction productionProfile)
     {
         return Update(productionProfile);
@@ -197,7 +191,6 @@ public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRe
     {
         return await GetWithIncludes<DeferredGasProduction>(productionProfileId, d => d.DrainageStrategy);
     }
-
 
     public DeferredGasProduction UpdateDeferredGasProduction(DeferredGasProduction productionProfile)
     {

@@ -175,11 +175,18 @@ public static class DcdIocConfiguration
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
+        /* Case assets */
+        services.AddScoped<DrainageStrategyService>();
+        services.AddScoped<DrainageStrategyTimeSeriesService>();
+        services.AddScoped<DrainageStrategyTimeSeriesRepository>();
+
+
+
+
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
-        services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();
         services.AddScoped<IExplorationService, ExplorationService>();
         services.AddScoped<ISurfService, SurfService>();
@@ -189,7 +196,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
-        services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();
         services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
         services.AddScoped<IExplorationTimeSeriesService, ExplorationTimeSeriesService>();
         services.AddScoped<ISurfTimeSeriesService, SurfTimeSeriesService>();
@@ -205,7 +211,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ICaseRepository, CaseRepository>();
         services.AddScoped<ISubstructureRepository, SubstructureRepository>();
         services.AddScoped<ITopsideRepository, TopsideRepository>();
-        services.AddScoped<IDrainageStrategyRepository, DrainageStrategyRepository>();
         services.AddScoped<IWellProjectRepository, WellProjectRepository>();
         services.AddScoped<IExplorationRepository, ExplorationRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
@@ -213,7 +218,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IOnshorePowerSupplyRepository, OnshorePowerSupplyRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
-        services.AddScoped<IDrainageStrategyTimeSeriesRepository, DrainageStrategyTimeSeriesRepository>();
         services.AddScoped<ISubstructureTimeSeriesRepository, SubstructureTimeSeriesRepository>();
         services.AddScoped<ITopsideTimeSeriesRepository, TopsideTimeSeriesRepository>();
         services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();

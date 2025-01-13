@@ -11,8 +11,8 @@ namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 [Route("projects/{projectId}/cases/{caseId}/drainage-strategies")]
 [AuthorizeActionType(ActionType.Edit)]
 public class DrainageStrategiesController(
-    IDrainageStrategyService drainageStrategyService,
-    IDrainageStrategyTimeSeriesService drainageStrategyTimeSeriesService)
+    DrainageStrategyService drainageStrategyService,
+    DrainageStrategyTimeSeriesService drainageStrategyTimeSeriesService)
     : ControllerBase
 {
     [HttpPut("{drainageStrategyId}")]

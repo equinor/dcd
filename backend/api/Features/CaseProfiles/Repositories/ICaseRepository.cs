@@ -9,5 +9,4 @@ public interface ICaseRepository
     Task<Case?> GetCase(Guid caseId);
     Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType);
     Task UpdateModifyTime(Guid caseId);
-    Task<Guid> GetPrimaryKeyForProjectId(Guid projectId);
 }
