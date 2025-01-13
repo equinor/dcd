@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Repositories;
 
-public class ExplorationTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IExplorationTimeSeriesRepository
+public class ExplorationTimeSeriesRepository(DcdDbContext context) : BaseRepository(context)
 {
     public GAndGAdminCostOverride CreateGAndGAdminCostOverride(GAndGAdminCostOverride profile)
     {
