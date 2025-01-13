@@ -1,16 +1,11 @@
-using System.Linq.Expressions;
-
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
-using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Services;
 
 public interface IExplorationService
 {
-    Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes);
-
     Task<ExplorationDto> UpdateExploration(
         Guid projectId,
         Guid caseId,

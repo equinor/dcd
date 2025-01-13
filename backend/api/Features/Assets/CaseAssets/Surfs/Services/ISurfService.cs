@@ -8,7 +8,6 @@ namespace api.Features.Assets.CaseAssets.Surfs.Services;
 
 public interface ISurfService
 {
-    Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes);
     Task<SurfDto> UpdateSurf<TDto>(
         Guid projectId,
         Guid caseId,

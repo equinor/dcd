@@ -16,11 +16,6 @@ public class WellProjectRepository(DcdDbContext context) : BaseRepository(contex
         return await Get<WellProject>(wellProjectId);
     }
 
-    public async Task<WellProject?> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes)
-    {
-        return await GetWithIncludes(wellProjectId, includes);
-    }
-
     public async Task<Well?> GetWell(Guid wellId)
     {
         return await Get<Well>(wellId);
