@@ -188,6 +188,9 @@ public static class DcdIocConfiguration
         services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
         services.AddScoped<OnshorePowerSupplyTimeSeriesRepository>();
 
+        services.AddScoped<SubstructureService>();
+        services.AddScoped<SubstructureTimeSeriesService>();
+        services.AddScoped<SubstructureTimeSeriesRepository>();
 
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
@@ -195,14 +198,12 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IWellProjectService, WellProjectService>();
         services.AddScoped<ISurfService, SurfService>();
-        services.AddScoped<ISubstructureService, SubstructureService>();
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
         services.AddScoped<ISurfTimeSeriesService, SurfTimeSeriesService>();
-        services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
         services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
@@ -211,14 +212,12 @@ public static class DcdIocConfiguration
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();
-        services.AddScoped<ISubstructureRepository, SubstructureRepository>();
         services.AddScoped<ITopsideRepository, TopsideRepository>();
         services.AddScoped<IWellProjectRepository, WellProjectRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
         services.AddScoped<ISurfRepository, SurfRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
-        services.AddScoped<ISubstructureTimeSeriesRepository, SubstructureTimeSeriesRepository>();
         services.AddScoped<ITopsideTimeSeriesRepository, TopsideTimeSeriesRepository>();
         services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
