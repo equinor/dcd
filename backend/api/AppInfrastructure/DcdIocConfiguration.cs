@@ -5,7 +5,6 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.Assets.CaseAssets.Transports.Repositories;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Repositories;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
@@ -190,7 +189,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<TransportService>();
         services.AddScoped<TransportTimeSeriesService>();
-        services.AddScoped<TransportTimeSeriesRepository>();
 
         services.AddScoped<WellProjectService>();
         services.AddScoped<WellProjectTimeSeriesService>();
