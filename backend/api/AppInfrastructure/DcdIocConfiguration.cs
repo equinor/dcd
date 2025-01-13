@@ -192,20 +192,16 @@ public static class DcdIocConfiguration
         services.AddScoped<WellProjectService>();
         services.AddScoped<WellProjectTimeSeriesService>();
 
+        /* Case time series */
+        services.AddScoped<CaseTimeSeriesService>();
+
 
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
-
-        services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
-
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
-
-        services.AddScoped<ICaseRepository, CaseRepository>();
-
-        services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
     }
 }

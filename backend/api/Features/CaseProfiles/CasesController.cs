@@ -11,7 +11,7 @@ namespace api.Features.CaseProfiles;
 [ApiController]
 [Route("projects/{projectId}/cases")]
 [AuthorizeActionType(ActionType.Edit)]
-public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : ControllerBase
+public class CasesController(CaseTimeSeriesService caseTimeSeriesService) : ControllerBase
 {
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
