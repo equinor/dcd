@@ -4,7 +4,6 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
-using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,6 @@ namespace api.Features.Assets.CaseAssets.Substructures.Services;
 
 public class SubstructureTimeSeriesService(
     DcdDbContext context,
-    SubstructureTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
@@ -56,8 +54,8 @@ public class SubstructureTimeSeriesService(
             substructureId,
             profileId,
             dto,
-            repository.GetSubstructureCostProfile,
-            repository.UpdateSubstructureCostProfile
+            id => context.SubstructureCostProfiles.Include(x => x.Substructure).SingleAsync(x => x.Id == id),
+            profile => context.SubstructureCostProfiles.Update(profile)
         );
     }
 
@@ -132,8 +130,8 @@ public class SubstructureTimeSeriesService(
             substructureId,
             costProfileId,
             dto,
-            repository.GetSubstructureCostProfileOverride,
-            repository.UpdateSubstructureCostProfileOverride
+            id => context.SubstructureCostProfileOverride.Include(x => x.Substructure).SingleAsync(x => x.Id == id),
+            profile => context.SubstructureCostProfileOverride.Update(profile)
         );
     }
 
@@ -143,15 +141,14 @@ public class SubstructureTimeSeriesService(
         Guid substructureId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, ISubstructureTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, existingProfile.Substructure.Id);
 

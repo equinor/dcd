@@ -2,7 +2,6 @@ using api.AppInfrastructure.Authorization;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Explorations.Services;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
-using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.Assets.CaseAssets.Surfs.Services;
@@ -184,7 +183,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<SubstructureService>();
         services.AddScoped<SubstructureTimeSeriesService>();
-        services.AddScoped<SubstructureTimeSeriesRepository>();
 
         services.AddScoped<SurfService>();
         services.AddScoped<SurfTimeSeriesService>();
