@@ -30,7 +30,7 @@ public class OnshorePowerSupplyTimeSeriesService(
     {
         await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
-        var onshorePowerSupply = await context.OnshorePowerSupplies.SingleAsync(x => x.Id == onshorePowerSupplyId);;
+        var onshorePowerSupply = await context.OnshorePowerSupplies.SingleAsync(x => x.Id == onshorePowerSupplyId);
 
         var resourceHasProfile = await context.OnshorePowerSupplies.AnyAsync(t => t.Id == onshorePowerSupplyId && t.CostProfileOverride != null);
 
