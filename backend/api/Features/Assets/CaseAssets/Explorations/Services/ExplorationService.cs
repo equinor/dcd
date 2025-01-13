@@ -7,7 +7,7 @@ using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -17,7 +17,7 @@ public class ExplorationService(
     ICaseRepository caseRepository,
     IExplorationRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IExplorationService
 {
@@ -35,7 +35,7 @@ public class ExplorationService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 
         var existingExploration = await repository.GetExploration(explorationId)
             ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
@@ -62,7 +62,7 @@ public class ExplorationService(
             ?? throw new NotFoundInDbException($"No exploration connected to {drillingScheduleId} found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Exploration>(projectId, existingExploration.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, existingExploration.Id);
 
         var existingDrillingSchedule = existingExploration.ExplorationWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
             ?? throw new NotFoundInDbException($"Drilling schedule with id {drillingScheduleId} not found.");
@@ -85,7 +85,7 @@ public class ExplorationService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 
         var existingExploration = await repository.GetExploration(explorationId)
             ?? throw new NotFoundInDbException($"Well project with {explorationId} not found.");

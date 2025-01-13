@@ -49,13 +49,14 @@ using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
-using api.Features.ProjectData.AccessCalculation;
+using api.Features.ProjectIntegrity;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
 using api.Features.ProjectMembers.Get.Sync;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
+using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
@@ -83,6 +84,7 @@ public static class DcdIocConfiguration
         services.AddScoped<CreateProjectService>();
         services.AddScoped<UpdateProjectService>();
         services.AddScoped<UserActionsService>();
+        services.AddScoped<ProjectExistsService>();
 
         services.AddScoped<CreateRevisionService>();
         services.AddScoped<CreateRevisionRepository>();
@@ -157,7 +159,7 @@ public static class DcdIocConfiguration
         /* Auth */
         services.AddScoped<CurrentUser>();
         services.AddScoped<IAuthorizationHandler, DcdAuthorizationHandler>();
-        services.AddScoped<IProjectAccessService, ProjectAccessService>();
+        services.AddScoped<IProjectIntegrityService, ProjectIntegrityService>();
 
         /* Prosp / Excel import */
         services.AddScoped<ProspExcelImportService>();

@@ -6,7 +6,7 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,7 +16,7 @@ public class TopsideService(
     ITopsideRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ITopsideService
 {
@@ -35,7 +35,7 @@ public class TopsideService(
         where TDto : BaseUpdateTopsideDto
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Topside>(projectId, topsideId);
+        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
         var existingTopside = await repository.GetTopside(topsideId)
             ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");

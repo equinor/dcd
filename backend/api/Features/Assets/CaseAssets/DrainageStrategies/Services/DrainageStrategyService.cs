@@ -7,7 +7,7 @@ using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -20,7 +20,7 @@ public class DrainageStrategyService(
     ICaseRepository caseRepository,
     IDrainageStrategyRepository repository,
     IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IDrainageStrategyService
 {
@@ -41,7 +41,7 @@ public class DrainageStrategyService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
+        await projectIntegrityService.EntityIsConnectedToProject<DrainageStrategy>(projectId, drainageStrategyId);
 
         var existingDrainageStrategy = await repository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");

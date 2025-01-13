@@ -5,8 +5,8 @@ import MenuItem from "@mui/material/MenuItem"
 import styled from "styled-components"
 
 import { useProjectContext } from "@/Context/ProjectContext"
-import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useRevisions } from "@/Hooks/useRevision"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface MenuControlsContainerProps {
     $hasRevisions: boolean
@@ -51,7 +51,7 @@ const MenuControls: React.FC<MenuControlsProps> = ({
 }) => {
     const { isRevision, setIsCreateRevisionModalOpen } = useProjectContext()
     const { exitRevisionView } = useRevisions()
-    const { isEditDisabled } = useEditDisabled()
+    const revisionAndProjectData = useDataFetch()
 
     const handleExitRevision = () => {
         if (isCaseMenu) {
@@ -82,7 +82,7 @@ const MenuControls: React.FC<MenuControlsProps> = ({
             </StyledMenuItem>
             <StyledMenuItem
                 onClick={() => setIsCreateRevisionModalOpen(true)}
-                disabled={!isRevision}
+                disabled={!revisionAndProjectData?.userActions.canCreateRevision}
             >
                 <Icon data={add} size={16} />
                 <Typography>

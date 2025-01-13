@@ -125,7 +125,7 @@ public class DcdExceptionHandlingMiddleware(
             case UnprocessableContentException:
                 return (HttpStatusCode.UnprocessableContent, exception.Message);
 
-            case ProjectAccessMismatchException:
+            case ProjectIntegrityException:
                 return (HttpStatusCode.Forbidden, exception.Message);
 
             case ResourceAlreadyExistsException:

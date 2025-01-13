@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+using api.Features.ProjectAccess;
+
 namespace api.Features.ProjectData.Dtos;
 
 public class RevisionDataDto

@@ -32,10 +32,14 @@ const ControlsWrapper = styled.div`
     z-index: 3;
 `
 
+const ContainerReset = styled.div`
+    height: 100%;
+    display: flex;
+`
+
 const ContentWrapper = styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
 `
 
 const MainView = styled.div`
@@ -190,7 +194,7 @@ const Overview = () => {
     // }
 
     return (
-        <>
+        <ContainerReset>
             <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
                 {snackBarMessage}
             </Snackbar>
@@ -243,7 +247,7 @@ const Overview = () => {
                     <Outlet />
                 </MainView>
             </ContentWrapper>
-        </>
+        </ContainerReset>
     )
 }
 

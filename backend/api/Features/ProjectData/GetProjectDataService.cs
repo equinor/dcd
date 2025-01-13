@@ -1,4 +1,4 @@
-using api.Features.ProjectData.AccessCalculation;
+using api.Features.ProjectAccess;
 using api.Features.ProjectData.Dtos;
 
 namespace api.Features.ProjectData;

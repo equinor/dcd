@@ -75,9 +75,6 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
-        export interface AccessRightsDto {
-            canView: boolean;
-        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -971,6 +968,10 @@ declare namespace Components {
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
+        export interface ProjectExistsDto {
+            projectExists: boolean;
+            canCreateProject: boolean;
+        }
         export interface ProjectMemberDto {
             projectId: string; // uuid
             userId: string; // uuid
@@ -1761,19 +1762,6 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateProjectDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDataDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdAccess {
-        namespace Get {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.AccessRightsDto;
             }
         }
     }
@@ -3730,6 +3718,19 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = boolean;
+            }
+        }
+    }
+    namespace ProjectsExists {
+        namespace Get {
+            namespace Parameters {
+                export type ContextId = string; // uuid
+            }
+            export interface QueryParameters {
+                contextId?: Parameters.ContextId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectExistsDto;
             }
         }
     }

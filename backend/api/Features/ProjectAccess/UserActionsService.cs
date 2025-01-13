@@ -1,12 +1,11 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
-using api.Features.ProjectData.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.ProjectData.AccessCalculation;
+namespace api.Features.ProjectAccess;
 
 public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
 {
