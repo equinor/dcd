@@ -13,7 +13,6 @@ using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 using api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
@@ -194,11 +193,6 @@ public static class DcdIocConfiguration
 
         /* Case time series */
         services.AddScoped<CaseTimeSeriesService>();
-
-
-        /* Misc */
-        services.AddScoped<ICaseService, CaseService>();
-        services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();

@@ -1,6 +1,5 @@
 using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.CaseProfiles.Services;
 using api.Models;
 
 using AutoMapper;
@@ -9,11 +8,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 
-public class Co2IntensityProfileService(DcdDbContext context, ICaseService caseService, IMapper mapper)
+public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
 {
     public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCase(caseId);
+        var caseItem = await context.Cases
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.HistoricCostCostProfile)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .SingleAsync(c => c.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.Co2Emissions)
