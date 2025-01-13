@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Context;
 using api.Features.CaseProfiles.Repositories;
 using api.Models;
@@ -13,11 +11,6 @@ public class TopsideRepository(DcdDbContext context) : BaseRepository(context), 
     public async Task<Topside?> GetTopside(Guid topsideId)
     {
         return await Get<Topside>(topsideId);
-    }
-
-    public async Task<Topside?> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes)
-    {
-        return await GetWithIncludes(topsideId, includes);
     }
 
     public async Task<Topside?> GetTopsideWithCostProfile(Guid topsideId)

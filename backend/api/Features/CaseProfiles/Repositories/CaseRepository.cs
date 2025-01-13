@@ -22,11 +22,6 @@ public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICa
         return await Get<Case>(caseId);
     }
 
-    public async Task<Case?> GetCaseWithIncludes(Guid caseId, params Expression<Func<Case, object>>[] includes)
-    {
-        return await GetWithIncludes(caseId, includes);
-    }
-
     public async Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType)
     {
         Expression<Func<Case, bool>> profileExistsExpression = profileType switch

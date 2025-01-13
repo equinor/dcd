@@ -18,9 +18,11 @@ using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
+using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
+using api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
@@ -175,7 +177,6 @@ public static class DcdIocConfiguration
 
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
-        services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
         services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
@@ -197,9 +198,9 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
         services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
-        services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
-        services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
-        services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
+        services.AddScoped<Co2IntensityProfileService>();
+        services.AddScoped<Co2IntensityTotalService>();
+        services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();
         services.AddScoped<ISubstructureRepository, SubstructureRepository>();
