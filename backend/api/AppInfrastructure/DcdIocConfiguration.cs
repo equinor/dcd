@@ -192,18 +192,21 @@ public static class DcdIocConfiguration
         services.AddScoped<SubstructureTimeSeriesService>();
         services.AddScoped<SubstructureTimeSeriesRepository>();
 
+        services.AddScoped<SurfService>();
+        services.AddScoped<SurfTimeSeriesService>();
+        services.AddScoped<SurfTimeSeriesRepository>();
+
+
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
         services.AddScoped<IWellProjectService, WellProjectService>();
-        services.AddScoped<ISurfService, SurfService>();
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
-        services.AddScoped<ISurfTimeSeriesService, SurfTimeSeriesService>();
         services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
@@ -215,12 +218,10 @@ public static class DcdIocConfiguration
         services.AddScoped<ITopsideRepository, TopsideRepository>();
         services.AddScoped<IWellProjectRepository, WellProjectRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
-        services.AddScoped<ISurfRepository, SurfRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
         services.AddScoped<ITopsideTimeSeriesRepository, TopsideTimeSeriesRepository>();
         services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
-        services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
     }
 }
