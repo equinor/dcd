@@ -1,24 +1,25 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Repositories;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Transports.Services;
 
 public class TransportTimeSeriesService(
-    ICaseRepository caseRepository,
-    ITransportRepository transportRepository,
-    ITransportTimeSeriesRepository repository,
+    DcdDbContext context,
+    TransportTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ITransportTimeSeriesService
 {
     public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
         Guid projectId,
@@ -27,17 +28,15 @@ public class TransportTimeSeriesService(
         CreateTransportCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, transportId);
 
-        var transport = await transportRepository.GetTransport(transportId)
-            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
+        var transport = await context.Transports.SingleAsync(x => x.Id == transportId);
 
-        var resourceHasProfile = await transportRepository.TransportHasCostProfileOverride(transportId);
+        var resourceHasProfile = await context.Transports.AnyAsync(t => t.Id == transportId && t.CostProfileOverride != null);
 
         if (resourceHasProfile)
         {
-            throw new ResourceAlreadyExistsException($"Transport with id {transportId} already has a profile of type {typeof(TransportCostProfileOverride).Name}.");
+            throw new ResourceAlreadyExistsException($"Transport with id {transportId} already has a profile of type {nameof(TransportCostProfileOverride)}.");
         }
 
         TransportCostProfileOverride profile = new()
@@ -47,12 +46,11 @@ public class TransportTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, transportId);
 
-        var createdProfile = repository.CreateTransportCostProfileOverride(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.TransportCostProfileOverride.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(newProfile, newProfile.Id);
     }
 
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
@@ -80,8 +78,9 @@ public class TransportTimeSeriesService(
         UpdateTransportCostProfileDto dto
     )
     {
-        var transport = await transportRepository.GetTransportWithCostProfile(transportId)
-            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
+        var transport = await context.Transports
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == transportId);
 
         if (transport.CostProfile != null)
         {
@@ -117,7 +116,7 @@ public class TransportTimeSeriesService(
         Transport transport
     )
     {
-        TransportCostProfile transportCostProfile = new TransportCostProfile
+        var transportCostProfile = new TransportCostProfile
         {
             Transport = transport
         };
@@ -129,12 +128,11 @@ public class TransportTimeSeriesService(
             newProfile.Transport.CostProfileOverride.Override = false;
         }
 
-        repository.CreateTransportCostProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.TransportCostProfile.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var newDto = mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newProfile, newProfile.Id);
-        return newDto;
+        return mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newProfile, newProfile.Id);
     }
 
     private async Task<TDto> UpdateTransportTimeSeries<TProfile, TDto, TUpdateDto>(
@@ -153,7 +151,6 @@ public class TransportTimeSeriesService(
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, existingProfile.Transport.Id);
 
         if (existingProfile.Transport.ProspVersion == null)
@@ -166,10 +163,9 @@ public class TransportTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 }

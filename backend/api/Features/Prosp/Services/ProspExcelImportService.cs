@@ -29,12 +29,12 @@ public class ProspExcelImportService(
     SurfService surfService,
     SubstructureService substructureService,
     TopsideService topsideService,
-    ITransportService transportService,
+    TransportService transportService,
     OnshorePowerSupplyService onshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
     SurfTimeSeriesService surfTimeSeriesService,
     TopsideTimeSeriesService topsideTimeSeriesService,
-    ITransportTimeSeriesService transportTimeSeriesService,
+    TransportTimeSeriesService transportTimeSeriesService,
     OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IRecalculationService recalculationService)
 {
