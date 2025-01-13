@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Repositories;
@@ -21,12 +19,6 @@ public class WellProjectService(
     IRecalculationService recalculationService)
     : IWellProjectService
 {
-    public async Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes)
-    {
-        return await repository.GetWellProjectWithIncludes(wellProjectId, includes)
-            ?? throw new NotFoundInDbException($"WellProject with id {wellProjectId} not found.");
-    }
-
     public async Task<WellProjectDto> UpdateWellProject(
         Guid projectId,
         Guid caseId,

@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
@@ -20,12 +18,6 @@ public class TransportService(
     IRecalculationService recalculationService)
     : ITransportService
 {
-    public async Task<Transport> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
-    {
-        return await transportRepository.GetTransportWithIncludes(transportId, includes)
-            ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
-    }
-
     public async Task<TransportDto> UpdateTransport<TDto>(Guid projectId, Guid caseId, Guid transportId, TDto updatedTransportDto)
         where TDto : BaseUpdateTransportDto
     {

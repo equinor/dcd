@@ -1,26 +1,26 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.CaseProfiles.Services;
+using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 
-public class CalculateTotalIncomeService(ICaseService caseService, IDrainageStrategyService drainageStrategyService) : ICalculateTotalIncomeService
+public class CalculateTotalIncomeService(DcdDbContext context)
 {
     public async Task CalculateTotalIncome(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(
-            caseId,
-            c => c.Project
-        );
+        var caseItem = await context.Cases
+            .Include(x => x.Project)
+            .Include(x => x.CalculatedTotalIncomeCostProfile)
+            .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!
-        );
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         CalculateTotalIncome(caseItem, drainageStrategy);
     }

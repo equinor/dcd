@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
@@ -21,12 +19,6 @@ public class ExplorationService(
     IRecalculationService recalculationService)
     : IExplorationService
 {
-    public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
-    {
-        return await repository.GetExplorationWithIncludes(explorationId, includes)
-            ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
-    }
-
     public async Task<ExplorationDto> UpdateExploration(
         Guid projectId,
         Guid caseId,

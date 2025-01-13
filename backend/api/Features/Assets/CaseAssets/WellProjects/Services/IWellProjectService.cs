@@ -9,7 +9,6 @@ namespace api.Features.Assets.CaseAssets.WellProjects.Services;
 
 public interface IWellProjectService
 {
-    Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes);
     Task<WellProjectDto> UpdateWellProject(
         Guid projectId,
         Guid caseId,

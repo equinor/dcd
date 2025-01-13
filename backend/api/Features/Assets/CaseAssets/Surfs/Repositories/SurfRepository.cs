@@ -15,11 +15,6 @@ public class SurfRepository(DcdDbContext context) : BaseRepository(context), ISu
         return await Get<Surf>(surfId);
     }
 
-    public async Task<Surf?> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
-    {
-        return await GetWithIncludes(surfId, includes);
-    }
-
     public async Task<Surf?> GetSurfWithCostProfile(Guid surfId)
     {
         return await Context.Surfs
@@ -31,10 +26,5 @@ public class SurfRepository(DcdDbContext context) : BaseRepository(context), ISu
     {
         return await Context.Surfs
             .AnyAsync(t => t.Id == surfId && t.CostProfileOverride != null);
-    }
-
-    public Surf UpdateSurf(Surf surf)
-    {
-        return Update(surf);
     }
 }

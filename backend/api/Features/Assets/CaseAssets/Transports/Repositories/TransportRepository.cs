@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Context;
 using api.Features.CaseProfiles.Repositories;
 using api.Models;
@@ -15,11 +13,6 @@ public class TransportRepository(DcdDbContext context) : BaseRepository(context)
         return await Get<Transport>(transportId);
     }
 
-    public async Task<Transport?> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
-    {
-        return await GetWithIncludes(transportId, includes);
-    }
-
     public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)
     {
         return await Context.Transports
@@ -31,10 +24,5 @@ public class TransportRepository(DcdDbContext context) : BaseRepository(context)
     {
         return await Context.Transports
             .AnyAsync(t => t.Id == transportId && t.CostProfileOverride != null);
-    }
-
-    public Transport UpdateTransport(Transport transport)
-    {
-        return Update(transport);
     }
 }

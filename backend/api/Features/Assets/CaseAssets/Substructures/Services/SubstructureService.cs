@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
@@ -20,12 +18,6 @@ public class SubstructureService(
     IRecalculationService recalculationService)
     : ISubstructureService
 {
-    public async Task<Substructure> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
-    {
-        return await substructureRepository.GetSubstructureWithIncludes(substructureId, includes)
-            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
-    }
-
     public async Task<SubstructureDto> UpdateSubstructure<TDto>(
         Guid projectId,
         Guid caseId,
