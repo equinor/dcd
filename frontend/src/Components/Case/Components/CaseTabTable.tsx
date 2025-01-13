@@ -3,6 +3,8 @@ import {
     useState,
     useEffect,
     useCallback,
+    memo,
+    useRef,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -11,8 +13,6 @@ import {
     ColDef,
     GridReadyEvent,
     ICellRendererParams,
-    CellClickedEvent,
-    CellDoubleClickedEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
@@ -62,7 +62,7 @@ const CenterGridIcons = styled.div`
     height: 100%;
 `
 
-const CaseTabTable = ({
+const CaseTabTable = memo(({
     timeSeriesData,
     dg4Year,
     tableYears,
@@ -77,34 +77,21 @@ const CaseTabTable = ({
     isProsp,
     sharepointFileId,
 }: Props) => {
-    console.log(`[${tableName}] Component rendering`, { timeSeriesData, dg4Year, tableYears })
-
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { caseId, tab } = useParams()
-    const [stagedEdit, setStagedEdit] = useState<any>()
     const { projectId } = useProjectContext()
 
     useEffect(() => {
-        if (stagedEdit) {
-            console.log(`[${tableName}] Staged edit changed:`, stagedEdit)
-            addEdit(stagedEdit)
-        }
-    }, [stagedEdit])
-
-    useEffect(() => {
         if (ongoingCalculation !== undefined) {
-            console.log(`[${tableName}] Ongoing calculation changed, triggering redraw:`, ongoingCalculation)
             gridRef.current?.api?.redrawRows()
         }
     }, [ongoingCalculation])
 
     const gridRowData = useMemo(
         () => {
-            console.log(`[${tableName}] Recalculating grid row data`)
             if (!timeSeriesData?.length) { return [] }
             const data = profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
-            console.log(`[${tableName}] New grid row data:`, data)
             return data
         },
         [timeSeriesData, editMode, dg4Year, tableName, tableYears],
@@ -115,18 +102,25 @@ const CaseTabTable = ({
             const currentNodes = gridRef.current.api.getRenderedNodes()
             const currentRowData = currentNodes.map((node: { data: any }) => node.data)
             if (!isEqual(currentRowData, gridRowData)) {
-                console.log(`[${tableName}] Setting new grid row data`)
                 gridRef.current.api.setGridOption("rowData", gridRowData)
             }
         }
     }, [gridRowData, timeSeriesData])
 
-    const stageEdit = useCallback((tableData: any) => {
-        const rowValues = getValuesFromEntireRow(tableData)
-        const existingProfile = tableData.profile ? structuredClone(tableData.profile) : {
+    const handleCellValueChange = useCallback((event: any) => {
+        const rule = TABLE_VALIDATION_RULES[event.data.profileName]
+        if (rule && (event.newValue < rule.min || event.newValue > rule.max)) {
+            setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+            return
+        }
+
+        const currentCell = gridRef.current?.api?.getFocusedCell()
+
+        const rowValues = getValuesFromEntireRow(event.data)
+        const existingProfile = event.data.profile ? structuredClone(event.data.profile) : {
             startYear: 0,
             values: [],
-            id: tableData.resourceId,
+            id: event.data.resourceId,
         }
 
         let newProfile
@@ -134,7 +128,7 @@ const CaseTabTable = ({
             const firstYear = rowValues[0].year
             const lastYear = rowValues[rowValues.length - 1].year
             const startYear = firstYear - dg4Year
-            newProfile = generateProfile(rowValues, tableData.profile, startYear, firstYear, lastYear)
+            newProfile = generateProfile(rowValues, event.data.profile, startYear, firstYear, lastYear)
         } else {
             newProfile = structuredClone(existingProfile)
             newProfile.values = []
@@ -143,16 +137,16 @@ const CaseTabTable = ({
         if (!caseId || !newProfile) { return }
 
         const getProfileData = () => timeSeriesData.find(
-            (v) => v.profileName === tableData.profileName,
+            (v) => v.profileName === event.data.profileName,
         )
 
         const profileInTimeSeriesData = getProfileData()
 
         if (!isEqual(newProfile.values, existingProfile.values)) {
-            setStagedEdit({
+            addEdit({
                 newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
                 previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
-                inputLabel: tableData.profileName,
+                inputLabel: event.data.profileName,
                 projectId,
                 resourceName: profileInTimeSeriesData?.resourceName,
                 resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
@@ -165,25 +159,13 @@ const CaseTabTable = ({
                 tableName,
             })
         }
-    }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName])
-
-    const handleCellValueChange = useCallback((event: any) => {
-        const rule = TABLE_VALIDATION_RULES[event.data.profileName]
-        if (rule && (event.newValue < rule.min || event.newValue > rule.max)) {
-            setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
-            return
-        }
-
-        const currentCell = gridRef.current?.api?.getFocusedCell()
-
-        stageEdit(event.data)
 
         if (currentCell) {
             requestAnimationFrame(() => {
                 gridRef.current?.api?.setFocusedCell(currentCell.rowIndex, currentCell.column)
             })
         }
-    }, [stageEdit])
+    }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, addEdit])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -295,9 +277,7 @@ const CaseTabTable = ({
     }, [generateTableYearColDefs])
 
     const onGridReady = useCallback((gridReadyEvent: GridReadyEvent) => {
-        console.log(`[${tableName}] Grid ready event triggered`)
         if (timeSeriesData?.length > 0) {
-            console.log(`[${tableName}] Setting initial grid data`)
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
     }, [gridRowData, timeSeriesData])
@@ -320,8 +300,6 @@ const CaseTabTable = ({
                 }}
             >
                 <AgGridReact
-                    onFirstDataRendered={(params) => console.log(`[${tableName}] First data rendered`)}
-                    onRowDataUpdated={(params) => console.log(`[${tableName}] Row data updated`)}
                     ref={gridRef}
                     rowData={gridRowData}
                     columnDefs={columnDefs}
@@ -349,6 +327,6 @@ const CaseTabTable = ({
             </div>
         </div>
     )
-}
+})
 
 export default CaseTabTable
