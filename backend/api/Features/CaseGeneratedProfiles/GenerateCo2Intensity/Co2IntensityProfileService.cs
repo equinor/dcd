@@ -2,13 +2,11 @@ using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Models;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 
-public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
+public class Co2IntensityProfileService(DcdDbContext context)
 {
     public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
@@ -86,9 +84,12 @@ public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
             Values = co2IntensityValues.ToArray(),
         };
 
-        var dto = mapper.Map<Co2IntensityDto>(co2Intensity);
-
-        return dto ?? new Co2IntensityDto();
+        return new Co2IntensityDto
+        {
+            Id = co2Intensity.Id,
+            StartYear = co2Intensity.StartYear,
+            Values = co2Intensity.Values
+        };
     }
 
     private static TimeSeries<double> GetTotalExportedVolumes(DrainageStrategy drainageStrategy)
@@ -108,8 +109,8 @@ public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
     private static TimeSeries<double> GetOilProfile(DrainageStrategy drainageStrategy)
     {
         var million = 1E6;
-        var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
-        var additionalOilValues = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
+        var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? [];
+        var additionalOilValues = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? [];
 
         TimeSeriesCost? oilProfile = null;
         TimeSeriesCost? additionalOilProfile = null;
@@ -134,8 +135,8 @@ public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
 
         // Merging the profiles, defaulting to an empty profile if null
         var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
-            oilProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 },
-            additionalOilProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
+            oilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
+            additionalOilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
         );
 
         return new TimeSeries<double>
@@ -148,8 +149,8 @@ public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
     private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
     {
         var billion = 1E9;
-        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
-        var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? [];
+        var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? [];
 
         TimeSeriesCost? gasProfile = null;
         TimeSeriesCost? additionalGasProfile = null;
@@ -173,8 +174,8 @@ public class Co2IntensityProfileService(DcdDbContext context, IMapper mapper)
         }
 
         var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
-            gasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 },
-            additionalGasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
+            gasProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
+            additionalGasProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
         );
 
         return new TimeSeries<double>

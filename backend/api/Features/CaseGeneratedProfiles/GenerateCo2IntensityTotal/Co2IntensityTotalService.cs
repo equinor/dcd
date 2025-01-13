@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
 
-public class Co2IntensityTotalService(DcdDbContext context, ILogger<Co2IntensityTotalService> logger)
+public class Co2IntensityTotalService(DcdDbContext context)
 {
     public async Task<double> Calculate(Guid caseId)
     {
@@ -57,29 +57,23 @@ public class Co2IntensityTotalService(DcdDbContext context, ILogger<Co2Intensity
             generateCo2EmissionsProfile.Values = drainageStrategy.Co2Emissions?.Values ?? [];
             generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2Emissions?.StartYear ?? 0;
         }
-        double co2Intensity = CalculateCO2Intensity(caseItem, projectPhysicalUnit, drainageStrategy, generateCo2EmissionsProfile);
-        return co2Intensity;
+
+        return CalculateCo2Intensity(projectPhysicalUnit, drainageStrategy, generateCo2EmissionsProfile);
     }
 
-    private double CalculateTotalOilProduction(Case caseItem, PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
+    private static double CalculateTotalOilProduction(PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var sumOilProduction = 0.0;
         var million = 1E6;
         var bblConversionFactor = 6.29;
-        try
+
+        if (drainageStrategy.ProductionProfileOil != null)
         {
-            if (drainageStrategy.ProductionProfileOil != null)
-            {
-                sumOilProduction += drainageStrategy.ProductionProfileOil.Values.Sum();
-            }
-            if (drainageStrategy.AdditionalProductionProfileOil != null)
-            {
-                sumOilProduction += drainageStrategy.AdditionalProductionProfileOil.Values.Sum();
-            }
+            sumOilProduction += drainageStrategy.ProductionProfileOil.Values.Sum();
         }
-        catch (ArgumentException)
+        if (drainageStrategy.AdditionalProductionProfileOil != null)
         {
-            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            sumOilProduction += drainageStrategy.AdditionalProductionProfileOil.Values.Sum();
         }
 
         if (physicalUnit != 0 && !excludeOilFieldConversion)
@@ -90,25 +84,19 @@ public class Co2IntensityTotalService(DcdDbContext context, ILogger<Co2Intensity
         return sumOilProduction / million;
     }
 
-    private double CalculateTotalGasProduction(Case caseItem, PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
+    private static double CalculateTotalGasProduction(PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var sumGasProduction = 0.0;
         var billion = 1E9;
         var scfConversionFactor = 35.315;
-        try
+
+        if (drainageStrategy.ProductionProfileGas != null)
         {
-            if (drainageStrategy.ProductionProfileGas != null)
-            {
-                sumGasProduction += drainageStrategy.ProductionProfileGas.Values.Sum();
-            }
-            if (drainageStrategy.AdditionalProductionProfileGas != null)
-            {
-                sumGasProduction += drainageStrategy.AdditionalProductionProfileGas.Values.Sum();
-            }
+            sumGasProduction += drainageStrategy.ProductionProfileGas.Values.Sum();
         }
-        catch (ArgumentException)
+        if (drainageStrategy.AdditionalProductionProfileGas != null)
         {
-            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            sumGasProduction += drainageStrategy.AdditionalProductionProfileGas.Values.Sum();
         }
 
         if (physicalUnit != 0 && !excludeOilFieldConversion)
@@ -119,27 +107,27 @@ public class Co2IntensityTotalService(DcdDbContext context, ILogger<Co2Intensity
         return sumGasProduction / billion;
     }
 
-    private double CalculateTotalExportedVolumes(Case caseItem, PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
+    private static double CalculateTotalExportedVolumes(PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var oilEquivalentFactor = 5.61;
         if (physicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(caseItem, physicalUnit, drainageStrategy, false) + CalculateTotalGasProduction(caseItem, physicalUnit, drainageStrategy, false) / oilEquivalentFactor;
+            return CalculateTotalOilProduction(physicalUnit, drainageStrategy, false) + CalculateTotalGasProduction(physicalUnit, drainageStrategy, false) / oilEquivalentFactor;
         }
-        return CalculateTotalOilProduction(caseItem, physicalUnit, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, physicalUnit, drainageStrategy, true);
+        return CalculateTotalOilProduction(physicalUnit, drainageStrategy, true) + CalculateTotalGasProduction(physicalUnit, drainageStrategy, true);
     }
 
-    private double CalculateTotalCO2Emissions(Co2EmissionsDto generateCo2EmissionsProfile)
+    private static double CalculateTotalCo2Emissions(Co2EmissionsDto generateCo2EmissionsProfile)
     {
         return generateCo2EmissionsProfile.Sum;
     }
 
-    private double CalculateCO2Intensity(Case caseItem, PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
+    private static double CalculateCo2Intensity(PhysUnit physicalUnit, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
     {
         var tonnesToKgFactor = 1000;
         var boeConversionFactor = 6.29;
-        var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, physicalUnit, drainageStrategy, true);
-        var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
+        var totalExportedVolumes = CalculateTotalExportedVolumes(physicalUnit, drainageStrategy, true);
+        var totalCo2Emissions = CalculateTotalCo2Emissions(generateCo2EmissionsProfile);
         if (totalExportedVolumes > 0 && totalCo2Emissions > 0)
         {
             return (totalCo2Emissions / totalExportedVolumes) / boeConversionFactor * tonnesToKgFactor;
