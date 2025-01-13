@@ -196,18 +196,19 @@ public static class DcdIocConfiguration
         services.AddScoped<SurfTimeSeriesService>();
         services.AddScoped<SurfTimeSeriesRepository>();
 
+        services.AddScoped<TopsideService>();
+        services.AddScoped<TopsideTimeSeriesService>();
+        services.AddScoped<TopsideTimeSeriesRepository>();
 
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
         services.AddScoped<IWellProjectService, WellProjectService>();
-        services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
-        services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
         services.AddScoped<Co2IntensityProfileService>();
@@ -215,12 +216,10 @@ public static class DcdIocConfiguration
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();
-        services.AddScoped<ITopsideRepository, TopsideRepository>();
         services.AddScoped<IWellProjectRepository, WellProjectRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
-        services.AddScoped<ITopsideTimeSeriesRepository, TopsideTimeSeriesRepository>();
         services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
     }
