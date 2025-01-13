@@ -14,8 +14,8 @@ namespace api.Features.Assets.CaseAssets.Explorations;
 [Route("projects/{projectId}/cases/{caseId}/explorations")]
 [AuthorizeActionType(ActionType.Edit)]
 public class ExplorationsController(
-    IExplorationService explorationService,
-    IExplorationTimeSeriesService explorationTimeSeriesService)
+    ExplorationService explorationService,
+    ExplorationTimeSeriesService explorationTimeSeriesService)
     : ControllerBase
 {
     [HttpPut("{explorationId}")]

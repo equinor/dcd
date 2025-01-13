@@ -1,17 +1,11 @@
 using api.Context;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 
-public class OnshorePowerSupplyTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IOnshorePowerSupplyTimeSeriesRepository
+public class OnshorePowerSupplyTimeSeriesRepository(DcdDbContext context) : BaseRepository(context)
 {
-    public OnshorePowerSupplyCostProfile CreateOnshorePowerSupplyCostProfile(OnshorePowerSupplyCostProfile onshorePowerSupplyCostProfile)
-    {
-        Context.OnshorePowerSupplyCostProfile.Add(onshorePowerSupplyCostProfile);
-        return onshorePowerSupplyCostProfile;
-    }
-
     public async Task<OnshorePowerSupplyCostProfile?> GetOnshorePowerSupplyCostProfile(Guid onshorePowerSupplyCostProfileId)
     {
         return await GetWithIncludes<OnshorePowerSupplyCostProfile>(onshorePowerSupplyCostProfileId, t => t.OnshorePowerSupply);
@@ -21,13 +15,6 @@ public class OnshorePowerSupplyTimeSeriesRepository(DcdDbContext context) : Base
     {
         return Update(onshorePowerSupplyCostProfile);
     }
-
-    public OnshorePowerSupplyCostProfileOverride CreateOnshorePowerSupplyCostProfileOverride(OnshorePowerSupplyCostProfileOverride profile)
-    {
-        Context.OnshorePowerSupplyCostProfileOverride.Add(profile);
-        return profile;
-    }
-
 
     public async Task<OnshorePowerSupplyCostProfileOverride?> GetOnshorePowerSupplyCostProfileOverride(Guid onshorePowerSupplyCostProfileOverrideId)
     {

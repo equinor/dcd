@@ -12,11 +12,6 @@ namespace api.Features.CaseProfiles.Repositories;
 
 public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICaseRepository
 {
-    public async Task<Project> GetProject(Guid projectPk)
-    {
-        return await Context.Projects.SingleAsync(p => p.Id == projectPk);
-    }
-
     public async Task<Case?> GetCase(Guid caseId)
     {
         return await Get<Case>(caseId);

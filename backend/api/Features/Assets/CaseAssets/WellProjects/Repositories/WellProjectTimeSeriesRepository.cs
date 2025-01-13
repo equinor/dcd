@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.WellProjects.Repositories;
 
-public class WellProjectTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IWellProjectTimeSeriesRepository
+public class WellProjectTimeSeriesRepository(DcdDbContext context) : BaseRepository(context)
 {
     public OilProducerCostProfileOverride CreateOilProducerCostProfileOverride(OilProducerCostProfileOverride profile)
     {

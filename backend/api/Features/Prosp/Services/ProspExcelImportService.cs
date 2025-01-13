@@ -26,16 +26,16 @@ namespace api.Features.Prosp.Services;
 public class ProspExcelImportService(
     DcdDbContext context,
     ICaseService caseService,
-    ISurfService surfService,
-    ISubstructureService substructureService,
-    ITopsideService topsideService,
-    ITransportService transportService,
-    IOnshorePowerSupplyService onshorePowerSupplyService,
-    ISubstructureTimeSeriesService substructureTimeSeriesService,
-    ISurfTimeSeriesService surfTimeSeriesService,
-    ITopsideTimeSeriesService topsideTimeSeriesService,
-    ITransportTimeSeriesService transportTimeSeriesService,
-    IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
+    SurfService surfService,
+    SubstructureService substructureService,
+    TopsideService topsideService,
+    TransportService transportService,
+    OnshorePowerSupplyService onshorePowerSupplyService,
+    SubstructureTimeSeriesService substructureTimeSeriesService,
+    SurfTimeSeriesService surfTimeSeriesService,
+    TopsideTimeSeriesService topsideTimeSeriesService,
+    TransportTimeSeriesService transportTimeSeriesService,
+    OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IRecalculationService recalculationService)
 {
     private const string SheetName = "main";

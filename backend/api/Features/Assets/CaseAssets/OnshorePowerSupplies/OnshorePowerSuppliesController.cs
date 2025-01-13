@@ -12,8 +12,8 @@ namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 [Route("projects/{projectId}/cases/{caseId}/onshorePowerSupplys")]
 [AuthorizeActionType(ActionType.Edit)]
 public class OnshorePowerSuppliesController(
-    IOnshorePowerSupplyService onshorePowerSupplyService,
-    IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService) : ControllerBase
+    OnshorePowerSupplyService onshorePowerSupplyService,
+    OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService) : ControllerBase
 {
     [HttpPut("{onshorePowerSupplyId}")]
     public async Task<OnshorePowerSupplyDto> UpdateOnshorePowerSupply(

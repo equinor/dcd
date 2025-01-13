@@ -1,25 +1,28 @@
+using System.Linq.Expressions;
+
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
 using api.Features.CaseProfiles.Enums;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Explorations.Services;
 
 public class ExplorationTimeSeriesService(
-    ICaseRepository caseRepository,
-    IExplorationTimeSeriesRepository repository,
-    IExplorationRepository explorationRepository,
+    DcdDbContext context,
+    ExplorationTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : IExplorationTimeSeriesService
 {
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
         Guid projectId,
@@ -143,17 +146,15 @@ public class ExplorationTimeSeriesService(
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, existingProfile.Exploration.Id);
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
         var updatedProfile = updateProfile(existingProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
     }
 
     private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
@@ -168,13 +169,11 @@ public class ExplorationTimeSeriesService(
             where TDto : class
             where TCreateDto : class
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 
-        var exploration = await explorationRepository.GetExploration(explorationId)
-            ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
+        var exploration = await context.Explorations.SingleAsync(x => x.Id == explorationId);
 
-        var resourceHasProfile = await explorationRepository.ExplorationHasProfile(explorationId, profileName);
+        var resourceHasProfile = await ExplorationHasProfile(explorationId, profileName);
 
         if (resourceHasProfile)
         {
@@ -183,16 +182,29 @@ public class ExplorationTimeSeriesService(
 
         TProfile profile = new()
         {
-            Exploration = exploration,
+            Exploration = exploration
         };
 
         var newProfile = mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
 
         var createdProfile = createProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
+    }
+
+    private async Task<bool> ExplorationHasProfile(Guid explorationId, ExplorationProfileNames profileType)
+    {
+        Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
+        {
+            ExplorationProfileNames.GAndGAdminCostOverride => d => d.GAndGAdminCostOverride != null,
+            ExplorationProfileNames.SeismicAcquisitionAndProcessing => d => d.SeismicAcquisitionAndProcessing != null,
+            ExplorationProfileNames.CountryOfficeCost => d => d.CountryOfficeCost != null,
+        };
+
+        return await context.Explorations
+            .Where(d => d.Id == explorationId)
+            .AnyAsync(profileExistsExpression);
     }
 }
