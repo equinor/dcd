@@ -5,7 +5,6 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
@@ -18,7 +17,6 @@ namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 
 public class DrainageStrategyTimeSeriesService(
     DcdDbContext context,
-    DrainageStrategyTimeSeriesRepository repository,
     IConversionMapperService conversionMapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
@@ -35,7 +33,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProductionProfileOilDto,
-            repository.CreateProductionProfileOil,
+            profile => context.ProductionProfileOil.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileOil
         );
     }
@@ -54,8 +52,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileOilId,
             updatedProductionProfileOilDto,
-            repository.GetProductionProfileOil,
-            repository.UpdateProductionProfileOil
+            id => context.ProductionProfileOil.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.Update(profile)
         );
     }
 
@@ -71,7 +69,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createAdditionalProductionProfileOilDto,
-            repository.CreateAdditionalProductionProfileOil,
+            profile => context.AdditionalProductionProfileOil.Add(profile),
             DrainageStrategyProfileNames.AdditionalProductionProfileOil
         );
     }
@@ -90,8 +88,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             additionalProductionProfileOilId,
             updatedAdditionalProductionProfileOilDto,
-            repository.GetAdditionalProductionProfileOil,
-            repository.UpdateAdditionalProductionProfileOil
+            id => context.AdditionalProductionProfileOil.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.AdditionalProductionProfileOil.Update(profile)
         );
     }
 
@@ -107,7 +105,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateProductionProfileGas,
+            profile => context.ProductionProfileGas.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileGas
         );
     }
@@ -126,8 +124,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileId,
             updatedProductionProfileGasDto,
-            repository.GetProductionProfileGas,
-            repository.UpdateProductionProfileGas
+            id => context.ProductionProfileGas.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.ProductionProfileGas.Update(profile)
         );
     }
 
@@ -143,7 +141,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateAdditionalProductionProfileGas,
+            profile => context.AdditionalProductionProfileGas.Add(profile),
             DrainageStrategyProfileNames.AdditionalProductionProfileGas
         );
     }
@@ -162,8 +160,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileId,
             updatedAdditionalProductionProfileGasDto,
-            repository.GetAdditionalProductionProfileGas,
-            repository.UpdateAdditionalProductionProfileGas
+            id => context.AdditionalProductionProfileGas.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.AdditionalProductionProfileGas.Update(profile)
         );
     }
 
@@ -179,7 +177,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateProductionProfileWater,
+            profile => context.ProductionProfileWater.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileWater
         );
     }
@@ -198,8 +196,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileId,
             updatedProductionProfileWaterDto,
-            repository.GetProductionProfileWater,
-            repository.UpdateProductionProfileWater
+            id => context.ProductionProfileWater.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.ProductionProfileWater.Update(profile)
         );
     }
 
@@ -215,7 +213,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateProductionProfileWaterInjection,
+            profile => context.ProductionProfileWaterInjection.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileWaterInjection
         );
     }
@@ -234,8 +232,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileId,
             updatedProductionProfileWaterInjectionDto,
-            repository.GetProductionProfileWaterInjection,
-            repository.UpdateProductionProfileWaterInjection
+            id => context.ProductionProfileWaterInjection.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.ProductionProfileWaterInjection.Update(profile)
         );
     }
 
@@ -251,7 +249,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateFuelFlaringAndLossesOverride,
+            profile => context.FuelFlaringAndLossesOverride.Add(profile),
             DrainageStrategyProfileNames.FuelFlaringAndLossesOverride
         );
     }
@@ -270,8 +268,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             profileId,
             updateDto,
-            repository.GetFuelFlaringAndLossesOverride,
-            repository.UpdateFuelFlaringAndLossesOverride
+            id => context.FuelFlaringAndLossesOverride.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.FuelFlaringAndLossesOverride.Update(profile)
         );
     }
 
@@ -287,7 +285,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateNetSalesGasOverride,
+            profile => context.NetSalesGasOverride.Add(profile),
             DrainageStrategyProfileNames.NetSalesGasOverride
         );
     }
@@ -306,8 +304,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             profileId,
             updateDto,
-            repository.GetNetSalesGasOverride,
-            repository.UpdateNetSalesGasOverride
+            id => context.NetSalesGasOverride.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.NetSalesGasOverride.Update(profile)
         );
     }
 
@@ -323,7 +321,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateCo2EmissionsOverride,
+            profile => context.Co2EmissionsOverride.Add(profile),
             DrainageStrategyProfileNames.Co2EmissionsOverride
         );
     }
@@ -342,8 +340,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             profileId,
             updateDto,
-            repository.GetCo2EmissionsOverride,
-            repository.UpdateCo2EmissionsOverride
+            id => context.Co2EmissionsOverride.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.Co2EmissionsOverride.Update(profile)
         );
     }
 
@@ -359,7 +357,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateImportedElectricityOverride,
+            profile => context.ImportedElectricityOverride.Add(profile),
             DrainageStrategyProfileNames.ImportedElectricityOverride
         );
     }
@@ -378,8 +376,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             profileId,
             updateDto,
-            repository.GetImportedElectricityOverride,
-            repository.UpdateImportedElectricityOverride
+            id => context.ImportedElectricityOverride.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.ImportedElectricityOverride.Update(profile)
         );
     }
 
@@ -395,7 +393,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateDeferredOilProduction,
+            profile => context.DeferredOilProduction.Add(profile),
             DrainageStrategyProfileNames.DeferredOilProduction
         );
     }
@@ -414,8 +412,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileId,
             updatedDeferredOilProductionDto,
-            repository.GetDeferredOilProduction,
-            repository.UpdateDeferredOilProduction
+            id => context.DeferredOilProduction.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.DeferredOilProduction.Update(profile)
         );
     }
 
@@ -431,7 +429,7 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            repository.CreateDeferredGasProduction,
+            profile => context.DeferredGasProduction.Add(profile),
             DrainageStrategyProfileNames.DeferredGasProduction
         );
     }
@@ -450,8 +448,8 @@ public class DrainageStrategyTimeSeriesService(
             drainageStrategyId,
             productionProfileId,
             updatedDeferredGasProductionDto,
-            repository.GetDeferredGasProduction,
-            repository.UpdateDeferredGasProduction
+            id => context.DeferredGasProduction.Include(x => x.DrainageStrategy).SingleAsync(x => x.Id == id),
+            profile => context.DeferredGasProduction.Update(profile)
         );
     }
 
@@ -461,15 +459,14 @@ public class DrainageStrategyTimeSeriesService(
         Guid drainageStrategyId,
         Guid productionProfileId,
         TUpdateDto updatedProductionProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, IDrainageStrategyTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(productionProfileId)
-            ?? throw new NotFoundInDbException($"Production profile with id {productionProfileId} not found.");
+        var existingProfile = await getProfile(productionProfileId);
 
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
@@ -490,7 +487,7 @@ public class DrainageStrategyTimeSeriesService(
         Guid caseId,
         Guid drainageStrategyId,
         TCreateDto createProductionProfileDto,
-        Func<TProfile, TProfile> createProfile,
+        Action<TProfile> createProfile,
         DrainageStrategyProfileNames profileName
     )
         where TProfile : class, IDrainageStrategyTimeSeries, new()
@@ -517,11 +514,11 @@ public class DrainageStrategyTimeSeriesService(
 
         var newProfile = conversionMapperService.MapToEntity(createProductionProfileDto, profile, drainageStrategyId, project.PhysicalUnit);
 
-        var createdProfile = createProfile(newProfile);
+        createProfile(newProfile);
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return conversionMapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id, project.PhysicalUnit);
+        return conversionMapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id, project.PhysicalUnit);
     }
 
     private async Task<bool> DrainageStrategyHasProfile(Guid drainageStrategyId, DrainageStrategyProfileNames profileType)
