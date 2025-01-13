@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
@@ -24,15 +22,6 @@ public class DrainageStrategyService(
     IRecalculationService recalculationService)
     : IDrainageStrategyService
 {
-    public async Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
-        Guid drainageStrategyId,
-        params Expression<Func<DrainageStrategy, object>>[] includes
-        )
-    {
-        return await repository.GetDrainageStrategyWithIncludes(drainageStrategyId, includes)
-            ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");
-    }
-
     public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
         Guid projectId,
         Guid caseId,

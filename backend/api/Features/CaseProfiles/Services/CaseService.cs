@@ -1,17 +1,12 @@
-using System.Linq.Expressions;
-
 using api.Context;
 using api.Exceptions;
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseProfiles.Services;
 
-public class CaseService(
-    DcdDbContext context,
-    ICaseRepository repository)
+public class CaseService(DcdDbContext context)
     : ICaseService
 {
     public async Task<Case> GetCase(Guid caseId)
@@ -40,11 +35,5 @@ public class CaseService(
         ?? throw new NotFoundInDbException($"Case {caseId} not found.");
 
         return caseItem;
-    }
-
-    public async Task<Case> GetCaseWithIncludes(Guid caseId, params Expression<Func<Case, object>>[] includes)
-    {
-        return await repository.GetCaseWithIncludes(caseId, includes)
-            ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
     }
 }

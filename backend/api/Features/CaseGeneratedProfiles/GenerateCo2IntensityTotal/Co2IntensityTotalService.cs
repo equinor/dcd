@@ -1,30 +1,30 @@
+using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.CaseProfiles.Repositories;
+using api.Features.CaseProfiles.Services;
 using api.Models;
 
-namespace api.Features.CaseProfiles.Services.GenerateCostProfiles;
+using Microsoft.EntityFrameworkCore;
 
-public class Co2IntensityTotalService(
+namespace api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
+
+public class Co2IntensityTotalService(DcdDbContext context,
     IProjectWithCasesAndAssetsRepository projectWithCasesAndAssetsRepository,
     ILogger<Co2IntensityTotalService> logger,
-    ICaseService caseService,
-    IDrainageStrategyService drainageStrategyService)
-    : ICo2IntensityTotalService
+    ICaseService caseService)
 {
     public async Task<double> Calculate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
         var project = await projectWithCasesAndAssetsRepository.GetProjectWithCasesAndAssets(caseItem.ProjectId);
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.Co2Emissions!,
-            d => d.Co2EmissionsOverride!,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!
-        );
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.Co2Emissions)
+            .Include(d => d.Co2EmissionsOverride)
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         var generateCo2EmissionsProfile = new Co2EmissionsDto();
         if (drainageStrategy.Co2EmissionsOverride?.Override == true)

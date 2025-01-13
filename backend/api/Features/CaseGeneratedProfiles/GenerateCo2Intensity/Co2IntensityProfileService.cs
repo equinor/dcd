@@ -1,32 +1,28 @@
+using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.CaseProfiles.Repositories;
+using api.Features.CaseProfiles.Services;
 using api.Models;
 
 using AutoMapper;
 
-namespace api.Features.CaseProfiles.Services.GenerateCostProfiles;
+using Microsoft.EntityFrameworkCore;
 
-public class Co2IntensityProfileService(
-    ICaseService caseService,
-    IDrainageStrategyService drainageStrategyService,
-    IProjectWithAssetsRepository projectWithAssetsRepository,
-    IMapper mapper)
-    : ICo2IntensityProfileService
+namespace api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
+
+public class Co2IntensityProfileService(DcdDbContext context, ICaseService caseService, IMapper mapper)
 {
     public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
-        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.Co2Emissions!,
-            d => d.Co2EmissionsOverride!,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!
-        );
+
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.Co2Emissions)
+            .Include(d => d.Co2EmissionsOverride)
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
 
@@ -81,14 +77,13 @@ public class Co2IntensityProfileService(
         var oilProfile = GetOilProfile(drainageStrategy);
         var gasProfile = GetGasProfile(drainageStrategy);
 
-        var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(oilProfile, gasProfile);
-        var totalExportedVolumes = new Co2Intensity
+        var totalProfile = TimeSeriesCost.MergeCostProfiles(oilProfile, gasProfile);
+
+        return new Co2Intensity
         {
             StartYear = totalProfile.StartYear,
-            Values = totalProfile.Values,
+            Values = totalProfile.Values
         };
-        return totalExportedVolumes;
     }
 
     private static TimeSeries<double> GetOilProfile(DrainageStrategy drainageStrategy)
@@ -124,15 +119,12 @@ public class Co2IntensityProfileService(
             additionalOilProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
         );
 
-        var oil = new TimeSeries<double>
+        return new TimeSeries<double>
         {
             Values = mergedProfiles.Values,
             StartYear = mergedProfiles.StartYear,
         };
-
-        return oil;
     }
-
 
     private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
     {
@@ -166,13 +158,10 @@ public class Co2IntensityProfileService(
             additionalGasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
         );
 
-        var gas = new TimeSeries<double>
+        return new TimeSeries<double>
         {
             Values = mergedProfiles.Values,
             StartYear = mergedProfiles.StartYear,
         };
-
-        return gas;
     }
-
 }

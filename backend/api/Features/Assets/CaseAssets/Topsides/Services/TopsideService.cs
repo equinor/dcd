@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
@@ -20,12 +18,6 @@ public class TopsideService(
     IRecalculationService recalculationService)
     : ITopsideService
 {
-    public async Task<Topside> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes)
-    {
-        return await repository.GetTopsideWithIncludes(topsideId, includes)
-            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
-    }
-
     public async Task<TopsideDto> UpdateTopside<TDto>(
         Guid projectId,
         Guid caseId,
