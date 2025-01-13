@@ -4,7 +4,6 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
-using api.Features.Assets.CaseAssets.Transports.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,6 @@ namespace api.Features.Assets.CaseAssets.Transports.Services;
 
 public class TransportTimeSeriesService(
     DcdDbContext context,
-    TransportTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
@@ -66,8 +64,8 @@ public class TransportTimeSeriesService(
             transportId,
             costProfileId,
             dto,
-            repository.GetTransportCostProfileOverride,
-            repository.UpdateTransportCostProfileOverride
+            id => context.TransportCostProfileOverride.Include(x => x.Transport).SingleAsync(x => x.Id == id),
+            profile => context.TransportCostProfileOverride.Update(profile)
         );
     }
 
@@ -104,8 +102,8 @@ public class TransportTimeSeriesService(
             transportId,
             profileId,
             dto,
-            repository.GetTransportCostProfile,
-            repository.UpdateTransportCostProfile
+            id => context.TransportCostProfile.Include(x => x.Transport).SingleAsync(x => x.Id == id),
+            profile => context.TransportCostProfile.Update(profile)
         );
     }
 
@@ -141,15 +139,14 @@ public class TransportTimeSeriesService(
         Guid transportId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, ITransportTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
         await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, existingProfile.Transport.Id);
 

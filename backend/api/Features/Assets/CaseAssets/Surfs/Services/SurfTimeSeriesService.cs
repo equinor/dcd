@@ -4,7 +4,6 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
-using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,6 @@ namespace api.Features.Assets.CaseAssets.Surfs.Services;
 
 public class SurfTimeSeriesService(
     DcdDbContext context,
-    SurfTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
@@ -88,8 +86,8 @@ public class SurfTimeSeriesService(
             surfId,
             profileId,
             dto,
-            repository.GetSurfCostProfile,
-            repository.UpdateSurfCostProfile
+            id => context.SurfCostProfile.Include(x => x.Surf).SingleAsync(x => x.Id == id),
+            profile => context.SurfCostProfile.Update(profile)
         );
     }
 
@@ -133,8 +131,8 @@ public class SurfTimeSeriesService(
             surfId,
             costProfileId,
             updatedSurfCostProfileOverrideDto,
-            repository.GetSurfCostProfileOverride,
-            repository.UpdateSurfCostProfileOverride
+            id => context.SurfCostProfileOverride.Include(x => x.Surf).SingleAsync(x => x.Id == id),
+            profile => context.SurfCostProfileOverride.Update(profile)
         );
     }
 
@@ -144,15 +142,14 @@ public class SurfTimeSeriesService(
         Guid surfId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, ISurfTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
         await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, existingProfile.Surf.Id);
 

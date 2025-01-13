@@ -4,7 +4,6 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
-using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,6 @@ namespace api.Features.Assets.CaseAssets.Topsides.Services;
 
 public class TopsideTimeSeriesService(
     DcdDbContext context,
-    TopsideTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
@@ -67,8 +65,8 @@ public class TopsideTimeSeriesService(
             topsideId,
             costProfileId,
             dto,
-            repository.GetTopsideCostProfileOverride,
-            repository.UpdateTopsideCostProfileOverride
+            id => context.TopsideCostProfileOverride.Include(x => x.Topside).SingleAsync(x => x.Id == id),
+            profile => context.TopsideCostProfileOverride.Update(profile)
         );
     }
 
@@ -107,8 +105,8 @@ public class TopsideTimeSeriesService(
             topsideId,
             profileId,
             dto,
-            repository.GetTopsideCostProfile,
-            repository.UpdateTopsideCostProfile
+            id => context.TopsideCostProfiles.Include(x => x.Topside).SingleAsync(x => x.Id == id),
+            profile => context.TopsideCostProfiles.Update(profile)
         );
     }
 
@@ -143,15 +141,14 @@ public class TopsideTimeSeriesService(
         Guid topsideId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, ITopsideTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
         await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, existingProfile.Topside.Id);
 
