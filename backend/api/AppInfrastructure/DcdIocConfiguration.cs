@@ -6,7 +6,6 @@ using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Services;
-using api.Features.Assets.CaseAssets.WellProjects.Repositories;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
@@ -192,7 +191,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<WellProjectService>();
         services.AddScoped<WellProjectTimeSeriesService>();
-        services.AddScoped<WellProjectTimeSeriesRepository>();
 
 
         /* Misc */
