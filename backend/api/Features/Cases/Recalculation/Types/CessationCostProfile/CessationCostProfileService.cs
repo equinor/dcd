@@ -41,7 +41,7 @@ public class CessationCostProfileService(DcdDbContext context)
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
 
 
-        CalculateCessationWellsCost(caseItem, project,linkedWells, lastYearOfProduction);
+        CalculateCessationWellsCost(caseItem, project, linkedWells, lastYearOfProduction);
         GetCessationOffshoreFacilitiesCost(caseItem, surf, lastYearOfProduction);
     }
 
