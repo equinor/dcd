@@ -19,7 +19,7 @@ import { mergeTimeseriesList } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-import { dateStringToDateUtc, getYearFromDateString } from "@/Utils/DateUtils"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()

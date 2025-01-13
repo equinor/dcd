@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import CaseTabTable from "@/Components/Case/Components/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { getYearFromDateString } from "@/Utils/DateUtils";
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface CessationCostsProps {
     tableYears: [number, number];
