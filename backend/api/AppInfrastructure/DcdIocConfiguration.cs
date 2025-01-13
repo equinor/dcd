@@ -49,7 +49,7 @@ using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
-using api.Features.ProjectData.AccessCalculation;
+using api.Features.ProjectIntegrity;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
@@ -142,24 +142,24 @@ public static class DcdIocConfiguration
 
         /* Recalculation services */
         services.AddScoped<IRecalculationService, RecalculationService>();
-        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
-        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
-        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
-        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
-        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
-        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
-        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
-        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
-        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
-        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
-        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
-        services.AddScoped<ICalculateNpvService, CalculateNpvService>();
-        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
+        services.AddScoped<WellCostProfileService>();
+        services.AddScoped<StudyCostProfileService>();
+        services.AddScoped<CessationCostProfileService>();
+        services.AddScoped<FuelFlaringLossesProfileService>();
+        services.AddScoped<GenerateGAndGAdminCostProfile>();
+        services.AddScoped<ImportedElectricityProfileService>();
+        services.AddScoped<NetSaleGasProfileService>();
+        services.AddScoped<OpexCostProfileService>();
+        services.AddScoped<Co2EmissionsProfileService>();
+        services.AddScoped<CalculateTotalIncomeService>();
+        services.AddScoped<CalculateTotalCostService>();
+        services.AddScoped<CalculateNpvService>();
+        services.AddScoped<CalculateBreakEvenOilPriceService>();
 
         /* Auth */
         services.AddScoped<CurrentUser>();
         services.AddScoped<IAuthorizationHandler, DcdAuthorizationHandler>();
-        services.AddScoped<IProjectAccessService, ProjectAccessService>();
+        services.AddScoped<IProjectIntegrityService, ProjectIntegrityService>();
 
         /* Prosp / Excel import */
         services.AddScoped<ProspExcelImportService>();

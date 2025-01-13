@@ -2,7 +2,7 @@ using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Models;
 
-namespace api.Features.ProjectData.AccessCalculation;
+namespace api.Features.ProjectAccess;
 
 public static class AccessCalculator
 {

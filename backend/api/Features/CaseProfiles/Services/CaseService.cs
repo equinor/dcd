@@ -14,11 +14,6 @@ public class CaseService(
     ICaseRepository repository)
     : ICaseService
 {
-    public async Task<Project> GetProject(Guid id)
-    {
-        return await repository.GetProject(id);
-    }
-
     public async Task<Case> GetCase(Guid caseId)
     {
         var caseItem = await context.Cases

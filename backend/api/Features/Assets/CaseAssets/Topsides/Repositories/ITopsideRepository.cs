@@ -10,5 +10,4 @@ public interface ITopsideRepository
     Task<Topside?> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes);
     Task<bool> TopsideHasCostProfileOverride(Guid topsideId);
     Task<Topside?> GetTopsideWithCostProfile(Guid topsideId);
-    Topside UpdateTopside(Topside topside);
 }

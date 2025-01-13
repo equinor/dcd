@@ -1,11 +1,11 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.ProjectData.AccessCalculation;
+using api.Features.ProjectAccess;
 using api.Models;
 
 using Xunit;
 
-namespace tests.Features.ProjectData.AccessCalculation;
+namespace tests.Features.ProjectAccess;
 
 public class UserActionCalculatorTests
 {

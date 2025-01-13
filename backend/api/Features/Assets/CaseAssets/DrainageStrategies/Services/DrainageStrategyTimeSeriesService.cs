@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,7 +16,7 @@ public class DrainageStrategyTimeSeriesService(
     IDrainageStrategyTimeSeriesRepository repository,
     IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
     IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IDrainageStrategyTimeSeriesService
 {
@@ -471,7 +471,7 @@ public class DrainageStrategyTimeSeriesService(
         var projectPk = await caseRepository.GetPrimaryKeyForProjectId(projectId);
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<DrainageStrategy>(projectPk, existingProfile.DrainageStrategy.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<DrainageStrategy>(projectPk, existingProfile.DrainageStrategy.Id);
 
         var project = await caseRepository.GetProject(projectPk);
 
@@ -497,7 +497,7 @@ public class DrainageStrategyTimeSeriesService(
         where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
+        await projectIntegrityService.EntityIsConnectedToProject<DrainageStrategy>(projectId, drainageStrategyId);
 
         var drainageStrategy = await drainageStrategyTimeSeriesRepository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDbException($"Drainage strategy with id {drainageStrategyId} not found.");

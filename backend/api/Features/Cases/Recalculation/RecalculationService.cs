@@ -90,70 +90,70 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         await context.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
         {
-            await serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
-            await serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wells);
+            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(wells);
         }
         if (rerunStudyCost)
         {
-            await serviceProvider.GetRequiredService<IStudyCostProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<StudyCostProfileService>().Generate(caseId);
         }
 
         if (rerunCessationCostProfile)
         {
-            await serviceProvider.GetRequiredService<ICessationCostProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<CessationCostProfileService>().Generate(caseId);
         }
 
         if (rerunFuelFlaringAndLosses)
         {
-            await serviceProvider.GetRequiredService<IFuelFlaringLossesProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<FuelFlaringLossesProfileService>().Generate(caseId);
         }
 
         if (rerunGAndGAdminCost)
         {
-            await serviceProvider.GetRequiredService<IGenerateGAndGAdminCostProfile>().Generate(caseId);
+            await serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>().Generate(caseId);
         }
 
         if (rerunImportedElectricity)
         {
-            await serviceProvider.GetRequiredService<IImportedElectricityProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<ImportedElectricityProfileService>().Generate(caseId);
         }
 
         if (rerunNetSalesGas)
         {
-            await serviceProvider.GetRequiredService<INetSaleGasProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<NetSaleGasProfileService>().Generate(caseId);
         }
 
         if (rerunOpex)
         {
-            await serviceProvider.GetRequiredService<IOpexCostProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<OpexCostProfileService>().Generate(caseId);
         }
 
         if (rerunCo2Emissions)
         {
-            await serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<Co2EmissionsProfileService>().Generate(caseId);
         }
 
         if (rerunTotalIncome)
         {
-            var calculateIncomeHelper = serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
+            var calculateIncomeHelper = serviceProvider.GetRequiredService<CalculateTotalIncomeService>();
             await calculateIncomeHelper.CalculateTotalIncome(caseId);
         }
 
         if (rerunTotalCost)
         {
-            var calculateCostHelper = serviceProvider.GetRequiredService<ICalculateTotalCostService>();
+            var calculateCostHelper = serviceProvider.GetRequiredService<CalculateTotalCostService>();
             await calculateCostHelper.CalculateTotalCost(caseId);
         }
 
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateNpv)
         {
-            var calculateNpvHelper = serviceProvider.GetRequiredService<ICalculateNpvService>();
+            var calculateNpvHelper = serviceProvider.GetRequiredService<CalculateNpvService>();
             await calculateNpvHelper.CalculateNpv(caseId);
         }
 
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
         {
-            var calculateBreakEvenHelper = serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
+            var calculateBreakEvenHelper = serviceProvider.GetRequiredService<CalculateBreakEvenOilPriceService>();
             await calculateBreakEvenHelper.CalculateBreakEvenOilPrice(caseId);
         }
     }

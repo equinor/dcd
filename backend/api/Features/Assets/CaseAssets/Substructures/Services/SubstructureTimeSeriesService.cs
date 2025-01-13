@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,7 +16,7 @@ public class SubstructureTimeSeriesService(
     ISubstructureTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ISubstructureTimeSeriesService
 {
@@ -28,7 +28,7 @@ public class SubstructureTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
+        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 
         var substructure = await substructureRepository.GetSubstructureWithCostProfile(substructureId)
             ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
@@ -94,7 +94,7 @@ public class SubstructureTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
+        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 
         var substructure = await substructureRepository.GetSubstructure(substructureId)
             ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
@@ -157,7 +157,7 @@ public class SubstructureTimeSeriesService(
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Substructure>(projectId, existingProfile.Substructure.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, existingProfile.Substructure.Id);
 
         if (existingProfile.Substructure.ProspVersion == null)
         {

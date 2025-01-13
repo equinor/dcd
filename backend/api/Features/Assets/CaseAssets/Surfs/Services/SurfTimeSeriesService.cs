@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,7 +16,7 @@ public class SurfTimeSeriesService(
     ISurfRepository surfRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ISurfTimeSeriesService
 {
@@ -28,7 +28,7 @@ public class SurfTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Surf>(projectId, surfId);
+        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
 
         var surf = await surfRepository.GetSurf(surfId)
             ?? throw new NotFoundInDbException($"Surf with id {surfId} not found.");
@@ -63,7 +63,7 @@ public class SurfTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Surf>(projectId, surfId);
+        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
 
         var surf = await surfRepository.GetSurfWithCostProfile(surfId)
             ?? throw new NotFoundInDbException($"Surf with id {surfId} not found.");
@@ -158,7 +158,7 @@ public class SurfTimeSeriesService(
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, existingProfile.Surf.Id);
 
         if (existingProfile.Surf.ProspVersion == null)
         {

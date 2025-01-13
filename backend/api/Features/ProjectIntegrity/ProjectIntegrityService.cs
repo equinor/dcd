@@ -2,9 +2,9 @@ using api.Context;
 using api.Exceptions;
 using api.Models.Interfaces;
 
-namespace api.Features.ProjectAccess;
+namespace api.Features.ProjectIntegrity;
 
-public class ProjectAccessService(DcdDbContext context) : IProjectAccessService
+public class ProjectIntegrityService(DcdDbContext context) : IProjectIntegrityService
 {
     /// <summary>
     /// Checks whether the project with the specified project ID exists on the entity with the given entity ID.
@@ -12,7 +12,7 @@ public class ProjectAccessService(DcdDbContext context) : IProjectAccessService
     /// </summary>
     /// <param name="projectIdFromUrl">The project ID extracted from the URL.</param>
     /// <param name="entityId">The ID of the entity being accessed.</param>
-    public async Task ProjectExists<T>(Guid projectIdFromUrl, Guid entityId)
+    public async Task EntityIsConnectedToProject<T>(Guid projectIdFromUrl, Guid entityId)
         where T : class, IHasProjectId
     {
         var entity = await context.Set<T>().FindAsync(entityId);
@@ -24,7 +24,7 @@ public class ProjectAccessService(DcdDbContext context) : IProjectAccessService
 
         if (entity.ProjectId != projectIdFromUrl)
         {
-            throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.");
+            throw new ProjectIntegrityException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.");
         }
     }
 }

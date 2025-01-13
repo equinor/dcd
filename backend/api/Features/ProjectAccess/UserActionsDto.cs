@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.ProjectData.Dtos;
+namespace api.Features.ProjectAccess;
 
 public class UserActionsDto
 {

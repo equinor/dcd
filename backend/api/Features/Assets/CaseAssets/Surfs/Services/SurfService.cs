@@ -1,12 +1,9 @@
-using System.Linq.Expressions;
-
-using api.Exceptions;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,16 +13,10 @@ public class SurfService(
     ISurfRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ISurfService
 {
-    public async Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
-    {
-        return await repository.GetSurfWithIncludes(surfId, includes)
-            ?? throw new NotFoundInDbException($"Topside with id {surfId} not found.");
-    }
-
     public async Task<SurfDto> UpdateSurf<TDto>(
         Guid projectId,
         Guid caseId,
@@ -35,7 +26,7 @@ public class SurfService(
         where TDto : BaseUpdateSurfDto
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Surf>(projectId, surfId);
+        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
 
         var existingSurf = await repository.GetSurf(surfId)
             ?? throw new ArgumentException($"Surf with id {surfId} not found.");

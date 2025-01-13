@@ -1,28 +1,26 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.CaseProfiles.Services;
+using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 
-public class CalculateBreakEvenOilPriceService(
-    ICaseService caseService,
-    IDrainageStrategyService drainageStrategyService) : ICalculateBreakEvenOilPriceService
+public class CalculateBreakEvenOilPriceService(DcdDbContext context)
 {
     public async Task CalculateBreakEvenOilPrice(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(
-            caseId,
-            c => c.Project
-        );
+        var caseItem = await context.Cases
+            .Include(x => x.Project)
+            .Include(x => x.CalculatedTotalCostCostProfile)
+            .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!
-        );
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         CalculateBreakEvenOilPrice(caseItem, drainageStrategy);
     }
@@ -39,7 +37,10 @@ public class CalculateBreakEvenOilPriceService(
             drainageStrategy.AdditionalProductionProfileOil
         );
 
-        if (oilVolume.Values.Length == 0) { return; }
+        if (oilVolume.Values.Length == 0)
+        {
+            return;
+        }
 
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
@@ -67,7 +68,10 @@ public class CalculateBreakEvenOilPriceService(
             oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year)
         );
 
-        if (discountedOilVolume == 0 || discountedGasVolume == 0) { return; }
+        if (discountedOilVolume == 0 || discountedGasVolume == 0)
+        {
+            return;
+        }
 
         var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
             caseItem.CalculatedTotalCostCostProfile?.Values ?? [],
@@ -81,10 +85,7 @@ public class CalculateBreakEvenOilPriceService(
 
         var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / 6.29;
 
-        if (caseItem != null)
-        {
-            caseItem.BreakEven = breakEvenPrice / caseItem.Project.ExchangeRateUSDToNOK;
-        }
+        caseItem.BreakEven = breakEvenPrice / caseItem.Project.ExchangeRateUSDToNOK;
     }
 }
 

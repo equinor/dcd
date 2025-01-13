@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using api.Context;
 using api.Features.CaseProfiles.Repositories;
 using api.Models;
@@ -15,11 +13,6 @@ public class SubstructureRepository(DcdDbContext context) : BaseRepository(conte
         return await Get<Substructure>(substructureId);
     }
 
-    public async Task<Substructure?> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
-    {
-        return await GetWithIncludes(substructureId, includes);
-    }
-
     public async Task<Substructure?> GetSubstructureWithCostProfile(Guid substructureId)
     {
         return await Context.Substructures
@@ -31,10 +24,5 @@ public class SubstructureRepository(DcdDbContext context) : BaseRepository(conte
     {
         return await Context.Substructures
             .AnyAsync(t => t.Id == substructureId && t.CostProfileOverride != null);
-    }
-
-    public Substructure UpdateSubstructure(Substructure substructure)
-    {
-        return Update(substructure);
     }
 }

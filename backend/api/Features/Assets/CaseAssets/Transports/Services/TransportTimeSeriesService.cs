@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Repositories;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,7 +16,7 @@ public class TransportTimeSeriesService(
     ITransportRepository transportRepository,
     ITransportTimeSeriesRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ITransportTimeSeriesService
 {
@@ -28,7 +28,7 @@ public class TransportTimeSeriesService(
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Transport>(projectId, transportId);
+        await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, transportId);
 
         var transport = await transportRepository.GetTransport(transportId)
             ?? throw new NotFoundInDbException($"Transport with id {transportId} not found.");
@@ -154,7 +154,7 @@ public class TransportTimeSeriesService(
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, existingProfile.Transport.Id);
 
         if (existingProfile.Transport.ProspVersion == null)
         {

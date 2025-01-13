@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Types.WellCostProfile;
 
-public class WellCostProfileService(DcdDbContext context) : IWellCostProfileService
+public class WellCostProfileService(DcdDbContext context)
 {
     public async Task UpdateCostProfilesForWellsFromDrillingSchedules(List<Guid> drillingScheduleIds)
     {

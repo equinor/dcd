@@ -1,98 +1,78 @@
-using api.Features.Assets.CaseAssets.Explorations.Services;
-using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Services;
-using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.Assets.CaseAssets.Transports.Services;
-using api.Features.Assets.CaseAssets.WellProjects.Services;
-using api.Features.CaseProfiles.Services;
+using api.Context;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 
-public class CalculateTotalCostService(
-    ICaseService caseService,
-    ISubstructureService substructureService,
-    ISurfService surfService,
-    ITopsideService topsideService,
-    ITransportService transportService,
-    IOnshorePowerSupplyService onshorePowerSupplyService,
-    IWellProjectService wellProjectService,
-    IExplorationService explorationService)
-    : ICalculateTotalCostService
+public class CalculateTotalCostService(DcdDbContext context)
 {
     public async Task CalculateTotalCost(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(
-            caseId,
-            c => c.TotalFeasibilityAndConceptStudies!,
-            c => c.TotalFeasibilityAndConceptStudiesOverride!,
-            c => c.TotalFEEDStudies!,
-            c => c.TotalFEEDStudiesOverride!,
-            c => c.TotalOtherStudiesCostProfile!,
-            c => c.HistoricCostCostProfile!,
-            c => c.WellInterventionCostProfile!,
-            c => c.WellInterventionCostProfileOverride!,
-            c => c.OffshoreFacilitiesOperationsCostProfile!,
-            c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
-            c => c.OnshoreRelatedOPEXCostProfile!,
-            c => c.AdditionalOPEXCostProfile!,
-            c => c.CessationWellsCost!,
-            c => c.CessationWellsCostOverride!,
-            c => c.CessationOffshoreFacilitiesCost!,
-            c => c.CessationOffshoreFacilitiesCostOverride!,
-            c => c.CessationOnshoreFacilitiesCostProfile!
-        );
+        var caseItem = await context.Cases
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.HistoricCostCostProfile)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .SingleAsync(x => x.Id == caseId);
 
-        var substructure = await substructureService.GetSubstructureWithIncludes(
-            caseItem.SubstructureLink,
-            s => s.CostProfileOverride!,
-            s => s.CostProfile!
-        );
+        var substructure = await context.Substructures
+            .Include(s => s.CostProfileOverride)
+            .Include(s => s.CostProfile)
+            .SingleAsync(x => x.Id == caseItem.SubstructureLink);
 
-        var surf = await surfService.GetSurfWithIncludes(
-            caseItem.SurfLink,
-            s => s.CostProfileOverride!,
-            s => s.CostProfile!
-        );
+        var surf = await context.Surfs
+            .Include(x => x.CostProfile)
+            .Include(x => x.CostProfileOverride)
+            .SingleAsync(x => x.Id == caseItem.SurfLink);
 
-        var topside = await topsideService.GetTopsideWithIncludes(
-            caseItem.TopsideLink,
-            t => t.CostProfileOverride!,
-            t => t.CostProfile!
-        );
+        var topside = await context.Topsides
+            .Include(x => x.CostProfile)
+            .Include(x => x.CostProfileOverride)
+            .SingleAsync(x => x.Id == caseItem.TopsideLink);
 
-        var transport = await transportService.GetTransportWithIncludes(
-            caseItem.TransportLink,
-            t => t.CostProfileOverride!,
-            t => t.CostProfile!
-        );
+        var transport = await context.Transports
+            .Include(x => x.CostProfile)
+            .Include(x => x.CostProfileOverride)
+            .SingleAsync(x => x.Id == caseItem.TransportLink);
 
-        var onshorePowerSupply = await onshorePowerSupplyService.GetOnshorePowerSupplyWithIncludes(
-            caseItem.OnshorePowerSupplyLink,
-            o => o.CostProfileOverride!,
-            o => o.CostProfile!
-        );
+        var onshorePowerSupply = await context.OnshorePowerSupplies
+            .Include(x => x.CostProfile)
+            .Include(x => x.CostProfileOverride)
+            .SingleAsync(x => x.Id == caseItem.OnshorePowerSupplyLink);
 
-        var wellProject = await wellProjectService.GetWellProjectWithIncludes(
-            caseItem.WellProjectLink,
-            w => w.OilProducerCostProfileOverride!,
-            w => w.OilProducerCostProfile!,
-            w => w.GasProducerCostProfileOverride!,
-            w => w.GasProducerCostProfile!,
-            w => w.WaterInjectorCostProfileOverride!,
-            w => w.WaterInjectorCostProfile!,
-            w => w.GasInjectorCostProfileOverride!,
-            w => w.GasInjectorCostProfile!
-        );
+        var wellProject = await context.WellProjects
+            .Include(x => x.OilProducerCostProfileOverride)
+            .Include(x => x.OilProducerCostProfile)
+            .Include(x => x.GasProducerCostProfileOverride)
+            .Include(x => x.GasProducerCostProfile)
+            .Include(x => x.WaterInjectorCostProfileOverride)
+            .Include(x => x.WaterInjectorCostProfile)
+            .Include(x => x.GasInjectorCostProfileOverride)
+            .Include(x => x.GasInjectorCostProfile)
+            .SingleAsync(x => x.Id == caseItem.WellProjectLink);
 
-        var exploration = await explorationService.GetExplorationWithIncludes(
-            caseItem.ExplorationLink,
-            e => e.GAndGAdminCost!,
-            e => e.CountryOfficeCost!,
-            e => e.SeismicAcquisitionAndProcessing!,
-            e => e.ExplorationWellCostProfile!,
-            e => e.AppraisalWellCostProfile!,
-            e => e.SidetrackCostProfile!);
+        var exploration = await context.Explorations
+            .Include(e => e.GAndGAdminCost)
+            .Include(e => e.CountryOfficeCost)
+            .Include(e => e.SeismicAcquisitionAndProcessing)
+            .Include(e => e.ExplorationWellCostProfile)
+            .Include(e => e.AppraisalWellCostProfile)
+            .Include(e => e.SidetrackCostProfile)
+            .SingleAsync(x => x.Id == caseItem.ExplorationLink);
 
         CalculateTotalCost(caseItem, substructure, surf, topside, transport, onshorePowerSupply, wellProject, exploration);
     }

@@ -5,7 +5,7 @@ using api.Features.Assets.CaseAssets.WellProjects.Repositories;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
 using api.Models;
@@ -17,7 +17,7 @@ public class WellProjectTimeSeriesService(
     IWellProjectRepository wellProjectRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IWellProjectTimeSeriesService
 {
@@ -182,7 +182,7 @@ public class WellProjectTimeSeriesService(
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, existingProfile.WellProject.Id);
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
@@ -206,7 +206,7 @@ public class WellProjectTimeSeriesService(
         where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
+        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
 
         var wellProject = await wellProjectRepository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDbException($"Well project with id {wellProjectId} not found.");

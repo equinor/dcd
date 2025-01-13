@@ -6,7 +6,7 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -15,7 +15,7 @@ public class OnshorePowerSupplyTimeSeriesService(
     IOnshorePowerSupplyRepository onshorePowerSupplyRepository,
     IOnshorePowerSupplyTimeSeriesRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : IOnshorePowerSupplyTimeSeriesService
 {
@@ -26,7 +26,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         CreateOnshorePowerSupplyCostProfileOverrideDto dto
     )
     {
-        await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
+        await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
         var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
             ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
@@ -151,7 +151,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
-        await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
 
         if (existingProfile.OnshorePowerSupply.ProspVersion == null)
         {

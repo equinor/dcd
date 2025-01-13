@@ -5,7 +5,7 @@ using api.Features.CaseProfiles.Dtos.Update;
 using api.Features.CaseProfiles.Enums;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectAccess;
+using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -15,7 +15,7 @@ public class CaseTimeSeriesService(
     ICaseTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService,
+    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
     : ICaseTimeSeriesService
 {
@@ -387,7 +387,7 @@ public class CaseTimeSeriesService(
             ?? throw new NotFoundInDbException($"Production profile with id {costProfileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Case>(projectId, existingProfile.Case.Id);
+        await projectIntegrityService.EntityIsConnectedToProject<Case>(projectId, existingProfile.Case.Id);
 
         mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
@@ -410,7 +410,7 @@ public class CaseTimeSeriesService(
         where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Case>(projectId, caseId);
+        await projectIntegrityService.EntityIsConnectedToProject<Case>(projectId, caseId);
 
         var caseEntity = await caseRepository.GetCase(caseId)
             ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");

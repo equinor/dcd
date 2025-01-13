@@ -32,9 +32,4 @@ public class TopsideRepository(DcdDbContext context) : BaseRepository(context), 
         return await Context.Topsides
             .AnyAsync(t => t.Id == topsideId && t.CostProfileOverride != null);
     }
-
-    public Topside UpdateTopside(Topside topside)
-    {
-        return Update(topside);
-    }
 }

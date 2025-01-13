@@ -1,44 +1,68 @@
 using System.Globalization;
 
-using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Services;
-using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.Assets.CaseAssets.Transports.Services;
-using api.Features.Assets.CaseAssets.WellProjects.Services;
-using api.Features.CaseProfiles.Services;
+using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Cases.Recalculation.Types.StudyCostProfile;
 
-public class StudyCostProfileService(
-    ICaseService caseService,
-    IWellProjectService wellProjectService,
-    ITopsideService topsideService,
-    ISubstructureService substructureService,
-    ISurfService surfService,
-    ITransportService transportService,
-    IOnshorePowerSupplyService onshorePowerSupplyService)
-    : IStudyCostProfileService
+public class StudyCostProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(
-            caseId,
-            c => c.TotalFeasibilityAndConceptStudies!,
-            c => c.TotalFeasibilityAndConceptStudiesOverride!,
-            c => c.TotalFEEDStudies!,
-            c => c.TotalFEEDStudiesOverride!
-        );
+        var caseItem = await context.Cases
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
+            .SingleAsync(x => x.Id == caseId);
 
-        var sumFacilityCost = await SumAllCostFacility(caseItem);
-        var sumWellCost = await SumWellCost(caseItem);
+        var substructure = await context.Substructures
+            .Include(s => s.CostProfileOverride)
+            .Include(s => s.CostProfile)
+            .SingleAsync(x => x.Id == caseItem.SubstructureLink);
+
+        var surf = await context.Surfs
+            .Include(s => s.CostProfileOverride)
+            .Include(s => s.CostProfile)
+            .SingleAsync(x => x.Id == caseItem.SurfLink);
+
+        var topside = await context.Topsides
+            .Include(s => s.CostProfileOverride)
+            .Include(s => s.CostProfile)
+            .SingleAsync(x => x.Id == caseItem.TopsideLink);
+
+        var transport = await context.Transports
+            .Include(s => s.CostProfileOverride)
+            .Include(s => s.CostProfile)
+            .SingleAsync(x => x.Id == caseItem.TransportLink);
+
+        var onshorePowerSupply = await context.OnshorePowerSupplies
+            .Include(o => o.CostProfileOverride)
+            .Include(o => o.CostProfile)
+            .SingleAsync(x => x.Id == caseItem.OnshorePowerSupplyLink);
+
+        var wellProject = await context.WellProjects
+            .Include(w => w.OilProducerCostProfileOverride)
+            .Include(w => w.OilProducerCostProfile)
+            .Include(w => w.GasProducerCostProfileOverride)
+            .Include(w => w.GasProducerCostProfile)
+            .Include(w => w.WaterInjectorCostProfileOverride)
+            .Include(w => w.WaterInjectorCostProfile)
+            .Include(w => w.GasInjectorCostProfileOverride)
+            .Include(w => w.GasInjectorCostProfile)
+            .SingleAsync(x => x.Id == caseItem.WellProjectLink);
+
+        var sumFacilityCost = SumAllCostFacility(substructure, surf, topside, transport, onshorePowerSupply);
+        var sumWellCost = SumWellCost(wellProject);
 
         CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
     }
 
-    public void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public static void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
         {
@@ -97,7 +121,7 @@ public class StudyCostProfileService(
         }
     }
 
-    public void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public static void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         if (caseItem.TotalFEEDStudiesOverride?.Override == true)
         {
@@ -161,39 +185,13 @@ public class StudyCostProfileService(
         }
     }
 
-    public async Task<double> SumAllCostFacility(Case caseItem)
+    private static double SumAllCostFacility(Substructure substructure,
+        Surf surf,
+        Topside topside,
+        Transport transport,
+        OnshorePowerSupply onshorePowerSupply)
     {
         var sumFacilityCost = 0.0;
-
-        var substructure = await substructureService.GetSubstructureWithIncludes(
-            caseItem.SubstructureLink,
-            s => s.CostProfileOverride!,
-            s => s.CostProfile!
-        );
-
-        var surf = await surfService.GetSurfWithIncludes(
-            caseItem.SurfLink,
-            s => s.CostProfileOverride!,
-            s => s.CostProfile!
-        );
-
-        var topside = await topsideService.GetTopsideWithIncludes(
-            caseItem.TopsideLink,
-            t => t.CostProfileOverride!,
-            t => t.CostProfile!
-        );
-
-        var transport = await transportService.GetTransportWithIncludes(
-            caseItem.TransportLink,
-            t => t.CostProfileOverride!,
-            t => t.CostProfile!
-        );
-
-        var onshorePowerSupply = await onshorePowerSupplyService.GetOnshorePowerSupplyWithIncludes(
-            caseItem.OnshorePowerSupplyLink,
-            o => o.CostProfileOverride!,
-            o => o.CostProfile!
-        );
 
         sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
@@ -204,21 +202,9 @@ public class StudyCostProfileService(
         return sumFacilityCost;
     }
 
-    public async Task<double> SumWellCost(Case caseItem)
+    public static double SumWellCost(WellProject wellProject)
     {
         var sumWellCost = 0.0;
-
-        var wellProject = await wellProjectService.GetWellProjectWithIncludes(
-            caseItem.WellProjectLink,
-            w => w.OilProducerCostProfileOverride!,
-            w => w.OilProducerCostProfile!,
-            w => w.GasProducerCostProfileOverride!,
-            w => w.GasProducerCostProfile!,
-            w => w.WaterInjectorCostProfileOverride!,
-            w => w.WaterInjectorCostProfile!,
-            w => w.GasInjectorCostProfileOverride!,
-            w => w.GasInjectorCostProfile!
-        );
 
         sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
         sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
@@ -240,10 +226,12 @@ public class StudyCostProfileService(
         {
             return profileOverride.Values.Sum();
         }
-        else if (profile != null)
+
+        if (profile != null)
         {
             return profile.Values.Sum();
         }
+
         return 0;
     }
 }
