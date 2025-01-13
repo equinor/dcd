@@ -1,23 +1,25 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
+
 public class OnshorePowerSupplyTimeSeriesService(
-    ICaseRepository caseRepository,
-    IOnshorePowerSupplyRepository onshorePowerSupplyRepository,
-    IOnshorePowerSupplyTimeSeriesRepository repository,
+    DcdDbContext context,
+    OnshorePowerSupplyTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : IOnshorePowerSupplyTimeSeriesService
 {
     public async Task<OnshorePowerSupplyCostProfileOverrideDto> CreateOnshorePowerSupplyCostProfileOverride(
         Guid projectId,
@@ -28,29 +30,27 @@ public class OnshorePowerSupplyTimeSeriesService(
     {
         await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
-        var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
-            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+        var onshorePowerSupply = await context.OnshorePowerSupplies.SingleAsync(x => x.Id == onshorePowerSupplyId);;
 
-        var resourceHasProfile = await onshorePowerSupplyRepository.OnshorePowerSupplyHasCostProfileOverride(onshorePowerSupplyId);
+        var resourceHasProfile = await context.OnshorePowerSupplies.AnyAsync(t => t.Id == onshorePowerSupplyId && t.CostProfileOverride != null);
 
         if (resourceHasProfile)
         {
-            throw new ResourceAlreadyExistsException($"OnshorePowerSupply with id {onshorePowerSupplyId} already has a profile of type {typeof(OnshorePowerSupplyCostProfileOverride).Name}.");
+            throw new ResourceAlreadyExistsException($"OnshorePowerSupply with id {onshorePowerSupplyId} already has a profile of type {nameof(OnshorePowerSupplyCostProfileOverride)}.");
         }
 
         OnshorePowerSupplyCostProfileOverride profile = new()
         {
-            OnshorePowerSupply = onshorePowerSupply,
+            OnshorePowerSupply = onshorePowerSupply
         };
 
         var newProfile = mapperService.MapToEntity(dto, profile, onshorePowerSupplyId);
 
-        var createdProfile = repository.CreateOnshorePowerSupplyCostProfileOverride(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.OnshorePowerSupplyCostProfileOverride.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>(newProfile, newProfile.Id);
     }
 
     public async Task<OnshorePowerSupplyCostProfileOverrideDto> UpdateOnshorePowerSupplyCostProfileOverride(
@@ -78,8 +78,9 @@ public class OnshorePowerSupplyTimeSeriesService(
         UpdateOnshorePowerSupplyCostProfileDto dto
     )
     {
-        var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupplyWithCostProfile(onshorePowerSupplyId)
-            ?? throw new NotFoundInDbException($"OnshorePowerSupply with id {onshorePowerSupplyId} not found.");
+        var onshorePowerSupply = await context.OnshorePowerSupplies
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == onshorePowerSupplyId);
 
         if (onshorePowerSupply.CostProfile != null)
         {
@@ -115,7 +116,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         OnshorePowerSupply onshorePowerSupply
     )
     {
-        OnshorePowerSupplyCostProfile onshorePowerSupplyCostProfile = new OnshorePowerSupplyCostProfile
+        var onshorePowerSupplyCostProfile = new OnshorePowerSupplyCostProfile
         {
             OnshorePowerSupply = onshorePowerSupply
         };
@@ -127,12 +128,12 @@ public class OnshorePowerSupplyTimeSeriesService(
             newProfile.OnshorePowerSupply.CostProfileOverride.Override = false;
         }
 
-        repository.CreateOnshorePowerSupplyCostProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.OnshorePowerSupplyCostProfile.Add(newProfile);
+
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var newDto = mapperService.MapToDto<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>(newProfile, newProfile.Id);
-        return newDto;
+        return mapperService.MapToDto<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>(newProfile, newProfile.Id);
     }
 
     private async Task<TDto> UpdateOnshorePowerSupplyTimeSeries<TProfile, TDto, TUpdateDto>(
@@ -149,7 +150,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+                              ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
 
         await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
 
@@ -163,10 +164,9 @@ public class OnshorePowerSupplyTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, onshorePowerSupplyId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 }

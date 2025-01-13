@@ -184,6 +184,9 @@ public static class DcdIocConfiguration
         services.AddScoped<ExplorationTimeSeriesService>();
         services.AddScoped<ExplorationTimeSeriesRepository>();
 
+        services.AddScoped<OnshorePowerSupplyService>();
+        services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
+        services.AddScoped<OnshorePowerSupplyTimeSeriesRepository>();
 
 
         /* Misc */
@@ -195,7 +198,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureService, SubstructureService>();
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
-        services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
@@ -203,7 +205,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
         services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
-        services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();
@@ -215,7 +216,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IWellProjectRepository, WellProjectRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
         services.AddScoped<ISurfRepository, SurfRepository>();
-        services.AddScoped<IOnshorePowerSupplyRepository, OnshorePowerSupplyRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
         services.AddScoped<ISubstructureTimeSeriesRepository, SubstructureTimeSeriesRepository>();
@@ -223,6 +223,5 @@ public static class DcdIocConfiguration
         services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
-        services.AddScoped<IOnshorePowerSupplyTimeSeriesRepository, OnshorePowerSupplyTimeSeriesRepository>();
     }
 }

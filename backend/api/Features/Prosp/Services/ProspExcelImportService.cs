@@ -30,12 +30,12 @@ public class ProspExcelImportService(
     ISubstructureService substructureService,
     ITopsideService topsideService,
     ITransportService transportService,
-    IOnshorePowerSupplyService onshorePowerSupplyService,
+    OnshorePowerSupplyService onshorePowerSupplyService,
     ISubstructureTimeSeriesService substructureTimeSeriesService,
     ISurfTimeSeriesService surfTimeSeriesService,
     ITopsideTimeSeriesService topsideTimeSeriesService,
     ITransportTimeSeriesService transportTimeSeriesService,
-    IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
+    OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IRecalculationService recalculationService)
 {
     private const string SheetName = "main";
