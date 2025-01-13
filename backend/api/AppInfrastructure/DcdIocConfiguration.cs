@@ -3,7 +3,6 @@ using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Explorations.Services;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.Assets.CaseAssets.Topsides.Services;
@@ -186,7 +185,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<SurfService>();
         services.AddScoped<SurfTimeSeriesService>();
-        services.AddScoped<SurfTimeSeriesRepository>();
 
         services.AddScoped<TopsideService>();
         services.AddScoped<TopsideTimeSeriesService>();
