@@ -4,7 +4,6 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,6 @@ namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 
 public class OnshorePowerSupplyTimeSeriesService(
     DcdDbContext context,
-    OnshorePowerSupplyTimeSeriesRepository repository,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
@@ -66,8 +64,8 @@ public class OnshorePowerSupplyTimeSeriesService(
             onshorePowerSupplyId,
             costProfileId,
             dto,
-            repository.GetOnshorePowerSupplyCostProfileOverride,
-            repository.UpdateOnshorePowerSupplyCostProfileOverride
+            id => context.OnshorePowerSupplyCostProfileOverride.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id),
+            profile => context.OnshorePowerSupplyCostProfileOverride.Update(profile)
         );
     }
 
@@ -104,8 +102,8 @@ public class OnshorePowerSupplyTimeSeriesService(
             onshorePowerSupplyId,
             profileId,
             dto,
-            repository.GetOnshorePowerSupplyCostProfile,
-            repository.UpdateOnshorePowerSupplyCostProfile
+            id => context.OnshorePowerSupplyCostProfile.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id),
+            profile => context.OnshorePowerSupplyCostProfile.Update(profile)
         );
     }
 
@@ -142,15 +140,14 @@ public class OnshorePowerSupplyTimeSeriesService(
         Guid onshorePowerSupplyId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, IOnshorePowerSupplyTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-                              ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
         await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
 
