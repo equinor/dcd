@@ -204,24 +204,24 @@ public static class DcdIocConfiguration
         services.AddScoped<TransportTimeSeriesService>();
         services.AddScoped<TransportTimeSeriesRepository>();
 
+        services.AddScoped<WellProjectService>();
+        services.AddScoped<WellProjectTimeSeriesService>();
+        services.AddScoped<WellProjectTimeSeriesRepository>();
+
 
         /* Misc */
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
 
-        services.AddScoped<IWellProjectService, WellProjectService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
-        services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
 
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();
-        services.AddScoped<IWellProjectRepository, WellProjectRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
-        services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
     }
 }
