@@ -1,8 +1,4 @@
 using api.Context;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.Assets.CaseAssets.Surfs.Services;
-using api.Features.CaseProfiles.Repositories;
-using api.Features.CaseProfiles.Services;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Models;
 
@@ -10,41 +6,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Types.CessationCostProfile;
 
-public class CessationCostProfileService(
-    DcdDbContext context,
-    ICaseService caseService,
-    IDrainageStrategyService drainageStrategyService,
-    ISurfService surfService,
-    IProjectWithAssetsRepository projectWithAssetsRepository)
-    : ICessationCostProfileService
+public class CessationCostProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(
-            caseId,
-            c => c.CessationWellsCostOverride!,
-            c => c.CessationWellsCost!,
-            c => c.CessationOffshoreFacilitiesCostOverride!,
-            c => c.CessationOffshoreFacilitiesCost!
-        );
+        var caseItem = await context.Cases
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!
-        );
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
+
+        var surf = await context.Surfs.SingleAsync(x => x.Id == caseItem.SurfLink);
+
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .ToListAsync();
+
+        var project = await context.Projects
+            .Include(p => p.Cases)
+            .Include(p => p.Wells)
+            .Include(p => p.ExplorationOperationalWellCosts)
+            .Include(p => p.DevelopmentOperationalWellCosts)
+            .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
 
-        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
 
-        await CalculateCessationWellsCost(caseItem, project, lastYearOfProduction);
-        await GetCessationOffshoreFacilitiesCost(caseItem, lastYearOfProduction);
+        CalculateCessationWellsCost(caseItem, project,linkedWells, lastYearOfProduction);
+        GetCessationOffshoreFacilitiesCost(caseItem, surf, lastYearOfProduction);
     }
 
-    private async Task CalculateCessationWellsCost(Case caseItem, Project project, int? lastYear)
+    private static void CalculateCessationWellsCost(Case caseItem, Project project, List<WellProjectWell> linkedWells, int? lastYear)
     {
         if (caseItem.CessationWellsCostOverride?.Override == true)
         {
@@ -57,15 +58,15 @@ public class CessationCostProfileService(
             return;
         }
 
-        caseItem.CessationWellsCost = await GenerateCessationWellsCost(
-            caseItem.WellProjectLink,
+        caseItem.CessationWellsCost = GenerateCessationWellsCost(
             project,
+            linkedWells,
             lastYear.Value,
             caseItem.CessationWellsCost ?? new CessationWellsCost()
         );
     }
 
-    private async Task GetCessationOffshoreFacilitiesCost(Case caseItem, int? lastYear)
+    private static void GetCessationOffshoreFacilitiesCost(Case caseItem, Surf surf, int? lastYear)
     {
         if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
         {
@@ -78,7 +79,6 @@ public class CessationCostProfileService(
             return;
         }
 
-        var surf = await surfService.GetSurfWithIncludes(caseItem.SurfLink);
         caseItem.CessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(
             surf,
             lastYear.Value,
@@ -86,12 +86,8 @@ public class CessationCostProfileService(
         );
     }
 
-    private async Task<CessationWellsCost> GenerateCessationWellsCost(Guid wellProjectId, Project project, int lastYear, CessationWellsCost cessationWells)
+    private static CessationWellsCost GenerateCessationWellsCost(Project project, List<WellProjectWell> linkedWells, int lastYear, CessationWellsCost cessationWells)
     {
-        var linkedWells = await context.WellProjectWell
-            .Include(wpw => wpw.DrillingSchedule)
-            .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
-
         var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 
         var sumDrilledWells = linkedWells
