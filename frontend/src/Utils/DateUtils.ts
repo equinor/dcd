@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /**
  * Converts a UTC date string to a UTC Date object.
  * All dates stored in the database is in UTC. We need to make sure the Date objects we create are also in UTC.
@@ -10,15 +11,13 @@ export const dateStringToDateUtc = (dateString: string): Date => {
 
     // Ensure the date string ends with "Z" or "+00:00" to create the Date object as UTC.
     if (!dateString.endsWith("Z") && !dateString.endsWith("+00:00")) {
-        // eslint-disable-next-line no-restricted-syntax
         return new Date(`${dateString}Z`)
     }
-    // eslint-disable-next-line no-restricted-syntax
     return new Date(dateString)
 }
 
-// eslint-disable-next-line no-restricted-syntax
 export const getYearFromDateString = (dateString: string): number => new Date(dateString).getFullYear()
+/* eslint-enable no-restricted-syntax */
 
 export const sortUtcDateStrings = (a: string, b: string): number => {
     const dateA = dateStringToDateUtc(a)
