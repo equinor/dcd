@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
 using api.Features.Cases.Recalculation;

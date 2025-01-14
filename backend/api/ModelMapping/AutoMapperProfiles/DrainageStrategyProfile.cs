@@ -144,7 +144,6 @@ public class DrainageStrategyProfile : Profile
         CreateMap<Co2Intensity, Co2IntensityDto>();
 
         CreateMap<UpdateDrainageStrategyDto, DrainageStrategy>();
-        CreateMap<UpdateDrainageStrategyWithProfilesDto, DrainageStrategy>();
 
         CreateMap<CreateImportedElectricityOverrideDto, ImportedElectricityOverride>()
             .ForMember(
@@ -372,8 +371,6 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileWaterInjection)
                     )
                     ));
-
-        CreateMap<CreateDrainageStrategyDto, DrainageStrategy>();
     }
 
     private static readonly Dictionary<string, double> ConversionFactors = new()

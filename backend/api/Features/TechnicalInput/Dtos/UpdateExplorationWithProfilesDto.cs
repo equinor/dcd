@@ -10,9 +10,3 @@ public class UpdateGAndGAdminCostOverrideDto : UpdateTimeSeriesCostDto
 public class UpdateSeismicAcquisitionAndProcessingDto : UpdateTimeSeriesCostDto;
 
 public class UpdateCountryOfficeCostDto : UpdateTimeSeriesCostDto;
-
-public class UpdateExplorationWellCostProfileDto : UpdateTimeSeriesCostDto;
-
-public class UpdateAppraisalWellCostProfileDto : UpdateTimeSeriesCostDto;
-
-public class UpdateSidetrackCostProfileDto : UpdateTimeSeriesCostDto;

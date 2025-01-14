@@ -17,13 +17,10 @@ public class TopsideProfile : Profile
         CreateMap<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>();
         CreateMap<TopsideCessationCostProfile, TopsideCessationCostProfileDto>();
 
-        CreateMap<APIUpdateTopsideWithProfilesDto, Topside>();
         CreateMap<APIUpdateTopsideDto, Topside>();
         CreateMap<PROSPUpdateTopsideDto, Topside>();
         CreateMap<UpdateTopsideCostProfileDto, TopsideCostProfile>();
         CreateMap<UpdateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
         CreateMap<CreateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
-
-        CreateMap<CreateTopsideDto, Topside>();
     }
 }
