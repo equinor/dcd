@@ -12,8 +12,9 @@ using api.Features.Assets.CaseAssets.Surfs.Update;
 using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Profiles.Services;
 using api.Features.Assets.CaseAssets.Topsides.Update;
-using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
+using api.Features.Assets.CaseAssets.Transports.Profiles.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
+using api.Features.Assets.CaseAssets.Transports.Update;
 using api.Features.Cases.Recalculation;
 using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
@@ -31,7 +32,7 @@ public class ProspExcelImportService(
     UpdateSurfService updateSurfService,
     SubstructureService substructureService,
     UpdateTopsideService updateTopsideService,
-    TransportService transportService,
+    UpdateTransportService updateTransportService,
     OnshorePowerSupplyService onshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
     SurfTimeSeriesService surfTimeSeriesService,
@@ -308,7 +309,7 @@ public class ProspExcelImportService(
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var transportLink = (await GetCaseWithNoIncludes(sourceCaseId)).TransportLink;
-        var updateTransportDto = new PROSPUpdateTransportDto
+        var updateTransportDto = new ProspUpdateTransportDto
         {
             DG3Date = dG3Date,
             DG4Date = dG4Date,
@@ -320,7 +321,7 @@ public class ProspExcelImportService(
             GasExportPipelineLength = gasExportPipelineLength
         };
 
-        await transportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
+        await updateTransportService.UpdateTransportFromProsp(projectId, sourceCaseId, transportLink, updateTransportDto);
         await transportTimeSeriesService.AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
     }
 
@@ -499,16 +500,10 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedTransport(Case caseItem)
     {
-        var transportLink = caseItem.TransportLink;
-        var dto = new PROSPUpdateTransportDto
-        {
-            Source = Source.ConceptApp
-        };
-
         var costProfileDto = new UpdateTransportCostProfileDto();
 
-        await transportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, transportLink, dto);
-        await transportTimeSeriesService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, transportLink, costProfileDto);
+        await updateTransportService.ResetTransport(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink);
+        await transportTimeSeriesService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, costProfileDto);
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)

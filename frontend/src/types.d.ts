@@ -8,16 +8,6 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
-        export interface APIUpdateTransportDto {
-            gasExportPipelineLength?: number; // double
-            oilExportPipelineLength?: number; // double
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1596,6 +1586,16 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateTransportDto {
+            gasExportPipelineLength?: number; // double
+            oilExportPipelineLength?: number; // double
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
+        }
         export interface UpdateWaterInjectorCostProfileOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -3156,7 +3156,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 transportId: Parameters.TransportId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateTransportDto;
+            export type RequestBody = Components.Schemas.UpdateTransportDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TransportDto;
             }
