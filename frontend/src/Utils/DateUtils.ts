@@ -17,6 +17,8 @@ export const dateStringToDateUtc = (dateString: string): Date => {
 }
 
 export const getYearFromDateString = (dateString: string): number => new Date(dateString).getFullYear()
+
+export const dateFromTimestamp = (timestamp: number): Date => new Date(timestamp)
 /* eslint-enable no-restricted-syntax */
 
 export const sortUtcDateStrings = (a: string, b: string): number => {

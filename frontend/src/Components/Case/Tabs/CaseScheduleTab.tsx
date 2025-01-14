@@ -10,6 +10,7 @@ import {
     isDefaultDate,
     toMonthDate,
     dateStringToDateUtc,
+    dateFromTimestamp,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
@@ -161,7 +162,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         const minDateValue = Math.max(
             ...filteredDates.map((date) => date.getTime()),
         )
-        const minDate = new Date(minDateValue)
+        const minDate = dateFromTimestamp(minDateValue)
         return toMonthDate(minDate)
     }
 
@@ -172,7 +173,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         const maxDateValue = Math.min(
             ...filteredDates.map((date) => date.getTime()),
         )
-        const maxDate = new Date(maxDateValue)
+        const maxDate = dateFromTimestamp(maxDateValue)
         return toMonthDate(maxDate)
     }
 
