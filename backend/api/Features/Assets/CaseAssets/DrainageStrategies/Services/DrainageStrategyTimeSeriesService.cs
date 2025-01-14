@@ -32,7 +32,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProductionProfileOilDto,
-            profile => context.ProductionProfileOil.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileOil
         );
     }
@@ -67,7 +66,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createAdditionalProductionProfileOilDto,
-            profile => context.AdditionalProductionProfileOil.Add(profile),
             DrainageStrategyProfileNames.AdditionalProductionProfileOil
         );
     }
@@ -102,7 +100,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.ProductionProfileGas.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileGas
         );
     }
@@ -137,7 +134,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.AdditionalProductionProfileGas.Add(profile),
             DrainageStrategyProfileNames.AdditionalProductionProfileGas
         );
     }
@@ -172,7 +168,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.ProductionProfileWater.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileWater
         );
     }
@@ -207,7 +202,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.ProductionProfileWaterInjection.Add(profile),
             DrainageStrategyProfileNames.ProductionProfileWaterInjection
         );
     }
@@ -242,7 +236,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.FuelFlaringAndLossesOverride.Add(profile),
             DrainageStrategyProfileNames.FuelFlaringAndLossesOverride
         );
     }
@@ -277,7 +270,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.NetSalesGasOverride.Add(profile),
             DrainageStrategyProfileNames.NetSalesGasOverride
         );
     }
@@ -312,7 +304,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.Co2EmissionsOverride.Add(profile),
             DrainageStrategyProfileNames.Co2EmissionsOverride
         );
     }
@@ -347,7 +338,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.ImportedElectricityOverride.Add(profile),
             DrainageStrategyProfileNames.ImportedElectricityOverride
         );
     }
@@ -382,7 +372,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.DeferredOilProduction.Add(profile),
             DrainageStrategyProfileNames.DeferredOilProduction
         );
     }
@@ -417,7 +406,6 @@ public class DrainageStrategyTimeSeriesService(
             caseId,
             drainageStrategyId,
             createProfileDto,
-            profile => context.DeferredGasProduction.Add(profile),
             DrainageStrategyProfileNames.DeferredGasProduction
         );
     }
@@ -473,7 +461,6 @@ public class DrainageStrategyTimeSeriesService(
         Guid caseId,
         Guid drainageStrategyId,
         TCreateDto createProductionProfileDto,
-        Action<TProfile> createProfile,
         DrainageStrategyProfileNames profileName
     )
         where TProfile : class, IDrainageStrategyTimeSeries, new()
@@ -495,12 +482,13 @@ public class DrainageStrategyTimeSeriesService(
 
         TProfile profile = new()
         {
-            DrainageStrategy = drainageStrategy,
+            DrainageStrategy = drainageStrategy
         };
 
         var newProfile = conversionMapperService.MapToEntity(createProductionProfileDto, profile, drainageStrategyId, project.PhysicalUnit);
 
-        createProfile(newProfile);
+        context.Add(newProfile);
+
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 

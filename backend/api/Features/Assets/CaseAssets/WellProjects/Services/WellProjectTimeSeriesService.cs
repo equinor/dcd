@@ -105,7 +105,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            profile => context.OilProducerCostProfileOverride.Add(profile),
             WellProjectProfileNames.OilProducerCostProfileOverride
         );
     }
@@ -122,7 +121,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            profile => context.GasProducerCostProfileOverride.Add(profile),
             WellProjectProfileNames.GasProducerCostProfileOverride
         );
     }
@@ -139,7 +137,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            profile => context.WaterInjectorCostProfileOverride.Add(profile),
             WellProjectProfileNames.WaterInjectorCostProfileOverride
         );
     }
@@ -156,7 +153,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            profile => context.GasInjectorCostProfileOverride.Add(profile),
             WellProjectProfileNames.GasInjectorCostProfileOverride
         );
     }
@@ -190,7 +186,6 @@ public class WellProjectTimeSeriesService(
         Guid caseId,
         Guid wellProjectId,
         TCreateDto createWellProjectProfileDto,
-        Action<TProfile> createProfile,
         WellProjectProfileNames profileName
     )
         where TProfile : class, IWellProjectTimeSeries, new()
@@ -215,7 +210,7 @@ public class WellProjectTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
 
-        createProfile(newProfile);
+        context.Add(newProfile);
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 

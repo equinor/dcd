@@ -33,7 +33,6 @@ public class ExplorationTimeSeriesService(
             caseId,
             explorationId,
             createProfileDto,
-            profile => context.GAndGAdminCostOverride.Add(profile),
             ExplorationProfileNames.GAndGAdminCostOverride
         );
     }
@@ -51,8 +50,7 @@ public class ExplorationTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.GAndGAdminCostOverride.Include(x => x.Exploration).SingleAsync(x => x.Id == id),
-            profile => context.GAndGAdminCostOverride.Update(profile)
+            id => context.GAndGAdminCostOverride.Include(x => x.Exploration).SingleAsync(x => x.Id == id)
         );
     }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
@@ -69,8 +67,7 @@ public class ExplorationTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.SeismicAcquisitionAndProcessing.Include(x => x.Exploration).SingleAsync(x => x.Id == id),
-            profile => context.SeismicAcquisitionAndProcessing.Update(profile)
+            id => context.SeismicAcquisitionAndProcessing.Include(x => x.Exploration).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -88,8 +85,7 @@ public class ExplorationTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.CountryOfficeCost.Include(x => x.Exploration).SingleAsync(x => x.Id == id),
-            profile => context.CountryOfficeCost.Update(profile)
+            id => context.CountryOfficeCost.Include(x => x.Exploration).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -105,7 +101,6 @@ public class ExplorationTimeSeriesService(
             caseId,
             explorationId,
             createProfileDto,
-            profile => context.SeismicAcquisitionAndProcessing.Add(profile),
             ExplorationProfileNames.SeismicAcquisitionAndProcessing
         );
     }
@@ -122,7 +117,6 @@ public class ExplorationTimeSeriesService(
             caseId,
             explorationId,
             createProfileDto,
-            profile => context.CountryOfficeCost.Add(profile),
             ExplorationProfileNames.CountryOfficeCost
         );
     }
@@ -133,8 +127,7 @@ public class ExplorationTimeSeriesService(
         Guid explorationId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, IExplorationTimeSeries
         where TDto : class
@@ -146,7 +139,6 @@ public class ExplorationTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
-        updateProfile(existingProfile);
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
@@ -158,7 +150,6 @@ public class ExplorationTimeSeriesService(
             Guid caseId,
             Guid explorationId,
             TCreateDto createExplorationProfileDto,
-            Action<TProfile> createProfile,
             ExplorationProfileNames profileName
         )
             where TProfile : class, IExplorationTimeSeries, new()
@@ -183,7 +174,7 @@ public class ExplorationTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
 
-        createProfile(newProfile);
+        context.Add(newProfile);
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
