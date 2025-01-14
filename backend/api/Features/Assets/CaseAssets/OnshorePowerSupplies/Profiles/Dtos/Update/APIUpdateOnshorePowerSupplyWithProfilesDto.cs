@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos.Update;
 
 public class UpdateOnshorePowerSupplyCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

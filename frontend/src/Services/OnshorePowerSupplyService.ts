@@ -7,7 +7,7 @@ class OnshorePowerSupplyService extends __BaseService {
         projectId: string,
         caseId: string,
         onshorePowerSupplyId: string,
-        dto: Components.Schemas.APIUpdateOnshorePowerSupplyDto,
+        dto: Components.Schemas.UpdateOnshorePowerSupplyDto,
     ): Promise<Components.Schemas.OnshorePowerSupplyDto> {
         const res: Components.Schemas.OnshorePowerSupplyDto = await this.put(
             `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}`,

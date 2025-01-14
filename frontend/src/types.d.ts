@@ -1,13 +1,5 @@
 declare namespace Components {
     namespace Schemas {
-        export interface APIUpdateOnshorePowerSupplyDto {
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1421,6 +1413,12 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateOnshorePowerSupplyDto {
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
+        }
         export interface UpdateOnshoreRelatedOPEXCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -2830,7 +2828,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateOnshorePowerSupplyDto;
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
             namespace Responses {
                 export type $200 = Components.Schemas.OnshorePowerSupplyDto;
             }

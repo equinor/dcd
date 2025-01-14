@@ -1,29 +1,17 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos.Update;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles;
 
 [Route("projects/{projectId}/cases/{caseId}/onshorePowerSupplys")]
 [AuthorizeActionType(ActionType.Edit)]
-public class OnshorePowerSuppliesController(
-    OnshorePowerSupplyService onshorePowerSupplyService,
-    OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService) : ControllerBase
+public class OnshorePowerSupplyProfilesController(OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService) : ControllerBase
 {
-    [HttpPut("{onshorePowerSupplyId}")]
-    public async Task<OnshorePowerSupplyDto> UpdateOnshorePowerSupply(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid onshorePowerSupplyId,
-        [FromBody] APIUpdateOnshorePowerSupplyDto dto)
-    {
-        return await onshorePowerSupplyService.UpdateOnshorePowerSupply(projectId, caseId, onshorePowerSupplyId, dto);
-    }
-
     [HttpPost("{onshorePowerSupplyId}/cost-profile-override")]
     public async Task<OnshorePowerSupplyCostProfileOverrideDto> CreateOnshorePowerSupplyCostProfileOverride(
         [FromRoute] Guid projectId,

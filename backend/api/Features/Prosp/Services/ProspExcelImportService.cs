@@ -2,7 +2,8 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Update;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
 using api.Features.Assets.CaseAssets.Substructures.Update;
@@ -508,16 +509,10 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
     {
-        var onshorePowerSupplyLink = caseItem.OnshorePowerSupplyLink;
-        var dto = new PROSPUpdateOnshorePowerSupplyDto
-        {
-            Source = Source.ConceptApp
-        };
-
         var costProfileDto = new UpdateOnshorePowerSupplyCostProfileDto();
 
-        await onshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, onshorePowerSupplyLink, dto);
-        await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, onshorePowerSupplyLink, costProfileDto);
+        await onshorePowerSupplyService.ResetOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink);
+        await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfileDto);
     }
 
     private static Concept MapSubstructureConcept(int importValue)

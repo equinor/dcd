@@ -2,8 +2,10 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Dtos.Update;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -11,7 +13,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Profiles.Services;
 
 public class OnshorePowerSupplyTimeSeriesService(
     DcdDbContext context,

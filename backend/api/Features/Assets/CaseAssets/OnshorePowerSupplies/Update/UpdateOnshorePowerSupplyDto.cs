@@ -1,10 +1,9 @@
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Update;
 
-public abstract class BaseUpdateOnshorePowerSupplyDto
+public class UpdateOnshorePowerSupplyDto
 {
-    public Currency Currency { get; set; }
     public int CostYear { get; set; }
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
