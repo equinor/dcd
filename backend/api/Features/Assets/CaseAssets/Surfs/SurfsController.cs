@@ -8,12 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Surfs;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/surfs")]
 [AuthorizeActionType(ActionType.Edit)]
 public class SurfsController(
-    ISurfService surfService,
-    ISurfTimeSeriesService surfTimeSeriesService) : ControllerBase
+    SurfService surfService,
+    SurfTimeSeriesService surfTimeSeriesService) : ControllerBase
 {
     [HttpPut("{surfId}")]
     public async Task<SurfDto> UpdateSurf(

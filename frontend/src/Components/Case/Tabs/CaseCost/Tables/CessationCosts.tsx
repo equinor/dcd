@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import CaseTabTable from "@/Components/Case/Components/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -75,7 +76,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={cessationTimeSeriesData}
-            dg4Year={apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030}
+            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
             tableYears={tableYears}
             tableName="Cessation cost"
             gridRef={cessationGridRef}

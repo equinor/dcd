@@ -8,12 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Substructures;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/substructures")]
 [AuthorizeActionType(ActionType.Edit)]
 public class SubstructuresController(
-    ISubstructureService substructureService,
-    ISubstructureTimeSeriesService substructureTimeSeriesService)
+    SubstructureService substructureService,
+    SubstructureTimeSeriesService substructureTimeSeriesService)
     : ControllerBase
 {
     [HttpPut("{substructureId}")]

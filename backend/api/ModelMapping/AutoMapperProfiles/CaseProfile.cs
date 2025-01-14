@@ -1,6 +1,6 @@
-using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
+using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -55,9 +55,5 @@ public class CaseProfile : Profile
         CreateMap<CreateHistoricCostCostProfileDto, HistoricCostCostProfile>();
         CreateMap<CreateOnshoreRelatedOPEXCostProfileDto, OnshoreRelatedOPEXCostProfile>();
         CreateMap<CreateAdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>();
-
-        CreateMap<OpexCostProfile, OpexCostProfileDto>();
-        CreateMap<CessationCost, CessationCostDto>();
-        CreateMap<StudyCostProfile, StudyCostProfileDto>();
     }
 }

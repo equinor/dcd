@@ -4,6 +4,7 @@ import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
@@ -82,7 +83,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={studyTimeSeriesData}
-            dg4Year={apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030}
+            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
             tableYears={tableYears}
             tableName="Total study cost"
             gridRef={studyGridRef}

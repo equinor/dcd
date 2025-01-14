@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Cases.GetWithAssets;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Dtos;

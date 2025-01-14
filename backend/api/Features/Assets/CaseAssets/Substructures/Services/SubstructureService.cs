@@ -1,22 +1,21 @@
-using api.Exceptions;
+using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
-using api.Features.Assets.CaseAssets.Substructures.Repositories;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Substructures.Services;
 
 public class SubstructureService(
-    ISubstructureRepository substructureRepository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ISubstructureService
 {
     public async Task<SubstructureDto> UpdateSubstructure<TDto>(
         Guid projectId,
@@ -26,20 +25,16 @@ public class SubstructureService(
     )
         where TDto : BaseUpdateSubstructureDto
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 
-        var existingSubstructure = await substructureRepository.GetSubstructure(substructureId)
-            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Id == substructureId);
 
         mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var dto = mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId);
-
-        return dto;
+        return mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId);
     }
 }

@@ -1,24 +1,23 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
-using api.Features.Assets.CaseAssets.Surfs.Repositories;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Surfs.Services;
 
 public class SurfTimeSeriesService(
-    ISurfTimeSeriesRepository repository,
-    ISurfRepository surfRepository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ISurfTimeSeriesService
 {
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
         Guid projectId,
@@ -27,13 +26,11 @@ public class SurfTimeSeriesService(
         CreateSurfCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
 
-        var surf = await surfRepository.GetSurf(surfId)
-            ?? throw new NotFoundInDbException($"Surf with id {surfId} not found.");
+        var surf = await context.Surfs.SingleAsync(x => x.Id == surfId);
 
-        var resourceHasProfile = await surfRepository.SurfHasCostProfileOverride(surfId);
+        var resourceHasProfile = await context.Surfs.AnyAsync(t => t.Id == surfId && t.CostProfileOverride != null);
 
         if (resourceHasProfile)
         {
@@ -42,17 +39,16 @@ public class SurfTimeSeriesService(
 
         SurfCostProfileOverride profile = new()
         {
-            Surf = surf,
+            Surf = surf
         };
 
         var newProfile = mapperService.MapToEntity(dto, profile, surfId);
 
-        var createdProfile = repository.CreateSurfCostProfileOverride(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.SurfCostProfileOverride.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(newProfile, newProfile.Id);
     }
 
     public async Task<SurfCostProfileDto> AddOrUpdateSurfCostProfile(
@@ -62,11 +58,11 @@ public class SurfTimeSeriesService(
         UpdateSurfCostProfileDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
 
-        var surf = await surfRepository.GetSurfWithCostProfile(surfId)
-            ?? throw new NotFoundInDbException($"Surf with id {surfId} not found.");
+        var surf = await context.Surfs
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == surfId);
 
         if (surf.CostProfile != null)
         {
@@ -90,8 +86,7 @@ public class SurfTimeSeriesService(
             surfId,
             profileId,
             dto,
-            repository.GetSurfCostProfile,
-            repository.UpdateSurfCostProfile
+            id => context.SurfCostProfile.Include(x => x.Surf).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -102,7 +97,7 @@ public class SurfTimeSeriesService(
         Surf surf
     )
     {
-        SurfCostProfile surfCostProfile = new SurfCostProfile
+        var surfCostProfile = new SurfCostProfile
         {
             Surf = surf
         };
@@ -114,12 +109,11 @@ public class SurfTimeSeriesService(
             newProfile.Surf.CostProfileOverride.Override = false;
         }
 
-        repository.CreateSurfCostProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.SurfCostProfile.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var newDto = mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newProfile, newProfile.Id);
-        return newDto;
+        return mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newProfile, newProfile.Id);
     }
 
     public async Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
@@ -136,8 +130,7 @@ public class SurfTimeSeriesService(
             surfId,
             costProfileId,
             updatedSurfCostProfileOverrideDto,
-            repository.GetSurfCostProfileOverride,
-            repository.UpdateSurfCostProfileOverride
+            id => context.SurfCostProfileOverride.Include(x => x.Surf).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -147,17 +140,14 @@ public class SurfTimeSeriesService(
         Guid surfId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ISurfTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, existingProfile.Surf.Id);
 
         if (existingProfile.Surf.ProspVersion == null)
@@ -170,10 +160,9 @@ public class SurfTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 }

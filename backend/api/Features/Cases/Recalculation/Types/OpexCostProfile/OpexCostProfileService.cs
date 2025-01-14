@@ -1,5 +1,4 @@
 using api.Context;
-using api.Features.CaseProfiles.Services;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Models;
 
@@ -7,11 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Types.OpexCostProfile;
 
-public class OpexCostProfileService(DcdDbContext context, ICaseService caseService)
+public class OpexCostProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCase(caseId);
+        var caseItem = await context.Cases
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.HistoricCostCostProfile)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .SingleAsync(c => c.Id == caseId);
+
         var project = await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)

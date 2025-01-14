@@ -1,6 +1,5 @@
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
-using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 
 namespace api.Features.Stea.Dtos;

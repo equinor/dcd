@@ -1,24 +1,23 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
-using api.Features.Assets.CaseAssets.Topsides.Repositories;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Topsides.Services;
 
 public class TopsideTimeSeriesService(
-    ITopsideTimeSeriesRepository repository,
-    ITopsideRepository topsideRepository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ITopsideTimeSeriesService
 {
     public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
         Guid projectId,
@@ -27,13 +26,11 @@ public class TopsideTimeSeriesService(
         CreateTopsideCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
-        var topside = await topsideRepository.GetTopside(topsideId)
-            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
+        var topside = await context.Topsides.SingleAsync(x => x.Id == topsideId);
 
-        var resourceHasProfile = await topsideRepository.TopsideHasCostProfileOverride(topsideId);
+        var resourceHasProfile = await context.Topsides.AnyAsync(t => t.Id == topsideId && t.CostProfileOverride != null);
 
         if (resourceHasProfile)
         {
@@ -42,17 +39,16 @@ public class TopsideTimeSeriesService(
 
         TopsideCostProfileOverride profile = new()
         {
-            Topside = topside,
+            Topside = topside
         };
 
         var newProfile = mapperService.MapToEntity(dto, profile, topsideId);
 
-        var createdProfile = repository.CreateTopsideCostProfileOverride(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.TopsideCostProfileOverride.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(newProfile, newProfile.Id);
     }
 
     public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
@@ -69,8 +65,7 @@ public class TopsideTimeSeriesService(
             topsideId,
             costProfileId,
             dto,
-            repository.GetTopsideCostProfileOverride,
-            repository.UpdateTopsideCostProfileOverride
+            id => context.TopsideCostProfileOverride.Include(x => x.Topside).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -81,11 +76,11 @@ public class TopsideTimeSeriesService(
         UpdateTopsideCostProfileDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
-        var topside = await topsideRepository.GetTopsideWithCostProfile(topsideId)
-            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
+        var topside = await context.Topsides
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == topsideId);
 
         if (topside.CostProfile != null)
         {
@@ -109,8 +104,7 @@ public class TopsideTimeSeriesService(
             topsideId,
             profileId,
             dto,
-            repository.GetTopsideCostProfile,
-            repository.UpdateTopsideCostProfile
+            id => context.TopsideCostProfiles.Include(x => x.Topside).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -132,12 +126,11 @@ public class TopsideTimeSeriesService(
             newProfile.Topside.CostProfileOverride.Override = false;
         }
 
-        repository.CreateTopsideCostProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.TopsideCostProfiles.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var newDto = mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(newProfile, newProfile.Id);
-        return newDto;
+        return mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(newProfile, newProfile.Id);
     }
 
     private async Task<TDto> UpdateTopsideTimeSeries<TProfile, TDto, TUpdateDto>(
@@ -146,17 +139,14 @@ public class TopsideTimeSeriesService(
         Guid topsideId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ITopsideTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, existingProfile.Topside.Id);
 
         if (existingProfile.Topside.ProspVersion == null)
@@ -169,10 +159,9 @@ public class TopsideTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 }

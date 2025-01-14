@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from "react"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"
+import {dateFromTimestamp} from "@/Utils/DateUtils";
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -257,7 +258,7 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
 }
 
 export const formatTime = (timestamp: number): string => {
-    const date = new Date(timestamp)
+    const date = dateFromTimestamp(timestamp)
     const hours = date.getHours()
     const minutes = date.getMinutes()
 

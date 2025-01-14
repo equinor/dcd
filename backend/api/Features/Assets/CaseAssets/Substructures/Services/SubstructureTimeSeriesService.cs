@@ -1,24 +1,23 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
-using api.Features.Assets.CaseAssets.Substructures.Repositories;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Substructures.Services;
 
 public class SubstructureTimeSeriesService(
-    ISubstructureRepository substructureRepository,
-    ISubstructureTimeSeriesRepository repository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ISubstructureTimeSeriesService
 {
     public async Task<SubstructureCostProfileDto> AddOrUpdateSubstructureCostProfile(
         Guid projectId,
@@ -27,11 +26,11 @@ public class SubstructureTimeSeriesService(
         UpdateSubstructureCostProfileDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 
-        var substructure = await substructureRepository.GetSubstructureWithCostProfile(substructureId)
-            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
+        var substructure = await context.Substructures
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == substructureId);
 
         if (substructure.CostProfile != null)
         {
@@ -55,8 +54,7 @@ public class SubstructureTimeSeriesService(
             substructureId,
             profileId,
             dto,
-            repository.GetSubstructureCostProfile,
-            repository.UpdateSubstructureCostProfile
+            id => context.SubstructureCostProfiles.Include(x => x.Substructure).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -67,7 +65,7 @@ public class SubstructureTimeSeriesService(
         Substructure substructure
     )
     {
-        SubstructureCostProfile substructureCostProfile = new SubstructureCostProfile
+        var substructureCostProfile = new SubstructureCostProfile
         {
             Substructure = substructure
         };
@@ -78,12 +76,11 @@ public class SubstructureTimeSeriesService(
             newProfile.Substructure.CostProfileOverride.Override = false;
         }
 
-        repository.CreateSubstructureCostProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.SubstructureCostProfiles.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var newDto = mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newProfile, newProfile.Id);
-        return newDto;
+        return mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newProfile, newProfile.Id);
     }
 
     public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
@@ -93,13 +90,11 @@ public class SubstructureTimeSeriesService(
         CreateSubstructureCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 
-        var substructure = await substructureRepository.GetSubstructure(substructureId)
-            ?? throw new NotFoundInDbException($"Substructure with id {substructureId} not found.");
+        var substructure = await context.Substructures.SingleAsync(x => x.Id == substructureId);
 
-        var resourceHasProfile = await substructureRepository.SubstructureHasCostProfileOverride(substructureId);
+        var resourceHasProfile = await context.Substructures.AnyAsync(t => t.Id == substructureId && t.CostProfileOverride != null);
 
         if (resourceHasProfile)
         {
@@ -113,12 +108,11 @@ public class SubstructureTimeSeriesService(
 
         var newProfile = mapperService.MapToEntity(dto, profile, substructureId);
 
-        var createdProfile = repository.CreateSubstructureCostProfileOverride(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.SubstructureCostProfileOverride.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(newProfile, newProfile.Id);
     }
 
     public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
@@ -130,14 +124,13 @@ public class SubstructureTimeSeriesService(
     )
     {
         return await UpdateSubstructureTimeSeries<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto, UpdateSubstructureCostProfileOverrideDto>(
-        projectId,
-        caseId,
-        substructureId,
-        costProfileId,
-        dto,
-        repository.GetSubstructureCostProfileOverride,
-        repository.UpdateSubstructureCostProfileOverride
-    );
+            projectId,
+            caseId,
+            substructureId,
+            costProfileId,
+            dto,
+            id => context.SubstructureCostProfileOverride.Include(x => x.Substructure).SingleAsync(x => x.Id == id)
+        );
     }
 
     private async Task<TDto> UpdateSubstructureTimeSeries<TProfile, TDto, TUpdateDto>(
@@ -146,17 +139,14 @@ public class SubstructureTimeSeriesService(
         Guid substructureId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ISubstructureTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, existingProfile.Substructure.Id);
 
         if (existingProfile.Substructure.ProspVersion == null)
@@ -166,12 +156,12 @@ public class SubstructureTimeSeriesService(
                 existingProfile.Substructure.CostProfileOverride.Override = true;
             }
         }
+
         mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 }

@@ -8,12 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Topsides;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/topsides")]
 [AuthorizeActionType(ActionType.Edit)]
 public class TopsidesController(
-    ITopsideService topsideService,
-    ITopsideTimeSeriesService topsideTimeSeriesService) : ControllerBase
+    TopsideService topsideService,
+    TopsideTimeSeriesService topsideTimeSeriesService) : ControllerBase
 {
     [HttpPut("{topsideId}")]
     public async Task<TopsideDto> UpdateTopside(

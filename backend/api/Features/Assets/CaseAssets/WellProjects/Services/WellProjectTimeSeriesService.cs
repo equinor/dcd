@@ -1,25 +1,25 @@
+using System.Linq.Expressions;
+
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
-using api.Features.Assets.CaseAssets.WellProjects.Repositories;
-using api.Features.CaseProfiles.Enums;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.WellProjects.Services;
 
 public class WellProjectTimeSeriesService(
-    IWellProjectTimeSeriesRepository repository,
-    IWellProjectRepository wellProjectRepository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : IWellProjectTimeSeriesService
 {
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         Guid projectId,
@@ -35,8 +35,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetOilProducerCostProfileOverride,
-            repository.UpdateOilProducerCostProfileOverride
+            id => context.OilProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -54,8 +53,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetGasProducerCostProfileOverride,
-            repository.UpdateGasProducerCostProfileOverride
+            id => context.GasProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -73,8 +71,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetWaterInjectorCostProfileOverride,
-            repository.UpdateWaterInjectorCostProfileOverride
+            id => context.WaterInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -92,8 +89,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetGasInjectorCostProfileOverride,
-            repository.UpdateGasInjectorCostProfileOverride
+            id => context.GasInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -109,7 +105,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            repository.CreateOilProducerCostProfileOverride,
             WellProjectProfileNames.OilProducerCostProfileOverride
         );
     }
@@ -126,7 +121,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            repository.CreateGasProducerCostProfileOverride,
             WellProjectProfileNames.GasProducerCostProfileOverride
         );
     }
@@ -143,7 +137,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            repository.CreateWaterInjectorCostProfileOverride,
             WellProjectProfileNames.WaterInjectorCostProfileOverride
         );
     }
@@ -160,7 +153,6 @@ public class WellProjectTimeSeriesService(
             caseId,
             wellProjectId,
             createProfileDto,
-            repository.CreateGasInjectorCostProfileOverride,
             WellProjectProfileNames.GasInjectorCostProfileOverride
         );
     }
@@ -171,26 +163,22 @@ public class WellProjectTimeSeriesService(
         Guid wellProjectId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, IWellProjectTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, existingProfile.WellProject.Id);
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 
     private async Task<TDto> CreateWellProjectProfile<TProfile, TDto, TCreateDto>(
@@ -198,20 +186,17 @@ public class WellProjectTimeSeriesService(
         Guid caseId,
         Guid wellProjectId,
         TCreateDto createWellProjectProfileDto,
-        Func<TProfile, TProfile> createProfile,
         WellProjectProfileNames profileName
     )
         where TProfile : class, IWellProjectTimeSeries, new()
         where TDto : class
         where TCreateDto : class
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
 
-        var wellProject = await wellProjectRepository.GetWellProject(wellProjectId)
-            ?? throw new NotFoundInDbException($"Well project with id {wellProjectId} not found.");
+        var wellProject = await context.WellProjects.SingleAsync(x => x.Id == wellProjectId);
 
-        var resourceHasProfile = await wellProjectRepository.WellProjectHasProfile(wellProjectId, profileName);
+        var resourceHasProfile = await WellProjectHasProfile(wellProjectId, profileName);
 
         if (resourceHasProfile)
         {
@@ -220,16 +205,30 @@ public class WellProjectTimeSeriesService(
 
         TProfile profile = new()
         {
-            WellProject = wellProject,
+            WellProject = wellProject
         };
 
         var newProfile = mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
 
-        var createdProfile = createProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        context.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);
+    }
+
+    private async Task<bool> WellProjectHasProfile(Guid wellProjectId, WellProjectProfileNames profileType)
+    {
+        Expression<Func<WellProject, bool>> profileExistsExpression = profileType switch
+        {
+            WellProjectProfileNames.OilProducerCostProfileOverride => d => d.OilProducerCostProfileOverride != null,
+            WellProjectProfileNames.GasProducerCostProfileOverride => d => d.GasProducerCostProfileOverride != null,
+            WellProjectProfileNames.WaterInjectorCostProfileOverride => d => d.WaterInjectorCostProfileOverride != null,
+            WellProjectProfileNames.GasInjectorCostProfileOverride => d => d.GasInjectorCostProfileOverride != null,
+        };
+
+        return await context.WellProjects
+            .Where(d => d.Id == wellProjectId)
+            .AnyAsync(profileExistsExpression);
     }
 }

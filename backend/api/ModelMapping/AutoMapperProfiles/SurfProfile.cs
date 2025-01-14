@@ -18,12 +18,9 @@ public class SurfProfile : Profile
         CreateMap<SurfCessationCostProfile, SurfCessationCostProfileDto>();
 
         CreateMap<APIUpdateSurfDto, Surf>();
-        CreateMap<APIUpdateSurfWithProfilesDto, Surf>();
         CreateMap<PROSPUpdateSurfDto, Surf>();
         CreateMap<UpdateSurfCostProfileDto, SurfCostProfile>();
         CreateMap<UpdateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
         CreateMap<CreateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
-
-        CreateMap<CreateSurfDto, Surf>();
     }
 }

@@ -14,6 +14,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { TimelineElement } from "../Sidebar"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -54,7 +55,7 @@ const CasesList: React.FC = () => {
 
     return (
         <>
-            {cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
+            {cases.sort((a, b) => sortUtcDateStrings(a.createTime, b.createTime)).map((projectCase, index) => (
                 <Grid
                     item
                     container

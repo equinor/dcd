@@ -10,12 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.WellProjects;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/well-projects")]
 [AuthorizeActionType(ActionType.Edit)]
 public class WellProjectsController(
-    IWellProjectService wellProjectService,
-    IWellProjectTimeSeriesService wellProjectTimeSeriesService)
+    WellProjectService wellProjectService,
+    WellProjectTimeSeriesService wellProjectTimeSeriesService)
     : ControllerBase
 {
     [HttpPut("{wellProjectId}")]

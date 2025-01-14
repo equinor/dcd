@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Cases.Duplicate;
 
-[ApiController]
 public class DuplicateCaseController(DuplicateCaseService duplicateCaseService, GetProjectDataService getProjectDataService) : ControllerBase
 {
     [HttpPost("projects/{projectId:guid}/cases/copy")]
