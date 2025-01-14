@@ -75,7 +75,7 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
-        export interface AdditionalOPEXCostProfileDto {
+        export interface AdditionalOpexCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
@@ -184,15 +184,15 @@ declare namespace Components {
             totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudiesDto;
             totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
             totalFEEDStudies?: TotalFEEDStudiesDto;
-            totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
+            totalFEEDStudiesOverride?: TotalFeedStudiesOverrideDto;
             totalOtherStudiesCostProfile?: TotalOtherStudiesCostProfileDto;
             historicCostCostProfile?: HistoricCostCostProfileDto;
             wellInterventionCostProfile?: WellInterventionCostProfileDto;
             wellInterventionCostProfileOverride?: WellInterventionCostProfileOverrideDto;
             offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfileDto;
             offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
-            onshoreRelatedOPEXCostProfile?: OnshoreRelatedOPEXCostProfileDto;
-            additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
+            onshoreRelatedOPEXCostProfile?: OnshoreRelatedOpexCostProfileDto;
+            additionalOPEXCostProfile?: AdditionalOpexCostProfileDto;
             calculatedTotalIncomeCostProfile?: CalculatedTotalIncomeCostProfileDto;
             calculatedTotalCostCostProfile?: CalculatedTotalCostCostProfileDto;
             topside: TopsideDto;
@@ -387,7 +387,7 @@ declare namespace Components {
             epaVersion: string;
             currency: Currency /* int32 */;
         }
-        export interface CreateAdditionalOPEXCostProfileDto {
+        export interface CreateAdditionalOpexCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -504,7 +504,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface CreateOnshoreRelatedOPEXCostProfileDto {
+        export interface CreateOnshoreRelatedOpexCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -559,13 +559,13 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface CreateTotalFEEDStudiesOverrideDto {
+        export interface CreateTotalFeasibilityAndConceptStudiesOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface CreateTotalFeasibilityAndConceptStudiesOverrideDto {
+        export interface CreateTotalFeedStudiesOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -900,7 +900,7 @@ declare namespace Components {
             id: string; // uuid
             source: Source /* int32 */;
         }
-        export interface OnshoreRelatedOPEXCostProfileDto {
+        export interface OnshoreRelatedOpexCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
@@ -1241,15 +1241,6 @@ declare namespace Components {
             epaVersion: string;
             currency: Currency /* int32 */;
         }
-        export interface TotalFEEDStudiesOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
         export interface TotalFeasibilityAndConceptStudiesDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1259,6 +1250,15 @@ declare namespace Components {
             currency: Currency /* int32 */;
         }
         export interface TotalFeasibilityAndConceptStudiesOverrideDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
+        }
+        export interface TotalFeedStudiesOverrideDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
@@ -1319,7 +1319,7 @@ declare namespace Components {
             id: string; // uuid
             source: Source /* int32 */;
         }
-        export interface UpdateAdditionalOPEXCostProfileDto {
+        export interface UpdateAdditionalOpexCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1488,7 +1488,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface UpdateOnshoreRelatedOPEXCostProfileDto {
+        export interface UpdateOnshoreRelatedOpexCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1573,13 +1573,13 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface UpdateTotalFEEDStudiesOverrideDto {
+        export interface UpdateTotalFeasibilityAndConceptStudiesOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface UpdateTotalFeasibilityAndConceptStudiesOverrideDto {
+        export interface UpdateTotalFeedStudiesOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1832,9 +1832,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateAdditionalOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateAdditionalOpexCostProfileDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
+                export type $200 = Components.Schemas.AdditionalOpexCostProfileDto;
             }
         }
     }
@@ -1850,9 +1850,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateAdditionalOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateAdditionalOpexCostProfileDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
+                export type $200 = Components.Schemas.AdditionalOpexCostProfileDto;
             }
         }
     }
@@ -2794,9 +2794,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateOnshoreRelatedOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateOnshoreRelatedOpexCostProfileDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OnshoreRelatedOPEXCostProfileDto;
+                export type $200 = Components.Schemas.OnshoreRelatedOpexCostProfileDto;
             }
         }
     }
@@ -2812,9 +2812,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateOnshoreRelatedOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateOnshoreRelatedOpexCostProfileDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OnshoreRelatedOPEXCostProfileDto;
+                export type $200 = Components.Schemas.OnshoreRelatedOpexCostProfileDto;
             }
         }
     }
@@ -3086,9 +3086,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTotalFEEDStudiesOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTotalFeedStudiesOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalFEEDStudiesOverrideDto;
+                export type $200 = Components.Schemas.TotalFeedStudiesOverrideDto;
             }
         }
     }
@@ -3104,9 +3104,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTotalFEEDStudiesOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTotalFeedStudiesOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalFEEDStudiesOverrideDto;
+                export type $200 = Components.Schemas.TotalFeedStudiesOverrideDto;
             }
         }
     }

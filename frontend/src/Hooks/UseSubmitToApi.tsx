@@ -496,13 +496,13 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createTotalFEEDStudiesOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateTotalFEEDStudiesOverrideDto,
+                            resourceObject as Components.Schemas.CreateTotalFeedStudiesOverrideDto,
                     )
                     : await (await GetCaseService()).updateTotalFEEDStudiesOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTotalFEEDStudiesOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTotalFeedStudiesOverrideDto,
                     ),
             })
             break
@@ -596,13 +596,13 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createOnshoreRelatedOPEXCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateOnshoreRelatedOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.CreateOnshoreRelatedOpexCostProfileDto,
                     )
                     : await (await GetCaseService()).updateOnshoreRelatedOPEXCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateOnshoreRelatedOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateOnshoreRelatedOpexCostProfileDto,
                     ),
             })
             break
@@ -616,13 +616,13 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createAdditionalOPEXCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateAdditionalOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.CreateAdditionalOpexCostProfileDto,
                     )
                     : await (await GetCaseService()).updateAdditionalOPEXCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateAdditionalOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateAdditionalOpexCostProfileDto,
                     ),
             })
             break
