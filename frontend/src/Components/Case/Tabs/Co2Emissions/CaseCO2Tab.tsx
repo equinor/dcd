@@ -121,7 +121,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             try {
                 if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(revisionAndProjectData.projectId, caseData.caseId)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(revisionAndProjectData.projectId, caseData.caseId)
                     const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
                     setCo2Intensity(await co2I)

@@ -20,7 +20,6 @@ using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
-using api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
 using api.Features.Cases.CaseComparison;
@@ -199,7 +198,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
         services.AddScoped<Co2IntensityProfileService>();
-        services.AddScoped<Co2IntensityTotalService>();
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();
