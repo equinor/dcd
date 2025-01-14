@@ -38,6 +38,9 @@ public class Co2IntensityTotalService(DcdDbContext context,
             generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2Emissions?.StartYear ?? 0;
         }
         double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
+        // var generateCo2Intensity = new Co2IntensityDto();
+        // generateCo2Intensity.StartYear = drainageStrategy.co2
+
         return co2Intensity;
     }
 
@@ -122,7 +125,7 @@ public class Co2IntensityTotalService(DcdDbContext context,
         var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
         if (totalExportedVolumes > 0 && totalCo2Emissions > 0)
         {
-            return (totalCo2Emissions / totalExportedVolumes) / boeConversionFactor * tonnesToKgFactor;
+            return totalCo2Emissions / totalExportedVolumes / boeConversionFactor * tonnesToKgFactor;
         }
         return 0;
     }

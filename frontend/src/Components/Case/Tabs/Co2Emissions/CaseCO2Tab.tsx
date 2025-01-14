@@ -22,6 +22,7 @@ import { useCaseContext } from "@/Context/CaseContext"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import { roundToFourDecimalsAndJoin } from "@/Utils/common"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -124,7 +125,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
                     setCo2Intensity(await co2I)
-                    setCo2IntensityTotal(Number(co2ITotal))
+                    console.log("co2Intensity", co2Intensity)
+                    setCo2IntensityTotal(Number((await co2I).sum))
+                    console.log("Co2IntensityTotal", co2IntensityTotal)
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
                     if (!yearRangeSetFromProfiles) {
@@ -162,7 +165,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 profileName: "Year-by-year CO2 intensity",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2Intensity,
-                total: co2IntensityTotal?.toString(),
+                // total: co2IntensityTotal?.toString(),
                 overridable: false,
                 editable: false,
                 resourceName: "co2Intensity",
@@ -267,7 +270,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>
                 <Grid item>
-                    <Typography variant="h1_bold">{Math.round(co2IntensityTotal * 10) / 10}</Typography>
+                    <Typography variant="h1_bold">{Math.round(Number(co2Intensity?.sum) * 10000) / 10000}</Typography>
                 </Grid>
                 <Grid item>
                     <Typography color="disabled">kg CO2/boe</Typography>

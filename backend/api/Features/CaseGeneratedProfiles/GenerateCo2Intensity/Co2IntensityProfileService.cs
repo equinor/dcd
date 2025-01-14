@@ -55,7 +55,7 @@ public class Co2IntensityProfileService(DcdDbContext context, ICaseService caseS
             if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
             {
                 var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i + yearDifference];
-                co2IntensityValues.Add(dividedProfiles / boeConversionFactor * tonnesToKgFactor);
+                co2IntensityValues.Add(dividedProfiles / 1E6 / boeConversionFactor * tonnesToKgFactor);
             }
         }
 
