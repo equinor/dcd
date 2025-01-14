@@ -1,4 +1,3 @@
-using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.Cases.GetWithAssets;
 using api.Models;
