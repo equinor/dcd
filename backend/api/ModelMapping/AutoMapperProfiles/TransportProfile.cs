@@ -18,12 +18,9 @@ public class TransportProfile : Profile
         CreateMap<TransportCessationCostProfile, TransportCessationCostProfileDto>();
 
         CreateMap<APIUpdateTransportDto, Transport>();
-        CreateMap<APIUpdateTransportWithProfilesDto, Transport>();
         CreateMap<PROSPUpdateTransportDto, Transport>();
         CreateMap<UpdateTransportCostProfileDto, TransportCostProfile>();
         CreateMap<UpdateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
         CreateMap<CreateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
-
-        CreateMap<CreateTransportDto, Transport>();
     }
 }

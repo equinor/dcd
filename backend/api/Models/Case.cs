@@ -120,8 +120,6 @@ public enum ProductionStrategyOverview
     Mixed
 }
 
-public class CessationCost : TimeSeriesCost;
-
 public class CessationWellsCost : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
@@ -153,8 +151,6 @@ public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSe
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
-
-public class OpexCostProfile : TimeSeriesCost;
 
 public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
@@ -199,8 +195,6 @@ public class AdditionalOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
-
-public class StudyCostProfile : TimeSeriesCost;
 
 public class TotalFeasibilityAndConceptStudies : TimeSeriesCost, ICaseTimeSeries
 {
