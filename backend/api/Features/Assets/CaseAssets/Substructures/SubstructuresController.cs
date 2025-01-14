@@ -12,8 +12,8 @@ namespace api.Features.Assets.CaseAssets.Substructures;
 [Route("projects/{projectId}/cases/{caseId}/substructures")]
 [AuthorizeActionType(ActionType.Edit)]
 public class SubstructuresController(
-    ISubstructureService substructureService,
-    ISubstructureTimeSeriesService substructureTimeSeriesService)
+    SubstructureService substructureService,
+    SubstructureTimeSeriesService substructureTimeSeriesService)
     : ControllerBase
 {
     [HttpPut("{substructureId}")]

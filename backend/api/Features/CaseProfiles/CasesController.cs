@@ -3,6 +3,7 @@ using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
 using api.Features.CaseProfiles.Services;
+using api.Features.Stea.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace api.Features.CaseProfiles;
 [ApiController]
 [Route("projects/{projectId}/cases")]
 [AuthorizeActionType(ActionType.Edit)]
-public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : ControllerBase
+public class CasesController(CaseTimeSeriesService caseTimeSeriesService) : ControllerBase
 {
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(

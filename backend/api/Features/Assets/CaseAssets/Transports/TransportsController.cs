@@ -12,8 +12,8 @@ namespace api.Features.Assets.CaseAssets.Transports;
 [Route("projects/{projectId}/cases/{caseId}/transports")]
 [AuthorizeActionType(ActionType.Edit)]
 public class TransportsController(
-    ITransportService transportService,
-    ITransportTimeSeriesService transportTimeSeriesService) : ControllerBase
+    TransportService transportService,
+    TransportTimeSeriesService transportTimeSeriesService) : ControllerBase
 {
     [HttpPut("{transportId}")]
     public async Task<TransportDto> UpdateTransport(

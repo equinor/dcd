@@ -1,23 +1,26 @@
+using System.Linq.Expressions;
+
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
-using api.Features.CaseProfiles.Enums;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
+using api.Features.Stea.Dtos;
 using api.ModelMapping;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseProfiles.Services;
 
 public class CaseTimeSeriesService(
-    ICaseTimeSeriesRepository repository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ICaseTimeSeriesService
 {
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
         Guid projectId,
@@ -31,8 +34,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetCessationWellsCostOverride,
-            repository.UpdateCessationWellsCostOverride
+            id => context.CessationWellsCostOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -48,8 +50,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetCessationOffshoreFacilitiesCostOverride,
-            repository.UpdateCessationOffshoreFacilitiesCostOverride
+            id => context.CessationOffshoreFacilitiesCostOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -65,8 +66,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetCessationOnshoreFacilitiesCostProfile,
-            repository.UpdateCessationOnshoreFacilitiesCostProfile
+            id => context.CessationOnshoreFacilitiesCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -82,8 +82,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetTotalFeasibilityAndConceptStudiesOverride,
-            repository.UpdateTotalFeasibilityAndConceptStudiesOverride
+            id => context.TotalFeasibilityAndConceptStudiesOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -99,8 +98,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetTotalFEEDStudiesOverride,
-            repository.UpdateTotalFEEDStudiesOverride
+            id => context.TotalFEEDStudiesOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -116,8 +114,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetTotalOtherStudiesCostProfile,
-            repository.UpdateTotalOtherStudiesCostProfile
+            id => context.TotalOtherStudiesCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -133,8 +130,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetHistoricCostCostProfile,
-            repository.UpdateHistoricCostCostProfile
+            id => context.HistoricCostCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -150,8 +146,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetWellInterventionCostProfileOverride,
-            repository.UpdateWellInterventionCostProfileOverride
+            id => context.WellInterventionCostProfileOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -167,8 +162,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetOffshoreFacilitiesOperationsCostProfileOverride,
-            repository.UpdateOffshoreFacilitiesOperationsCostProfileOverride
+            id => context.OffshoreFacilitiesOperationsCostProfileOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -184,8 +178,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetOnshoreRelatedOPEXCostProfile,
-            repository.UpdateOnshoreRelatedOPEXCostProfile
+            id => context.OnshoreRelatedOPEXCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -199,7 +192,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateOffshoreFacilitiesOperationsCostProfileOverride,
+            profile => context.OffshoreFacilitiesOperationsCostProfileOverride.Add(profile),
             CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride
         );
     }
@@ -213,7 +206,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateCessationWellsCostOverride,
+            profile => context.CessationWellsCostOverride.Add(profile),
             CaseProfileNames.CessationWellsCostOverride
         );
     }
@@ -228,7 +221,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateCessationOffshoreFacilitiesCostOverride,
+            profile => context.CessationOffshoreFacilitiesCostOverride.Add(profile),
             CaseProfileNames.CessationOffshoreFacilitiesCostOverride
         );
     }
@@ -243,7 +236,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateCessationOnshoreFacilitiesCostProfile,
+            profile => context.CessationOnshoreFacilitiesCostProfile.Add(profile),
             CaseProfileNames.CessationOnshoreFacilitiesCostProfile
         );
     }
@@ -258,7 +251,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateTotalFeasibilityAndConceptStudiesOverride,
+            profile => context.TotalFeasibilityAndConceptStudiesOverride.Add(profile),
             CaseProfileNames.TotalFeasibilityAndConceptStudiesOverride
         );
     }
@@ -273,7 +266,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateTotalFEEDStudiesOverride,
+            profile => context.TotalFEEDStudiesOverride.Add(profile),
             CaseProfileNames.TotalFEEDStudiesOverride
         );
     }
@@ -288,7 +281,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateTotalOtherStudiesCostProfile,
+            profile => context.TotalOtherStudiesCostProfile.Add(profile),
             CaseProfileNames.TotalOtherStudiesCostProfile
         );
     }
@@ -303,7 +296,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateHistoricCostCostProfile,
+            profile => context.HistoricCostCostProfile.Add(profile),
             CaseProfileNames.HistoricCostCostProfile
         );
     }
@@ -318,7 +311,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateWellInterventionCostProfileOverride,
+            profile => context.WellInterventionCostProfileOverride.Add(profile),
             CaseProfileNames.WellInterventionCostProfileOverride
         );
     }
@@ -333,7 +326,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateOnshoreRelatedOPEXCostProfile,
+            profile => context.OnshoreRelatedOPEXCostProfile.Add(profile),
             CaseProfileNames.OnshoreRelatedOPEXCostProfile
         );
     }
@@ -348,7 +341,7 @@ public class CaseTimeSeriesService(
             projectId,
             caseId,
             createProfileDto,
-            repository.CreateAdditionalOPEXCostProfile,
+            profile => context.AdditionalOPEXCostProfile.Add(profile),
             CaseProfileNames.AdditionalOPEXCostProfile
         );
     }
@@ -365,8 +358,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            repository.GetAdditionalOPEXCostProfile,
-            repository.UpdateAdditionalOPEXCostProfile
+            id => context.AdditionalOPEXCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -375,47 +367,40 @@ public class CaseTimeSeriesService(
         Guid caseId,
         Guid costProfileId,
         TUpdateDto updatedCostProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ICaseTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
+        var existingProfile = await getProfile(costProfileId);
 
-        var existingProfile = await getProfile(costProfileId)
-            ?? throw new NotFoundInDbException($"Production profile with id {costProfileId} not found.");
-
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Case>(projectId, existingProfile.Case.Id);
 
         mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
     }
 
     private async Task<TDto> CreateCaseProfile<TProfile, TDto, TCreateDto>(
         Guid projectId,
         Guid caseId,
         TCreateDto createProfileDto,
-        Func<TProfile, TProfile> createProfile,
+        Action<TProfile> createProfile,
         CaseProfileNames profileName
     )
         where TProfile : class, ICaseTimeSeries, new()
         where TDto : class
         where TCreateDto : class
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Case>(projectId, caseId);
 
-        var caseEntity = await caseRepository.GetCase(caseId)
-            ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
+        var caseEntity = await context.Cases.SingleAsync(x => x.Id == caseId);
 
-        var resourceHasProfile = await caseRepository.CaseHasProfile(caseId, profileName);
+        var resourceHasProfile = await CaseHasProfile(caseId, profileName);
 
         if (resourceHasProfile)
         {
@@ -424,16 +409,39 @@ public class CaseTimeSeriesService(
 
         TProfile profile = new()
         {
-            Case = caseEntity,
+            Case = caseEntity
         };
 
         var newProfile = mapperService.MapToEntity(createProfileDto, profile, caseId);
 
-        var createdProfile = createProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        createProfile(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);
+    }
+
+    private async Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType)
+    {
+        Expression<Func<Case, bool>> profileExistsExpression = profileType switch
+        {
+            CaseProfileNames.CessationWellsCostOverride => d => d.CessationWellsCostOverride != null,
+            CaseProfileNames.CessationOffshoreFacilitiesCostOverride => d => d.CessationOffshoreFacilitiesCostOverride != null,
+            CaseProfileNames.CessationOnshoreFacilitiesCostProfile => d => d.CessationOnshoreFacilitiesCostProfile != null,
+            CaseProfileNames.TotalFeasibilityAndConceptStudiesOverride => d => d.TotalFeasibilityAndConceptStudiesOverride != null,
+            CaseProfileNames.TotalFEEDStudiesOverride => d => d.TotalFEEDStudiesOverride != null,
+            CaseProfileNames.TotalOtherStudiesCostProfile => d => d.TotalOtherStudiesCostProfile != null,
+            CaseProfileNames.HistoricCostCostProfile => d => d.HistoricCostCostProfile != null,
+            CaseProfileNames.WellInterventionCostProfileOverride => d => d.WellInterventionCostProfileOverride != null,
+            CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride => d => d.OffshoreFacilitiesOperationsCostProfileOverride != null,
+            CaseProfileNames.OnshoreRelatedOPEXCostProfile => d => d.OnshoreRelatedOPEXCostProfile != null,
+            CaseProfileNames.AdditionalOPEXCostProfile => d => d.AdditionalOPEXCostProfile != null,
+            CaseProfileNames.CalculatedTotalIncomeCostProfile => d => d.CalculatedTotalIncomeCostProfile != null,
+            CaseProfileNames.CalculatedTotalCostCostProfile => d => d.CalculatedTotalCostCostProfile != null,
+        };
+
+        return await context.Cases
+            .Where(d => d.Id == caseId)
+            .AnyAsync(profileExistsExpression);
     }
 }

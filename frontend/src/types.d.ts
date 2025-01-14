@@ -1977,11 +1977,11 @@ declare namespace Paths {
         namespace Get {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.Co2DrillingFlaringFuelTotalsDto;
@@ -1992,11 +1992,11 @@ declare namespace Paths {
         namespace Get {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.Co2IntensityDto;
@@ -2007,11 +2007,11 @@ declare namespace Paths {
         namespace Get {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export type $200 = number; // double

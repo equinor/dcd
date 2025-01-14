@@ -1,31 +1,22 @@
-using System.Linq.Expressions;
-
-using api.Exceptions;
+using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
-using api.Features.Assets.CaseAssets.Topsides.Repositories;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Topsides.Services;
 
 public class TopsideService(
-    ITopsideRepository repository,
-    ICaseRepository caseRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : ITopsideService
 {
-    public async Task<Topside> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes)
-    {
-        return await repository.GetTopsideWithIncludes(topsideId, includes)
-            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
-    }
-
     public async Task<TopsideDto> UpdateTopside<TDto>(
         Guid projectId,
         Guid caseId,
@@ -34,19 +25,16 @@ public class TopsideService(
     )
         where TDto : BaseUpdateTopsideDto
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
-        var existingTopside = await repository.GetTopside(topsideId)
-            ?? throw new NotFoundInDbException($"Topside with id {topsideId} not found.");
+        var existingTopside = await context.Topsides.SingleAsync(x => x.Id == topsideId);
 
         mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
         existingTopside.LastChangedDate = DateTime.UtcNow;
 
-        await caseRepository.UpdateModifyTime(caseId);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var dto = mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId);
-        return dto;
+        return mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId);
     }
 }

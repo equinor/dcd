@@ -1,26 +1,19 @@
 using api.AppInfrastructure.Authorization;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.Assets.CaseAssets.Explorations.Repositories;
 using api.Features.Assets.CaseAssets.Explorations.Services;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
-using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Repositories;
 using api.Features.Assets.CaseAssets.Surfs.Services;
-using api.Features.Assets.CaseAssets.Topsides.Repositories;
 using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.Assets.CaseAssets.Transports.Repositories;
 using api.Features.Assets.CaseAssets.Transports.Services;
-using api.Features.Assets.CaseAssets.WellProjects.Repositories;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
-using api.Features.CaseProfiles.Repositories;
+using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
+using api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
 using api.Features.CaseProfiles.Services;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
@@ -142,19 +135,19 @@ public static class DcdIocConfiguration
 
         /* Recalculation services */
         services.AddScoped<IRecalculationService, RecalculationService>();
-        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
-        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
-        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
-        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
-        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
-        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
-        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
-        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
-        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
-        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
-        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
-        services.AddScoped<ICalculateNpvService, CalculateNpvService>();
-        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
+        services.AddScoped<WellCostProfileService>();
+        services.AddScoped<StudyCostProfileService>();
+        services.AddScoped<CessationCostProfileService>();
+        services.AddScoped<FuelFlaringLossesProfileService>();
+        services.AddScoped<GenerateGAndGAdminCostProfile>();
+        services.AddScoped<ImportedElectricityProfileService>();
+        services.AddScoped<NetSaleGasProfileService>();
+        services.AddScoped<OpexCostProfileService>();
+        services.AddScoped<Co2EmissionsProfileService>();
+        services.AddScoped<CalculateTotalIncomeService>();
+        services.AddScoped<CalculateTotalCostService>();
+        services.AddScoped<CalculateNpvService>();
+        services.AddScoped<CalculateBreakEvenOilPriceService>();
 
         /* Auth */
         services.AddScoped<CurrentUser>();
@@ -173,52 +166,36 @@ public static class DcdIocConfiguration
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
-        /* Misc */
-        services.AddScoped<ICaseService, CaseService>();
-        services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
-        services.AddScoped<IProjectWithCasesAndAssetsRepository, ProjectWithCasesAndAssetsRepository>();
+        /* Case assets */
+        services.AddScoped<DrainageStrategyService>();
+        services.AddScoped<DrainageStrategyTimeSeriesService>();
 
-        services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
-        services.AddScoped<IWellProjectService, WellProjectService>();
-        services.AddScoped<IExplorationService, ExplorationService>();
-        services.AddScoped<ISurfService, SurfService>();
-        services.AddScoped<ISubstructureService, SubstructureService>();
-        services.AddScoped<ITopsideService, TopsideService>();
-        services.AddScoped<ITransportService, TransportService>();
-        services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
+        services.AddScoped<ExplorationService>();
+        services.AddScoped<ExplorationTimeSeriesService>();
 
-        services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
-        services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();
-        services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
-        services.AddScoped<IExplorationTimeSeriesService, ExplorationTimeSeriesService>();
-        services.AddScoped<ISurfTimeSeriesService, SurfTimeSeriesService>();
-        services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
-        services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
-        services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
-        services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
+        services.AddScoped<OnshorePowerSupplyService>();
+        services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
 
-        services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
-        services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
-        services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
+        services.AddScoped<SubstructureService>();
+        services.AddScoped<SubstructureTimeSeriesService>();
 
-        services.AddScoped<ICaseRepository, CaseRepository>();
-        services.AddScoped<ISubstructureRepository, SubstructureRepository>();
-        services.AddScoped<ITopsideRepository, TopsideRepository>();
-        services.AddScoped<IDrainageStrategyRepository, DrainageStrategyRepository>();
-        services.AddScoped<IWellProjectRepository, WellProjectRepository>();
-        services.AddScoped<IExplorationRepository, ExplorationRepository>();
-        services.AddScoped<ITransportRepository, TransportRepository>();
-        services.AddScoped<ISurfRepository, SurfRepository>();
-        services.AddScoped<IOnshorePowerSupplyRepository, OnshorePowerSupplyRepository>();
+        services.AddScoped<SurfService>();
+        services.AddScoped<SurfTimeSeriesService>();
 
-        services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
-        services.AddScoped<IDrainageStrategyTimeSeriesRepository, DrainageStrategyTimeSeriesRepository>();
-        services.AddScoped<ISubstructureTimeSeriesRepository, SubstructureTimeSeriesRepository>();
-        services.AddScoped<ITopsideTimeSeriesRepository, TopsideTimeSeriesRepository>();
-        services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
-        services.AddScoped<IExplorationTimeSeriesRepository, ExplorationTimeSeriesRepository>();
-        services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
-        services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
-        services.AddScoped<IOnshorePowerSupplyTimeSeriesRepository, OnshorePowerSupplyTimeSeriesRepository>();
+        services.AddScoped<TopsideService>();
+        services.AddScoped<TopsideTimeSeriesService>();
+
+        services.AddScoped<TransportService>();
+        services.AddScoped<TransportTimeSeriesService>();
+
+        services.AddScoped<WellProjectService>();
+        services.AddScoped<WellProjectTimeSeriesService>();
+
+        /* Case time series */
+        services.AddScoped<CaseTimeSeriesService>();
+
+        services.AddScoped<Co2IntensityProfileService>();
+        services.AddScoped<Co2IntensityTotalService>();
+        services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
     }
 }

@@ -1,25 +1,25 @@
+using System.Linq.Expressions;
+
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
-using api.Features.Assets.CaseAssets.Explorations.Repositories;
-using api.Features.CaseProfiles.Enums;
-using api.Features.CaseProfiles.Repositories;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Assets.CaseAssets.Explorations.Services;
 
 public class ExplorationTimeSeriesService(
-    ICaseRepository caseRepository,
-    IExplorationTimeSeriesRepository repository,
-    IExplorationRepository explorationRepository,
+    DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : IExplorationTimeSeriesService
 {
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
         Guid projectId,
@@ -33,7 +33,7 @@ public class ExplorationTimeSeriesService(
             caseId,
             explorationId,
             createProfileDto,
-            repository.CreateGAndGAdminCostOverride,
+            profile => context.GAndGAdminCostOverride.Add(profile),
             ExplorationProfileNames.GAndGAdminCostOverride
         );
     }
@@ -51,8 +51,8 @@ public class ExplorationTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetGAndGAdminCostOverride,
-            repository.UpdateGAndGAdminCostOverride
+            id => context.GAndGAdminCostOverride.Include(x => x.Exploration).SingleAsync(x => x.Id == id),
+            profile => context.GAndGAdminCostOverride.Update(profile)
         );
     }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
@@ -69,8 +69,8 @@ public class ExplorationTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetSeismicAcquisitionAndProcessing,
-            repository.UpdateSeismicAcquisitionAndProcessing
+            id => context.SeismicAcquisitionAndProcessing.Include(x => x.Exploration).SingleAsync(x => x.Id == id),
+            profile => context.SeismicAcquisitionAndProcessing.Update(profile)
         );
     }
 
@@ -88,8 +88,8 @@ public class ExplorationTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            repository.GetCountryOfficeCost,
-            repository.UpdateCountryOfficeCost
+            id => context.CountryOfficeCost.Include(x => x.Exploration).SingleAsync(x => x.Id == id),
+            profile => context.CountryOfficeCost.Update(profile)
         );
     }
 
@@ -105,7 +105,7 @@ public class ExplorationTimeSeriesService(
             caseId,
             explorationId,
             createProfileDto,
-            repository.CreateSeismicAcquisitionAndProcessing,
+            profile => context.SeismicAcquisitionAndProcessing.Add(profile),
             ExplorationProfileNames.SeismicAcquisitionAndProcessing
         );
     }
@@ -122,7 +122,7 @@ public class ExplorationTimeSeriesService(
             caseId,
             explorationId,
             createProfileDto,
-            repository.CreateCountryOfficeCost,
+            profile => context.CountryOfficeCost.Add(profile),
             ExplorationProfileNames.CountryOfficeCost
         );
     }
@@ -133,27 +133,24 @@ public class ExplorationTimeSeriesService(
         Guid explorationId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile,
+        Action<TProfile> updateProfile
     )
         where TProfile : class, IExplorationTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDbException($"Cost profile with id {profileId} not found.");
+        var existingProfile = await getProfile(profileId);
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, existingProfile.Exploration.Id);
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
-        var updatedProfile = updateProfile(existingProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        updateProfile(existingProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
     }
 
     private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
@@ -161,20 +158,18 @@ public class ExplorationTimeSeriesService(
             Guid caseId,
             Guid explorationId,
             TCreateDto createExplorationProfileDto,
-            Func<TProfile, TProfile> createProfile,
+            Action<TProfile> createProfile,
             ExplorationProfileNames profileName
         )
             where TProfile : class, IExplorationTimeSeries, new()
             where TDto : class
             where TCreateDto : class
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 
-        var exploration = await explorationRepository.GetExploration(explorationId)
-            ?? throw new NotFoundInDbException($"Exploration with id {explorationId} not found.");
+        var exploration = await context.Explorations.SingleAsync(x => x.Id == explorationId);
 
-        var resourceHasProfile = await explorationRepository.ExplorationHasProfile(explorationId, profileName);
+        var resourceHasProfile = await ExplorationHasProfile(explorationId, profileName);
 
         if (resourceHasProfile)
         {
@@ -183,16 +178,29 @@ public class ExplorationTimeSeriesService(
 
         TProfile profile = new()
         {
-            Exploration = exploration,
+            Exploration = exploration
         };
 
         var newProfile = mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
 
-        var createdProfile = createProfile(newProfile);
-        await caseRepository.UpdateModifyTime(caseId);
+        createProfile(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);
+    }
+
+    private async Task<bool> ExplorationHasProfile(Guid explorationId, ExplorationProfileNames profileType)
+    {
+        Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
+        {
+            ExplorationProfileNames.GAndGAdminCostOverride => d => d.GAndGAdminCostOverride != null,
+            ExplorationProfileNames.SeismicAcquisitionAndProcessing => d => d.SeismicAcquisitionAndProcessing != null,
+            ExplorationProfileNames.CountryOfficeCost => d => d.CountryOfficeCost != null,
+        };
+
+        return await context.Explorations
+            .Where(d => d.Id == explorationId)
+            .AnyAsync(profileExistsExpression);
     }
 }

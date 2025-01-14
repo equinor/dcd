@@ -1,29 +1,20 @@
-using api.Features.CaseProfiles.Services;
+using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 
-public class CalculateNpvService(ICaseService caseService) : ICalculateNpvService
+public class CalculateNpvService(DcdDbContext context)
 {
-    private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
-    {
-        if (caseItem.CalculatedTotalIncomeCostProfile == null || caseItem.CalculatedTotalCostCostProfile == null)
-        {
-            return null;
-        }
-
-        return EconomicsHelper.CalculateCashFlow(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile);
-    }
-
     public async Task CalculateNpv(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(
-            caseId,
-            c => c.Project,
-            c => c.CalculatedTotalIncomeCostProfile!,
-            c => c.CalculatedTotalCostCostProfile!
-        );
+        var caseItem = await context.Cases
+            .Include(c => c.Project)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .SingleAsync(x => x.Id == caseId);
 
         CalculateNpv(caseItem);
     }
@@ -59,5 +50,14 @@ public class CalculateNpvService(ICaseService caseService) : ICalculateNpvServic
 
         caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;
     }
-}
 
+    private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
+    {
+        if (caseItem.CalculatedTotalIncomeCostProfile == null || caseItem.CalculatedTotalCostCostProfile == null)
+        {
+            return null;
+        }
+
+        return EconomicsHelper.CalculateCashFlow(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile);
+    }
+}

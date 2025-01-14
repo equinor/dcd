@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Services.Helpers;
 using api.Models;
 
 namespace api.Features.CaseProfiles.Dtos.TimeSeries;
@@ -41,11 +40,11 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
 
     public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
     {
-        if (timeSeriesCost == null || timeSeriesCost.Values.IsNullOrEmpty())
+        if (timeSeriesCost == null || timeSeriesCost.Values.Length == 0)
         {
             return this;
         }
-        if (Values.IsNullOrEmpty())
+        if (Values == null || Values.Length == 0)
         {
             Values = timeSeriesCost.Values;
             StartYear = timeSeriesCost.StartYear;

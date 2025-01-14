@@ -1,5 +1,3 @@
-using api.Features.CaseProfiles.Services.Helpers;
-
 namespace api.Features.Stea.Dtos;
 
 public static class SteaProjectDtoBuilder
@@ -18,7 +16,7 @@ public static class SteaProjectDtoBuilder
             steaCases.Add(c);
         }
 
-        if (!startYears.IsNullOrEmpty())
+        if (startYears.Length != 0)
         {
             Array.Sort(startYears);
             startYear = Array.Find(startYears, e => e > 0);

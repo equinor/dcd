@@ -10,6 +10,7 @@ using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
+using api.Features.Stea.Dtos;
 using api.ModelMapping;
 using api.Models;
 

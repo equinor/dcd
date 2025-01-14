@@ -1,5 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
@@ -10,7 +11,6 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
-using api.Features.CaseProfiles.Services;
 using api.Features.Cases.Recalculation;
 using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
@@ -25,17 +25,16 @@ namespace api.Features.Prosp.Services;
 
 public class ProspExcelImportService(
     DcdDbContext context,
-    ICaseService caseService,
-    ISurfService surfService,
-    ISubstructureService substructureService,
-    ITopsideService topsideService,
-    ITransportService transportService,
-    IOnshorePowerSupplyService onshorePowerSupplyService,
-    ISubstructureTimeSeriesService substructureTimeSeriesService,
-    ISurfTimeSeriesService surfTimeSeriesService,
-    ITopsideTimeSeriesService topsideTimeSeriesService,
-    ITransportTimeSeriesService transportTimeSeriesService,
-    IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
+    SurfService surfService,
+    SubstructureService substructureService,
+    TopsideService topsideService,
+    TransportService transportService,
+    OnshorePowerSupplyService onshorePowerSupplyService,
+    SubstructureTimeSeriesService substructureTimeSeriesService,
+    SurfTimeSeriesService surfTimeSeriesService,
+    TopsideTimeSeriesService topsideTimeSeriesService,
+    TransportTimeSeriesService transportTimeSeriesService,
+    OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IRecalculationService recalculationService)
 {
     private const string SheetName = "main";
@@ -124,7 +123,7 @@ public class ProspExcelImportService(
         var importedCurrency = ReadIntValue(cellData, ProspCellReferences.Surf.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var surfLink = (await caseService.GetCase(sourceCaseId)).SurfLink;
+        var surfLink = (await GetCaseWithNoIncludes(sourceCaseId)).SurfLink;
 
         var updatedSurfDto = new PROSPUpdateSurfDto
         {
@@ -197,7 +196,7 @@ public class ProspExcelImportService(
         var importedCurrency = ReadIntValue(cellData, ProspCellReferences.TopSide.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var topsideLink = (await caseService.GetCase(sourceCaseId)).TopsideLink;
+        var topsideLink = (await GetCaseWithNoIncludes(sourceCaseId)).TopsideLink;
         var updateTopsideDto = new PROSPUpdateTopsideDto
         {
             DG3Date = dG3Date,
@@ -260,7 +259,7 @@ public class ProspExcelImportService(
         var importedCurrency = ReadIntValue(cellData, ProspCellReferences.SubStructure.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var substructureLink = (await caseService.GetCase(sourceCaseId)).SubstructureLink;
+        var substructureLink = (await GetCaseWithNoIncludes(sourceCaseId)).SubstructureLink;
         var updateSubstructureDto = new PROSPUpdateSubstructureDto
         {
             DryWeight = dryWeight,
@@ -305,7 +304,7 @@ public class ProspExcelImportService(
         var gasExportPipelineLength = ReadDoubleValue(cellData, ProspCellReferences.Transport.GasExportPipelineLength);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var transportLink = (await caseService.GetCase(sourceCaseId)).TransportLink;
+        var transportLink = (await GetCaseWithNoIncludes(sourceCaseId)).TransportLink;
         var updateTransportDto = new PROSPUpdateTransportDto
         {
             DG3Date = dG3Date,
@@ -343,7 +342,7 @@ public class ProspExcelImportService(
             StartYear = costProfileStartYear - dG4Date.Year,
         };
 
-        var onshorePowerSupplyLink = (await caseService.GetCase(sourceCaseId)).OnshorePowerSupplyLink;
+        var onshorePowerSupplyLink = (await GetCaseWithNoIncludes(sourceCaseId)).OnshorePowerSupplyLink;
         await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, sourceCaseId, onshorePowerSupplyLink, costProfile);
     }
 
@@ -355,7 +354,7 @@ public class ProspExcelImportService(
         var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
-        var caseItem = await caseService.GetCase(sourceCaseId);
+        var caseItem = await GetCase(sourceCaseId);
         caseItem.SharepointFileId = sharepointFileId;
         caseItem.SharepointFileName = sharepointFileName;
         caseItem.SharepointFileUrl = sharepointFileUrl;
@@ -428,7 +427,7 @@ public class ProspExcelImportService(
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var caseItem = await caseService.GetCase(sourceCaseId);
+        var caseItem = await GetCase(sourceCaseId);
         caseItem.SharepointFileId = null;
         caseItem.SharepointFileName = null;
         caseItem.SharepointFileUrl = null;
@@ -586,5 +585,38 @@ public class ProspExcelImportService(
             41 => ProductionFlowline.HDPELinedCS,
             _ => ProductionFlowline.No_production_flowline
         };
+    }
+
+    private async Task<Case> GetCaseWithNoIncludes(Guid caseId)
+    {
+        return await context.Cases.SingleAsync(x => x.Id == caseId);
+    }
+
+    private async Task<Case> GetCase(Guid caseId)
+    {
+        var caseItem = await context.Cases
+                           .Include(c => c.TotalFeasibilityAndConceptStudies)
+                           .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                           .Include(c => c.TotalFEEDStudies)
+                           .Include(c => c.TotalFEEDStudiesOverride)
+                           .Include(c => c.TotalOtherStudiesCostProfile)
+                           .Include(c => c.HistoricCostCostProfile)
+                           .Include(c => c.WellInterventionCostProfile)
+                           .Include(c => c.WellInterventionCostProfileOverride)
+                           .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+                           .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                           .Include(c => c.OnshoreRelatedOPEXCostProfile)
+                           .Include(c => c.AdditionalOPEXCostProfile)
+                           .Include(c => c.CessationWellsCost)
+                           .Include(c => c.CessationWellsCostOverride)
+                           .Include(c => c.CessationOffshoreFacilitiesCost)
+                           .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                           .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+                           .Include(c => c.CalculatedTotalIncomeCostProfile)
+                           .Include(c => c.CalculatedTotalCostCostProfile)
+                           .SingleOrDefaultAsync(c => c.Id == caseId)
+                       ?? throw new NotFoundInDbException($"Case {caseId} not found.");
+
+        return caseItem;
     }
 }
