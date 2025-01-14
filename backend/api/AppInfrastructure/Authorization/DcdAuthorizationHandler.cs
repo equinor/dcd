@@ -87,7 +87,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
             .Select(x => new
             {
                 ProjectIdWithProjectMembersConnected = x.OriginalProjectId ?? x.Id,
-                x.Classification,
+                Classification = x.IsRevision ? x.OriginalProject!.Classification : x.Classification,
                 x.IsRevision
             })
             .SingleAsync();

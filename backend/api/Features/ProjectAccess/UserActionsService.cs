@@ -33,7 +33,7 @@ public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
             .Where(x => x.Id == primaryKeyValue)
             .Select(x => new
             {
-                x.Classification,
+                x.OriginalProject!.Classification,
                 OriginalProjectId = x.OriginalProjectId!.Value
             })
             .SingleAsync();
