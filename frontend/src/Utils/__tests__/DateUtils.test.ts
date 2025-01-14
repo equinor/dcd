@@ -43,6 +43,13 @@ describe("dateStringToDateUtc", () => {
         const result = dateStringToDateUtc(dateString)
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
+
+    it("should convert \"0001-01-01T00:00:00.0000000\" to \"0001-01-01T00:00:00Z\"", () => {
+        const dateString = "0001-01-01T00:00:00.0000000"
+        const expectedDate = new Date("0001-01-01T00:00:00Z")
+        const result = dateStringToDateUtc(dateString)
+        expect(result.toISOString()).toBe(expectedDate.toISOString())
+    })
 })
 
 describe("getYearFromDateString", () => {
