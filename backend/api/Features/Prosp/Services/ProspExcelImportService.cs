@@ -6,8 +6,9 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
 using api.Features.Assets.CaseAssets.Substructures.Update;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
-using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos.Update;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Services;
+using api.Features.Assets.CaseAssets.Surfs.Update;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
@@ -26,7 +27,7 @@ namespace api.Features.Prosp.Services;
 
 public class ProspExcelImportService(
     DcdDbContext context,
-    SurfService surfService,
+    UpdateSurfService updateSurfService,
     SubstructureService substructureService,
     TopsideService topsideService,
     TransportService transportService,
@@ -126,7 +127,7 @@ public class ProspExcelImportService(
             importedCurrency == 2 ? Currency.USD : 0;
         var surfLink = (await GetCaseWithNoIncludes(sourceCaseId)).SurfLink;
 
-        var updatedSurfDto = new PROSPUpdateSurfDto
+        var updatedSurfDto = new ProspUpdateSurfDto
         {
             ProductionFlowline = productionFlowLine,
             UmbilicalSystemLength = lengthUmbilicalSystem,
@@ -146,7 +147,7 @@ public class ProspExcelImportService(
             CessationCost = cessationCost,
         };
 
-        await surfService.UpdateSurf(projectId, sourceCaseId, surfLink, updatedSurfDto);
+        await updateSurfService.UpdateSurfFromProsp(projectId, sourceCaseId, surfLink, updatedSurfDto);
         await surfTimeSeriesService.AddOrUpdateSurfCostProfile(projectId, sourceCaseId, surfLink, costProfile);
     }
 
@@ -261,7 +262,7 @@ public class ProspExcelImportService(
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var substructureLink = (await GetCaseWithNoIncludes(sourceCaseId)).SubstructureLink;
-        var updateSubstructureDto = new PROSPUpdateSubstructureDto
+        var updateSubstructureDto = new ProspUpdateSubstructureDto
         {
             DryWeight = dryWeight,
             Concept = concept,
@@ -466,16 +467,10 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedSurf(Case caseItem)
     {
-        var surfLink = caseItem.SurfLink;
-        var dto = new PROSPUpdateSurfDto
-        {
-            Source = Source.ConceptApp
-        };
-
         var costProfileDto = new UpdateSurfCostProfileDto();
 
-        await surfService.UpdateSurf(caseItem.ProjectId, caseItem.Id, surfLink, dto);
-        await surfTimeSeriesService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, surfLink, costProfileDto);
+        await updateSurfService.ResetSurf(caseItem.ProjectId, caseItem.Id, caseItem.SurfLink);
+        await surfTimeSeriesService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SurfLink, costProfileDto);
     }
 
     private async Task ClearImportedTopside(Case caseItem)

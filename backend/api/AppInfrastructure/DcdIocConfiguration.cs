@@ -6,7 +6,8 @@ using api.Features.Assets.CaseAssets.Explorations.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
 using api.Features.Assets.CaseAssets.Substructures.Update;
-using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Services;
+using api.Features.Assets.CaseAssets.Surfs.Update;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
@@ -182,7 +183,7 @@ public static class DcdIocConfiguration
         services.AddScoped<SubstructureService>();
         services.AddScoped<SubstructureTimeSeriesService>();
 
-        services.AddScoped<SurfService>();
+        services.AddScoped<UpdateSurfService>();
         services.AddScoped<SurfTimeSeriesService>();
 
         services.AddScoped<TopsideService>();

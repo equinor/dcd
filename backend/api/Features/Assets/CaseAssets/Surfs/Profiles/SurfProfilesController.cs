@@ -1,29 +1,17 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.Surfs.Dtos;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
-using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos.Update;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Surfs;
+namespace api.Features.Assets.CaseAssets.Surfs.Profiles;
 
 [Route("projects/{projectId}/cases/{caseId}/surfs")]
 [AuthorizeActionType(ActionType.Edit)]
-public class SurfsController(
-    SurfService surfService,
-    SurfTimeSeriesService surfTimeSeriesService) : ControllerBase
+public class SurfProfilesController(SurfTimeSeriesService surfTimeSeriesService) : ControllerBase
 {
-    [HttpPut("{surfId}")]
-    public async Task<SurfDto> UpdateSurf(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid surfId,
-        [FromBody] APIUpdateSurfDto dto)
-    {
-        return await surfService.UpdateSurf(projectId, caseId, surfId, dto);
-    }
-
     [HttpPost("{surfId}/cost-profile-override/")]
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
         [FromRoute] Guid projectId,

@@ -1,9 +1,9 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.Surfs.Dtos;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos.Update;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -11,7 +11,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Surfs.Services;
+namespace api.Features.Assets.CaseAssets.Surfs.Profiles.Services;
 
 public class SurfTimeSeriesService(
     DcdDbContext context,

@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
+namespace api.Features.Assets.CaseAssets.Surfs.Update;
 
 public abstract class BaseUpdateSurfDto
 {
@@ -20,4 +20,14 @@ public abstract class BaseUpdateSurfDto
     public string ApprovedBy { get; set; } = string.Empty;
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
+}
+
+public class ProspUpdateSurfDto : BaseUpdateSurfDto
+{
+    public DateTime? ProspVersion { get; set; }
+}
+
+public class UpdateSurfDto : BaseUpdateSurfDto
+{
+    public Maturity Maturity { get; set; }
 }

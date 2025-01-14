@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.Surfs.Dtos;
+namespace api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos;
 
-public class SurfWithProfilesDto
+public class SurfDto
 {
     [Required]
     public Guid Id { get; set; }
@@ -13,12 +12,6 @@ public class SurfWithProfilesDto
     public string Name { get; set; } = string.Empty;
     [Required]
     public Guid ProjectId { get; set; }
-    [Required]
-    public SurfCostProfileDto CostProfile { get; set; } = new();
-    [Required]
-    public SurfCostProfileOverrideDto CostProfileOverride { get; set; } = new();
-    [Required]
-    public SurfCessationCostProfileDto CessationCostProfile { get; set; } = new();
     [Required]
     public double CessationCost { get; set; }
     [Required]
@@ -55,13 +48,3 @@ public class SurfWithProfilesDto
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
 }
-
-public class SurfCostProfileDto : TimeSeriesCostDto;
-
-public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class SurfCessationCostProfileDto : TimeSeriesCostDto;
