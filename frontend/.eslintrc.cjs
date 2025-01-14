@@ -42,6 +42,13 @@ module.exports = {
         "no-console": process.env.NODE_ENV === "production"
             ? "warn"
             : "off",
+        "no-restricted-syntax": [
+            "error",
+            {
+                selector: "NewExpression[callee.name=\"Date\"][arguments.length > 0]",
+                message: "Do not use new Date(xyz). Use a date utility function instead.",
+            },
+        ],
     },
     overrides: [
         {
@@ -75,6 +82,18 @@ module.exports = {
         },
         {
             files: "src/setupTests.ts",
+            rules: {
+                "import/no-extraneous-dependencies": 0,
+            },
+        },
+        {
+            files: ["src/Utils/DateUtils.ts", "src/Utils/__tests__/DateUtils.test.ts"],
+            rules: {
+                "no-restricted-syntax": 0,
+            },
+        },
+        {
+            files: ["src/Utils/__tests__/DateUtils.test.ts"],
             rules: {
                 "import/no-extraneous-dependencies": 0,
             },

@@ -9,7 +9,8 @@ import {
     formatDate,
     isDefaultDate,
     toMonthDate,
-    dateFromString,
+    dateStringToDateUtc,
+    dateFromTimestamp,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
@@ -97,25 +98,25 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
     const getDGOChangesObject = (newDate: Date): ResourceObject | undefined => {
         const newCaseObject = caseData
-        newCaseObject.dG0Date = new Date(newDate).toISOString()
+        newCaseObject.dG0Date = newDate.toISOString()
 
         if (newCaseObject.dG1Date && isDefaultDateString(newCaseObject.dG1Date)) {
-            const dg = new Date(newCaseObject.dG0Date)
+            const dg = dateStringToDateUtc(newCaseObject.dG0Date)
             dg.setMonth(dg.getMonth() + 12)
             newCaseObject.dG1Date = dg.toISOString()
         }
         if (isDefaultDateString(newCaseObject.dG2Date)) {
-            const dg = new Date(newCaseObject.dG1Date)
+            const dg = dateStringToDateUtc(newCaseObject.dG1Date)
             dg.setMonth(dg.getMonth() + 12)
             newCaseObject.dG2Date = dg.toISOString()
         }
         if (isDefaultDateString(newCaseObject.dG3Date)) {
-            const dg = new Date(newCaseObject.dG2Date)
+            const dg = dateStringToDateUtc(newCaseObject.dG2Date)
             dg.setMonth(dg.getMonth() + 12)
             newCaseObject.dG3Date = dg.toISOString()
         }
         if (isDefaultDateString(newCaseObject.dG4Date)) {
-            const dg = new Date(newCaseObject.dG3Date)
+            const dg = dateStringToDateUtc(newCaseObject.dG3Date)
             dg.setMonth(dg.getMonth() + 36)
             newCaseObject.dG4Date = dg.toISOString()
         }
@@ -135,9 +136,9 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
         if ((dateValueYear >= 2010 && dateValueYear <= 2110) || dateValue === "") {
             const caseDataCopy: any = { ...caseData }
-            const newDate = Number.isNaN(new Date(dateValue).getTime())
+            const newDate = Number.isNaN(dateStringToDateUtc(dateValue).getTime())
                 ? defaultDate()
-                : new Date(dateValue)
+                : dateStringToDateUtc(dateValue)
             const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
 
             addEdit({
@@ -161,7 +162,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         const minDateValue = Math.max(
             ...filteredDates.map((date) => date.getTime()),
         )
-        const minDate = new Date(minDateValue)
+        const minDate = dateFromTimestamp(minDateValue)
         return toMonthDate(minDate)
     }
 
@@ -172,18 +173,18 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         const maxDateValue = Math.min(
             ...filteredDates.map((date) => date.getTime()),
         )
-        const maxDate = new Date(maxDateValue)
+        const maxDate = dateFromTimestamp(maxDateValue)
         return toMonthDate(maxDate)
     }
 
     const getDatesFromStrings = (dateStrings: any[]) => {
-        const dates = dateStrings.map((d) => new Date(String(d)))
+        const dates = dateStrings.map((d) => dateStringToDateUtc(String(d)))
         return dates
     }
 
     const toScheduleValue = (date: string | number | boolean | null | undefined) => {
-        const paramString = `${String(date)}Z`
-        const dateString = dateFromString(paramString)
+        const paramString = String(date)
+        const dateString = dateStringToDateUtc(paramString)
         if (isDefaultDate(dateString)) {
             return undefined
         }

@@ -2,10 +2,10 @@ import React, { ChangeEventHandler, useState } from "react"
 import { Input, InputWrapper } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import {
-    dateFromString,
     isDefaultDate,
     toMonthDate,
     formatDate,
+    dateStringToDateUtc,
 } from "@/Utils/DateUtils"
 import {
     isWithinRange,
@@ -54,7 +54,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     }
 
     const toScheduleValue = (date: string) => {
-        const dateString = dateFromString(date)
+        const dateString = dateStringToDateUtc(date)
         if (isDefaultDate(dateString)) {
             return undefined
         }

@@ -24,6 +24,7 @@ import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -92,11 +93,11 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!projectData) { return }
 
-        const lastModified = new Date(projectData.commonProjectAndRevisionData.modifyTime)
+        const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)

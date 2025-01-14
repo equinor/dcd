@@ -4,6 +4,7 @@ import { Typography } from "@equinor/eds-core-react"
 import CaseEditHistory from "@/Components/Case/Components/CaseEditHistory"
 import { useCaseContext } from "@/Context/CaseContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const Container = styled.div`
     display: flex;
@@ -38,7 +39,7 @@ const EditHistoryOverviewTab = () => {
     return (
         <Container>
             {revisionAndProjectData.commonProjectAndRevisionData.cases
-                .sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
+                .sort((a, b) => sortUtcDateStrings(a.createTime, b.createTime))
                 .map((projectCase, index) => {
                     const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.caseId)
                     return filteredEdits.length > 0 ? (

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -94,7 +95,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={opexTimeSeriesData}
-            dg4Year={apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030}
+            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
             tableYears={tableYears}
             tableName="OPEX cost"
             gridRef={opexGridRef}

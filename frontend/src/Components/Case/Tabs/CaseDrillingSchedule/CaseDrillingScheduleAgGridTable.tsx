@@ -11,7 +11,6 @@ import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import isEqual from "lodash/isEqual"
 import {
-    isExplorationWell,
     cellStyleRightAlign,
     getValuesFromEntireRow,
     generateProfile,

@@ -22,6 +22,7 @@ import { useCaseContext } from "@/Context/CaseContext"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -130,7 +131,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     if (!yearRangeSetFromProfiles) {
                         SetTableYearsFromProfiles(
                             [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
-                            caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
+                            getYearFromDateString(caseData.dG4Date),
                             setStartYear,
                             setEndYear,
                             setTableYears,
@@ -186,6 +187,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
 
     const co2EmissionsChartData = () => {
         const dataArray = []
+        if (!caseData) { return [{}] }
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
@@ -195,14 +197,14 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                         useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
                         startYear,
-                        caseData!.dG4Date ? new Date(caseData!.dG4Date).getFullYear() : 2030,
+                        getYearFromDateString(caseData.dG4Date),
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
                         co2Intensity,
                         i,
                         startYear,
-                        caseData!.dG4Date ? new Date(caseData!.dG4Date).getFullYear() : 2030,
+                        getYearFromDateString(caseData.dG4Date),
                     ),
             })
         }
@@ -293,7 +295,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 <CaseTabTable
                     addEdit={addEdit}
                     timeSeriesData={timeSeriesData}
-                    dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
+                    dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableYears={tableYears}
                     tableName="CO2 emissions"
                     includeFooter={false}

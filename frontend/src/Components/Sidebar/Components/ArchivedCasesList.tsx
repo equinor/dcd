@@ -11,6 +11,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppContext } from "@/Context/AppContext"
 import { TimelineElement } from "../Sidebar"
+import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -18,7 +19,7 @@ const SideBarRefCaseWrapper = styled.div`
 
 interface ArchivedCase extends Components.Schemas.CaseOverviewDto { isReferenceCase: boolean}
 
-const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
+const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => sortUtcDateStrings(a.createTime, b.createTime)
 
 const getTooltipText = (
     caseName: string | undefined,
