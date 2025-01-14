@@ -1,6 +1,5 @@
 export const defaultDg4Date = "2030-01-01T00:00:00Z"
 
-/* eslint-disable no-restricted-syntax */
 /**
  * Converts a UTC date string to a UTC Date object.
  * All dates stored in the database are in UTC. We need to make sure the Date objects we create are also in UTC.
@@ -30,7 +29,6 @@ export const dateStringToDateUtc = (dateString: string): Date => {
 export const getYearFromDateString = (dateString: string): number => new Date(dateString).getFullYear()
 
 export const dateFromTimestamp = (timestamp: number): Date => new Date(timestamp)
-/* eslint-enable no-restricted-syntax */
 
 export const sortUtcDateStrings = (a: string, b: string): number => {
     const dateA = dateStringToDateUtc(a)

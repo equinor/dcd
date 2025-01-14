@@ -86,5 +86,17 @@ module.exports = {
                 "import/no-extraneous-dependencies": 0,
             },
         },
+        {
+            files: ["src/Utils/DateUtils.ts", "src/Utils/__tests__/DateUtils.test.ts"],
+            rules: {
+                "no-restricted-syntax": 0,
+            },
+        },
+        {
+            files: ["src/Utils/__tests__/DateUtils.test.ts"],
+            rules: {
+                "import/no-extraneous-dependencies": 0,
+            },
+        },
     ],
 }

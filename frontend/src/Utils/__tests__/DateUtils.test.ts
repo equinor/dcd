@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-restricted-syntax */
 import { describe, it, expect } from "vitest"
 import {
     dateFromTimestamp,
