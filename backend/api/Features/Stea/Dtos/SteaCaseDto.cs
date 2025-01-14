@@ -1,4 +1,4 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 

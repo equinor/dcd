@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos.Create;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -12,7 +12,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Services;
 
 public class DrainageStrategyTimeSeriesService(
     DcdDbContext context,

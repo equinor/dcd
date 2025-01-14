@@ -1,4 +1,4 @@
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Services;
 
 public enum DrainageStrategyProfileNames
 {

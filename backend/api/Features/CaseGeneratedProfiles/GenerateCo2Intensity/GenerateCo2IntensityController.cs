@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 

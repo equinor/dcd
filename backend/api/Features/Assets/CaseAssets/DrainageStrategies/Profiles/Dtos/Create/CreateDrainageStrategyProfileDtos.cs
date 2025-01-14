@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Create;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos.Create;
 
 public class CreateProductionProfileOilDto : CreateTimeSeriesVolumeDto;
 

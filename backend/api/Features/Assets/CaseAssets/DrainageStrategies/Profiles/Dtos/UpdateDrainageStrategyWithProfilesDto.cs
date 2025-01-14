@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos;
 
 public class UpdateProductionProfileOilDto : UpdateTimeSeriesVolumeDto;
 

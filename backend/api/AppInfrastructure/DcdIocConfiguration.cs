@@ -1,5 +1,6 @@
 using api.AppInfrastructure.Authorization;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Services;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Update;
 using api.Features.Assets.CaseAssets.Explorations.Services;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Services;
@@ -167,7 +168,7 @@ public static class DcdIocConfiguration
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
         /* Case assets */
-        services.AddScoped<DrainageStrategyService>();
+        services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<DrainageStrategyTimeSeriesService>();
 
         services.AddScoped<ExplorationService>();

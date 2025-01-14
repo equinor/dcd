@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos;
 
 public class DrainageStrategyDto
 {
