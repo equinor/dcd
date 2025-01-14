@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
+namespace api.Features.Assets.CaseAssets.Topsides.Update;
 
 public abstract class BaseUpdateTopsideDto
 {
@@ -27,4 +27,15 @@ public abstract class BaseUpdateTopsideDto
     public double FacilityOpex { get; set; }
     public double PeakElectricityImported { get; set; }
     public Source Source { get; set; }
+}
+
+public class UpdateTopsideDto : BaseUpdateTopsideDto
+{
+    public Maturity Maturity { get; set; }
+    public string ApprovedBy { get; set; } = string.Empty;
+}
+
+public class ProspUpdateTopsideDto : BaseUpdateTopsideDto
+{
+    public DateTime? ProspVersion { get; set; }
 }

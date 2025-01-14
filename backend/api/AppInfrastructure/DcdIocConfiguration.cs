@@ -8,7 +8,8 @@ using api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
 using api.Features.Assets.CaseAssets.Substructures.Update;
 using api.Features.Assets.CaseAssets.Surfs.Profiles.Services;
 using api.Features.Assets.CaseAssets.Surfs.Update;
-using api.Features.Assets.CaseAssets.Topsides.Services;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Services;
+using api.Features.Assets.CaseAssets.Topsides.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
@@ -186,7 +187,7 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateSurfService>();
         services.AddScoped<SurfTimeSeriesService>();
 
-        services.AddScoped<TopsideService>();
+        services.AddScoped<UpdateTopsideService>();
         services.AddScoped<TopsideTimeSeriesService>();
 
         services.AddScoped<TransportService>();

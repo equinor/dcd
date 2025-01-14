@@ -1,29 +1,17 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.Topsides.Dtos;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
-using api.Features.Assets.CaseAssets.Topsides.Services;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos.Update;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Topsides;
+namespace api.Features.Assets.CaseAssets.Topsides.Profiles;
 
 [Route("projects/{projectId}/cases/{caseId}/topsides")]
 [AuthorizeActionType(ActionType.Edit)]
-public class TopsidesController(
-    TopsideService topsideService,
-    TopsideTimeSeriesService topsideTimeSeriesService) : ControllerBase
+public class TopsideProfilesController(TopsideTimeSeriesService topsideTimeSeriesService) : ControllerBase
 {
-    [HttpPut("{topsideId}")]
-    public async Task<TopsideDto> UpdateTopside(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid topsideId,
-        [FromBody] APIUpdateTopsideDto dto)
-    {
-        return await topsideService.UpdateTopside(projectId, caseId, topsideId, dto);
-    }
-
     [HttpPost("{topsideId}/cost-profile-override/")]
     public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
         [FromRoute] Guid projectId,

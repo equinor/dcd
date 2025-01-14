@@ -6,7 +6,7 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Update;
 using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos;
-using api.Features.Assets.CaseAssets.Topsides.Dtos;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;

@@ -8,33 +8,6 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
-        export interface APIUpdateTopsideDto {
-            dryWeight?: number; // double
-            oilCapacity?: number; // double
-            gasCapacity?: number; // double
-            waterInjectionCapacity?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            currency?: Currency /* int32 */;
-            fuelConsumption?: number; // double
-            flaredGas?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            cO2ShareOilProfile?: number; // double
-            cO2ShareGasProfile?: number; // double
-            cO2ShareWaterInjectionProfile?: number; // double
-            cO2OnMaxOilProfile?: number; // double
-            cO2OnMaxGasProfile?: number; // double
-            cO2OnMaxWaterInjectionProfile?: number; // double
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            facilityOpex?: number; // double
-            peakElectricityImported?: number; // double
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
-        }
         export interface APIUpdateTransportDto {
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
@@ -1573,6 +1546,33 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateTopsideDto {
+            dryWeight?: number; // double
+            oilCapacity?: number; // double
+            gasCapacity?: number; // double
+            waterInjectionCapacity?: number; // double
+            artificialLift?: ArtificialLift /* int32 */;
+            currency?: Currency /* int32 */;
+            fuelConsumption?: number; // double
+            flaredGas?: number; // double
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            cO2ShareOilProfile?: number; // double
+            cO2ShareGasProfile?: number; // double
+            cO2ShareWaterInjectionProfile?: number; // double
+            cO2OnMaxOilProfile?: number; // double
+            cO2OnMaxGasProfile?: number; // double
+            cO2OnMaxWaterInjectionProfile?: number; // double
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            facilityOpex?: number; // double
+            peakElectricityImported?: number; // double
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
+            approvedBy?: string | null;
+        }
         export interface UpdateTotalFEEDStudiesOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -2998,7 +2998,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 topsideId: Parameters.TopsideId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateTopsideDto;
+            export type RequestBody = Components.Schemas.UpdateTopsideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TopsideDto;
             }

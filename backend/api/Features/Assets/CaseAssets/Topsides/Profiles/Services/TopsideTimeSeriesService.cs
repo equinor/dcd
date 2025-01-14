@@ -1,9 +1,9 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.Topsides.Dtos;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos.Update;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -11,7 +11,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Topsides.Services;
+namespace api.Features.Assets.CaseAssets.Topsides.Profiles.Services;
 
 public class TopsideTimeSeriesService(
     DcdDbContext context,

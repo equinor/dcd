@@ -7,7 +7,7 @@ class TopsideService extends __BaseService {
         projectId: string,
         caseId: string,
         topsideId: string,
-        dto: Components.Schemas.APIUpdateTopsideDto,
+        dto: Components.Schemas.UpdateTopsideDto,
     ): Promise<Components.Schemas.TopsideDto> {
         const res: Components.Schemas.TopsideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/topsides/${topsideId}`,

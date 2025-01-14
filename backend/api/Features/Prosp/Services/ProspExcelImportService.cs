@@ -9,8 +9,9 @@ using api.Features.Assets.CaseAssets.Substructures.Update;
 using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Profiles.Services;
 using api.Features.Assets.CaseAssets.Surfs.Update;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
-using api.Features.Assets.CaseAssets.Topsides.Services;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos.Update;
+using api.Features.Assets.CaseAssets.Topsides.Profiles.Services;
+using api.Features.Assets.CaseAssets.Topsides.Update;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Cases.Recalculation;
@@ -29,7 +30,7 @@ public class ProspExcelImportService(
     DcdDbContext context,
     UpdateSurfService updateSurfService,
     SubstructureService substructureService,
-    TopsideService topsideService,
+    UpdateTopsideService updateTopsideService,
     TransportService transportService,
     OnshorePowerSupplyService onshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
@@ -199,7 +200,7 @@ public class ProspExcelImportService(
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var topsideLink = (await GetCaseWithNoIncludes(sourceCaseId)).TopsideLink;
-        var updateTopsideDto = new PROSPUpdateTopsideDto
+        var updateTopsideDto = new ProspUpdateTopsideDto
         {
             DG3Date = dG3Date,
             DG4Date = dG4Date,
@@ -227,7 +228,7 @@ public class ProspExcelImportService(
             PeakElectricityImported = peakElectricityImported
         };
 
-        await topsideService.UpdateTopside(projectId, sourceCaseId, topsideLink, updateTopsideDto);
+        await updateTopsideService.UpdateTopsideFromProsp(projectId, sourceCaseId, topsideLink, updateTopsideDto);
         await topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(projectId, sourceCaseId, topsideLink, costProfile);
     }
 
@@ -476,7 +477,7 @@ public class ProspExcelImportService(
     private async Task ClearImportedTopside(Case caseItem)
     {
         var topsideLink = caseItem.TopsideLink;
-        var dto = new PROSPUpdateTopsideDto
+        var dto = new ProspUpdateTopsideDto
         {
             Source = Source.ConceptApp
         };
@@ -484,7 +485,7 @@ public class ProspExcelImportService(
         var costProfileDto = new UpdateTopsideCostProfileDto();
 
 
-        await topsideService.UpdateTopside(caseItem.ProjectId, caseItem.Id, topsideLink, dto);
+        await updateTopsideService.ResetTopside(caseItem.ProjectId, caseItem.Id, topsideLink);
         await topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId, caseItem.Id, topsideLink, costProfileDto);
     }
 
