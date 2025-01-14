@@ -1,17 +1,26 @@
 /* eslint-disable no-restricted-syntax */
 /**
  * Converts a UTC date string to a UTC Date object.
- * All dates stored in the database is in UTC. We need to make sure the Date objects we create are also in UTC.
+ * All dates stored in the database are in UTC. We need to make sure the Date objects we create are also in UTC.
  * If we ever need to work with non-UTC dates, we should create a new function for that.
  * @param dateString - The UTC date string to convert.
  * @returns The Date object representing the UTC date.
  */
 export const dateStringToDateUtc = (dateString: string): Date => {
-    // TODO: Make sure the string is a valid date string.
-
     // Ensure the date string ends with "Z" or "+00:00" to create the Date object as UTC.
     if (!dateString.endsWith("Z") && !dateString.endsWith("+00:00")) {
-        return new Date(`${dateString}Z`)
+        if (dateString.length === 10) {
+            // Handle "0001-01-01" format
+            return new Date(`${dateString}T00:00:00Z`)
+        }
+        if (dateString.length === 16) {
+            // Handle "0001-01-01T00:00" format
+            return new Date(`${dateString}:00Z`)
+        }
+        if (dateString.length === 19) {
+            // Handle "0001-01-01T00:00:00" format
+            return new Date(`${dateString}Z`)
+        }
     }
     return new Date(dateString)
 }
