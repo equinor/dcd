@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Substructures.Update;
 
-public class SubstructureService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateSubstructureService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task ResetSubstructure(Guid projectId, Guid caseId, Guid substructureId)
     {

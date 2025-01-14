@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Substructures.Update;
 
-public class UpdateSubstructureController(SubstructureService substructureService) : ControllerBase
+public class UpdateSubstructureController(UpdateSubstructureService updateSubstructureService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/substructures/{substructureId:guid}")]
@@ -14,6 +14,6 @@ public class UpdateSubstructureController(SubstructureService substructureServic
         [FromRoute] Guid substructureId,
         [FromBody] UpdateSubstructureDto dto)
     {
-        return await substructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
+        return await updateSubstructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
     }
 }

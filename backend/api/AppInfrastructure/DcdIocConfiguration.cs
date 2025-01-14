@@ -178,13 +178,13 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<DrainageStrategyTimeSeriesService>();
 
-        services.AddScoped<ExplorationService>();
+        services.AddScoped<UpdateExplorationService>();
         services.AddScoped<ExplorationTimeSeriesService>();
 
-        services.AddScoped<OnshorePowerSupplyService>();
+        services.AddScoped<UpdateOnshorePowerSupplyService>();
         services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
 
-        services.AddScoped<SubstructureService>();
+        services.AddScoped<UpdateSubstructureService>();
         services.AddScoped<SubstructureTimeSeriesService>();
 
         services.AddScoped<UpdateSurfService>();

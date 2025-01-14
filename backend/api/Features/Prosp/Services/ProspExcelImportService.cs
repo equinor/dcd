@@ -31,10 +31,10 @@ namespace api.Features.Prosp.Services;
 public class ProspExcelImportService(
     DcdDbContext context,
     UpdateSurfService updateSurfService,
-    SubstructureService substructureService,
+    UpdateSubstructureService updateSubstructureService,
     UpdateTopsideService updateTopsideService,
     UpdateTransportService updateTransportService,
-    OnshorePowerSupplyService onshorePowerSupplyService,
+    UpdateOnshorePowerSupplyService updateOnshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
     SurfTimeSeriesService surfTimeSeriesService,
     TopsideTimeSeriesService topsideTimeSeriesService,
@@ -277,7 +277,7 @@ public class ProspExcelImportService(
             CostYear = costYear
         };
 
-        await substructureService.UpdateSubstructureFromProsp(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
+        await updateSubstructureService.UpdateSubstructureFromProsp(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
         await substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(projectId, sourceCaseId, substructureLink, costProfile);
     }
 
@@ -495,7 +495,7 @@ public class ProspExcelImportService(
     {
         var costProfileDto = new UpdateSubstructureCostProfileDto();
 
-        await substructureService.ResetSubstructure(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink);
+        await updateSubstructureService.ResetSubstructure(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink);
         await substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink, costProfileDto);
     }
 
@@ -511,7 +511,7 @@ public class ProspExcelImportService(
     {
         var costProfileDto = new UpdateOnshorePowerSupplyCostProfileDto();
 
-        await onshorePowerSupplyService.ResetOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink);
+        await updateOnshorePowerSupplyService.ResetOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink);
         await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfileDto);
     }
 

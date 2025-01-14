@@ -3,7 +3,6 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Update.Dtos;
-using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.Cases.Recalculation;
 using api.ModelMapping;
@@ -13,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Update;
 
-public class ExplorationService(DcdDbContext context, IMapperService mapperService, IRecalculationService recalculationService)
+public class UpdateExplorationService(DcdDbContext context, IMapperService mapperService, IRecalculationService recalculationService)
 {
     public async Task<ExplorationDto> UpdateExploration(
         Guid projectId,

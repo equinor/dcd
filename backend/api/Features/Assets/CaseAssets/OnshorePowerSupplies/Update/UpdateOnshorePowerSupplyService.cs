@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Update;
 
-public class OnshorePowerSupplyService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task ResetOnshorePowerSupply(Guid projectId, Guid caseId, Guid onshorePowerSupplyId)
     {

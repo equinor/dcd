@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Update;
 
-public class UpdateExplorationsController(ExplorationService explorationService) : ControllerBase
+public class UpdateExplorationsController(UpdateExplorationService updateExplorationService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId}/cases/{caseId}/explorations/{explorationId}")]
@@ -18,7 +18,7 @@ public class UpdateExplorationsController(ExplorationService explorationService)
         [FromRoute] Guid explorationId,
         [FromBody] UpdateExplorationDto dto)
     {
-        return await explorationService.UpdateExploration(projectId, caseId, explorationId, dto);
+        return await updateExplorationService.UpdateExploration(projectId, caseId, explorationId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -31,7 +31,7 @@ public class UpdateExplorationsController(ExplorationService explorationService)
         [FromRoute] Guid drillingScheduleId,
         [FromBody] UpdateDrillingScheduleDto dto)
     {
-        return await explorationService.UpdateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, drillingScheduleId, dto);
+        return await updateExplorationService.UpdateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, drillingScheduleId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -43,6 +43,6 @@ public class UpdateExplorationsController(ExplorationService explorationService)
         [FromRoute] Guid wellId,
         [FromBody] CreateDrillingScheduleDto dto)
     {
-        return await explorationService.CreateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, dto);
+        return await updateExplorationService.CreateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, dto);
     }
 }
