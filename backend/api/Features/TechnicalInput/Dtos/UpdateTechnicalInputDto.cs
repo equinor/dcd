@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
-using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.Projects.Update;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;

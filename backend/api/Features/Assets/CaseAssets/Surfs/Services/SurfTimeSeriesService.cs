@@ -86,8 +86,7 @@ public class SurfTimeSeriesService(
             surfId,
             profileId,
             dto,
-            id => context.SurfCostProfile.Include(x => x.Surf).SingleAsync(x => x.Id == id),
-            profile => context.SurfCostProfile.Update(profile)
+            id => context.SurfCostProfile.Include(x => x.Surf).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -131,8 +130,7 @@ public class SurfTimeSeriesService(
             surfId,
             costProfileId,
             updatedSurfCostProfileOverrideDto,
-            id => context.SurfCostProfileOverride.Include(x => x.Surf).SingleAsync(x => x.Id == id),
-            profile => context.SurfCostProfileOverride.Update(profile)
+            id => context.SurfCostProfileOverride.Include(x => x.Surf).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -142,8 +140,7 @@ public class SurfTimeSeriesService(
         Guid surfId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ISurfTimeSeries
         where TDto : class

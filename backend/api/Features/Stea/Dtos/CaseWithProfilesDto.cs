@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 
-namespace api.Features.CaseProfiles.Dtos;
+namespace api.Features.Stea.Dtos;
 
 public class CaseWithProfilesDto
 {

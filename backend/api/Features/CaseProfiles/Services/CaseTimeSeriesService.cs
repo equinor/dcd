@@ -6,9 +6,9 @@ using api.Exceptions;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
-using api.Features.CaseProfiles.Enums;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
+using api.Features.Stea.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -34,8 +34,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.CessationWellsCostOverride.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.CessationWellsCostOverride.Update(profile)
+            id => context.CessationWellsCostOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -51,8 +50,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.CessationOffshoreFacilitiesCostOverride.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.CessationOffshoreFacilitiesCostOverride.Update(profile)
+            id => context.CessationOffshoreFacilitiesCostOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -68,8 +66,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.CessationOnshoreFacilitiesCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.CessationOnshoreFacilitiesCostProfile.Update(profile)
+            id => context.CessationOnshoreFacilitiesCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -85,8 +82,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.TotalFeasibilityAndConceptStudiesOverride.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.TotalFeasibilityAndConceptStudiesOverride.Update(profile)
+            id => context.TotalFeasibilityAndConceptStudiesOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -102,8 +98,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.TotalFEEDStudiesOverride.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.TotalFEEDStudiesOverride.Update(profile)
+            id => context.TotalFEEDStudiesOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -119,8 +114,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.TotalOtherStudiesCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.TotalOtherStudiesCostProfile.Update(profile)
+            id => context.TotalOtherStudiesCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -136,8 +130,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.HistoricCostCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.HistoricCostCostProfile.Update(profile)
+            id => context.HistoricCostCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -153,8 +146,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.WellInterventionCostProfileOverride.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.WellInterventionCostProfileOverride.Update(profile)
+            id => context.WellInterventionCostProfileOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -170,8 +162,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.OffshoreFacilitiesOperationsCostProfileOverride.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.OffshoreFacilitiesOperationsCostProfileOverride.Update(profile)
+            id => context.OffshoreFacilitiesOperationsCostProfileOverride.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -187,8 +178,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.OnshoreRelatedOPEXCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.OnshoreRelatedOPEXCostProfile.Update(profile)
+            id => context.OnshoreRelatedOPEXCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -368,8 +358,7 @@ public class CaseTimeSeriesService(
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            id => context.AdditionalOPEXCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id),
-            profile => context.AdditionalOPEXCostProfile.Update(profile)
+            id => context.AdditionalOPEXCostProfile.Include(x => x.Case).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -378,8 +367,7 @@ public class CaseTimeSeriesService(
         Guid caseId,
         Guid costProfileId,
         TUpdateDto updatedCostProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ICaseTimeSeries
         where TDto : class

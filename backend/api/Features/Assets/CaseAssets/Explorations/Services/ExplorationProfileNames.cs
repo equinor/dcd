@@ -1,4 +1,4 @@
-namespace api.Features.CaseProfiles.Enums;
+namespace api.Features.Assets.CaseAssets.Explorations.Services;
 
 public enum ExplorationProfileNames
 {

@@ -54,8 +54,7 @@ public class SubstructureTimeSeriesService(
             substructureId,
             profileId,
             dto,
-            id => context.SubstructureCostProfiles.Include(x => x.Substructure).SingleAsync(x => x.Id == id),
-            profile => context.SubstructureCostProfiles.Update(profile)
+            id => context.SubstructureCostProfiles.Include(x => x.Substructure).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -130,8 +129,7 @@ public class SubstructureTimeSeriesService(
             substructureId,
             costProfileId,
             dto,
-            id => context.SubstructureCostProfileOverride.Include(x => x.Substructure).SingleAsync(x => x.Id == id),
-            profile => context.SubstructureCostProfileOverride.Update(profile)
+            id => context.SubstructureCostProfileOverride.Include(x => x.Substructure).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -141,8 +139,7 @@ public class SubstructureTimeSeriesService(
         Guid substructureId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ISubstructureTimeSeries
         where TDto : class

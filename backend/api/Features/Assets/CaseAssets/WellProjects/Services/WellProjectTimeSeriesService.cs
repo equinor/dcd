@@ -5,7 +5,6 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
-using api.Features.CaseProfiles.Enums;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
@@ -36,8 +35,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.OilProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.OilProducerCostProfileOverride.Update(profile)
+            id => context.OilProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -55,8 +53,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.GasProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.GasProducerCostProfileOverride.Update(profile)
+            id => context.GasProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -74,8 +71,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.WaterInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.WaterInjectorCostProfileOverride.Update(profile)
+            id => context.WaterInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -93,8 +89,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.GasInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.GasInjectorCostProfileOverride.Update(profile)
+            id => context.GasInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -172,8 +167,7 @@ public class WellProjectTimeSeriesService(
         Guid wellProjectId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, IWellProjectTimeSeries
         where TDto : class

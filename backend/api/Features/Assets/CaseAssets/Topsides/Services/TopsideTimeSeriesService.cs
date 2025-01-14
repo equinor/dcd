@@ -65,8 +65,7 @@ public class TopsideTimeSeriesService(
             topsideId,
             costProfileId,
             dto,
-            id => context.TopsideCostProfileOverride.Include(x => x.Topside).SingleAsync(x => x.Id == id),
-            profile => context.TopsideCostProfileOverride.Update(profile)
+            id => context.TopsideCostProfileOverride.Include(x => x.Topside).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -105,8 +104,7 @@ public class TopsideTimeSeriesService(
             topsideId,
             profileId,
             dto,
-            id => context.TopsideCostProfiles.Include(x => x.Topside).SingleAsync(x => x.Id == id),
-            profile => context.TopsideCostProfiles.Update(profile)
+            id => context.TopsideCostProfiles.Include(x => x.Topside).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -141,8 +139,7 @@ public class TopsideTimeSeriesService(
         Guid topsideId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ITopsideTimeSeries
         where TDto : class
