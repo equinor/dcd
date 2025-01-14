@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/drainage-strategies")]
 [AuthorizeActionType(ActionType.Edit)]
 public class DrainageStrategiesController(

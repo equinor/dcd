@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Explorations;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/explorations")]
 [AuthorizeActionType(ActionType.Edit)]
 public class ExplorationsController(

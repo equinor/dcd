@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.CaseProfiles;
 
-[ApiController]
 [Route("projects/{projectId}/cases")]
 [AuthorizeActionType(ActionType.Edit)]
 public class CasesController(CaseTimeSeriesService caseTimeSeriesService) : ControllerBase

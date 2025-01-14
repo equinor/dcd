@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Transports;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/transports")]
 [AuthorizeActionType(ActionType.Edit)]
 public class TransportsController(

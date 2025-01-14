@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/onshorePowerSupplys")]
 [AuthorizeActionType(ActionType.Edit)]
 public class OnshorePowerSuppliesController(

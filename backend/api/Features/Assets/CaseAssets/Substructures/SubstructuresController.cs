@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Substructures;
 
-[ApiController]
 [Route("projects/{projectId}/cases/{caseId}/substructures")]
 [AuthorizeActionType(ActionType.Edit)]
 public class SubstructuresController(
