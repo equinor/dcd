@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseProfiles.Services;
 
-public abstract class UpdateCaseProfileBaseService(
+public abstract class CaseProfileBaseService(
     DcdDbContext context,
     IRecalculationService recalculationService,
     IProjectIntegrityService projectIntegrityService,

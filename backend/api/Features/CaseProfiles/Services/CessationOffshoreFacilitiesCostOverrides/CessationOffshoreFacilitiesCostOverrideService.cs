@@ -14,7 +14,7 @@ public class CessationOffshoreFacilitiesCostOverrideService(
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : UpdateCaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
+    : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
     public async Task<CessationOffshoreFacilitiesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(
         Guid projectId,

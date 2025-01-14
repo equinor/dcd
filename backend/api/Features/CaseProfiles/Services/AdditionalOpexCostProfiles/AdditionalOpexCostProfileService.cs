@@ -14,7 +14,7 @@ public class AdditionalOpexCostProfileService(
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : UpdateCaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
+    : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
     public async Task<AdditionalOpexCostProfileDto> CreateAdditionalOpexCostProfile(
         Guid projectId,
