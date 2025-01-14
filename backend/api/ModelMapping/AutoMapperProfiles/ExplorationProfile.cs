@@ -1,5 +1,5 @@
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos.Create;
 using api.Features.Cases.GetWithAssets;
 using api.Features.TechnicalInput.Dtos;
 using api.Models;
@@ -23,7 +23,6 @@ public class ExplorationProfile : Profile
         CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
-        CreateMap<UpdateExplorationDto, Exploration>();
         CreateMap<UpdateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();

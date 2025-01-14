@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;

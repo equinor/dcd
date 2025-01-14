@@ -1,41 +1,42 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Update.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Services;
+namespace api.Features.Assets.CaseAssets.Explorations.Update;
 
-public class ExplorationService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class ExplorationService(DcdDbContext context, IMapperService mapperService, IRecalculationService recalculationService)
 {
     public async Task<ExplorationDto> UpdateExploration(
         Guid projectId,
         Guid caseId,
         Guid explorationId,
-        UpdateExplorationDto updatedExplorationDto
-    )
+        UpdateExplorationDto updatedExplorationDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
+        var existingExploration = await context.Explorations.SingleAsync(x => x.ProjectId == projectId && x.Id == explorationId);
 
-        var existingExploration = await context.Explorations.SingleAsync(x => x.Id == explorationId);
-
-        mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
+        existingExploration.RigMobDemob = updatedExplorationDto.RigMobDemob;
+        existingExploration.Currency = updatedExplorationDto.Currency;
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<Exploration, ExplorationDto>(existingExploration, explorationId);
+        return new ExplorationDto
+        {
+            Id = existingExploration.Id,
+            ProjectId = existingExploration.ProjectId,
+            Name = existingExploration.Name,
+            RigMobDemob = existingExploration.RigMobDemob,
+            Currency = existingExploration.Currency
+        };
     }
 
     public async Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
@@ -44,15 +45,13 @@ public class ExplorationService(
         Guid explorationId,
         Guid wellId,
         Guid drillingScheduleId,
-        UpdateDrillingScheduleDto updatedExplorationWellDto
-    )
+        UpdateDrillingScheduleDto updatedExplorationWellDto)
     {
         var existingExploration = await context.Explorations
                 .Include(e => e.ExplorationWells)
                 .ThenInclude(w => w.DrillingSchedule)
+                .Where(x => x.ProjectId == projectId)
                 .SingleAsync(e => e.ExplorationWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
-
-        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, existingExploration.Id);
 
         var existingDrillingSchedule = existingExploration.ExplorationWells.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
             ?? throw new NotFoundInDbException($"Drilling schedule with id {drillingScheduleId} not found.");
@@ -70,12 +69,9 @@ public class ExplorationService(
         Guid caseId,
         Guid explorationId,
         Guid wellId,
-        CreateDrillingScheduleDto updatedExplorationWellDto
-    )
+        CreateDrillingScheduleDto updatedExplorationWellDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
-
-        var existingExploration = await context.Explorations.SingleAsync(x => x.Id == explorationId);
+        var existingExploration = await context.Explorations.SingleAsync(x => x.ProjectId == projectId && x.Id == explorationId);
 
         var existingWell = await context.Wells.SingleAsync(x => x.Id == wellId);
 

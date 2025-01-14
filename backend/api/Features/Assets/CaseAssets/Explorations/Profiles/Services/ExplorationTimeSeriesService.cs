@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos.Create;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
@@ -13,7 +13,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Services;
+namespace api.Features.Assets.CaseAssets.Explorations.Profiles.Services;
 
 public class ExplorationTimeSeriesService(
     DcdDbContext context,

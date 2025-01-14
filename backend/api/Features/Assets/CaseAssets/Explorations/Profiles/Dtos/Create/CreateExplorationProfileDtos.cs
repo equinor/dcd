@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Create;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
+namespace api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos.Create;
 
 public class CreateGAndGAdminCostOverrideDto : CreateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

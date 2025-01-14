@@ -1,7 +1,8 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Profiles.Services;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Update;
-using api.Features.Assets.CaseAssets.Explorations.Services;
+using api.Features.Assets.CaseAssets.Explorations.Profiles.Services;
+using api.Features.Assets.CaseAssets.Explorations.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Services;

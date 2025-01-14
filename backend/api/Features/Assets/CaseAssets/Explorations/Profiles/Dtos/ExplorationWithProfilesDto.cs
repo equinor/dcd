@@ -4,7 +4,7 @@ using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Cases.GetWithAssets;
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Dtos;
+namespace api.Features.Assets.CaseAssets.Explorations.Profiles.Dtos;
 
 public class ExplorationWithProfilesDto
 {
