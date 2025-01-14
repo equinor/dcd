@@ -4,7 +4,6 @@ import {
     useEffect,
     useCallback,
     memo,
-    useRef,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -39,6 +38,7 @@ import {
     ITimeSeriesTableDataWithSet,
 } from "@/Models/ITimeSeries"
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
+import { createLogger } from "@/Utils/logger"
 
 interface Props {
     timeSeriesData: ITimeSeriesTableDataWithSet[]
@@ -62,6 +62,8 @@ const CenterGridIcons = styled.div`
     height: 100%;
 `
 
+const logger = createLogger({ name: "CaseTabTable", enabled: true })
+
 const CaseTabTable = memo(({
     timeSeriesData,
     dg4Year,
@@ -77,35 +79,15 @@ const CaseTabTable = memo(({
     isProsp,
     sharepointFileId,
 }: Props) => {
-    const { editMode, setSnackBarMessage } = useAppContext()
+    const { editMode, setSnackBarMessage, isSaving } = useAppContext()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
-
     useEffect(() => {
         if (ongoingCalculation !== undefined) {
             gridRef.current?.api?.redrawRows()
         }
     }, [ongoingCalculation])
-
-    const gridRowData = useMemo(
-        () => {
-            if (!timeSeriesData?.length) { return [] }
-            const data = profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
-            return data
-        },
-        [timeSeriesData, editMode, dg4Year, tableName, tableYears],
-    )
-
-    useEffect(() => {
-        if (gridRef.current?.api && timeSeriesData?.length > 0 && gridRowData.length > 0) {
-            const currentNodes = gridRef.current.api.getRenderedNodes()
-            const currentRowData = currentNodes.map((node: { data: any }) => node.data)
-            if (!isEqual(currentRowData, gridRowData)) {
-                gridRef.current.api.setGridOption("rowData", gridRowData)
-            }
-        }
-    }, [gridRowData, timeSeriesData])
 
     const handleCellValueChange = useCallback((event: any) => {
         const rule = TABLE_VALIDATION_RULES[event.data.profileName]
@@ -113,8 +95,6 @@ const CaseTabTable = memo(({
             setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
             return
         }
-
-        const currentCell = gridRef.current?.api?.getFocusedCell()
 
         const rowValues = getValuesFromEntireRow(event.data)
         const existingProfile = event.data.profile ? structuredClone(event.data.profile) : {
@@ -143,7 +123,7 @@ const CaseTabTable = memo(({
         const profileInTimeSeriesData = getProfileData()
 
         if (!isEqual(newProfile.values, existingProfile.values)) {
-            addEdit({
+            const edit = {
                 newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
                 previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
                 inputLabel: event.data.profileName,
@@ -157,26 +137,46 @@ const CaseTabTable = memo(({
                 resourceProfileId: profileInTimeSeriesData?.resourceProfileId,
                 tabName: tab,
                 tableName,
-            })
-        }
+            }
 
-        if (currentCell) {
-            requestAnimationFrame(() => {
-                gridRef.current?.api?.setFocusedCell(currentCell.rowIndex, currentCell.column)
-            })
+            // Process edit immediately
+            logger.info("Processing edit", { edit })
+            addEdit(edit)
         }
-    }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, addEdit])
+    }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
         resizable: true,
-        editable: true,
+        editable: (params: any) => {
+            if (isSaving) { return false }
+            return tableCellisEditable(params, editMode)
+        },
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
         enableCellChangeFlash: editMode,
         suppressMovable: true,
-    }), [editMode, handleCellValueChange])
+    }), [editMode, handleCellValueChange, isSaving])
+
+    const gridRowData = useMemo(
+        () => {
+            if (!timeSeriesData?.length) { return [] }
+            const data = profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
+            return data
+        },
+        [timeSeriesData, editMode, dg4Year, tableName, tableYears],
+    )
+
+    useEffect(() => {
+        if (gridRef.current?.api && timeSeriesData?.length > 0 && gridRowData.length > 0) {
+            const currentNodes = gridRef.current.api.getRenderedNodes()
+            const currentRowData = currentNodes.map((node: { data: any }) => node.data)
+            if (!isEqual(currentRowData, gridRowData)) {
+                gridRef.current.api.setGridOption("rowData", gridRowData)
+            }
+        }
+    }, [gridRowData, timeSeriesData])
 
     const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (!params.data || !editMode) {
@@ -248,8 +248,8 @@ const CaseTabTable = memo(({
                 field: index.toString(),
                 flex: 1,
                 editable: (params: any) => {
-                    const isEditable = tableCellisEditable(params, editMode)
-                    return isEditable
+                    if (isSaving) { return false }
+                    return tableCellisEditable(params, editMode)
                 },
                 minWidth: 100,
                 aggFunc: formatColumnSum,
@@ -262,12 +262,12 @@ const CaseTabTable = memo(({
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
+                cellClass: (params: any) => (editMode && !isSaving && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
-    }, [tableYears, editMode, gridRowData, tableName, totalRowName])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isSaving])
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
 
@@ -281,6 +281,32 @@ const CaseTabTable = memo(({
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
     }, [gridRowData, timeSeriesData])
+
+    // Handle grid blur event
+    useEffect(() => {
+        const gridDiv = document.getElementById(tableName)
+        if (!gridDiv) { return undefined }
+
+        const handleBlur = (event: FocusEvent) => {
+            // Only log if the focus is moving outside the grid container
+            const relatedTarget = event.relatedTarget as HTMLElement
+            if (!relatedTarget
+                || gridDiv.contains(relatedTarget)
+                || (event.target instanceof HTMLInputElement && relatedTarget.classList.contains("ag-cell"))) {
+                return
+            }
+
+            logger.info("Grid lost focus", {
+                tableName,
+                event: "focus_lost",
+            })
+        }
+
+        gridDiv.addEventListener("focusout", handleBlur, true)
+        return () => {
+            gridDiv.removeEventListener("focusout", handleBlur, true)
+        }
+    }, [tableName])
 
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
@@ -313,8 +339,9 @@ const CaseTabTable = memo(({
                         headerCheckbox: false,
                         enableClickSelection: true,
                     }}
-                    cellSelection
-                    enableCharts
+                    suppressCellFocus
+                    enableCellTextSelection={false}
+                    suppressClickEdit={false}
                     singleClickEdit
                     stopEditingWhenCellsLoseFocus
                     alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
