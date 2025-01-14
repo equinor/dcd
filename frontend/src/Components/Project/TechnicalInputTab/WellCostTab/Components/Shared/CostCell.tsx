@@ -1,7 +1,6 @@
 import { Input, Table, Typography } from "@equinor/eds-core-react"
 import {
     ChangeEventHandler,
-    Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
 
@@ -9,7 +8,7 @@ import { useAppContext } from "@/Context/AppContext"
 
 interface Props {
     title: string
-    setValue: Dispatch<SetStateAction<number | undefined>>
+    setValue: (value: number | undefined) => void
     value: number
 }
 

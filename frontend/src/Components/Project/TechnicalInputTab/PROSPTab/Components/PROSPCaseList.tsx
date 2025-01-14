@@ -19,8 +19,8 @@ import { GetProspService } from "@/Services/ProspService"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useAppContext } from "@/Context/AppContext"
-import { ImportStatusEnum } from "./ImportStatusEnum"
-import SharePointImport from "./SharePointImport"
+import { ProspImportStatusEnum } from "@/Models/ProspImportStatusEnum"
+import SharePointImport from "@/Models/sharepoint/SharePointImport"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface Props {
@@ -30,10 +30,10 @@ interface Props {
 interface RowData {
     id: string,
     name: string,
-    surfState: ImportStatusEnum
-    substructureState: ImportStatusEnum
-    topsideState: ImportStatusEnum
-    transportState: ImportStatusEnum
+    surfState: ProspImportStatusEnum
+    substructureState: ProspImportStatusEnum
+    topsideState: ProspImportStatusEnum
+    transportState: ProspImportStatusEnum
     sharePointFileName?: string | null
     sharePointFileId?: string | null
     sharepointFileUrl?: string | null
@@ -116,7 +116,7 @@ const PROSPCaseList = ({
         gridRef.current.redrawRows()
     }
 
-    const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
+    const handleAdvancedSettingsChange = (p: any, value: ProspImportStatusEnum) => {
         if (revisionAndProjectData && revisionAndProjectData.commonProjectAndRevisionData.cases) {
             const projectCase = revisionAndProjectData.commonProjectAndRevisionData.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
@@ -147,21 +147,21 @@ const PROSPCaseList = ({
     const advancedSettingsRenderer = (
         p: any,
     ) => {
-        if (p.value === ImportStatusEnum.Selected) {
+        if (p.value === ProspImportStatusEnum.Selected) {
             return (
                 <Checkbox
                     checked
                     disabled={isEditDisabled || !editMode}
-                    onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.NotSelected)}
+                    onChange={() => handleAdvancedSettingsChange(p, ProspImportStatusEnum.NotSelected)}
                 />
             )
         }
-        if (p.value === ImportStatusEnum.NotSelected) {
+        if (p.value === ProspImportStatusEnum.NotSelected) {
             return (
                 <Checkbox
                     checked={false}
                     disabled={isEditDisabled || !editMode}
-                    onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
+                    onChange={() => handleAdvancedSettingsChange(p, ProspImportStatusEnum.Selected)}
                 />
             )
         }
@@ -169,7 +169,7 @@ const PROSPCaseList = ({
             <Checkbox
                 checked
                 disabled={isEditDisabled || !editMode}
-                onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
+                onChange={() => handleAdvancedSettingsChange(p, ProspImportStatusEnum.Selected)}
             />
         )
     }
@@ -333,10 +333,10 @@ const PROSPCaseList = ({
             )?.sharepointFileUrl
             dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
-            dto.surf = node.data?.surfState === ImportStatusEnum.Selected
-            dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
-            dto.topside = node.data?.topsideState === ImportStatusEnum.Selected
-            dto.transport = node.data?.transportState === ImportStatusEnum.Selected
+            dto.surf = node.data?.surfState === ProspImportStatusEnum.Selected
+            dto.substructure = node.data?.substructureState === ProspImportStatusEnum.Selected
+            dto.topside = node.data?.topsideState === ProspImportStatusEnum.Selected
+            dto.transport = node.data?.transportState === ProspImportStatusEnum.Selected
             if (node.isSelected()) {
                 dtos.push(dto)
             }

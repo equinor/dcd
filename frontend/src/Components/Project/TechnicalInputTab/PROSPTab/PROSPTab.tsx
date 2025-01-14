@@ -17,7 +17,7 @@ import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditProject from "@/Hooks/useEditProject"
 import { useAppContext } from "@/Context/AppContext"
-import PROSPCaseList from "./PROSPCaseList"
+import PROSPCaseList from "./Components/PROSPCaseList"
 
 const PROSPTab = () => {
     const revisionAndProjectData = useDataFetch()

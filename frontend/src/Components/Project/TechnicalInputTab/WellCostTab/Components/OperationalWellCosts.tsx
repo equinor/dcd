@@ -4,11 +4,12 @@ import {
     SetStateAction,
     useEffect,
     useState,
+    useCallback,
 } from "react"
 import styled from "styled-components"
 
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import OperationalWellCost from "./OperationalWellCost"
+import OperationalWellCost from "./Shared/CostCell"
 
 const {
     Head, Body, Row, Cell,
@@ -56,13 +57,14 @@ const OperationalWellCosts = ({
         developmentOperationalWellCosts?.annualWellInterventionCostPerWell,
     )
     const [developmentPluggingAndAbandonment, setDevelopmentPluggingAndAbandonment] = useState<number | undefined>(developmentOperationalWellCosts?.pluggingAndAbandonment)
+
     const [explorationRigUpgrading, setExplorationRigUpgrading] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigUpgrading)
     const [explorationRigMobDemob, setExplorationRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigMobDemob)
     const [explorationProjectDrillingCosts, setExplorationProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.explorationProjectDrillingCosts)
     const [appraisalRigMobDemob, setAppraisalRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalRigMobDemob)
     const [appraisalProjectDrillingCosts, setAppraisalProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalProjectDrillingCosts)
 
-    useEffect(() => {
+    const updateDevelopmentCosts = useCallback(() => {
         if (developmentRigUpgrading === undefined
             || developmentRigMobDemob === undefined
             || developmentAnnualWellInterventionCost === undefined
@@ -70,17 +72,25 @@ const OperationalWellCosts = ({
             return
         }
         if (developmentOperationalWellCosts && setDevelopmentOperationalWellCosts) {
-            const newDevelopmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsOverviewDto = { ...developmentOperationalWellCosts }
-            newDevelopmentOperationalWellCosts.rigUpgrading = developmentRigUpgrading
-            newDevelopmentOperationalWellCosts.rigMobDemob = developmentRigMobDemob
-            newDevelopmentOperationalWellCosts.annualWellInterventionCostPerWell = developmentAnnualWellInterventionCost
-            newDevelopmentOperationalWellCosts.pluggingAndAbandonment = developmentPluggingAndAbandonment
+            const newDevelopmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsOverviewDto = {
+                ...developmentOperationalWellCosts,
+                rigUpgrading: developmentRigUpgrading,
+                rigMobDemob: developmentRigMobDemob,
+                annualWellInterventionCostPerWell: developmentAnnualWellInterventionCost,
+                pluggingAndAbandonment: developmentPluggingAndAbandonment,
+            }
             setDevelopmentOperationalWellCosts(newDevelopmentOperationalWellCosts)
         }
-    }, [developmentRigUpgrading, developmentRigMobDemob,
-        developmentAnnualWellInterventionCost, developmentPluggingAndAbandonment])
+    }, [
+        developmentRigUpgrading,
+        developmentRigMobDemob,
+        developmentAnnualWellInterventionCost,
+        developmentPluggingAndAbandonment,
+        developmentOperationalWellCosts,
+        setDevelopmentOperationalWellCosts,
+    ])
 
-    useEffect(() => {
+    const updateExplorationCosts = useCallback(() => {
         if (explorationRigUpgrading === undefined
             || explorationRigMobDemob === undefined
             || explorationProjectDrillingCosts === undefined
@@ -89,16 +99,33 @@ const OperationalWellCosts = ({
             return
         }
         if (explorationOperationalWellCosts && setExplorationOperationalWellCosts) {
-            const newExplorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsOverviewDto = { ...explorationOperationalWellCosts }
-            newExplorationOperationalWellCosts.explorationRigUpgrading = explorationRigUpgrading
-            newExplorationOperationalWellCosts.explorationRigMobDemob = explorationRigMobDemob
-            newExplorationOperationalWellCosts.explorationProjectDrillingCosts = explorationProjectDrillingCosts
-            newExplorationOperationalWellCosts.appraisalRigMobDemob = appraisalRigMobDemob
-            newExplorationOperationalWellCosts.appraisalProjectDrillingCosts = appraisalProjectDrillingCosts
+            const newExplorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsOverviewDto = {
+                ...explorationOperationalWellCosts,
+                explorationRigUpgrading,
+                explorationRigMobDemob,
+                explorationProjectDrillingCosts,
+                appraisalRigMobDemob,
+                appraisalProjectDrillingCosts,
+            }
             setExplorationOperationalWellCosts(newExplorationOperationalWellCosts)
         }
-    }, [explorationRigUpgrading, explorationRigMobDemob,
-        explorationProjectDrillingCosts, appraisalRigMobDemob, appraisalProjectDrillingCosts])
+    }, [
+        explorationRigUpgrading,
+        explorationRigMobDemob,
+        explorationProjectDrillingCosts,
+        appraisalRigMobDemob,
+        appraisalProjectDrillingCosts,
+        explorationOperationalWellCosts,
+        setExplorationOperationalWellCosts,
+    ])
+
+    useEffect(() => {
+        updateDevelopmentCosts()
+    }, [updateDevelopmentCosts])
+
+    useEffect(() => {
+        updateExplorationCosts()
+    }, [updateExplorationCosts])
 
     return (
         <FullwidthTable>
