@@ -1,6 +1,7 @@
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
+using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;

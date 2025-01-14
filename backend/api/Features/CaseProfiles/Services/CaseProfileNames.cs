@@ -1,4 +1,4 @@
-namespace api.Features.CaseProfiles.Enums;
+namespace api.Features.CaseProfiles.Services;
 
 public enum CaseProfileNames
 {

@@ -1,5 +1,6 @@
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Cases.GetWithAssets;
 using api.Models;
 
 using AutoMapper;
@@ -12,7 +13,5 @@ public class WellProjectWellProfile : Profile
     {
         CreateMap<WellProjectWell, WellProjectWellDto>();
         CreateMap<DrillingSchedule, DrillingScheduleDto>();
-
-        CreateMap<UpdateWellProjectWellWithScheduleDto, WellProjectWell>();
     }
 }

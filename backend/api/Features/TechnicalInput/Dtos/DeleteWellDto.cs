@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.CaseProfiles.Dtos.Well;
+namespace api.Features.TechnicalInput.Dtos;
 
 public class DeleteWellDto
 {

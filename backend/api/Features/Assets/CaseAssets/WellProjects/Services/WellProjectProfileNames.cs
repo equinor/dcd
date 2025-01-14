@@ -1,4 +1,4 @@
-namespace api.Features.CaseProfiles.Enums;
+namespace api.Features.Assets.CaseAssets.WellProjects.Services;
 
 public enum WellProjectProfileNames
 {
