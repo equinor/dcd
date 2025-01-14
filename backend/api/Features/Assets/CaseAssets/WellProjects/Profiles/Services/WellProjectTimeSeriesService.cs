@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos.Create;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.Features.TechnicalInput.Dtos;
@@ -13,7 +13,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.WellProjects.Services;
+namespace api.Features.Assets.CaseAssets.WellProjects.Profiles.Services;
 
 public class WellProjectTimeSeriesService(
     DcdDbContext context,

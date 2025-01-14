@@ -9,7 +9,7 @@ using api.Features.Assets.CaseAssets.Substructures.Update;
 using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Stea.Dtos;
 

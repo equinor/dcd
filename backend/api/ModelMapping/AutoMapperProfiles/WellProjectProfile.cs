@@ -1,5 +1,6 @@
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos.Create;
+using api.Features.Assets.CaseAssets.WellProjects.Update;
 using api.Features.Cases.GetWithAssets;
 using api.Features.TechnicalInput.Dtos;
 using api.Models;

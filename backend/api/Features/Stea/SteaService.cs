@@ -8,7 +8,7 @@ using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Profiles.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos;
 using api.Features.Stea.Dtos;
 using api.Features.Stea.ExcelExport;
 using api.Features.Wells.Get;

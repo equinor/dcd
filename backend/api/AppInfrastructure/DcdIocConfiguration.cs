@@ -13,7 +13,8 @@ using api.Features.Assets.CaseAssets.Topsides.Profiles.Services;
 using api.Features.Assets.CaseAssets.Topsides.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.Transports.Update;
-using api.Features.Assets.CaseAssets.WellProjects.Services;
+using api.Features.Assets.CaseAssets.WellProjects.Profiles.Services;
+using api.Features.Assets.CaseAssets.WellProjects.Update;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
@@ -195,7 +196,7 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateTransportService>();
         services.AddScoped<TransportTimeSeriesService>();
 
-        services.AddScoped<WellProjectService>();
+        services.AddScoped<UpdateWellProjectService>();
         services.AddScoped<WellProjectTimeSeriesService>();
 
         /* Case time series */

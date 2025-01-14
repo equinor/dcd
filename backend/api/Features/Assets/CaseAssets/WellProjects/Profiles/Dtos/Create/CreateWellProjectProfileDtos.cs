@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Create;
 
-namespace api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
+namespace api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos.Create;
 
 public class CreateOilProducerCostProfileOverrideDto : CreateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

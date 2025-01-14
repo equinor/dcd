@@ -4,7 +4,7 @@ using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Cases.GetWithAssets;
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.WellProjects.Dtos;
+namespace api.Features.Assets.CaseAssets.WellProjects.Profiles.Dtos;
 
 public class WellProjectWithProfilesDto
 {
