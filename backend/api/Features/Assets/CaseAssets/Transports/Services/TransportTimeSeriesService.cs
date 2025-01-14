@@ -64,8 +64,7 @@ public class TransportTimeSeriesService(
             transportId,
             costProfileId,
             dto,
-            id => context.TransportCostProfileOverride.Include(x => x.Transport).SingleAsync(x => x.Id == id),
-            profile => context.TransportCostProfileOverride.Update(profile)
+            id => context.TransportCostProfileOverride.Include(x => x.Transport).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -102,8 +101,7 @@ public class TransportTimeSeriesService(
             transportId,
             profileId,
             dto,
-            id => context.TransportCostProfile.Include(x => x.Transport).SingleAsync(x => x.Id == id),
-            profile => context.TransportCostProfile.Update(profile)
+            id => context.TransportCostProfile.Include(x => x.Transport).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -139,8 +137,7 @@ public class TransportTimeSeriesService(
         Guid transportId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, ITransportTimeSeries
         where TDto : class

@@ -36,8 +36,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.OilProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.OilProducerCostProfileOverride.Update(profile)
+            id => context.OilProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -55,8 +54,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.GasProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.GasProducerCostProfileOverride.Update(profile)
+            id => context.GasProducerCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -74,8 +72,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.WaterInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.WaterInjectorCostProfileOverride.Update(profile)
+            id => context.WaterInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -93,8 +90,7 @@ public class WellProjectTimeSeriesService(
             wellProjectId,
             profileId,
             updateDto,
-            id => context.GasInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id),
-            profile => context.GasInjectorCostProfileOverride.Update(profile)
+            id => context.GasInjectorCostProfileOverride.Include(x => x.WellProject).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -172,8 +168,7 @@ public class WellProjectTimeSeriesService(
         Guid wellProjectId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, IWellProjectTimeSeries
         where TDto : class

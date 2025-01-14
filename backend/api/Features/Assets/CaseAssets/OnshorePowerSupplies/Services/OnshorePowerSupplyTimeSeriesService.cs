@@ -64,8 +64,7 @@ public class OnshorePowerSupplyTimeSeriesService(
             onshorePowerSupplyId,
             costProfileId,
             dto,
-            id => context.OnshorePowerSupplyCostProfileOverride.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id),
-            profile => context.OnshorePowerSupplyCostProfileOverride.Update(profile)
+            id => context.OnshorePowerSupplyCostProfileOverride.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -102,8 +101,7 @@ public class OnshorePowerSupplyTimeSeriesService(
             onshorePowerSupplyId,
             profileId,
             dto,
-            id => context.OnshorePowerSupplyCostProfile.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id),
-            profile => context.OnshorePowerSupplyCostProfile.Update(profile)
+            id => context.OnshorePowerSupplyCostProfile.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id)
         );
     }
 
@@ -140,8 +138,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         Guid onshorePowerSupplyId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile,
-        Action<TProfile> updateProfile
+        Func<Guid, Task<TProfile>> getProfile
     )
         where TProfile : class, IOnshorePowerSupplyTimeSeries
         where TDto : class
