@@ -1,3 +1,5 @@
+export const defaultDg4Date = "2030-01-01T00:00:00Z"
+
 /* eslint-disable no-restricted-syntax */
 /**
  * Converts a UTC date string to a UTC Date object.
@@ -17,8 +19,8 @@ export const dateStringToDateUtc = (dateString: string): Date => {
             // Handle "0001-01-01T00:00" format
             return new Date(`${dateString}:00Z`)
         }
-        if (dateString.length === 19) {
-            // Handle "0001-01-01T00:00:00" format
+        if (dateString.length >= 19) {
+            // Handle "0001-01-01T00:00:00.xx" format
             return new Date(`${dateString}Z`)
         }
     }
@@ -52,6 +54,7 @@ export const isDefaultDate = (date?: Date | null): boolean => {
 }
 
 export const isDefaultDateString = (dateString?: string | null): boolean => {
+    // eslint-disable-next-line no-restricted-syntax
     const date = new Date(dateString ?? "")
     if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true

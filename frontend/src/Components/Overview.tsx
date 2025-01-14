@@ -99,7 +99,7 @@ const Overview = () => {
         if (!projectData) { return }
 
         const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
-        const currentTime = new Date() // TODO: Check this
+        const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
         const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)

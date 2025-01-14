@@ -19,6 +19,7 @@ import Modal from "./Modal"
 import {
     dateStringToDateUtc,
     defaultDate,
+    defaultDg4Date,
     isDefaultDate,
     toMonthDate,
 } from "@/Utils/DateUtils"
@@ -103,7 +104,7 @@ const CreateCaseModal = () => {
         if (!isDefaultDate(dG4Date)) {
             return toMonthDate(dG4Date)
         }
-        return toMonthDate(dateStringToDateUtc("2030-01-01T00:00:00Z")) // TODO: Fix this
+        return toMonthDate(dateStringToDateUtc(defaultDg4Date))
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
