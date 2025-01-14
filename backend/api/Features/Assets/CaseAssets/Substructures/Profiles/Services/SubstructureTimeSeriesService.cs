@@ -11,7 +11,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Substructures.Services;
+namespace api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
 
 public class SubstructureTimeSeriesService(
     DcdDbContext context,
@@ -23,8 +23,7 @@ public class SubstructureTimeSeriesService(
         Guid projectId,
         Guid caseId,
         Guid substructureId,
-        UpdateSubstructureCostProfileDto dto
-    )
+        UpdateSubstructureCostProfileDto dto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 

@@ -1,6 +1,7 @@
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
+using api.Features.Assets.CaseAssets.Substructures.Update;
 using api.Models;
 
 using AutoMapper;

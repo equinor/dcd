@@ -2,29 +2,16 @@ using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
-using api.Features.Assets.CaseAssets.Substructures.Services;
+using api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Substructures;
+namespace api.Features.Assets.CaseAssets.Substructures.Profiles;
 
 [Route("projects/{projectId}/cases/{caseId}/substructures")]
 [AuthorizeActionType(ActionType.Edit)]
-public class SubstructuresController(
-    SubstructureService substructureService,
-    SubstructureTimeSeriesService substructureTimeSeriesService)
-    : ControllerBase
+public class SubstructuresController(SubstructureTimeSeriesService substructureTimeSeriesService) : ControllerBase
 {
-    [HttpPut("{substructureId}")]
-    public async Task<SubstructureDto> UpdateSubstructure(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid substructureId,
-        [FromBody] APIUpdateSubstructureDto dto)
-    {
-        return await substructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
-    }
-
     [HttpPost("{substructureId}/cost-profile-override")]
     public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
         [FromRoute] Guid projectId,

@@ -4,7 +4,8 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
-using api.Features.Assets.CaseAssets.Substructures.Services;
+using api.Features.Assets.CaseAssets.Substructures.Profiles.Services;
+using api.Features.Assets.CaseAssets.Substructures.Update;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
@@ -272,7 +273,7 @@ public class ProspExcelImportService(
             CostYear = costYear
         };
 
-        await substructureService.UpdateSubstructure(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
+        await substructureService.UpdateSubstructureFromProsp(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
         await substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(projectId, sourceCaseId, substructureLink, costProfile);
     }
 
@@ -494,16 +495,10 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedSubstructure(Case caseItem)
     {
-        var substructureLink = caseItem.SubstructureLink;
-        var dto = new PROSPUpdateSubstructureDto
-        {
-            Source = Source.ConceptApp
-        };
-
         var costProfileDto = new UpdateSubstructureCostProfileDto();
 
-        await substructureService.UpdateSubstructure(caseItem.ProjectId, caseItem.Id, substructureLink, dto);
-        await substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, substructureLink, costProfileDto);
+        await substructureService.ResetSubstructure(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink);
+        await substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink, costProfileDto);
     }
 
     private async Task ClearImportedTransport(Case caseItem)

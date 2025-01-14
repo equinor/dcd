@@ -8,17 +8,6 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
-        export interface APIUpdateSubstructureDto {
-            dryWeight?: number; // double
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            concept?: Concept /* int32 */;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
-        }
         export interface APIUpdateSurfDto {
             cessationCost?: number; // double
             infieldPipelineSystemLength?: number; // double
@@ -1553,6 +1542,17 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateSubstructureDto {
+            dryWeight?: number; // double
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            concept?: Concept /* int32 */;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
+            approvedBy?: string | null;
+        }
         export interface UpdateSurfCostProfileOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -2886,7 +2886,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 substructureId: Parameters.SubstructureId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSubstructureDto;
+            export type RequestBody = Components.Schemas.UpdateSubstructureDto;
             namespace Responses {
                 export type $200 = Components.Schemas.SubstructureDto;
             }
