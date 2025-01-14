@@ -8,6 +8,20 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.HistoricCostCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.CaseProfiles.Services.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeedStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.WellInterventionCostProfileOverrides.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Stea.Dtos;
 
@@ -25,15 +39,15 @@ public class CaseWithAssetsDto
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
     public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
-    public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    public TotalFeedStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; }
     public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; }
-    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
+    public OnshoreRelatedOpexCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; }
+    public AdditionalOpexCostProfileDto? AdditionalOPEXCostProfile { get; set; }
     public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; }
     public CalculatedTotalCostCostProfileDto? CalculatedTotalCostCostProfile { get; set; }
 

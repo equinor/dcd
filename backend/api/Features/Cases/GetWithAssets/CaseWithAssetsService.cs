@@ -8,6 +8,20 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.HistoricCostCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.CaseProfiles.Services.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeedStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.WellInterventionCostProfileOverrides.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Stea.Dtos;
 using api.ModelMapping;
@@ -42,15 +56,15 @@ public class CaseWithAssetsService(
             TotalFeasibilityAndConceptStudies = MapToDto<TotalFeasibilityAndConceptStudies, TotalFeasibilityAndConceptStudiesDto>(caseItem.TotalFeasibilityAndConceptStudies, caseItem.TotalFeasibilityAndConceptStudies?.Id),
             TotalFeasibilityAndConceptStudiesOverride = MapToDto<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>(caseItem.TotalFeasibilityAndConceptStudiesOverride, caseItem.TotalFeasibilityAndConceptStudiesOverride?.Id),
             TotalFEEDStudies = MapToDto<TotalFEEDStudies, TotalFEEDStudiesDto>(caseItem.TotalFEEDStudies, caseItem.TotalFEEDStudies?.Id),
-            TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
+            TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TotalFeedStudiesOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
             TotalOtherStudiesCostProfile = MapToDto<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto>(caseItem.TotalOtherStudiesCostProfile, caseItem.TotalOtherStudiesCostProfile?.Id),
             HistoricCostCostProfile = MapToDto<HistoricCostCostProfile, HistoricCostCostProfileDto>(caseItem.HistoricCostCostProfile, caseItem.HistoricCostCostProfile?.Id),
             WellInterventionCostProfile = MapToDto<WellInterventionCostProfile, WellInterventionCostProfileDto>(caseItem.WellInterventionCostProfile, caseItem.WellInterventionCostProfile?.Id),
             WellInterventionCostProfileOverride = MapToDto<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>(caseItem.WellInterventionCostProfileOverride, caseItem.WellInterventionCostProfileOverride?.Id),
             OffshoreFacilitiesOperationsCostProfile = MapToDto<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>(caseItem.OffshoreFacilitiesOperationsCostProfile, caseItem.OffshoreFacilitiesOperationsCostProfile?.Id),
             OffshoreFacilitiesOperationsCostProfileOverride = MapToDto<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride, caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Id),
-            OnshoreRelatedOPEXCostProfile = MapToDto<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>(caseItem.OnshoreRelatedOPEXCostProfile, caseItem.OnshoreRelatedOPEXCostProfile?.Id),
-            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
+            OnshoreRelatedOPEXCostProfile = MapToDto<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOpexCostProfileDto>(caseItem.OnshoreRelatedOPEXCostProfile, caseItem.OnshoreRelatedOPEXCostProfile?.Id),
+            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, AdditionalOpexCostProfileDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
             CalculatedTotalIncomeCostProfile = MapToDto<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto>(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalIncomeCostProfile?.Id),
             CalculatedTotalCostCostProfile = MapToDto<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto>(caseItem.CalculatedTotalCostCostProfile, caseItem.CalculatedTotalCostCostProfile?.Id),
             DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
