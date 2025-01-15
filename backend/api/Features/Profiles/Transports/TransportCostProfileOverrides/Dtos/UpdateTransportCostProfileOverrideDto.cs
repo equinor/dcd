@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
 
-namespace api.Features.Assets.CaseAssets.Transports.Dtos.Update;
+namespace api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
 
 public class UpdateTransportCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

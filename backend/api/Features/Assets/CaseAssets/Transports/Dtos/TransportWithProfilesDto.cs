@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
 using api.Models;
 using api.Models.Enums;
 
@@ -39,11 +40,5 @@ public class TransportWithProfilesDto
 }
 
 public class TransportCostProfileDto : TimeSeriesCostDto;
-
-public class TransportCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
 
 public class TransportCessationCostProfileDto : TimeSeriesCostDto;
