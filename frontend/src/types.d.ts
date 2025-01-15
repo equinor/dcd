@@ -1988,21 +1988,6 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdCo2intensity {
-        namespace Get {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.Co2IntensityDto;
-            }
-        }
-    }
     namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyId {
         namespace Put {
             namespace Parameters {
