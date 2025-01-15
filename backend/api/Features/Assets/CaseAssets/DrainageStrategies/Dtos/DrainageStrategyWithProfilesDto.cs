@@ -74,7 +74,7 @@ public class DrainageStrategyWithProfilesDto
     public ImportedElectricityOverrideDto ImportedElectricityOverride { get; set; } = new();
 
     [Required]
-    public Co2IntensityDto? Co2Intensity { get; set; }
+    public Co2IntensityDto? Co2Intensity { get; set; } = new();
     [Required]
     public DeferredOilProductionDto DeferredOilProduction { get; set; } = new();
     [Required]
