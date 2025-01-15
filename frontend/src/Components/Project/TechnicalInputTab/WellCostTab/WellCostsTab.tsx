@@ -8,6 +8,7 @@ import { add } from "@equinor/eds-icons"
 
 import { useAppContext } from "@/Context/AppContext"
 import useEditProject from "@/Hooks/useEditProject"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { EMPTY_GUID } from "@/Utils/constants"
 import ExplorationCosts from "./Components/Exploration/ExplorationCosts"
@@ -31,7 +32,8 @@ const SectionHeader = styled.div`
 
 const WellCostsTab = () => {
     const revisionAndProjectData = useDataFetch()
-    const { addTechnicalInputEdit } = useEditProject()
+    const { addExplorationWellCostEdit, addDevelopmentWellCostEdit } = useTechnicalInputEdits()
+    const { addProjectEdit } = useEditProject()
     const { editMode } = useAppContext()
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 
@@ -62,35 +64,35 @@ const WellCostsTab = () => {
         }
     }
 
-    useEffect(() => {
-        const updateWellCosts = async () => {
-            if (revisionAndProjectData
-                && editMode
-                && developmentOperationalWellCosts
-                && explorationOperationalWellCosts
-                && developmentWells
-                && explorationWells
-            ) {
-                const wellDtos = [...explorationWells, ...developmentWells]
-                const updateTechnicalInputDto = {
-                    projectDto: { ...revisionAndProjectData.commonProjectAndRevisionData },
-                    explorationOperationalWellCostsDto: explorationOperationalWellCosts || {},
-                    developmentOperationalWellCostsDto: developmentOperationalWellCosts || {},
-                    createWellDtos: wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === ""),
-                    updateWellDtos: wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== ""),
-                    deleteWellDtos: deletedWells.map((id) => ({ id })),
-                }
+    // useEffect(() => {
+    //     const updateWellCosts = async () => {
+    //         if (revisionAndProjectData
+    //             && editMode
+    //             && developmentOperationalWellCosts
+    //             && explorationOperationalWellCosts
+    //             && developmentWells
+    //             && explorationWells
+    //         ) {
+    //             const wellDtos = [...explorationWells, ...developmentWells]
+    //             const updateTechnicalInputDto = {
+    //                 projectDto: { ...revisionAndProjectData.commonProjectAndRevisionData },
+    //                 explorationOperationalWellCostsDto: explorationOperationalWellCosts || {},
+    //                 developmentOperationalWellCostsDto: developmentOperationalWellCosts || {},
+    //                 createWellDtos: wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === ""),
+    //                 updateWellDtos: wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== ""),
+    //                 deleteWellDtos: deletedWells.map((id) => ({ id })),
+    //             }
 
-                addTechnicalInputEdit(revisionAndProjectData.projectId, updateTechnicalInputDto)
-            }
-        }
-        updateWellCosts()
-    }, [
-        developmentOperationalWellCosts,
-        explorationOperationalWellCosts,
-        developmentWells,
-        explorationWells,
-    ])
+    //             addTechnicalInputEdit(revisionAndProjectData.projectId, updateTechnicalInputDto)
+    //         }
+    //     }
+    //     updateWellCosts()
+    // }, [
+    //     developmentOperationalWellCosts,
+    //     explorationOperationalWellCosts,
+    //     developmentWells,
+    //     explorationWells,
+    // ])
 
     return (
         <div>
