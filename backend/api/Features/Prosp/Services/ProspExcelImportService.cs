@@ -15,6 +15,7 @@ using api.Features.Cases.Recalculation;
 using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
 using api.Models;
+using api.Models.Enums;
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Assets.CaseAssets.Surfs.Dtos;
 
