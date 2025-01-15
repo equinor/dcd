@@ -18,29 +18,7 @@ public abstract class CaseProfileBaseService(
     IProjectIntegrityService projectIntegrityService,
     IMapperService mapperService)
 {
-    protected DcdDbContext Context { get; } = context;
-
-    protected async Task<TDto> UpdateCaseCostProfile<TProfile, TDto, TUpdateDto>(
-        Guid projectId,
-        Guid caseId,
-        Guid costProfileId,
-        TUpdateDto updatedCostProfileDto,
-        Func<Guid, Task<TProfile>> getProfile)
-        where TProfile : class, ICaseTimeSeries
-        where TDto : class
-        where TUpdateDto : class
-    {
-        var existingProfile = await getProfile(costProfileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<Case>(projectId, existingProfile.Case.Id);
-
-        mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
-
-        await Context.UpdateCaseModifyTime(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
-    }
+    protected DcdDbContext Context => context;
 
     protected async Task<TDto> CreateCaseProfile<TProfile, TDto, TCreateDto>(
         Guid projectId,
@@ -76,5 +54,27 @@ public abstract class CaseProfileBaseService(
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);
+    }
+
+    protected async Task<TDto> UpdateCaseCostProfile<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        TUpdateDto updatedCostProfileDto,
+        Func<Guid, Task<TProfile>> getProfile)
+        where TProfile : class, ICaseTimeSeries
+        where TDto : class
+        where TUpdateDto : class
+    {
+        var existingProfile = await getProfile(costProfileId);
+
+        await projectIntegrityService.EntityIsConnectedToProject<Case>(projectId, existingProfile.Case.Id);
+
+        mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
+
+        await Context.UpdateCaseModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+
+        return mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
     }
 }
