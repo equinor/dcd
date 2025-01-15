@@ -1,5 +1,16 @@
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils.Dtos;
+using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.DeferredGasProductions.Dtos;
+using api.Features.Profiles.DrainageStrategies.DeferredOilProductions.Dtos;
+using api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileGases.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileOils.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
 using api.Models;
 
 using AutoMapper;
