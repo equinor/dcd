@@ -16,7 +16,7 @@ const StyledTypography = styled(Typography)`
     text-align: right;
 `
 
-const OperationalWellCost = ({
+const CostCell = ({
     title, setValue, value,
 }: Props) => {
     const { editMode } = useAppContext()
@@ -44,4 +44,4 @@ const OperationalWellCost = ({
     )
 }
 
-export default OperationalWellCost
+export default CostCell

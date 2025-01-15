@@ -6,7 +6,7 @@ import {
 } from "react"
 
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import CostCell from "../Shared/CostCell"
+import OperationalWellCost from "./Shared/CostCell"
 import {
     FullwidthTable,
     Head,
@@ -14,7 +14,7 @@ import {
     Row,
     Cell,
     CostWithCurrency,
-} from "../Shared/SharedWellStyles"
+} from "./Shared/SharedWellStyles"
 
 interface Props {
     setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>>
@@ -67,27 +67,27 @@ const ExplorationCosts = ({
                 </Row>
             </Head>
             <Body>
-                <CostCell
+                <OperationalWellCost
                     title="Rig upgrading - exploration"
                     setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, explorationRigUpgrading: value ?? 0 }))}
                     value={costs.explorationRigUpgrading}
                 />
-                <CostCell
+                <OperationalWellCost
                     title="Rig mob/demob - exploration"
                     setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, explorationRigMobDemob: value ?? 0 }))}
                     value={costs.explorationRigMobDemob}
                 />
-                <CostCell
+                <OperationalWellCost
                     title="Project spesific drilling costs - exploration"
                     setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, explorationProjectDrillingCosts: value ?? 0 }))}
                     value={costs.explorationProjectDrillingCosts}
                 />
-                <CostCell
+                <OperationalWellCost
                     title="Rig mob/demob - appraisal"
                     setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, appraisalRigMobDemob: value ?? 0 }))}
                     value={costs.appraisalRigMobDemob}
                 />
-                <CostCell
+                <OperationalWellCost
                     title="Project spesific drilling costs - appraisal"
                     setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, appraisalProjectDrillingCosts: value ?? 0 }))}
                     value={costs.appraisalProjectDrillingCosts}
