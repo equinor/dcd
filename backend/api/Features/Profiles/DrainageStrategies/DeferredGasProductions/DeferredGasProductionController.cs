@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
 public class DeferredGasProductionController(DeferredGasProductionService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-gas-production")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-gas-production/")]
     public async Task<DeferredGasProductionDto> CreateDeferredGasProduction(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

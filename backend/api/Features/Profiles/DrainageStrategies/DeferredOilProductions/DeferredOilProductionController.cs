@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
 public class DeferredOilProductionController(DeferredOilProductionService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-oil-production")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-oil-production/")]
     public async Task<DeferredOilProductionDto> CreateDeferredOilProduction(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

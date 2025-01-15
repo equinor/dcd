@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides
 public class FuelFlaringAndLossesOverrideController(FuelFlaringAndLossesOverrideService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/fuel-flaring-and-losses-override")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/fuel-flaring-and-losses-override/")]
     public async Task<FuelFlaringAndLossesOverrideDto> CreateFuelFlaringAndLossesOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
