@@ -50,6 +50,18 @@ using api.Features.Images.Delete;
 using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
+using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
+using api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
+using api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
+using api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides;
+using api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides;
+using api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileOils;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectIntegrity;
@@ -178,7 +190,6 @@ public static class DcdIocConfiguration
 
         /* Case assets */
         services.AddScoped<DrainageStrategyService>();
-        services.AddScoped<DrainageStrategyTimeSeriesService>();
 
         services.AddScoped<ExplorationService>();
         services.AddScoped<ExplorationTimeSeriesService>();
@@ -213,6 +224,20 @@ public static class DcdIocConfiguration
         services.AddScoped<TotalFeedStudiesOverrideService>();
         services.AddScoped<TotalOtherStudiesCostProfileService>();
         services.AddScoped<WellInterventionCostProfileOverrideService>();
+
+        /* Drainage strategy profiles */
+        services.AddScoped<AdditionalProductionProfileGasService>();
+        services.AddScoped<AdditionalProductionProfileOilService>();
+        services.AddScoped<Co2EmissionsOverrideService>();
+        services.AddScoped<DeferredGasProductionService>();
+        services.AddScoped<DeferredOilProductionService>();
+        services.AddScoped<FuelFlaringAndLossesOverrideService>();
+        services.AddScoped<ImportedElectricityOverrideService>();
+        services.AddScoped<NetSalesGasOverrideService>();
+        services.AddScoped<ProductionProfileGasService>();
+        services.AddScoped<ProductionProfileOilService>();
+        services.AddScoped<ProductionProfileWaterInjectionService>();
+        services.AddScoped<ProductionProfileWaterService>();
 
 
         services.AddScoped<Co2IntensityProfileService>();
