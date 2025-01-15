@@ -12,7 +12,6 @@ using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
-using api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
@@ -173,6 +172,7 @@ public static class DcdIocConfiguration
         services.AddScoped<NetSaleGasProfileService>();
         services.AddScoped<OpexCostProfileService>();
         services.AddScoped<Co2EmissionsProfileService>();
+        services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<CalculateTotalIncomeService>();
         services.AddScoped<CalculateTotalCostService>();
         services.AddScoped<CalculateNpvService>();
@@ -253,8 +253,6 @@ public static class DcdIocConfiguration
         services.AddScoped<OilProducerCostProfileOverrideService>();
         services.AddScoped<WaterInjectorCostProfileOverrideService>();
 
-        services.AddScoped<Co2IntensityProfileService>();
-        services.AddScoped<Co2IntensityTotalService>();
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
     }
 }
