@@ -33,19 +33,6 @@ const WellCostsTab = () => {
     const { editMode } = useAppContext()
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 
-    const [
-        explorationOperationalWellCosts,
-        setExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>()
-
-    const [
-        developmentOperationalWellCosts,
-        setDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>()
-
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>([])
-    const [developmentWells, setDevelopmentWells] = useState<Components.Schemas.WellOverviewDto[]>([])
-
     const CreateWell = async (wells: any[], setWells: React.Dispatch<React.SetStateAction<any[]>>, category: number) => {
         const newWell: any = {
             wellCategory: category,
@@ -98,7 +85,7 @@ const WellCostsTab = () => {
             <Section>
                 <SectionHeader>
                     <Typography variant="h2">Exploration Well Costs</Typography>
-                    {editMode && (
+                    {/* {editMode && (
                         <Button
                             onClick={
                                 () => CreateWell(explorationWells, setExplorationWells, 4)
@@ -108,20 +95,18 @@ const WellCostsTab = () => {
                             <Icon data={add} />
                             Add new exploration well type
                         </Button>
-                    )}
+                    )} */}
                 </SectionHeader>
                 {/* <ExplorationWells
                     setExplorationWells={setExplorationWells}
                     setDeletedWells={setDeletedWells}
                 /> */}
-                <ExplorationCosts
-                    setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
-                />
+                <ExplorationCosts />
             </Section>
             <Section>
                 <SectionHeader>
                     <Typography variant="h2">Development Well Costs</Typography>
-                    {editMode && (
+                    {/* {editMode && (
                         <Button
                             onClick={() => CreateWell(developmentWells, setDevelopmentWells, 0)}
                             variant="outlined"
@@ -129,15 +114,13 @@ const WellCostsTab = () => {
                             <Icon data={add} />
                             Add new development/drilling well type
                         </Button>
-                    )}
+                    )} */}
                 </SectionHeader>
                 {/* <DevelopmentWells
                     setDeletedWells={setDeletedWells}
                     setDevelopmentWells={setDevelopmentWells}
-                />
-                <DevelopmentCosts
-                    setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                 /> */}
+                <DevelopmentCosts />
             </Section>
         </div>
     )

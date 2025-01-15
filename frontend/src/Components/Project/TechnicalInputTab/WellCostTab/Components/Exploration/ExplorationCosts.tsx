@@ -1,11 +1,8 @@
-import {
-    Dispatch,
-    SetStateAction,
-    useEffect,
-    useState,
-} from "react"
+import { useEffect, useState } from "react"
 
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDebounce } from "@/Hooks/useDebounce"
 import CostCell from "../Shared/CostCell"
 import {
     FullwidthTable,
@@ -15,25 +12,27 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 
-interface Props {
-    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>>
-}
+type ExplorationCostsState = Omit<
+    Components.Schemas.ExplorationOperationalWellCostsOverviewDto,
+    "explorationOperationalWellCostsId" | "projectId"
+>
 
-const ExplorationCosts = ({
-    setExplorationOperationalWellCosts,
-}: Props) => {
+const ExplorationCosts = () => {
     const revisionAndProjectData = useDataFetch()
-    const { addExplorationWellCostEdit, addDevelopmentWellCostEdit } = useTechnicalInputEdits()
+    const { explorationOperationalWellCostsId } = revisionAndProjectData?.commonProjectAndRevisionData.explorationOperationalWellCosts ?? {}
+    const { projectId } = revisionAndProjectData ?? {}
+    const { addExplorationWellCostEdit } = useTechnicalInputEdits()
 
-    const [costs, setCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto>({
+    const [costs, setCosts] = useState<ExplorationCostsState>({
         explorationRigUpgrading: 0,
         explorationRigMobDemob: 0,
         explorationProjectDrillingCosts: 0,
         appraisalRigMobDemob: 0,
         appraisalProjectDrillingCosts: 0,
     })
+
+    const debouncedCosts = useDebounce(costs, 1000)
 
     useEffect(() => {
         if (revisionAndProjectData?.commonProjectAndRevisionData.explorationOperationalWellCosts) {
@@ -43,13 +42,15 @@ const ExplorationCosts = ({
                 explorationProjectDrillingCosts: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.explorationProjectDrillingCosts ?? 0,
                 appraisalRigMobDemob: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.appraisalRigMobDemob ?? 0,
                 appraisalProjectDrillingCosts: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.appraisalProjectDrillingCosts ?? 0,
-            })
+            } as ExplorationCostsState)
         }
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        setExplorationOperationalWellCosts(costs)
-    }, [costs])
+        if (explorationOperationalWellCostsId && projectId) {
+            addExplorationWellCostEdit(projectId, explorationOperationalWellCostsId, debouncedCosts)
+        }
+    }, [debouncedCosts])
 
     return (
         <FullwidthTable>
@@ -71,28 +72,28 @@ const ExplorationCosts = ({
             <Body>
                 <CostCell
                     title="Rig upgrading - exploration"
-                    setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, explorationRigUpgrading: value ?? 0 }))}
-                    value={costs.explorationRigUpgrading}
+                    setValue={(value: number) => setCosts((prev) => ({ ...prev, explorationRigUpgrading: value ?? 0 }))}
+                    value={costs.explorationRigUpgrading ?? 0}
                 />
                 <CostCell
                     title="Rig mob/demob - exploration"
-                    setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, explorationRigMobDemob: value ?? 0 }))}
-                    value={costs.explorationRigMobDemob}
+                    setValue={(value: number) => setCosts((prev) => ({ ...prev, explorationRigMobDemob: value ?? 0 }))}
+                    value={costs.explorationRigMobDemob ?? 0}
                 />
                 <CostCell
                     title="Project spesific drilling costs - exploration"
-                    setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, explorationProjectDrillingCosts: value ?? 0 }))}
-                    value={costs.explorationProjectDrillingCosts}
+                    setValue={(value: number) => setCosts((prev) => ({ ...prev, explorationProjectDrillingCosts: value ?? 0 }))}
+                    value={costs.explorationProjectDrillingCosts ?? 0}
                 />
                 <CostCell
                     title="Rig mob/demob - appraisal"
-                    setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, appraisalRigMobDemob: value ?? 0 }))}
-                    value={costs.appraisalRigMobDemob}
+                    setValue={(value: number) => setCosts((prev) => ({ ...prev, appraisalRigMobDemob: value ?? 0 }))}
+                    value={costs.appraisalRigMobDemob ?? 0}
                 />
                 <CostCell
                     title="Project spesific drilling costs - appraisal"
-                    setValue={(value: number | undefined) => setCosts((prev) => ({ ...prev, appraisalProjectDrillingCosts: value ?? 0 }))}
-                    value={costs.appraisalProjectDrillingCosts}
+                    setValue={(value: number) => setCosts((prev) => ({ ...prev, appraisalProjectDrillingCosts: value ?? 0 }))}
+                    value={costs.appraisalProjectDrillingCosts ?? 0}
                 />
             </Body>
         </FullwidthTable>

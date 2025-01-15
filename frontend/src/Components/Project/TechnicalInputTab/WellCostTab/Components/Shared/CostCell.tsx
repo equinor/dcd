@@ -8,7 +8,7 @@ import { useAppContext } from "@/Context/AppContext"
 
 interface Props {
     title: string
-    setValue: (value: number | undefined) => void
+    setValue: (value: number) => void
     value: number
 }
 
