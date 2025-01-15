@@ -1,5 +1,6 @@
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
+using api.Features.ProjectData.Dtos.AssetDtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ public class UpdateDevelopmentOperationalWellCostsController(UpdateDevelopmentOp
     [HttpPut("project/{projectId:guid}/development-operational-well-costs/{developmentOperationalWellCostsId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
     [DisableLazyLoading]
-    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
+    public async Task<DevelopmentOperationalWellCostsOverviewDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
     {
         return await updateDevelopmentOperationalWellCostsService.UpdateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, dto);
     }

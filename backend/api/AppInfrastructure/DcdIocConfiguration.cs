@@ -83,8 +83,7 @@ public static class DcdIocConfiguration
         services.AddScoped<CreateRevisionRepository>();
         services.AddScoped<UpdateRevisionService>();
 
-        services.AddScoped<TechnicalInputService>();
-        services.AddScoped<UpdateProjectAndOperationalWellsCostService>();
+        services.AddScoped<UpdateWellsService>();
         services.AddScoped<UpdateExplorationWellCostProfilesService>();
         services.AddScoped<UpdateWellProjectCostProfilesService>();
 
