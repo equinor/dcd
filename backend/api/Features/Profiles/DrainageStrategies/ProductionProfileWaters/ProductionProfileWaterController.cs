@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 public class ProductionProfileWaterController(ProductionProfileWaterService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water/")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water")]
     public async Task<ProductionProfileWaterDto> CreateProductionProfileWater(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides;
 public class NetSalesGasOverrideController(NetSalesGasOverrideService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/net-sales-gas-override/")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/net-sales-gas-override")]
     public async Task<NetSalesGasOverrideDto> CreateNetSalesGasOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
