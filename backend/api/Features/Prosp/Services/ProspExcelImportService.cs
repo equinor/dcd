@@ -12,6 +12,8 @@ using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles.Transports.TransportCostProfiles;
+using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
 using api.Models;
@@ -34,9 +36,9 @@ public class ProspExcelImportService(
     SubstructureTimeSeriesService substructureTimeSeriesService,
     SurfTimeSeriesService surfTimeSeriesService,
     TopsideTimeSeriesService topsideTimeSeriesService,
-    TransportTimeSeriesService transportTimeSeriesService,
     OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
-    IRecalculationService recalculationService)
+    IRecalculationService recalculationService,
+    TransportCostProfileService transportCostProfileService)
 {
     private const string SheetName = "main";
 
@@ -319,7 +321,7 @@ public class ProspExcelImportService(
         };
 
         await transportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
-        await transportTimeSeriesService.AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
+        await AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
     }
 
     private async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -518,7 +520,7 @@ public class ProspExcelImportService(
         var costProfileDto = new UpdateTransportCostProfileDto();
 
         await transportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, transportLink, dto);
-        await transportTimeSeriesService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, transportLink, costProfileDto);
+        await AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, transportLink, costProfileDto);
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
@@ -619,5 +621,24 @@ public class ProspExcelImportService(
                        ?? throw new NotFoundInDbException($"Case {caseId} not found.");
 
         return caseItem;
+    }
+
+    private async Task AddOrUpdateTransportCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid transportId,
+        UpdateTransportCostProfileDto dto)
+    {
+        var transport = await context.Transports
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == transportId);
+
+        if (transport.CostProfile != null)
+        {
+            await transportCostProfileService.UpdateTransportCostProfile(projectId, caseId, transportId, transport.CostProfile.Id, dto);
+            return;
+        }
+
+        await transportCostProfileService.CreateTransportCostProfile(caseId, transportId, dto, transport);
     }
 }

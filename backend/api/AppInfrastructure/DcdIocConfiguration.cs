@@ -64,6 +64,8 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.Explorations.CountryOfficeCosts;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
+using api.Features.Profiles.Transports.TransportCostProfileOverrides;
+using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
 using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides;
@@ -198,6 +200,7 @@ public static class DcdIocConfiguration
         /* Case assets */
         services.AddScoped<DrainageStrategyService>();
         services.AddScoped<ExplorationService>();
+        services.AddScoped<TransportService>();
         services.AddScoped<WellProjectService>();
 
         services.AddScoped<OnshorePowerSupplyService>();
@@ -211,9 +214,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<TopsideService>();
         services.AddScoped<TopsideTimeSeriesService>();
-
-        services.AddScoped<TransportService>();
-        services.AddScoped<TransportTimeSeriesService>();
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();
@@ -246,6 +246,10 @@ public static class DcdIocConfiguration
         services.AddScoped<CountryOfficeCostService>();
         services.AddScoped<GAndGAdminCostOverrideService>();
         services.AddScoped<SeismicAcquisitionAndProcessingService>();
+
+        /* Transport profiles */
+        services.AddScoped<TransportCostProfileService>();
+        services.AddScoped<TransportCostProfileOverrideService>();
 
         /* Well project profiles */
         services.AddScoped<GasInjectorCostProfileOverrideService>();
