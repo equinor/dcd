@@ -62,6 +62,9 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
+using api.Features.Profiles.Explorations.CountryOfficeCosts;
+using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
+using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectIntegrity;
@@ -190,9 +193,7 @@ public static class DcdIocConfiguration
 
         /* Case assets */
         services.AddScoped<DrainageStrategyService>();
-
         services.AddScoped<ExplorationService>();
-        services.AddScoped<ExplorationTimeSeriesService>();
 
         services.AddScoped<OnshorePowerSupplyService>();
         services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
@@ -239,6 +240,10 @@ public static class DcdIocConfiguration
         services.AddScoped<ProductionProfileWaterInjectionService>();
         services.AddScoped<ProductionProfileWaterService>();
 
+        /* Exploration profiles */
+        services.AddScoped<CountryOfficeCostService>();
+        services.AddScoped<GAndGAdminCostOverrideService>();
+        services.AddScoped<SeismicAcquisitionAndProcessingService>();
 
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();

@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
+using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
+using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Dtos;
@@ -43,13 +46,3 @@ public class AppraisalWellCostProfileDto : TimeSeriesCostDto;
 public class SidetrackCostProfileDto : TimeSeriesCostDto;
 
 public class GAndGAdminCostDto : TimeSeriesCostDto;
-
-public class GAndGAdminCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class SeismicAcquisitionAndProcessingDto : TimeSeriesCostDto;
-
-public class CountryOfficeCostDto : TimeSeriesCostDto;
