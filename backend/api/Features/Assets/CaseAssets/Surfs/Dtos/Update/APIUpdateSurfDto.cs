@@ -1,5 +1,6 @@
 
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 

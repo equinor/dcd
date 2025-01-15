@@ -1,17 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
-using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles.Dtos;
-using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides.Dtos;
-using api.Features.CaseProfiles.Services.CessationOnshoreFacilitiesCostProfiles.Dtos;
-using api.Features.CaseProfiles.Services.CessationWellsCostOverrides.Dtos;
-using api.Features.CaseProfiles.Services.HistoricCostCostProfiles.Dtos;
-using api.Features.CaseProfiles.Services.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
-using api.Features.CaseProfiles.Services.OnshoreRelatedOpexCostProfiles.Dtos;
-using api.Features.CaseProfiles.Services.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
-using api.Features.CaseProfiles.Services.TotalFeedStudiesOverrides.Dtos;
-using api.Features.CaseProfiles.Services.TotalOtherStudiesCostProfiles.Dtos;
-using api.Features.CaseProfiles.Services.WellInterventionCostProfileOverrides.Dtos;
+using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
+using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.Profiles.Cases.CessationWellsCostOverrides.Dtos;
+using api.Features.Profiles.Cases.HistoricCostCostProfiles.Dtos;
+using api.Features.Profiles.Cases.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.Profiles.Cases.TotalFeedStudiesOverrides.Dtos;
+using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides.Dtos;
 using api.Models;
 
 namespace api.Features.Stea.Dtos;
