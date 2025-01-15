@@ -65,6 +65,10 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.Explorations.CountryOfficeCosts;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
+using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
+using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides;
+using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides;
+using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectIntegrity;
@@ -194,6 +198,7 @@ public static class DcdIocConfiguration
         /* Case assets */
         services.AddScoped<DrainageStrategyService>();
         services.AddScoped<ExplorationService>();
+        services.AddScoped<WellProjectService>();
 
         services.AddScoped<OnshorePowerSupplyService>();
         services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
@@ -209,9 +214,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<TransportService>();
         services.AddScoped<TransportTimeSeriesService>();
-
-        services.AddScoped<WellProjectService>();
-        services.AddScoped<WellProjectTimeSeriesService>();
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();
@@ -244,6 +246,12 @@ public static class DcdIocConfiguration
         services.AddScoped<CountryOfficeCostService>();
         services.AddScoped<GAndGAdminCostOverrideService>();
         services.AddScoped<SeismicAcquisitionAndProcessingService>();
+
+        /* Well project profiles */
+        services.AddScoped<GasInjectorCostProfileOverrideService>();
+        services.AddScoped<GasProducerCostProfileOverrideService>();
+        services.AddScoped<OilProducerCostProfileOverrideService>();
+        services.AddScoped<WaterInjectorCostProfileOverrideService>();
 
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();

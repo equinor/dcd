@@ -2,6 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.WellProjects.Dtos;
@@ -40,32 +44,8 @@ public class WellProjectWithProfilesDto
 
 public class OilProducerCostProfileDto : TimeSeriesCostDto;
 
-public class OilProducerCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
 public class GasProducerCostProfileDto : TimeSeriesCostDto;
-
-public class GasProducerCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
 
 public class WaterInjectorCostProfileDto : TimeSeriesCostDto;
 
-public class WaterInjectorCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
 public class GasInjectorCostProfileDto : TimeSeriesCostDto;
-
-public class GasInjectorCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
