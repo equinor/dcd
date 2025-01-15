@@ -13,7 +13,17 @@ using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 using api.Features.CaseGeneratedProfiles.GenerateCo2IntensityTotal;
-using api.Features.CaseProfiles.Services;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides;
+using api.Features.CaseProfiles.Services.CessationOnshoreFacilitiesCostProfiles;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides;
+using api.Features.CaseProfiles.Services.HistoricCostCostProfiles;
+using api.Features.CaseProfiles.Services.OffshoreFacilitiesOperationsCostProfileOverrides;
+using api.Features.CaseProfiles.Services.OnshoreRelatedOpexCostProfiles;
+using api.Features.CaseProfiles.Services.TotalFeasibilityAndConceptStudiesOverrides;
+using api.Features.CaseProfiles.Services.TotalFeedStudiesOverrides;
+using api.Features.CaseProfiles.Services.TotalOtherStudiesCostProfiles;
+using api.Features.CaseProfiles.Services.WellInterventionCostProfileOverrides;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
@@ -191,8 +201,19 @@ public static class DcdIocConfiguration
         services.AddScoped<WellProjectService>();
         services.AddScoped<WellProjectTimeSeriesService>();
 
-        /* Case time series */
-        services.AddScoped<CaseTimeSeriesService>();
+        /* Case profiles */
+        services.AddScoped<AdditionalOpexCostProfileService>();
+        services.AddScoped<CessationOffshoreFacilitiesCostOverrideService>();
+        services.AddScoped<CessationOnshoreFacilitiesCostProfileService>();
+        services.AddScoped<CessationWellsCostOverrideService>();
+        services.AddScoped<HistoricCostCostProfileService>();
+        services.AddScoped<OffshoreFacilitiesOperationsCostProfileOverrideService>();
+        services.AddScoped<OnshoreRelatedOpexCostProfileService>();
+        services.AddScoped<TotalFeasibilityAndConceptStudiesOverrideService>();
+        services.AddScoped<TotalFeedStudiesOverrideService>();
+        services.AddScoped<TotalOtherStudiesCostProfileService>();
+        services.AddScoped<WellInterventionCostProfileOverrideService>();
+
 
         services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2IntensityTotalService>();

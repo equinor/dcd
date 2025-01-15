@@ -1,6 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.HistoricCostCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.CaseProfiles.Services.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeedStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.WellInterventionCostProfileOverrides.Dtos;
 using api.Models;
 
 namespace api.Features.Stea.Dtos;
@@ -89,7 +103,7 @@ public class CaseWithProfilesDto
     [Required]
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
     [Required]
-    public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    public TotalFeedStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     [Required]
     public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; } = new();
     [Required]
@@ -103,9 +117,9 @@ public class CaseWithProfilesDto
     [Required]
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     [Required]
-    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new();
+    public OnshoreRelatedOpexCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new();
     [Required]
-    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new();
+    public AdditionalOpexCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new();
     [Required]
     public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; } = new();
     [Required]
@@ -140,65 +154,21 @@ public class CessationCostDto : TimeSeriesCostDto;
 
 public class CessationWellsCostDto : TimeSeriesCostDto;
 
-public class CessationWellsCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
 public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto
 {
 }
-public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class CessationOnshoreFacilitiesCostProfileDto : TimeSeriesCostDto;
 
 public class OpexCostProfileDto : TimeSeriesCostDto;
 
-public class HistoricCostCostProfileDto : TimeSeriesCostDto;
-
 public class WellInterventionCostProfileDto : TimeSeriesCostDto;
 
-public class WellInterventionCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
 public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto;
-
-public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class OnshoreRelatedOPEXCostProfileDto : TimeSeriesCostDto;
-
-public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto;
 
 public class StudyCostProfileDto : TimeSeriesCostDto;
 
 public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto;
 
-public class TotalFeasibilityAndConceptStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
 public class TotalFEEDStudiesDto : TimeSeriesCostDto;
-
-public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class TotalOtherStudiesCostProfileDto : TimeSeriesCostDto;
 
 public class CapexYear
 {

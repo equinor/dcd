@@ -48,12 +48,12 @@ export type ProfileObject =
     Components.Schemas.CessationWellsCostOverrideDto |
     Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto |
     Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto |
-    Components.Schemas.TotalFEEDStudiesOverrideDto |
+    Components.Schemas.TotalFeedStudiesOverrideDto |
     Components.Schemas.HistoricCostCostProfileDto |
     Components.Schemas.WellInterventionCostProfileOverrideDto |
     Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto |
-    Components.Schemas.OnshoreRelatedOPEXCostProfileDto |
-    Components.Schemas.AdditionalOPEXCostProfileDto |
+    Components.Schemas.OnshoreRelatedOpexCostProfileDto |
+    Components.Schemas.AdditionalOpexCostProfileDto |
     Components.Schemas.TopsideCostProfileOverrideDto |
     Components.Schemas.SurfCostProfileOverrideDto |
     Components.Schemas.TransportCostProfileOverrideDto |
@@ -96,12 +96,12 @@ export type ProfilePropertyKey =
     keyof Components.Schemas.CessationWellsCostOverrideDto |
     keyof Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto |
     keyof Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto |
-    keyof Components.Schemas.TotalFEEDStudiesOverrideDto |
+    keyof Components.Schemas.TotalFeedStudiesOverrideDto |
     keyof Components.Schemas.HistoricCostCostProfileDto |
     keyof Components.Schemas.WellInterventionCostProfileOverrideDto |
     keyof Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto |
-    keyof Components.Schemas.OnshoreRelatedOPEXCostProfileDto |
-    keyof Components.Schemas.AdditionalOPEXCostProfileDto |
+    keyof Components.Schemas.OnshoreRelatedOpexCostProfileDto |
+    keyof Components.Schemas.AdditionalOpexCostProfileDto |
     keyof Components.Schemas.TopsideCostProfileOverrideDto |
     keyof Components.Schemas.SurfCostProfileOverrideDto |
     keyof Components.Schemas.TransportCostProfileOverrideDto |

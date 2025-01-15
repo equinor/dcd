@@ -1,5 +1,17 @@
-using api.Features.CaseProfiles.Dtos.Create;
-using api.Features.CaseProfiles.Dtos.Update;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles;
+using api.Features.CaseProfiles.Services.AdditionalOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides;
+using api.Features.CaseProfiles.Services.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides;
+using api.Features.CaseProfiles.Services.CessationWellsCostOverrides.Dtos;
+using api.Features.CaseProfiles.Services.HistoricCostCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.CaseProfiles.Services.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalFeedStudiesOverrides.Dtos;
+using api.Features.CaseProfiles.Services.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.CaseProfiles.Services.WellInterventionCostProfileOverrides.Dtos;
 using api.Features.Stea.Dtos;
 using api.Models;
 
@@ -20,15 +32,15 @@ public class CaseProfile : Profile
         CreateMap<TotalFeasibilityAndConceptStudies, TotalFeasibilityAndConceptStudiesDto>();
         CreateMap<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>();
         CreateMap<TotalFEEDStudies, TotalFEEDStudiesDto>();
-        CreateMap<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>();
+        CreateMap<TotalFEEDStudiesOverride, TotalFeedStudiesOverrideDto>();
         CreateMap<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto>();
         CreateMap<WellInterventionCostProfile, WellInterventionCostProfileDto>();
         CreateMap<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>();
         CreateMap<HistoricCostCostProfile, HistoricCostCostProfileDto>();
-        CreateMap<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>();
-        CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
+        CreateMap<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOpexCostProfileDto>();
+        CreateMap<AdditionalOPEXCostProfile, AdditionalOpexCostProfileDto>();
         CreateMap<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto>();
         CreateMap<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto>();
 
@@ -36,24 +48,24 @@ public class CaseProfile : Profile
         CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
         CreateMap<UpdateCessationOnshoreFacilitiesCostProfileDto, CessationOnshoreFacilitiesCostProfile>();
         CreateMap<UpdateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
-        CreateMap<UpdateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
+        CreateMap<UpdateTotalFeedStudiesOverrideDto, TotalFEEDStudiesOverride>();
         CreateMap<UpdateTotalOtherStudiesCostProfileDto, TotalOtherStudiesCostProfile>();
         CreateMap<UpdateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<UpdateHistoricCostCostProfileDto, HistoricCostCostProfile>();
-        CreateMap<UpdateOnshoreRelatedOPEXCostProfileDto, OnshoreRelatedOPEXCostProfile>();
-        CreateMap<UpdateAdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>();
+        CreateMap<UpdateOnshoreRelatedOpexCostProfileDto, OnshoreRelatedOPEXCostProfile>();
+        CreateMap<UpdateAdditionalOpexCostProfileDto, AdditionalOPEXCostProfile>();
 
         CreateMap<CreateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
         CreateMap<CreateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
         CreateMap<CreateCessationOnshoreFacilitiesCostProfileDto, CessationOnshoreFacilitiesCostProfile>();
         CreateMap<CreateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
-        CreateMap<CreateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
+        CreateMap<CreateTotalFeedStudiesOverrideDto, TotalFEEDStudiesOverride>();
         CreateMap<CreateTotalOtherStudiesCostProfileDto, TotalOtherStudiesCostProfile>();
         CreateMap<CreateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<CreateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<CreateHistoricCostCostProfileDto, HistoricCostCostProfile>();
-        CreateMap<CreateOnshoreRelatedOPEXCostProfileDto, OnshoreRelatedOPEXCostProfile>();
-        CreateMap<CreateAdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>();
+        CreateMap<CreateOnshoreRelatedOpexCostProfileDto, OnshoreRelatedOPEXCostProfile>();
+        CreateMap<CreateAdditionalOpexCostProfileDto, AdditionalOPEXCostProfile>();
     }
 }
