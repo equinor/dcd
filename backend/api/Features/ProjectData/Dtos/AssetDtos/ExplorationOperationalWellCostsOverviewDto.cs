@@ -5,6 +5,7 @@ namespace api.Features.ProjectData.Dtos.AssetDtos;
 public class ExplorationOperationalWellCostsOverviewDto
 {
     [Required] public required Guid ExplorationOperationalWellCostsId { get; set; }
+    [Required] public required Guid ProjectId { get; set; }
     [Required] public required double ExplorationRigUpgrading { get; set; }
     [Required] public required double ExplorationRigMobDemob { get; set; }
     [Required] public required double ExplorationProjectDrillingCosts { get; set; }

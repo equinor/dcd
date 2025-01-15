@@ -620,6 +620,7 @@ declare namespace Components {
         }
         export interface DevelopmentOperationalWellCostsOverviewDto {
             developmentOperationalWellCostsId: string; // uuid
+            projectId: string; // uuid
             rigUpgrading: number; // double
             rigMobDemob: number; // double
             annualWellInterventionCostPerWell: number; // double
@@ -666,6 +667,7 @@ declare namespace Components {
         }
         export interface ExplorationOperationalWellCostsOverviewDto {
             explorationOperationalWellCostsId: string; // uuid
+            projectId: string; // uuid
             explorationRigUpgrading: number; // double
             explorationRigMobDemob: number; // double
             explorationProjectDrillingCosts: number; // double

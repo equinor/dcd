@@ -30,6 +30,7 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
 
         return new DevelopmentOperationalWellCostsOverviewDto
         {
+            ProjectId = existingDevelopmentOperationalWellCosts.ProjectId,
             DevelopmentOperationalWellCostsId = existingDevelopmentOperationalWellCosts.Id,
             RigUpgrading = existingDevelopmentOperationalWellCosts.RigUpgrading,
             RigMobDemob = existingDevelopmentOperationalWellCosts.RigMobDemob,
