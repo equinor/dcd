@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
 public class Co2EmissionsOverrideController(Co2EmissionsOverrideService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/co2-emissions-override")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/co2-emissions-override/")]
     public async Task<Co2EmissionsOverrideDto> CreateCo2EmissionsOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

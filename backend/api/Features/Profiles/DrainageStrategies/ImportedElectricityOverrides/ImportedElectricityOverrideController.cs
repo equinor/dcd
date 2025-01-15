@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides;
 public class ImportedElectricityOverrideController(ImportedElectricityOverrideService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override/")]
     public async Task<ImportedElectricityOverrideDto> CreateImportedElectricityOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

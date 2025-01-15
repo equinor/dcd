@@ -8,7 +8,7 @@ namespace api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjecti
 public class ProductionProfileWaterInjectionController(ProductionProfileWaterInjectionService service) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water-injection")]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water-injection/")]
     public async Task<ProductionProfileWaterInjectionDto> CreateProductionProfileWaterInjection(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
