@@ -1,10 +1,8 @@
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
 using api.Features.Assets.CaseAssets.Explorations.Services;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
-using api.Features.TechnicalInput.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,8 +11,7 @@ namespace api.Features.Assets.CaseAssets.Explorations;
 [Route("projects/{projectId}/cases/{caseId}/explorations")]
 [AuthorizeActionType(ActionType.Edit)]
 public class ExplorationsController(
-    ExplorationService explorationService,
-    ExplorationTimeSeriesService explorationTimeSeriesService)
+    ExplorationService explorationService)
     : ControllerBase
 {
     [HttpPut("{explorationId}")]
@@ -48,70 +45,5 @@ public class ExplorationsController(
         [FromBody] CreateDrillingScheduleDto dto)
     {
         return await explorationService.CreateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, dto);
-    }
-
-
-
-    [HttpPut("{explorationId}/g-and-g-and-admin-cost-override/{costProfileId}")]
-    public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid costProfileId,
-        [FromBody] UpdateGAndGAdminCostOverrideDto dto)
-    {
-        return await explorationTimeSeriesService.UpdateGAndGAdminCostOverride(projectId, caseId, explorationId, costProfileId, dto);
-    }
-
-    [HttpPost("{explorationId}/g-and-g-and-admin-cost-override")]
-    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid explorationId,
-    [FromBody] CreateGAndGAdminCostOverrideDto dto)
-    {
-        return await explorationTimeSeriesService.CreateGAndGAdminCostOverride(projectId, caseId, explorationId, dto);
-    }
-
-    [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
-    public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid costProfileId,
-        [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
-    {
-        return await explorationTimeSeriesService.UpdateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, costProfileId, dto);
-    }
-
-    [HttpPost("{explorationId}/seismic-acquisition-and-processing")]
-    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
-    {
-        return await explorationTimeSeriesService.CreateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, dto);
-    }
-
-    [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
-    public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid costProfileId,
-        [FromBody] UpdateCountryOfficeCostDto dto)
-    {
-        return await explorationTimeSeriesService.UpdateCountryOfficeCost(projectId, caseId, explorationId, costProfileId, dto);
-    }
-
-    [HttpPost("{explorationId}/country-office-cost")]
-    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromBody] CreateCountryOfficeCostDto dto)
-    {
-        return await explorationTimeSeriesService.CreateCountryOfficeCost(projectId, caseId, explorationId, dto);
     }
 }
