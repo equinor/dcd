@@ -146,8 +146,6 @@ public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride
     public bool Override { get; set; }
 }
 
-// public class Co2Intensity : TimeSeriesMass;
-
 public interface IDrainageStrategyTimeSeries
 {
     DrainageStrategy DrainageStrategy { get; set; }
