@@ -4,19 +4,19 @@ import { useAppContext } from "../Context/AppContext"
 
 type UpdateTechnicalInputVariables = {
     projectId: string;
-    body: Components.Schemas.UpdateTechnicalInputDto;
+    body: Components.Schemas.UpdateWellsDto;
 };
 
 type UpdateExplorationWellCostVariables = {
     projectId: string;
     explorationOperationalWellCostsId: string;
-    body: Components.Schemas.ExplorationOperationalWellCostsDto;
+    body: Components.Schemas.UpdateExplorationOperationalWellCostsDto;
 };
 
 type UpdateDevelopmentWellCostVariables = {
     projectId: string;
     developmentOperationalWellCostsId: string;
-    body: Components.Schemas.DevelopmentOperationalWellCostsDto;
+    body: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
 };
 
 export const useTechnicalInputEdits = () => {
@@ -80,9 +80,9 @@ export const useTechnicalInputEdits = () => {
         },
     })
 
-    const addTechnicalInputEdit = (
+    const addWellsEdit = (
         projectId: string,
-        technicalInputEdit: Components.Schemas.UpdateTechnicalInputDto,
+        technicalInputEdit: Components.Schemas.UpdateWellsDto,
     ) => {
         setIsSaving(true)
         technicalInputMutation.mutate({ projectId, body: technicalInputEdit })
@@ -91,7 +91,7 @@ export const useTechnicalInputEdits = () => {
     const addExplorationWellCostEdit = (
         projectId: string,
         explorationOperationalWellCostsId: string,
-        explorationWellsCostEdit: Components.Schemas.ExplorationOperationalWellCostsDto,
+        explorationWellsCostEdit: Components.Schemas.UpdateExplorationOperationalWellCostsDto,
     ) => {
         setIsSaving(true)
         ExplorationWellCostMutation.mutate({ projectId, explorationOperationalWellCostsId, body: explorationWellsCostEdit })
@@ -100,14 +100,14 @@ export const useTechnicalInputEdits = () => {
     const addDevelopmentWellCostEdit = (
         projectId: string,
         developmentOperationalWellCostsId: string,
-        developmentWellsCostEdit: Components.Schemas.DevelopmentOperationalWellCostsDto,
+        developmentWellsCostEdit: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto,
     ) => {
         setIsSaving(true)
         DevelopmentWellCostMutation.mutate({ projectId, developmentOperationalWellCostsId, body: developmentWellsCostEdit })
     }
 
     return {
-        addTechnicalInputEdit,
+        addWellsEdit,
         addExplorationWellCostEdit,
         addDevelopmentWellCostEdit,
     }

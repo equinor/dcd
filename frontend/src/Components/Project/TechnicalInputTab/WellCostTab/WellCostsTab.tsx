@@ -110,10 +110,10 @@ const WellCostsTab = () => {
                         </Button>
                     )}
                 </SectionHeader>
-                <ExplorationWells
+                {/* <ExplorationWells
                     setExplorationWells={setExplorationWells}
                     setDeletedWells={setDeletedWells}
-                />
+                /> */}
                 <ExplorationCosts
                     setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
                 />
@@ -131,13 +131,13 @@ const WellCostsTab = () => {
                         </Button>
                     )}
                 </SectionHeader>
-                <DevelopmentWells
+                {/* <DevelopmentWells
                     setDeletedWells={setDeletedWells}
                     setDevelopmentWells={setDevelopmentWells}
                 />
                 <DevelopmentCosts
                     setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
-                />
+                /> */}
             </Section>
         </div>
     )
