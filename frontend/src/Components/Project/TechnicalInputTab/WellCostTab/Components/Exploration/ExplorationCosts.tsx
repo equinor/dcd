@@ -15,6 +15,7 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 
 interface Props {
     setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>>
@@ -24,6 +25,7 @@ const ExplorationCosts = ({
     setExplorationOperationalWellCosts,
 }: Props) => {
     const revisionAndProjectData = useDataFetch()
+    const { addExplorationWellCostEdit, addDevelopmentWellCostEdit } = useTechnicalInputEdits()
 
     const [costs, setCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto>({
         explorationRigUpgrading: 0,

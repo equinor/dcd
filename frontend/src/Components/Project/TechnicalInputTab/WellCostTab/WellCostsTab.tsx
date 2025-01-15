@@ -7,8 +7,6 @@ import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
 
 import { useAppContext } from "@/Context/AppContext"
-import useEditProject from "@/Hooks/useEditProject"
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { EMPTY_GUID } from "@/Utils/constants"
 import ExplorationCosts from "./Components/Exploration/ExplorationCosts"
@@ -32,8 +30,6 @@ const SectionHeader = styled.div`
 
 const WellCostsTab = () => {
     const revisionAndProjectData = useDataFetch()
-    const { addExplorationWellCostEdit, addDevelopmentWellCostEdit } = useTechnicalInputEdits()
-    const { addProjectEdit } = useEditProject()
     const { editMode } = useAppContext()
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 

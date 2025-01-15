@@ -25,7 +25,7 @@ export const useTechnicalInputEdits = () => {
 
     const technicalInputMutationFn = async ({ projectId, body }: UpdateTechnicalInputVariables) => {
         const technicalInputService = await GetTechnicalInputService()
-        const res = await technicalInputService.update(projectId, body)
+        const res = await technicalInputService.updateWells(projectId, body)
         return res
     }
 
