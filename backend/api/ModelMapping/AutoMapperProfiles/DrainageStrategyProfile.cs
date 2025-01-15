@@ -120,6 +120,15 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2EmissionsOverride)
                     )
                     ));
+        CreateMap<Co2Intensity, Co2IntensityDto>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesToDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(Co2Intensity)
+                    )
+                    ));
         CreateMap<DeferredOilProduction, DeferredOilProductionDto>()
             .ForMember(
                 dest => dest.Values,

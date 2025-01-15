@@ -9,15 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 
-public class Co2IntensityProfileService(DcdDbContext context, ICaseService caseService, IMapper mapper)
+public class Co2IntensityProfileService(DcdDbContext context, ICaseService caseService)
 {
-    public async Task<Co2IntensityDto> Generate(Guid caseId)
+    public async Task Generate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
 
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.Co2Emissions)
             .Include(d => d.Co2EmissionsOverride)
+            .Include(d => d.Co2Intensity)
             .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
@@ -61,15 +62,11 @@ public class Co2IntensityProfileService(DcdDbContext context, ICaseService caseS
 
         var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
 
-        var co2Intensity = new Co2Intensity
+        drainageStrategy.Co2Intensity = new()
         {
             StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset,
             Values = co2IntensityValues.ToArray(),
         };
-
-        var dto = mapper.Map<Co2IntensityDto>(co2Intensity);
-
-        return dto ?? new Co2IntensityDto();
     }
 
     private static TimeSeries<double> GetTotalExportedVolumes(DrainageStrategy drainageStrategy)

@@ -135,6 +135,7 @@ public class ProjectWithCasesAndAssetsRepository(DcdDbContext context) : IProjec
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
+            .Include(c => c.Co2Intensity)
             .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)

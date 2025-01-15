@@ -152,6 +152,7 @@ public static class DcdIocConfiguration
         services.AddScoped<NetSaleGasProfileService>();
         services.AddScoped<OpexCostProfileService>();
         services.AddScoped<Co2EmissionsProfileService>();
+        services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<CalculateTotalIncomeService>();
         services.AddScoped<CalculateTotalCostService>();
         services.AddScoped<CalculateNpvService>();
@@ -197,7 +198,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
         services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
-        services.AddScoped<Co2IntensityProfileService>();
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         services.AddScoped<ICaseRepository, CaseRepository>();

@@ -22,7 +22,6 @@ import { useCaseContext } from "@/Context/CaseContext"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
-import { roundToFourDecimalsAndJoin } from "@/Utils/common"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -47,6 +46,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const drainageStrategyData = apiData?.drainageStrategy
     const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
     const co2EmissionsData = apiData?.co2Emissions
+    const co2IntensityData = apiData?.co2Intensity
 
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2DistributionChartData, setCo2DistributionChartData] = useState<ICo2DistributionChartData[]>([
@@ -54,8 +54,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         { profile: "Flaring", value: 0 },
         { profile: "Fuel", value: 0 },
     ])
-    const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
-    const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
+
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -120,18 +119,13 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         (async () => {
             try {
                 if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(revisionAndProjectData.projectId, caseData.caseId)
                     const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
-                    setCo2Intensity(await co2I)
-                    console.log("co2Intensity", co2Intensity)
-                    setCo2IntensityTotal(Number((await co2I).sum))
-                    console.log("Co2IntensityTotal", co2IntensityTotal)
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
                     if (!yearRangeSetFromProfiles) {
                         SetTableYearsFromProfiles(
-                            [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
+                            [co2EmissionsData, await co2IntensityData, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
                             caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
                             setStartYear,
                             setEndYear,
@@ -163,13 +157,12 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             {
                 profileName: "Year-by-year CO2 intensity",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
-                profile: co2Intensity,
-                // total: co2IntensityTotal?.toString(),
+                profile: co2IntensityData,
                 overridable: false,
                 editable: false,
                 resourceName: "co2Intensity",
                 resourceId: drainageStrategyData?.id!,
-                resourceProfileId: co2Intensity?.id,
+                resourceProfileId: co2IntensityData?.id,
                 resourcePropertyKey: "co2Intensity",
             },
         ]
@@ -177,8 +170,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     }, [
         co2EmissionsData,
         co2EmissionsOverrideData,
-        co2Intensity,
-        co2IntensityTotal,
+        co2IntensityData,
         co2DrillingFlaringFuelTotals,
     ])
 
@@ -201,7 +193,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
-                        co2Intensity,
+                        co2IntensityData,
                         i,
                         startYear,
                         caseData!.dG4Date ? new Date(caseData!.dG4Date).getFullYear() : 2030,
@@ -269,7 +261,11 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>
                 <Grid item>
-                    <Typography variant="h1_bold">{Math.round(Number(co2Intensity?.sum) * 10000) / 10000}</Typography>
+                    <Typography variant="h1_bold">
+                        {co2IntensityData?.sum && co2IntensityData?.values && co2IntensityData.values.length > 0
+                            ? Math.round((Number(co2IntensityData.sum) / co2IntensityData.values.length) * 10000) / 10000
+                            : 0}
+                    </Typography>
                 </Grid>
                 <Grid item>
                     <Typography color="disabled">kg CO2/boe</Typography>
