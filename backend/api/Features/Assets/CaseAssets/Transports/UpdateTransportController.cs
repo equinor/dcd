@@ -1,5 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +8,13 @@ public class UpdateTransportController(UpdateTransportService updateTransportSer
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/transports/{transportId:guid}")]
-    public async Task<TransportDto> UpdateTransport(
+    public async Task<NoContentResult> UpdateTransport(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid transportId,
         [FromBody] UpdateTransportDto dto)
     {
-        return await updateTransportService.UpdateTransport(projectId, caseId, transportId, dto);
+        await updateTransportService.UpdateTransport(projectId, caseId, transportId, dto);
+        return NoContent();
     }
 }

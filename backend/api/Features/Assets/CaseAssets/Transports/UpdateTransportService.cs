@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,7 @@ public class UpdateTransportService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<TransportDto> UpdateTransport(Guid projectId, Guid caseId, Guid transportId, UpdateTransportDto updatedTransportDto)
+    public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, UpdateTransportDto updatedTransportDto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, transportId);
 
@@ -27,8 +26,6 @@ public class UpdateTransportService(
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<Transport, TransportDto>(existing, transportId);
     }
 
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, ProspUpdateTransportDto updatedTransportDto)

@@ -3,7 +3,6 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
-using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -19,7 +18,7 @@ public class UpdateWellProjectService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<WellProjectDto> UpdateWellProject(
+    public async Task UpdateWellProject(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
@@ -33,8 +32,6 @@ public class UpdateWellProjectService(
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<WellProject, WellProjectDto>(existingWellProject, wellProjectId);
     }
 
     public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(

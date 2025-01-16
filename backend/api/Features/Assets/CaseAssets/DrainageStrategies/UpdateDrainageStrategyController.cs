@@ -1,5 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +8,13 @@ public class UpdateDrainageStrategyController(UpdateDrainageStrategyService upda
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}")]
-    public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
+    public async Task<NoContentResult> UpdateDrainageStrategy(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromBody] UpdateDrainageStrategyDto dto)
     {
-        return await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, drainageStrategyId, dto);
+        await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, drainageStrategyId, dto);
+        return NoContent();
     }
 }

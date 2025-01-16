@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,7 @@ public class UpdateTopsideService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<TopsideDto> UpdateTopside(
+    public async Task UpdateTopside(
         Guid projectId,
         Guid caseId,
         Guid topsideId,
@@ -31,8 +30,6 @@ public class UpdateTopsideService(
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId);
     }
 
     public async Task UpdateTopside(
