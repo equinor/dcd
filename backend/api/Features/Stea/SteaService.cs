@@ -24,11 +24,11 @@ public class SteaService(DcdDbContext context, SteaRepository steaRepository)
         {
             Project = await steaRepository.GetProjectWithCasesAndAssets(projectPk),
             DrainageStrategies = await steaRepository.GetDrainageStrategies(projectPk),
-            Explorations =  await steaRepository.GetExplorations(projectPk),
+            Explorations = await steaRepository.GetExplorations(projectPk),
             OnshorePowerSupplies = await steaRepository.GetOnshorePowerSupplies(projectPk),
             Substructures = await steaRepository.GetSubstructures(projectPk),
             Surfs = await steaRepository.GetSurfs(projectPk),
-            Topsides =  await steaRepository.GetTopsides(projectPk),
+            Topsides = await steaRepository.GetTopsides(projectPk),
             Transports = await steaRepository.GetTransports(projectPk),
             WellProjects = await steaRepository.GetWellProjects(projectPk),
             Wells = await steaRepository.GetWells(projectPk)
