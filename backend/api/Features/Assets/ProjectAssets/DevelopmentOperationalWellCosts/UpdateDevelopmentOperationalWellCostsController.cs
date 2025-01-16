@@ -8,7 +8,7 @@ namespace api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 
 public class UpdateDevelopmentOperationalWellCostsController(UpdateDevelopmentOperationalWellCostsService updateDevelopmentOperationalWellCostsService) : ControllerBase
 {
-    [HttpPut("project/{projectId:guid}/development-operational-well-costs/{developmentOperationalWellCostsId:guid}")]
+    [HttpPut("projects/{projectId:guid}/development-operational-well-costs/{developmentOperationalWellCostsId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
     [DisableLazyLoading]
     public async Task<DevelopmentOperationalWellCostsOverviewDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)

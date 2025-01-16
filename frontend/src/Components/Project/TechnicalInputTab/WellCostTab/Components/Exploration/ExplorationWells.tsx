@@ -1,10 +1,10 @@
 import {
     Button, Icon, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { delete_to_trash } from "@equinor/eds-icons"
 import {
-    ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
+    ChangeEvent, useEffect, useMemo, useRef, useState,
 } from "react"
+import { add, delete_to_trash } from "@equinor/eds-icons"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
@@ -18,19 +18,14 @@ import { GetWellService } from "@/Services/WellService"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import Modal from "@/Components/Modal/Modal"
+import { SectionHeader } from "../Shared/SharedWellStyles"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 
-interface Props {
-    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
-    setDeletedWells: Dispatch<SetStateAction<string[]>>
-}
-
-const ExplorationWells = ({
-    setExplorationWells,
-    setDeletedWells,
-}: Props) => {
+const ExplorationWells = () => {
+    const { addWellsEdit } = useTechnicalInputEdits()
     const revisionAndProjectData = useDataFetch()
-    const { editMode } = useAppContext()
     const { isEditDisabled } = useEditDisabled()
+    const { editMode } = useAppContext()
     const gridRef = useRef(null)
     const styles = useStyles()
 
@@ -41,21 +36,49 @@ const ExplorationWells = ({
 
     const onGridReady = (params: any) => { gridRef.current = params.api }
 
-    const updateWells = (p: any) => {
-        const rowWells: any[] = p.data.wells
-        if (rowWells) {
-            const { field } = p.colDef
-            const index = rowWells.findIndex((w) => w === p.data.well)
-            if (index > -1) {
-                const well = rowWells[index]
-                const updatedWell = well
-                updatedWell[field as keyof typeof updatedWell] = field === "name"
-                    ? p.newValue : Number(p.newValue.toString().replace(/,/g, "."))
-                const updatedWells = [...rowWells]
-                updatedWells[index] = updatedWell
-                setWells(updatedWells)
-            }
+    const CreateWell = async (category: number) => {
+        const newWell: Components.Schemas.CreateWellDto = {
+            wellCategory: category as Components.Schemas.WellCategory,
+            name: "New well",
         }
+        if (revisionAndProjectData) {
+            const createWells: Components.Schemas.UpdateWellsDto = {
+                createWellDtos: [newWell],
+                updateWellDtos: [],
+                deleteWellDtos: [],
+            }
+            addWellsEdit(revisionAndProjectData.projectId, createWells)
+        }
+    }
+
+    const updateWells = (p: any) => {
+        const currentWells = p.data.wells as Components.Schemas.WellOverviewDto[]
+        const { field } = p.colDef
+        const wellToUpdate = p.data.well
+        const { newValue } = p
+
+        if (!currentWells || !revisionAndProjectData || !field || !wellToUpdate) { return }
+
+        const wellIndex = currentWells.findIndex((w) => w === wellToUpdate)
+        if (wellIndex === -1) { return }
+
+        const updateField = (well: Components.Schemas.WellOverviewDto, fieldToChange: string, value: any) => ({
+            ...well,
+            [fieldToChange]: fieldToChange === "name" ? value : Number(value.toString().replace(/,/g, ".")),
+        })
+
+        const updatedWell = updateField(wells[wellIndex], field, newValue)
+
+        const updatedWellsArray = [...wells]
+        updatedWellsArray[wellIndex] = updatedWell
+
+        const updatePayload: Components.Schemas.UpdateWellsDto = {
+            createWellDtos: [],
+            updateWellDtos: updatedWellsArray.filter(isExplorationWell),
+            deleteWellDtos: [],
+        }
+
+        addWellsEdit(revisionAndProjectData.projectId, updatePayload)
     }
 
     const wellsToRowData = () => {
@@ -108,24 +131,18 @@ const ExplorationWells = ({
         )
     }
 
-    const handleDeleteWell = (p: any) => {
-        const rowWells: any[] = p.data.wells
-        if (rowWells) {
-            const index = rowWells.findIndex((w) => w === p.data.well)
-            if (index > -1) {
-                const updatedWells = [...rowWells]
-                updatedWells.splice(index, 1)
-                setWells(updatedWells)
-                setDeletedWells((prev) => {
-                    if (!prev.includes(p.data.well.id)) {
-                        const deletedWells = [...prev]
-                        deletedWells.push(p.data.well.id)
-                        return deletedWells
-                    }
-                    return prev
-                })
+    const handleDeleteWell = (params: any) => {
+        const { well: wellToDelete } = params.data
+
+        if (revisionAndProjectData) {
+            const deleteWells: Components.Schemas.UpdateWellsDto = {
+                createWellDtos: [],
+                updateWellDtos: [],
+                deleteWellDtos: [{ id: wellToDelete.id }],
             }
+            addWellsEdit(revisionAndProjectData.projectId, deleteWells)
         }
+
         setWellStagedForDeletion(undefined)
     }
 
@@ -208,12 +225,22 @@ const ExplorationWells = ({
         wellsToRowData()
     }, [wells])
 
-    useEffect(() => {
-        setExplorationWells(wells)
-    }, [wells])
-
     return (
         <>
+            <SectionHeader>
+                <Typography variant="h2">Exploration Well Costs</Typography>
+                {editMode && (
+                    <Button
+                        onClick={
+                            () => CreateWell(4)
+                        }
+                        variant="outlined"
+                    >
+                        <Icon data={add} />
+                        Add new exploration well type
+                    </Button>
+                )}
+            </SectionHeader>
             <Modal
                 isOpen={!!wellStagedForDeletion}
                 title="Delete well"

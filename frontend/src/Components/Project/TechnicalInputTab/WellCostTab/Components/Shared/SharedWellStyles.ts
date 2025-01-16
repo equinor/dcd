@@ -22,3 +22,17 @@ export const CostWithCurrency = styled.div`
         letter-spacing: 0.5px;
     }
 `
+
+export const Section = styled.section`
+    margin-top: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+`
+
+export const SectionHeader = styled.div`
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+`
