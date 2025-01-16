@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.WellProjects;
 
-public class UpdateWellProjectController(WellProjectService wellProjectService) : ControllerBase
+public class UpdateWellProjectController(UpdateWellProjectService updateWellProjectService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}")]
@@ -17,7 +17,7 @@ public class UpdateWellProjectController(WellProjectService wellProjectService) 
         [FromRoute] Guid wellProjectId,
         [FromBody] UpdateWellProjectDto dto)
     {
-        return await wellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
+        return await updateWellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -30,7 +30,7 @@ public class UpdateWellProjectController(WellProjectService wellProjectService) 
         [FromRoute] Guid drillingScheduleId,
         [FromBody] UpdateDrillingScheduleDto dto)
     {
-        return await wellProjectService.UpdateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
+        return await updateWellProjectService.UpdateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -42,6 +42,6 @@ public class UpdateWellProjectController(WellProjectService wellProjectService) 
         [FromRoute] Guid wellId,
         [FromBody] CreateDrillingScheduleDto dto)
     {
-        return await wellProjectService.CreateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, dto);
+        return await updateWellProjectService.CreateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, dto);
     }
 }
