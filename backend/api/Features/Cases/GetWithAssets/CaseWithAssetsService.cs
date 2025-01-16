@@ -1,5 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Cases.GetWithAssets.Dtos;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
 using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
 using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;

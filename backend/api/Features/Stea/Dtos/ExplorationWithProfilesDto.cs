@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
-using api.Features.Cases.GetWithAssets;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;

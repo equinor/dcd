@@ -1,26 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Models;
 using api.Models.Enums;
 
-namespace api.Features.Cases.GetWithAssets;
+namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
-public class TransportDto
+public class OnshorePowerSupplyDto
 {
     [Required]
     public Guid Id { get; set; }
     [Required]
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
     [Required]
     public Guid ProjectId { get; set; }
-    [Required]
-    public Maturity Maturity { get; set; }
-    [Required]
-    public double GasExportPipelineLength { get; set; }
-    [Required]
-    public double OilExportPipelineLength { get; set; }
-    [Required]
-    public Currency Currency { get; set; }
     public DateTime? LastChangedDate { get; set; }
     [Required]
     public int CostYear { get; set; }

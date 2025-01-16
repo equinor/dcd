@@ -1,4 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Cases.GetWithAssets.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 

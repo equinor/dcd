@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
 using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
 using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;
@@ -36,7 +37,7 @@ using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Stea.Dtos;
 
-namespace api.Features.Cases.GetWithAssets;
+namespace api.Features.Cases.GetWithAssets.Dtos;
 
 public class CaseWithAssetsDto
 {
