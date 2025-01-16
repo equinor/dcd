@@ -19,25 +19,6 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
             approvedBy?: string | null;
         }
-        export interface APIUpdateSurfDto {
-            cessationCost?: number; // double
-            infieldPipelineSystemLength?: number; // double
-            umbilicalSystemLength?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            riserCount?: number; // int32
-            templateCount?: number; // int32
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            productionFlowline?: ProductionFlowline /* int32 */;
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            approvedBy?: string | null;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-        }
         export interface AdditionalOpexCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1522,6 +1503,25 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateSurfDto {
+            cessationCost?: number; // double
+            infieldPipelineSystemLength?: number; // double
+            umbilicalSystemLength?: number; // double
+            artificialLift?: ArtificialLift /* int32 */;
+            riserCount?: number; // int32
+            templateCount?: number; // int32
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            productionFlowline?: ProductionFlowline /* int32 */;
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
+        }
         export interface UpdateTechnicalInputDto {
             projectDto: UpdateProjectDto;
             developmentOperationalWellCostsDto: UpdateDevelopmentOperationalWellCostsDto;
@@ -2912,7 +2912,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 surfId: Parameters.SurfId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSurfDto;
+            export type RequestBody = Components.Schemas.UpdateSurfDto;
             namespace Responses {
                 export type $200 = Components.Schemas.SurfDto;
             }

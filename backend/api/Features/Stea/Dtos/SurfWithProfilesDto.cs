@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
 using api.Models;
 using api.Models.Enums;
 
@@ -58,11 +59,5 @@ public class SurfWithProfilesDto
 }
 
 public class SurfCostProfileDto : TimeSeriesCostDto;
-
-public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
 
 public class SurfCessationCostProfileDto : TimeSeriesCostDto;

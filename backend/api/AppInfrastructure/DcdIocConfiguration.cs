@@ -3,7 +3,7 @@ using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.Explorations;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Assets.CaseAssets.WellProjects;
@@ -64,6 +64,8 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.Explorations.CountryOfficeCosts;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
+using api.Features.Profiles.Surfs.SurfCostProfileOverrides;
+using api.Features.Profiles.Surfs.SurfCostProfiles;
 using api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides;
@@ -202,6 +204,7 @@ public static class DcdIocConfiguration
         /* Case assets */
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<UpdateExplorationService>();
+        services.AddScoped<UpdateSurfService>();
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
         services.AddScoped<UpdateWellProjectService>();
@@ -211,9 +214,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<SubstructureService>();
         services.AddScoped<SubstructureTimeSeriesService>();
-
-        services.AddScoped<SurfService>();
-        services.AddScoped<SurfTimeSeriesService>();
 
 
         /* Case profiles */
@@ -247,6 +247,10 @@ public static class DcdIocConfiguration
         services.AddScoped<CountryOfficeCostService>();
         services.AddScoped<GAndGAdminCostOverrideService>();
         services.AddScoped<SeismicAcquisitionAndProcessingService>();
+
+        /* Surf profiles */
+        services.AddScoped<SurfCostProfileService>();
+        services.AddScoped<SurfTimeSeriesService>();
 
         /* Topside profiles */
         services.AddScoped<TopsideCostProfileService>();

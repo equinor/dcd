@@ -1,7 +1,7 @@
-using api.Features.Assets.CaseAssets.Surfs.Dtos;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
+using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
+using api.Features.Profiles.Surfs.SurfCostProfiles.Dtos;
 using api.Features.Stea.Dtos;
 using api.Models;
 
@@ -19,8 +19,8 @@ public class SurfProfile : Profile
         CreateMap<SurfCostProfileOverride, SurfCostProfileOverrideDto>();
         CreateMap<SurfCessationCostProfile, SurfCessationCostProfileDto>();
 
-        CreateMap<APIUpdateSurfDto, Surf>();
-        CreateMap<PROSPUpdateSurfDto, Surf>();
+        CreateMap<UpdateSurfDto, Surf>();
+        CreateMap<ProspUpdateSurfDto, Surf>();
         CreateMap<UpdateSurfCostProfileDto, SurfCostProfile>();
         CreateMap<UpdateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
         CreateMap<CreateSurfCostProfileOverrideDto, SurfCostProfileOverride>();

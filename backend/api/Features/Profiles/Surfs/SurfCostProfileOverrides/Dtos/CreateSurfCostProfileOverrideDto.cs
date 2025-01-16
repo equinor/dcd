@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Create;
 
-namespace api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
+namespace api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
 
 public class CreateSurfCostProfileOverrideDto : CreateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

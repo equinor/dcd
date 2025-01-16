@@ -1,7 +1,7 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
 
-namespace api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
+namespace api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
 
 public class UpdateSurfCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {

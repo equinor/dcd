@@ -5,11 +5,12 @@ using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
-using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles.Surfs.SurfCostProfiles;
+using api.Features.Profiles.Surfs.SurfCostProfiles.Dtos;
 using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfiles;
@@ -28,13 +29,13 @@ namespace api.Features.Prosp.Services;
 
 public class ProspExcelImportService(
     DcdDbContext context,
-    SurfService surfService,
+    UpdateSurfService updateSurfService,
     SubstructureService substructureService,
     UpdateTopsideService updateTopsideService,
     UpdateTransportService updateTransportService,
     OnshorePowerSupplyService onshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
-    SurfTimeSeriesService surfTimeSeriesService,
+    SurfCostProfileService surfCostProfileService,
     TopsideCostProfileService topsideCostProfileService,
     OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IRecalculationService recalculationService,
@@ -128,7 +129,7 @@ public class ProspExcelImportService(
             importedCurrency == 2 ? Currency.USD : 0;
         var surfLink = (await GetCaseWithNoIncludes(sourceCaseId)).SurfLink;
 
-        var updatedSurfDto = new PROSPUpdateSurfDto
+        var updatedSurfDto = new ProspUpdateSurfDto
         {
             ProductionFlowline = productionFlowLine,
             UmbilicalSystemLength = lengthUmbilicalSystem,
@@ -148,8 +149,8 @@ public class ProspExcelImportService(
             CessationCost = cessationCost,
         };
 
-        await surfService.UpdateSurf(projectId, sourceCaseId, surfLink, updatedSurfDto);
-        await surfTimeSeriesService.AddOrUpdateSurfCostProfile(projectId, sourceCaseId, surfLink, costProfile);
+        await updateSurfService.UpdateSurf(projectId, sourceCaseId, surfLink, updatedSurfDto);
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, sourceCaseId, surfLink, costProfile);
     }
 
     private async Task ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -469,15 +470,15 @@ public class ProspExcelImportService(
     private async Task ClearImportedSurf(Case caseItem)
     {
         var surfLink = caseItem.SurfLink;
-        var dto = new PROSPUpdateSurfDto
+        var dto = new ProspUpdateSurfDto
         {
             Source = Source.ConceptApp
         };
 
         var costProfileDto = new UpdateSurfCostProfileDto();
 
-        await surfService.UpdateSurf(caseItem.ProjectId, caseItem.Id, surfLink, dto);
-        await surfTimeSeriesService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, surfLink, costProfileDto);
+        await updateSurfService.UpdateSurf(caseItem.ProjectId, caseItem.Id, surfLink, dto);
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, surfLink, costProfileDto);
     }
 
     private async Task ClearImportedTopside(Case caseItem)
