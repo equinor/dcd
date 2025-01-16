@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using api.Models;
 using api.Models.Enums;
 
-namespace api.Features.Assets.CaseAssets.Transports.Dtos;
+namespace api.Features.Cases.GetWithAssets;
 
 public class TransportDto
 {

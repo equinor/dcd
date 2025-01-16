@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.WellProjects.Dtos;
+namespace api.Features.Assets.CaseAssets.WellProjects;
 
 public class UpdateWellProjectDto
 {

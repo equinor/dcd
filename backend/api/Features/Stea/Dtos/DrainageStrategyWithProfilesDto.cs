@@ -15,7 +15,7 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+namespace api.Features.Stea.Dtos;
 
 public class DrainageStrategyWithProfilesDto
 {

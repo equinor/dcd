@@ -1,5 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
 using api.Features.TechnicalInput.Dtos;
 

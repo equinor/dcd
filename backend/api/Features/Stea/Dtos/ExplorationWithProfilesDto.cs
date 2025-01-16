@@ -7,7 +7,7 @@ using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Dtos;
+namespace api.Features.Stea.Dtos;
 
 public class ExplorationWithProfilesDto
 {

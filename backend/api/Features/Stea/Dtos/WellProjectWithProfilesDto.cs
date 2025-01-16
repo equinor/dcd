@@ -8,7 +8,7 @@ using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.WellProjects.Dtos;
+namespace api.Features.Stea.Dtos;
 
 public class WellProjectWithProfilesDto
 {

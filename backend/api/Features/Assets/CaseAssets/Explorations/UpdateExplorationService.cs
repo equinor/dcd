@@ -1,9 +1,9 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -11,9 +11,9 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Services;
+namespace api.Features.Assets.CaseAssets.Explorations;
 
-public class ExplorationService(
+public class UpdateExplorationService(
     DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
@@ -23,8 +23,7 @@ public class ExplorationService(
         Guid projectId,
         Guid caseId,
         Guid explorationId,
-        UpdateExplorationDto updatedExplorationDto
-    )
+        UpdateExplorationDto updatedExplorationDto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 
@@ -44,8 +43,7 @@ public class ExplorationService(
         Guid explorationId,
         Guid wellId,
         Guid drillingScheduleId,
-        UpdateDrillingScheduleDto updatedExplorationWellDto
-    )
+        UpdateDrillingScheduleDto updatedExplorationWellDto)
     {
         var existingExploration = await context.Explorations
                 .Include(e => e.ExplorationWells)
@@ -70,8 +68,7 @@ public class ExplorationService(
         Guid caseId,
         Guid explorationId,
         Guid wellId,
-        CreateDrillingScheduleDto updatedExplorationWellDto
-    )
+        CreateDrillingScheduleDto updatedExplorationWellDto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
 

@@ -1,18 +1,16 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.WellProjects;
 
-[Route("projects/{projectId}/cases/{caseId}/well-projects")]
-[AuthorizeActionType(ActionType.Edit)]
-public class WellProjectsController(WellProjectService wellProjectService) : ControllerBase
+public class UpdateWellProjectController(WellProjectService wellProjectService) : ControllerBase
 {
-    [HttpPut("{wellProjectId}")]
+    [AuthorizeActionType(ActionType.Edit)]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}")]
     public async Task<WellProjectDto> UpdateWellProject(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
@@ -22,7 +20,8 @@ public class WellProjectsController(WellProjectService wellProjectService) : Con
         return await wellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
     }
 
-    [HttpPut("{wellProjectId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
+    [AuthorizeActionType(ActionType.Edit)]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/wells/{wellId:guid}/drilling-schedule/{drillingScheduleId:guid}")]
     public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
@@ -34,7 +33,8 @@ public class WellProjectsController(WellProjectService wellProjectService) : Con
         return await wellProjectService.UpdateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
     }
 
-    [HttpPost("{wellProjectId}/wells/{wellId}/drilling-schedule")]
+    [AuthorizeActionType(ActionType.Edit)]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/wells/{wellId:guid}/drilling-schedule")]
     public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

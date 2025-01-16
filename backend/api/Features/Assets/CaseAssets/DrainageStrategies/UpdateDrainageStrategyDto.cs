@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
 public class UpdateDrainageStrategyDto
 {

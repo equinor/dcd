@@ -7,7 +7,7 @@ class TransportService extends __BaseService {
         projectId: string,
         caseId: string,
         transportId: string,
-        dto: Components.Schemas.APIUpdateTransportDto,
+        dto: Components.Schemas.UpdateTransportDto,
     ): Promise<Components.Schemas.TransportDto> {
         const res: Components.Schemas.TransportDto = await this.put(
             `projects/${projectId}/cases/${caseId}/transports/${transportId}`,

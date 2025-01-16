@@ -9,8 +9,7 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
-using api.Features.Assets.CaseAssets.Transports.Services;
+using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
@@ -31,7 +30,7 @@ public class ProspExcelImportService(
     SurfService surfService,
     SubstructureService substructureService,
     TopsideService topsideService,
-    TransportService transportService,
+    UpdateTransportService updateTransportService,
     OnshorePowerSupplyService onshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
     SurfTimeSeriesService surfTimeSeriesService,
@@ -308,7 +307,7 @@ public class ProspExcelImportService(
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var transportLink = (await GetCaseWithNoIncludes(sourceCaseId)).TransportLink;
-        var updateTransportDto = new PROSPUpdateTransportDto
+        var updateTransportDto = new ProspUpdateTransportDto
         {
             DG3Date = dG3Date,
             DG4Date = dG4Date,
@@ -320,7 +319,7 @@ public class ProspExcelImportService(
             GasExportPipelineLength = gasExportPipelineLength
         };
 
-        await transportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
+        await updateTransportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
         await AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
     }
 
@@ -512,14 +511,14 @@ public class ProspExcelImportService(
     private async Task ClearImportedTransport(Case caseItem)
     {
         var transportLink = caseItem.TransportLink;
-        var dto = new PROSPUpdateTransportDto
+        var dto = new ProspUpdateTransportDto
         {
             Source = Source.ConceptApp
         };
 
         var costProfileDto = new UpdateTransportCostProfileDto();
 
-        await transportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, transportLink, dto);
+        await updateTransportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, transportLink, dto);
         await AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, transportLink, costProfileDto);
     }
 

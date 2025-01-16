@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.Explorations.Dtos;
+namespace api.Features.Cases.GetWithAssets;
 
 public class ExplorationDto
 {

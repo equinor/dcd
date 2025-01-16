@@ -1,4 +1,5 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Assets.CaseAssets.DrainageStrategies;
+using api.Features.Cases.GetWithAssets;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils.Dtos;
 using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides.Dtos;
@@ -11,6 +12,7 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileGases.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileOils.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
+using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;

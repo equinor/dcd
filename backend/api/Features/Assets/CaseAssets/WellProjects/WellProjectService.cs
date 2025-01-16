@@ -1,9 +1,9 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -11,7 +11,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.WellProjects.Services;
+namespace api.Features.Assets.CaseAssets.WellProjects;
 
 public class WellProjectService(
     DcdDbContext context,
@@ -23,8 +23,7 @@ public class WellProjectService(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
-        UpdateWellProjectDto updatedWellProjectDto
-    )
+        UpdateWellProjectDto updatedWellProjectDto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
 
@@ -44,8 +43,7 @@ public class WellProjectService(
         Guid wellProjectId,
         Guid wellId,
         Guid drillingScheduleId,
-        UpdateDrillingScheduleDto updatedWellProjectWellDto
-    )
+        UpdateDrillingScheduleDto updatedWellProjectWellDto)
     {
         var existingWellProject = await context.WellProjects
             .Include(e => e.WellProjectWells)
@@ -70,8 +68,7 @@ public class WellProjectService(
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,
-        CreateDrillingScheduleDto updatedWellProjectWellDto
-    )
+        CreateDrillingScheduleDto updatedWellProjectWellDto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
 
@@ -82,7 +79,7 @@ public class WellProjectService(
         DrillingSchedule drillingSchedule = new();
         var newDrillingSchedule = mapperService.MapToEntity(updatedWellProjectWellDto, drillingSchedule, wellProjectId);
 
-        WellProjectWell newWellProjectWell = new()
+        var newWellProjectWell = new WellProjectWell
         {
             Well = existingWell,
             WellProject = existingWellProject,

@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils.Dtos;

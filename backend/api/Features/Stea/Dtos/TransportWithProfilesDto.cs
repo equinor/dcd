@@ -5,7 +5,7 @@ using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
 using api.Models;
 using api.Models.Enums;
 
-namespace api.Features.Assets.CaseAssets.Transports.Dtos;
+namespace api.Features.Stea.Dtos;
 
 public class TransportWithProfilesDto
 {

@@ -1,6 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -8,9 +8,9 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
+namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
-public class DrainageStrategyService(
+public class UpdateDrainageStrategyService(
     DcdDbContext context,
     IConversionMapperService conversionMapperService,
     IProjectIntegrityService projectIntegrityService,
@@ -20,8 +20,7 @@ public class DrainageStrategyService(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        UpdateDrainageStrategyDto updatedDrainageStrategyDto
-    )
+        UpdateDrainageStrategyDto updatedDrainageStrategyDto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<DrainageStrategy>(projectId, drainageStrategyId);
 
