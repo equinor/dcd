@@ -23,7 +23,6 @@ public class DrainageStrategyProfile : Profile
 {
     public DrainageStrategyProfile()
     {
-        CreateMap<DrainageStrategy, DrainageStrategyWithProfilesDto>();
         CreateMap<DrainageStrategy, DrainageStrategyDto>();
         CreateMap<ProductionProfileOil, ProductionProfileOilDto>()
             .ForMember(
