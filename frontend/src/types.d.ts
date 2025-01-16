@@ -2754,6 +2754,62 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshorePowerSupplyDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyIdCostProfileOverride {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyIdCostProfileOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdOnshoreRelatedOpexCostProfile {
         namespace Post {
             namespace Parameters {
@@ -2785,62 +2841,6 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateOnshoreRelatedOpexCostProfileDto;
             namespace Responses {
                 export type $200 = Components.Schemas.OnshoreRelatedOpexCostProfileDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyIdCostProfileOverride {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyIdCostProfileOverride$CostProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
             }
         }
     }
