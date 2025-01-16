@@ -74,7 +74,7 @@ const DevelopmentWells = () => {
 
         const updatePayload: Components.Schemas.UpdateWellsDto = {
             createWellDtos: [],
-            updateWellDtos: updatedWellsArray.filter(isExplorationWell),
+            updateWellDtos: updatedWellsArray.filter((well) => !isExplorationWell(well)),
             deleteWellDtos: [],
         }
         addWellsEdit(revisionAndProjectData.projectId, updatePayload)
