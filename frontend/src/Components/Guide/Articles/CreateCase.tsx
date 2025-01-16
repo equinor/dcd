@@ -6,74 +6,66 @@ const CreateCase = () => (
         <Article.Header>How to create a case</Article.Header>
         <Article.Body>
             <VideoPlayer src="https://dcdstorageaccount.blob.core.windows.net/user-guide/How%20t%20o%20create%20case.mp4" />
-            <ol data-spread="true" start={1} data-pm-slice="3 5 []">
+            <ol>
                 <li>
                     <p><strong>Go to the Project Overview Page:</strong></p>
-                    <ul data-spread="false">
+                    <ul>
                         <li>
-                            <p>Find the table with your existing cases.</p>
+                            Find the table with your existing cases.
                         </li>
                     </ul>
                 </li>
                 <li>
                     <p><strong>Choose How to Create a Case:</strong></p>
-                    <ul data-spread="false">
+                    <ul>
                         <li>
-                            <p>
-                                <strong>Option 1:</strong>
-                                {" "}
-                                Click the &apos;Create a Case&apos; button above the table.
-                            </p>
+                            <strong>Option 1:</strong>
+                            {" "}
+                            Click the &apos;Create a Case&apos; button above the case overview table.
+
                         </li>
                         <li>
-                            <p>
-                                <strong>Option 2:</strong>
-                                {" "}
-                                Click the small&nbsp;
-                                <strong>plus (+) icon</strong>
-                                {" "}
-                                on the sidebar (available anywhere in the app).
-                            </p>
+                            <strong>Option 2:</strong>
+                            {" "}
+                            Click the small&nbsp;
+                            <strong>plus (+) icon</strong>
+                            {" "}
+                            on the sidebar (available anywhere in the app).
                         </li>
                     </ul>
                 </li>
                 <li>
                     <p><strong>Fill in the Details:</strong></p>
-                    <ul data-spread="false">
+                    <ul>
                         <li>
-                            <p>A modal will appear.</p>
+                            A modal will appear.
                         </li>
                         <li>
-                            <p>
-                                Enter the&nbsp;
-                                <strong>case name</strong>
-                                {" "}
-                                (mandatory).
-                            </p>
+
+                            Enter the&nbsp;
+                            <strong>case name</strong>
+                            {" "}
+                            (mandatory).
+
                         </li>
                         <li>
-                            <p>Add other details if needed (you can edit them later).</p>
+                            Add other details if needed (you can edit them later).
                         </li>
                     </ul>
                 </li>
                 <li>
                     <p><strong>Finalize:</strong></p>
-                    <ul data-spread="false">
+                    <ul>
                         <li>
-                            <p>
-                                Click&nbsp;
-                                <strong>&apos;Create Case&apos;</strong>
-                                {" "}
-                                to save it.
-                            </p>
+
+                            Click&nbsp;
+                            <strong>&apos;Create Case&apos;</strong>
+                            {" "}
+                            to save it.
+
                         </li>
-                    </ul>
-                </li>
-                <li>
-                    <p><strong>You&rsquo;re Done:</strong></p>
-                    <ul data-spread="false">
                         <li>
-                            <p>The new case will appear in your list.</p>
+                            The new case will appear in in the sidebar, and in the case overview table.
                         </li>
                     </ul>
                 </li>

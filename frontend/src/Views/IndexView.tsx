@@ -1,18 +1,25 @@
 import React from "react"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
+import styled from "styled-components"
 import UserGuideView from "../Components/Guide/UserGuide"
+
+const StickyBanner = styled(Banner)`
+    position: sticky;
+    top: 0;
+    z-index: 1;
+`
 
 const IndexView: React.FC = () => (
     <div>
-        <Banner>
+        <StickyBanner>
             <Banner.Icon variant="info">
                 <Icon data={info_circle} />
             </Banner.Icon>
             <Banner.Message>
                 Select a project to view
             </Banner.Message>
-        </Banner>
+        </StickyBanner>
         <UserGuideView />
     </div>
 )

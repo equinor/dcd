@@ -9,15 +9,11 @@ import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { isAxiosError } from "@/Utils/common"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import IndexView from "@/Views/IndexView"
 
 // Banner components
 const SelectProjectBanner = () => (
-    <Banner>
-        <Banner.Icon variant="info">
-            <Icon data={info_circle} />
-        </Banner.Icon>
-        <Banner.Message>Select a project to view</Banner.Message>
-    </Banner>
+    <IndexView />
 )
 
 const LoadingBanner = () => (

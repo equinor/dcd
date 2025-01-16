@@ -7,62 +7,73 @@ import { tokens } from "@equinor/eds-tokens"
 import Article from "./Components/Article"
 import Header from "./Components/Header"
 import CreateCase from "./Articles/CreateCase"
+import MakeEdits from "./Articles/MakeEdits"
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 40px;
-  padding: 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 40px;
+    padding: 40px;
     background-color: white;
+
+    & video {
+        max-width: 70%;
+    }
 `
 
 const ArticleView = styled.div`
   flex: 1;
   margin-top: 20px;
   max-width: 1000px;
+
+    & li {
+        margin-bottom: 10px;
+    }
+
 `
 
 const MainHeader = styled.div`
   font-family: Equinor;
   font-weight: 400;
-  font-size: 28px;
+  font-size: 32px;
   margin-bottom: 30px;
 `
 const Button = styled.button < { isActive: boolean, isHeader: boolean } >`
-  font-family: Equinor;
-  transition: all 0.3s ease-in-out;
-  border: none;
-  border-left: 4px solid ${({ isActive }) => (isActive ? tokens.colors.interactive.primary__resting.rgba : "#e6e6e6")};
-  background-color: transparent;
-  display: flex;
-  padding: 10px 20px;
-  padding-left: ${({ isActive }) => (isActive ? "26px" : "20px")}; 
-  width: 100%;
-  font-size: ${({ isHeader }) => (isHeader ? "25px" : "16px")}; 
+    font-family: Equinor;
+    transition: all 0.3s ease-in-out;
+    border: none;
+    border-left: 4px solid ${({ isActive }) => (isActive ? tokens.colors.interactive.primary__resting.rgba : "#e6e6e6")};
+    background-color: transparent;
+    display: flex;
+    padding: 10px 20px;
+    padding-left: ${({ isActive }) => (isActive ? "26px" : "20px")}; 
+    width: 100%;
+    font-size: ${({ isHeader }) => (isHeader ? "25px" : "16px")}; 
+    text-align: left;
 
-  &:hover {
-    border-left: 4px solid ${tokens.colors.interactive.primary__resting.rgba};
-  }
+    &:hover {
+        border-left: 4px solid ${tokens.colors.interactive.primary__resting.rgba};
+    }
 
-  &:focus {
-    outline: none;
-  }
+    &:focus {
+        outline: none;
+    }
 `
 
 const NavigationBar = styled.div`
-  position: sticky;
-  margin-top: 20px;
-  top: 20px;
-  min-width: 270px;
+    position: sticky;
+    margin-top: 20px;
+    top: 140px;
+    width: 300px;
 
-  & > a {
-    text-decoration: none;
-  }
+    & > a {
+        text-decoration: none;
+    }
 `
 
 interface ArticleData {
-  title: string;
+    title: string;
     component: React.FC;
     type?: "header";
 }
@@ -82,17 +93,15 @@ const placeholder = (title: string) => {
 const articles: ArticleData[] = [
     { type: "header", title: "Cases", component: () => <Header>Cases</Header> },
     { title: "How to create a case", component: CreateCase },
-    { title: "How to edit data", component: placeholder("Show of autosave and view/edit mode") },
+    { title: "How to edit data", component: MakeEdits },
     { title: "How to change the case information/ case page", component: placeholder("How to change the case information/ case page") },
     { title: "How to enter the production profile", component: placeholder("How to enter the production profile") },
     { title: "How to upload Prosp and how it fills out the facilities tab", component: placeholder("How to upload Prosp and how it fills out the facilities tab") },
     { title: "How to add well cost", component: placeholder("How to add well cost") },
     { title: "How to add wells in the well schedule", component: placeholder("How to add wells in the well schedule") },
     { title: "How to give finance and control the numbers – STEA export", component: placeholder("How to give finance and control the numbers – STEA export") },
-
     { type: "header", title: "Project", component: () => <Header>Project</Header> },
     { title: "How to make a revision", component: placeholder("How to make a revision") },
-
     { type: "header", title: "Utilities?", component: () => <Header>Utilities?</Header> },
 ]
 

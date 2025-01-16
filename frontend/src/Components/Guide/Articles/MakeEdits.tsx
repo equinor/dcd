@@ -3,17 +3,16 @@ import Article from "../Components/Article"
 
 const MakeEdits = () => (
     <Article>
-        <Article.Header>How to create a case</Article.Header>
+        <Article.Header>How to edit data</Article.Header>
         <Article.Body>
             <VideoPlayer src="https://dcdstorageaccount.blob.core.windows.net/user-guide/claudia%20-%20how%20to%20make%20edits.mp4" />
             <div>
-                <h2>Project and Case Dashboard Modes</h2>
                 <p>
                     The project and case dashboards have two primary modes:
-                    <strong>&quot;view&quot; mode</strong>
+                    <strong> &quot;view mode&quot;</strong>
                     {" "}
                     and
-                    <strong>&quot;edit&quot; mode</strong>
+                    <strong> &quot;edit mode&quot;</strong>
                     .
                 </p>
                 <ul>
