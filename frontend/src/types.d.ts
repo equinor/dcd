@@ -1,24 +1,5 @@
 declare namespace Components {
     namespace Schemas {
-        export interface APIUpdateOnshorePowerSupplyDto {
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-        }
-        export interface APIUpdateSubstructureDto {
-            dryWeight?: number; // double
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            concept?: Concept /* int32 */;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
-        }
         export interface AdditionalOpexCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1432,6 +1413,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateOnshorePowerSupplyDto {
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
+        }
         export interface UpdateOnshoreRelatedOpexCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1496,6 +1485,17 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
+        }
+        export interface UpdateSubstructureDto {
+            dryWeight?: number; // double
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            concept?: Concept /* int32 */;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
+            approvedBy?: string | null;
         }
         export interface UpdateSurfCostProfileOverrideDto {
             startYear?: number; // int32
@@ -2800,7 +2800,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateOnshorePowerSupplyDto;
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
             namespace Responses {
                 export type $200 = Components.Schemas.OnshorePowerSupplyDto;
             }
@@ -2856,7 +2856,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 substructureId: Parameters.SubstructureId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSubstructureDto;
+            export type RequestBody = Components.Schemas.UpdateSubstructureDto;
             namespace Responses {
                 export type $200 = Components.Schemas.SubstructureDto;
             }

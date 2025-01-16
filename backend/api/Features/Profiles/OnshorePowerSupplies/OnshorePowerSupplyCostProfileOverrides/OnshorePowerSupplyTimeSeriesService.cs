@@ -1,10 +1,8 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides.Dtos;
 using api.Features.ProjectIntegrity;
 using api.Features.Stea.Dtos;
 using api.ModelMapping;
@@ -12,7 +10,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
+namespace api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides;
 
 public class OnshorePowerSupplyTimeSeriesService(
     DcdDbContext context,
@@ -24,8 +22,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         Guid projectId,
         Guid caseId,
         Guid onshorePowerSupplyId,
-        CreateOnshorePowerSupplyCostProfileOverrideDto dto
-    )
+        CreateOnshorePowerSupplyCostProfileOverrideDto dto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
@@ -65,73 +62,9 @@ public class OnshorePowerSupplyTimeSeriesService(
             onshorePowerSupplyId,
             costProfileId,
             dto,
-            id => context.OnshorePowerSupplyCostProfileOverride.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id)
-        );
+            id => context.OnshorePowerSupplyCostProfileOverride.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id));
     }
 
-    public async Task<OnshorePowerSupplyCostProfileDto> AddOrUpdateOnshorePowerSupplyCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        UpdateOnshorePowerSupplyCostProfileDto dto
-    )
-    {
-        var onshorePowerSupply = await context.OnshorePowerSupplies
-            .Include(t => t.CostProfile)
-            .SingleAsync(t => t.Id == onshorePowerSupplyId);
-
-        if (onshorePowerSupply.CostProfile != null)
-        {
-            return await UpdateOnshorePowerSupplyCostProfile(projectId, caseId, onshorePowerSupplyId, onshorePowerSupply.CostProfile.Id, dto);
-        }
-
-        return await CreateOnshorePowerSupplyCostProfile(caseId, onshorePowerSupplyId, dto, onshorePowerSupply);
-    }
-
-    private async Task<OnshorePowerSupplyCostProfileDto> UpdateOnshorePowerSupplyCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        Guid profileId,
-        UpdateOnshorePowerSupplyCostProfileDto dto
-    )
-    {
-        return await UpdateOnshorePowerSupplyTimeSeries<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto, UpdateOnshorePowerSupplyCostProfileDto>(
-            projectId,
-            caseId,
-            onshorePowerSupplyId,
-            profileId,
-            dto,
-            id => context.OnshorePowerSupplyCostProfile.Include(x => x.OnshorePowerSupply).SingleAsync(x => x.Id == id)
-        );
-    }
-
-    private async Task<OnshorePowerSupplyCostProfileDto> CreateOnshorePowerSupplyCostProfile(
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        UpdateOnshorePowerSupplyCostProfileDto dto,
-        OnshorePowerSupply onshorePowerSupply
-    )
-    {
-        var onshorePowerSupplyCostProfile = new OnshorePowerSupplyCostProfile
-        {
-            OnshorePowerSupply = onshorePowerSupply
-        };
-
-        var newProfile = mapperService.MapToEntity(dto, onshorePowerSupplyCostProfile, onshorePowerSupplyId);
-
-        if (newProfile.OnshorePowerSupply.CostProfileOverride != null)
-        {
-            newProfile.OnshorePowerSupply.CostProfileOverride.Override = false;
-        }
-
-        context.OnshorePowerSupplyCostProfile.Add(newProfile);
-
-        await context.UpdateCaseModifyTime(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>(newProfile, newProfile.Id);
-    }
 
     private async Task<TDto> UpdateOnshorePowerSupplyTimeSeries<TProfile, TDto, TUpdateDto>(
         Guid projectId,
@@ -139,8 +72,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         Guid onshorePowerSupplyId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile
-    )
+        Func<Guid, Task<TProfile>> getProfile)
         where TProfile : class, IOnshorePowerSupplyTimeSeries
         where TDto : class
         where TUpdateDto : class
