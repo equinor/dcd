@@ -1,7 +1,6 @@
-using api.Features.Assets.CaseAssets.Topsides.Dtos;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
+using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
 using api.Features.Stea.Dtos;
 using api.Models;
 
@@ -19,8 +18,8 @@ public class TopsideProfile : Profile
         CreateMap<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>();
         CreateMap<TopsideCessationCostProfile, TopsideCessationCostProfileDto>();
 
-        CreateMap<APIUpdateTopsideDto, Topside>();
-        CreateMap<PROSPUpdateTopsideDto, Topside>();
+        CreateMap<UpdateTopsideDto, Topside>();
+        CreateMap<ProspUpdateTopsideDto, Topside>();
         CreateMap<UpdateTopsideCostProfileDto, TopsideCostProfile>();
         CreateMap<UpdateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
         CreateMap<CreateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();

@@ -7,10 +7,11 @@ using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Services;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
-using api.Features.Assets.CaseAssets.Topsides.Services;
+using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
+using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
 using api.Features.Prosp.Constants;
@@ -29,12 +30,12 @@ public class ProspExcelImportService(
     DcdDbContext context,
     SurfService surfService,
     SubstructureService substructureService,
-    TopsideService topsideService,
+    UpdateTopsideService updateTopsideService,
     UpdateTransportService updateTransportService,
     OnshorePowerSupplyService onshorePowerSupplyService,
     SubstructureTimeSeriesService substructureTimeSeriesService,
     SurfTimeSeriesService surfTimeSeriesService,
-    TopsideTimeSeriesService topsideTimeSeriesService,
+    TopsideCostProfileService topsideCostProfileService,
     OnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IRecalculationService recalculationService,
     TransportCostProfileService transportCostProfileService)
@@ -199,7 +200,7 @@ public class ProspExcelImportService(
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var topsideLink = (await GetCaseWithNoIncludes(sourceCaseId)).TopsideLink;
-        var updateTopsideDto = new PROSPUpdateTopsideDto
+        var updateTopsideDto = new ProspUpdateTopsideDto
         {
             DG3Date = dG3Date,
             DG4Date = dG4Date,
@@ -227,8 +228,8 @@ public class ProspExcelImportService(
             PeakElectricityImported = peakElectricityImported
         };
 
-        await topsideService.UpdateTopside(projectId, sourceCaseId, topsideLink, updateTopsideDto);
-        await topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(projectId, sourceCaseId, topsideLink, costProfile);
+        await updateTopsideService.UpdateTopside(projectId, sourceCaseId, topsideLink, updateTopsideDto);
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, sourceCaseId, topsideLink, costProfile);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -482,7 +483,7 @@ public class ProspExcelImportService(
     private async Task ClearImportedTopside(Case caseItem)
     {
         var topsideLink = caseItem.TopsideLink;
-        var dto = new PROSPUpdateTopsideDto
+        var dto = new ProspUpdateTopsideDto
         {
             Source = Source.ConceptApp
         };
@@ -490,8 +491,8 @@ public class ProspExcelImportService(
         var costProfileDto = new UpdateTopsideCostProfileDto();
 
 
-        await topsideService.UpdateTopside(caseItem.ProjectId, caseItem.Id, topsideLink, dto);
-        await topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId, caseItem.Id, topsideLink, costProfileDto);
+        await updateTopsideService.UpdateTopside(caseItem.ProjectId, caseItem.Id, topsideLink, dto);
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId, caseItem.Id, topsideLink, costProfileDto);
     }
 
     private async Task ClearImportedSubstructure(Case caseItem)

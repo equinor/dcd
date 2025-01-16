@@ -1,10 +1,8 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Assets.CaseAssets.Topsides.Dtos;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
-using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
 using api.Features.ProjectIntegrity;
 using api.Features.Stea.Dtos;
 using api.ModelMapping;
@@ -12,9 +10,9 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Topsides.Services;
+namespace api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 
-public class TopsideTimeSeriesService(
+public class TopsideCostProfileOverrideService(
     DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
@@ -24,8 +22,7 @@ public class TopsideTimeSeriesService(
         Guid projectId,
         Guid caseId,
         Guid topsideId,
-        CreateTopsideCostProfileOverrideDto dto
-    )
+        CreateTopsideCostProfileOverrideDto dto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
 
@@ -57,8 +54,7 @@ public class TopsideTimeSeriesService(
         Guid caseId,
         Guid topsideId,
         Guid costProfileId,
-        UpdateTopsideCostProfileOverrideDto dto
-    )
+        UpdateTopsideCostProfileOverrideDto dto)
     {
         return await UpdateTopsideTimeSeries<TopsideCostProfileOverride, TopsideCostProfileOverrideDto, UpdateTopsideCostProfileOverrideDto>(
             projectId,
@@ -70,78 +66,13 @@ public class TopsideTimeSeriesService(
         );
     }
 
-    public async Task<TopsideCostProfileDto> AddOrUpdateTopsideCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        UpdateTopsideCostProfileDto dto
-    )
-    {
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
-
-        var topside = await context.Topsides
-            .Include(t => t.CostProfile)
-            .SingleAsync(t => t.Id == topsideId);
-
-        if (topside.CostProfile != null)
-        {
-            return await UpdateTopsideCostProfile(projectId, caseId, topsideId, topside.CostProfile.Id, dto);
-        }
-
-        return await CreateTopsideCostProfile(caseId, topsideId, dto, topside);
-    }
-
-    private async Task<TopsideCostProfileDto> UpdateTopsideCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        Guid profileId,
-        UpdateTopsideCostProfileDto dto
-    )
-    {
-        return await UpdateTopsideTimeSeries<TopsideCostProfile, TopsideCostProfileDto, UpdateTopsideCostProfileDto>(
-            projectId,
-            caseId,
-            topsideId,
-            profileId,
-            dto,
-            id => context.TopsideCostProfiles.Include(x => x.Topside).SingleAsync(x => x.Id == id)
-        );
-    }
-
-    private async Task<TopsideCostProfileDto> CreateTopsideCostProfile(
-        Guid caseId,
-        Guid topsideId,
-        UpdateTopsideCostProfileDto dto,
-        Topside topside
-    )
-    {
-        TopsideCostProfile topsideCostProfile = new()
-        {
-            Topside = topside
-        };
-
-        var newProfile = mapperService.MapToEntity(dto, topsideCostProfile, topsideId);
-        if (newProfile.Topside.CostProfileOverride != null)
-        {
-            newProfile.Topside.CostProfileOverride.Override = false;
-        }
-
-        context.TopsideCostProfiles.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(newProfile, newProfile.Id);
-    }
-
     private async Task<TDto> UpdateTopsideTimeSeries<TProfile, TDto, TUpdateDto>(
         Guid projectId,
         Guid caseId,
         Guid topsideId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile
-    )
+        Func<Guid, Task<TProfile>> getProfile)
         where TProfile : class, ITopsideTimeSeries
         where TDto : class
         where TUpdateDto : class

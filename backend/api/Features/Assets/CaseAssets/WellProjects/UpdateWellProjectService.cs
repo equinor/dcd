@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.WellProjects;
 
-public class WellProjectService(
+public class UpdateWellProjectService(
     DcdDbContext context,
     IMapperService mapperService,
     IProjectIntegrityService projectIntegrityService,
