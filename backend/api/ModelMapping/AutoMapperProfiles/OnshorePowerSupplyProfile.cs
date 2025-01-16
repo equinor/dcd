@@ -1,7 +1,7 @@
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides.Dtos;
+using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles.Dtos;
 using api.Features.Stea.Dtos;
 using api.Models;
 
@@ -18,8 +18,8 @@ public class OnshorePowerSupplyProfile : Profile
         CreateMap<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>();
         CreateMap<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>();
 
-        CreateMap<APIUpdateOnshorePowerSupplyDto, OnshorePowerSupply>();
-        CreateMap<PROSPUpdateOnshorePowerSupplyDto, OnshorePowerSupply>();
+        CreateMap<UpdateOnshorePowerSupplyDto, OnshorePowerSupply>();
+        CreateMap<ProspUpdateOnshorePowerSupplyDto, OnshorePowerSupply>();
         CreateMap<UpdateOnshorePowerSupplyCostProfileDto, OnshorePowerSupplyCostProfile>();
         CreateMap<UpdateOnshorePowerSupplyCostProfileOverrideDto, OnshorePowerSupplyCostProfileOverride>();
         CreateMap<CreateOnshorePowerSupplyCostProfileOverrideDto, OnshorePowerSupplyCostProfileOverride>();

@@ -1,43 +1,5 @@
 declare namespace Components {
     namespace Schemas {
-        export interface APIUpdateOnshorePowerSupplyDto {
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-        }
-        export interface APIUpdateSubstructureDto {
-            dryWeight?: number; // double
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            concept?: Concept /* int32 */;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
-        }
-        export interface APIUpdateSurfDto {
-            cessationCost?: number; // double
-            infieldPipelineSystemLength?: number; // double
-            umbilicalSystemLength?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            riserCount?: number; // int32
-            templateCount?: number; // int32
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            productionFlowline?: ProductionFlowline /* int32 */;
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            approvedBy?: string | null;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-        }
         export interface AdditionalOpexCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1451,6 +1413,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateOnshorePowerSupplyDto {
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
+        }
         export interface UpdateOnshoreRelatedOpexCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1516,11 +1486,41 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface UpdateSubstructureDto {
+            dryWeight?: number; // double
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            concept?: Concept /* int32 */;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
+            approvedBy?: string | null;
+        }
         export interface UpdateSurfCostProfileOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
+        }
+        export interface UpdateSurfDto {
+            cessationCost?: number; // double
+            infieldPipelineSystemLength?: number; // double
+            umbilicalSystemLength?: number; // double
+            artificialLift?: ArtificialLift /* int32 */;
+            riserCount?: number; // int32
+            templateCount?: number; // int32
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            productionFlowline?: ProductionFlowline /* int32 */;
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
         }
         export interface UpdateTechnicalInputDto {
             projectDto: UpdateProjectDto;
@@ -2754,6 +2754,62 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshorePowerSupplyDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyIdCostProfileOverride {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyIdCostProfileOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdOnshoreRelatedOpexCostProfile {
         namespace Post {
             namespace Parameters {
@@ -2788,62 +2844,6 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.APIUpdateOnshorePowerSupplyDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyIdCostProfileOverride {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyIdCostProfileOverride$CostProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
-            }
-        }
-    }
     namespace Projects$ProjectIdCases$CaseIdSubstructures$SubstructureId {
         namespace Put {
             namespace Parameters {
@@ -2856,7 +2856,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 substructureId: Parameters.SubstructureId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSubstructureDto;
+            export type RequestBody = Components.Schemas.UpdateSubstructureDto;
             namespace Responses {
                 export type $200 = Components.Schemas.SubstructureDto;
             }
@@ -2912,7 +2912,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 surfId: Parameters.SurfId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSurfDto;
+            export type RequestBody = Components.Schemas.UpdateSurfDto;
             namespace Responses {
                 export type $200 = Components.Schemas.SurfDto;
             }

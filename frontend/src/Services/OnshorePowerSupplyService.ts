@@ -7,10 +7,10 @@ class OnshorePowerSupplyService extends __BaseService {
         projectId: string,
         caseId: string,
         onshorePowerSupplyId: string,
-        dto: Components.Schemas.APIUpdateOnshorePowerSupplyDto,
+        dto: Components.Schemas.UpdateOnshorePowerSupplyDto,
     ): Promise<Components.Schemas.OnshorePowerSupplyDto> {
         const res: Components.Schemas.OnshorePowerSupplyDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}`,
+            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}`,
             { body: dto },
         )
         return res
@@ -23,7 +23,7 @@ class OnshorePowerSupplyService extends __BaseService {
         dto: Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto,
     ): Promise<Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto> {
         const res: Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}/cost-profile-override/`,
+            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}/cost-profile-override/`,
             { body: dto },
         )
         return res
@@ -37,7 +37,7 @@ class OnshorePowerSupplyService extends __BaseService {
         dto: Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto,
     ): Promise<Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto> {
         const res: Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}/cost-profile-override/${costProfileId}`,
+            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}/cost-profile-override/${costProfileId}`,
             { body: dto },
         )
         return res

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides.Dtos;
 using api.Models;
 using api.Models.Enums;
 
@@ -41,11 +42,5 @@ public class SubstructureWithProfilesDto
 }
 
 public class SubstructureCostProfileDto : TimeSeriesCostDto;
-
-public class SubstructureCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
 
 public class SubstructureCessationCostProfileDto : TimeSeriesCostDto;

@@ -1,9 +1,9 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.Explorations;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
-using api.Features.Assets.CaseAssets.Substructures.Services;
-using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
+using api.Features.Assets.CaseAssets.Substructures;
+using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Assets.CaseAssets.WellProjects;
@@ -64,6 +64,12 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.Explorations.CountryOfficeCosts;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
+using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides;
+using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
+using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides;
+using api.Features.Profiles.Substructures.SubstructureCostProfiles;
+using api.Features.Profiles.Surfs.SurfCostProfileOverrides;
+using api.Features.Profiles.Surfs.SurfCostProfiles;
 using api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides;
@@ -202,19 +208,12 @@ public static class DcdIocConfiguration
         /* Case assets */
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<UpdateExplorationService>();
+        services.AddScoped<UpdateOnshorePowerSupplyService>();
+        services.AddScoped<UpdateSubstructureService>();
+        services.AddScoped<UpdateSurfService>();
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
         services.AddScoped<UpdateWellProjectService>();
-
-        services.AddScoped<OnshorePowerSupplyService>();
-        services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
-
-        services.AddScoped<SubstructureService>();
-        services.AddScoped<SubstructureTimeSeriesService>();
-
-        services.AddScoped<SurfService>();
-        services.AddScoped<SurfTimeSeriesService>();
-
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();
@@ -247,6 +246,18 @@ public static class DcdIocConfiguration
         services.AddScoped<CountryOfficeCostService>();
         services.AddScoped<GAndGAdminCostOverrideService>();
         services.AddScoped<SeismicAcquisitionAndProcessingService>();
+
+        /* Onshore power supply profiles */
+        services.AddScoped<OnshorePowerSupplyCostProfileService>();
+        services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
+
+        /* Substructure profiles */
+        services.AddScoped<SubstructureCostProfileService>();
+        services.AddScoped<SubstructureCostProfileOverrideService>();
+
+        /* Surf profiles */
+        services.AddScoped<SurfCostProfileService>();
+        services.AddScoped<SurfTimeSeriesService>();
 
         /* Topside profiles */
         services.AddScoped<TopsideCostProfileService>();
