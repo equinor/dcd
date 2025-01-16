@@ -1,12 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 using api.Models.Enums;
 
-namespace api.Features.Assets.CaseAssets.Topsides.Dtos;
+namespace api.Features.Cases.GetWithAssets;
 
-public class TopsideWithProfilesDto
+public class TopsideDto
 {
     [Required]
     public Guid Id { get; set; }
@@ -14,12 +13,6 @@ public class TopsideWithProfilesDto
     public string Name { get; set; } = string.Empty;
     [Required]
     public Guid ProjectId { get; set; }
-    [Required]
-    public TopsideCostProfileDto CostProfile { get; set; } = new();
-    [Required]
-    public TopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new();
-    [Required]
-    public TopsideCessationCostProfileDto CessationCostProfile { get; set; } = new();
     [Required]
     public double DryWeight { get; set; }
     [Required]
@@ -71,13 +64,3 @@ public class TopsideWithProfilesDto
     [Required]
     public double PeakElectricityImported { get; set; }
 }
-
-public class TopsideCostProfileDto : TimeSeriesCostDto;
-
-public class TopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class TopsideCessationCostProfileDto : TimeSeriesCostDto;

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models.Enums;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
+namespace api.Features.Cases.GetWithAssets;
 
 public class OnshorePowerSupplyDto
 {

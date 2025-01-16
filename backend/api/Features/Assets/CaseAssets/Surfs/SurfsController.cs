@@ -3,6 +3,8 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Cases.GetWithAssets;
+using api.Features.Stea.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
