@@ -13,7 +13,6 @@ public class TopsideProfile : Profile
     public TopsideProfile()
     {
         CreateMap<Topside, TopsideDto>();
-        CreateMap<Topside, TopsideWithProfilesDto>();
         CreateMap<TopsideCostProfile, TopsideCostProfileDto>();
         CreateMap<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>();
         CreateMap<TopsideCessationCostProfile, TopsideCessationCostProfileDto>();

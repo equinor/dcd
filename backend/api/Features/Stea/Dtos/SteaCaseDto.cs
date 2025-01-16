@@ -12,7 +12,6 @@ public class SteaCaseDto
     public TimeSeriesCostDto Exploration { get; set; } = new();
     public CapexDto Capex { get; set; } = new();
     public ProductionAndSalesVolumesDto ProductionAndSalesVolumes { get; set; } = new();
-    public OffshoreFacilitiesCostProfileDto OffshoreFacilitiesCostProfileDto { get; set; } = new();
     public StudyCostProfileDto StudyCostProfile { get; set; } = new();
     public OpexCostProfileDto OpexCostProfile { get; set; } = new();
 }

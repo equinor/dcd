@@ -16,7 +16,6 @@ public class WellProjectProfile : Profile
     public WellProjectProfile()
     {
         CreateMap<WellProject, WellProjectDto>();
-        CreateMap<WellProject, WellProjectWithProfilesDto>();
         CreateMap<OilProducerCostProfile, OilProducerCostProfileDto>();
         CreateMap<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>();
         CreateMap<GasProducerCostProfile, GasProducerCostProfileDto>();

@@ -2,14 +2,10 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Stea.Dtos;
 using api.Features.Stea.ExcelExport;
-using api.Features.Wells.Get;
-using api.Models;
-
-using AutoMapper;
 
 namespace api.Features.Stea;
 
-public class SteaService(DcdDbContext context, SteaRepository steaRepository, IMapper mapper)
+public class SteaService(DcdDbContext context, SteaRepository steaRepository)
 {
     public async Task<(byte[] excelFileContents, string filename)> GetExcelFile(Guid projectId)
     {
@@ -24,38 +20,32 @@ public class SteaService(DcdDbContext context, SteaRepository steaRepository, IM
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var project = await steaRepository.GetProjectWithCasesAndAssets(projectPk);
-
-        var drainageStrategies = await steaRepository.GetDrainageStrategies(projectPk);
-        var explorations = await steaRepository.GetExplorations(projectPk);
-        var onshorePowerSupplies = await steaRepository.GetOnshorePowerSupplies(projectPk);
-        var substructures = await steaRepository.GetSubstructures(projectPk);
-        var surfs = await steaRepository.GetSurfs(projectPk);
-        var topsides = await steaRepository.GetTopsides(projectPk);
-        var transports = await steaRepository.GetTransports(projectPk);
-        var wellProjects = await steaRepository.GetWellProjects(projectPk);
-        var wells = await steaRepository.GetWells(projectPk);
-
-        var data = new ProjectWithAssetsWrapperDto
+        var data = new SteaDbData
         {
-            Project = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString()),
-            DrainageStrategies = mapper.Map<List<DrainageStrategyWithProfilesDto>>(drainageStrategies, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString()),
-            Explorations = mapper.Map<List<ExplorationWithProfilesDto>>(explorations),
-            OnshorePowerSupplies = mapper.Map<List<OnshorePowerSupplyWithProfilesDto>>(onshorePowerSupplies),
-            Substructures = mapper.Map<List<SubstructureWithProfilesDto>>(substructures),
-            Surfs = mapper.Map<List<SurfWithProfilesDto>>(surfs),
-            Topsides = mapper.Map<List<TopsideWithProfilesDto>>(topsides),
-            Transports = mapper.Map<List<TransportWithProfilesDto>>(transports),
-            WellProjects = mapper.Map<List<WellProjectWithProfilesDto>>(wellProjects),
-            Wells = mapper.Map<List<WellDto>>(wells)
+            Project = await steaRepository.GetProjectWithCasesAndAssets(projectPk),
+            DrainageStrategies = await steaRepository.GetDrainageStrategies(projectPk),
+            Explorations = await steaRepository.GetExplorations(projectPk),
+            OnshorePowerSupplies = await steaRepository.GetOnshorePowerSupplies(projectPk),
+            Substructures = await steaRepository.GetSubstructures(projectPk),
+            Surfs = await steaRepository.GetSurfs(projectPk),
+            Topsides = await steaRepository.GetTopsides(projectPk),
+            Transports = await steaRepository.GetTransports(projectPk),
+            WellProjects = await steaRepository.GetWellProjects(projectPk),
+            Wells = await steaRepository.GetWells(projectPk)
         };
 
-        var steaCaseDtos = data.Project
-            .Cases
-            .Where(x => !x.Archived)
-            .Select(x => SteaCaseDtoBuilder.Build(x, data))
-            .ToList();
+        var steaCaseDtos = new List<SteaCaseDto>();
 
-        return SteaProjectDtoBuilder.Build(project.Name, steaCaseDtos);
+        foreach (var caseItem in data.Project.Cases)
+        {
+            if (caseItem.Archived)
+            {
+                continue;
+            }
+
+            steaCaseDtos.Add(SteaCaseDtoBuilder.Build(caseItem, data));
+        }
+
+        return SteaProjectDtoBuilder.Build(data.Project.Name, steaCaseDtos);
     }
 }
