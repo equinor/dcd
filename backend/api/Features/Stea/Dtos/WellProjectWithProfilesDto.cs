@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
-using api.Features.Cases.GetWithAssets;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;

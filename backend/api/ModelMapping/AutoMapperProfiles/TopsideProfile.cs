@@ -1,5 +1,5 @@
 using api.Features.Assets.CaseAssets.Topsides;
-using api.Features.Cases.GetWithAssets;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
 using api.Features.Stea.Dtos;
 using api.Models;

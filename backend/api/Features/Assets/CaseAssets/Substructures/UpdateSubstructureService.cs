@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,7 @@ public class UpdateSubstructureService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<SubstructureDto> UpdateSubstructure(
+    public async Task UpdateSubstructure(
         Guid projectId,
         Guid caseId,
         Guid substructureId,
@@ -31,8 +30,6 @@ public class UpdateSubstructureService(
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId);
     }
 
     public async Task UpdateSubstructure(

@@ -1,6 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
-using api.Features.TechnicalInput.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 

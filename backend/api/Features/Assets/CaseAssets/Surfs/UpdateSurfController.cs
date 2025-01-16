@@ -1,5 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +8,13 @@ public class UpdateSurfController(UpdateSurfService updateSurfService) : Control
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/surfs/{surfId:guid}")]
-    public async Task<SurfDto> UpdateSurf(
+    public async Task<NoContentResult> UpdateSurf(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid surfId,
         [FromBody] UpdateSurfDto dto)
     {
-        return await updateSurfService.UpdateSurf(projectId, caseId, surfId, dto);
+        await updateSurfService.UpdateSurf(projectId, caseId, surfId, dto);
+        return NoContent();
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using api.Models;
 using api.Models.Enums;
 
-namespace api.Features.Cases.GetWithAssets;
+namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 public class SurfDto
 {

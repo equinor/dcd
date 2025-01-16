@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,7 @@ public class UpdateSurfService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<SurfDto> UpdateSurf(
+    public async Task UpdateSurf(
         Guid projectId,
         Guid caseId,
         Guid surfId,
@@ -31,8 +30,6 @@ public class UpdateSurfService(
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<Surf, SurfDto>(existingSurf, surfId);
     }
 
     public async Task UpdateSurf(

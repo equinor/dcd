@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
@@ -16,7 +15,7 @@ public class UpdateOnshorePowerSupplyService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<OnshorePowerSupplyDto> UpdateOnshorePowerSupply(
+    public async Task UpdateOnshorePowerSupply(
         Guid projectId,
         Guid caseId,
         Guid onshorePowerSupplyId,
@@ -31,8 +30,6 @@ public class UpdateOnshorePowerSupplyService(
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<OnshorePowerSupply, OnshorePowerSupplyDto>(existing, onshorePowerSupplyId);
     }
 
     public async Task UpdateOnshorePowerSupply(

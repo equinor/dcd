@@ -1,7 +1,6 @@
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +10,14 @@ public class UpdateExplorationController(UpdateExplorationService updateExplorat
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/explorations/{explorationId:guid}")]
-    public async Task<ExplorationDto> UpdateExploration(
+    public async Task<NoContentResult> UpdateExploration(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid explorationId,
         [FromBody] UpdateExplorationDto dto)
     {
-        return await updateExplorationService.UpdateExploration(projectId, caseId, explorationId, dto);
+        await updateExplorationService.UpdateExploration(projectId, caseId, explorationId, dto);
+        return NoContent();
     }
 
     [AuthorizeActionType(ActionType.Edit)]

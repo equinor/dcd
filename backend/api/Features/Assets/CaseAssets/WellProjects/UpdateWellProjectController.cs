@@ -1,7 +1,6 @@
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +10,14 @@ public class UpdateWellProjectController(UpdateWellProjectService updateWellProj
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}")]
-    public async Task<WellProjectDto> UpdateWellProject(
+    public async Task<NoContentResult> UpdateWellProject(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
         [FromBody] UpdateWellProjectDto dto)
     {
-        return await updateWellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
+        await updateWellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
+        return NoContent();
     }
 
     [AuthorizeActionType(ActionType.Edit)]

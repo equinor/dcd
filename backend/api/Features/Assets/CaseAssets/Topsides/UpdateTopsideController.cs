@@ -1,5 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +8,13 @@ public class UpdateTopsideController(UpdateTopsideService updateTopsideService) 
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/topsides/{topsideId:guid}")]
-    public async Task<TopsideDto> UpdateTopside(
+    public async Task<NoContentResult> UpdateTopside(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid topsideId,
         [FromBody] UpdateTopsideDto dto)
     {
-        return await updateTopsideService.UpdateTopside(projectId, caseId, topsideId, dto);
+        await updateTopsideService.UpdateTopside(projectId, caseId, topsideId, dto);
+        return NoContent();
     }
 }

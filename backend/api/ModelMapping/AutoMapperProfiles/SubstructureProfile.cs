@@ -1,5 +1,5 @@
 using api.Features.Assets.CaseAssets.Substructures;
-using api.Features.Cases.GetWithAssets;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides.Dtos;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles.Dtos;
 using api.Features.Stea.Dtos;

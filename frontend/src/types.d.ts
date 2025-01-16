@@ -2002,7 +2002,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateDrainageStrategyDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DrainageStrategyDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2476,7 +2477,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateExplorationDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ExplorationDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2768,7 +2770,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2858,7 +2861,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateSubstructureDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SubstructureDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2914,7 +2918,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateSurfDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SurfDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2970,7 +2975,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateTopsideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TopsideDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -3128,7 +3134,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateTransportDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TransportDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -3218,7 +3225,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateWellProjectDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WellProjectDto;
+                export interface $200 {
+                }
             }
         }
     }

@@ -1,5 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Cases.GetWithAssets;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +8,13 @@ public class UpdateSubstructureController(UpdateSubstructureService updateSubstr
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/substructures/{substructureId:guid}")]
-    public async Task<SubstructureDto> UpdateSubstructure(
+    public async Task<NoContentResult> UpdateSubstructure(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid substructureId,
         [FromBody] UpdateSubstructureDto dto)
     {
-        return await updateSubstructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
+        await updateSubstructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
+        return NoContent();
     }
 }
