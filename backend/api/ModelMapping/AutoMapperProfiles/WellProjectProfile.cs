@@ -1,7 +1,10 @@
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
-using api.Features.Cases.GetWithAssets;
-using api.Features.TechnicalInput.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
+using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;

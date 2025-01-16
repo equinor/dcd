@@ -7,7 +7,7 @@ class SubstructureService extends __BaseService {
         projectId: string,
         caseId: string,
         substructureId: string,
-        dto: Components.Schemas.APIUpdateSubstructureDto,
+        dto: Components.Schemas.UpdateSubstructureDto,
     ): Promise<Components.Schemas.SubstructureDto> {
         const res: Components.Schemas.SubstructureDto = await this.put(
             `projects/${projectId}/cases/${caseId}/substructures/${substructureId}`,

@@ -1,6 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
+using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.Profiles.Cases.CessationWellsCostOverrides.Dtos;
+using api.Features.Profiles.Cases.HistoricCostCostProfiles.Dtos;
+using api.Features.Profiles.Cases.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.Profiles.Cases.TotalFeedStudiesOverrides.Dtos;
+using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides.Dtos;
 using api.Models;
 
 namespace api.Features.Stea.Dtos;
@@ -89,7 +100,7 @@ public class CaseWithProfilesDto
     [Required]
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
     [Required]
-    public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    public TotalFeedStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     [Required]
     public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; } = new();
     [Required]
@@ -103,9 +114,9 @@ public class CaseWithProfilesDto
     [Required]
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     [Required]
-    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new();
+    public OnshoreRelatedOpexCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new();
     [Required]
-    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new();
+    public AdditionalOpexCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new();
     [Required]
     public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; } = new();
     [Required]
@@ -140,65 +151,21 @@ public class CessationCostDto : TimeSeriesCostDto;
 
 public class CessationWellsCostDto : TimeSeriesCostDto;
 
-public class CessationWellsCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
 public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto
 {
 }
-public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class CessationOnshoreFacilitiesCostProfileDto : TimeSeriesCostDto;
 
 public class OpexCostProfileDto : TimeSeriesCostDto;
 
-public class HistoricCostCostProfileDto : TimeSeriesCostDto;
-
 public class WellInterventionCostProfileDto : TimeSeriesCostDto;
 
-public class WellInterventionCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
 public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto;
-
-public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class OnshoreRelatedOPEXCostProfileDto : TimeSeriesCostDto;
-
-public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto;
 
 public class StudyCostProfileDto : TimeSeriesCostDto;
 
 public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto;
 
-public class TotalFeasibilityAndConceptStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
 public class TotalFEEDStudiesDto : TimeSeriesCostDto;
-
-public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
-}
-
-public class TotalOtherStudiesCostProfileDto : TimeSeriesCostDto;
 
 public class CapexYear
 {

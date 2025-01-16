@@ -1,6 +1,8 @@
-using api.Features.Assets.CaseAssets.Transports.Dtos;
-using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
-using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
+using api.Features.Assets.CaseAssets.Transports;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
+using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
+using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -17,8 +19,8 @@ public class TransportProfile : Profile
         CreateMap<TransportCostProfileOverride, TransportCostProfileOverrideDto>();
         CreateMap<TransportCessationCostProfile, TransportCessationCostProfileDto>();
 
-        CreateMap<APIUpdateTransportDto, Transport>();
-        CreateMap<PROSPUpdateTransportDto, Transport>();
+        CreateMap<UpdateTransportDto, Transport>();
+        CreateMap<ProspUpdateTransportDto, Transport>();
         CreateMap<UpdateTransportCostProfileDto, TransportCostProfile>();
         CreateMap<UpdateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
         CreateMap<CreateTransportCostProfileOverrideDto, TransportCostProfileOverride>();

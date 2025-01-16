@@ -40,7 +40,7 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
 
     public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
     {
-        if (timeSeriesCost == null || timeSeriesCost.Values.Length == 0)
+        if (timeSeriesCost?.Values == null || timeSeriesCost.Values.Length == 0)
         {
             return this;
         }

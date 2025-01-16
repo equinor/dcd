@@ -7,7 +7,7 @@ class SurfService extends __BaseService {
         projectId: string,
         caseId: string,
         surfId: string,
-        dto: Components.Schemas.APIUpdateSurfDto,
+        dto: Components.Schemas.UpdateSurfDto,
     ): Promise<Components.Schemas.SurfDto> {
         const res: Components.Schemas.SurfDto = await this.put(
             `projects/${projectId}/cases/${caseId}/surfs/${surfId}`,

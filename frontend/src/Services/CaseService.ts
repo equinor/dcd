@@ -155,9 +155,9 @@ class CaseService extends __BaseService {
     public async createTotalFEEDStudiesOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateTotalFEEDStudiesOverrideDto,
-    ): Promise<Components.Schemas.TotalFEEDStudiesOverrideDto> {
-        const res: Components.Schemas.TotalFEEDStudiesOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTotalFeedStudiesOverrideDto,
+    ): Promise<Components.Schemas.TotalFeedStudiesOverrideDto> {
+        const res: Components.Schemas.TotalFeedStudiesOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/total-feed-studies-override/`,
             { body: dto },
         )
@@ -168,9 +168,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateTotalFEEDStudiesOverrideDto,
-    ): Promise<Components.Schemas.TotalFEEDStudiesOverrideDto> {
-        const res: Components.Schemas.TotalFEEDStudiesOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTotalFeedStudiesOverrideDto,
+    ): Promise<Components.Schemas.TotalFeedStudiesOverrideDto> {
+        const res: Components.Schemas.TotalFeedStudiesOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/total-feed-studies-override/${costProfileId}`,
             { body: dto },
         )
@@ -280,9 +280,9 @@ class CaseService extends __BaseService {
     public async createOnshoreRelatedOPEXCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateOnshoreRelatedOPEXCostProfileDto,
-    ): Promise<Components.Schemas.OnshoreRelatedOPEXCostProfileDto> {
-        const res: Components.Schemas.OnshoreRelatedOPEXCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateOnshoreRelatedOpexCostProfileDto,
+    ): Promise<Components.Schemas.OnshoreRelatedOpexCostProfileDto> {
+        const res: Components.Schemas.OnshoreRelatedOpexCostProfileDto = await this.post(
             `projects/${projectId}/cases/${caseId}/onshore-related-opex-cost-profile/`,
             { body: dto },
         )
@@ -293,9 +293,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateOnshoreRelatedOPEXCostProfileDto,
-    ): Promise<Components.Schemas.OnshoreRelatedOPEXCostProfileDto> {
-        const res: Components.Schemas.OnshoreRelatedOPEXCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateOnshoreRelatedOpexCostProfileDto,
+    ): Promise<Components.Schemas.OnshoreRelatedOpexCostProfileDto> {
+        const res: Components.Schemas.OnshoreRelatedOpexCostProfileDto = await this.put(
             `projects/${projectId}/cases/${caseId}/onshore-related-opex-cost-profile/${costProfileId}`,
             { body: dto },
         )
@@ -305,9 +305,9 @@ class CaseService extends __BaseService {
     public async createAdditionalOPEXCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateAdditionalOPEXCostProfileDto,
-    ): Promise<Components.Schemas.AdditionalOPEXCostProfileDto> {
-        const res: Components.Schemas.AdditionalOPEXCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateAdditionalOpexCostProfileDto,
+    ): Promise<Components.Schemas.AdditionalOpexCostProfileDto> {
+        const res: Components.Schemas.AdditionalOpexCostProfileDto = await this.post(
             `projects/${projectId}/cases/${caseId}/additional-opex-cost-profile/`,
             { body: dto },
         )
@@ -318,9 +318,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateAdditionalOPEXCostProfileDto,
-    ): Promise<Components.Schemas.AdditionalOPEXCostProfileDto> {
-        const res: Components.Schemas.AdditionalOPEXCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateAdditionalOpexCostProfileDto,
+    ): Promise<Components.Schemas.AdditionalOpexCostProfileDto> {
+        const res: Components.Schemas.AdditionalOpexCostProfileDto = await this.put(
             `projects/${projectId}/cases/${caseId}/additional-opex-cost-profile/${costProfileId}`,
             { body: dto },
         )

@@ -1,5 +1,4 @@
 using api.Context;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ namespace api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 
 public class Co2IntensityProfileService(DcdDbContext context)
 {
-    public async Task<Co2IntensityDto> Generate(Guid caseId)
+    public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
             .Include(c => c.TotalFeasibilityAndConceptStudies)
@@ -35,6 +34,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.Co2Emissions)
             .Include(d => d.Co2EmissionsOverride)
+            .Include(d => d.Co2Intensity)
             .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
@@ -72,23 +72,16 @@ public class Co2IntensityProfileService(DcdDbContext context)
             if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
             {
                 var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i + yearDifference];
-                co2IntensityValues.Add(dividedProfiles / boeConversionFactor * tonnesToKgFactor);
+                co2IntensityValues.Add(dividedProfiles / 1E6 / boeConversionFactor * tonnesToKgFactor);
             }
         }
 
         var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
 
-        var co2Intensity = new Co2Intensity
+        drainageStrategy.Co2Intensity = new()
         {
             StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset,
             Values = co2IntensityValues.ToArray(),
-        };
-
-        return new Co2IntensityDto
-        {
-            Id = co2Intensity.Id,
-            StartYear = co2Intensity.StartYear,
-            Values = co2Intensity.Values
         };
     }
 

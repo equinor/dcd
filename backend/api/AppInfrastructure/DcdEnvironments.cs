@@ -34,6 +34,6 @@ public static class DcdEnvironments
 
     public static class FeatureToggles
     {
-        public static bool RevisionEnabled => CurrentEnvironment is not RadixProd;
+        public static bool RevisionEnabled => true;
     }
 }

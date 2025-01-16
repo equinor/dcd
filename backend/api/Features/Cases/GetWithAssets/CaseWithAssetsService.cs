@@ -1,13 +1,40 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
-using api.Features.Assets.CaseAssets.Substructures.Dtos;
-using api.Features.Assets.CaseAssets.Surfs.Dtos;
-using api.Features.Assets.CaseAssets.Topsides.Dtos;
-using api.Features.Assets.CaseAssets.Transports.Dtos;
-using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.Cases.GetWithAssets.Dtos;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
+using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.Profiles.Cases.CessationWellsCostOverrides.Dtos;
+using api.Features.Profiles.Cases.HistoricCostCostProfiles.Dtos;
+using api.Features.Profiles.Cases.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.Profiles.Cases.TotalFeedStudiesOverrides.Dtos;
+using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils.Dtos;
+using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.DeferredGasProductions.Dtos;
+using api.Features.Profiles.DrainageStrategies.DeferredOilProductions.Dtos;
+using api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileGases.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileOils.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
+using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
+using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
+using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
+using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides.Dtos;
+using api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
+using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Stea.Dtos;
 using api.ModelMapping;
@@ -42,15 +69,15 @@ public class CaseWithAssetsService(
             TotalFeasibilityAndConceptStudies = MapToDto<TotalFeasibilityAndConceptStudies, TotalFeasibilityAndConceptStudiesDto>(caseItem.TotalFeasibilityAndConceptStudies, caseItem.TotalFeasibilityAndConceptStudies?.Id),
             TotalFeasibilityAndConceptStudiesOverride = MapToDto<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>(caseItem.TotalFeasibilityAndConceptStudiesOverride, caseItem.TotalFeasibilityAndConceptStudiesOverride?.Id),
             TotalFEEDStudies = MapToDto<TotalFEEDStudies, TotalFEEDStudiesDto>(caseItem.TotalFEEDStudies, caseItem.TotalFEEDStudies?.Id),
-            TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
+            TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TotalFeedStudiesOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
             TotalOtherStudiesCostProfile = MapToDto<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto>(caseItem.TotalOtherStudiesCostProfile, caseItem.TotalOtherStudiesCostProfile?.Id),
             HistoricCostCostProfile = MapToDto<HistoricCostCostProfile, HistoricCostCostProfileDto>(caseItem.HistoricCostCostProfile, caseItem.HistoricCostCostProfile?.Id),
             WellInterventionCostProfile = MapToDto<WellInterventionCostProfile, WellInterventionCostProfileDto>(caseItem.WellInterventionCostProfile, caseItem.WellInterventionCostProfile?.Id),
             WellInterventionCostProfileOverride = MapToDto<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>(caseItem.WellInterventionCostProfileOverride, caseItem.WellInterventionCostProfileOverride?.Id),
             OffshoreFacilitiesOperationsCostProfile = MapToDto<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>(caseItem.OffshoreFacilitiesOperationsCostProfile, caseItem.OffshoreFacilitiesOperationsCostProfile?.Id),
             OffshoreFacilitiesOperationsCostProfileOverride = MapToDto<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride, caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Id),
-            OnshoreRelatedOPEXCostProfile = MapToDto<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>(caseItem.OnshoreRelatedOPEXCostProfile, caseItem.OnshoreRelatedOPEXCostProfile?.Id),
-            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
+            OnshoreRelatedOPEXCostProfile = MapToDto<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOpexCostProfileDto>(caseItem.OnshoreRelatedOPEXCostProfile, caseItem.OnshoreRelatedOPEXCostProfile?.Id),
+            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, AdditionalOpexCostProfileDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
             CalculatedTotalIncomeCostProfile = MapToDto<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto>(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalIncomeCostProfile?.Id),
             CalculatedTotalCostCostProfile = MapToDto<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto>(caseItem.CalculatedTotalCostCostProfile, caseItem.CalculatedTotalCostCostProfile?.Id),
             DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
@@ -66,6 +93,7 @@ public class CaseWithAssetsService(
             NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, NetSalesGasOverrideDto>(drainageStrategy.NetSalesGasOverride, drainageStrategy.NetSalesGasOverride?.Id, project.PhysicalUnit),
             Co2Emissions = ConversionMapToDto<Co2Emissions, Co2EmissionsDto>(drainageStrategy.Co2Emissions, drainageStrategy.Co2Emissions?.Id, project.PhysicalUnit),
             Co2EmissionsOverride = ConversionMapToDto<Co2EmissionsOverride, Co2EmissionsOverrideDto>(drainageStrategy.Co2EmissionsOverride, drainageStrategy.Co2EmissionsOverride?.Id, project.PhysicalUnit),
+            Co2Intensity = ConversionMapToDto<Co2Intensity, Co2IntensityDto>(drainageStrategy.Co2Intensity, drainageStrategy.Co2Intensity?.Id, project.PhysicalUnit),
             ProductionProfileNgl = ConversionMapToDto<ProductionProfileNgl, ProductionProfileNglDto>(drainageStrategy.ProductionProfileNgl, drainageStrategy.ProductionProfileNgl?.Id, project.PhysicalUnit),
             ImportedElectricity = ConversionMapToDto<ImportedElectricity, ImportedElectricityDto>(drainageStrategy.ImportedElectricity, drainageStrategy.ImportedElectricity?.Id, project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<ImportedElectricityOverride, ImportedElectricityOverrideDto>(drainageStrategy.ImportedElectricityOverride, drainageStrategy.ImportedElectricityOverride?.Id, project.PhysicalUnit),

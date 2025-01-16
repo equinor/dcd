@@ -1,6 +1,7 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
+using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils.Dtos;
+using api.Features.Profiles.DrainageStrategies.ProductionProfileOils.Dtos;
 
 namespace api.Features.Stea.Dtos;
 

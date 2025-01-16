@@ -569,6 +569,30 @@ namespace api.Migrations
                     b.ToTable("Co2EmissionsOverride");
                 });
 
+            modelBuilder.Entity("api.Models.Co2Intensity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DrainageStrategy.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DrainageStrategy.Id")
+                        .IsUnique();
+
+                    b.ToTable("Co2Intensity");
+                });
+
             modelBuilder.Entity("api.Models.CountryOfficeCost", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3299,6 +3323,17 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
+            modelBuilder.Entity("api.Models.Co2Intensity", b =>
+                {
+                    b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
+                        .WithOne("Co2Intensity")
+                        .HasForeignKey("api.Models.Co2Intensity", "DrainageStrategy.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DrainageStrategy");
+                });
+
             modelBuilder.Entity("api.Models.CountryOfficeCost", b =>
                 {
                     b.HasOne("api.Models.Exploration", "Exploration")
@@ -4133,6 +4168,8 @@ namespace api.Migrations
                     b.Navigation("Co2Emissions");
 
                     b.Navigation("Co2EmissionsOverride");
+
+                    b.Navigation("Co2Intensity");
 
                     b.Navigation("DeferredGasProduction");
 

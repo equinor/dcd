@@ -1,7 +1,9 @@
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
-using api.Features.Cases.GetWithAssets;
-using api.Features.TechnicalInput.Dtos;
+using api.Features.Assets.CaseAssets.Explorations;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
+using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
+using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
+using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;
