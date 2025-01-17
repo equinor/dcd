@@ -90,7 +90,7 @@ public class ProspExcelImportService(
         return new DateTime(1900, 1, 1);
     }
 
-    private async Task ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportSurf(List<Cell> cellData, Guid projectId, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -129,7 +129,6 @@ public class ProspExcelImportService(
         var importedCurrency = ReadIntValue(cellData, ProspCellReferences.Surf.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var surfLink = (await GetCaseWithNoIncludes(sourceCaseId)).SurfLink;
 
         var updatedSurfDto = new ProspUpdateSurfDto
         {
@@ -151,11 +150,11 @@ public class ProspExcelImportService(
             CessationCost = cessationCost,
         };
 
-        await updateSurfService.UpdateSurf(projectId, sourceCaseId, surfLink, updatedSurfDto);
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, sourceCaseId, surfLink, costProfile);
+        await updateSurfService.UpdateSurf(projectId, caseItem.Id, caseItem.SurfLink, updatedSurfDto);
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, caseItem.Id, caseItem.SurfLink, costProfile);
     }
 
-    private async Task ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportTopside(List<Cell> cellData, Guid projectId, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -202,7 +201,6 @@ public class ProspExcelImportService(
         var importedCurrency = ReadIntValue(cellData, ProspCellReferences.TopSide.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var topsideLink = (await GetCaseWithNoIncludes(sourceCaseId)).TopsideLink;
         var updateTopsideDto = new ProspUpdateTopsideDto
         {
             DG3Date = dG3Date,
@@ -231,11 +229,11 @@ public class ProspExcelImportService(
             PeakElectricityImported = peakElectricityImported
         };
 
-        await updateTopsideService.UpdateTopside(projectId, sourceCaseId, topsideLink, updateTopsideDto);
-        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, sourceCaseId, topsideLink, costProfile);
+        await updateTopsideService.UpdateTopside(projectId, caseItem.Id, caseItem.TopsideLink, updateTopsideDto);
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, caseItem.Id, caseItem.TopsideLink, costProfile);
     }
 
-    private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportSubstructure(List<Cell> cellData, Guid projectId, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -265,7 +263,6 @@ public class ProspExcelImportService(
         var importedCurrency = ReadIntValue(cellData, ProspCellReferences.SubStructure.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var substructureLink = (await GetCaseWithNoIncludes(sourceCaseId)).SubstructureLink;
         var updateSubstructureDto = new ProspUpdateSubstructureDto
         {
             DryWeight = dryWeight,
@@ -278,11 +275,11 @@ public class ProspExcelImportService(
             CostYear = costYear
         };
 
-        await updateSubstructureService.UpdateSubstructure(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(projectId, sourceCaseId, substructureLink, costProfile);
+        await updateSubstructureService.UpdateSubstructure(projectId, caseItem.Id, caseItem.SubstructureLink, updateSubstructureDto);
+        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(projectId, caseItem.Id, caseItem.SubstructureLink, costProfile);
     }
 
-    private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportTransport(List<Cell> cellData, Guid projectId, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -310,7 +307,6 @@ public class ProspExcelImportService(
         var gasExportPipelineLength = ReadDoubleValue(cellData, ProspCellReferences.Transport.GasExportPipelineLength);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var transportLink = (await GetCaseWithNoIncludes(sourceCaseId)).TransportLink;
         var updateTransportDto = new ProspUpdateTransportDto
         {
             DG3Date = dG3Date,
@@ -323,11 +319,11 @@ public class ProspExcelImportService(
             GasExportPipelineLength = gasExportPipelineLength
         };
 
-        await updateTransportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
-        await AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
+        await updateTransportService.UpdateTransport(projectId, caseItem.Id, caseItem.TransportLink, updateTransportDto);
+        await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, caseItem.TransportLink, costProfile);
     }
 
-    private async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid projectId, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -348,8 +344,7 @@ public class ProspExcelImportService(
             StartYear = costProfileStartYear - dG4Date.Year,
         };
 
-        var onshorePowerSupplyLink = (await GetCaseWithNoIncludes(sourceCaseId)).OnshorePowerSupplyLink;
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, sourceCaseId, onshorePowerSupplyLink, costProfile);
+        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfile);
     }
 
     public async Task ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
@@ -375,7 +370,7 @@ public class ProspExcelImportService(
                 var parsedData = cellData.ToList();
                 if (assets["Surf"])
                 {
-                    await ImportSurf(parsedData, sourceCaseId, projectId);
+                    await ImportSurf(parsedData, projectId, caseItem);
                 }
                 else
                 {
@@ -384,7 +379,7 @@ public class ProspExcelImportService(
 
                 if (assets["Topside"])
                 {
-                    await ImportTopside(parsedData, sourceCaseId, projectId);
+                    await ImportTopside(parsedData, projectId, caseItem);
                 }
                 else
                 {
@@ -393,7 +388,7 @@ public class ProspExcelImportService(
 
                 if (assets["Substructure"])
                 {
-                    await ImportSubstructure(parsedData, sourceCaseId, projectId);
+                    await ImportSubstructure(parsedData, projectId, caseItem);
                 }
                 else
                 {
@@ -402,7 +397,7 @@ public class ProspExcelImportService(
 
                 if (assets["Transport"])
                 {
-                    await ImportTransport(parsedData, sourceCaseId, projectId);
+                    await ImportTransport(parsedData, projectId, caseItem);
                 }
                 else
                 {
@@ -411,7 +406,7 @@ public class ProspExcelImportService(
 
                 if (assets["OnshorePowerSupply"])
                 {
-                    await ImportOnshorePowerSupply(parsedData, sourceCaseId, projectId);
+                    await ImportOnshorePowerSupply(parsedData, projectId, caseItem);
                 }
                 else
                 {
@@ -521,7 +516,7 @@ public class ProspExcelImportService(
         var costProfileDto = new UpdateTransportCostProfileDto();
 
         await updateTransportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, dto);
-        await AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, costProfileDto);
+        await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, costProfileDto);
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
@@ -590,11 +585,6 @@ public class ProspExcelImportService(
         };
     }
 
-    private async Task<Case> GetCaseWithNoIncludes(Guid caseId)
-    {
-        return await context.Cases.SingleAsync(x => x.Id == caseId);
-    }
-
     private async Task<Case> GetCase(Guid caseId)
     {
         var caseItem = await context.Cases
@@ -621,24 +611,5 @@ public class ProspExcelImportService(
                        ?? throw new NotFoundInDbException($"Case {caseId} not found.");
 
         return caseItem;
-    }
-
-    private async Task AddOrUpdateTransportCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid transportId,
-        UpdateTransportCostProfileDto dto)
-    {
-        var transport = await context.Transports
-            .Include(t => t.CostProfile)
-            .SingleAsync(t => t.Id == transportId);
-
-        if (transport.CostProfile != null)
-        {
-            await transportCostProfileService.UpdateTransportCostProfile(projectId, caseId, transportId, transport.CostProfile.Id, dto);
-            return;
-        }
-
-        await transportCostProfileService.CreateTransportCostProfile(caseId, transportId, dto, transport);
     }
 }

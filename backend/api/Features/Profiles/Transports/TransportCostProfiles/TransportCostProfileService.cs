@@ -14,7 +14,26 @@ public class TransportCostProfileService(
     IMapperService mapperService,
     IRecalculationService recalculationService)
 {
-    public async Task CreateTransportCostProfile(
+    public async Task AddOrUpdateTransportCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid transportId,
+        UpdateTransportCostProfileDto dto)
+    {
+        var transport = await context.Transports
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == transportId);
+
+        if (transport.CostProfile != null)
+        {
+            await UpdateTransportCostProfile(projectId, caseId, transportId, transport.CostProfile.Id, dto);
+            return;
+        }
+
+        await CreateTransportCostProfile(caseId, transportId, dto, transport);
+    }
+
+    private async Task CreateTransportCostProfile(
         Guid caseId,
         Guid transportId,
         UpdateTransportCostProfileDto dto,
@@ -37,7 +56,7 @@ public class TransportCostProfileService(
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
-    public async Task UpdateTransportCostProfile(
+    private async Task UpdateTransportCostProfile(
         Guid projectId,
         Guid caseId,
         Guid transportId,
