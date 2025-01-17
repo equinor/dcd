@@ -187,7 +187,7 @@ const useEditCase = () => {
     const editIsForSameResourceName = (edit1: EditInstance, edit2: EditInstance) => edit1.resourceName === edit2.resourceName && edit1.caseId === edit2.caseId
 
     const handleTableEdit = (insertedEditInstanceObject: EditInstance) => {
-        editQueueLogger.log("Current queue before adding table edit:", apiQueue)
+        editQueueLogger.log("Current queue for this specific resource before adding table edit: ", apiQueue)
         editQueueLogger.log("Adding table edit:", insertedEditInstanceObject)
 
         // Use functional update to ensure we're working with the latest state

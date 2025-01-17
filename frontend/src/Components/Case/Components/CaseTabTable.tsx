@@ -14,25 +14,25 @@ import {
     ICellRendererParams,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
-import { CircularProgress } from "@equinor/eds-core-react"
+import { Button, CircularProgress } from "@equinor/eds-core-react"
 import styled from "styled-components"
 
 import {
-    getValuesFromEntireRow,
-    generateProfile,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
-    validateInput,
     formatColumnSum,
-    roundToFourDecimalsAndJoin,
+    validateTableCellChange,
+    generateTableCellEdit,
+    ITableCellChangeParams,
+    ITableCellChangeConfig,
+    validateInput,
 } from "@/Utils/common"
 import { useAppContext } from "@/Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
 import ErrorCellRenderer from "./CellRenderers/ErrorCellRenderer"
-import ClickableLockIcon from "./ClickableLockIcon"
+import CalculationSourceToggle from "./CalculationToggle/CalculationSourceToggle"
 import {
     ITimeSeriesTableDataOverrideWithSet,
     ITimeSeriesTableDataWithSet,
@@ -83,65 +83,83 @@ const CaseTabTable = memo(({
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
+
+    const [editQueue, setEditQueue] = useState<any[]>([])
+
+    /*
+    this is not even necessary?!
     useEffect(() => {
         if (ongoingCalculation !== undefined) {
             gridRef.current?.api?.redrawRows()
+            logger.info("redrawing rows because ongoingCalculation changed to", ongoingCalculation)
         }
     }, [ongoingCalculation])
+    */
+
+    // log the queue when it changes
+    useEffect(() => {
+        logger.info("edit queue changed", { editQueue })
+    }, [editQueue])
+
+    const submitEditQueue = useCallback(() => {
+        logger.info("submitting edit queue", { editQueue })
+        editQueue.forEach((edit) => {
+            logger.info("Submitting edit", { edit })
+            addEdit(edit)
+        })
+        setEditQueue([])
+    }, [editQueue])
+
+    /*
+    // if nothing works, uncomment this. it auto submits the edit queue after 3 seconds of inactivity
+    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
+    useEffect(() => {
+        if (editQueue.length > 0) {
+            const timer = setTimeout(() => {
+                const timeSinceLastEdit = Date.now() - lastEditTime
+                if (timeSinceLastEdit >= 3000) {
+                    logger.info("Auto-submitting edit queue after 5 seconds of inactivity")
+                    submitEditQueue()
+                }
+            }, 5000)
+            return () => clearTimeout(timer)
+        }
+        return undefined
+    }, [editQueue, lastEditTime, submitEditQueue])
+    */
 
     const handleCellValueChange = useCallback((event: any) => {
-        const rule = TABLE_VALIDATION_RULES[event.data.profileName]
-        if (rule && (event.newValue < rule.min || event.newValue > rule.max)) {
-            setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+        const params: ITableCellChangeParams = {
+            data: event.data,
+            newValue: event.newValue,
+            oldValue: event.oldValue,
+            profileName: event.data.profileName,
+            profile: event.data.profile,
+            resourceId: event.data.resourceId,
+        }
+        logger.info("handling cell value change, where the cell is", event.data.profileName, event.data.resourceName)
+        logger.info("the new value is", event.newValue)
+        logger.info("the old value is", event.oldValue)
+
+        const config: ITableCellChangeConfig = {
+            dg4Year,
+            caseId,
+            projectId,
+            tab,
+            tableName,
+            timeSeriesData,
+            setSnackBarMessage,
+        }
+
+        if (!validateTableCellChange(params, config)) {
             return
         }
 
-        const rowValues = getValuesFromEntireRow(event.data)
-        const existingProfile = event.data.profile ? structuredClone(event.data.profile) : {
-            startYear: 0,
-            values: [],
-            id: event.data.resourceId,
-        }
-
-        let newProfile
-        if (rowValues.length > 0) {
-            const firstYear = rowValues[0].year
-            const lastYear = rowValues[rowValues.length - 1].year
-            const startYear = firstYear - dg4Year
-            newProfile = generateProfile(rowValues, event.data.profile, startYear, firstYear, lastYear)
-        } else {
-            newProfile = structuredClone(existingProfile)
-            newProfile.values = []
-        }
-
-        if (!caseId || !newProfile) { return }
-
-        const getProfileData = () => timeSeriesData.find(
-            (v) => v.profileName === event.data.profileName,
-        )
-
-        const profileInTimeSeriesData = getProfileData()
-
-        if (!isEqual(newProfile.values, existingProfile.values)) {
-            const edit = {
-                newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
-                previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
-                inputLabel: event.data.profileName,
-                projectId,
-                resourceName: profileInTimeSeriesData?.resourceName,
-                resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
-                caseId,
-                resourceId: profileInTimeSeriesData?.resourceId,
-                newResourceObject: newProfile,
-                previousResourceObject: existingProfile,
-                resourceProfileId: profileInTimeSeriesData?.resourceProfileId,
-                tabName: tab,
-                tableName,
-            }
-
-            // Process edit immediately
+        const edit = generateTableCellEdit(params, config)
+        if (edit) {
             logger.info("Processing edit", { edit })
-            addEdit(edit)
+            // setLastEditTime(Date.now())
+            setEditQueue((prev) => [...prev, edit])
         }
     }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
 
@@ -195,7 +213,7 @@ const CaseTabTable = memo(({
 
         return (
             <CenterGridIcons>
-                <ClickableLockIcon
+                <CalculationSourceToggle
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
@@ -276,7 +294,7 @@ const CaseTabTable = memo(({
         setColumnDefs(newColDefs)
     }, [generateTableYearColDefs])
 
-    const onGridReady = useCallback((gridReadyEvent: GridReadyEvent) => {
+    const initializeGridWithData = useCallback((gridReadyEvent: GridReadyEvent) => {
         if (timeSeriesData?.length > 0) {
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
@@ -284,29 +302,29 @@ const CaseTabTable = memo(({
 
     // Handle grid blur event
     useEffect(() => {
-        const gridDiv = document.getElementById(tableName)
-        if (!gridDiv) { return undefined }
+        const containerRef = document.getElementById(tableName)?.parentElement
+        logger.info("Setting up click handler for table", { tableName, containerRef })
 
-        const handleBlur = (event: FocusEvent) => {
-            // Only log if the focus is moving outside the grid container
-            const relatedTarget = event.relatedTarget as HTMLElement
-            if (!relatedTarget
-                || gridDiv.contains(relatedTarget)
-                || (event.target instanceof HTMLInputElement && relatedTarget.classList.contains("ag-cell"))) {
-                return
-            }
-
-            logger.info("Grid lost focus", {
-                tableName,
-                event: "focus_lost",
+        const handleClickOutside = (event: MouseEvent) => {
+            logger.info("Click detected", {
+                containerRef: !!containerRef,
+                isOutside: containerRef && !containerRef.contains(event.target as Node),
+                queueLength: editQueue.length,
+                target: event.target,
             })
+
+            if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
+                logger.info("Click detected outside container - submitting edit queue", { editQueue })
+                submitEditQueue()
+            }
         }
 
-        gridDiv.addEventListener("focusout", handleBlur, true)
+        document.addEventListener("mousedown", handleClickOutside)
         return () => {
-            gridDiv.removeEventListener("focusout", handleBlur, true)
+            logger.info("Cleaning up click handler for table", { tableName })
+            document.removeEventListener("mousedown", handleClickOutside)
         }
-    }, [tableName])
+    }, [tableName, editQueue, submitEditQueue])
 
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
@@ -319,6 +337,9 @@ const CaseTabTable = memo(({
 
     return (
         <div className={styles.root}>
+            <div style={{ display: "flex", gap: "8px" }}>
+                <Button onClick={submitEditQueue}>Submit Edit Queue</Button>
+            </div>
             <div
                 id={tableName}
                 style={{
@@ -332,24 +353,19 @@ const CaseTabTable = memo(({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
-                    rowSelection={{
-                        mode: "multiRow",
-                        copySelectedRows: false,
-                        checkboxes: false,
-                        headerCheckbox: false,
-                        enableClickSelection: true,
-                    }}
-                    suppressCellFocus
-                    enableCellTextSelection={false}
-                    suppressClickEdit={false}
-                    singleClickEdit
-                    stopEditingWhenCellsLoseFocus
                     alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
                     grandTotalRow={includeFooter ? "bottom" : undefined}
                     getRowStyle={getCaseRowStyle}
                     suppressLastEmptyLineOnPaste
-                    onGridReady={onGridReady}
+                    onGridReady={initializeGridWithData}
                     defaultExcelExportParams={defaultExcelExportParams}
+                    cellSelection // let the user select multiple cells
+                    copyHeadersToClipboard={false} // don't copy headers to clipboard
+                    stopEditingWhenCellsLoseFocus
+                    onCellEditingStopped={() => {
+                        logger.info("oneditingstopped called")
+                    }}
+
                 />
             </div>
         </div>
