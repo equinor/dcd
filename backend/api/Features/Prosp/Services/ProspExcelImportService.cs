@@ -408,6 +408,7 @@ public class ProspExcelImportService(
                 {
                     await ClearImportedTransport(caseItem);
                 }
+
                 if (assets["OnshorePowerSupply"])
                 {
                     await ImportOnshorePowerSupply(parsedData, sourceCaseId, projectId);
@@ -471,7 +472,6 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedSurf(Case caseItem)
     {
-        var surfLink = caseItem.SurfLink;
         var dto = new ProspUpdateSurfDto
         {
             Source = Source.ConceptApp
@@ -479,8 +479,8 @@ public class ProspExcelImportService(
 
         var costProfileDto = new UpdateSurfCostProfileDto();
 
-        await updateSurfService.UpdateSurf(caseItem.ProjectId, caseItem.Id, surfLink, dto);
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, surfLink, costProfileDto);
+        await updateSurfService.UpdateSurf(caseItem.ProjectId, caseItem.Id, caseItem.SurfLink, dto);
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SurfLink, costProfileDto);
     }
 
     private async Task ClearImportedTopside(Case caseItem)
@@ -500,7 +500,6 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedSubstructure(Case caseItem)
     {
-        var substructureLink = caseItem.SubstructureLink;
         var dto = new ProspUpdateSubstructureDto
         {
             Source = Source.ConceptApp
@@ -508,13 +507,12 @@ public class ProspExcelImportService(
 
         var costProfileDto = new UpdateSubstructureCostProfileDto();
 
-        await updateSubstructureService.UpdateSubstructure(caseItem.ProjectId, caseItem.Id, substructureLink, dto);
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, substructureLink, costProfileDto);
+        await updateSubstructureService.UpdateSubstructure(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink, dto);
+        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink, costProfileDto);
     }
 
     private async Task ClearImportedTransport(Case caseItem)
     {
-        var transportLink = caseItem.TransportLink;
         var dto = new ProspUpdateTransportDto
         {
             Source = Source.ConceptApp
@@ -522,13 +520,12 @@ public class ProspExcelImportService(
 
         var costProfileDto = new UpdateTransportCostProfileDto();
 
-        await updateTransportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, transportLink, dto);
-        await AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, transportLink, costProfileDto);
+        await updateTransportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, dto);
+        await AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, costProfileDto);
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
     {
-        var onshorePowerSupplyLink = caseItem.OnshorePowerSupplyLink;
         var dto = new ProspUpdateOnshorePowerSupplyDto
         {
             Source = Source.ConceptApp
@@ -536,8 +533,8 @@ public class ProspExcelImportService(
 
         var costProfileDto = new UpdateOnshorePowerSupplyCostProfileDto();
 
-        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, onshorePowerSupplyLink, dto);
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, onshorePowerSupplyLink, costProfileDto);
+        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, dto);
+        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfileDto);
     }
 
     private static Concept MapSubstructureConcept(int importValue)

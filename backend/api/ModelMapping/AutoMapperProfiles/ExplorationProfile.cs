@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.Explorations;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
@@ -23,7 +22,6 @@ public class ExplorationProfile : Profile
         CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
-        CreateMap<UpdateExplorationDto, Exploration>();
         CreateMap<UpdateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();

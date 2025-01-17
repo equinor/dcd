@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
 using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
@@ -17,8 +16,6 @@ public class TransportProfile : Profile
         CreateMap<TransportCostProfileOverride, TransportCostProfileOverrideDto>();
         CreateMap<TransportCessationCostProfile, TransportCessationCostProfileDto>();
 
-        CreateMap<UpdateTransportDto, Transport>();
-        CreateMap<ProspUpdateTransportDto, Transport>();
         CreateMap<UpdateTransportCostProfileDto, TransportCostProfile>();
         CreateMap<UpdateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
         CreateMap<CreateTransportCostProfileOverrideDto, TransportCostProfileOverride>();

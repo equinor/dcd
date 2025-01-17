@@ -24,11 +24,10 @@ public class UpdateExplorationService(
         Guid explorationId,
         UpdateExplorationDto updatedExplorationDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
+        var existingExploration = await context.Explorations.SingleAsync(x => x.ProjectId == projectId && x.Id == explorationId);
 
-        var existingExploration = await context.Explorations.SingleAsync(x => x.Id == explorationId);
-
-        mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
+        existingExploration.RigMobDemob = updatedExplorationDto.RigMobDemob;
+        existingExploration.Currency = updatedExplorationDto.Currency;
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);

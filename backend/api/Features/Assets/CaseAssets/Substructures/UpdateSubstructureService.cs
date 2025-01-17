@@ -1,19 +1,12 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectIntegrity;
-using api.ModelMapping;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Substructures;
 
-public class UpdateSubstructureService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class UpdateSubstructureService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateSubstructure(
         Guid projectId,
@@ -21,11 +14,18 @@ public class UpdateSubstructureService(
         Guid substructureId,
         UpdateSubstructureDto updatedSubstructureDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.ProjectId == projectId && x.Id == substructureId);
 
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Id == substructureId);
+        existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
+        existingSubstructure.Currency = updatedSubstructureDto.Currency;
+        existingSubstructure.CostYear = updatedSubstructureDto.CostYear;
+        existingSubstructure.Source = updatedSubstructureDto.Source;
+        existingSubstructure.Concept = updatedSubstructureDto.Concept;
+        existingSubstructure.DG3Date = updatedSubstructureDto.DG3Date;
+        existingSubstructure.DG4Date = updatedSubstructureDto.DG4Date;
+        existingSubstructure.Maturity = updatedSubstructureDto.Maturity;
+        existingSubstructure.ApprovedBy = updatedSubstructureDto.ApprovedBy;
 
-        mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);
@@ -38,11 +38,17 @@ public class UpdateSubstructureService(
         Guid substructureId,
         ProspUpdateSubstructureDto updatedSubstructureDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.ProjectId == projectId && x.Id == substructureId);
 
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Id == substructureId);
+        existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
+        existingSubstructure.Currency = updatedSubstructureDto.Currency;
+        existingSubstructure.CostYear = updatedSubstructureDto.CostYear;
+        existingSubstructure.Source = updatedSubstructureDto.Source;
+        existingSubstructure.Concept = updatedSubstructureDto.Concept;
+        existingSubstructure.DG3Date = updatedSubstructureDto.DG3Date;
+        existingSubstructure.DG4Date = updatedSubstructureDto.DG4Date;
+        existingSubstructure.ProspVersion = updatedSubstructureDto.ProspVersion;
 
-        mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);

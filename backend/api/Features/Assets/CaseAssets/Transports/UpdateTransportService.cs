@@ -1,27 +1,25 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectIntegrity;
-using api.ModelMapping;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Transports;
 
-public class UpdateTransportService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class UpdateTransportService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, UpdateTransportDto updatedTransportDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, transportId);
+        var existing = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
 
-        var existing = await context.Transports.SingleAsync(x => x.Id == transportId);
-
-        mapperService.MapToEntity(updatedTransportDto, existing, transportId);
+        existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
+        existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
+        existing.Currency = updatedTransportDto.Currency;
+        existing.CostYear = updatedTransportDto.CostYear;
+        existing.DG3Date = updatedTransportDto.DG3Date;
+        existing.DG4Date = updatedTransportDto.DG4Date;
+        existing.Source = updatedTransportDto.Source;
+        existing.Maturity = updatedTransportDto.Maturity;
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);
@@ -30,11 +28,16 @@ public class UpdateTransportService(
 
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, ProspUpdateTransportDto updatedTransportDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, transportId);
+        var existing = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
 
-        var existing = await context.Transports.SingleAsync(x => x.Id == transportId);
-
-        mapperService.MapToEntity(updatedTransportDto, existing, transportId);
+        existing.ProspVersion = updatedTransportDto.ProspVersion;
+        existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
+        existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
+        existing.Currency = updatedTransportDto.Currency;
+        existing.CostYear = updatedTransportDto.CostYear;
+        existing.DG3Date = updatedTransportDto.DG3Date;
+        existing.DG4Date = updatedTransportDto.DG4Date;
+        existing.Source = updatedTransportDto.Source;
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);

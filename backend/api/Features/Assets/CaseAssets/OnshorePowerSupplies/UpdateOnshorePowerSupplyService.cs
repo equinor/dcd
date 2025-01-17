@@ -1,19 +1,12 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectIntegrity;
-using api.ModelMapping;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 
-public class UpdateOnshorePowerSupplyService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateOnshorePowerSupply(
         Guid projectId,
@@ -21,11 +14,12 @@ public class UpdateOnshorePowerSupplyService(
         Guid onshorePowerSupplyId,
         UpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.ProjectId == projectId && x.Id == onshorePowerSupplyId);
 
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Id == onshorePowerSupplyId);
-
-        mapperService.MapToEntity(updatedOnshorePowerSupplyDto, existing, onshorePowerSupplyId);
+        existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
+        existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
+        existing.DG4Date = updatedOnshorePowerSupplyDto.DG4Date;
+        existing.Source = updatedOnshorePowerSupplyDto.Source;
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);
@@ -38,11 +32,13 @@ public class UpdateOnshorePowerSupplyService(
         Guid onshorePowerSupplyId,
         ProspUpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.ProjectId == projectId && x.Id == onshorePowerSupplyId);
 
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Id == onshorePowerSupplyId);
-
-        mapperService.MapToEntity(updatedOnshorePowerSupplyDto, existing, onshorePowerSupplyId);
+        existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
+        existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
+        existing.DG4Date = updatedOnshorePowerSupplyDto.DG4Date;
+        existing.Source = updatedOnshorePowerSupplyDto.Source;
+        existing.ProspVersion = updatedOnshorePowerSupplyDto.ProspVersion;
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);

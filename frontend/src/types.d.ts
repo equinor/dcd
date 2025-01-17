@@ -1338,12 +1338,10 @@ declare namespace Components {
             override?: boolean;
         }
         export interface UpdateOnshorePowerSupplyDto {
-            currency?: Currency /* int32 */;
             costYear?: number; // int32
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
             source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
         }
         export interface UpdateOnshoreRelatedOpexCostProfileDto {
             startYear?: number; // int32
@@ -1630,6 +1628,12 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId /* uuid */;
+        }
         export type RequestBody = Components.Schemas.UrlDto;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];

@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides.Dtos;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles.Dtos;
@@ -17,8 +16,6 @@ public class SubstructureProfile : Profile
         CreateMap<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>();
         CreateMap<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>();
 
-        CreateMap<UpdateSubstructureDto, Substructure>();
-        CreateMap<ProspUpdateSubstructureDto, Substructure>();
         CreateMap<UpdateSubstructureCostProfileDto, SubstructureCostProfile>();
         CreateMap<UpdateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
         CreateMap<CreateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
