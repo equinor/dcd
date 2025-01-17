@@ -19,8 +19,8 @@ export class __ProspService extends __BaseService {
         return res
     }
 
-    async getSharePointFileNamesAndId(body: any) {
-        const driveItem: DriveItem[] = await this.post("sharepoint", { body })
+    async getSharePointFileNamesAndId(body: Components.Schemas.UrlDto, projectId: string) {
+        const driveItem: DriveItem[] = await this.post(`projects/${projectId}/sharepoint`, { body })
         return driveItem
     }
 

@@ -32,10 +32,13 @@ const PROSPTab = () => {
     const [errorMessage, setErrorMessage] = useState<string>("")
 
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
+        if (!revisionAndProjectData?.projectId) {
+            return
+        }
         setIsRefreshing(true)
         e.preventDefault()
         try {
-            const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
+            const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl }, revisionAndProjectData.projectId)
             setDriveItems(result)
             setErrorMessage("")
 
@@ -64,7 +67,7 @@ const PROSPTab = () => {
                 if (revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl && revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl !== "") {
                     try {
                         const result = await (await GetProspService())
-                            .getSharePointFileNamesAndId({ url: revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl })
+                            .getSharePointFileNamesAndId({ url: revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl }, revisionAndProjectData.projectId)
                         setDriveItems(result)
                         setErrorMessage("")
                     } catch (error) {
