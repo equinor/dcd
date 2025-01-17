@@ -226,13 +226,10 @@ const useEditCase = () => {
             const existingQueueItemsResourceObject = structuredClone(latestEditInQueue.newResourceObject)
 
             let combinedResourceObject = {} as ResourceObject
-            /* if (isTableEdit) {
-                combinedResourceObject = structuredClone(newResourceObject)
-            } else { */
+
             const propertyKey = resourcePropertyKey as keyof ResourceObject
             existingQueueItemsResourceObject[propertyKey] = newResourceObject[propertyKey]
             combinedResourceObject = existingQueueItemsResourceObject
-            // }
 
             editQueueLogger.log("Combined resource object:", combinedResourceObject)
 
