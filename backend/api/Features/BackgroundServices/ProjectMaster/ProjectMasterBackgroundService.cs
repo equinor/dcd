@@ -1,6 +1,8 @@
 using api.AppInfrastructure;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 
+using static api.Features.BackgroundServices.DisableConcurrentJobExecution.DisableConcurrentJobExecutionService;
+
 namespace api.Features.BackgroundServices.ProjectMaster;
 
 public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, ILogger<ProjectMasterBackgroundService> logger)
@@ -13,6 +15,12 @@ public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, I
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(_executionFrequency, stoppingToken);
+
+            if (!IsJobRunnerInstance)
+            {
+                continue;
+            }
+
             await UpdateProjects();
         }
     }

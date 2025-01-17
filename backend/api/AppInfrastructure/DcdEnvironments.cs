@@ -17,6 +17,7 @@ public static class DcdEnvironments
     public static bool ReturnExceptionDetails => CurrentEnvironment is not RadixProd;
     public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
     public static bool DisplayAllFusionUsersAsPmt => CurrentEnvironment is not RadixProd;
+    public static bool RunBackgroundJobsOnLocalMachine => CurrentEnvironment is LocalDev or Ci;
 
     public static string FusionEnvironment => CurrentEnvironment switch
     {

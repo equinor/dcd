@@ -46,6 +46,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         await serviceProvider.GetRequiredService<CalculateTotalCostService>().CalculateTotalCost(caseId);
         await serviceProvider.GetRequiredService<CalculateNpvService>().CalculateNpv(caseId);
         await serviceProvider.GetRequiredService<CalculateBreakEvenOilPriceService>().CalculateBreakEvenOilPrice(caseId);
+
+        await context.SaveChangesAsync();
     }
 
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)

@@ -2,6 +2,7 @@ using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.Models;
 using api.Models.Infrastructure;
+using api.Models.Infrastructure.BackgroundJobs;
 using api.Models.Infrastructure.ProjectRecalculation;
 using api.Models.Interfaces;
 
@@ -93,6 +94,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
     public DbSet<PendingRecalculation> PendingRecalculations => Set<PendingRecalculation>();
     public DbSet<CompletedRecalculation> CompletedRecalculations => Set<CompletedRecalculation>();
+    public DbSet<BackgroundJobMachineInstanceLog> BackgroundJobMachineInstanceLogs => Set<BackgroundJobMachineInstanceLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

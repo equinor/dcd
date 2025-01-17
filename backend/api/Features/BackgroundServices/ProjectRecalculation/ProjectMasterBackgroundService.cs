@@ -1,5 +1,7 @@
 using api.Features.BackgroundServices.ProjectRecalculation.Services;
 
+using static api.Features.BackgroundServices.DisableConcurrentJobExecution.DisableConcurrentJobExecutionService;
+
 namespace api.Features.BackgroundServices.ProjectRecalculation;
 
 public class ProjectRecalculationBackgroundService(IServiceScopeFactory scopeFactory, ILogger<ProjectRecalculationBackgroundService> logger)
@@ -12,6 +14,12 @@ public class ProjectRecalculationBackgroundService(IServiceScopeFactory scopeFac
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(_executionFrequency, stoppingToken);
+
+            if (!IsJobRunnerInstance)
+            {
+                continue;
+            }
+
             await RunProjectRecalculation();
         }
     }
