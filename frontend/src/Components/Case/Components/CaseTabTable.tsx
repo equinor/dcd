@@ -14,7 +14,7 @@ import {
     ICellRendererParams,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
-import { Button, CircularProgress } from "@equinor/eds-core-react"
+import { CircularProgress } from "@equinor/eds-core-react"
 import styled from "styled-components"
 
 import {
@@ -85,6 +85,13 @@ const CaseTabTable = memo(({
     const { projectId } = useProjectContext()
 
     const [editQueue, setEditQueue] = useState<any[]>([])
+    const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
+
+    useEffect(() => {
+        if (timeSeriesData?.length > 0 && editQueue.length === 0) {
+            setPresentedTableData(timeSeriesData)
+        }
+    }, [timeSeriesData])
 
     const submitEditQueue = useCallback(() => {
         logger.info("submitting edit queue", { editQueue })
@@ -133,7 +140,7 @@ const CaseTabTable = memo(({
             projectId,
             tab,
             tableName,
-            timeSeriesData,
+            timeSeriesData: presentedTableData,
             setSnackBarMessage,
         }
 
@@ -147,26 +154,26 @@ const CaseTabTable = memo(({
             setLastEditTime(Date.now())
             setEditQueue((prev) => [...prev, edit])
         }
-    }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
+    }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
 
     const gridRowData = useMemo(
         () => {
-            if (!timeSeriesData?.length) { return [] }
-            const data = profilesToRowData(timeSeriesData, dg4Year, tableName, editMode)
+            if (!presentedTableData?.length) { return [] }
+            const data = profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
             return data
         },
-        [timeSeriesData, editMode, dg4Year, tableName, tableYears],
+        [presentedTableData, editMode, dg4Year, tableName, tableYears],
     )
 
     useEffect(() => {
-        if (gridRef.current?.api && timeSeriesData?.length > 0 && gridRowData.length > 0) {
+        if (gridRef.current?.api && presentedTableData?.length > 0 && gridRowData.length > 0) {
             const currentNodes = gridRef.current.api.getRenderedNodes()
             const currentRowData = currentNodes.map((node: { data: any }) => node.data)
             if (!isEqual(currentRowData, gridRowData)) {
                 gridRef.current.api.setGridOption("rowData", gridRowData)
             }
         }
-    }, [gridRowData, timeSeriesData])
+    }, [gridRowData, presentedTableData])
 
     const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (!params.data || !editMode) {
@@ -237,10 +244,7 @@ const CaseTabTable = memo(({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => {
-                    if (isSaving) { return false }
-                    return tableCellisEditable(params, editMode)
-                },
+                editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellRenderer: ErrorCellRenderer,
@@ -267,10 +271,10 @@ const CaseTabTable = memo(({
     }, [generateTableYearColDefs])
 
     const initializeGridWithData = useCallback((gridReadyEvent: GridReadyEvent) => {
-        if (timeSeriesData?.length > 0) {
+        if (presentedTableData?.length > 0) {
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
-    }, [gridRowData, timeSeriesData])
+    }, [gridRowData, presentedTableData])
 
     // Handle grid blur event
     useEffect(() => {
@@ -303,10 +307,7 @@ const CaseTabTable = memo(({
             sortable: true,
             filter: true,
             resizable: true,
-            editable: (params: any) => {
-                if (isSaving) { return false }
-                return tableCellisEditable(params, editMode)
-            },
+            editable: (params: any) => tableCellisEditable(params, editMode),
             onCellValueChanged: handleCellValueChange,
             suppressHeaderMenuButton: true,
             enableCellChangeFlash: editMode,
@@ -340,9 +341,6 @@ const CaseTabTable = memo(({
 
     return (
         <div className={styles.root}>
-            <div style={{ display: "flex", gap: "8px" }}>
-                <Button onClick={submitEditQueue}>Submit Edit Queue</Button>
-            </div>
             <div
                 id={tableName}
                 style={{
