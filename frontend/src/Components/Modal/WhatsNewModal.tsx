@@ -101,7 +101,7 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Fix updating case from the cases table in project view" },
             { description: "Fix so the user can manually type dates in schedule tab" },
             { description: "Fix issue with case comparison graph showing wrong data for the cases" },
-            { description: "fix so that undo/redo on pasted range should update all values" },
+            { description: "Fix so that undo/redo on pasted range should update all values" },
         ],
     },
     "2.2.1": {
@@ -112,6 +112,22 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Minor UI Improvements" },
         ],
         Bugfixes: [
+            { description: "Minor bugfixes and performance improvements" },
+        ],
+    },
+    "2.3.0": {
+        "New Functionalities": [
+            { description: "Create project revision - Create revisions of the current project and view earlier revisions. Revisions are a snapshot of the project and all the cases at the time of creation" },
+            { description: "Add caption to images" },
+            { description: "Add selected project tab to the URL" },
+
+        ],
+        "UI Improvements": [
+            { description: "Minor UI Improvements" },
+        ],
+        Bugfixes: [
+            { description: "Fix navigation between case and project with the browser's back button" },
+            { description: "Fix issue where the CO2 tab on project was reset when entering edit mode" },
             { description: "Minor bugfixes and performance improvements" },
         ],
     },
