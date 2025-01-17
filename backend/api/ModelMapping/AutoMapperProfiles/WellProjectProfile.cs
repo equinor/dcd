@@ -4,7 +4,6 @@ using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
-using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -16,7 +15,6 @@ public class WellProjectProfile : Profile
     public WellProjectProfile()
     {
         CreateMap<WellProject, WellProjectDto>();
-        CreateMap<WellProject, WellProjectWithProfilesDto>();
         CreateMap<OilProducerCostProfile, OilProducerCostProfileDto>();
         CreateMap<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>();
         CreateMap<GasProducerCostProfile, GasProducerCostProfileDto>();
@@ -27,7 +25,6 @@ public class WellProjectProfile : Profile
         CreateMap<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>();
         CreateMap<WellProjectWell, WellProjectWellDto>().ReverseMap();
 
-        CreateMap<UpdateWellProjectDto, WellProject>();
         CreateMap<UpdateOilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>();
         CreateMap<UpdateGasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>();
         CreateMap<UpdateWaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>();

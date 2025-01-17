@@ -1,19 +1,12 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectIntegrity;
-using api.ModelMapping;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Topsides;
 
-public class UpdateTopsideService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class UpdateTopsideService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateTopside(
         Guid projectId,
@@ -21,11 +14,33 @@ public class UpdateTopsideService(
         Guid topsideId,
         UpdateTopsideDto updatedTopsideDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
+        var existingTopside = await context.Topsides.SingleAsync(x => x.ProjectId == projectId && x.Id == topsideId);
 
-        var existingTopside = await context.Topsides.SingleAsync(x => x.Id == topsideId);
-
-        mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
+        existingTopside.DryWeight = updatedTopsideDto.DryWeight;
+        existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;
+        existingTopside.GasCapacity = updatedTopsideDto.GasCapacity;
+        existingTopside.WaterInjectionCapacity = updatedTopsideDto.WaterInjectionCapacity;
+        existingTopside.ArtificialLift = updatedTopsideDto.ArtificialLift;
+        existingTopside.Currency = updatedTopsideDto.Currency;
+        existingTopside.FuelConsumption = updatedTopsideDto.FuelConsumption;
+        existingTopside.FlaredGas = updatedTopsideDto.FlaredGas;
+        existingTopside.ProducerCount = updatedTopsideDto.ProducerCount;
+        existingTopside.GasInjectorCount = updatedTopsideDto.GasInjectorCount;
+        existingTopside.WaterInjectorCount = updatedTopsideDto.WaterInjectorCount;
+        existingTopside.CO2ShareOilProfile = updatedTopsideDto.CO2ShareOilProfile;
+        existingTopside.CO2ShareGasProfile = updatedTopsideDto.CO2ShareGasProfile;
+        existingTopside.CO2ShareWaterInjectionProfile = updatedTopsideDto.CO2ShareWaterInjectionProfile;
+        existingTopside.CO2OnMaxOilProfile = updatedTopsideDto.CO2OnMaxOilProfile;
+        existingTopside.CO2OnMaxGasProfile = updatedTopsideDto.CO2OnMaxGasProfile;
+        existingTopside.CO2OnMaxWaterInjectionProfile = updatedTopsideDto.CO2OnMaxWaterInjectionProfile;
+        existingTopside.CostYear = updatedTopsideDto.CostYear;
+        existingTopside.DG3Date = updatedTopsideDto.DG3Date;
+        existingTopside.DG4Date = updatedTopsideDto.DG4Date;
+        existingTopside.FacilityOpex = updatedTopsideDto.FacilityOpex;
+        existingTopside.PeakElectricityImported = updatedTopsideDto.PeakElectricityImported;
+        existingTopside.Source = updatedTopsideDto.Source;
+        existingTopside.Maturity = updatedTopsideDto.Maturity;
+        existingTopside.ApprovedBy = updatedTopsideDto.ApprovedBy;
         existingTopside.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);
@@ -38,11 +53,32 @@ public class UpdateTopsideService(
         Guid topsideId,
         ProspUpdateTopsideDto updatedTopsideDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
+        var existingTopside = await context.Topsides.SingleAsync(x => x.ProjectId == projectId && x.Id == topsideId);
 
-        var existingTopside = await context.Topsides.SingleAsync(x => x.Id == topsideId);
-
-        mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
+        existingTopside.DryWeight = updatedTopsideDto.DryWeight;
+        existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;
+        existingTopside.GasCapacity = updatedTopsideDto.GasCapacity;
+        existingTopside.WaterInjectionCapacity = updatedTopsideDto.WaterInjectionCapacity;
+        existingTopside.ArtificialLift = updatedTopsideDto.ArtificialLift;
+        existingTopside.Currency = updatedTopsideDto.Currency;
+        existingTopside.FuelConsumption = updatedTopsideDto.FuelConsumption;
+        existingTopside.FlaredGas = updatedTopsideDto.FlaredGas;
+        existingTopside.ProducerCount = updatedTopsideDto.ProducerCount;
+        existingTopside.GasInjectorCount = updatedTopsideDto.GasInjectorCount;
+        existingTopside.WaterInjectorCount = updatedTopsideDto.WaterInjectorCount;
+        existingTopside.CO2ShareOilProfile = updatedTopsideDto.CO2ShareOilProfile;
+        existingTopside.CO2ShareGasProfile = updatedTopsideDto.CO2ShareGasProfile;
+        existingTopside.CO2ShareWaterInjectionProfile = updatedTopsideDto.CO2ShareWaterInjectionProfile;
+        existingTopside.CO2OnMaxOilProfile = updatedTopsideDto.CO2OnMaxOilProfile;
+        existingTopside.CO2OnMaxGasProfile = updatedTopsideDto.CO2OnMaxGasProfile;
+        existingTopside.CO2OnMaxWaterInjectionProfile = updatedTopsideDto.CO2OnMaxWaterInjectionProfile;
+        existingTopside.CostYear = updatedTopsideDto.CostYear;
+        existingTopside.DG3Date = updatedTopsideDto.DG3Date;
+        existingTopside.DG4Date = updatedTopsideDto.DG4Date;
+        existingTopside.FacilityOpex = updatedTopsideDto.FacilityOpex;
+        existingTopside.PeakElectricityImported = updatedTopsideDto.PeakElectricityImported;
+        existingTopside.Source = updatedTopsideDto.Source;
+        existingTopside.ProspVersion = updatedTopsideDto.ProspVersion;
         existingTopside.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);

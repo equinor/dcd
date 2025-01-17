@@ -10,6 +10,7 @@ using api.Features.Assets.CaseAssets.WellProjects;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
+using api.Features.BackgroundServices.ProjectRecalculation.Services;
 using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Cases.CaseComparison;
@@ -165,6 +166,7 @@ public static class DcdIocConfiguration
 
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();
+        services.AddScoped<RecalculateProjectService>();
 
         /* Project assets */
         services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();

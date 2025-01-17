@@ -15,9 +15,9 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     ILogger<ProspController> logger)
     : ControllerBase
 {
-    [HttpPost("prosp/sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
+    [HttpPost("prosp/projects/{projectId:guid}/sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] UrlDto urlDto)
+    public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId(Guid projectId, [FromBody] UrlDto urlDto)
     {
         if (string.IsNullOrWhiteSpace(urlDto.Url))
         {

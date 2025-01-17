@@ -24,11 +24,11 @@ public class UpdateWellProjectService(
         Guid wellProjectId,
         UpdateWellProjectDto updatedWellProjectDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
+        var existingWellProject = await context.WellProjects.SingleAsync(x => x.ProjectId == projectId && x.Id == wellProjectId);
 
-        var existingWellProject = await context.WellProjects.SingleAsync(x => x.Id == wellProjectId);
-
-        mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
+        existingWellProject.Name = updatedWellProjectDto.Name;
+        existingWellProject.ArtificialLift = updatedWellProjectDto.ArtificialLift;
+        existingWellProject.Currency = updatedWellProjectDto.Currency;
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);

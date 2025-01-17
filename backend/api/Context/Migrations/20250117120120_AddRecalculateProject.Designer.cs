@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250117120120_AddRecalculateProject")]
+    partial class AddRecalculateProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1230,29 +1233,6 @@ namespace api.Migrations
                     b.ToTable("ImportedElectricityOverride");
                 });
 
-            modelBuilder.Entity("api.Models.Infrastructure.BackgroundJobs.BackgroundJobMachineInstanceLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsJobRunner")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastSeenUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MachineName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BackgroundJobMachineInstanceLogs");
-                });
-
             modelBuilder.Entity("api.Models.Infrastructure.ChangeLog", b =>
                 {
                     b.Property<int>("Id")
@@ -1301,6 +1281,31 @@ namespace api.Migrations
                     b.HasIndex("TimestampUtc");
 
                     b.ToTable("ChangeLogs");
+                });
+
+            modelBuilder.Entity("api.Models.Infrastructure.CompletedRecalculation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CalculationLengthInMilliseconds")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompletedRecalculations");
                 });
 
             modelBuilder.Entity("api.Models.Infrastructure.ExceptionLog", b =>
@@ -1374,32 +1379,7 @@ namespace api.Migrations
                     b.ToTable("LazyLoadingOccurrences");
                 });
 
-            modelBuilder.Entity("api.Models.Infrastructure.ProjectRecalculation.CompletedRecalculation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CalculationLengthInMilliseconds")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompletedRecalculations");
-                });
-
-            modelBuilder.Entity("api.Models.Infrastructure.ProjectRecalculation.PendingRecalculation", b =>
+            modelBuilder.Entity("api.Models.Infrastructure.PendingRecalculation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

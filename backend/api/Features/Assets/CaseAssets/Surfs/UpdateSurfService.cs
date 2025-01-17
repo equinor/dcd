@@ -1,19 +1,12 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.ProjectIntegrity;
-using api.ModelMapping;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Surfs;
 
-public class UpdateSurfService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class UpdateSurfService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateSurf(
         Guid projectId,
@@ -21,11 +14,25 @@ public class UpdateSurfService(
         Guid surfId,
         UpdateSurfDto updatedSurfDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
+        var existingSurf = await context.Surfs.SingleAsync(x => x.ProjectId == projectId && x.Id == surfId);
 
-        var existingSurf = await context.Surfs.SingleAsync(x => x.Id == surfId);
-
-        mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
+        existingSurf.CessationCost = updatedSurfDto.CessationCost;
+        existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
+        existingSurf.UmbilicalSystemLength = updatedSurfDto.UmbilicalSystemLength;
+        existingSurf.ArtificialLift = updatedSurfDto.ArtificialLift;
+        existingSurf.RiserCount = updatedSurfDto.RiserCount;
+        existingSurf.TemplateCount = updatedSurfDto.TemplateCount;
+        existingSurf.ProducerCount = updatedSurfDto.ProducerCount;
+        existingSurf.GasInjectorCount = updatedSurfDto.GasInjectorCount;
+        existingSurf.WaterInjectorCount = updatedSurfDto.WaterInjectorCount;
+        existingSurf.ProductionFlowline = updatedSurfDto.ProductionFlowline;
+        existingSurf.Currency = updatedSurfDto.Currency;
+        existingSurf.CostYear = updatedSurfDto.CostYear;
+        existingSurf.Source = updatedSurfDto.Source;
+        existingSurf.ApprovedBy = updatedSurfDto.ApprovedBy;
+        existingSurf.DG3Date = updatedSurfDto.DG3Date;
+        existingSurf.DG4Date = updatedSurfDto.DG4Date;
+        existingSurf.Maturity = updatedSurfDto.Maturity;
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);
@@ -38,11 +45,25 @@ public class UpdateSurfService(
         Guid surfId,
         ProspUpdateSurfDto updatedSurfDto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
+        var existingSurf = await context.Surfs.SingleAsync(x => x.ProjectId == projectId && x.Id == surfId);
 
-        var existingSurf = await context.Surfs.SingleAsync(x => x.Id == surfId);
-
-        mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
+        existingSurf.CessationCost = updatedSurfDto.CessationCost;
+        existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
+        existingSurf.UmbilicalSystemLength = updatedSurfDto.UmbilicalSystemLength;
+        existingSurf.ArtificialLift = updatedSurfDto.ArtificialLift;
+        existingSurf.RiserCount = updatedSurfDto.RiserCount;
+        existingSurf.TemplateCount = updatedSurfDto.TemplateCount;
+        existingSurf.ProducerCount = updatedSurfDto.ProducerCount;
+        existingSurf.GasInjectorCount = updatedSurfDto.GasInjectorCount;
+        existingSurf.WaterInjectorCount = updatedSurfDto.WaterInjectorCount;
+        existingSurf.ProductionFlowline = updatedSurfDto.ProductionFlowline;
+        existingSurf.Currency = updatedSurfDto.Currency;
+        existingSurf.CostYear = updatedSurfDto.CostYear;
+        existingSurf.Source = updatedSurfDto.Source;
+        existingSurf.ApprovedBy = updatedSurfDto.ApprovedBy;
+        existingSurf.DG3Date = updatedSurfDto.DG3Date;
+        existingSurf.DG4Date = updatedSurfDto.DG4Date;
+        existingSurf.ProspVersion = updatedSurfDto.ProspVersion;
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseModifyTime(caseId);

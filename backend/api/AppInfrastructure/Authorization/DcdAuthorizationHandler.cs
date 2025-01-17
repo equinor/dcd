@@ -50,12 +50,12 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
             return true;
         }
 
-        var userAccess = await GetUserAccess(context.User, endpointAccessRequirement.Value);
+        var userAccess = await GetUserAccess(context.User);
 
         return userAccess.Contains(endpointAccessRequirement.Value);
     }
 
-    private async Task<HashSet<ActionType>> GetUserAccess(ClaimsPrincipal claimsPrincipal, ActionType endpointAccessRequirement)
+    private async Task<HashSet<ActionType>> GetUserAccess(ClaimsPrincipal claimsPrincipal)
     {
         var userId = claimsPrincipal.GetAzureUniqueId();
         var userRoles = claimsPrincipal.DcdParseApplicationRoles();
@@ -69,7 +69,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
 
         if (projectId == null)
         {
-            return [endpointAccessRequirement];
+            return [];
         }
 
         if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))

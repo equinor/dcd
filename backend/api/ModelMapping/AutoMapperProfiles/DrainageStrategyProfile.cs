@@ -12,7 +12,6 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileGases.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileOils.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
-using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -23,7 +22,6 @@ public class DrainageStrategyProfile : Profile
 {
     public DrainageStrategyProfile()
     {
-        CreateMap<DrainageStrategy, DrainageStrategyWithProfilesDto>();
         CreateMap<DrainageStrategy, DrainageStrategyDto>();
         CreateMap<ProductionProfileOil, ProductionProfileOilDto>()
             .ForMember(
@@ -164,8 +162,6 @@ public class DrainageStrategyProfile : Profile
         CreateMap<ImportedElectricity, ImportedElectricityDto>();
         CreateMap<ImportedElectricityOverride, ImportedElectricityOverrideDto>();
         CreateMap<Co2Intensity, Co2IntensityDto>();
-
-        CreateMap<UpdateDrainageStrategyDto, DrainageStrategy>();
 
         CreateMap<CreateImportedElectricityOverrideDto, ImportedElectricityOverride>()
             .ForMember(

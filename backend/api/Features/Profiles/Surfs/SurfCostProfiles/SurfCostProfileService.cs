@@ -26,6 +26,7 @@ public class SurfCostProfileService(
 
         var surf = await context.Surfs
             .Include(t => t.CostProfile)
+            .Include(x => x.CostProfileOverride)
             .SingleAsync(t => t.Id == surfId);
 
         if (surf.CostProfile != null)

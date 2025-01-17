@@ -36,7 +36,6 @@ using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
-using api.Features.Stea.Dtos;
 using api.ModelMapping;
 using api.Models;
 
