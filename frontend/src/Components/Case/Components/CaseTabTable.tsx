@@ -86,11 +86,6 @@ const CaseTabTable = memo(({
 
     const [editQueue, setEditQueue] = useState<any[]>([])
 
-    // log the queue when it changes
-    useEffect(() => {
-        logger.info("edit queue changed", { editQueue })
-    }, [editQueue])
-
     const submitEditQueue = useCallback(() => {
         logger.info("submitting edit queue", { editQueue })
         editQueue.forEach((edit) => {
@@ -100,7 +95,6 @@ const CaseTabTable = memo(({
         setEditQueue([])
     }, [editQueue])
 
-    // if nothing works, uncomment this. it auto submits the edit queue after 3 seconds of inactivity
     const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
     useEffect(() => {
         if (editQueue.length > 0) {
@@ -154,20 +148,6 @@ const CaseTabTable = memo(({
             setEditQueue((prev) => [...prev, edit])
         }
     }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
-
-    const defaultColDef = useMemo(() => ({
-        sortable: true,
-        filter: true,
-        resizable: true,
-        editable: (params: any) => {
-            if (isSaving) { return false }
-            return tableCellisEditable(params, editMode)
-        },
-        onCellValueChanged: handleCellValueChange,
-        suppressHeaderMenuButton: true,
-        enableCellChangeFlash: editMode,
-        suppressMovable: true,
-    }), [editMode, handleCellValueChange, isSaving])
 
     const gridRowData = useMemo(
         () => {
@@ -295,26 +275,15 @@ const CaseTabTable = memo(({
     // Handle grid blur event
     useEffect(() => {
         const containerRef = document.getElementById(tableName)?.parentElement
-        logger.info("Setting up click handler for table", { tableName, containerRef })
 
         const handleClickOutside = (event: MouseEvent) => {
-            logger.info("Click detected", {
-                containerRef: !!containerRef,
-                isOutside: containerRef && !containerRef.contains(event.target as Node),
-                queueLength: editQueue.length,
-                target: event.target,
-            })
-
             if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
-                logger.info("Click detected outside container - submitting edit queue", { editQueue })
-                console.log("api.getEditingCells()", gridRef.current.api.getEditingCells())
-                // submitEditQueue()
+                submitEditQueue()
             }
         }
 
         document.addEventListener("mousedown", handleClickOutside)
         return () => {
-            logger.info("Cleaning up click handler for table", { tableName })
             document.removeEventListener("mousedown", handleClickOutside)
         }
     }, [tableName, editQueue, submitEditQueue])
@@ -327,6 +296,47 @@ const CaseTabTable = memo(({
             fileName: "export.xlsx",
         }
     }, [tableYears])
+
+    const gridConfig = useMemo(() => ({
+        // Column configuration
+        defaultColDef: {
+            sortable: true,
+            filter: true,
+            resizable: true,
+            editable: (params: any) => {
+                if (isSaving) { return false }
+                return tableCellisEditable(params, editMode)
+            },
+            onCellValueChanged: handleCellValueChange,
+            suppressHeaderMenuButton: true,
+            enableCellChangeFlash: editMode,
+            suppressMovable: true,
+        },
+        // Grid configuration
+        rowData: gridRowData,
+        columnDefs,
+        animateRows: true,
+        domLayout: "autoHeight" as const,
+        alignedGrids: alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined,
+        grandTotalRow: includeFooter ? ("bottom" as const) : undefined,
+        getRowStyle: getCaseRowStyle,
+        suppressLastEmptyLineOnPaste: true,
+        onGridReady: initializeGridWithData,
+        defaultExcelExportParams,
+        cellSelection: true,
+        copyHeadersToClipboard: false,
+        stopEditingWhenCellsLoseFocus: true,
+    }), [
+        editMode,
+        handleCellValueChange,
+        isSaving,
+        gridRowData,
+        columnDefs,
+        alignedGridsRef,
+        includeFooter,
+        initializeGridWithData,
+        defaultExcelExportParams,
+    ])
 
     return (
         <div className={styles.root}>
@@ -341,24 +351,7 @@ const CaseTabTable = memo(({
             >
                 <AgGridReact
                     ref={gridRef}
-                    rowData={gridRowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
-                    grandTotalRow={includeFooter ? "bottom" : undefined}
-                    getRowStyle={getCaseRowStyle}
-                    suppressLastEmptyLineOnPaste
-                    onGridReady={initializeGridWithData}
-                    defaultExcelExportParams={defaultExcelExportParams}
-                    cellSelection // let the user select multiple cells
-                    copyHeadersToClipboard={false} // don't copy headers to clipboard
-                    stopEditingWhenCellsLoseFocus
-                    onCellEditingStopped={() => {
-                        logger.info("oneditingstopped called")
-                    }}
-
+                    {...gridConfig}
                 />
             </div>
         </div>
