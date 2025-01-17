@@ -12,7 +12,6 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileGases.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileOils.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.Dtos;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
-using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;

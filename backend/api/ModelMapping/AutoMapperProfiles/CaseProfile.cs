@@ -1,3 +1,4 @@
+using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
 using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
 using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;
@@ -9,7 +10,6 @@ using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides.Dto
 using api.Features.Profiles.Cases.TotalFeedStudiesOverrides.Dtos;
 using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles.Dtos;
 using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides.Dtos;
-using api.Features.Stea.Dtos;
 using api.Models;
 
 using AutoMapper;

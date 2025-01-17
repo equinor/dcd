@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles.Dtos;
 using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
@@ -35,7 +36,6 @@ using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides.Dtos;
 using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
-using api.Features.Stea.Dtos;
 
 namespace api.Features.Cases.GetWithAssets.Dtos;
 
@@ -142,3 +142,19 @@ public class CaseWithAssetsDto
     public GasInjectorCostProfileDto? GasInjectorCostProfile { get; set; }
     public GasInjectorCostProfileOverrideDto? GasInjectorCostProfileOverride { get; set; }
 }
+
+public class CessationWellsCostDto : TimeSeriesCostDto;
+
+public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto;
+
+public class WellInterventionCostProfileDto : TimeSeriesCostDto;
+
+public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto;
+
+public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto;
+
+public class TotalFEEDStudiesDto : TimeSeriesCostDto;
+
+public class CalculatedTotalIncomeCostProfileDto : TimeSeriesCostDto;
+
+public class CalculatedTotalCostCostProfileDto : TimeSeriesCostDto;
