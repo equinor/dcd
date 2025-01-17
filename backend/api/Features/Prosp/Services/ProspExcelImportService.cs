@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Assets.CaseAssets.Surfs;
@@ -347,15 +346,41 @@ public class ProspExcelImportService(
         await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfile);
     }
 
-    public async Task ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
-        string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
+    public async Task ImportProsp(Stream stream,
+        Guid sourceCaseId,
+        Guid projectId,
+        Dictionary<string, bool> assets,
+        string sharepointFileId,
+        string? sharepointFileName,
+        string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;
         var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
-        var caseItem = await GetCase(sourceCaseId);
+        var caseItem = await context.Cases
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.HistoricCostCostProfile)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .SingleAsync(c => c.Id == sourceCaseId);
+
         caseItem.SharepointFileId = sharepointFileId;
         caseItem.SharepointFileName = sharepointFileName;
         caseItem.SharepointFileUrl = sharepointFileUrl;
@@ -429,7 +454,8 @@ public class ProspExcelImportService(
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var caseItem = await GetCase(sourceCaseId);
+        var caseItem = await context.Cases.SingleAsync(x => x.Id == sourceCaseId);
+
         caseItem.SharepointFileId = null;
         caseItem.SharepointFileName = null;
         caseItem.SharepointFileUrl = null;
@@ -467,69 +493,82 @@ public class ProspExcelImportService(
 
     private async Task ClearImportedSurf(Case caseItem)
     {
-        var dto = new ProspUpdateSurfDto
-        {
-            Source = Source.ConceptApp
-        };
+        await updateSurfService.UpdateSurf(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.SurfLink,
+            new ProspUpdateSurfDto
+            {
+                Source = Source.ConceptApp
+            });
 
-        var costProfileDto = new UpdateSurfCostProfileDto();
-
-        await updateSurfService.UpdateSurf(caseItem.ProjectId, caseItem.Id, caseItem.SurfLink, dto);
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SurfLink, costProfileDto);
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.SurfLink,
+            new UpdateSurfCostProfileDto());
     }
 
     private async Task ClearImportedTopside(Case caseItem)
     {
-        var topsideLink = caseItem.TopsideLink;
-        var dto = new ProspUpdateTopsideDto
-        {
-            Source = Source.ConceptApp
-        };
+        await updateTopsideService.UpdateTopside(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.TopsideLink,
+            new ProspUpdateTopsideDto
+            {
+                Source = Source.ConceptApp
+            });
 
-        var costProfileDto = new UpdateTopsideCostProfileDto();
-
-
-        await updateTopsideService.UpdateTopside(caseItem.ProjectId, caseItem.Id, topsideLink, dto);
-        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId, caseItem.Id, topsideLink, costProfileDto);
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.TopsideLink,
+            new UpdateTopsideCostProfileDto());
     }
 
     private async Task ClearImportedSubstructure(Case caseItem)
     {
-        var dto = new ProspUpdateSubstructureDto
-        {
-            Source = Source.ConceptApp
-        };
+        await updateSubstructureService.UpdateSubstructure(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.SubstructureLink,
+            new ProspUpdateSubstructureDto
+            {
+                Source = Source.ConceptApp
+            });
 
-        var costProfileDto = new UpdateSubstructureCostProfileDto();
-
-        await updateSubstructureService.UpdateSubstructure(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink, dto);
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.SubstructureLink, costProfileDto);
+        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.SubstructureLink,
+            new UpdateSubstructureCostProfileDto());
     }
 
     private async Task ClearImportedTransport(Case caseItem)
     {
-        var dto = new ProspUpdateTransportDto
-        {
-            Source = Source.ConceptApp
-        };
+        await updateTransportService.UpdateTransport(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.TransportLink,
+            new ProspUpdateTransportDto
+            {
+                Source = Source.ConceptApp
+            });
 
-        var costProfileDto = new UpdateTransportCostProfileDto();
-
-        await updateTransportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, dto);
-        await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.TransportLink, costProfileDto);
+        await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.TransportLink,
+            new UpdateTransportCostProfileDto());
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
     {
-        var dto = new ProspUpdateOnshorePowerSupplyDto
-        {
-            Source = Source.ConceptApp
-        };
+        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.OnshorePowerSupplyLink,
+            new ProspUpdateOnshorePowerSupplyDto
+            {
+                Source = Source.ConceptApp
+            });
 
-        var costProfileDto = new UpdateOnshorePowerSupplyCostProfileDto();
-
-        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, dto);
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfileDto);
+        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId,
+            caseItem.Id,
+            caseItem.OnshorePowerSupplyLink,
+            new UpdateOnshorePowerSupplyCostProfileDto());
     }
 
     private static Concept MapSubstructureConcept(int importValue)
@@ -583,33 +622,5 @@ public class ProspExcelImportService(
             41 => ProductionFlowline.HDPELinedCS,
             _ => ProductionFlowline.No_production_flowline
         };
-    }
-
-    private async Task<Case> GetCase(Guid caseId)
-    {
-        var caseItem = await context.Cases
-                           .Include(c => c.TotalFeasibilityAndConceptStudies)
-                           .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-                           .Include(c => c.TotalFEEDStudies)
-                           .Include(c => c.TotalFEEDStudiesOverride)
-                           .Include(c => c.TotalOtherStudiesCostProfile)
-                           .Include(c => c.HistoricCostCostProfile)
-                           .Include(c => c.WellInterventionCostProfile)
-                           .Include(c => c.WellInterventionCostProfileOverride)
-                           .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-                           .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                           .Include(c => c.OnshoreRelatedOPEXCostProfile)
-                           .Include(c => c.AdditionalOPEXCostProfile)
-                           .Include(c => c.CessationWellsCost)
-                           .Include(c => c.CessationWellsCostOverride)
-                           .Include(c => c.CessationOffshoreFacilitiesCost)
-                           .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-                           .Include(c => c.CessationOnshoreFacilitiesCostProfile)
-                           .Include(c => c.CalculatedTotalIncomeCostProfile)
-                           .Include(c => c.CalculatedTotalCostCostProfile)
-                           .SingleOrDefaultAsync(c => c.Id == caseId)
-                       ?? throw new NotFoundInDbException($"Case {caseId} not found.");
-
-        return caseItem;
     }
 }
