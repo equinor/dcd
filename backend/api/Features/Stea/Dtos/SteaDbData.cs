@@ -12,6 +12,5 @@ public class SteaDbData
     public required List<Surf> Surfs { get; set; }
     public required List<Topside> Topsides { get; set; }
     public required List<Transport> Transports { get; set; }
-    public required List<Well> Wells { get; set; }
     public required List<WellProject> WellProjects { get; set; }
 }
