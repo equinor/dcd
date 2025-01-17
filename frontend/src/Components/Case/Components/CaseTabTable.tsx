@@ -62,7 +62,7 @@ const CenterGridIcons = styled.div`
     height: 100%;
 `
 
-const logger = createLogger({ name: "CaseTabTable", enabled: true })
+const logger = createLogger({ name: "CaseTabTable", enabled: false })
 
 const CaseTabTable = memo(({
     timeSeriesData,
@@ -86,16 +86,6 @@ const CaseTabTable = memo(({
 
     const [editQueue, setEditQueue] = useState<any[]>([])
 
-    /*
-    this is not even necessary?!
-    useEffect(() => {
-        if (ongoingCalculation !== undefined) {
-            gridRef.current?.api?.redrawRows()
-            logger.info("redrawing rows because ongoingCalculation changed to", ongoingCalculation)
-        }
-    }, [ongoingCalculation])
-    */
-
     // log the queue when it changes
     useEffect(() => {
         logger.info("edit queue changed", { editQueue })
@@ -110,7 +100,6 @@ const CaseTabTable = memo(({
         setEditQueue([])
     }, [editQueue])
 
-    /*
     // if nothing works, uncomment this. it auto submits the edit queue after 3 seconds of inactivity
     const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
     useEffect(() => {
@@ -119,14 +108,17 @@ const CaseTabTable = memo(({
                 const timeSinceLastEdit = Date.now() - lastEditTime
                 if (timeSinceLastEdit >= 3000) {
                     logger.info("Auto-submitting edit queue after 5 seconds of inactivity")
-                    submitEditQueue()
+                    if (gridRef.current.api.getEditingCells().length > 0) {
+                        gridRef.current.api.stopEditing()
+                    } else {
+                        submitEditQueue()
+                    }
                 }
-            }, 5000)
+            }, 3000)
             return () => clearTimeout(timer)
         }
         return undefined
     }, [editQueue, lastEditTime, submitEditQueue])
-    */
 
     const handleCellValueChange = useCallback((event: any) => {
         const params: ITableCellChangeParams = {
@@ -158,7 +150,7 @@ const CaseTabTable = memo(({
         const edit = generateTableCellEdit(params, config)
         if (edit) {
             logger.info("Processing edit", { edit })
-            // setLastEditTime(Date.now())
+            setLastEditTime(Date.now())
             setEditQueue((prev) => [...prev, edit])
         }
     }, [timeSeriesData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
@@ -315,7 +307,8 @@ const CaseTabTable = memo(({
 
             if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
                 logger.info("Click detected outside container - submitting edit queue", { editQueue })
-                submitEditQueue()
+                console.log("api.getEditingCells()", gridRef.current.api.getEditingCells())
+                // submitEditQueue()
             }
         }
 
