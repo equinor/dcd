@@ -62,7 +62,10 @@ const CenterGridIcons = styled.div`
     height: 100%;
 `
 
-const logger = createLogger({ name: "CaseTabTable", enabled: false })
+const logger = createLogger({
+    name: "CaseTabTable",
+    enabled: false, // Set to true to enable debug logging. dont leave this on for production
+})
 
 const CaseTabTable = memo(({
     timeSeriesData,

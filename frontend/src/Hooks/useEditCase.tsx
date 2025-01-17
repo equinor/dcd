@@ -34,10 +34,9 @@ interface AddEditParams {
     inputFieldId?: string;
 }
 
-// Create logger instance for edit queue
 const editQueueLogger = createLogger({
     name: "EDIT_QUEUE",
-    enabled: true, // Set to false to disable logging
+    enabled: false, // Set to true to enable debug logging. dont leave this on for production
 })
 
 const useEditCase = () => {
