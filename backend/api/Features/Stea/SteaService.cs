@@ -16,7 +16,7 @@ public class SteaService(DcdDbContext context, SteaRepository steaRepository)
         return (bytes, project.Name + "ExportToSTEA.xlsx");
     }
 
-    public async Task<SteaProjectDto> GetInputToStea(Guid projectId)
+    private async Task<SteaProjectDto> GetInputToStea(Guid projectId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
