@@ -8,7 +8,7 @@ namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 
 public class Co2IntensityProfileService(DcdDbContext context)
 {
-    public async Task Generate(Guid caseId)
+    public async Task CalculateCo2IntensityProfile(Guid caseId)
     {
         var caseItem = await context.Cases
             .Include(c => c.TotalFeasibilityAndConceptStudies)
@@ -41,14 +41,17 @@ public class Co2IntensityProfileService(DcdDbContext context)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
+        CalculateCo2Intensity(drainageStrategy);
+    }
 
+    public static void CalculateCo2Intensity(DrainageStrategy drainageStrategy)
+    {
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
-
         TimeSeries<double> generateCo2EmissionsProfile = new();
         if (drainageStrategy.Co2EmissionsOverride?.Override == true)
         {
             generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
-            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values.Select(v => v / 1E6).ToArray();
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values.Select(v => v).ToArray();
         }
         else
         {
@@ -73,7 +76,9 @@ public class Co2IntensityProfileService(DcdDbContext context)
             if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
             {
                 var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i + yearDifference];
-                co2IntensityValues.Add(dividedProfiles / 1E6 / boeConversionFactor * tonnesToKgFactor);
+                var co2Intensity = dividedProfiles / 1E6 / boeConversionFactor * tonnesToKgFactor;
+                co2IntensityValues.Add(co2Intensity);
+
             }
         }
 
@@ -89,14 +94,11 @@ public class Co2IntensityProfileService(DcdDbContext context)
     private static TimeSeries<double> GetTotalExportedVolumes(DrainageStrategy drainageStrategy)
     {
         var oilProfile = GetOilProfile(drainageStrategy);
-        var gasProfile = GetGasProfile(drainageStrategy);
-
-        var totalProfile = CostProfileMerger.MergeCostProfiles(oilProfile, gasProfile);
 
         return new Co2Intensity
         {
-            StartYear = totalProfile.StartYear,
-            Values = totalProfile.Values
+            StartYear = oilProfile.StartYear,
+            Values = oilProfile.Values
         };
     }
 
@@ -127,49 +129,9 @@ public class Co2IntensityProfileService(DcdDbContext context)
             };
         }
 
-        // Merging the profiles, defaulting to an empty profile if null
         var mergedProfiles = CostProfileMerger.MergeCostProfiles(
             oilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
             additionalOilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
-        );
-
-        return new TimeSeries<double>
-        {
-            Values = mergedProfiles.Values,
-            StartYear = mergedProfiles.StartYear,
-        };
-    }
-
-    private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
-    {
-        var billion = 1E9;
-        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? [];
-        var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? [];
-
-        TimeSeriesCost? gasProfile = null;
-        TimeSeriesCost? additionalGasProfile = null;
-
-        if (drainageStrategy.ProductionProfileGas != null)
-        {
-            gasProfile = new TimeSeriesCost
-            {
-                StartYear = drainageStrategy.ProductionProfileGas.StartYear,
-                Values = gasValues,
-            };
-        }
-
-        if (drainageStrategy.AdditionalProductionProfileGas != null)
-        {
-            additionalGasProfile = new TimeSeriesCost
-            {
-                StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear,
-                Values = additionalGasValues,
-            };
-        }
-
-        var mergedProfiles = CostProfileMerger.MergeCostProfiles(
-            gasProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
-            additionalGasProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
         );
 
         return new TimeSeries<double>

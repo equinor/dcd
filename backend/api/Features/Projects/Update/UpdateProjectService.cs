@@ -51,7 +51,39 @@ public class UpdateProjectService(DcdDbContext context)
 
     private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
     {
+        if (existingProject.ExchangeRateUSDToNOK != projectDto.ExchangeRateUSDToNOK)
+        {
+            return true;
+        }
+        if (existingProject.DiscountRate != projectDto.DiscountRate)
+        {
+            return true;
+        }
+        if (existingProject.GasPriceNOK != projectDto.GasPriceNOK)
+        {
+            return true;
+        }
+        if (existingProject.OilPriceUSD != projectDto.OilPriceUSD)
+        {
+            return true;
+        }
+        if (existingProject.AverageDevelopmentDrillingDays != projectDto.AverageDevelopmentDrillingDays)
+        {
+            return true;
+        }
         if (existingProject.DailyEmissionFromDrillingRig != projectDto.DailyEmissionFromDrillingRig)
+        {
+            return true;
+        }
+        if (existingProject.CO2EmissionFromFuelGas != projectDto.CO2EmissionFromFuelGas)
+        {
+            return true;
+        }
+        if (existingProject.CO2EmissionsFromFlaredGas != projectDto.CO2EmissionsFromFlaredGas)
+        {
+            return true;
+        }
+        if (existingProject.CO2Vented != projectDto.CO2Vented)
         {
             return true;
         }
