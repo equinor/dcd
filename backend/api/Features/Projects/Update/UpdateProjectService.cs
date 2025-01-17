@@ -1,4 +1,6 @@
 using api.Context;
+using api.Models;
+using api.Models.Infrastructure.ProjectRecalculation;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,8 @@ public class UpdateProjectService(DcdDbContext context)
     public async Task UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
         var existingProject = await context.Projects.SingleAsync(p => p.Id == projectId);
+
+        var shouldTriggerRecalculation = ShouldTriggerRecalculation(existingProject, projectDto);
 
         existingProject.Name = projectDto.Name;
         existingProject.ReferenceCaseId = projectDto.ReferenceCaseId;
@@ -33,6 +37,25 @@ public class UpdateProjectService(DcdDbContext context)
         existingProject.DiscountRate = projectDto.DiscountRate;
         existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
 
+        if (shouldTriggerRecalculation)
+        {
+            context.PendingRecalculations.Add(new PendingRecalculation
+            {
+                ProjectId = existingProject.Id,
+                CreatedUtc = DateTime.UtcNow
+            });
+        }
+
         await context.SaveChangesAsync();
+    }
+
+    private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
+    {
+        if (existingProject.DailyEmissionFromDrillingRig != projectDto.DailyEmissionFromDrillingRig)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

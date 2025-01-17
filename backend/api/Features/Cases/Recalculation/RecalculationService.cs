@@ -23,6 +23,31 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
 {
     private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
+    public async Task RunAllRecalculations(Guid caseId)
+    {
+        var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
+
+        if (wells.Count != 0 || drillingScheduleIds.Count != 0)
+        {
+            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(wells);
+        }
+
+        await serviceProvider.GetRequiredService<StudyCostProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<CessationCostProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<FuelFlaringLossesProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>().Generate(caseId);
+        await serviceProvider.GetRequiredService<ImportedElectricityProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<NetSaleGasProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<OpexCostProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<Co2EmissionsProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<Co2IntensityProfileService>().Generate(caseId);
+        await serviceProvider.GetRequiredService<CalculateTotalIncomeService>().CalculateTotalIncome(caseId);
+        await serviceProvider.GetRequiredService<CalculateTotalCostService>().CalculateTotalCost(caseId);
+        await serviceProvider.GetRequiredService<CalculateNpvService>().CalculateNpv(caseId);
+        await serviceProvider.GetRequiredService<CalculateBreakEvenOilPriceService>().CalculateBreakEvenOilPrice(caseId);
+    }
+
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
     {
         await Semaphore.WaitAsync(cancellationToken);

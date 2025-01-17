@@ -3,6 +3,7 @@ using System.Globalization;
 using api.AppInfrastructure;
 using api.AppInfrastructure.Middleware;
 using api.Features.BackgroundServices.ProjectMaster;
+using api.Features.BackgroundServices.ProjectRecalculation;
 using api.ModelMapping.AutoMapperProfiles;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -44,6 +45,7 @@ builder.Services.AddAutoMapper(typeof(CaseProfile));
 builder.Services.AddDcdIocConfiguration();
 
 builder.Services.AddHostedService<ProjectMasterBackgroundService>();
+builder.Services.AddHostedService<ProjectRecalculationBackgroundService>();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@ using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.Models;
 using api.Models.Infrastructure;
+using api.Models.Infrastructure.ProjectRecalculation;
 using api.Models.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
@@ -90,6 +91,8 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
     public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
+    public DbSet<PendingRecalculation> PendingRecalculations => Set<PendingRecalculation>();
+    public DbSet<CompletedRecalculation> CompletedRecalculations => Set<CompletedRecalculation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
