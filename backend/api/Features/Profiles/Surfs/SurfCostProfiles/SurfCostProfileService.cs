@@ -2,7 +2,6 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Surfs.SurfCostProfiles.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -13,7 +12,6 @@ namespace api.Features.Profiles.Surfs.SurfCostProfiles;
 public class SurfCostProfileService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
     public async Task AddOrUpdateSurfCostProfile(
@@ -22,12 +20,10 @@ public class SurfCostProfileService(
         Guid surfId,
         UpdateSurfCostProfileDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
-
         var surf = await context.Surfs
             .Include(t => t.CostProfile)
             .Include(x => x.CostProfileOverride)
-            .SingleAsync(t => t.Id == surfId);
+            .SingleAsync(t => t.ProjectId == projectId && t.Id == surfId);
 
         if (surf.CostProfile != null)
         {
@@ -70,9 +66,7 @@ public class SurfCostProfileService(
     {
         var existingProfile = await context.SurfCostProfile
             .Include(x => x.Surf).ThenInclude(surf => surf.CostProfileOverride)
-            .SingleAsync(x => x.Id == profileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, existingProfile.Surf.Id);
+            .SingleAsync(x => x.Surf.ProjectId == projectId && x.Id == profileId);
 
         if (existingProfile.Surf.ProspVersion == null)
         {

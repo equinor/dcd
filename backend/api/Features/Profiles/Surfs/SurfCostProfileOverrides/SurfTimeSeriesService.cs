@@ -3,7 +3,6 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -14,7 +13,6 @@ namespace api.Features.Profiles.Surfs.SurfCostProfileOverrides;
 public class SurfTimeSeriesService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
@@ -23,9 +21,7 @@ public class SurfTimeSeriesService(
         Guid surfId,
         CreateSurfCostProfileOverrideDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, surfId);
-
-        var surf = await context.Surfs.SingleAsync(x => x.Id == surfId);
+        var surf = await context.Surfs.SingleAsync(x => x.ProjectId == projectId && x.Id == surfId);
 
         var resourceHasProfile = await context.Surfs.AnyAsync(t => t.Id == surfId && t.CostProfileOverride != null);
 
@@ -55,30 +51,9 @@ public class SurfTimeSeriesService(
         Guid costProfileId,
         UpdateSurfCostProfileOverrideDto updatedSurfCostProfileOverrideDto)
     {
-        return await UpdateSurfTimeSeries<SurfCostProfileOverride, SurfCostProfileOverrideDto, UpdateSurfCostProfileOverrideDto>(
-            projectId,
-            caseId,
-            surfId,
-            costProfileId,
-            updatedSurfCostProfileOverrideDto,
-            id => context.SurfCostProfileOverride.Include(x => x.Surf).SingleAsync(x => x.Id == id)
-        );
-    }
-
-    private async Task<TDto> UpdateSurfTimeSeries<TProfile, TDto, TUpdateDto>(
-        Guid projectId,
-        Guid caseId,
-        Guid surfId,
-        Guid profileId,
-        TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile)
-        where TProfile : class, ISurfTimeSeries
-        where TDto : class
-        where TUpdateDto : class
-    {
-        var existingProfile = await getProfile(profileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<Surf>(projectId, existingProfile.Surf.Id);
+        var existingProfile = await context.SurfCostProfileOverride
+            .Include(x => x.Surf)
+            .SingleAsync(x => x.Surf.ProjectId == projectId && x.Id ==costProfileId);
 
         if (existingProfile.Surf.ProspVersion == null)
         {
@@ -88,11 +63,11 @@ public class SurfTimeSeriesService(
             }
         }
 
-        mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
+        mapperService.MapToEntity(updatedSurfCostProfileOverrideDto, existingProfile, surfId);
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        return mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(existingProfile, costProfileId);
     }
 }

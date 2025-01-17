@@ -2,7 +2,6 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -13,7 +12,6 @@ namespace api.Features.Profiles.Topsides.TopsideCostProfiles;
 public class TopsideCostProfileService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
     public async Task AddOrUpdateTopsideCostProfile(
@@ -22,11 +20,9 @@ public class TopsideCostProfileService(
         Guid topsideId,
         UpdateTopsideCostProfileDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
-
         var topside = await context.Topsides
             .Include(t => t.CostProfile)
-            .SingleAsync(t => t.Id == topsideId);
+            .SingleAsync(t => t.ProjectId == projectId && t.Id == topsideId);
 
         if (topside.CostProfile != null)
         {
@@ -68,9 +64,7 @@ public class TopsideCostProfileService(
     {
         var existingProfile = await context.TopsideCostProfiles
             .Include(x => x.Topside).ThenInclude(topside => topside.CostProfileOverride)
-            .SingleAsync(x => x.Id == profileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, existingProfile.Topside.Id);
+            .SingleAsync(x => x.Topside.ProjectId == projectId && x.Id == profileId);
 
         if (existingProfile.Topside.ProspVersion == null)
         {

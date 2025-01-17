@@ -4,7 +4,6 @@ using api.Exceptions;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -15,7 +14,6 @@ namespace api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 public class TopsideCostProfileOverrideService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
     public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
@@ -24,9 +22,7 @@ public class TopsideCostProfileOverrideService(
         Guid topsideId,
         CreateTopsideCostProfileOverrideDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, topsideId);
-
-        var topside = await context.Topsides.SingleAsync(x => x.Id == topsideId);
+        var topside = await context.Topsides.SingleAsync(x => x.ProjectId == projectId && x.Id == topsideId);
 
         var resourceHasProfile = await context.Topsides.AnyAsync(t => t.Id == topsideId && t.CostProfileOverride != null);
 
@@ -56,30 +52,9 @@ public class TopsideCostProfileOverrideService(
         Guid costProfileId,
         UpdateTopsideCostProfileOverrideDto dto)
     {
-        return await UpdateTopsideTimeSeries<TopsideCostProfileOverride, TopsideCostProfileOverrideDto, UpdateTopsideCostProfileOverrideDto>(
-            projectId,
-            caseId,
-            topsideId,
-            costProfileId,
-            dto,
-            id => context.TopsideCostProfileOverride.Include(x => x.Topside).SingleAsync(x => x.Id == id)
-        );
-    }
-
-    private async Task<TDto> UpdateTopsideTimeSeries<TProfile, TDto, TUpdateDto>(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        Guid profileId,
-        TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile>> getProfile)
-        where TProfile : class, ITopsideTimeSeries
-        where TDto : class
-        where TUpdateDto : class
-    {
-        var existingProfile = await getProfile(profileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<Topside>(projectId, existingProfile.Topside.Id);
+        var existingProfile = await context.TopsideCostProfileOverride
+            .Include(x => x.Topside)
+            .SingleAsync(x => x.Topside.ProjectId == projectId && x.Id == costProfileId);
 
         if (existingProfile.Topside.ProspVersion == null)
         {
@@ -89,11 +64,11 @@ public class TopsideCostProfileOverrideService(
             }
         }
 
-        mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
+        mapperService.MapToEntity(dto, existingProfile, topsideId);
 
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        return mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(existingProfile, costProfileId);
     }
 }
