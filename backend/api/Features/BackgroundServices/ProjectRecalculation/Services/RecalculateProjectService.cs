@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using api.Context;
 using api.Features.Cases.Recalculation;
 using api.Models.Infrastructure.ProjectRecalculation;
@@ -29,9 +31,13 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
                 .Select(x => x.Id)
                 .ToListAsync();
 
+            Dictionary<Guid, Dictionary<string, long>> debugLog = [];
+
             foreach (var caseId in caseIds)
             {
-                await recalculationService.RunAllRecalculations(caseId);
+                var timingForCase = await recalculationService.RunAllRecalculations(caseId);
+
+                debugLog.Add(caseId, timingForCase);
             }
 
             context.PendingRecalculations.Remove(pendingProject);
@@ -43,7 +49,8 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
                 ProjectId = pendingProject.ProjectId,
                 StartUtc = start,
                 EndUtc = end,
-                CalculationLengthInMilliseconds = (int)end.Subtract(start).TotalMilliseconds
+                CalculationLengthInMilliseconds = (int)end.Subtract(start).TotalMilliseconds,
+                DebugLog = JsonSerializer.Serialize(debugLog)
             });
 
             await context.SaveChangesAsync();

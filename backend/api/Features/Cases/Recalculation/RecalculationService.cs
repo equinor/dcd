@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using api.Context;
 using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
@@ -23,31 +25,83 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
 {
     private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
-    public async Task RunAllRecalculations(Guid caseId)
+    public async Task<Dictionary<string, long>> RunAllRecalculations(Guid caseId)
     {
+        Dictionary<string, long> debugLog = [];
+
+        var stopwatch = Stopwatch.StartNew();
+
         var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
+        debugLog.Add("CalculateExplorationAndWellProjectCost", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
 
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
         {
             await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            debugLog.Add("UpdateCostProfilesForWellsFromDrillingSchedules", stopwatch.ElapsedMilliseconds);
+            stopwatch.Restart();
+
             await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(wells);
+            debugLog.Add("UpdateCostProfilesForWells", stopwatch.ElapsedMilliseconds);
+            stopwatch.Restart();
         }
 
         await serviceProvider.GetRequiredService<StudyCostProfileService>().Generate(caseId);
+        debugLog.Add("StudyCostProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<CessationCostProfileService>().Generate(caseId);
+        debugLog.Add("CessationCostProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<FuelFlaringLossesProfileService>().Generate(caseId);
+        debugLog.Add("FuelFlaringLossesProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>().Generate(caseId);
+        debugLog.Add("GenerateGAndGAdminCostProfile", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<ImportedElectricityProfileService>().Generate(caseId);
+        debugLog.Add("ImportedElectricityProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<NetSaleGasProfileService>().Generate(caseId);
+        debugLog.Add("NetSaleGasProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<OpexCostProfileService>().Generate(caseId);
+        debugLog.Add("OpexCostProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<Co2EmissionsProfileService>().Generate(caseId);
+        debugLog.Add("Co2EmissionsProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<Co2IntensityProfileService>().Generate(caseId);
+        debugLog.Add("Co2IntensityProfileService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<CalculateTotalIncomeService>().CalculateTotalIncome(caseId);
+        debugLog.Add("CalculateTotalIncomeService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<CalculateTotalCostService>().CalculateTotalCost(caseId);
+        debugLog.Add("CalculateTotalCostService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<CalculateNpvService>().CalculateNpv(caseId);
+        debugLog.Add("CalculateNpvService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
         await serviceProvider.GetRequiredService<CalculateBreakEvenOilPriceService>().CalculateBreakEvenOilPrice(caseId);
+        debugLog.Add("CalculateBreakEvenOilPriceService", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
 
         await context.SaveChangesAsync();
+        debugLog.Add("SaveChangesAsync", stopwatch.ElapsedMilliseconds);
+
+        return debugLog;
     }
 
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
