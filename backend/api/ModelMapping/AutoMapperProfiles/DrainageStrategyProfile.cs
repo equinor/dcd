@@ -163,8 +163,6 @@ public class DrainageStrategyProfile : Profile
         CreateMap<ImportedElectricityOverride, ImportedElectricityOverrideDto>();
         CreateMap<Co2Intensity, Co2IntensityDto>();
 
-        CreateMap<UpdateDrainageStrategyDto, DrainageStrategy>();
-
         CreateMap<CreateImportedElectricityOverrideDto, ImportedElectricityOverride>()
             .ForMember(
                 dest => dest.Values,
