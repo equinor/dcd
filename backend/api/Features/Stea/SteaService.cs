@@ -30,8 +30,7 @@ public class SteaService(DcdDbContext context, SteaRepository steaRepository)
             Surfs = await steaRepository.GetSurfs(projectPk),
             Topsides = await steaRepository.GetTopsides(projectPk),
             Transports = await steaRepository.GetTransports(projectPk),
-            WellProjects = await steaRepository.GetWellProjects(projectPk),
-            Wells = await steaRepository.GetWells(projectPk)
+            WellProjects = await steaRepository.GetWellProjects(projectPk)
         };
 
         var steaCaseDtos = new List<SteaCaseDto>();
@@ -46,6 +45,13 @@ public class SteaService(DcdDbContext context, SteaRepository steaRepository)
             steaCaseDtos.Add(SteaCaseDtoBuilder.Build(caseItem, data));
         }
 
-        return SteaProjectDtoBuilder.Build(data.Project.Name, steaCaseDtos);
+        var startYears = steaCaseDtos.Where(x => x.StartYear > 0).Select(x => x.StartYear).ToList();
+
+        return new SteaProjectDto
+        {
+            Name = data.Project.Name,
+            SteaCases = steaCaseDtos,
+            StartYear = startYears.Any() ? startYears.Min() : 0
+        };
     }
 }

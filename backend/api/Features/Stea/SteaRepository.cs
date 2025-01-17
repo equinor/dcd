@@ -39,13 +39,6 @@ public class SteaRepository(DcdDbContext context)
         return project;
     }
 
-    public async Task<List<Well>> GetWells(Guid projectPk)
-    {
-        return await context.Wells
-            .Where(d => d.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
     public async Task<List<Exploration>> GetExplorations(Guid projectPk)
     {
         return await context.Explorations

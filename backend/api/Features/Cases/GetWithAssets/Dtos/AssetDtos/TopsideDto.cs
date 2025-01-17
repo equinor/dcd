@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 using api.Models.Enums;
 
@@ -64,3 +65,13 @@ public class TopsideDto
     [Required]
     public double PeakElectricityImported { get; set; }
 }
+
+public class TopsideCostProfileDto : TimeSeriesCostDto;
+
+public class TopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    [Required]
+    public bool Override { get; set; }
+}
+
+public class TopsideCessationCostProfileDto : TimeSeriesCostDto;

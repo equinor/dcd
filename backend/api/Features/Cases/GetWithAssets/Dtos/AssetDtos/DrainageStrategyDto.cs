@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 
 namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
@@ -18,3 +19,14 @@ public class DrainageStrategyDto
     [Required] public GasSolution GasSolution { get; set; }
 }
 
+public class FuelFlaringAndLossesDto : TimeSeriesVolumeDto;
+
+public class NetSalesGasDto : TimeSeriesVolumeDto;
+
+public class Co2EmissionsDto : TimeSeriesMassDto;
+
+public class ImportedElectricityDto : TimeSeriesEnergyDto;
+
+public class ProductionProfileNglDto : TimeSeriesVolumeDto;
+
+public class Co2IntensityDto : TimeSeriesMassDto;
