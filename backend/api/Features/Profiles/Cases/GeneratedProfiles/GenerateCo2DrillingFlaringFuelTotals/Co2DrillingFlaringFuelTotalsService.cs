@@ -4,7 +4,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 
 public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {

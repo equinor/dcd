@@ -1,7 +1,6 @@
 using System.Diagnostics;
 
 using api.Context;
-using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
@@ -15,6 +14,7 @@ using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 using api.Features.Cases.Recalculation.Types.OpexCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
+using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;

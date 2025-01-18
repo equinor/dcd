@@ -3,7 +3,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
+namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 
 public class Co2IntensityProfileService(DcdDbContext context)
 {
