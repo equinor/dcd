@@ -19,7 +19,7 @@ public class WaterInjectorCostProfileOverrideController(WaterInjectorCostProfile
     }
 
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut($"projects/{{projectId:guid}}/cases/{{caseId:guid}}/well-projects/{{wellProjectId:guid}}/water-injector-cost-profile-override/{{{nameof(costProfileId)}}}")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/water-injector-cost-profile-override/{costProfileId:guid}")]
     public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
