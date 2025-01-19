@@ -53,7 +53,7 @@ public class SurfTimeSeriesService(
     {
         var existingProfile = await context.SurfCostProfileOverride
             .Include(x => x.Surf)
-            .SingleAsync(x => x.Surf.ProjectId == projectId && x.Id ==costProfileId);
+            .SingleAsync(x => x.Surf.ProjectId == projectId && x.Id == costProfileId);
 
         if (existingProfile.Surf.ProspVersion == null)
         {
