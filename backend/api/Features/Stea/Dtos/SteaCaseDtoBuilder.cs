@@ -23,7 +23,7 @@ public static class SteaCaseDtoBuilder
         {
             steaCaseDto.Exploration.StartYear,
             steaCaseDto.ProductionAndSalesVolumes.StartYear,
-            steaCaseDto.Capex.StartYear,
+            steaCaseDto.Capex.Summary.StartYear,
             steaCaseDto.StudyCostProfile.StartYear,
             steaCaseDto.OpexCostProfile.StartYear,
             steaCaseDto.Capex.CessationCost.StartYear
@@ -203,7 +203,7 @@ public static class SteaCaseDtoBuilder
         costProfile.StartYear += dg4Year;
 
         steaCaseDto.Capex.Drilling = costProfile;
-        steaCaseDto.Capex.AddValues(costProfile);
+        steaCaseDto.Capex.Summary.AddValues(costProfile);
 
         steaCaseDto.Capex.OffshoreFacilities = new TimeSeriesCostDto();
         var substructure = steaDbData.Substructures.First(l => l.Id == caseItem.SubstructureLink);
@@ -271,8 +271,8 @@ public static class SteaCaseDtoBuilder
             steaCaseDto.Capex.OnshorePowerSupplyCost.AddValues(new TimeSeriesCostDto(onshorePowerSupply.CostProfile));
         }
 
-        steaCaseDto.Capex.AddValues(steaCaseDto.Capex.OffshoreFacilities);
-        steaCaseDto.Capex.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost);
+        steaCaseDto.Capex.Summary.AddValues(steaCaseDto.Capex.OffshoreFacilities);
+        steaCaseDto.Capex.Summary.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost);
     }
 
     private static void AddProductionSalesAndVolumes(SteaDbData steaDbData, SteaCaseDto steaCaseDto, Case caseItem)
