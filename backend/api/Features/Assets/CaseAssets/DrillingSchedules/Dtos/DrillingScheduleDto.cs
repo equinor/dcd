@@ -1,6 +1,6 @@
 
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 
-namespace api.Features.CaseProfiles.Dtos.Well;
+namespace api.Features.Assets.CaseAssets.DrillingSchedules.Dtos;
 
 public class DrillingScheduleDto : TimeSeriesScheduleDto;

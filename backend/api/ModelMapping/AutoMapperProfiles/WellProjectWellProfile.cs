@@ -1,4 +1,4 @@
-using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Assets.CaseAssets.DrillingSchedules.Dtos;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Models;
 

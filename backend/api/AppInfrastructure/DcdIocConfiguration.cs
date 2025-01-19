@@ -1,5 +1,6 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
+using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.Explorations;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
@@ -216,6 +217,9 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
         services.AddScoped<UpdateWellProjectService>();
+
+        /* Drilling schedules */
+        services.AddScoped<DrillingScheduleService>();
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();

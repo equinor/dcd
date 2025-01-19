@@ -1,6 +1,4 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.CaseProfiles.Dtos;
-using api.Features.CaseProfiles.Dtos.Well;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,30 +16,5 @@ public class UpdateWellProjectController(UpdateWellProjectService updateWellProj
     {
         await updateWellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
         return NoContent();
-    }
-
-    [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/wells/{wellId:guid}/drilling-schedule/{drillingScheduleId:guid}")]
-    public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid wellProjectId,
-        [FromRoute] Guid wellId,
-        [FromRoute] Guid drillingScheduleId,
-        [FromBody] UpdateDrillingScheduleDto dto)
-    {
-        return await updateWellProjectService.UpdateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
-    }
-
-    [AuthorizeActionType(ActionType.Edit)]
-    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/wells/{wellId:guid}/drilling-schedule")]
-    public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid wellProjectId,
-        [FromRoute] Guid wellId,
-        [FromBody] CreateDrillingScheduleDto dto)
-    {
-        return await updateWellProjectService.CreateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, dto);
     }
 }
