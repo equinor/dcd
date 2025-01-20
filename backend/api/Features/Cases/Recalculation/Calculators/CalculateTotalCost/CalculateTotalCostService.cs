@@ -27,6 +27,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
 
         var substructure = await context.Substructures
@@ -67,6 +68,7 @@ public class CalculateTotalCostService(DcdDbContext context)
 
         var exploration = await context.Explorations
             .Include(e => e.GAndGAdminCost)
+            .Include(e => e.GAndGAdminCostOverride)
             .Include(e => e.CountryOfficeCost)
             .Include(e => e.SeismicAcquisitionAndProcessing)
             .Include(e => e.ExplorationWellCostProfile)
