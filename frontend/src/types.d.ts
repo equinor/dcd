@@ -200,37 +200,37 @@ declare namespace Components {
             mdqc: boolean;
         }
         export interface CreateTimeSeriesCostDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
         }
         export interface CreateTimeSeriesCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface CreateTimeSeriesEnergyDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface CreateTimeSeriesMassOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface CreateTimeSeriesScheduleDto {
-            startYear?: number; // int32
-            values?: number /* int32 */[] | null;
+            startYear: number; // int32
+            values: number /* int32 */[];
         }
         export interface CreateTimeSeriesVolumeDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface CreateTimeSeriesVolumeOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface CreateWellDto {
             name: string;
@@ -472,16 +472,16 @@ declare namespace Components {
         export interface TimeSeriesCostDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
         }
         export interface TimeSeriesCostOverrideDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
             override: boolean;
@@ -489,45 +489,45 @@ declare namespace Components {
         export interface TimeSeriesEnergyDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
         }
         export interface TimeSeriesEnergyOverrideDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
             override: boolean;
         }
         export interface TimeSeriesMassDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
         }
         export interface TimeSeriesMassOverrideDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
             override: boolean;
         }
         export interface TimeSeriesScheduleDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* int32 */[] | null;
+            values: number /* int32 */[];
         }
         export interface TimeSeriesVolumeDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
         }
         export interface TimeSeriesVolumeOverrideDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
+            values: number /* double */[];
+            sum: number; // double
             override: boolean;
         }
         export interface TopsideDto {
@@ -731,38 +731,38 @@ declare namespace Components {
             deleteWellDtos: DeleteWellDto[];
         }
         export interface UpdateTimeSeriesCostDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
         }
         export interface UpdateTimeSeriesCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface UpdateTimeSeriesEnergyOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface UpdateTimeSeriesMassOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface UpdateTimeSeriesScheduleDto {
-            startYear?: number; // int32
-            values?: number /* int32 */[] | null;
+            startYear: number; // int32
+            values: number /* int32 */[];
         }
         export interface UpdateTimeSeriesVolumeDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface UpdateTimeSeriesVolumeOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface UpdateTopsideDto {
             dryWeight?: number; // double

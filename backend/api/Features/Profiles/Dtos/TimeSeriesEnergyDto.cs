@@ -13,17 +13,17 @@ public class TimeSeriesEnergyOverrideDto : TimeSeriesEnergyDto
 
 public class CreateTimeSeriesEnergyDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
 }
 
 public class UpdateTimeSeriesEnergyDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
 }
 
 public class UpdateTimeSeriesEnergyOverrideDto : UpdateTimeSeriesEnergyDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }

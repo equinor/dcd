@@ -13,22 +13,22 @@ public class TimeSeriesVolumeOverrideDto : TimeSeriesVolumeDto
 
 public class CreateTimeSeriesVolumeDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
 }
 
 public class CreateTimeSeriesVolumeOverrideDto : CreateTimeSeriesVolumeDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }
 
 public class UpdateTimeSeriesVolumeDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
 }
 
 public class UpdateTimeSeriesVolumeOverrideDto : UpdateTimeSeriesVolumeDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }

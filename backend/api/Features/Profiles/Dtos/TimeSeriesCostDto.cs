@@ -29,24 +29,24 @@ public class TimeSeriesCostOverrideDto : TimeSeriesCostDto
 
 public class CreateTimeSeriesCostDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
-    public Currency Currency { get; set; }
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
+    [Required] public Currency Currency { get; set; }
 }
 
 public class CreateTimeSeriesCostOverrideDto : CreateTimeSeriesCostDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }
 
 public class UpdateTimeSeriesCostDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
-    public Currency Currency { get; set; }
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
+    [Required] public Currency Currency { get; set; }
 }
 
 public class UpdateTimeSeriesCostOverrideDto : UpdateTimeSeriesCostDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }

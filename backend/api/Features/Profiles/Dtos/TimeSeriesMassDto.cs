@@ -13,22 +13,22 @@ public class TimeSeriesMassOverrideDto : TimeSeriesMassDto
 
 public class CreateTimeSeriesMassDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
 }
 
 public class CreateTimeSeriesMassOverrideDto : CreateTimeSeriesMassDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }
 
 public class UpdateTimeSeriesMassDto
 {
-    public int StartYear { get; set; }
-    public double[]? Values { get; set; } = [];
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
 }
 
 public class UpdateTimeSeriesMassOverrideDto : UpdateTimeSeriesMassDto
 {
-    public bool Override { get; set; }
+    [Required] public bool Override { get; set; }
 }
