@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class WaterInjectorCostProfileOverrideService(
     IRecalculationService recalculationService)
     : WellProjectProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
-    public async Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateWaterInjectorCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
-        CreateWaterInjectorCostProfileOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateWellProjectProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, CreateWaterInjectorCostProfileOverrideDto>(
+        return await CreateWellProjectProfile<WaterInjectorCostProfileOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             wellProjectId,
@@ -30,14 +30,14 @@ public class WaterInjectorCostProfileOverrideService(
             d => d.WaterInjectorCostProfileOverride != null);
     }
 
-    public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateWaterInjectorCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
-        UpdateWaterInjectorCostProfileOverrideDto updateDto)
+        UpdateTimeSeriesCostOverrideDto updateDto)
     {
-        return await UpdateWellProjectCostProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, UpdateWaterInjectorCostProfileOverrideDto>(
+        return await UpdateWellProjectCostProfile<WaterInjectorCostProfileOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             wellProjectId,

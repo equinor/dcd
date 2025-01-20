@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class ProductionProfileWaterService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<ProductionProfileWaterDto> CreateProductionProfileWater(
+    public async Task<TimeSeriesVolumeDto> CreateProductionProfileWater(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateProductionProfileWaterDto createProfileDto)
+        CreateTimeSeriesVolumeDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<ProductionProfileWater, ProductionProfileWaterDto, CreateProductionProfileWaterDto>(
+        return await CreateDrainageStrategyProfile<ProductionProfileWater, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class ProductionProfileWaterService(
             d => d.ProductionProfileWater != null);
     }
 
-    public async Task<ProductionProfileWaterDto> UpdateProductionProfileWater(
+    public async Task<TimeSeriesVolumeDto> UpdateProductionProfileWater(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateProductionProfileWaterDto updatedProductionProfileWaterDto)
+        UpdateTimeSeriesVolumeDto updatedProductionProfileWaterDto)
     {
-        return await UpdateDrainageStrategyProfile<ProductionProfileWater, ProductionProfileWaterDto, UpdateProductionProfileWaterDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileWater, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,

@@ -1,4 +1,4 @@
-using api.Features.Assets.CaseAssets.DrillingSchedules.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -9,8 +9,8 @@ public class WellProfile : Profile
 {
     public WellProfile()
     {
-        CreateMap<DrillingScheduleDto, DrillingSchedule>().ReverseMap();
-        CreateMap<CreateDrillingScheduleDto, DrillingSchedule>();
-        CreateMap<UpdateDrillingScheduleDto, DrillingSchedule>();
+        CreateMap<TimeSeriesScheduleDto, DrillingSchedule>().ReverseMap();
+        CreateMap<CreateTimeSeriesScheduleDto, DrillingSchedule>();
+        CreateMap<UpdateTimeSeriesScheduleDto, DrillingSchedule>();
     }
 }

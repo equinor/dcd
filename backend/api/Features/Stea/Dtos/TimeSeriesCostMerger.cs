@@ -1,4 +1,4 @@
-using api.Features.CaseProfiles.Dtos.TimeSeries;
+using api.Features.Profiles.Dtos;
 
 namespace api.Features.Stea.Dtos;
 

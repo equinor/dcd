@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Surfs.SurfCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -18,7 +18,7 @@ public class SurfCostProfileService(
         Guid projectId,
         Guid caseId,
         Guid surfId,
-        UpdateSurfCostProfileDto dto)
+        UpdateTimeSeriesCostDto dto)
     {
         var surf = await context.Surfs
             .Include(t => t.CostProfile)
@@ -37,7 +37,7 @@ public class SurfCostProfileService(
     private async Task CreateSurfCostProfile(
         Guid caseId,
         Guid surfId,
-        UpdateSurfCostProfileDto dto,
+        UpdateTimeSeriesCostDto dto,
         Surf surf)
     {
         var surfCostProfile = new SurfCostProfile
@@ -62,7 +62,7 @@ public class SurfCostProfileService(
         Guid caseId,
         Guid surfId,
         Guid profileId,
-        UpdateSurfCostProfileDto updatedProfileDto)
+        UpdateTimeSeriesCostDto updatedProfileDto)
     {
         var existingProfile = await context.SurfCostProfile
             .Include(x => x.Surf).ThenInclude(surf => surf.CostProfileOverride)

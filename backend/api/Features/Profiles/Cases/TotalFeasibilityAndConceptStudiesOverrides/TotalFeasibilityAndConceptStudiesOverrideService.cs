@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class TotalFeasibilityAndConceptStudiesOverrideService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
-        CreateTotalFeasibilityAndConceptStudiesOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateCaseProfile<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto, CreateTotalFeasibilityAndConceptStudiesOverrideDto>(
+        return await CreateCaseProfile<TotalFeasibilityAndConceptStudiesOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.TotalFeasibilityAndConceptStudiesOverride != null);
     }
 
-    public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateTotalFeasibilityAndConceptStudiesOverrideDto updatedCostProfileDto)
+        UpdateTimeSeriesCostOverrideDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto, UpdateTotalFeasibilityAndConceptStudiesOverrideDto>(
+        return await UpdateCaseCostProfile<TotalFeasibilityAndConceptStudiesOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             costProfileId,

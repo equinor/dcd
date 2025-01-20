@@ -55,9 +55,9 @@ class CaseService extends __BaseService {
     public async createCessationWellsCostOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateCessationWellsCostOverrideDto,
-    ): Promise<Components.Schemas.CessationWellsCostOverrideDto> {
-        const res: Components.Schemas.CessationWellsCostOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/cessation-wells-cost-override/`,
             { body: dto },
         )
@@ -68,9 +68,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateCessationWellsCostOverrideDto,
-    ): Promise<Components.Schemas.CessationWellsCostOverrideDto> {
-        const res: Components.Schemas.CessationWellsCostOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/cessation-wells-cost-override/${costProfileId}`,
             { body: dto },
         )
@@ -80,9 +80,9 @@ class CaseService extends __BaseService {
     public async createCessationOffshoreFacilitiesCostOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateCessationOffshoreFacilitiesCostOverrideDto,
-    ): Promise<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto> {
-        const res: Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/cessation-offshore-facilities-cost-override/`,
             { body: dto },
         )
@@ -93,9 +93,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateCessationOffshoreFacilitiesCostOverrideDto,
-    ): Promise<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto> {
-        const res: Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/cessation-offshore-facilities-cost-override/${costProfileId}`,
             { body: dto },
         )
@@ -105,9 +105,9 @@ class CaseService extends __BaseService {
     public async createCessationOnshoreFacilitiesCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
-    ): Promise<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto> {
-        const res: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/cessation-onshore-facilities-cost-profile/`,
             { body: dto },
         )
@@ -118,9 +118,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
-    ): Promise<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto> {
-        const res: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto = await this.put(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/cessation-onshore-facilities-cost-profile/${costProfileId}`,
             { body: dto },
         )
@@ -130,9 +130,9 @@ class CaseService extends __BaseService {
     public async createTotalFeasibilityAndConceptStudiesOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateTotalFeasibilityAndConceptStudiesOverrideDto,
-    ): Promise<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto> {
-        const res: Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/total-feasibility-and-concept-studies-override/`,
             { body: dto },
         )
@@ -143,9 +143,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateTotalFeasibilityAndConceptStudiesOverrideDto,
-    ): Promise<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto> {
-        const res: Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/total-feasibility-and-concept-studies-override/${costProfileId}`,
             { body: dto },
         )
@@ -155,9 +155,9 @@ class CaseService extends __BaseService {
     public async createTotalFEEDStudiesOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateTotalFeedStudiesOverrideDto,
-    ): Promise<Components.Schemas.TotalFeedStudiesOverrideDto> {
-        const res: Components.Schemas.TotalFeedStudiesOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/total-feed-studies-override/`,
             { body: dto },
         )
@@ -168,9 +168,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateTotalFeedStudiesOverrideDto,
-    ): Promise<Components.Schemas.TotalFeedStudiesOverrideDto> {
-        const res: Components.Schemas.TotalFeedStudiesOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/total-feed-studies-override/${costProfileId}`,
             { body: dto },
         )
@@ -180,9 +180,9 @@ class CaseService extends __BaseService {
     public async createTotalOtherStudiesCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateTotalOtherStudiesCostProfileDto,
-    ): Promise<Components.Schemas.TotalOtherStudiesCostProfileDto> {
-        const res: Components.Schemas.TotalOtherStudiesCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/total-other-studies-cost-profile/`,
             { body: dto },
         )
@@ -193,9 +193,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateTotalOtherStudiesCostProfileDto,
-    ): Promise<Components.Schemas.TotalOtherStudiesCostProfileDto> {
-        const res: Components.Schemas.TotalOtherStudiesCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/total-other-studies-cost-profile/${costProfileId}`,
             { body: dto },
         )
@@ -205,9 +205,9 @@ class CaseService extends __BaseService {
     public async createHistoricCostCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateHistoricCostCostProfileDto,
-    ): Promise<Components.Schemas.HistoricCostCostProfileDto> {
-        const res: Components.Schemas.HistoricCostCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/historic-cost-cost-profile/`,
             { body: dto },
         )
@@ -218,9 +218,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateHistoricCostCostProfileDto,
-    ): Promise<Components.Schemas.HistoricCostCostProfileDto> {
-        const res: Components.Schemas.HistoricCostCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/historic-cost-cost-profile/${costProfileId}`,
             { body: dto },
         )
@@ -230,9 +230,9 @@ class CaseService extends __BaseService {
     public async createOffshoreFacilitiesOperationsCostProfileOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateOffshoreFacilitiesOperationsCostProfileOverrideDto,
-    ): Promise<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto> {
-        const res: Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/offshore-facilities-operations-cost-profile-override/`,
             { body: dto },
         )
@@ -243,9 +243,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto,
-    ): Promise<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto> {
-        const res: Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/offshore-facilities-operations-cost-profile-override/${costProfileId}`,
             { body: dto },
         )
@@ -255,9 +255,9 @@ class CaseService extends __BaseService {
     public async createWellInterventionCostProfileOverride(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateWellInterventionCostProfileOverrideDto,
-    ): Promise<Components.Schemas.WellInterventionCostProfileOverrideDto> {
-        const res: Components.Schemas.WellInterventionCostProfileOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/well-intervention-cost-profile-override/`,
             { body: dto },
         )
@@ -268,9 +268,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateWellInterventionCostProfileOverrideDto,
-    ): Promise<Components.Schemas.WellInterventionCostProfileOverrideDto> {
-        const res: Components.Schemas.WellInterventionCostProfileOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/well-intervention-cost-profile-override/${costProfileId}`,
             { body: dto },
         )
@@ -280,9 +280,9 @@ class CaseService extends __BaseService {
     public async createOnshoreRelatedOPEXCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateOnshoreRelatedOpexCostProfileDto,
-    ): Promise<Components.Schemas.OnshoreRelatedOpexCostProfileDto> {
-        const res: Components.Schemas.OnshoreRelatedOpexCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/onshore-related-opex-cost-profile/`,
             { body: dto },
         )
@@ -293,9 +293,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateOnshoreRelatedOpexCostProfileDto,
-    ): Promise<Components.Schemas.OnshoreRelatedOpexCostProfileDto> {
-        const res: Components.Schemas.OnshoreRelatedOpexCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/onshore-related-opex-cost-profile/${costProfileId}`,
             { body: dto },
         )
@@ -305,9 +305,9 @@ class CaseService extends __BaseService {
     public async createAdditionalOPEXCostProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateAdditionalOpexCostProfileDto,
-    ): Promise<Components.Schemas.AdditionalOpexCostProfileDto> {
-        const res: Components.Schemas.AdditionalOpexCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/additional-opex-cost-profile/`,
             { body: dto },
         )
@@ -318,9 +318,9 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateAdditionalOpexCostProfileDto,
-    ): Promise<Components.Schemas.AdditionalOpexCostProfileDto> {
-        const res: Components.Schemas.AdditionalOpexCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/additional-opex-cost-profile/${costProfileId}`,
             { body: dto },
         )

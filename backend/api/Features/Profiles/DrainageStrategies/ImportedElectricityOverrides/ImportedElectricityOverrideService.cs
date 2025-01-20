@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class ImportedElectricityOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<ImportedElectricityOverrideDto> CreateImportedElectricityOverride(
+    public async Task<TimeSeriesEnergyOverrideDto> CreateImportedElectricityOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateImportedElectricityOverrideDto createProfileDto)
+        CreateTimeSeriesEnergyDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<ImportedElectricityOverride, ImportedElectricityOverrideDto, CreateImportedElectricityOverrideDto>(
+        return await CreateDrainageStrategyProfile<ImportedElectricityOverride, TimeSeriesEnergyOverrideDto, CreateTimeSeriesEnergyDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class ImportedElectricityOverrideService(
             d => d.ImportedElectricityOverride != null);
     }
 
-    public async Task<ImportedElectricityOverrideDto> UpdateImportedElectricityOverride(
+    public async Task<TimeSeriesEnergyOverrideDto> UpdateImportedElectricityOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateImportedElectricityOverrideDto updateDto)
+        UpdateTimeSeriesEnergyOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<ImportedElectricityOverride, ImportedElectricityOverrideDto, UpdateImportedElectricityOverrideDto>(
+        return await UpdateDrainageStrategyProfile<ImportedElectricityOverride, TimeSeriesEnergyOverrideDto, UpdateTimeSeriesEnergyOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

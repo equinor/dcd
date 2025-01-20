@@ -1,9 +1,8 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -16,11 +15,11 @@ public class TopsideCostProfileOverrideService(
     IMapperService mapperService,
     IRecalculationService recalculationService)
 {
-    public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateTopsideCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid topsideId,
-        CreateTopsideCostProfileOverrideDto dto)
+        CreateTimeSeriesCostOverrideDto dto)
     {
         var topside = await context.Topsides.SingleAsync(x => x.ProjectId == projectId && x.Id == topsideId);
 
@@ -42,15 +41,15 @@ public class TopsideCostProfileOverrideService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(newProfile, newProfile.Id);
+        return mapperService.MapToDto<TopsideCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
     }
 
-    public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateTopsideCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid topsideId,
         Guid costProfileId,
-        UpdateTopsideCostProfileOverrideDto dto)
+        UpdateTimeSeriesCostOverrideDto dto)
     {
         var existingProfile = await context.TopsideCostProfileOverride
             .Include(x => x.Topside)
@@ -69,6 +68,6 @@ public class TopsideCostProfileOverrideService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(existingProfile, costProfileId);
+        return mapperService.MapToDto<TopsideCostProfileOverride, TimeSeriesCostOverrideDto>(existingProfile, costProfileId);
     }
 }

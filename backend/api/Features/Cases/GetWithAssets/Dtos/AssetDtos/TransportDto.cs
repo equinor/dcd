@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 using api.Models.Enums;
 
@@ -31,7 +30,3 @@ public class TransportDto
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
 }
-
-public class TransportCostProfileDto : TimeSeriesCostDto;
-
-public class TransportCessationCostProfileDto : TimeSeriesCostDto;

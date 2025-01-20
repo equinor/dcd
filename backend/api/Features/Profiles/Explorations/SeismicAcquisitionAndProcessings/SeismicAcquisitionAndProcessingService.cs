@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -15,13 +15,13 @@ public class SeismicAcquisitionAndProcessingService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService) : ExplorationProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
-    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+    public async Task<TimeSeriesCostDto> CreateSeismicAcquisitionAndProcessing(
         Guid projectId,
         Guid caseId,
         Guid explorationId,
-        CreateSeismicAcquisitionAndProcessingDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
+        return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             explorationId,
@@ -29,14 +29,14 @@ public class SeismicAcquisitionAndProcessingService(
             d => d.SeismicAcquisitionAndProcessing != null);
     }
 
-    public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
+    public async Task<TimeSeriesCostDto> UpdateSeismicAcquisitionAndProcessing(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
-        UpdateSeismicAcquisitionAndProcessingDto updateDto)
+        UpdateTimeSeriesCostDto updateDto)
     {
-        return await UpdateExplorationCostProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, UpdateSeismicAcquisitionAndProcessingDto>(
+        return await UpdateExplorationCostProfile<SeismicAcquisitionAndProcessing, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             wellProjectId,

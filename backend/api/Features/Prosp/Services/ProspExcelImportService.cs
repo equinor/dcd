@@ -6,16 +6,12 @@ using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles.Dtos;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles.Dtos;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
-using api.Features.Profiles.Substructures.SubstructureCostProfiles.Dtos;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
-using api.Features.Profiles.Surfs.SurfCostProfiles.Dtos;
-using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfiles;
-using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
 using api.Models;
@@ -116,7 +112,7 @@ public class ProspExcelImportService(
         var waterInjectorCount = ReadIntValue(cellData, ProspCellReferences.Surf.WaterInjectorCount);
         var gasInjectorCount = ReadIntValue(cellData, ProspCellReferences.Surf.GasInjectorCount);
         var cessationCost = ReadDoubleValue(cellData, ProspCellReferences.Surf.CessationCost);
-        var costProfile = new UpdateSurfCostProfileDto
+        var costProfile = new UpdateTimeSeriesCostDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -188,7 +184,7 @@ public class ProspExcelImportService(
         var cO2OnMaxWaterInjectionProfile =
             ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2OnMaxWaterInjectionProfile);
         var facilityOpex = ReadDoubleValue(cellData, ProspCellReferences.TopSide.FacilityOpex);
-        var costProfile = new UpdateTopsideCostProfileDto
+        var costProfile = new UpdateTimeSeriesCostDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -250,7 +246,7 @@ public class ProspExcelImportService(
         var dryWeight = ReadDoubleValue(cellData, ProspCellReferences.SubStructure.DryWeight);
         var conceptInt = ReadIntValue(cellData, ProspCellReferences.SubStructure.ConceptInt);
         var concept = MapSubstructureConcept(conceptInt);
-        var costProfile = new UpdateSubstructureCostProfileDto
+        var costProfile = new UpdateTimeSeriesCostDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year
@@ -293,7 +289,7 @@ public class ProspExcelImportService(
         var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.Transport.CostProfileStartYear);
         var dG3Date = ReadDateValue(cellData, ProspCellReferences.Transport.Dg3Date);
         var dG4Date = ReadDateValue(cellData, ProspCellReferences.Transport.Dg4Date);
-        var costProfile = new UpdateTransportCostProfileDto
+        var costProfile = new UpdateTimeSeriesCostDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -337,7 +333,7 @@ public class ProspExcelImportService(
         var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.OnshorePowerSupply.CostProfileStartYear);
         var dG4Date = ReadDateValue(cellData, ProspCellReferences.OnshorePowerSupply.Dg4Date);
 
-        var costProfile = new UpdateOnshorePowerSupplyCostProfileDto
+        var costProfile = new UpdateTimeSeriesCostDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -504,7 +500,7 @@ public class ProspExcelImportService(
         await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId,
             caseItem.Id,
             caseItem.SurfLink,
-            new UpdateSurfCostProfileDto());
+            new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedTopside(Case caseItem)
@@ -520,7 +516,7 @@ public class ProspExcelImportService(
         await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId,
             caseItem.Id,
             caseItem.TopsideLink,
-            new UpdateTopsideCostProfileDto());
+            new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedSubstructure(Case caseItem)
@@ -536,7 +532,7 @@ public class ProspExcelImportService(
         await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId,
             caseItem.Id,
             caseItem.SubstructureLink,
-            new UpdateSubstructureCostProfileDto());
+            new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedTransport(Case caseItem)
@@ -552,7 +548,7 @@ public class ProspExcelImportService(
         await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId,
             caseItem.Id,
             caseItem.TransportLink,
-            new UpdateTransportCostProfileDto());
+            new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
@@ -568,7 +564,7 @@ public class ProspExcelImportService(
         await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId,
             caseItem.Id,
             caseItem.OnshorePowerSupplyLink,
-            new UpdateOnshorePowerSupplyCostProfileDto());
+            new UpdateTimeSeriesCostDto());
     }
 
     private static Concept MapSubstructureConcept(int importValue)

@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -18,7 +18,7 @@ public class TransportCostProfileService(
         Guid projectId,
         Guid caseId,
         Guid transportId,
-        UpdateTransportCostProfileDto dto)
+        UpdateTimeSeriesCostDto dto)
     {
         var transport = await context.Transports
             .Include(t => t.CostProfile)
@@ -36,7 +36,7 @@ public class TransportCostProfileService(
     private async Task CreateTransportCostProfile(
         Guid caseId,
         Guid transportId,
-        UpdateTransportCostProfileDto dto,
+        UpdateTimeSeriesCostDto dto,
         Transport transport)
     {
         var transportCostProfile = new TransportCostProfile
@@ -61,7 +61,7 @@ public class TransportCostProfileService(
         Guid caseId,
         Guid transportId,
         Guid profileId,
-        UpdateTransportCostProfileDto dto)
+        UpdateTimeSeriesCostDto dto)
     {
         var existingProfile = await context.TransportCostProfile
             .Include(x => x.Transport).ThenInclude(transport => transport.CostProfileOverride)

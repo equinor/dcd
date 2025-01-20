@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileGases.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class ProductionProfileGasService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<ProductionProfileGasDto> CreateProductionProfileGas(
+    public async Task<TimeSeriesVolumeDto> CreateProductionProfileGas(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateProductionProfileGasDto createProfileDto)
+        CreateTimeSeriesVolumeDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<ProductionProfileGas, ProductionProfileGasDto, CreateProductionProfileGasDto>(
+        return await CreateDrainageStrategyProfile<ProductionProfileGas, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class ProductionProfileGasService(
             d => d.ProductionProfileGas != null);
     }
 
-    public async Task<ProductionProfileGasDto> UpdateProductionProfileGas(
+    public async Task<TimeSeriesVolumeDto> UpdateProductionProfileGas(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateProductionProfileGasDto updatedProductionProfileGasDto)
+        UpdateTimeSeriesVolumeDto updatedProductionProfileGasDto)
     {
-        return await UpdateDrainageStrategyProfile<ProductionProfileGas, ProductionProfileGasDto, UpdateProductionProfileGasDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileGas, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,

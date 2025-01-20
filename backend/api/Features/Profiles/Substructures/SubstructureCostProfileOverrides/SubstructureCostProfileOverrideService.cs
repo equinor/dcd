@@ -2,7 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -17,11 +17,11 @@ public class SubstructureCostProfileOverrideService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateSubstructureCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid substructureId,
-        CreateSubstructureCostProfileOverrideDto dto)
+        CreateTimeSeriesCostOverrideDto dto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
 
@@ -45,17 +45,17 @@ public class SubstructureCostProfileOverrideService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(newProfile, newProfile.Id);
+        return mapperService.MapToDto<SubstructureCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
     }
 
-    public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateSubstructureCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid substructureId,
         Guid costProfileId,
-        UpdateSubstructureCostProfileOverrideDto dto)
+        UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await UpdateSubstructureTimeSeries<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto, UpdateSubstructureCostProfileOverrideDto>(
+        return await UpdateSubstructureTimeSeries<SubstructureCostProfileOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             substructureId,

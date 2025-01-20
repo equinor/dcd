@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class OnshoreRelatedOpexCostProfileService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<OnshoreRelatedOpexCostProfileDto> CreateOnshoreRelatedOpexCostProfile(
+    public async Task<TimeSeriesCostDto> CreateOnshoreRelatedOpexCostProfile(
         Guid projectId,
         Guid caseId,
-        CreateOnshoreRelatedOpexCostProfileDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateCaseProfile<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOpexCostProfileDto, CreateOnshoreRelatedOpexCostProfileDto>(
+        return await CreateCaseProfile<OnshoreRelatedOPEXCostProfile, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.OnshoreRelatedOPEXCostProfile != null);
     }
 
-    public async Task<OnshoreRelatedOpexCostProfileDto> UpdateOnshoreRelatedOpexCostProfile(
+    public async Task<TimeSeriesCostDto> UpdateOnshoreRelatedOpexCostProfile(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateOnshoreRelatedOpexCostProfileDto updatedCostProfileDto)
+        UpdateTimeSeriesCostDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOpexCostProfileDto, UpdateOnshoreRelatedOpexCostProfileDto>(
+        return await UpdateCaseCostProfile<OnshoreRelatedOPEXCostProfile, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             costProfileId,

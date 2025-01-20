@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class AdditionalProductionProfileOilController(AdditionalProductionProfil
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/additional-production-profile-oil")]
-    public async Task<AdditionalProductionProfileOilDto> CreateAdditionalProductionProfileOil(
+    public async Task<TimeSeriesVolumeDto> CreateAdditionalProductionProfileOil(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateAdditionalProductionProfileOilDto dto)
+        [FromBody] CreateTimeSeriesVolumeDto dto)
     {
         return await service.CreateAdditionalProductionProfileOil(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/additional-production-profile-oil/{profileId:guid}")]
-    public async Task<AdditionalProductionProfileOilDto> UpdateAdditionalProductionProfileOil(
+    public async Task<TimeSeriesVolumeDto> UpdateAdditionalProductionProfileOil(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateAdditionalProductionProfileOilDto dto)
+        [FromBody] UpdateTimeSeriesVolumeDto dto)
     {
         return await service.UpdateAdditionalProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
     }

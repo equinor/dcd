@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class Co2EmissionsOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<Co2EmissionsOverrideDto> CreateCo2EmissionsOverride(
+    public async Task<TimeSeriesMassOverrideDto> CreateCo2EmissionsOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateCo2EmissionsOverrideDto createProfileDto)
+        CreateTimeSeriesMassOverrideDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<Co2EmissionsOverride, Co2EmissionsOverrideDto, CreateCo2EmissionsOverrideDto>(
+        return await CreateDrainageStrategyProfile<Co2EmissionsOverride, TimeSeriesMassOverrideDto, CreateTimeSeriesMassOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class Co2EmissionsOverrideService(
             d => d.Co2EmissionsOverride != null);
     }
 
-    public async Task<Co2EmissionsOverrideDto> UpdateCo2EmissionsOverride(
+    public async Task<TimeSeriesMassOverrideDto> UpdateCo2EmissionsOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateCo2EmissionsOverrideDto updateDto)
+        UpdateTimeSeriesMassOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<Co2EmissionsOverride, Co2EmissionsOverrideDto, UpdateCo2EmissionsOverrideDto>(
+        return await UpdateDrainageStrategyProfile<Co2EmissionsOverride, TimeSeriesMassOverrideDto, UpdateTimeSeriesMassOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

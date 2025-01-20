@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.OffshoreFacilitiesOperationsCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class OffshoreFacilitiesOperationsCostProfileOverrideService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
         Guid projectId,
         Guid caseId,
-        CreateOffshoreFacilitiesOperationsCostProfileOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateCaseProfile<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto, CreateOffshoreFacilitiesOperationsCostProfileOverrideDto>(
+        return await CreateCaseProfile<OffshoreFacilitiesOperationsCostProfileOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.OffshoreFacilitiesOperationsCostProfileOverride != null);
     }
 
-    public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> UpdateOffshoreFacilitiesOperationsCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateOffshoreFacilitiesOperationsCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto updatedCostProfileDto)
+        UpdateTimeSeriesCostOverrideDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto, UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto>(
+        return await UpdateCaseCostProfile<OffshoreFacilitiesOperationsCostProfileOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             costProfileId,

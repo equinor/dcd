@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.TotalFeedStudiesOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class TotalFeedStudiesOverrideService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<TotalFeedStudiesOverrideDto> CreateTotalFeedStudiesOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateTotalFeedStudiesOverride(
         Guid projectId,
         Guid caseId,
-        CreateTotalFeedStudiesOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateCaseProfile<TotalFEEDStudiesOverride, TotalFeedStudiesOverrideDto, CreateTotalFeedStudiesOverrideDto>(
+        return await CreateCaseProfile<TotalFEEDStudiesOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.TotalFEEDStudiesOverride != null);
     }
 
-    public async Task<TotalFeedStudiesOverrideDto> UpdateTotalFeedStudiesOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateTotalFeedStudiesOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateTotalFeedStudiesOverrideDto updatedCostProfileDto)
+        UpdateTimeSeriesCostOverrideDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<TotalFEEDStudiesOverride, TotalFeedStudiesOverrideDto, UpdateTotalFeedStudiesOverrideDto>(
+        return await UpdateCaseCostProfile<TotalFEEDStudiesOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             costProfileId,

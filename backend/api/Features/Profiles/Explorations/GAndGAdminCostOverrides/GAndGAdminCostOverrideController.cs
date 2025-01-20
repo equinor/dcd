@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class GAndGAdminCostOverrideController(GAndGAdminCostOverrideService serv
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/explorations/{explorationId:guid}/g-and-g-and-admin-cost-override")]
-    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateGAndGAdminCostOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid explorationId,
-        [FromBody] CreateGAndGAdminCostOverrideDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
         return await service.CreateGAndGAdminCostOverride(projectId, caseId, explorationId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/explorations/{explorationId:guid}/g-and-g-and-admin-cost-override/{costProfileId:guid}")]
-    public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateGAndGAdminCostOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid explorationId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateGAndGAdminCostOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
         return await service.UpdateGAndGAdminCostOverride(projectId, caseId, explorationId, costProfileId, dto);
     }

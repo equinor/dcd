@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.HistoricCostCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class HistoricCostCostProfileService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<HistoricCostCostProfileDto> CreateHistoricCostCostProfile(
+    public async Task<TimeSeriesCostDto> CreateHistoricCostCostProfile(
         Guid projectId,
         Guid caseId,
-        CreateHistoricCostCostProfileDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateCaseProfile<HistoricCostCostProfile, HistoricCostCostProfileDto, CreateHistoricCostCostProfileDto>(
+        return await CreateCaseProfile<HistoricCostCostProfile, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.HistoricCostCostProfile != null);
     }
 
-    public async Task<HistoricCostCostProfileDto> UpdateHistoricCostCostProfile(
+    public async Task<TimeSeriesCostDto> UpdateHistoricCostCostProfile(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateHistoricCostCostProfileDto updatedCostProfileDto)
+        UpdateTimeSeriesCostDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<HistoricCostCostProfile, HistoricCostCostProfileDto, UpdateHistoricCostCostProfileDto>(
+        return await UpdateCaseCostProfile<HistoricCostCostProfile, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             costProfileId,
