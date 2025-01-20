@@ -11,13 +11,10 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
 
     public TimeSeriesCostDto(TimeSeriesCost timeSeriesCost)
     {
-        EPAVersion = timeSeriesCost.EPAVersion ?? string.Empty;
         Currency = timeSeriesCost.Currency;
         StartYear = timeSeriesCost.StartYear;
         Values = timeSeriesCost.Values ?? [];
     }
-
-    [Required] public string EPAVersion { get; set; } = string.Empty;
 
     [Required] public Currency Currency { get; set; }
 }

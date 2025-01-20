@@ -14,7 +14,6 @@ export interface ITimeSeriesOverride extends ITimeSeries {
 }
 
 export interface ITimeSeriesCost extends ITimeSeries {
-    epaVersion: string
     currency: Components.Schemas.Currency
 }
 

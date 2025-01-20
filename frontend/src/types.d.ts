@@ -474,7 +474,6 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
             sum: number; // double
-            epaVersion: string;
             currency: Currency /* int32 */;
         }
         export interface TimeSeriesCostOverrideDto {
@@ -482,7 +481,6 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
             sum: number; // double
-            epaVersion: string;
             currency: Currency /* int32 */;
             override: boolean;
         }
