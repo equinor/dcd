@@ -135,7 +135,7 @@ const useEditCase = () => {
             newResourceObject,
         } = editInstance
 
-        const submitted = await submitToApi({
+        const result = await submitToApi({
             projectId,
             caseId: caseId!,
             resourceName,
@@ -146,13 +146,15 @@ const useEditCase = () => {
             resourceObject: newResourceObject as ResourceObject,
         })
 
-        if (submitted && caseId) {
+        if (result.success && caseId) {
             if (!resourceProfileId) {
                 return editInstance
             }
             const editWithProfileId = structuredClone(editInstance)
-            editWithProfileId.resourceProfileId = submitted.resourceProfileId
-            editWithProfileId.drillingScheduleId = submitted.resourceProfileId
+            if (result.data?.id) {
+                editWithProfileId.resourceProfileId = result.data.id
+                editWithProfileId.drillingScheduleId = result.data.id
+            }
             return editWithProfileId
         }
 
@@ -170,18 +172,46 @@ const useEditCase = () => {
     const processQueue = async () => {
         editQueueLogger.log("Processing queue:", apiQueue)
 
-        const uniqueEditsQueue = _.uniqBy(
-            [...apiQueue].reverse(),
-            (edit) => edit.resourceName + edit.resourceId + edit.resourcePropertyKey + (edit.wellId ? edit.wellId : ""),
-        )
+        try {
+            const uniqueEditsQueue = _.uniqBy(
+                [...apiQueue].reverse(),
+                (edit) => edit.resourceName + edit.resourceId + edit.resourcePropertyKey + (edit.wellId ? edit.wellId : ""),
+            )
 
-        editQueueLogger.log("Unique edits to process:", uniqueEditsQueue)
+            editQueueLogger.log("Unique edits to process:", uniqueEditsQueue)
 
-        const results = await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
-        editQueueLogger.log("API submission results:", results)
+            const results = await Promise.all(
+                uniqueEditsQueue.map(async (editInstance) => {
+                    try {
+                        return await HandleApiSubmissionResults(editInstance)
+                    } catch (error) {
+                        console.error("Error processing edit:", {
+                            error,
+                            editInstance,
+                            resourceName: editInstance.resourceName,
+                            resourceId: editInstance.resourceId,
+                        })
+                        editQueueLogger.log("Issue happens here! Failed to process edit:", {
+                            error,
+                            editInstance,
+                        })
+                        return null
+                    }
+                }),
+            )
 
-        updateHistory()
-        setApiQueue([])
+            editQueueLogger.log("API submission results:", results)
+
+            if (results.some((result) => result !== null)) {
+                updateHistory()
+            }
+
+            setApiQueue([])
+        } catch (error) {
+            console.error("Fatal error in processQueue:", error)
+            editQueueLogger.log("Fatal error in processQueue:", error)
+            setApiQueue([]) // Clear queue even on error to prevent stuck state
+        }
     }
     const editIsForSameResourceName = (edit1: EditInstance, edit2: EditInstance) => edit1.resourceName === edit2.resourceName && edit1.caseId === edit2.caseId
 

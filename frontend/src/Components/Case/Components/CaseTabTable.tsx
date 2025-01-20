@@ -96,20 +96,10 @@ const CaseTabTable = memo(({
         if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
             if (timeSeriesData?.length > 0 && editQueue.length === 0) {
                 setPresentedTableData(timeSeriesData)
-                console.log("update from timeseriesdata accepted because editQueue is empty: ", editQueue)
-            } else {
-                console.log("update from timeseriesdata rejected")
             }
             previousTimeSeriesDataRef.current = timeSeriesData
-        } else {
-            console.log("THE TIMESERIES DATA IS THE SAME")
         }
     }, [timeSeriesData])
-
-    // log the editQueue
-    useEffect(() => {
-        console.log("editQueue", editQueue)
-    }, [editQueue])
 
     const submitEditQueue = useCallback(() => {
         logger.info("submitting edit queue", { editQueue })
