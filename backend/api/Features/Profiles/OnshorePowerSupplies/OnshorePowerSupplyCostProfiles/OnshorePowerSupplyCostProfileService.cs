@@ -2,7 +2,6 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -13,7 +12,6 @@ namespace api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfi
 public class OnshorePowerSupplyCostProfileService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
     public async Task AddOrUpdateOnshorePowerSupplyCostProfile(
@@ -68,9 +66,7 @@ public class OnshorePowerSupplyCostProfileService(
     {
         var existingProfile = await context.OnshorePowerSupplyCostProfile
             .Include(x => x.OnshorePowerSupply).ThenInclude(onshorePowerSupply => onshorePowerSupply.CostProfileOverride)
-            .SingleAsync(x => x.Id == profileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
+            .SingleAsync(x => x.OnshorePowerSupply.ProjectId == projectId && x.Id == profileId);
 
         if (existingProfile.OnshorePowerSupply.ProspVersion == null)
         {

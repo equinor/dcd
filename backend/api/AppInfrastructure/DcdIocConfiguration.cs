@@ -1,5 +1,6 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
+using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.Explorations;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
@@ -11,8 +12,6 @@ using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.BackgroundServices.ProjectRecalculation.Services;
-using api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
-using api.Features.CaseGeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
@@ -43,6 +42,8 @@ using api.Features.Profiles.Cases.AdditionalOpexCostProfiles;
 using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides;
 using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles;
 using api.Features.Profiles.Cases.CessationWellsCostOverrides;
+using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Cases.HistoricCostCostProfiles;
 using api.Features.Profiles.Cases.OffshoreFacilitiesOperationsCostProfileOverrides;
 using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles;
@@ -215,6 +216,9 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
         services.AddScoped<UpdateWellProjectService>();
+
+        /* Drilling schedules */
+        services.AddScoped<DrillingScheduleService>();
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();

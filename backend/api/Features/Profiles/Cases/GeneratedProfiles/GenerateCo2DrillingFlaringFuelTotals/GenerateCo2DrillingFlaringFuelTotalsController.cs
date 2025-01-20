@@ -2,7 +2,7 @@ using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.CaseGeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 
 public class GenerateCo2DrillingFlaringFuelTotalsController(Co2DrillingFlaringFuelTotalsService generateCo2DrillingFlaringFuelTotals) : ControllerBase
 {

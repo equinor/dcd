@@ -3,7 +3,6 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -14,9 +13,7 @@ namespace api.Features.Profiles.Transports.TransportCostProfileOverrides;
 public class TransportCostProfileOverrideService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : TransportProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
     public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
         Guid projectId,
@@ -24,29 +21,27 @@ public class TransportCostProfileOverrideService(
         Guid transportId,
         CreateTransportCostProfileOverrideDto dto)
     {
-        await ProjectIntegrityService.EntityIsConnectedToProject<Transport>(projectId, transportId);
+        var transport = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
 
-        var transport = await Context.Transports.SingleAsync(x => x.Id == transportId);
-
-        var resourceHasProfile = await Context.Transports.AnyAsync(t => t.Id == transportId && t.CostProfileOverride != null);
+        var resourceHasProfile = await context.Transports.AnyAsync(t => t.Id == transportId && t.CostProfileOverride != null);
 
         if (resourceHasProfile)
         {
             throw new ResourceAlreadyExistsException($"Transport with id {transportId} already has a profile of type {nameof(TransportCostProfileOverride)}.");
         }
 
-        TransportCostProfileOverride profile = new()
+        var profile = new TransportCostProfileOverride
         {
-            Transport = transport,
+            Transport = transport
         };
 
-        var newProfile = MapperService.MapToEntity(dto, profile, transportId);
+        var newProfile = mapperService.MapToEntity(dto, profile, transportId);
 
-        Context.TransportCostProfileOverride.Add(newProfile);
-        await Context.UpdateCaseModifyTime(caseId);
-        await RecalculationService.SaveChangesAndRecalculateAsync(caseId);
+        context.TransportCostProfileOverride.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return MapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(newProfile, newProfile.Id);
+        return mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(newProfile, newProfile.Id);
     }
 
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
@@ -56,12 +51,23 @@ public class TransportCostProfileOverrideService(
         Guid costProfileId,
         UpdateTransportCostProfileOverrideDto dto)
     {
-        return await UpdateTransportTimeSeries<TransportCostProfileOverride, TransportCostProfileOverrideDto, UpdateTransportCostProfileOverrideDto>(
-            projectId,
-            caseId,
-            transportId,
-            costProfileId,
-            dto,
-            id => Context.TransportCostProfileOverride.Include(x => x.Transport).SingleAsync(x => x.Id == id));
+        var existingProfile = await context.TransportCostProfileOverride
+            .Include(x => x.Transport).ThenInclude(x => x.CostProfileOverride)
+            .SingleAsync(x => x.Transport.ProjectId == projectId && x.Id == costProfileId);
+
+        if (existingProfile.Transport.ProspVersion == null)
+        {
+            if (existingProfile.Transport.CostProfileOverride != null)
+            {
+                existingProfile.Transport.CostProfileOverride.Override = true;
+            }
+        }
+
+        mapperService.MapToEntity(dto, existingProfile, transportId);
+
+        await context.UpdateCaseModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+
+        return mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(existingProfile, costProfileId);
     }
 }

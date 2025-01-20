@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Assets.CaseAssets.DrillingSchedules.Dtos;
 
 namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 

@@ -1,5 +1,4 @@
-using api.Features.CaseProfiles.Dtos;
-using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.Assets.CaseAssets.DrillingSchedules.Dtos;
 using api.Models;
 
 using AutoMapper;

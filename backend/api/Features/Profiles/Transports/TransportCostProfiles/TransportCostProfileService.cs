@@ -1,9 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Transports.TransportCostProfiles.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -14,11 +12,28 @@ namespace api.Features.Profiles.Transports.TransportCostProfiles;
 public class TransportCostProfileService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
-    : TransportProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
-    public async Task CreateTransportCostProfile(
+    public async Task AddOrUpdateTransportCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid transportId,
+        UpdateTransportCostProfileDto dto)
+    {
+        var transport = await context.Transports
+            .Include(t => t.CostProfile)
+            .SingleAsync(t => t.Id == transportId);
+
+        if (transport.CostProfile != null)
+        {
+            await UpdateTransportCostProfile(projectId, caseId, transportId, transport.CostProfile.Id, dto);
+            return;
+        }
+
+        await CreateTransportCostProfile(caseId, transportId, dto, transport);
+    }
+
+    private async Task CreateTransportCostProfile(
         Guid caseId,
         Guid transportId,
         UpdateTransportCostProfileDto dto,
@@ -29,31 +44,40 @@ public class TransportCostProfileService(
             Transport = transport
         };
 
-        var newProfile = MapperService.MapToEntity(dto, transportCostProfile, transportId);
+        var newProfile = mapperService.MapToEntity(dto, transportCostProfile, transportId);
 
         if (newProfile.Transport.CostProfileOverride != null)
         {
             newProfile.Transport.CostProfileOverride.Override = false;
         }
 
-        Context.TransportCostProfile.Add(newProfile);
-        await Context.UpdateCaseModifyTime(caseId);
-        await RecalculationService.SaveChangesAndRecalculateAsync(caseId);
+        context.TransportCostProfile.Add(newProfile);
+        await context.UpdateCaseModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
-    public async Task UpdateTransportCostProfile(
+    private async Task UpdateTransportCostProfile(
         Guid projectId,
         Guid caseId,
         Guid transportId,
         Guid profileId,
         UpdateTransportCostProfileDto dto)
     {
-        await UpdateTransportTimeSeries<TransportCostProfile, TransportCostProfileDto, UpdateTransportCostProfileDto>(
-            projectId,
-            caseId,
-            transportId,
-            profileId,
-            dto,
-            id => Context.TransportCostProfile.Include(x => x.Transport).SingleAsync(x => x.Id == id));
+        var existingProfile = await context.TransportCostProfile
+            .Include(x => x.Transport).ThenInclude(transport => transport.CostProfileOverride)
+            .SingleAsync(x => x.Transport.ProjectId == projectId && x.Id == profileId);
+
+        if (existingProfile.Transport.ProspVersion == null)
+        {
+            if (existingProfile.Transport.CostProfileOverride != null)
+            {
+                existingProfile.Transport.CostProfileOverride.Override = true;
+            }
+        }
+
+        mapperService.MapToEntity(dto, existingProfile, transportId);
+
+        await context.UpdateCaseModifyTime(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

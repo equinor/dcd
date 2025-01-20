@@ -13,8 +13,9 @@ public class SteaCaseDto
     public TimeSeriesCostDto OpexCostProfile { get; set; } = new();
 }
 
-public class CapexDto : TimeSeriesCostDto
+public class CapexDto
 {
+    public TimeSeriesCostDto Summary { get; set; } = new();
     public TimeSeriesCostDto Drilling { get; set; } = new();
     public TimeSeriesCostDto OffshoreFacilities { get; set; } = new();
     public TimeSeriesCostDto CessationCost { get; set; } = new();

@@ -23,7 +23,7 @@ public static class ExportToExcelService
             businessCase.Exploration = CreateExcelRow("Exploration Cost", project.StartYear, c.Exploration, rowCount, 1);
 
             rowCount++;
-            businessCase.Capex = CreateExcelRow("Capex", project.StartYear, c.Capex, rowCount, 1);
+            businessCase.Capex = CreateExcelRow("Capex", project.StartYear, c.Capex.Summary, rowCount, 1);
 
             rowCount++;
             businessCase.Drilling = CreateExcelRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
@@ -64,9 +64,9 @@ public static class ExportToExcelService
             {
                 allRows.Add(c.Exploration.Values.Length + c.Exploration.StartYear);
             }
-            if (c.Capex.Values != null)
+            if (c.Capex.Summary.Values != null)
             {
-                allRows.Add(c.Capex.Values.Length + c.Capex.StartYear);
+                allRows.Add(c.Capex.Summary.Values.Length + c.Capex.Summary.StartYear);
             }
             if (c.Capex.CessationCost.Values != null)
             {

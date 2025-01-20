@@ -117,7 +117,7 @@ public class ProspSharepointImportService(
             var siteNameFromUrl = validatedUri.AbsolutePath.Split('/')[2];
 
             // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
-            var relativePath = $@"/sites/{siteNameFromUrl}";
+            var relativePath = $"/sites/{siteNameFromUrl}";
 
             var site = await graphServiceClient.Sites.GetByPath(relativePath, hostName)
                 .Request()
@@ -128,8 +128,8 @@ public class ProspSharepointImportService(
             var documentLibraryNameFromUrl = validatedUri.AbsolutePath.Split('/')[3];
             // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
             var parentReferencePath = pathFromIdParameter != null
-                ? $@"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
-                : $@"/drive/root:/{documentLibraryNameFromUrl}";
+                ? $"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
+                : $"/drive/root:/{documentLibraryNameFromUrl}";
 
             siteData.Add(parentReferencePath);
         }
@@ -212,11 +212,9 @@ public class ProspSharepointImportService(
                 continue;
             }
 
-            foreach (var itemInfo in dtos.Where(importDto =>
-                         importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
+            foreach (var itemInfo in dtos.Where(importDto => importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
             {
-                var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside,
-                    itemInfo.Transport);
+                var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside, itemInfo.Transport);
                 await prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,

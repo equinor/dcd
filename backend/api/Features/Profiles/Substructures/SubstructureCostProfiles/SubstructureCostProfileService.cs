@@ -2,7 +2,6 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles.Dtos;
-using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
 
@@ -13,7 +12,6 @@ namespace api.Features.Profiles.Substructures.SubstructureCostProfiles;
 public class SubstructureCostProfileService(
     DcdDbContext context,
     IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
     public async Task AddOrUpdateSubstructureCostProfile(
@@ -22,11 +20,9 @@ public class SubstructureCostProfileService(
         Guid substructureId,
         UpdateSubstructureCostProfileDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, substructureId);
-
         var substructure = await context.Substructures
             .Include(t => t.CostProfile)
-            .SingleAsync(t => t.Id == substructureId);
+            .SingleAsync(t => t.ProjectId == projectId && t.Id == substructureId);
 
         if (substructure.CostProfile != null)
         {
@@ -68,9 +64,7 @@ public class SubstructureCostProfileService(
     {
         var existingProfile = await context.SubstructureCostProfiles
             .Include(x => x.Substructure).ThenInclude(x => x.CostProfileOverride)
-            .SingleAsync(x => x.Id == profileId);
-
-        await projectIntegrityService.EntityIsConnectedToProject<Substructure>(projectId, existingProfile.Substructure.Id);
+            .SingleAsync(x => x.Substructure.ProjectId == projectId && x.Id == profileId);
 
         if (existingProfile.Substructure.ProspVersion == null)
         {
