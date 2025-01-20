@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class SeismicAcquisitionAndProcessingController(SeismicAcquisitionAndProc
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/explorations/{explorationId:guid}/seismic-acquisition-and-processing")]
-    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+    public async Task<TimeSeriesCostDto> CreateSeismicAcquisitionAndProcessing(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid explorationId,
-        [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
+        [FromBody] CreateTimeSeriesCostDto dto)
     {
         return await service.CreateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/explorations/{explorationId:guid}/seismic-acquisition-and-processing/{costProfileId:guid}")]
-    public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
+    public async Task<TimeSeriesCostDto> UpdateSeismicAcquisitionAndProcessing(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid explorationId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
+        [FromBody] UpdateTimeSeriesCostDto dto)
     {
         return await service.UpdateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, costProfileId, dto);
     }

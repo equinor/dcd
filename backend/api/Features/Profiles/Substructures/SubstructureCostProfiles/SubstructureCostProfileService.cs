@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Substructures.SubstructureCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -18,7 +18,7 @@ public class SubstructureCostProfileService(
         Guid projectId,
         Guid caseId,
         Guid substructureId,
-        UpdateSubstructureCostProfileDto dto)
+        UpdateTimeSeriesCostDto dto)
     {
         var substructure = await context.Substructures
             .Include(t => t.CostProfile)
@@ -36,7 +36,7 @@ public class SubstructureCostProfileService(
     private async Task CreateSubstructureCostProfile(
         Guid caseId,
         Guid substructureId,
-        UpdateSubstructureCostProfileDto dto,
+        UpdateTimeSeriesCostDto dto,
         Substructure substructure)
     {
         var substructureCostProfile = new SubstructureCostProfile
@@ -60,7 +60,7 @@ public class SubstructureCostProfileService(
         Guid caseId,
         Guid substructureId,
         Guid profileId,
-        UpdateSubstructureCostProfileDto updatedProfileDto)
+        UpdateTimeSeriesCostDto updatedProfileDto)
     {
         var existingProfile = await context.SubstructureCostProfiles
             .Include(x => x.Substructure).ThenInclude(x => x.CostProfileOverride)

@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class GasProducerCostProfileOverrideController(GasProducerCostProfileOver
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/gas-producer-cost-profile-override")]
-    public async Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateGasProducerCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
-        [FromBody] CreateGasProducerCostProfileOverrideDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
         return await service.CreateGasProducerCostProfileOverride(projectId, caseId, wellProjectId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/gas-producer-cost-profile-override/{costProfileId:guid}")]
-    public async Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateGasProducerCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateGasProducerCostProfileOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
         return await service.UpdateGasProducerCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
     }

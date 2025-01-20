@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,21 +9,21 @@ public class TotalOtherStudiesCostProfileController(TotalOtherStudiesCostProfile
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/total-other-studies-cost-profile")]
-    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+    public async Task<TimeSeriesCostDto> CreateTotalOtherStudiesCostProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromBody] CreateTotalOtherStudiesCostProfileDto dto)
+        [FromBody] CreateTimeSeriesCostDto dto)
     {
         return await service.CreateTotalOtherStudiesCostProfile(projectId, caseId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/total-other-studies-cost-profile/{costProfileId:guid}")]
-    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+    public async Task<TimeSeriesCostDto> UpdateTotalOtherStudiesCostProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateTotalOtherStudiesCostProfileDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
         return await service.UpdateTotalOtherStudiesCostProfile(projectId, caseId, costProfileId, dto);
     }

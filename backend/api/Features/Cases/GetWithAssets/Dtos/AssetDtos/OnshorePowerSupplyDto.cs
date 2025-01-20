@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models.Enums;
 
 namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
@@ -21,12 +20,4 @@ public class OnshorePowerSupplyDto
     public DateTime? ProspVersion { get; set; }
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
-}
-
-public class OnshorePowerSupplyCostProfileDto : TimeSeriesCostDto;
-
-public class OnshorePowerSupplyCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
 }

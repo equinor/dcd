@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.CessationWellsCostOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,24 +16,24 @@ public class CessationWellsCostOverrideService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(Guid projectId,
+    public async Task<TimeSeriesCostOverrideDto> CreateCessationWellsCostOverride(Guid projectId,
         Guid caseId,
-        CreateCessationWellsCostOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateCaseProfile<CessationWellsCostOverride, CessationWellsCostOverrideDto, CreateCessationWellsCostOverrideDto>(
+        return await CreateCaseProfile<CessationWellsCostOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.CessationWellsCostOverride != null);
     }
 
-    public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateCessationWellsCostOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateCessationWellsCostOverrideDto updatedCostProfileDto)
+        UpdateTimeSeriesCostOverrideDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<CessationWellsCostOverride, CessationWellsCostOverrideDto, UpdateCessationWellsCostOverrideDto>(
+        return await UpdateCaseCostProfile<CessationWellsCostOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             costProfileId,

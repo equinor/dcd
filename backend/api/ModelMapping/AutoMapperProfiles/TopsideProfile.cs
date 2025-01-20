@@ -1,5 +1,5 @@
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
-using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -11,12 +11,12 @@ public class TopsideProfile : Profile
     public TopsideProfile()
     {
         CreateMap<Topside, TopsideDto>();
-        CreateMap<TopsideCostProfile, TopsideCostProfileDto>();
-        CreateMap<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>();
-        CreateMap<TopsideCessationCostProfile, TopsideCessationCostProfileDto>();
+        CreateMap<TopsideCostProfile, TimeSeriesCostDto>();
+        CreateMap<TopsideCostProfileOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<TopsideCessationCostProfile, TimeSeriesCostDto>();
 
-        CreateMap<UpdateTopsideCostProfileDto, TopsideCostProfile>();
-        CreateMap<UpdateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
-        CreateMap<CreateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
+        CreateMap<UpdateTimeSeriesCostDto, TopsideCostProfile>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, TopsideCostProfileOverride>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, TopsideCostProfileOverride>();
     }
 }

@@ -1,7 +1,5 @@
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
-using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
-using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
-using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -13,21 +11,21 @@ public class ExplorationProfile : Profile
     public ExplorationProfile()
     {
         CreateMap<Exploration, ExplorationDto>();
-        CreateMap<ExplorationWellCostProfile, ExplorationWellCostProfileDto>();
-        CreateMap<AppraisalWellCostProfile, AppraisalWellCostProfileDto>();
-        CreateMap<SidetrackCostProfile, SidetrackCostProfileDto>();
-        CreateMap<GAndGAdminCost, GAndGAdminCostDto>();
-        CreateMap<GAndGAdminCostOverride, GAndGAdminCostOverrideDto>();
-        CreateMap<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>();
-        CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
+        CreateMap<ExplorationWellCostProfile, TimeSeriesCostDto>();
+        CreateMap<AppraisalWellCostProfile, TimeSeriesCostDto>();
+        CreateMap<SidetrackCostProfile, TimeSeriesCostDto>();
+        CreateMap<GAndGAdminCost, TimeSeriesCostDto>();
+        CreateMap<GAndGAdminCostOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<SeismicAcquisitionAndProcessing, TimeSeriesCostDto>();
+        CreateMap<CountryOfficeCost, TimeSeriesCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
-        CreateMap<UpdateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
-        CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
-        CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, GAndGAdminCostOverride>();
+        CreateMap<UpdateTimeSeriesCostDto, SeismicAcquisitionAndProcessing>();
+        CreateMap<UpdateTimeSeriesCostDto, CountryOfficeCost>();
 
-        CreateMap<CreateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
-        CreateMap<CreateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
-        CreateMap<CreateCountryOfficeCostDto, CountryOfficeCost>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, GAndGAdminCostOverride>();
+        CreateMap<CreateTimeSeriesCostDto, SeismicAcquisitionAndProcessing>();
+        CreateMap<CreateTimeSeriesCostDto, CountryOfficeCost>();
     }
 }

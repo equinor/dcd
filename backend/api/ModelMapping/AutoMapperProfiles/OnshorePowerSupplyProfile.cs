@@ -1,6 +1,5 @@
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides.Dtos;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -12,11 +11,11 @@ public class OnshorePowerSupplyProfile : Profile
     public OnshorePowerSupplyProfile()
     {
         CreateMap<OnshorePowerSupply, OnshorePowerSupplyDto>();
-        CreateMap<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>();
-        CreateMap<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>();
+        CreateMap<OnshorePowerSupplyCostProfile, TimeSeriesCostDto>();
+        CreateMap<OnshorePowerSupplyCostProfileOverride, TimeSeriesCostOverrideDto>();
 
-        CreateMap<UpdateOnshorePowerSupplyCostProfileDto, OnshorePowerSupplyCostProfile>();
-        CreateMap<UpdateOnshorePowerSupplyCostProfileOverrideDto, OnshorePowerSupplyCostProfileOverride>();
-        CreateMap<CreateOnshorePowerSupplyCostProfileOverrideDto, OnshorePowerSupplyCostProfileOverride>();
+        CreateMap<UpdateTimeSeriesCostDto, OnshorePowerSupplyCostProfile>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, OnshorePowerSupplyCostProfileOverride>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, OnshorePowerSupplyCostProfileOverride>();
     }
 }

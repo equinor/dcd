@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Explorations.CountryOfficeCosts.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -15,13 +15,13 @@ public class CountryOfficeCostService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService) : ExplorationProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
-    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+    public async Task<TimeSeriesCostDto> CreateCountryOfficeCost(
         Guid projectId,
         Guid caseId,
         Guid explorationId,
-        CreateCountryOfficeCostDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
+        return await CreateExplorationProfile<CountryOfficeCost, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             explorationId,
@@ -29,14 +29,14 @@ public class CountryOfficeCostService(
             d => d.CountryOfficeCost != null);
     }
 
-    public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
+    public async Task<TimeSeriesCostDto> UpdateCountryOfficeCost(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
-        UpdateCountryOfficeCostDto updateDto)
+        UpdateTimeSeriesCostDto updateDto)
     {
-        return await UpdateExplorationCostProfile<CountryOfficeCost, CountryOfficeCostDto, UpdateCountryOfficeCostDto>(
+        return await UpdateExplorationCostProfile<CountryOfficeCost, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             wellProjectId,

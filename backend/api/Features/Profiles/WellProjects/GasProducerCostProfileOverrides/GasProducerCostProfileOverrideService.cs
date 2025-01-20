@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class GasProducerCostProfileOverrideService(
     IRecalculationService recalculationService)
     : WellProjectProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
-    public async Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateGasProducerCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
-        CreateGasProducerCostProfileOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateWellProjectProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, CreateGasProducerCostProfileOverrideDto>(
+        return await CreateWellProjectProfile<GasProducerCostProfileOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             wellProjectId,
@@ -30,14 +30,14 @@ public class GasProducerCostProfileOverrideService(
             d => d.GasProducerCostProfileOverride != null);
     }
 
-    public async Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateGasProducerCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
-        UpdateGasProducerCostProfileOverrideDto updateDto)
+        UpdateTimeSeriesCostOverrideDto updateDto)
     {
-        return await UpdateWellProjectCostProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, UpdateGasProducerCostProfileOverrideDto>(
+        return await UpdateWellProjectCostProfile<GasProducerCostProfileOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             wellProjectId,

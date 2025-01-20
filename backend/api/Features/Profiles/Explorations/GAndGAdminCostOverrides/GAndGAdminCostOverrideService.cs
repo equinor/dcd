@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Explorations.GAndGAdminCostOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -15,13 +15,13 @@ public class GAndGAdminCostOverrideService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService) : ExplorationProfileBaseService(context, mapperService, projectIntegrityService, recalculationService)
 {
-    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateGAndGAdminCostOverride(
         Guid projectId,
         Guid caseId,
         Guid explorationId,
-        CreateGAndGAdminCostOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
+        return await CreateExplorationProfile<GAndGAdminCostOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             explorationId,
@@ -29,14 +29,14 @@ public class GAndGAdminCostOverrideService(
             d => d.GAndGAdminCostOverride != null);
     }
 
-    public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateGAndGAdminCostOverride(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
-        UpdateGAndGAdminCostOverrideDto updateDto)
+        UpdateTimeSeriesCostOverrideDto updateDto)
     {
-        return await UpdateExplorationCostProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, UpdateGAndGAdminCostOverrideDto>(
+        return await UpdateExplorationCostProfile<GAndGAdminCostOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             wellProjectId,

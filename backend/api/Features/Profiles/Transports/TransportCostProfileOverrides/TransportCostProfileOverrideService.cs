@@ -2,7 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Transports.TransportCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -15,11 +15,11 @@ public class TransportCostProfileOverrideService(
     IMapperService mapperService,
     IRecalculationService recalculationService)
 {
-    public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateTransportCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid transportId,
-        CreateTransportCostProfileOverrideDto dto)
+        CreateTimeSeriesCostOverrideDto dto)
     {
         var transport = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
 
@@ -41,15 +41,15 @@ public class TransportCostProfileOverrideService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(newProfile, newProfile.Id);
+        return mapperService.MapToDto<TransportCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
     }
 
-    public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateTransportCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid transportId,
         Guid costProfileId,
-        UpdateTransportCostProfileOverrideDto dto)
+        UpdateTimeSeriesCostOverrideDto dto)
     {
         var existingProfile = await context.TransportCostProfileOverride
             .Include(x => x.Transport).ThenInclude(x => x.CostProfileOverride)
@@ -68,6 +68,6 @@ public class TransportCostProfileOverrideService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(existingProfile, costProfileId);
+        return mapperService.MapToDto<TransportCostProfileOverride, TimeSeriesCostOverrideDto>(existingProfile, costProfileId);
     }
 }
