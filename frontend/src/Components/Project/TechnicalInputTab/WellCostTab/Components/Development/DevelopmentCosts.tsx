@@ -49,7 +49,13 @@ const DevelopmentCosts = () => {
 
     useEffect(() => {
         if (developmentOperationalWellCostsId && projectId) {
-            addDevelopmentWellCostEdit(projectId, developmentOperationalWellCostsId, debouncedCosts)
+            const allCostsZeroOrUndefined = Object.values(costs).every(
+                (cost) => cost === 0 || cost === undefined,
+            )
+
+            if (!allCostsZeroOrUndefined) {
+                addDevelopmentWellCostEdit(projectId, developmentOperationalWellCostsId, debouncedCosts)
+            }
         }
     }, [debouncedCosts])
 

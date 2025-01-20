@@ -43,8 +43,7 @@ const Wells = ({
     const gridRef = useRef(null)
     const styles = useStyles()
 
-    const [wells, setWells] = useState<Components.Schemas.WellOverviewDto[] | []>([])
-    const [rowData, setRowData] = useState<TableWell[]>()
+    const [rowData, setRowData] = useState<TableWell[]>([])
     const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
 
     const onGridReady = (params: any) => { gridRef.current = params.api }
@@ -64,7 +63,7 @@ const Wells = ({
         }
     }
 
-    const wellsToRowData = () => {
+    const wellsToRowData = (wells: Components.Schemas.WellOverviewDto[]) => {
         if (wells) {
             const tableWells: TableWell[] = []
             wells.forEach((w) => {
@@ -188,6 +187,7 @@ const Wells = ({
             field: "name",
             flex: 2,
             editable: editMode,
+            singleClickEdit: true,
         },
         {
             field: "wellCategory",
@@ -195,6 +195,7 @@ const Wells = ({
             cellRenderer: wellCategoryRenderer,
             editable: false,
             flex: 2,
+            singleClickEdit: true,
         },
         {
             field: "drillingDays",
@@ -202,6 +203,7 @@ const Wells = ({
             flex: 1,
             cellStyle: cellStyleRightAlign,
             editable: editMode,
+            singleClickEdit: true,
         },
         {
             field: "wellCost",
@@ -214,6 +216,7 @@ const Wells = ({
             },
             cellStyle: cellStyleRightAlign,
             editable: editMode,
+            singleClickEdit: true,
         },
         {
             field: "delete",
@@ -221,18 +224,20 @@ const Wells = ({
             cellRenderer: deleteWellRenderer,
             editable: false,
             width: 80,
+            singleClickEdit: false,
         },
     ] as ColDef[], [editMode, revisionAndProjectData?.commonProjectAndRevisionData.currency])
 
     useEffect(() => {
-        if (revisionAndProjectData?.commonProjectAndRevisionData.wells) {
-            setWells(revisionAndProjectData.commonProjectAndRevisionData.wells.filter(filterWells))
+        const allWells: Components.Schemas.WellOverviewDto[] = revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []
+        const filteredWells: Components.Schemas.WellOverviewDto[] = allWells.filter(filterWells) ?? []
+
+        if (allWells && filteredWells.length > 0) {
+            wellsToRowData(filteredWells)
+        } else {
+            setRowData([])
         }
     }, [revisionAndProjectData, filterWells])
-
-    useEffect(() => {
-        wellsToRowData()
-    }, [wells])
 
     return (
         <>
@@ -287,7 +292,6 @@ const Wells = ({
                         domLayout="autoHeight"
                         onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
-                        singleClickEdit={editMode}
                         onRowValueChanged={onRowValueChanged}
                         onCellClicked={(params) => {
                             if (params.column.getColId() === "delete") {

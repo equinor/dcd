@@ -48,7 +48,13 @@ const ExplorationCosts = () => {
 
     useEffect(() => {
         if (explorationOperationalWellCostsId && projectId) {
-            addExplorationWellCostEdit(projectId, explorationOperationalWellCostsId, debouncedCosts)
+            const allCostsZeroOrUndefined = Object.values(costs).every(
+                (cost) => cost === 0 || cost === undefined,
+            )
+
+            if (!allCostsZeroOrUndefined) {
+                addExplorationWellCostEdit(projectId, explorationOperationalWellCostsId, debouncedCosts)
+            }
         }
     }, [debouncedCosts])
 
