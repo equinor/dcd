@@ -4,6 +4,7 @@ import {
     useEffect,
     useCallback,
     memo,
+    useRef,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -89,21 +90,52 @@ const CaseTabTable = memo(({
 
     const [editQueue, setEditQueue] = useState<any[]>([])
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
+    const previousTimeSeriesDataRef = useRef(timeSeriesData)
 
     useEffect(() => {
-        if (timeSeriesData?.length > 0 && editQueue.length === 0) {
-            setPresentedTableData(timeSeriesData)
+        if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
+            if (timeSeriesData?.length > 0 && editQueue.length === 0) {
+                setPresentedTableData(timeSeriesData)
+                console.log("update from timeseriesdata accepted because editQueue is empty: ", editQueue)
+            } else {
+                console.log("update from timeseriesdata rejected")
+            }
+            previousTimeSeriesDataRef.current = timeSeriesData
+        } else {
+            console.log("THE TIMESERIES DATA IS THE SAME")
         }
     }, [timeSeriesData])
 
+    // log the editQueue
+    useEffect(() => {
+        console.log("editQueue", editQueue)
+    }, [editQueue])
+
     const submitEditQueue = useCallback(() => {
         logger.info("submitting edit queue", { editQueue })
+        if (isSaving) {
+            return
+        }
+
+        if (editQueue.length === 0) {
+            return
+        }
+
+        const submittedEdits = []
         editQueue.forEach((edit) => {
             logger.info("Submitting edit", { edit })
-            addEdit(edit)
+            const submitted = addEdit(edit)
+            if (!submitted) {
+                logger.error("Failed to submit edit", { edit })
+            } else {
+                logger.info("Submitted edit", { edit })
+                submittedEdits.push(edit)
+            }
         })
-        setEditQueue([])
-    }, [editQueue])
+        if (submittedEdits.length === editQueue.length) {
+            setEditQueue([])
+        }
+    }, [editQueue, isSaving])
 
     const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
     useEffect(() => {
@@ -259,12 +291,12 @@ const CaseTabTable = memo(({
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (editMode && !isSaving && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
+                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
-    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isSaving])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName])
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
 
@@ -333,7 +365,6 @@ const CaseTabTable = memo(({
     }), [
         editMode,
         handleCellValueChange,
-        isSaving,
         gridRowData,
         columnDefs,
         alignedGridsRef,
