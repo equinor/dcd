@@ -24,6 +24,46 @@ public class WellCostProfileService(DcdDbContext context)
         await UpdateExplorationCostProfiles(explorationWells.ToList());
     }
 
+    public async Task UpdateCostProfilesForWellsFromDrillingSchedules(Guid caseId)
+    {
+        var drillingScheduleIds = await context.Cases
+            .Where(x => x.Id == caseId)
+            .SelectMany(x => x.WellProject!.WellProjectWells)
+            .Select(x => x.DrillingSchedule)
+            .Where(x => x != null)
+            .Select(x => x!.Id)
+            .ToListAsync();
+
+        if (drillingScheduleIds.Count == 0)
+        {
+            return;
+        }
+
+        var explorationWells = GetAllExplorationWells()
+            .Where(ew => ew.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(ew.DrillingScheduleId.Value));
+
+        var wellProjectWells = GetAllWellProjectWells()
+            .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value));
+
+        await UpdateWellProjectCostProfiles(wellProjectWells.ToList());
+        await UpdateExplorationCostProfiles(explorationWells.ToList());
+    }
+
+    public async Task UpdateCostProfilesForWells(Guid caseId)
+    {
+        var wells = await context.Cases
+            .Where(w => w.Id == caseId)
+            .SelectMany(x => x.WellProject!.WellProjectWells)
+            .Select(x => x.Well)
+            .ToListAsync();
+
+        var explorationWells = await GetAllExplorationWells().Where(ew => wells.Contains(ew.Well)).ToListAsync();
+        var wellProjectWells = await GetAllWellProjectWells().Where(wpw => wells.Contains(wpw.Well)).ToListAsync();
+
+        await UpdateExplorationCostProfiles(explorationWells);
+        await UpdateWellProjectCostProfiles(wellProjectWells);
+    }
+
     public async Task UpdateCostProfilesForWells(List<Well> wells)
     {
         if (wells.Count == 0)

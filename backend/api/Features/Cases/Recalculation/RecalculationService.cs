@@ -31,20 +31,13 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
 
         var stopwatch = Stopwatch.StartNew();
 
-        var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
-        debugLog.Add("CalculateExplorationAndWellProjectCost", stopwatch.ElapsedMilliseconds);
+        await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(caseId);
+        debugLog.Add("UpdateCostProfilesForWellsFromDrillingSchedules", stopwatch.ElapsedMilliseconds);
         stopwatch.Restart();
 
-        if (wells.Count != 0 || drillingScheduleIds.Count != 0)
-        {
-            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
-            debugLog.Add("UpdateCostProfilesForWellsFromDrillingSchedules", stopwatch.ElapsedMilliseconds);
-            stopwatch.Restart();
-
-            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(wells);
-            debugLog.Add("UpdateCostProfilesForWells", stopwatch.ElapsedMilliseconds);
-            stopwatch.Restart();
-        }
+        await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(caseId);
+        debugLog.Add("UpdateCostProfilesForWells", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
 
         await serviceProvider.GetRequiredService<StudyCostProfileService>().Generate(caseId);
         debugLog.Add("StudyCostProfileService", stopwatch.ElapsedMilliseconds);
