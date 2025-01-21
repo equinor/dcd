@@ -5,7 +5,7 @@ import isEqual from "lodash/isEqual"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"
-import {dateFromTimestamp} from "@/Utils/DateUtils";
+import { dateFromTimestamp } from "@/Utils/DateUtils"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"

@@ -1,6 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
+using api.Features.ProjectData.Dtos.AssetDtos;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 
 public class UpdateExplorationOperationalWellCostsService(DcdDbContext context)
 {
-    public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(
+    public async Task<ExplorationOperationalWellCostsOverviewDto> UpdateExplorationOperationalWellCosts(
         Guid projectId,
         Guid explorationOperationalWellCostsId,
         UpdateExplorationOperationalWellCostsDto dto)
@@ -28,10 +29,10 @@ public class UpdateExplorationOperationalWellCostsService(DcdDbContext context)
 
         await context.SaveChangesAsync();
 
-        return new ExplorationOperationalWellCostsDto
+        return new ExplorationOperationalWellCostsOverviewDto
         {
-            Id = existingExplorationOperationalWellCosts.Id,
             ProjectId = existingExplorationOperationalWellCosts.ProjectId,
+            ExplorationOperationalWellCostsId = existingExplorationOperationalWellCosts.Id,
             ExplorationRigUpgrading = existingExplorationOperationalWellCosts.ExplorationRigUpgrading,
             ExplorationRigMobDemob = existingExplorationOperationalWellCosts.ExplorationRigMobDemob,
             ExplorationProjectDrillingCosts = existingExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,

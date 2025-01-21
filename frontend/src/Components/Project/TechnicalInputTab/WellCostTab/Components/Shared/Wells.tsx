@@ -1,9 +1,9 @@
 import {
     Button, Icon, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { delete_to_trash } from "@equinor/eds-icons"
+import { delete_to_trash, add } from "@equinor/eds-icons"
 import {
-    ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
+    ChangeEvent, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -17,49 +17,60 @@ import { GetWellService } from "@/Services/WellService"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import Modal from "@/Components/Modal/Modal"
+import { TableWell } from "@/Models/Wells"
+import { SectionHeader } from "./SharedWellStyles"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 
-interface Props {
-    wells: Components.Schemas.WellOverviewDto[] | undefined
-    setWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
-    explorationWells: boolean
-    setDeletedWells: Dispatch<SetStateAction<string[]>>
+interface WellsProps {
+    title: string
+    addButtonText: string
+    defaultWellCategory: number
+    wellOptions: Array<{ key: string; value: number; label: string }>
+    filterWells: (well: Components.Schemas.WellOverviewDto) => boolean
 }
 
-interface TableWell {
-    id: string,
-    name: string,
-    wellCategory: Components.Schemas.WellCategory,
-    drillingDays: number,
-    wellCost: number,
-    well: Components.Schemas.WellOverviewDto
-    wells: Components.Schemas.WellOverviewDto[]
-}
-
-const WellListEditTechnicalInput = ({
-    explorationWells,
-    wells,
-    setWells,
-    setDeletedWells,
-}: Props) => {
-    const { editMode } = useAppContext()
+const Wells = ({
+    title,
+    addButtonText,
+    defaultWellCategory,
+    wellOptions,
+    filterWells,
+}: WellsProps) => {
     const revisionAndProjectData = useDataFetch()
+    const { addWellsEdit } = useTechnicalInputEdits()
+    const { editMode } = useAppContext()
     const { isEditDisabled } = useEditDisabled()
     const gridRef = useRef(null)
     const styles = useStyles()
 
-    const [rowData, setRowData] = useState<TableWell[]>()
+    const [rowData, setRowData] = useState<TableWell[]>([])
     const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
 
     const onGridReady = (params: any) => { gridRef.current = params.api }
 
-    const wellsToRowData = () => {
+    const CreateWell = async (category: number) => {
+        const newWell: Components.Schemas.CreateWellDto = {
+            wellCategory: category as Components.Schemas.WellCategory,
+            name: "New well",
+        }
+        if (revisionAndProjectData) {
+            const createWells: Components.Schemas.UpdateWellsDto = {
+                createWellDtos: [newWell],
+                updateWellDtos: [],
+                deleteWellDtos: [],
+            }
+            addWellsEdit(revisionAndProjectData.projectId, createWells)
+        }
+    }
+
+    const wellsToRowData = (wells: Components.Schemas.WellOverviewDto[]) => {
         if (wells) {
             const tableWells: TableWell[] = []
             wells.forEach((w) => {
                 const tableWell: TableWell = {
                     id: w.id!,
                     name: w.name ?? "",
-                    wellCategory: explorationWells ? 4 : 0,
+                    wellCategory: defaultWellCategory as Components.Schemas.WellCategory,
                     drillingDays: w.drillingDays ?? 0,
                     wellCost: w.wellCost ?? 0,
                     well: w,
@@ -72,21 +83,29 @@ const WellListEditTechnicalInput = ({
         }
     }
 
-    const updateWells = (p: any) => {
-        const rowWells: any[] = p.data.wells
-        if (rowWells) {
-            const { field } = p.colDef
-            const index = rowWells.findIndex((w) => w === p.data.well)
-            if (index > -1) {
-                const well = rowWells[index]
-                const updatedWell = well
-                updatedWell[field as keyof typeof updatedWell] = field === "name"
-                    ? p.newValue : Number(p.newValue.toString().replace(/,/g, "."))
-                const updatedWells = [...rowWells]
-                updatedWells[index] = updatedWell
-                setWells(updatedWells)
-            }
+    const onRowValueChanged = (event: any) => {
+        const updatedData = event.data
+        const previousData = updatedData.well
+
+        if (!previousData || !updatedData || !revisionAndProjectData) {
+            return
         }
+
+        const updatedWell = {
+            id: previousData.id,
+            name: updatedData.name || previousData.name || "",
+            wellCategory: updatedData.wellCategory || previousData.wellCategory || defaultWellCategory,
+            drillingDays: updatedData.drillingDays !== undefined ? (updatedData.drillingDays ?? 0) : (previousData.drillingDays ?? 0),
+            wellCost: updatedData.wellCost !== undefined ? (updatedData.wellCost ?? 0) : (previousData.wellCost ?? 0),
+        }
+
+        const updatePayload: Components.Schemas.UpdateWellsDto = {
+            createWellDtos: [],
+            updateWellDtos: [updatedWell],
+            deleteWellDtos: [],
+        }
+
+        addWellsEdit(revisionAndProjectData.projectId, updatePayload)
     }
 
     const handleWellCategoryChange = async (
@@ -112,43 +131,27 @@ const WellListEditTechnicalInput = ({
                 disabled={!editMode || isEditDisabled}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => handleWellCategoryChange(e, p)}
             >
-                {!explorationWells ? (
-                    <>
-                        <option key="0" value={0}>Oil producer</option>
-                        <option key="1" value={1}>Gas producer</option>
-                        <option key="2" value={2}>Water injector</option>
-                        <option key="3" value={3}>Gas injector</option>
-                    </>
-                )
-                    : (
-                        <>
-                            <option key="4" value={4}>Exploration well</option>
-                            <option key="5" value={5}>Appraisal well</option>
-                            <option key="6" value={6}>Sidetrack</option>
-                        </>
-                    )}
+                {wellOptions.map((option) => (
+                    <option key={option.key} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
             </NativeSelect>
         )
     }
 
-    const handleDeleteWell = (p: any) => {
-        const rowWells: any[] = p.data.wells
-        if (rowWells) {
-            const index = rowWells.findIndex((w) => w === p.data.well)
-            if (index > -1) {
-                const updatedWells = [...rowWells]
-                updatedWells.splice(index, 1)
-                setWells(updatedWells)
-                setDeletedWells((prev) => {
-                    if (!prev.includes(p.data.well.id)) {
-                        const deletedWells = [...prev]
-                        deletedWells.push(p.data.well.id)
-                        return deletedWells
-                    }
-                    return prev
-                })
+    const handleDeleteWell = (params: any) => {
+        const { well: wellToDelete } = params.data
+
+        if (revisionAndProjectData) {
+            const deleteWells: Components.Schemas.UpdateWellsDto = {
+                createWellDtos: [],
+                updateWellDtos: [],
+                deleteWellDtos: [{ id: wellToDelete.id }],
             }
+            addWellsEdit(revisionAndProjectData.projectId, deleteWells)
         }
+
         setWellStagedForDeletion(undefined)
     }
 
@@ -175,16 +178,16 @@ const WellListEditTechnicalInput = ({
         filter: true,
         resizable: true,
         editable: true,
-        onCellValueChanged: updateWells,
         suppressHeaderMenuButton: true,
         cellClass: editMode ? "editableCell" : undefined,
-    }), [])
+    }), [editMode])
 
-    const GetColumnDefs = () => [
+    const columnDefs = useMemo(() => [
         {
             field: "name",
             flex: 2,
             editable: editMode,
+            singleClickEdit: true,
         },
         {
             field: "wellCategory",
@@ -192,6 +195,7 @@ const WellListEditTechnicalInput = ({
             cellRenderer: wellCategoryRenderer,
             editable: false,
             flex: 2,
+            singleClickEdit: true,
         },
         {
             field: "drillingDays",
@@ -199,6 +203,7 @@ const WellListEditTechnicalInput = ({
             flex: 1,
             cellStyle: cellStyleRightAlign,
             editable: editMode,
+            singleClickEdit: true,
         },
         {
             field: "wellCost",
@@ -211,6 +216,7 @@ const WellListEditTechnicalInput = ({
             },
             cellStyle: cellStyleRightAlign,
             editable: editMode,
+            singleClickEdit: true,
         },
         {
             field: "delete",
@@ -218,21 +224,35 @@ const WellListEditTechnicalInput = ({
             cellRenderer: deleteWellRenderer,
             editable: false,
             width: 80,
+            singleClickEdit: false,
         },
-    ]
-
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
+    ] as ColDef[], [editMode, revisionAndProjectData?.commonProjectAndRevisionData.currency])
 
     useEffect(() => {
-        setColumnDefs(GetColumnDefs())
-    }, [editMode])
+        const allWells: Components.Schemas.WellOverviewDto[] = revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []
+        const filteredWells: Components.Schemas.WellOverviewDto[] = allWells.filter(filterWells) ?? []
 
-    useEffect(() => {
-        wellsToRowData()
-    }, [wells])
+        if (allWells && filteredWells.length > 0) {
+            wellsToRowData(filteredWells)
+        } else {
+            setRowData([])
+        }
+    }, [revisionAndProjectData, filterWells])
 
     return (
         <>
+            <SectionHeader>
+                <Typography variant="h2">{title}</Typography>
+                {editMode && (
+                    <Button
+                        onClick={() => CreateWell(defaultWellCategory)}
+                        variant="outlined"
+                    >
+                        <Icon data={add} />
+                        {addButtonText}
+                    </Button>
+                )}
+            </SectionHeader>
             <Modal
                 isOpen={!!wellStagedForDeletion}
                 title="Delete well"
@@ -241,7 +261,6 @@ const WellListEditTechnicalInput = ({
                     <Typography>
                         This well is currently in use in a case. Are you sure you want to delete it?
                     </Typography>
-
                 )}
                 actions={(
                     <>
@@ -260,7 +279,6 @@ const WellListEditTechnicalInput = ({
                         </Button>
                     </>
                 )}
-
             />
             <Grid item xs={12} className={styles.root}>
                 <div>
@@ -270,10 +288,11 @@ const WellListEditTechnicalInput = ({
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
                         animateRows
+                        editType="fullRow"
                         domLayout="autoHeight"
                         onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
-                        singleClickEdit={editMode}
+                        onRowValueChanged={onRowValueChanged}
                         rowSelection={{
                             mode: "multiRow",
                             enableClickSelection: false,
@@ -286,4 +305,5 @@ const WellListEditTechnicalInput = ({
         </>
     )
 }
-export default WellListEditTechnicalInput
+
+export default Wells

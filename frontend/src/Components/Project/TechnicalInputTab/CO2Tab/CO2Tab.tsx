@@ -8,9 +8,10 @@ import React, {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { Switch, Tooltip } from "@equinor/eds-core-react"
+import { Switch, Tooltip, Typography } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
+import styled from "styled-components"
 
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
@@ -19,6 +20,16 @@ import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
+const StyledContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 0 10px;
+`
+
 interface CO2Data {
     profile: string
     unit: string
@@ -26,7 +37,7 @@ interface CO2Data {
     value: number | undefined
 }
 
-const CO2ListTechnicalInput = () => {
+const CO2Tab = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const { isRevision } = useProjectContext()
@@ -43,13 +54,12 @@ const CO2ListTechnicalInput = () => {
     const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>()
     const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>()
 
-    const [rowData, setRowData] = useState([{}])
     const { editMode } = useAppContext()
     const { addProjectEdit } = useEditProject()
 
     let cO2VentedRow = true
 
-    const getColumnDefs = useCallback((edit: boolean): ColDef[] => ([
+    const columnDefs = useMemo(() => [
         {
             field: "profile",
             headerName: "CO2 emission",
@@ -66,17 +76,11 @@ const CO2ListTechnicalInput = () => {
             field: "value",
             headerName: "Value",
             flex: 1,
-            editable: edit,
-            cellClass: edit ? "editableCell" : undefined,
+            editable: editMode,
+            cellClass: editMode ? "editableCell" : undefined,
             cellStyle: cellStyleRightAlign,
         },
-    ]), [editMode])
-
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>(getColumnDefs(editMode))
-
-    useEffect(() => {
-        setColumnDefs(getColumnDefs(editMode))
-    }, [editMode])
+    ] as ColDef[], [editMode])
 
     useEffect(() => {
         if (revisionAndProjectData) {
@@ -97,53 +101,50 @@ const CO2ListTechnicalInput = () => {
         return value
     }
 
-    useEffect(() => {
-        const co2Data: CO2Data[] = [
-            {
-                profile: "CO2 removed from the gas",
-                unit: "% of design gas rate",
-                set: setCO2RemovedFromGas,
-                value: toRowValue(cO2RemovedFromGas),
-            },
-            {
-                profile: "CO2-emissions from fuel gas",
-                unit: "kg CO2/Sm³",
-                set: setCO2EmissionsFromFuelGas,
-                value: toRowValue(cO2EmissionsFromFuelGas),
-            },
-            {
-                profile: "Flared gas per produced volume",
-                unit: "Sm³/Sm³",
-                set: setFlaredGasPerProducedVolume,
-                value: toRowValue(flaredGasPerProducedVolume),
-            },
-            {
-                profile: "CO2-emissions from flared gas",
-                unit: "kg CO2/Sm³",
-                set: setCO2EmissionsFromFlaredGas,
-                value: toRowValue(cO2EmissionsFromFlaredGas),
-            },
-            {
-                profile: "CO2 vented",
-                unit: "kg CO2/Sm³",
-                set: setCO2Vented,
-                value: toRowValue(cO2Vented),
-            },
-            {
-                profile: "Average development well drilling days",
-                unit: "days/wells",
-                set: setAverageDevelopmentWellDrillingDays,
-                value: toRowValue(averageDevelopmentWellDrillingDays),
-            },
-            {
-                profile: "Daily emissions from drilling rig",
-                unit: "tonnes CO2/day",
-                set: setDailyEmissionsFromDrillingRig,
-                value: toRowValue(dailyEmissionsFromDrillingRig),
-            },
-        ]
-        setRowData(co2Data)
-    }, [
+    const rowData = useMemo(() => [
+        {
+            profile: "CO2 removed from the gas",
+            unit: "% of design gas rate",
+            set: setCO2RemovedFromGas,
+            value: toRowValue(cO2RemovedFromGas),
+        },
+        {
+            profile: "CO2-emissions from fuel gas",
+            unit: "kg CO2/Sm³",
+            set: setCO2EmissionsFromFuelGas,
+            value: toRowValue(cO2EmissionsFromFuelGas),
+        },
+        {
+            profile: "Flared gas per produced volume",
+            unit: "Sm³/Sm³",
+            set: setFlaredGasPerProducedVolume,
+            value: toRowValue(flaredGasPerProducedVolume),
+        },
+        {
+            profile: "CO2-emissions from flared gas",
+            unit: "kg CO2/Sm³",
+            set: setCO2EmissionsFromFlaredGas,
+            value: toRowValue(cO2EmissionsFromFlaredGas),
+        },
+        {
+            profile: "CO2 vented",
+            unit: "kg CO2/Sm³",
+            set: setCO2Vented,
+            value: toRowValue(cO2Vented),
+        },
+        {
+            profile: "Average development well drilling days",
+            unit: "days/wells",
+            set: setAverageDevelopmentWellDrillingDays,
+            value: toRowValue(averageDevelopmentWellDrillingDays),
+        },
+        {
+            profile: "Daily emissions from drilling rig",
+            unit: "tonnes CO2/day",
+            set: setDailyEmissionsFromDrillingRig,
+            value: toRowValue(dailyEmissionsFromDrillingRig),
+        },
+    ] as CO2Data[], [
         cO2RemovedFromGas,
         cO2EmissionsFromFuelGas,
         flaredGasPerProducedVolume,
@@ -180,7 +181,8 @@ const CO2ListTechnicalInput = () => {
     )
 
     const handleCellValueChange = (p: any) => {
-        p.data.set(Number(p.data.value.toString().replace(/,/g, ".")))
+        const value = p.data.value === null ? 0 : p.data.value
+        p.data.set(Number(value.toString().replace(/,/g, ".")))
     }
 
     const defaultColDef = useMemo(() => ({
@@ -189,6 +191,13 @@ const CO2ListTechnicalInput = () => {
         resizable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
+        suppressKeyboardEvent: (params: any) => {
+            if (params.event.key === "Enter") {
+                gridRef.current?.stopEditing()
+                return true
+            }
+            return false
+        },
     }), [])
 
     const switchRow = () => {
@@ -234,7 +243,10 @@ const CO2ListTechnicalInput = () => {
 
     return (
         <Grid container spacing={1} justifyContent="flex-end">
-            <Grid item>
+            <StyledContainer>
+                <Typography>
+                    You can override these default assumption to customize the calculation made in CO2 emissions.
+                </Typography>
                 <Tooltip title={getEditDisabledText()}>
                     <Switch
                         disabled={isEditDisabled || !editMode}
@@ -246,7 +258,7 @@ const CO2ListTechnicalInput = () => {
                         label={check ? "CO2 re-injected" : "CO2 vented"}
                     />
                 </Tooltip>
-            </Grid>
+            </StyledContainer>
             <Grid item xs={12} className={styles.root}>
                 <div
                     style={{
@@ -264,6 +276,7 @@ const CO2ListTechnicalInput = () => {
                         isExternalFilterPresent={isExternalFilterPresent}
                         doesExternalFilterPass={doesExternalFilterPass}
                         singleClickEdit={editMode}
+                        stopEditingWhenCellsLoseFocus
                     />
                 </div>
             </Grid>
@@ -271,4 +284,4 @@ const CO2ListTechnicalInput = () => {
     )
 }
 
-export default CO2ListTechnicalInput
+export default CO2Tab

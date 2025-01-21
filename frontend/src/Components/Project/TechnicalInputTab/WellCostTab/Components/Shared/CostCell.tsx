@@ -1,7 +1,6 @@
 import { Input, Table, Typography } from "@equinor/eds-core-react"
 import {
     ChangeEventHandler,
-    Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
 
@@ -9,7 +8,7 @@ import { useAppContext } from "@/Context/AppContext"
 
 interface Props {
     title: string
-    setValue: Dispatch<SetStateAction<number | undefined>>
+    setValue: (value: number) => void
     value: number
 }
 
@@ -17,7 +16,7 @@ const StyledTypography = styled(Typography)`
     text-align: right;
 `
 
-const OperationalWellCost = ({
+const CostCell = ({
     title, setValue, value,
 }: Props) => {
     const { editMode } = useAppContext()
@@ -45,4 +44,4 @@ const OperationalWellCost = ({
     )
 }
 
-export default OperationalWellCost
+export default CostCell

@@ -9,18 +9,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.TechnicalInput;
 
-public class TechnicalInputService(
+public class UpdateWellsService(
     DcdDbContext context,
     UpdateExplorationWellCostProfilesService updateExplorationWellCostProfilesService,
     UpdateWellProjectCostProfilesService updateWellProjectCostProfilesService)
 {
-    public async Task UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
+    public async Task UpdateWells(Guid projectId, UpdateWellsDto updateWellsDto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        await DeleteWells(technicalInputDto.DeleteWellDtos);
-        await CreateWells(technicalInputDto.CreateWellDtos, projectPk);
-        await UpdateWells(technicalInputDto.UpdateWellDtos);
+        await DeleteWells(updateWellsDto.DeleteWellDtos);
+        await CreateWells(updateWellsDto.CreateWellDtos, projectPk);
+        await UpdateWells(updateWellsDto.UpdateWellDtos);
 
         await context.SaveChangesAsync();
     }
