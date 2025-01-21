@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.DrainageStrategies.DeferredGasProductions.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class DeferredGasProductionController(DeferredGasProductionService servic
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-gas-production")]
-    public async Task<DeferredGasProductionDto> CreateDeferredGasProduction(
+    public async Task<TimeSeriesVolumeDto> CreateDeferredGasProduction(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateDeferredGasProductionDto dto)
+        [FromBody] CreateTimeSeriesVolumeDto dto)
     {
         return await service.CreateDeferredGasProduction(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-gas-production/{profileId:guid}")]
-    public async Task<DeferredGasProductionDto> UpdateDeferredGasProduction(
+    public async Task<TimeSeriesVolumeDto> UpdateDeferredGasProduction(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateDeferredGasProductionDto dto)
+        [FromBody] UpdateTimeSeriesVolumeDto dto)
     {
         return await service.UpdateDeferredGasProduction(projectId, caseId, drainageStrategyId, profileId, dto);
     }

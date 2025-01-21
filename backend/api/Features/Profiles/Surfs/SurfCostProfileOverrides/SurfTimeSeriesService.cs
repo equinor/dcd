@@ -2,7 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Surfs.SurfCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -15,11 +15,11 @@ public class SurfTimeSeriesService(
     IMapperService mapperService,
     IRecalculationService recalculationService)
 {
-    public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateSurfCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid surfId,
-        CreateSurfCostProfileOverrideDto dto)
+        CreateTimeSeriesCostOverrideDto dto)
     {
         var surf = await context.Surfs.SingleAsync(x => x.ProjectId == projectId && x.Id == surfId);
 
@@ -41,15 +41,15 @@ public class SurfTimeSeriesService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(newProfile, newProfile.Id);
+        return mapperService.MapToDto<SurfCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
     }
 
-    public async Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateSurfCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid surfId,
         Guid costProfileId,
-        UpdateSurfCostProfileOverrideDto updatedSurfCostProfileOverrideDto)
+        UpdateTimeSeriesCostOverrideDto updatedSurfCostProfileOverrideDto)
     {
         var existingProfile = await context.SurfCostProfileOverride
             .Include(x => x.Surf)
@@ -68,6 +68,6 @@ public class SurfTimeSeriesService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(existingProfile, costProfileId);
+        return mapperService.MapToDto<SurfCostProfileOverride, TimeSeriesCostOverrideDto>(existingProfile, costProfileId);
     }
 }

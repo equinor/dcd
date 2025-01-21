@@ -62,7 +62,8 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-
+    const totalOilProduction = (apiData?.productionProfileOil?.sum ?? 0)
+        + (apiData?.additionalProductionProfileOil?.sum ?? 0)
     const co2GridRef = useRef<any>(null)
 
     const co2IntensityLine = {
@@ -265,9 +266,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 <Grid item>
                     <Typography variant="h1_bold">
                         {co2IntensityData?.sum && co2IntensityData?.values && co2IntensityData.values.length > 0
-                            ? Math.round((Number(co2IntensityData.sum) / co2IntensityData.values.length) * 10000) / 10000
-                            : 0}
+                            ? ((Number(co2EmissionsData?.sum) * 1000) / (totalOilProduction * 6.29)).toFixed(4)
+                            : "0.0000"}
                     </Typography>
+
                 </Grid>
                 <Grid item>
                     <Typography color="disabled">kg CO2/boe</Typography>

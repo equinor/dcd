@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.DeferredGasProductions.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class DeferredGasProductionService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<DeferredGasProductionDto> CreateDeferredGasProduction(
+    public async Task<TimeSeriesVolumeDto> CreateDeferredGasProduction(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateDeferredGasProductionDto createProfileDto)
+        CreateTimeSeriesVolumeDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<DeferredGasProduction, DeferredGasProductionDto, CreateDeferredGasProductionDto>(
+        return await CreateDrainageStrategyProfile<DeferredGasProduction, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class DeferredGasProductionService(
             d => d.DeferredGasProduction != null);
     }
 
-    public async Task<DeferredGasProductionDto> UpdateDeferredGasProduction(
+    public async Task<TimeSeriesVolumeDto> UpdateDeferredGasProduction(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateDeferredGasProductionDto updatedDeferredGasProductionDto)
+        UpdateTimeSeriesVolumeDto updatedDeferredGasProductionDto)
     {
-        return await UpdateDrainageStrategyProfile<DeferredGasProduction, DeferredGasProductionDto, UpdateDeferredGasProductionDto>(
+        return await UpdateDrainageStrategyProfile<DeferredGasProduction, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,

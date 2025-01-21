@@ -1,10 +1,11 @@
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.Helpers;
 
 public static class EmissionCalculationHelper
 {
-    private const int Cd = 365;
+    private const double Cd = 365.25;
     private const int ConversionFactorFromMtoG = 1000;
 
     public static TimeSeries<double> CalculateTotalFuelConsumptions(
@@ -43,7 +44,7 @@ public static class EmissionCalculationHelper
         var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy, pe);
         var totalPowerWi = CalculateTotalUseOfPowerWi(topside, drainageStrategy, pe);
 
-        var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { totalPowerOil, totalPowerGas, totalPowerWi });
+        var mergedPowerProfile = CostProfileMerger.MergeCostProfiles(totalPowerOil, totalPowerGas, totalPowerWi);
 
         var totalUseOfPowerValues = mergedPowerProfile.Values.Select(v => v + co2ShareCo2Max).ToArray();
         var totalUseOfPower = new TimeSeries<double>
@@ -106,7 +107,7 @@ public static class EmissionCalculationHelper
             Values = additionalGr
         };
 
-        var mergedProfile = TimeSeriesCost.MergeCostProfiles(productionProfileGas, additionalProductionProfileGas);
+        var mergedProfile = CostProfileMerger.MergeCostProfiles(productionProfileGas, additionalProductionProfileGas);
 
         var gsp = topside.CO2ShareGasProfile;
         var gom = topside.CO2OnMaxGasProfile;
@@ -153,7 +154,7 @@ public static class EmissionCalculationHelper
             Values = additionalOr
         };
 
-        var mergedProfile = TimeSeriesCost.MergeCostProfiles(productionProfileOil, additionalProductionProfileOil);
+        var mergedProfile = CostProfileMerger.MergeCostProfiles(productionProfileOil, additionalProductionProfileOil);
 
         var osp = topside.CO2ShareOilProfile;
         var oom = topside.CO2OnMaxOilProfile;
@@ -208,9 +209,9 @@ public static class EmissionCalculationHelper
             StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0,
         };
 
-        var mergedOilProfile = TimeSeriesCost.MergeCostProfiles(oilRateTs, additionalOilRateTs);
-        var mergedGasProfile = TimeSeriesCost.MergeCostProfiles(gasRateTs, additionalGasRateTs);
-        var mergedOilAndGas = TimeSeriesCost.MergeCostProfiles(mergedOilProfile, mergedGasProfile);
+        var mergedOilProfile = CostProfileMerger.MergeCostProfiles(oilRateTs, additionalOilRateTs);
+        var mergedGasProfile = CostProfileMerger.MergeCostProfiles(gasRateTs, additionalGasRateTs);
+        var mergedOilAndGas = CostProfileMerger.MergeCostProfiles(mergedOilProfile, mergedGasProfile);
 
         var flaringValues = mergedOilAndGas.Values.Select(v => v * project.FlaredGasPerProducedVolume).ToArray();
         var flaring = new TimeSeries<double>
@@ -240,7 +241,7 @@ public static class EmissionCalculationHelper
             StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0,
         };
 
-        var mergedGasLosses = TimeSeriesCost.MergeCostProfiles(gasLossesTs, additionalGasLossesTs);
+        var mergedGasLosses = CostProfileMerger.MergeCostProfiles(gasLossesTs, additionalGasLossesTs);
 
         var losses = new TimeSeries<double>
         {

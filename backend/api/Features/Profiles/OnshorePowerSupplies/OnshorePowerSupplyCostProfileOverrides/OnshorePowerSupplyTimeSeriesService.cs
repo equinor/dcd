@@ -1,9 +1,8 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -18,11 +17,11 @@ public class OnshorePowerSupplyTimeSeriesService(
     IProjectIntegrityService projectIntegrityService,
     IRecalculationService recalculationService)
 {
-    public async Task<OnshorePowerSupplyCostProfileOverrideDto> CreateOnshorePowerSupplyCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateOnshorePowerSupplyCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid onshorePowerSupplyId,
-        CreateOnshorePowerSupplyCostProfileOverrideDto dto)
+        CreateTimeSeriesCostOverrideDto dto)
     {
         await projectIntegrityService.EntityIsConnectedToProject<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
@@ -46,17 +45,17 @@ public class OnshorePowerSupplyTimeSeriesService(
         await context.UpdateCaseModifyTime(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>(newProfile, newProfile.Id);
+        return mapperService.MapToDto<OnshorePowerSupplyCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
     }
 
-    public async Task<OnshorePowerSupplyCostProfileOverrideDto> UpdateOnshorePowerSupplyCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateOnshorePowerSupplyCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid onshorePowerSupplyId,
         Guid costProfileId,
-        UpdateOnshorePowerSupplyCostProfileOverrideDto dto)
+        UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await UpdateOnshorePowerSupplyTimeSeries<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto, UpdateOnshorePowerSupplyCostProfileOverrideDto>(
+        return await UpdateOnshorePowerSupplyTimeSeries<OnshorePowerSupplyCostProfileOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             onshorePowerSupplyId,

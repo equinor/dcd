@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.Cases.HistoricCostCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,21 +9,21 @@ public class HistoricCostCostProfileController(HistoricCostCostProfileService se
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/historic-cost-cost-profile")]
-    public async Task<HistoricCostCostProfileDto> CreateHistoricCostCostProfile(
+    public async Task<TimeSeriesCostDto> CreateHistoricCostCostProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromBody] CreateHistoricCostCostProfileDto dto)
+        [FromBody] CreateTimeSeriesCostDto dto)
     {
         return await service.CreateHistoricCostCostProfile(projectId, caseId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/historic-cost-cost-profile/{costProfileId:guid}")]
-    public async Task<HistoricCostCostProfileDto> UpdateHistoricCostCostProfile(
+    public async Task<TimeSeriesCostDto> UpdateHistoricCostCostProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateHistoricCostCostProfileDto dto)
+        [FromBody] UpdateTimeSeriesCostDto dto)
     {
         return await service.UpdateHistoricCostCostProfile(projectId, caseId, costProfileId, dto);
     }

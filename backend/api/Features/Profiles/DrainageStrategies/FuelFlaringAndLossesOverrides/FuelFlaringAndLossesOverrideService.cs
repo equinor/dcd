@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class FuelFlaringAndLossesOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<FuelFlaringAndLossesOverrideDto> CreateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesVolumeOverrideDto> CreateFuelFlaringAndLossesOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateFuelFlaringAndLossesOverrideDto createProfileDto)
+        CreateTimeSeriesVolumeOverrideDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<FuelFlaringAndLossesOverride, FuelFlaringAndLossesOverrideDto, CreateFuelFlaringAndLossesOverrideDto>(
+        return await CreateDrainageStrategyProfile<FuelFlaringAndLossesOverride, TimeSeriesVolumeOverrideDto, CreateTimeSeriesVolumeOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class FuelFlaringAndLossesOverrideService(
             d => d.FuelFlaringAndLossesOverride != null);
     }
 
-    public async Task<FuelFlaringAndLossesOverrideDto> UpdateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesVolumeOverrideDto> UpdateFuelFlaringAndLossesOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateFuelFlaringAndLossesOverrideDto updateDto)
+        UpdateTimeSeriesVolumeOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<FuelFlaringAndLossesOverride, FuelFlaringAndLossesOverrideDto, UpdateFuelFlaringAndLossesOverrideDto>(
+        return await UpdateDrainageStrategyProfile<FuelFlaringAndLossesOverride, TimeSeriesVolumeOverrideDto, UpdateTimeSeriesVolumeOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

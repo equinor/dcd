@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -71,7 +72,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
         }
 
         var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfilesList([fuelConsumption, flarings, losses]);
+            CostProfileMerger.MergeCostProfiles([fuelConsumption, flarings, losses]);
 
         if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
         {
@@ -87,7 +88,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
 
         var additionalProductionProfileGas = drainageStrategy.AdditionalProductionProfileGas ?? new TimeSeries<double>();
 
-        var gasProduction = TimeSeriesCost.MergeCostProfiles(drainageStrategy.ProductionProfileGas, additionalProductionProfileGas);
-        return TimeSeriesCost.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
+        var gasProduction = CostProfileMerger.MergeCostProfiles(drainageStrategy.ProductionProfileGas, additionalProductionProfileGas);
+        return CostProfileMerger.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
     }
 }

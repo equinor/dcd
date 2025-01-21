@@ -157,6 +157,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         dbContext.LazyLoadingOccurrences.Add(new LazyLoadingOccurrence
         {
             Message = message,
+            FullStackTrace = new System.Diagnostics.StackTrace().ToString(),
             TimestampUtc = DateTime.UtcNow
         });
 

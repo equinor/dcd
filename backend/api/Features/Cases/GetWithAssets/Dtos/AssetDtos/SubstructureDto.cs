@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 using api.Models.Enums;
 
@@ -33,7 +32,3 @@ public class SubstructureDto
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
 }
-
-public class SubstructureCostProfileDto : TimeSeriesCostDto;
-
-public class SubstructureCessationCostProfileDto : TimeSeriesCostDto;

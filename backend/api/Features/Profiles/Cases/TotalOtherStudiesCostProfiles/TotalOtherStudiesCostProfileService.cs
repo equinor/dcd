@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class TotalOtherStudiesCostProfileService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+    public async Task<TimeSeriesCostDto> CreateTotalOtherStudiesCostProfile(
         Guid projectId,
         Guid caseId,
-        CreateTotalOtherStudiesCostProfileDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateCaseProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, CreateTotalOtherStudiesCostProfileDto>(
+        return await CreateCaseProfile<TotalOtherStudiesCostProfile, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.TotalOtherStudiesCostProfile != null);
     }
 
-    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+    public async Task<TimeSeriesCostDto> UpdateTotalOtherStudiesCostProfile(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto)
+        UpdateTimeSeriesCostDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, UpdateTotalOtherStudiesCostProfileDto>(
+        return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             costProfileId,

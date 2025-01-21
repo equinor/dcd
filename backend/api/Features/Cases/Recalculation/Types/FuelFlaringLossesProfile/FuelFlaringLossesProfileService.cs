@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
 
-        var total = TimeSeriesCost.MergeCostProfilesList([fuelConsumptions, flaring, losses]);
+        var total = CostProfileMerger.MergeCostProfiles([fuelConsumptions, flaring, losses]);
 
         if (drainageStrategy.FuelFlaringAndLosses != null)
         {

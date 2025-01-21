@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class NetSalesGasOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<NetSalesGasOverrideDto> CreateNetSalesGasOverride(
+    public async Task<TimeSeriesVolumeOverrideDto> CreateNetSalesGasOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateNetSalesGasOverrideDto createProfileDto)
+        CreateTimeSeriesVolumeOverrideDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<NetSalesGasOverride, NetSalesGasOverrideDto, CreateNetSalesGasOverrideDto>(
+        return await CreateDrainageStrategyProfile<NetSalesGasOverride, TimeSeriesVolumeOverrideDto, CreateTimeSeriesVolumeOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class NetSalesGasOverrideService(
             d => d.NetSalesGasOverride != null);
     }
 
-    public async Task<NetSalesGasOverrideDto> UpdateNetSalesGasOverride(
+    public async Task<TimeSeriesVolumeOverrideDto> UpdateNetSalesGasOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateNetSalesGasOverrideDto updateDto)
+        UpdateTimeSeriesVolumeOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<NetSalesGasOverride, NetSalesGasOverrideDto, UpdateNetSalesGasOverrideDto>(
+        return await UpdateDrainageStrategyProfile<NetSalesGasOverride, TimeSeriesVolumeOverrideDto, UpdateTimeSeriesVolumeOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

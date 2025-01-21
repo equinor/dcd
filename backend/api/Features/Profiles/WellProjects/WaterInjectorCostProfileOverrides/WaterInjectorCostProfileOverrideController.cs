@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class WaterInjectorCostProfileOverrideController(WaterInjectorCostProfile
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/water-injector-cost-profile-override")]
-    public async Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateWaterInjectorCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
-        [FromBody] CreateWaterInjectorCostProfileOverrideDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
         return await service.CreateWaterInjectorCostProfileOverride(projectId, caseId, wellProjectId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/water-injector-cost-profile-override/{costProfileId:guid}")]
-    public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateWaterInjectorCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateWaterInjectorCostProfileOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
         return await service.UpdateWaterInjectorCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
     }

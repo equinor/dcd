@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 
 namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
@@ -18,11 +17,3 @@ public class ExplorationDto
     [Required]
     public Currency Currency { get; set; }
 }
-
-public class ExplorationWellCostProfileDto : TimeSeriesCostDto;
-
-public class AppraisalWellCostProfileDto : TimeSeriesCostDto;
-
-public class SidetrackCostProfileDto : TimeSeriesCostDto;
-
-public class GAndGAdminCostDto : TimeSeriesCostDto;

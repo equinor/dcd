@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -159,7 +160,7 @@ public class WellCostProfileService(DcdDbContext context)
             }
         }
 
-        var mergedCostProfile = TimeSeriesCost.MergeCostProfilesList(costProfilesList);
+        var mergedCostProfile = CostProfileMerger.MergeCostProfiles(costProfilesList);
         return mergedCostProfile;
     }
 
@@ -181,7 +182,7 @@ public class WellCostProfileService(DcdDbContext context)
             }
         }
 
-        var mergedCostProfile = TimeSeriesCost.MergeCostProfilesList(costProfilesList);
+        var mergedCostProfile = CostProfileMerger.MergeCostProfiles(costProfilesList);
         return mergedCostProfile;
     }
 

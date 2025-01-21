@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +9,23 @@ public class AdditionalProductionProfileGasController(AdditionalProductionProfil
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/additional-production-profile-gas")]
-    public async Task<AdditionalProductionProfileGasDto> CreateAdditionalProductionProfileGas(
+    public async Task<TimeSeriesVolumeDto> CreateAdditionalProductionProfileGas(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateAdditionalProductionProfileGasDto dto)
+        [FromBody] CreateTimeSeriesVolumeDto dto)
     {
         return await service.CreateAdditionalProductionProfileGas(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/additional-production-profile-gas/{profileId:guid}")]
-    public async Task<AdditionalProductionProfileGasDto> UpdateAdditionalProductionProfileGas(
+    public async Task<TimeSeriesVolumeDto> UpdateAdditionalProductionProfileGas(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateAdditionalProductionProfileGasDto dto)
+        [FromBody] UpdateTimeSeriesVolumeDto dto)
     {
         return await service.UpdateAdditionalProductionProfileGas(projectId, caseId, drainageStrategyId, profileId, dto);
     }

@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class ProductionProfileWaterInjectionService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<ProductionProfileWaterInjectionDto> CreateProductionProfileWaterInjection(
+    public async Task<TimeSeriesVolumeDto> CreateProductionProfileWaterInjection(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateProductionProfileWaterInjectionDto createProfileDto)
+        CreateTimeSeriesVolumeDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto, CreateProductionProfileWaterInjectionDto>(
+        return await CreateDrainageStrategyProfile<ProductionProfileWaterInjection, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class ProductionProfileWaterInjectionService(
             d => d.ProductionProfileWaterInjection != null);
     }
 
-    public async Task<ProductionProfileWaterInjectionDto> UpdateProductionProfileWaterInjection(
+    public async Task<TimeSeriesVolumeDto> UpdateProductionProfileWaterInjection(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateProductionProfileWaterInjectionDto updatedProductionProfileWaterInjectionDto)
+        UpdateTimeSeriesVolumeDto updatedProductionProfileWaterInjectionDto)
     {
-        return await UpdateDrainageStrategyProfile<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto, UpdateProductionProfileWaterInjectionDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileWaterInjection, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,

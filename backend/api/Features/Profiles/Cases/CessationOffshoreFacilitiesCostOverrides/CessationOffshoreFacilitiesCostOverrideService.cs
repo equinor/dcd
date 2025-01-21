@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class CessationOffshoreFacilitiesCostOverrideService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<CessationOffshoreFacilitiesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(
         Guid projectId,
         Guid caseId,
-        CreateCessationOffshoreFacilitiesCostOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateCaseProfile<CessationOffshoreFacilitiesCostOverride, CessationOffshoreFacilitiesCostOverrideDto, CreateCessationOffshoreFacilitiesCostOverrideDto>(
+        return await CreateCaseProfile<CessationOffshoreFacilitiesCostOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.CessationOffshoreFacilitiesCostOverride != null);
     }
 
-    public async Task<CessationOffshoreFacilitiesCostOverrideDto> UpdateCessationOffshoreFacilitiesCostOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateCessationOffshoreFacilitiesCostOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateCessationOffshoreFacilitiesCostOverrideDto updatedCostProfileDto)
+        UpdateTimeSeriesCostOverrideDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<CessationOffshoreFacilitiesCostOverride, CessationOffshoreFacilitiesCostOverrideDto, UpdateCessationOffshoreFacilitiesCostOverrideDto>(
+        return await UpdateCaseCostProfile<CessationOffshoreFacilitiesCostOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             costProfileId,

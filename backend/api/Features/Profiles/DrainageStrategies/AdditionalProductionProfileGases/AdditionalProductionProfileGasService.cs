@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,13 +16,13 @@ public class AdditionalProductionProfileGasService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<AdditionalProductionProfileGasDto> CreateAdditionalProductionProfileGas(
+    public async Task<TimeSeriesVolumeDto> CreateAdditionalProductionProfileGas(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateAdditionalProductionProfileGasDto createProfileDto)
+        CreateTimeSeriesVolumeDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto, CreateAdditionalProductionProfileGasDto>(
+        return await CreateDrainageStrategyProfile<AdditionalProductionProfileGas, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class AdditionalProductionProfileGasService(
             d => d.AdditionalProductionProfileGas != null);
     }
 
-    public async Task<AdditionalProductionProfileGasDto> UpdateAdditionalProductionProfileGas(
+    public async Task<TimeSeriesVolumeDto> UpdateAdditionalProductionProfileGas(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateAdditionalProductionProfileGasDto updatedAdditionalProductionProfileGasDto)
+        UpdateTimeSeriesVolumeDto updatedAdditionalProductionProfileGasDto)
     {
-        return await UpdateDrainageStrategyProfile<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto, UpdateAdditionalProductionProfileGasDto>(
+        return await UpdateDrainageStrategyProfile<AdditionalProductionProfileGas, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
             projectId,
             caseId,
             drainageStrategyId,

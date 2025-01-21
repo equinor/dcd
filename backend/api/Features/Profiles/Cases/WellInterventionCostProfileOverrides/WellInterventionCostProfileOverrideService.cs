@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class WellInterventionCostProfileOverrideService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<WellInterventionCostProfileOverrideDto> CreateWellInterventionCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateWellInterventionCostProfileOverride(
         Guid projectId,
         Guid caseId,
-        CreateWellInterventionCostProfileOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateCaseProfile<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto, CreateWellInterventionCostProfileOverrideDto>(
+        return await CreateCaseProfile<WellInterventionCostProfileOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.WellInterventionCostProfileOverride != null);
     }
 
-    public async Task<WellInterventionCostProfileOverrideDto> UpdateWellInterventionCostProfileOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateWellInterventionCostProfileOverride(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateWellInterventionCostProfileOverrideDto updatedCostProfileDto)
+        UpdateTimeSeriesCostOverrideDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto, UpdateWellInterventionCostProfileOverrideDto>(
+        return await UpdateCaseCostProfile<WellInterventionCostProfileOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             costProfileId,

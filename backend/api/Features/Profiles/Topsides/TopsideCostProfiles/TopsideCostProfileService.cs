@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Topsides.TopsideCostProfileOverrides.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -18,7 +18,7 @@ public class TopsideCostProfileService(
         Guid projectId,
         Guid caseId,
         Guid topsideId,
-        UpdateTopsideCostProfileDto dto)
+        UpdateTimeSeriesCostDto dto)
     {
         var topside = await context.Topsides
             .Include(t => t.CostProfile)
@@ -36,7 +36,7 @@ public class TopsideCostProfileService(
     private async Task CreateTopsideCostProfile(
         Guid caseId,
         Guid topsideId,
-        UpdateTopsideCostProfileDto dto,
+        UpdateTimeSeriesCostDto dto,
         Topside topside)
     {
         var topsideCostProfile = new TopsideCostProfile
@@ -60,7 +60,7 @@ public class TopsideCostProfileService(
         Guid caseId,
         Guid topsideId,
         Guid profileId,
-        UpdateTopsideCostProfileDto updatedProfileDto)
+        UpdateTimeSeriesCostDto updatedProfileDto)
     {
         var existingProfile = await context.TopsideCostProfiles
             .Include(x => x.Topside).ThenInclude(topside => topside.CostProfileOverride)

@@ -1,6 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.Features.ProjectIntegrity;
 using api.ModelMapping;
 using api.Models;
@@ -16,25 +16,25 @@ public class CessationOnshoreFacilitiesCostProfileService(
     IRecalculationService recalculationService)
     : CaseProfileBaseService(context, recalculationService, projectIntegrityService, mapperService)
 {
-    public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+    public async Task<TimeSeriesCostDto> CreateCessationOnshoreFacilitiesCostProfile(
         Guid projectId,
         Guid caseId,
-        CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(
+        return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             createProfileDto,
             d => d.CessationOnshoreFacilitiesCostProfile != null);
     }
 
-    public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+    public async Task<TimeSeriesCostDto> UpdateCessationOnshoreFacilitiesCostProfile(
         Guid projectId,
         Guid caseId,
         Guid costProfileId,
-        UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto)
+        UpdateTimeSeriesCostDto updatedCostProfileDto)
     {
-        return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
+        return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             costProfileId,

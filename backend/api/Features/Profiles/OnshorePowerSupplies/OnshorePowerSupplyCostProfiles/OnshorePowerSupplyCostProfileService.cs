@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles.Dtos;
+using api.Features.Profiles.Dtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -18,7 +18,7 @@ public class OnshorePowerSupplyCostProfileService(
         Guid projectId,
         Guid caseId,
         Guid onshorePowerSupplyId,
-        UpdateOnshorePowerSupplyCostProfileDto dto)
+        UpdateTimeSeriesCostDto dto)
     {
         var onshorePowerSupply = await context.OnshorePowerSupplies
             .Include(t => t.CostProfile)
@@ -36,7 +36,7 @@ public class OnshorePowerSupplyCostProfileService(
     private async Task CreateOnshorePowerSupplyCostProfile(
         Guid caseId,
         Guid onshorePowerSupplyId,
-        UpdateOnshorePowerSupplyCostProfileDto dto,
+        UpdateTimeSeriesCostDto dto,
         OnshorePowerSupply onshorePowerSupply)
     {
         var onshorePowerSupplyCostProfile = new OnshorePowerSupplyCostProfile
@@ -62,7 +62,7 @@ public class OnshorePowerSupplyCostProfileService(
         Guid caseId,
         Guid onshorePowerSupplyId,
         Guid profileId,
-        UpdateOnshorePowerSupplyCostProfileDto updatedProfileDto)
+        UpdateTimeSeriesCostDto updatedProfileDto)
     {
         var existingProfile = await context.OnshorePowerSupplyCostProfile
             .Include(x => x.OnshorePowerSupply).ThenInclude(onshorePowerSupply => onshorePowerSupply.CostProfileOverride)

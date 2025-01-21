@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 
 namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
@@ -13,11 +12,3 @@ public class WellProjectDto
     [Required] public ArtificialLift ArtificialLift { get; set; }
     [Required] public Currency Currency { get; set; }
 }
-
-public class OilProducerCostProfileDto : TimeSeriesCostDto;
-
-public class GasProducerCostProfileDto : TimeSeriesCostDto;
-
-public class WaterInjectorCostProfileDto : TimeSeriesCostDto;
-
-public class GasInjectorCostProfileDto : TimeSeriesCostDto;
