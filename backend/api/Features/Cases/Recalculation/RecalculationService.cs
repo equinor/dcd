@@ -31,10 +31,6 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
 
         var stopwatch = Stopwatch.StartNew();
 
-        await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(caseId);
-        debugLog.Add("UpdateCostProfilesForWellsFromDrillingSchedules", stopwatch.ElapsedMilliseconds);
-        stopwatch.Restart();
-
         await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(caseId);
         debugLog.Add("UpdateCostProfilesForWells", stopwatch.ElapsedMilliseconds);
         stopwatch.Restart();
