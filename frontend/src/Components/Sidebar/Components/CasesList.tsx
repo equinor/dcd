@@ -23,7 +23,7 @@ const SideBarRefCaseWrapper = styled.div`
 `
 
 const CasesList: React.FC = () => {
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, setEditMode } = useAppContext()
     const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()
@@ -33,6 +33,7 @@ const CasesList: React.FC = () => {
 
     const selectCase = (caseId: string) => {
         if (!caseId) { return null }
+        setEditMode(false)
         if (isRevision && revisionId) {
             navigateToRevisionCase(revisionId, caseId)
         } else {

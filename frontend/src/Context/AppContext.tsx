@@ -10,6 +10,7 @@ import {
     useEffect,
 } from "react"
 import { EditInstance } from "../Models/Interfaces"
+import { useLocalStorage } from "../Hooks/useLocalStorage"
 
 interface AppContextType {
     showEditHistory: boolean,
@@ -34,32 +35,22 @@ interface AppContextType {
     setIsCalculatingTotalStudyCostOverrides: Dispatch<SetStateAction<boolean>>,
     apiQueue: EditInstance[],
     setApiQueue: Dispatch<SetStateAction<EditInstance[]>>,
-
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [showEditHistory, setShowEditHistory] = useState<boolean>(false)
-
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSaving, setIsSaving] = useState<boolean>(false)
-    const [editMode, setEditMode] = useState<boolean>(() => {
-        const savedEditMode = localStorage.getItem("dcdEditMode")
-        return savedEditMode ? JSON.parse(savedEditMode) : false
-    })
+    const [editMode, setEditMode] = useLocalStorage<boolean>("dcdEditMode", false)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [showRevisionReminder, setShowRevisionReminder] = useState<boolean>(false)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
     const [isCalculatingProductionOverrides, setIsCalculatingProductionOverrides] = useState<boolean>(false)
     const [isCalculatingTotalStudyCostOverrides, setIsCalculatingTotalStudyCostOverrides] = useState<boolean>(false)
     const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
-
-    // Persist editMode changes to localStorage
-    useEffect(() => {
-        localStorage.setItem("dcdEditMode", JSON.stringify(editMode))
-    }, [editMode])
 
     const value = useMemo(() => ({
         showEditHistory,

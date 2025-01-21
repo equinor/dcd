@@ -2,6 +2,7 @@ import { Button, Tooltip } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { ReferenceCaseIcon } from "../../Components/ReferenceCaseIcon"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useAppContext } from "@/Context/AppContext"
 
 const Wrapper = styled.div`
     justify-content: center;
@@ -23,8 +24,10 @@ export const CaseNameCell = ({
     value, data, isRevision, revisionId,
 }: CaseNameCellProps) => {
     const { navigateToCase, navigateToRevisionCase } = useAppNavigation()
+    const { setEditMode } = useAppContext()
 
     const navigateToSelectedCase = () => {
+        setEditMode(false)
         if (isRevision && revisionId) {
             navigateToRevisionCase(revisionId, data.id)
         } else {
