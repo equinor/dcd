@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Features.Wells.Update;
+namespace api.Features.Wells.Update.Dtos;
 
 public class UpdateWellDto
 {

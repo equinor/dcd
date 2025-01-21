@@ -5,7 +5,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.TechnicalInput;
+namespace api.Features.Wells.Update;
 
 public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 {
