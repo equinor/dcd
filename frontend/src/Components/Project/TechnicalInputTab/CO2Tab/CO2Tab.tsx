@@ -181,7 +181,8 @@ const CO2Tab = () => {
     )
 
     const handleCellValueChange = (p: any) => {
-        p.data.set(Number(p.data.value.toString().replace(/,/g, ".")))
+        const value = p.data.value === null ? 0 : p.data.value
+        p.data.set(Number(value.toString().replace(/,/g, ".")))
     }
 
     const defaultColDef = useMemo(() => ({

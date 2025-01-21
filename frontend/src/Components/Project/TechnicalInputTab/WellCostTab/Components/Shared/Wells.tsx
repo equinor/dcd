@@ -93,10 +93,10 @@ const Wells = ({
 
         const updatedWell = {
             id: previousData.id,
-            name: updatedData.name || previousData.name,
-            wellCategory: updatedData.wellCategory || previousData.wellCategory,
-            drillingDays: updatedData.drillingDays !== undefined ? updatedData.drillingDays : previousData.drillingDays,
-            wellCost: updatedData.wellCost !== undefined ? updatedData.wellCost : previousData.wellCost,
+            name: updatedData.name || previousData.name || "",
+            wellCategory: updatedData.wellCategory || previousData.wellCategory || defaultWellCategory,
+            drillingDays: updatedData.drillingDays !== undefined ? (updatedData.drillingDays ?? 0) : (previousData.drillingDays ?? 0),
+            wellCost: updatedData.wellCost !== undefined ? (updatedData.wellCost ?? 0) : (previousData.wellCost ?? 0),
         }
 
         const updatePayload: Components.Schemas.UpdateWellsDto = {
