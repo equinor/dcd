@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
@@ -24,10 +24,10 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     const { isCalculatingTotalStudyCostOverrides } = useAppContext()
     const revisionAndProjectData = useDataFetch()
 
-    const calculatedFields = [
+    const calculatedFields = useMemo(() => [
         "totalFeasibilityAndConceptStudiesOverride",
         "totalFEEDStudiesOverride",
-    ]
+    ], [])
 
     const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
