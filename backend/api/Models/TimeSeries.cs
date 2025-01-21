@@ -14,23 +14,13 @@ public class TimeSeries<T> : IChangeTrackable
 
     public Guid Id { get; set; }
     public int StartYear { get; set; }
-
     public string InternalData { get; set; } = null!;
+
     [NotMapped]
     public T[] Values
     {
-        get
-        {
-            if (string.IsNullOrEmpty(InternalData))
-            {
-                return [];
-            }
-            return Array.ConvertAll(InternalData.Split(';'), ConvertStringToGeneric);
-        }
-        set
-        {
-            InternalData = string.Join(";", value.Select(p => p!.ToString()).ToArray());
-        }
+        get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), ConvertStringToGeneric);
+        set => InternalData = string.Join(";", value.Select(p => p!.ToString()).ToArray());
     }
 
     private static T ConvertStringToGeneric(string pf)
