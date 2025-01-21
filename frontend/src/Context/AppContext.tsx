@@ -7,6 +7,7 @@ import {
     ReactNode,
     useContext,
     useMemo,
+    useEffect,
 } from "react"
 import { EditInstance } from "../Models/Interfaces"
 
@@ -44,13 +45,21 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSaving, setIsSaving] = useState<boolean>(false)
-    const [editMode, setEditMode] = useState<boolean>(false)
+    const [editMode, setEditMode] = useState<boolean>(() => {
+        const savedEditMode = localStorage.getItem("dcdEditMode")
+        return savedEditMode ? JSON.parse(savedEditMode) : false
+    })
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [showRevisionReminder, setShowRevisionReminder] = useState<boolean>(false)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
     const [isCalculatingProductionOverrides, setIsCalculatingProductionOverrides] = useState<boolean>(false)
     const [isCalculatingTotalStudyCostOverrides, setIsCalculatingTotalStudyCostOverrides] = useState<boolean>(false)
     const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
+
+    // Persist editMode changes to localStorage
+    useEffect(() => {
+        localStorage.setItem("dcdEditMode", JSON.stringify(editMode))
+    }, [editMode])
 
     const value = useMemo(() => ({
         showEditHistory,

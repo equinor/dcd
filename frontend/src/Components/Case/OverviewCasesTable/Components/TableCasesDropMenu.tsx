@@ -75,7 +75,7 @@ const CasesDropMenu = ({
         if (!selectedCase || selectedCaseId === undefined || !revisionAndProjectData?.projectId) { return }
         const newResourceObject = { ...selectedCase, archived: isArchived } as ResourceObject
         const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
-        if (result) {
+        if (result.success) {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", revisionAndProjectData.projectId] },
             )

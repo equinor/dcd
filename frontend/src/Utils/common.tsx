@@ -1,5 +1,6 @@
 import { AxiosError } from "axios"
 import { Dispatch, SetStateAction } from "react"
+import isEqual from "lodash/isEqual"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
@@ -226,7 +227,7 @@ export const numberValueParser = (
         return oldValue
     }
 
-    if (valueWithOnlyNumbersCommasAndDots !== newValue) {
+    if (valueWithOnlyNumbersCommasAndDots.toString() !== newValue.toString()) {
         setSnackBarMessage("Only numbers, commas and dates are allowed. Invalid characters have been removed.")
     }
 
@@ -302,8 +303,6 @@ export const getValuesFromEntireRow = (tableData: any) => {
             })
         }
     })
-
-    console.log(valuePerYear.sort((a, b) => a.year - b.year))
     return valuePerYear.sort((a, b) => a.year - b.year)
 }
 
@@ -371,3 +370,86 @@ export const defaultAxesData = [
 ]
 
 export const roundToFourDecimalsAndJoin = (values: string[]): string => values.map((value) => Math.floor(Number(value) * 10000) / 10000).join(" - ")
+
+export interface ITableCellChangeParams {
+    data: any
+    newValue: any
+    oldValue: any
+    profileName: string
+    profile?: any
+    resourceId?: string
+}
+
+export interface ITableCellChangeConfig {
+    dg4Year: number
+    caseId?: string
+    projectId?: string
+    tab?: string
+    tableName?: string
+    timeSeriesData: any[]
+    setSnackBarMessage?: (message: string) => void
+}
+
+export const validateTableCellChange = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
+    const { data, newValue, profileName } = params
+    const { setSnackBarMessage } = config
+
+    const rule = TABLE_VALIDATION_RULES[profileName]
+    if (rule && setSnackBarMessage && (newValue < rule.min || newValue > rule.max)) {
+        setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+        return false
+    }
+
+    return true
+}
+
+export const generateTableCellEdit = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
+    const { data, profileName } = params
+    const {
+        dg4Year, caseId, projectId, tab, tableName, timeSeriesData,
+    } = config
+
+    if (!caseId) { return null }
+
+    const rowValues = getValuesFromEntireRow(data)
+    const existingProfile = data.profile ? structuredClone(data.profile) : {
+        startYear: 0,
+        values: [],
+        id: data.resourceId,
+    }
+
+    let newProfile
+    if (rowValues.length > 0) {
+        const firstYear = rowValues[0].year
+        const lastYear = rowValues[rowValues.length - 1].year
+        const startYear = firstYear - dg4Year
+        newProfile = generateProfile(rowValues, data.profile, startYear, firstYear, lastYear)
+    } else {
+        newProfile = structuredClone(existingProfile)
+        newProfile.values = []
+    }
+
+    if (!newProfile || isEqual(newProfile.values, existingProfile.values)) {
+        return null
+    }
+
+    const profileInTimeSeriesData = timeSeriesData.find(
+        (v) => v.profileName === profileName,
+    )
+
+    return {
+        newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
+        previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
+        inputLabel: profileName,
+        projectId,
+        resourceName: profileInTimeSeriesData?.resourceName,
+        resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
+        caseId,
+        resourceId: profileInTimeSeriesData?.resourceId,
+        newResourceObject: newProfile,
+        previousResourceObject: existingProfile,
+        resourceProfileId: profileInTimeSeriesData?.resourceProfileId,
+        tabName: tab,
+        tableName,
+    }
+}

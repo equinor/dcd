@@ -76,7 +76,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
 
             timer = setTimeout(() => {
                 processQueue()
-            }, 2000)
+            }, 3000)
         } else {
             setIsSaving(false)
         }

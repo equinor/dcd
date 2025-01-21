@@ -3,11 +3,11 @@ import styled from "styled-components"
 import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { error_outlined } from "@equinor/eds-icons"
 
-const ErrorCellContainer = styled.div<{ hasError: boolean }>`
+const ErrorCellContainer = styled.div<{ $hasError: boolean }>`
     display: flex;
     justify-content: space-between;
     padding-right: 6px;
-    background-color: ${(props) => (props.hasError ? "#FFCCCC" : "transparent")};
+    background-color: ${(props) => (props.$hasError ? "#FFCCCC" : "transparent")};
 
     & > div {
         position: relative;
@@ -31,7 +31,7 @@ interface ErrorCellRendererProps {
 
 const ErrorCellRenderer = ({ errorMsg, value }: ErrorCellRendererProps) => (
     errorMsg ? (
-        <ErrorCellContainer hasError={!!errorMsg}>
+        <ErrorCellContainer $hasError={!!errorMsg}>
             <Tooltip title={errorMsg} placement="top">
                 <div>
                     <Icon data={error_outlined} size={18} color="red" />

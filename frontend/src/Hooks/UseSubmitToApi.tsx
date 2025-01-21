@@ -79,9 +79,10 @@ export const useSubmitToApi = () => {
             const payload: any = { projectId, caseId, serviceMethod }
             if (resourceId) { payload.resourceId = resourceId }
 
-            return await mutation.mutateAsync(payload)
+            const result = await mutation.mutateAsync(payload)
+            return { success: true, data: result }
         } catch (error) {
-            return false
+            return { success: false, error }
         }
     }
 
@@ -122,9 +123,9 @@ export const useSubmitToApi = () => {
                 serviceMethod: createOrUpdateFunction,
             })
             const returnValue = { ...result, resourceProfileId: result.id }
-            return returnValue
+            return { success: true, data: returnValue }
         } catch (error) {
-            return error
+            return { success: false, error }
         }
     }
 
@@ -147,9 +148,9 @@ export const useSubmitToApi = () => {
                 serviceMethod: createOrUpdateFunction,
             })
             const returnValue = { ...result, resourceProfileId: result.id }
-            return returnValue
+            return { success: true, data: returnValue }
         } catch (error) {
-            return error
+            return { success: false, error }
         }
     }
 
@@ -173,7 +174,7 @@ export const useSubmitToApi = () => {
         resourceProfileId,
         wellId,
         drillingScheduleId,
-    }: SubmitToApiParams): Promise<any> => {
+    }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
         }
@@ -184,48 +185,48 @@ export const useSubmitToApi = () => {
 
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
-            throw Error()
+            return { success: false, error: new Error("Asset ID is required for this service") }
         }
 
-        let success = {}
+        let result
         switch (resourceName) {
         case "case":
-            success = await updateCase({
+            result = await updateCase({
                 projectId, caseId, resourceObject,
             })
             break
         case "topside":
-            success = await updateTopside({
+            result = await updateTopside({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "surf":
-            success = await updateSurf({
+            result = await updateSurf({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "substructure":
-            success = await updateSubstructure({
+            result = await updateSubstructure({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "transport":
-            success = await updateTransport({
+            result = await updateTransport({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "onshorePowerSupply":
-            success = await updateOnshorePowerSupply({
+            result = await updateOnshorePowerSupply({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "drainageStrategy":
-            success = await updateDrainageStrategy({
+            result = await updateDrainageStrategy({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "productionProfileOil":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -247,7 +248,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "additionalProductionProfileOil":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -269,7 +270,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "productionProfileGas":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -291,7 +292,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "additionalProductionProfileGas":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -313,7 +314,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "productionProfileWater":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -335,7 +336,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "productionProfileWaterInjection":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -357,7 +358,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "productionProfileFuelFlaringAndLossesOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -379,7 +380,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "productionProfileNetSalesGasOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -401,7 +402,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "productionProfileImportedElectricityOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -423,7 +424,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "deferredOilProduction":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -445,7 +446,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "deferredGasProduction":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -467,7 +468,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "totalFeasibilityAndConceptStudiesOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -487,7 +488,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "totalFEEDStudiesOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -507,7 +508,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "totalOtherStudiesCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -527,7 +528,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "historicCostCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -547,7 +548,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "wellInterventionCostProfileOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -567,7 +568,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "offshoreFacilitiesOperationsCostProfileOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -587,7 +588,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "onshoreRelatedOPEXCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -607,7 +608,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "additionalOPEXCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -627,7 +628,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "cessationWellsCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -647,7 +648,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "cessationOffshoreFacilitiesCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -667,7 +668,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "cessationOnshoreFacilitiesCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -687,7 +688,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "surfCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -709,7 +710,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "topsideCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -731,7 +732,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "substructureCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -753,7 +754,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "transportCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -775,7 +776,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "onshorePowerSupplyCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -797,7 +798,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "wellProjectOilProducerCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -819,7 +820,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "wellProjectGasProducerCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -841,7 +842,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "wellProjectWaterInjectorCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -863,7 +864,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "wellProjectGasInjectorCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -885,7 +886,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "gAndGAdminCost":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -907,7 +908,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "seismicAcquisitionAndProcessing":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -929,7 +930,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "countryOfficeCost":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -951,7 +952,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "co2EmissionsOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -973,7 +974,7 @@ export const useSubmitToApi = () => {
             })
             break
         case "explorationWellDrillingSchedule":
-            success = await createOrUpdateDrillingSchedule(
+            result = await createOrUpdateDrillingSchedule(
                 projectId,
                 caseId,
                     resourceId!,
@@ -998,7 +999,7 @@ export const useSubmitToApi = () => {
             )
             break
         case "wellProjectWellDrillingSchedule":
-            success = await createOrUpdateDrillingSchedule(
+            result = await createOrUpdateDrillingSchedule(
                 projectId,
                 caseId,
                     resourceId!,
@@ -1025,8 +1026,9 @@ export const useSubmitToApi = () => {
             break
         default:
             console.log("Service not found")
+            return { success: false, error: new Error("Service not found") }
         }
-        return success
+        return result
     }
 
     return { submitToApi, updateCase, mutation }

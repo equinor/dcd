@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppContext } from "@/Context/AppContext"
@@ -19,11 +19,11 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     const { isCalculatingProductionOverrides } = useAppContext()
     const revisionAndProjectData = useDataFetch()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
-    const calculatedFields = [
+    const calculatedFields = useMemo(() => [
         "productionProfileFuelFlaringAndLossesOverride",
         "productionProfileNetSalesGasOverride",
         "productionProfileImportedElectricityOverride",
-    ]
+    ], [])
 
     useEffect(() => {
         const drainageStrategyData = apiData.drainageStrategy
