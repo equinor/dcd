@@ -1,5 +1,6 @@
 using api.Context;
 using api.Exceptions;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +105,6 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
             }
         }
 
-        return TimeSeriesCost.MergeCostProfilesList(costProfilesList);
+        return CostProfileMerger.MergeCostProfiles(costProfilesList);
     }
 }

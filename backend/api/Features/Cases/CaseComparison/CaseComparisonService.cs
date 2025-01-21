@@ -1,3 +1,4 @@
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 namespace api.Features.Cases.CaseComparison;
@@ -137,7 +138,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         TimeSeriesCost? feed = caseItem.TotalFEEDStudiesOverride?.Override == true ? caseItem.TotalFEEDStudiesOverride : caseItem.TotalFEEDStudies;
         TimeSeriesCost? otherStudies = caseItem.TotalOtherStudiesCostProfile;
 
-        var studyTimeSeries = TimeSeriesCost.MergeCostProfilesList([feasibility, feed, otherStudies]);
+        var studyTimeSeries = CostProfileMerger.MergeCostProfiles(feasibility, feed, otherStudies);
 
         TimeSeriesCost? wellIntervention = caseItem.WellInterventionCostProfileOverride?.Override == true ? caseItem.WellInterventionCostProfileOverride : caseItem.WellInterventionCostProfile;
         TimeSeriesCost? offshoreFacilities = caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true
@@ -147,7 +148,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         TimeSeriesCost? onshoreOpex = caseItem.OnshoreRelatedOPEXCostProfile;
         TimeSeriesCost? additionalOpex = caseItem.AdditionalOPEXCostProfile;
 
-        var opexTimeSeries = TimeSeriesCost.MergeCostProfilesList(
+        var opexTimeSeries = CostProfileMerger.MergeCostProfiles(
         [
             wellIntervention,
             offshoreFacilities,
@@ -170,7 +171,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             : caseItem.CessationOffshoreFacilitiesCost;
         TimeSeriesCost? cessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile;
 
-        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList([cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile]);
+        var cessationTimeSeries = CostProfileMerger.MergeCostProfiles([cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile]);
 
         return cessationTimeSeries.Values.Sum();
     }

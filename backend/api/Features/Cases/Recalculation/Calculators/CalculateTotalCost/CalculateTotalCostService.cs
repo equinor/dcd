@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -131,7 +132,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = explorationCost.Values
         };
 
-        var totalCost = TimeSeriesCost.MergeCostProfilesList(
+        var totalCost = CostProfileMerger.MergeCostProfiles(
         [
             studiesProfile,
             opexProfile,
@@ -170,7 +171,7 @@ public class CalculateTotalCostService(DcdDbContext context)
         TimeSeries<double> otherStudiesProfile = caseItem.TotalOtherStudiesCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        var totalStudyCost = TimeSeriesCost.MergeCostProfilesList(
+        var totalStudyCost = CostProfileMerger.MergeCostProfiles(
         [
             feasibilityProfile,
             feedProfile,
@@ -197,7 +198,7 @@ public class CalculateTotalCostService(DcdDbContext context)
         TimeSeries<double> additionalOpexProfile = caseItem.AdditionalOPEXCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        var totalOpexCost = TimeSeriesCost.MergeCostProfilesList(
+        var totalOpexCost = CostProfileMerger.MergeCostProfiles(
         [
             historicCostProfile,
             wellInterventionProfile,
@@ -221,7 +222,7 @@ public class CalculateTotalCostService(DcdDbContext context)
         TimeSeries<double> cessationOnshoreFacilitiesProfile = caseItem.CessationOnshoreFacilitiesCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        var totalCessationCost = TimeSeriesCost.MergeCostProfilesList(
+        var totalCessationCost = CostProfileMerger.MergeCostProfiles(
         [
             cessationWellsProfile,
             cessationOffshoreFacilitiesProfile,
@@ -258,7 +259,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             onshorePowerSupply?.CostProfileOverride
         );
 
-        var totalOffshoreFacilityCost = TimeSeriesCost.MergeCostProfilesList(
+        var totalOffshoreFacilityCost = CostProfileMerger.MergeCostProfiles(
         [
             substructureProfile,
             surfProfile,
@@ -289,7 +290,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             wellProject.GasInjectorCostProfileOverride
         );
 
-        var totalDevelopmentCost = TimeSeriesCost.MergeCostProfilesList(
+        var totalDevelopmentCost = CostProfileMerger.MergeCostProfiles(
         [
             oilProducerProfile,
             gasProducerProfile,
@@ -321,7 +322,7 @@ public class CalculateTotalCostService(DcdDbContext context)
         TimeSeries<double> sidetrackCostProfile = exploration?.SidetrackCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        var totalExploration = TimeSeriesCost.MergeCostProfilesList(
+        var totalExploration = CostProfileMerger.MergeCostProfiles(
         [
             gAndGAdminCostProfile,
             seismicAcquisitionAndProcessingProfile,

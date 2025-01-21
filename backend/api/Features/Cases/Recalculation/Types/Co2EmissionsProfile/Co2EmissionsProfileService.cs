@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
 
-        var tempProfile = TimeSeriesCost.MergeCostProfilesList([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
+        var tempProfile = CostProfileMerger.MergeCostProfiles([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 
@@ -52,8 +53,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
 
         var drillingEmissionsProfile = await CalculateDrillingEmissions(project, caseItem.WellProjectLink);
 
-        var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
+        var totalProfile = CostProfileMerger.MergeCostProfiles(newProfile, drillingEmissionsProfile);
 
         if (drainageStrategy.Co2Emissions != null)
         {
@@ -132,7 +132,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
             };
-            wellDrillingSchedules = TimeSeriesCost.MergeCostProfiles(wellDrillingSchedules, timeSeries);
+            wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
         var drillingEmission = new ProductionProfileGas
