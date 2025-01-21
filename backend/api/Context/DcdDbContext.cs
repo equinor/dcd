@@ -95,6 +95,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<PendingRecalculation> PendingRecalculations => Set<PendingRecalculation>();
     public DbSet<CompletedRecalculation> CompletedRecalculations => Set<CompletedRecalculation>();
     public DbSet<BackgroundJobMachineInstanceLog> BackgroundJobMachineInstanceLogs => Set<BackgroundJobMachineInstanceLog>();
+    public DbSet<FrontendException> FrontendExceptions => Set<FrontendException>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
