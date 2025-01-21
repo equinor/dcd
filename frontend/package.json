@@ -15,7 +15,9 @@
         "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
         "start": "fusion-framework-cli app dev",
         "test": "vitest",
-        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage"
+        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
+        "lint": "eslint \"src/**/*.{ts,tsx}\"",
+        "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix"
     },
     "browserslist": {
         "production": [

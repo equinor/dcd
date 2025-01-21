@@ -14,6 +14,7 @@ import { useAppContext } from "../Context/AppContext"
 import { useSubmitToApi } from "./UseSubmitToApi"
 import { useAppNavigation } from "./useNavigate"
 import { createLogger } from "../Utils/logger"
+import { useLocalStorage } from "./useLocalStorage"
 
 interface AddEditParams {
     inputLabel: string;
@@ -54,19 +55,13 @@ const useEditCase = () => {
     } = useCaseContext()
     const { submitToApi } = useSubmitToApi()
     const { navigateToCaseTab } = useAppNavigation()
+    const [storedEditIndexes, setStoredEditIndexes] = useLocalStorage<EditEntry[]>("editIndexes", [])
 
     const { caseId: caseIdFromParams } = useParams()
 
     const getActiveEditFromIndexes = () => {
-        const storedEditIndexes = localStorage.getItem("editIndexes")
-        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-
-        const existingEntry = _.find(editIndexesArray, { caseId: caseIdFromParams })
-
-        if (existingEntry) {
-            return existingEntry
-        }
-        return undefined
+        const existingEntry = _.find(storedEditIndexes, { caseId: caseIdFromParams })
+        return existingEntry
     }
 
     const updateEditIndex = (newEditId: string) => {
@@ -76,24 +71,22 @@ const useEditCase = () => {
         }
 
         const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
-
-        const storedEditIndexes = localStorage.getItem("editIndexes")
-        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-
         const activeEdit = getActiveEditFromIndexes()
 
+        let updatedEditIndexes: EditEntry[]
         if (activeEdit) {
             activeEdit.currentEditId = newEditId
-            const index = _.findIndex(editIndexesArray, { caseId: caseIdFromParams })
-            editIndexesArray[index] = activeEdit
+            const index = _.findIndex(storedEditIndexes, { caseId: caseIdFromParams })
+            updatedEditIndexes = [...storedEditIndexes]
+            updatedEditIndexes[index] = activeEdit
             editQueueLogger.log("Updated existing edit index:", { newEditId, activeEdit })
         } else {
-            editIndexesArray.push(editEntry)
+            updatedEditIndexes = [...storedEditIndexes, editEntry]
             editQueueLogger.log("Added new edit index:", editEntry)
         }
 
-        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
-        setEditIndexes(editIndexesArray)
+        setStoredEditIndexes(updatedEditIndexes)
+        setEditIndexes(updatedEditIndexes)
     }
 
     const updateHistory = () => {

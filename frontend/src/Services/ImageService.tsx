@@ -27,18 +27,18 @@ export class ImageService extends __BaseService {
     public async updateProjectImage(
         projectId: string,
         imageId: string,
-        dto: Components.Schemas.UpdateImageDto
-        ): Promise<Components.Schemas.ImageDto> {
+        dto: Components.Schemas.UpdateImageDto,
+    ): Promise<Components.Schemas.ImageDto> {
         const response: Components.Schemas.ImageDto = await this.put(`projects/${projectId}/images/${imageId}`, { body: dto })
         return response
     }
-    
+
     public async updateCaseImage(
         projectId: string,
         caseId: string,
         imageId: string,
-        dto: Components.Schemas.UpdateImageDto
-        ): Promise<Components.Schemas.ImageDto> {
+        dto: Components.Schemas.UpdateImageDto,
+    ): Promise<Components.Schemas.ImageDto> {
         const response: Components.Schemas.ImageDto = await this.put(`projects/${projectId}/cases/${caseId}/images/${imageId}`, { body: dto })
         return response
     }

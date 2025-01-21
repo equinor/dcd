@@ -19,6 +19,7 @@ import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 // import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useLocalStorage } from "@/Hooks/useLocalStorage"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Sidebar/Sidebar"
@@ -69,11 +70,11 @@ const Overview = () => {
         setIsCreateRevisionModalOpen,
     } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
-    const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
     const { Features } = useFeatureContext()
     const revisionAndProjectData = useDataFetch()
+    const [warnedProjects, setWarnedProjects] = useLocalStorage<WarnedProjectInterface | null>("pv", null)
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
@@ -116,27 +117,11 @@ const Overview = () => {
         }
     }
 
-    function fetchPV() {
-        setWarnedProjects(JSON.parse(String(localStorage.getItem("pv"))))
-        // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
-    }
-
-    useEffect(() => {
-        fetchPV()
-        window.addEventListener("storage", () => fetchPV())
-    }, [])
-
     useEffect(() => {
         if (currentUser && (!currentUserId || currentUser.localAccountId !== currentUserId)) {
             setCurrentUserId(currentUser.localAccountId as keyof typeof warnedProjects)
         }
     }, [currentUser])
-
-    useEffect(() => {
-        if (warnedProjects && JSON.stringify(warnedProjects) !== localStorage.getItem("pv")) {
-            localStorage.setItem("pv", JSON.stringify(warnedProjects))
-        }
-    }, [warnedProjects])
 
     useEffect(() => {
         if (revisionAndProjectData) {
