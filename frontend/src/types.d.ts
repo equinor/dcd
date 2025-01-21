@@ -244,15 +244,9 @@ declare namespace Components {
         export interface DeleteWellDto {
             id: string; // uuid
         }
-        export interface DevelopmentOperationalWellCostsDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            rigUpgrading: number; // double
-            rigMobDemob: number; // double
-            annualWellInterventionCostPerWell: number; // double
-            pluggingAndAbandonment: number; // double
-        }
         export interface DevelopmentOperationalWellCostsOverviewDto {
+            developmentOperationalWellCostsId: string; // uuid
+            projectId: string; // uuid
             rigUpgrading: number; // double
             rigMobDemob: number; // double
             annualWellInterventionCostPerWell: number; // double
@@ -285,6 +279,11 @@ declare namespace Components {
             lastModifiedBy?: IdentitySet;
             lastModifiedDateTime?: string | null; // date-time
         }
+        export interface ExceptionDto {
+            details: {
+                [name: string]: string;
+            } | null;
+        }
         export interface ExplorationDto {
             id: string; // uuid
             projectId: string; // uuid
@@ -292,16 +291,9 @@ declare namespace Components {
             rigMobDemob: number; // double
             currency: Currency /* int32 */;
         }
-        export interface ExplorationOperationalWellCostsDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            explorationRigUpgrading: number; // double
-            explorationRigMobDemob: number; // double
-            explorationProjectDrillingCosts: number; // double
-            appraisalRigMobDemob: number; // double
-            appraisalProjectDrillingCosts: number; // double
-        }
         export interface ExplorationOperationalWellCostsOverviewDto {
+            explorationOperationalWellCostsId: string; // uuid
+            projectId: string; // uuid
             explorationRigUpgrading: number; // double
             explorationRigMobDemob: number; // double
             explorationProjectDrillingCosts: number; // double
@@ -720,14 +712,6 @@ declare namespace Components {
             dG4Date?: string | null; // date-time
             maturity?: Maturity /* int32 */;
         }
-        export interface UpdateTechnicalInputDto {
-            projectDto: UpdateProjectDto;
-            developmentOperationalWellCostsDto: UpdateDevelopmentOperationalWellCostsDto;
-            explorationOperationalWellCostsDto: UpdateExplorationOperationalWellCostsDto;
-            updateWellDtos: UpdateWellDto[];
-            createWellDtos: CreateWellDto[];
-            deleteWellDtos: DeleteWellDto[];
-        }
         export interface UpdateTimeSeriesCostDto {
             startYear: number; // int32
             values: number /* double */[];
@@ -813,6 +797,11 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
         }
+        export interface UpdateWellsDto {
+            updateWellDtos: UpdateWellDto[];
+            createWellDtos: CreateWellDto[];
+            deleteWellDtos: DeleteWellDto[];
+        }
         export interface UrlDto {
             url?: string | null;
         }
@@ -823,16 +812,6 @@ declare namespace Components {
             canEditProjectMembers: boolean;
         }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
-        export interface WellDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            name: string;
-            wellInterventionCost: number; // double
-            plugingAndAbandonmentCost: number; // double
-            wellCategory: WellCategory /* int32 */;
-            wellCost: number; // double
-            drillingDays: number; // double
-        }
         export interface WellOverviewDto {
             id: string; // uuid
             name: string;
@@ -874,19 +853,12 @@ declare namespace Paths {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
-    namespace Project$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
-        namespace Put {
-            namespace Parameters {
-                export type DevelopmentOperationalWellCostsId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                developmentOperationalWellCostsId: Parameters.DevelopmentOperationalWellCostsId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
+    namespace LogException {
+        namespace Post {
+            export type RequestBody = Components.Schemas.ExceptionDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2604,6 +2576,22 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
+        namespace Put {
+            namespace Parameters {
+                export type DevelopmentOperationalWellCostsId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                developmentOperationalWellCostsId: Parameters.DevelopmentOperationalWellCostsId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DevelopmentOperationalWellCostsOverviewDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdExplorationOperationalWellCosts$ExplorationOperationalWellCostsId {
         namespace Put {
             namespace Parameters {
@@ -2616,7 +2604,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateExplorationOperationalWellCostsDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
+                export type $200 = Components.Schemas.ExplorationOperationalWellCostsOverviewDto;
             }
         }
     }
@@ -2789,7 +2777,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdTechnicalInput {
+    namespace Projects$ProjectIdWells {
         namespace Put {
             namespace Parameters {
                 export type ProjectId = string; // uuid
@@ -2797,53 +2785,9 @@ declare namespace Paths {
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTechnicalInputDto;
+            export type RequestBody = Components.Schemas.UpdateWellsDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDataDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdWells {
-        namespace Post {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateWellDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.WellDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdWells$WellId {
-        namespace Delete {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-                export type WellId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                wellId: Parameters.WellId /* uuid */;
-            }
-            namespace Responses {
-                export interface $200 {
-                }
-            }
-        }
-        namespace Put {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-                export type WellId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                wellId: Parameters.WellId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateWellDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.WellDto;
             }
         }
     }

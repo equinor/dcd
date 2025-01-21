@@ -11,14 +11,14 @@ export const useProjectEdits = () => {
         body: Components.Schemas.UpdateProjectDto;
     };
 
-    const mutationFn = async ({ projectId, body }: UpdateProjectVariables) => {
+    const projectMutationFn = async ({ projectId, body }: UpdateProjectVariables) => {
         const projectService = await GetProjectService()
         const res = await projectService.updateProject(projectId, body)
         return res
     }
 
-    const mutation = useMutation({
-        mutationFn,
+    const projectMutation = useMutation({
+        mutationFn: projectMutationFn,
         onSuccess: (variables) => {
             const { fusionProjectId } = variables.commonProjectAndRevisionData
             queryClient.invalidateQueries(
@@ -37,7 +37,7 @@ export const useProjectEdits = () => {
         projectEdit: Components.Schemas.UpdateProjectDto,
     ) => {
         setIsSaving(true)
-        mutation.mutate({ projectId, body: projectEdit })
+        projectMutation.mutate({ projectId, body: projectEdit })
     }
 
     return {

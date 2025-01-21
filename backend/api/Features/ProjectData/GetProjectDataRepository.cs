@@ -100,7 +100,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SharepointSiteUrl = x.SharepointSiteUrl,
                 ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsOverviewDto
                 {
-                    ExplorationRigUpgrading = x.ExplorationOperationalWellCosts!.ExplorationRigUpgrading,
+                    ProjectId = x.ExplorationOperationalWellCosts!.ProjectId,
+                    ExplorationOperationalWellCostsId = x.ExplorationOperationalWellCosts.Id,
+                    ExplorationRigUpgrading = x.ExplorationOperationalWellCosts.ExplorationRigUpgrading,
                     ExplorationRigMobDemob = x.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
                     ExplorationProjectDrillingCosts = x.ExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,
                     AppraisalRigMobDemob = x.ExplorationOperationalWellCosts.AppraisalRigMobDemob,
@@ -108,7 +110,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 },
                 DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCostsOverviewDto
                 {
-                    RigUpgrading = x.DevelopmentOperationalWellCosts!.RigUpgrading,
+                    ProjectId = x.DevelopmentOperationalWellCosts!.ProjectId,
+                    DevelopmentOperationalWellCostsId = x.DevelopmentOperationalWellCosts.Id,
+                    RigUpgrading = x.DevelopmentOperationalWellCosts.RigUpgrading,
                     RigMobDemob = x.DevelopmentOperationalWellCosts.RigMobDemob,
                     AnnualWellInterventionCostPerWell = x.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell,
                     PluggingAndAbandonment = x.DevelopmentOperationalWellCosts.PluggingAndAbandonment
