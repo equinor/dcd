@@ -24,6 +24,8 @@ type DevelopmentCostsState = Omit<
 const DevelopmentCosts = () => {
     const revisionAndProjectData = useDataFetch()
     const { developmentOperationalWellCostsId } = revisionAndProjectData?.commonProjectAndRevisionData.developmentOperationalWellCosts ?? {}
+    const { developmentOperationalWellCosts } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
+    const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
     const { addDevelopmentWellCostEdit } = useTechnicalInputEdits()
 
@@ -39,10 +41,10 @@ const DevelopmentCosts = () => {
     useEffect(() => {
         if (revisionAndProjectData?.commonProjectAndRevisionData.developmentOperationalWellCosts) {
             setCosts({
-                rigUpgrading: revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts.rigUpgrading ?? 0,
-                rigMobDemob: revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts.rigMobDemob ?? 0,
-                annualWellInterventionCostPerWell: revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts.annualWellInterventionCostPerWell ?? 0,
-                pluggingAndAbandonment: revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts.pluggingAndAbandonment ?? 0,
+                rigUpgrading: developmentOperationalWellCosts?.rigUpgrading ?? 0,
+                rigMobDemob: developmentOperationalWellCosts?.rigMobDemob ?? 0,
+                annualWellInterventionCostPerWell: developmentOperationalWellCosts?.annualWellInterventionCostPerWell ?? 0,
+                pluggingAndAbandonment: developmentOperationalWellCosts?.pluggingAndAbandonment ?? 0,
             } as DevelopmentCostsState)
         }
     }, [revisionAndProjectData])
@@ -70,7 +72,7 @@ const DevelopmentCosts = () => {
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

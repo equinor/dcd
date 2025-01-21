@@ -21,6 +21,8 @@ type ExplorationCostsState = Omit<
 const ExplorationCosts = () => {
     const revisionAndProjectData = useDataFetch()
     const { explorationOperationalWellCostsId } = revisionAndProjectData?.commonProjectAndRevisionData.explorationOperationalWellCosts ?? {}
+    const { explorationOperationalWellCosts } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
+    const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
     const { addExplorationWellCostEdit } = useTechnicalInputEdits()
 
@@ -35,13 +37,13 @@ const ExplorationCosts = () => {
     const debouncedCosts = useDebounce(costs, 1000)
 
     useEffect(() => {
-        if (revisionAndProjectData?.commonProjectAndRevisionData.explorationOperationalWellCosts) {
+        if (explorationOperationalWellCosts) {
             setCosts({
-                explorationRigUpgrading: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.explorationRigUpgrading ?? 0,
-                explorationRigMobDemob: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.explorationRigMobDemob ?? 0,
-                explorationProjectDrillingCosts: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.explorationProjectDrillingCosts ?? 0,
-                appraisalRigMobDemob: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.appraisalRigMobDemob ?? 0,
-                appraisalProjectDrillingCosts: revisionAndProjectData.commonProjectAndRevisionData.explorationOperationalWellCosts.appraisalProjectDrillingCosts ?? 0,
+                explorationRigUpgrading: explorationOperationalWellCosts.explorationRigUpgrading ?? 0,
+                explorationRigMobDemob: explorationOperationalWellCosts.explorationRigMobDemob ?? 0,
+                explorationProjectDrillingCosts: explorationOperationalWellCosts.explorationProjectDrillingCosts ?? 0,
+                appraisalRigMobDemob: explorationOperationalWellCosts.appraisalRigMobDemob ?? 0,
+                appraisalProjectDrillingCosts: explorationOperationalWellCosts.appraisalProjectDrillingCosts ?? 0,
             } as ExplorationCostsState)
         }
     }, [revisionAndProjectData])
@@ -69,7 +71,7 @@ const ExplorationCosts = () => {
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

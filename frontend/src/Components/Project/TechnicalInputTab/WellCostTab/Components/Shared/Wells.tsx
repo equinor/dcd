@@ -293,11 +293,6 @@ const Wells = ({
                         onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
                         onRowValueChanged={onRowValueChanged}
-                        onCellClicked={(params) => {
-                            if (params.column.getColId() === "delete") {
-                                params.api.stopEditing()
-                            }
-                        }}
                         rowSelection={{
                             mode: "multiRow",
                             enableClickSelection: false,
