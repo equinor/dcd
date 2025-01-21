@@ -51,14 +51,38 @@ public class WellCostProfileService(DcdDbContext context)
 
     public async Task UpdateCostProfilesForWells(Guid caseId)
     {
-        var wells = await context.Cases
+        var wellIds = new List<Guid>();
+
+        wellIds.AddRange(await context.Cases
             .Where(w => w.Id == caseId)
             .SelectMany(x => x.WellProject!.WellProjectWells)
-            .Select(x => x.Well)
+            .Select(x => x.WellId)
+            .ToListAsync());
+
+        wellIds.AddRange(await context.Cases
+            .Where(w => w.Id == caseId)
+            .SelectMany(x => x.Exploration!.ExplorationWells)
+            .Select(x => x.WellId)
+            .ToListAsync());
+
+        var explorationWells = await context.ExplorationWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.Exploration).ThenInclude(e => e.ExplorationWellCostProfile)
+            .Include(ew => ew.Exploration).ThenInclude(e => e.AppraisalWellCostProfile)
+            .Include(ew => ew.Exploration).ThenInclude(e => e.SidetrackCostProfile)
+            .Where(x => wellIds.Contains(x.WellId))
             .ToListAsync();
 
-        var explorationWells = await GetAllExplorationWells().Where(ew => wells.Contains(ew.Well)).ToListAsync();
-        var wellProjectWells = await GetAllWellProjectWells().Where(wpw => wells.Contains(wpw.Well)).ToListAsync();
+        var wellProjectWells = await context.WellProjectWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.WellProject).ThenInclude(e => e.OilProducerCostProfile)
+            .Include(ew => ew.WellProject).ThenInclude(e => e.GasProducerCostProfile)
+            .Include(ew => ew.WellProject).ThenInclude(e => e.WaterInjectorCostProfile)
+            .Include(ew => ew.WellProject).ThenInclude(e => e.GasInjectorCostProfile)
+            .Where(x => wellIds.Contains(x.WellId))
+            .ToListAsync();
 
         await UpdateExplorationCostProfiles(explorationWells);
         await UpdateWellProjectCostProfiles(wellProjectWells);
