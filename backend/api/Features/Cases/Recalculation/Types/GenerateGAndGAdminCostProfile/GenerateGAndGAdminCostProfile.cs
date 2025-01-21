@@ -40,7 +40,7 @@ public class GenerateGAndGAdminCostProfile(DcdDbContext context)
                 var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
                 var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
 
-                var totalMinutesLastYear = new TimeSpan(365, 0, 0, 0).TotalMinutes;
+                var totalMinutesLastYear = new TimeSpan(DateTime.IsLeapYear(lastYear.Year) ? 366 : 365, 0, 0, 0).TotalMinutes;
                 var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
 
                 var gAndGAdminCost = new GAndGAdminCost();

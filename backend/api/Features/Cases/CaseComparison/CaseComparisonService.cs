@@ -40,7 +40,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
 
             var totalCo2Emissions = generateCo2EmissionsProfile?.Values.Sum() ?? 0;
-            var co2Intensity = CalculateCo2Intensity(project, drainageStrategy, totalCo2Emissions);
+            var co2Intensity = drainageStrategy.Co2Intensity?.Values.Sum() ?? 0;
 
             var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
 
@@ -211,21 +211,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         }
 
         return sumExplorationWellCost;
-    }
-
-    private static double CalculateCo2Intensity(Project project, DrainageStrategy drainageStrategy, double totalCo2Emissions)
-    {
-        const int tonnesToKgFactor = 1000;
-        const double boeConversionFactor = 6.29;
-
-        var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, true);
-
-        if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
-        {
-            return totalCo2Emissions / totalExportedVolumes / boeConversionFactor * tonnesToKgFactor;
-        }
-
-        return 0;
     }
 
     private static double SumWellCostWithPreloadedData(Case caseItem)

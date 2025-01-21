@@ -5,7 +5,7 @@ namespace api.Features.Cases.Recalculation.Types.Helpers;
 
 public static class EmissionCalculationHelper
 {
-    private const int Cd = 365;
+    private const double Cd = 365.25;
     private const int ConversionFactorFromMtoG = 1000;
 
     public static TimeSeries<double> CalculateTotalFuelConsumptions(
