@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -90,7 +91,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
         var oilProfile = GetOilProfile(drainageStrategy);
         var gasProfile = GetGasProfile(drainageStrategy);
 
-        var totalProfile = TimeSeriesCost.MergeCostProfiles(oilProfile, gasProfile);
+        var totalProfile = CostProfileMerger.MergeCostProfiles(oilProfile, gasProfile);
 
         return new Co2Intensity
         {
@@ -127,7 +128,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
         }
 
         // Merging the profiles, defaulting to an empty profile if null
-        var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
+        var mergedProfiles = CostProfileMerger.MergeCostProfiles(
             oilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
             additionalOilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
         );
@@ -166,7 +167,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
             };
         }
 
-        var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
+        var mergedProfiles = CostProfileMerger.MergeCostProfiles(
             gasProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
             additionalGasProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
         );

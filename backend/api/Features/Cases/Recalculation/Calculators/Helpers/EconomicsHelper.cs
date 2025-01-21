@@ -1,3 +1,4 @@
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Calculators.Helpers;
@@ -46,7 +47,7 @@ public static class EconomicsHelper
 
     public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeries<double>? t1, TimeSeries<double>? t2)
     {
-        return TimeSeriesCost.MergeCostProfiles(
+        return CostProfileMerger.MergeCostProfiles(
             new TimeSeries<double>
             {
                 StartYear = t1?.StartYear ?? 0,
