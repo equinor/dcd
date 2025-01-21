@@ -24,7 +24,7 @@ public class Co2IntensityProfileServiceTests
         {
             Id = caseId,
             Project = project,
-            
+
             DG4Date = new DateTime(2030, 1, 1),
             DrainageStrategyLink = Guid.NewGuid(),
             CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
@@ -46,11 +46,9 @@ public class Co2IntensityProfileServiceTests
             Co2Emissions = new Co2Emissions
             {
                 StartYear = 2023,
-                Values = [29400000/1000]
+                Values = [29400000 / 1000]
             }
         };
-
-
 
         // Act
         Co2IntensityProfileService.CalculateCo2Intensity(drainageStrategy);
