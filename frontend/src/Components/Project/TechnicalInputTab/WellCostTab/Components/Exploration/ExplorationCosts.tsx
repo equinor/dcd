@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { useDataFetch } from "@/Hooks/useDataFetch"
@@ -12,6 +12,7 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
+import { useAppContext } from "@/Context/AppContext"
 
 type ExplorationCostsState = Omit<
     Components.Schemas.ExplorationOperationalWellCostsOverviewDto,
@@ -24,6 +25,7 @@ const ExplorationCosts = () => {
     const { explorationOperationalWellCosts } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
+    const { editMode } = useAppContext()
     const { addExplorationWellCostEdit } = useTechnicalInputEdits()
 
     const [costs, setCosts] = useState<ExplorationCostsState>({
@@ -35,6 +37,8 @@ const ExplorationCosts = () => {
     })
 
     const debouncedCosts = useDebounce(costs, 1000)
+
+    const previousCostsRef = useRef<ExplorationCostsState | null>(null)
 
     useEffect(() => {
         if (explorationOperationalWellCosts) {
@@ -49,16 +53,16 @@ const ExplorationCosts = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (explorationOperationalWellCostsId && projectId) {
-            const allCostsZeroOrUndefined = Object.values(costs).every(
-                (cost) => cost === 0 || cost === undefined,
+        if (explorationOperationalWellCostsId && projectId && debouncedCosts) {
+            const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
+                ([key, value]) => previousCostsRef.current?.[key as keyof ExplorationCostsState] !== value,
             )
-
-            if (!allCostsZeroOrUndefined) {
+            if (hasChanges && editMode) {
+                previousCostsRef.current = { ...debouncedCosts }
                 addExplorationWellCostEdit(projectId, explorationOperationalWellCostsId, debouncedCosts)
             }
         }
-    }, [debouncedCosts])
+    }, [debouncedCosts, explorationOperationalWellCostsId, projectId, addExplorationWellCostEdit, editMode])
 
     return (
         <FullwidthTable>

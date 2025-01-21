@@ -1,5 +1,6 @@
 import {
     useEffect,
+    useRef,
     useState,
 } from "react"
 
@@ -15,6 +16,7 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
+import { useAppContext } from "@/Context/AppContext"
 
 type DevelopmentCostsState = Omit<
     Components.Schemas.DevelopmentOperationalWellCostsOverviewDto,
@@ -28,6 +30,8 @@ const DevelopmentCosts = () => {
     const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
     const { addDevelopmentWellCostEdit } = useTechnicalInputEdits()
+    const { editMode } = useAppContext()
+    const previousCostsRef = useRef<DevelopmentCostsState | null>(null)
 
     const [costs, setCosts] = useState<DevelopmentCostsState>({
         rigUpgrading: 0,
@@ -39,7 +43,7 @@ const DevelopmentCosts = () => {
     const debouncedCosts = useDebounce(costs, 1000)
 
     useEffect(() => {
-        if (revisionAndProjectData?.commonProjectAndRevisionData.developmentOperationalWellCosts) {
+        if (developmentOperationalWellCosts) {
             setCosts({
                 rigUpgrading: developmentOperationalWellCosts?.rigUpgrading ?? 0,
                 rigMobDemob: developmentOperationalWellCosts?.rigMobDemob ?? 0,
@@ -50,16 +54,16 @@ const DevelopmentCosts = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (developmentOperationalWellCostsId && projectId) {
-            const allCostsZeroOrUndefined = Object.values(costs).every(
-                (cost) => cost === 0 || cost === undefined,
+        if (developmentOperationalWellCostsId && projectId && debouncedCosts) {
+            const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
+                ([key, value]) => previousCostsRef.current?.[key as keyof DevelopmentCostsState] !== value,
             )
-
-            if (!allCostsZeroOrUndefined) {
+            if (hasChanges && editMode) {
+                previousCostsRef.current = { ...debouncedCosts }
                 addDevelopmentWellCostEdit(projectId, developmentOperationalWellCostsId, debouncedCosts)
             }
         }
-    }, [debouncedCosts])
+    }, [debouncedCosts, developmentOperationalWellCostsId, projectId, addDevelopmentWellCostEdit])
 
     return (
         <FullwidthTable>
