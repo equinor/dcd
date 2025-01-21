@@ -1,31 +1,22 @@
 import React, { useState } from "react"
-import { microsoft_excel } from "@equinor/eds-icons"
-import {
-    Icon,
-    Tooltip,
-    Button,
-    CircularProgress,
-} from "@equinor/eds-core-react"
+import { Button, CircularProgress, Tooltip } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { ICellRendererParams } from "@ag-grid-community/core"
-
-import { ExcelHideIcon } from "@/Media/Icons/ExcelHideIcon"
-import { CalculatorIcon } from "@/Media/Icons/CalculatorIcon"
-import { CalculatorHideIcon } from "@/Media/Icons/CalculatorHideIcon"
 import { DisabledExcelHideIcon } from "@/Media/Icons/DisabledExcelHideIcon"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import { ProfileNames } from "@/Models/Interfaces"
 import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
+import { CalculatorToggle, ExcelToggle } from "./ToggleIcons"
 
-interface LockIconProps {
+interface CalculationSourceToggleProps {
     clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>
     addEdit: any
     isProsp?: boolean
     sharepointFileId?: string
 }
 
-const LockIcon: React.FC<LockIconProps> = ({
+const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     clickedElement,
     addEdit,
     isProsp,
@@ -36,7 +27,7 @@ const LockIcon: React.FC<LockIconProps> = ({
     const [sharepointId] = useState(sharepointFileId)
     const { apiQueue } = useAppContext()
 
-    const handleLockIconClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
+    const handleToggleClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (params?.data?.override !== undefined && caseId) {
             const profile = {
                 ...params.data.overrideProfile,
@@ -84,45 +75,15 @@ const LockIcon: React.FC<LockIconProps> = ({
         )
     }
 
-    if (clickedElement.data?.overridable) {
-        return (clickedElement.data.overrideProfile?.override) ? (
-            <>
-                {isProsp ? (
-                    <Tooltip title="Show numbers from PROSP file">
-                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
-                            <ExcelHideIcon size={20} />
-                        </Button>
-                    </Tooltip>
-                ) : (
-                    <Tooltip title="Show calculated numbers">
-                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
-                            <CalculatorHideIcon size={20} />
-                        </Button>
-                    </Tooltip>
-                )}
-            </>
-        ) : (
-            <>
-                {isProsp ? (
-                    <Tooltip title="Hide numbers from PROSP file">
-                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
-                            <Icon
-                                data={microsoft_excel}
-                                color="#007079"
-                            />
-                        </Button>
-                    </Tooltip>
-                ) : (
-                    <Tooltip title="Hide calculated numbers">
-                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
-                            <CalculatorIcon size={20} />
-                        </Button>
-                    </Tooltip>
-                )}
-            </>
-        )
+    if (!clickedElement.data?.overridable) {
+        return null
     }
-    return null
+
+    return isProsp ? (
+        <ExcelToggle clickedElement={clickedElement} onClick={handleToggleClick} />
+    ) : (
+        <CalculatorToggle clickedElement={clickedElement} onClick={handleToggleClick} />
+    )
 }
 
-export default LockIcon
+export default CalculationSourceToggle

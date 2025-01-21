@@ -75,7 +75,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         if (!caseApiData?.case || !caseId || !revisionAndProjectData?.projectId) { return }
         const newResourceObject = { ...caseApiData?.case, archived } as ResourceObject
         const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId, resourceObject: newResourceObject })
-        if (result) {
+        if (result.success) {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", revisionAndProjectData.projectId] },
             )

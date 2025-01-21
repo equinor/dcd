@@ -53,9 +53,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu, onOpenRevisionDetails,
 }) => {
     const { navigateToRevision, disableCurrentRevision } = useRevisions()
-
     const revisionAndProjectData = useDataFetch()
-
     const [revisions, setRevisions] = useState<Revision[]>([])
 
     useEffect(() => {
