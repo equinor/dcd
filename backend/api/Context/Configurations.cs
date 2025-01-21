@@ -108,3 +108,27 @@ public class ChangeLogConfiguration : IEntityTypeConfiguration<ChangeLog>
         builder.HasIndex(x => x.TimestampUtc);
     }
 }
+
+public class RequestLogConfiguration : IEntityTypeConfiguration<RequestLog>
+{
+    public void Configure(EntityTypeBuilder<RequestLog> builder)
+    {
+        builder.HasIndex(x => x.RequestStartUtc);
+    }
+}
+
+public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
+{
+    public void Configure(EntityTypeBuilder<ExceptionLog> builder)
+    {
+        builder.HasIndex(x => x.UtcTimestamp);
+    }
+}
+
+public class FrontendExceptionConfiguration : IEntityTypeConfiguration<FrontendException>
+{
+    public void Configure(EntityTypeBuilder<FrontendException> builder)
+    {
+        builder.HasIndex(x => x.CreatedUtc);
+    }
+}

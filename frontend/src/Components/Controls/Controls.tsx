@@ -62,10 +62,6 @@ const Controls = () => {
         }
     }
 
-    useEffect(() => {
-        setEditMode(false)
-    }, [caseId])
-
     return (
         <Wrapper>
             <WhatsNewModal />

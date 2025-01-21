@@ -1,13 +1,11 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.TechnicalInput.Dtos;
-using api.Features.Wells.Create;
-using api.Features.Wells.Update;
+using api.Features.Wells.Update.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.TechnicalInput;
+namespace api.Features.Wells.Update;
 
 public class UpdateWellsService(
     DcdDbContext context,

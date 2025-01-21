@@ -1,9 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.Wells.Create;
-using api.Features.Wells.Update;
-
-namespace api.Features.TechnicalInput.Dtos;
+namespace api.Features.Wells.Update.Dtos;
 
 public class UpdateWellsDto
 {

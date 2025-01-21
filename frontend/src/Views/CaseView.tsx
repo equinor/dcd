@@ -15,6 +15,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditCase from "@/Hooks/useEditCase"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useLocalStorage } from "@/Hooks/useLocalStorage"
 
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
@@ -30,6 +31,7 @@ const CaseView = () => {
         setCaseEditsBelongingToCurrentCase,
     } = useCaseContext()
     const { navigateToCase, navigateToProject } = useAppNavigation()
+    const [, setCaseEditsStorage] = useLocalStorage("caseEdits", caseEdits)
 
     // syncs the active tab with the url
     useEffect(() => {
@@ -54,7 +56,7 @@ const CaseView = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
+        setCaseEditsStorage(caseEdits)
     }, [caseEdits])
 
     useEffect(() => {

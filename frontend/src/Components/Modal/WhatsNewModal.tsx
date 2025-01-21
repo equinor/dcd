@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
 import Modal from "./Modal"
 import { useModalContext } from "../../Context/ModalContext"
+import { useLocalStorage } from "../../Hooks/useLocalStorage"
 
 const Header = styled(Typography)`
     margin: 20px 0 10px 0;
@@ -145,9 +146,9 @@ const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
 const WhatsNewModal: React.FC = () => {
     const { featuresModalIsOpen, setFeaturesModalIsOpen } = useModalContext()
     const [unseenVersions, setUnseenVersions] = useState<Version[]>([])
+    const [lastSeenVersion, setLastSeenVersion] = useLocalStorage<Version | null>("lastSeenWhatsNewVersion", null)
 
     useEffect(() => {
-        const lastSeenVersion = localStorage.getItem("lastSeenWhatsNewVersion") as Version | null
         const unseen = lastSeenVersion
             ? versions.filter((version) => {
                 const [lastMajor, lastMinor, lastPatch] = lastSeenVersion.split(".").map(Number)
@@ -165,10 +166,10 @@ const WhatsNewModal: React.FC = () => {
             setUnseenVersions(unseen)
             setFeaturesModalIsOpen(true)
         }
-    }, [])
+    }, [lastSeenVersion])
 
     const onClose = () => {
-        localStorage.setItem("lastSeenWhatsNewVersion", versions[0])
+        setLastSeenVersion(versions[0])
         setFeaturesModalIsOpen(false)
     }
 

@@ -95,10 +95,6 @@ using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
-using api.Features.TechnicalInput;
-using api.Features.Wells.Create;
-using api.Features.Wells.Delete;
-using api.Features.Wells.Get;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
 using api.ModelMapping;
@@ -134,10 +130,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateProjectMemberService>();
 
         /* Wells */
-        services.AddScoped<GetWellService>();
-        services.AddScoped<CreateWellService>();
-        services.AddScoped<UpdateWellService>();
-        services.AddScoped<DeleteWellService>();
         services.AddScoped<GetIsWellInUseService>();
 
         /* Cases */
