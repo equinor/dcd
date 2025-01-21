@@ -44,26 +44,28 @@ const DevelopmentCosts = () => {
 
     useEffect(() => {
         if (developmentOperationalWellCosts) {
-            setCosts({
+            const newCosts = {
                 rigUpgrading: developmentOperationalWellCosts?.rigUpgrading ?? 0,
                 rigMobDemob: developmentOperationalWellCosts?.rigMobDemob ?? 0,
                 annualWellInterventionCostPerWell: developmentOperationalWellCosts?.annualWellInterventionCostPerWell ?? 0,
                 pluggingAndAbandonment: developmentOperationalWellCosts?.pluggingAndAbandonment ?? 0,
-            } as DevelopmentCostsState)
+            } as DevelopmentCostsState
+            setCosts(newCosts)
+            previousCostsRef.current = newCosts
         }
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (developmentOperationalWellCostsId && projectId && debouncedCosts) {
+        if (developmentOperationalWellCostsId && projectId && debouncedCosts && editMode) {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof DevelopmentCostsState] !== value,
             )
-            if (hasChanges && editMode) {
+            if (hasChanges) {
                 previousCostsRef.current = { ...debouncedCosts }
                 addDevelopmentWellCostEdit(projectId, developmentOperationalWellCostsId, debouncedCosts)
             }
         }
-    }, [debouncedCosts, developmentOperationalWellCostsId, projectId, addDevelopmentWellCostEdit])
+    }, [debouncedCosts, developmentOperationalWellCostsId, projectId, addDevelopmentWellCostEdit, editMode])
 
     return (
         <FullwidthTable>

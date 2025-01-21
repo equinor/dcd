@@ -21,7 +21,7 @@ type UpdateDevelopmentWellCostVariables = {
 
 export const useTechnicalInputEdits = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage } = useAppContext()
+    const { setSnackBarMessage, setIsSaving } = useAppContext()
 
     const technicalInputMutationFn = async ({ projectId, body }: UpdateTechnicalInputVariables) => {
         const technicalInputService = await GetTechnicalInputService()
@@ -48,10 +48,12 @@ export const useTechnicalInputEdits = () => {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", fusionProjectId] },
             )
+            setIsSaving(false)
         },
         onError: (error) => {
             console.error("Error updating technical input", error)
             setSnackBarMessage(error.message)
+            setIsSaving(false)
         },
     })
 
@@ -61,10 +63,12 @@ export const useTechnicalInputEdits = () => {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", variables.projectId] },
             )
+            setIsSaving(false)
         },
         onError: (error) => {
             console.error("Error updating technical input", error)
             setSnackBarMessage(error.message)
+            setIsSaving(false)
         },
     })
 
@@ -74,6 +78,12 @@ export const useTechnicalInputEdits = () => {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", variables.projectId] },
             )
+            setIsSaving(false)
+        },
+        onError: (error) => {
+            console.error("Error updating technical input", error)
+            setSnackBarMessage(error.message)
+            setIsSaving(false)
         },
     })
 
@@ -81,6 +91,7 @@ export const useTechnicalInputEdits = () => {
         projectId: string,
         technicalInputEdit: Components.Schemas.UpdateWellsDto,
     ) => {
+        setIsSaving(true)
         wellsMutation.mutate({ projectId, body: technicalInputEdit })
     }
 
@@ -89,6 +100,7 @@ export const useTechnicalInputEdits = () => {
         explorationOperationalWellCostsId: string,
         explorationWellsCostEdit: Components.Schemas.UpdateExplorationOperationalWellCostsDto,
     ) => {
+        setIsSaving(true)
         ExplorationWellCostMutation.mutate({ projectId, explorationOperationalWellCostsId, body: explorationWellsCostEdit })
     }
 
@@ -97,6 +109,7 @@ export const useTechnicalInputEdits = () => {
         developmentOperationalWellCostsId: string,
         developmentWellsCostEdit: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto,
     ) => {
+        setIsSaving(true)
         DevelopmentWellCostMutation.mutate({ projectId, developmentOperationalWellCostsId, body: developmentWellsCostEdit })
     }
 
