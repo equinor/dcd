@@ -31,7 +31,7 @@ const ExternalAccessInfo = () => {
                                 <EditorViewerHeading $smallGap>
                                     <Typography
                                         link
-                                        href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Project+Member+%28FUSION%29"
+                                        href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+app+-+Editor+%28FUSION%29"
                                         target="_blank"
                                     >
                                         Concept App - Editor
@@ -63,7 +63,7 @@ const ExternalAccessInfo = () => {
                             <EditorViewerHeading $smallGap>
                                 <Typography
                                     link
-                                    href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Observer+%28FUSION%29"
+                                    href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Viewer+%28FUSION%29"
                                     target="_blank"
                                 >
                                     Concept App - Viewer
