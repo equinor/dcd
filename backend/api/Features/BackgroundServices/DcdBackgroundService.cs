@@ -58,7 +58,7 @@ public abstract class DcdBackgroundService(IServiceScopeFactory serviceScopeFact
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.ChangeTracker.LazyLoadingEnabled = false;
 
-        dbContext.BackgroundJobLogs.Add(entity: new BackgroundJobLog
+        dbContext.BackgroundJobLogs.Add(new BackgroundJobLog
         {
             JobType = GetType().Name,
             MachineName = Environment.MachineName,
