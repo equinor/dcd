@@ -51,7 +51,7 @@ public class SubstructureCostProfileService(
         }
 
         context.SubstructureCostProfiles.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -76,7 +76,7 @@ public class SubstructureCostProfileService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

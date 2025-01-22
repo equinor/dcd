@@ -52,7 +52,7 @@ public class TransportCostProfileService(
         }
 
         context.TransportCostProfile.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -77,7 +77,7 @@ public class TransportCostProfileService(
 
         mapperService.MapToEntity(dto, existingProfile, transportId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

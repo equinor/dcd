@@ -35,7 +35,7 @@ public class UpdateSurfService(DcdDbContext context, IRecalculationService recal
         existingSurf.Maturity = updatedSurfDto.Maturity;
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -66,7 +66,7 @@ public class UpdateSurfService(DcdDbContext context, IRecalculationService recal
         existingSurf.ProspVersion = updatedSurfDto.ProspVersion;
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

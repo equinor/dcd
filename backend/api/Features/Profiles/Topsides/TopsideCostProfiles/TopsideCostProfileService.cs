@@ -51,7 +51,7 @@ public class TopsideCostProfileService(
         }
 
         context.TopsideCostProfiles.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -76,7 +76,7 @@ public class TopsideCostProfileService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

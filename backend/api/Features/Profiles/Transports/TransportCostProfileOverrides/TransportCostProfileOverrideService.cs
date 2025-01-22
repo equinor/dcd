@@ -38,7 +38,7 @@ public class TransportCostProfileOverrideService(
         var newProfile = mapperService.MapToEntity(dto, profile, transportId);
 
         context.TransportCostProfileOverride.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TransportCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
@@ -65,7 +65,7 @@ public class TransportCostProfileOverrideService(
 
         mapperService.MapToEntity(dto, existingProfile, transportId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TransportCostProfileOverride, TimeSeriesCostOverrideDto>(existingProfile, costProfileId);

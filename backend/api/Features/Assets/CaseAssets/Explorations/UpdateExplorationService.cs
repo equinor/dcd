@@ -19,7 +19,7 @@ public class UpdateExplorationService(DcdDbContext context, IRecalculationServic
         existingExploration.RigMobDemob = updatedExplorationDto.RigMobDemob;
         existingExploration.Currency = updatedExplorationDto.Currency;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

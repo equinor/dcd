@@ -53,7 +53,7 @@ public class OnshorePowerSupplyCostProfileService(
 
         context.OnshorePowerSupplyCostProfile.Add(newProfile);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -78,7 +78,7 @@ public class OnshorePowerSupplyCostProfileService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, onshorePowerSupplyId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

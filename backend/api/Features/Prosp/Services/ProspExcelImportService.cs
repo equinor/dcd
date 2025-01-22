@@ -482,7 +482,6 @@ public class ProspExcelImportService(
         existingCase.SharepointFileId = updatedCaseDto.SharepointFileId;
         existingCase.SharepointFileName = updatedCaseDto.SharepointFileName;
         existingCase.SharepointFileUrl = updatedCaseDto.SharepointFileUrl;
-        existingCase.ModifyTime = DateTime.UtcNow;
 
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }

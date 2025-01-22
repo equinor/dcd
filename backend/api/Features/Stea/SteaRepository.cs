@@ -34,7 +34,7 @@ public class SteaRepository(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
-        project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+        project.Cases = project.Cases.OrderBy(c => c.CreatedUtc).ToList();
 
         return project;
     }

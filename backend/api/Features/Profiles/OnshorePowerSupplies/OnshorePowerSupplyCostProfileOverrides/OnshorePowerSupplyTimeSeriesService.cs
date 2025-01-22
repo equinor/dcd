@@ -42,7 +42,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         var newProfile = mapperService.MapToEntity(dto, profile, onshorePowerSupplyId);
 
         context.OnshorePowerSupplyCostProfileOverride.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<OnshorePowerSupplyCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
@@ -90,7 +90,7 @@ public class OnshorePowerSupplyTimeSeriesService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, onshorePowerSupplyId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);

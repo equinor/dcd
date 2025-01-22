@@ -28,7 +28,7 @@ public class UpdateSubstructureService(DcdDbContext context, IRecalculationServi
 
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -51,7 +51,7 @@ public class UpdateSubstructureService(DcdDbContext context, IRecalculationServi
 
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

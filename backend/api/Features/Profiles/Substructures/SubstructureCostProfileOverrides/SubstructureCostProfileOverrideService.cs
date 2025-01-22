@@ -42,7 +42,7 @@ public class SubstructureCostProfileOverrideService(
         var newProfile = mapperService.MapToEntity(dto, profile, substructureId);
 
         context.SubstructureCostProfileOverride.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<SubstructureCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
@@ -89,7 +89,7 @@ public class SubstructureCostProfileOverrideService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
