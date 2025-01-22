@@ -1,5 +1,6 @@
 using api.Models;
 using api.Models.Infrastructure;
+using api.Models.Infrastructure.BackgroundJobs;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -130,5 +131,13 @@ public class FrontendExceptionConfiguration : IEntityTypeConfiguration<FrontendE
     public void Configure(EntityTypeBuilder<FrontendException> builder)
     {
         builder.HasIndex(x => x.CreatedUtc);
+    }
+}
+
+public class BackgroundJobLogConfiguration : IEntityTypeConfiguration<BackgroundJobLog>
+{
+    public void Configure(EntityTypeBuilder<BackgroundJobLog> builder)
+    {
+        builder.HasIndex(x => x.TimestampUtc);
     }
 }

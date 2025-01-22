@@ -76,10 +76,13 @@ const CasesList: React.FC = () => {
                             {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
+                                        {sidebarOpen && revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
+                                            <ReferenceCaseIcon iconPlacement="sideBar" />
+                                        )}
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
+                                        {!sidebarOpen && revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

@@ -49,7 +49,7 @@ builder.Services.AddDcdIocConfiguration();
 builder.Services.AddHostedService<DisableConcurrentJobExecutionService>();
 builder.Services.AddHostedService<ProjectMasterBackgroundService>();
 builder.Services.AddHostedService<ProjectRecalculationBackgroundService>();
-builder.Services.AddHostedService<JobCleanupService>();
+builder.Services.AddHostedService<JobCleanupBackgroundService>();
 
 var app = builder.Build();
 

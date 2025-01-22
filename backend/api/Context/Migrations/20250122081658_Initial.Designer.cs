@@ -12,15 +12,15 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250117120120_AddRecalculateProject")]
-    partial class AddRecalculateProject
+    [Migration("20250122081658_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -39,10 +39,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -116,10 +112,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
 
@@ -153,10 +145,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -183,10 +171,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -372,10 +356,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -402,10 +382,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -437,10 +413,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -468,10 +440,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -498,10 +466,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -604,10 +568,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
@@ -851,10 +811,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
 
@@ -936,10 +892,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
 
@@ -966,10 +918,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
@@ -1001,10 +949,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1031,10 +975,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -1066,10 +1006,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1096,10 +1032,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -1133,10 +1065,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -1233,6 +1161,29 @@ namespace api.Migrations
                     b.ToTable("ImportedElectricityOverride");
                 });
 
+            modelBuilder.Entity("api.Models.Infrastructure.BackgroundJobs.BackgroundJobMachineInstanceLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsJobRunner")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastSeenUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MachineName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BackgroundJobMachineInstanceLogs");
+                });
+
             modelBuilder.Entity("api.Models.Infrastructure.ChangeLog", b =>
                 {
                     b.Property<int>("Id")
@@ -1283,31 +1234,6 @@ namespace api.Migrations
                     b.ToTable("ChangeLogs");
                 });
 
-            modelBuilder.Entity("api.Models.Infrastructure.CompletedRecalculation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CalculationLengthInMilliseconds")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompletedRecalculations");
-                });
-
             modelBuilder.Entity("api.Models.Infrastructure.ExceptionLog", b =>
                 {
                     b.Property<long>("Id")
@@ -1356,7 +1282,40 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UtcTimestamp");
+
                     b.ToTable("ExceptionLogs");
+                });
+
+            modelBuilder.Entity("api.Models.Infrastructure.FrontendException", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DetailsJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedUtc");
+
+                    b.ToTable("FrontendExceptions");
                 });
 
             modelBuilder.Entity("api.Models.Infrastructure.LazyLoadingOccurrence", b =>
@@ -1366,6 +1325,10 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FullStackTrace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -1379,7 +1342,36 @@ namespace api.Migrations
                     b.ToTable("LazyLoadingOccurrences");
                 });
 
-            modelBuilder.Entity("api.Models.Infrastructure.PendingRecalculation", b =>
+            modelBuilder.Entity("api.Models.Infrastructure.ProjectRecalculation.CompletedRecalculation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CalculationLengthInMilliseconds")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DebugLog")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompletedRecalculations");
+                });
+
+            modelBuilder.Entity("api.Models.Infrastructure.ProjectRecalculation.PendingRecalculation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1428,6 +1420,8 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RequestStartUtc");
 
                     b.ToTable("RequestLogs");
                 });
@@ -1495,10 +1489,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1525,10 +1515,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -1557,10 +1543,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1587,10 +1569,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -1660,10 +1638,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1690,10 +1664,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -1727,10 +1697,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2057,10 +2023,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
 
@@ -2087,10 +2049,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Exploration.Id")
                         .HasColumnType("uniqueidentifier");
@@ -2176,10 +2134,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2207,10 +2161,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2237,10 +2187,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2350,10 +2296,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2381,10 +2323,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2411,10 +2349,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2548,10 +2482,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2579,10 +2509,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2609,10 +2535,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2647,10 +2569,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2677,10 +2595,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2712,10 +2626,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2742,10 +2652,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2776,10 +2682,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2855,10 +2757,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2886,10 +2784,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2916,10 +2810,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -2951,10 +2841,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2981,10 +2867,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()
@@ -3053,10 +2935,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -3083,10 +2961,6 @@ namespace api.Migrations
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalData")
                         .IsRequired()

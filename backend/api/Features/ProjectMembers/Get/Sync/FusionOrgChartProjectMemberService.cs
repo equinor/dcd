@@ -10,7 +10,8 @@ using Microsoft.Identity.Abstractions;
 
 namespace api.Features.ProjectMembers.Get.Sync;
 
-public class FusionOrgChartProjectMemberService(DcdDbContext context,
+public class FusionOrgChartProjectMemberService(
+    DcdDbContext context,
     IDownstreamApi downstreamApi,
     IFusionContextResolver fusionContextResolver,
     ILogger<FusionOrgChartProjectMemberService> logger)
@@ -63,9 +64,9 @@ public class FusionOrgChartProjectMemberService(DcdDbContext context,
 
         var fusionSearchObject = new FusionSearchObject
         {
-            Filter = $"positions/any(p: p/isActive eq true and p/project/id eq '{orgChartId}' and p/contract eq null)",
+            Filter = $"positions/any(p: p/isActive eq true and p/isProjectManagementTeam eq true and p/project/id eq '{orgChartId}' and p/contract eq null) and accountClassification ne 'External'",
             Top = 100,
-            Skip = 0
+            Skip = 0,
         };
 
         var fusionPeople = await GetFusionPeople(fusionSearchObject);
@@ -125,20 +126,17 @@ public class FusionOrgChartProjectMemberService(DcdDbContext context,
                     continue;
                 }
 
-                if (projectPosition.Project!.IsProjectManagementTeam == true || DcdEnvironments.DisplayAllFusionUsersAsPmt)
+                if (pmtUsersForProject.Any(x => x.AzureUniqueId == fusionPerson.AzureUniqueId))
                 {
-                    if (pmtUsersForProject.Any(x => x.AzureUniqueId == fusionPerson.AzureUniqueId))
-                    {
-                        continue;
-                    }
-
-                    pmtUsersForProject.Add(new FusionPersonDto
-                    {
-                        Name = fusionPerson.Name!,
-                        Mail = fusionPerson.Mail!,
-                        AzureUniqueId = fusionPerson.AzureUniqueId
-                    });
+                    continue;
                 }
+
+                pmtUsersForProject.Add(new FusionPersonDto
+                {
+                    Name = fusionPerson.Name!,
+                    Mail = fusionPerson.Mail!,
+                    AzureUniqueId = fusionPerson.AzureUniqueId
+                });
             }
         }
 

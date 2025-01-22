@@ -12,6 +12,21 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "BackgroundJobMachineInstanceLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MachineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastSeenUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsJobRunner = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BackgroundJobMachineInstanceLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ChangeLogs",
                 columns: table => new
                 {
@@ -30,6 +45,23 @@ namespace api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChangeLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompletedRecalculations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CalculationLengthInMilliseconds = table.Column<int>(type: "int", nullable: false),
+                    DebugLog = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompletedRecalculations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,17 +101,49 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FrontendExceptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DetailsJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FrontendExceptions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LazyLoadingOccurrences",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullStackTrace = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TimestampUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LazyLoadingOccurrences", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PendingRecalculations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PendingRecalculations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,7 +162,6 @@ namespace api.Migrations
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false),
                     PhysicalUnit = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProjectPhase = table.Column<int>(type: "int", nullable: false),
                     InternalProjectPhase = table.Column<int>(type: "int", nullable: false),
                     Classification = table.Column<int>(type: "int", nullable: false),
@@ -111,11 +174,14 @@ namespace api.Migrations
                     CO2Vented = table.Column<double>(type: "float", nullable: false),
                     DailyEmissionFromDrillingRig = table.Column<double>(type: "float", nullable: false),
                     AverageDevelopmentDrillingDays = table.Column<double>(type: "float", nullable: false),
-                    ModifyTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OilPriceUSD = table.Column<double>(type: "float", nullable: false),
                     GasPriceNOK = table.Column<double>(type: "float", nullable: false),
                     DiscountRate = table.Column<double>(type: "float", nullable: false),
-                    ExchangeRateUSDToNOK = table.Column<double>(type: "float", nullable: false)
+                    ExchangeRateUSDToNOK = table.Column<double>(type: "float", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -291,10 +357,13 @@ namespace api.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RevisionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RevisionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RevisionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Arena = table.Column<bool>(type: "bit", nullable: false),
                     Mdqc = table.Column<bool>(type: "bit", nullable: false),
-                    Classification = table.Column<int>(type: "int", nullable: false)
+                    Classification = table.Column<int>(type: "int", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -577,6 +646,26 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Co2Intensity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DrainageStrategyId = table.Column<Guid>(name: "DrainageStrategy.Id", type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Co2Intensity", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Co2Intensity_DrainageStrategies_DrainageStrategy.Id",
+                        column: x => x.DrainageStrategyId,
+                        principalTable: "DrainageStrategies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeferredGasProduction",
                 columns: table => new
                 {
@@ -848,7 +937,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -870,7 +958,6 @@ namespace api.Migrations
                     ExplorationId = table.Column<Guid>(name: "Exploration.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -893,7 +980,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -915,7 +1001,6 @@ namespace api.Migrations
                     ExplorationId = table.Column<Guid>(name: "Exploration.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -938,7 +1023,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -960,7 +1044,6 @@ namespace api.Migrations
                     ExplorationId = table.Column<Guid>(name: "Exploration.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -983,7 +1066,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1005,7 +1087,6 @@ namespace api.Migrations
                     OnshorePowerSupplyId = table.Column<Guid>(name: "OnshorePowerSupply.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1028,7 +1109,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1050,7 +1130,6 @@ namespace api.Migrations
                     SubstructureId = table.Column<Guid>(name: "Substructure.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1073,7 +1152,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1095,7 +1173,6 @@ namespace api.Migrations
                     SubstructureId = table.Column<Guid>(name: "Substructure.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1117,7 +1194,6 @@ namespace api.Migrations
                     SurfId = table.Column<Guid>(name: "Surf.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1139,7 +1215,6 @@ namespace api.Migrations
                     SurfId = table.Column<Guid>(name: "Surf.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1162,7 +1237,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1184,7 +1258,6 @@ namespace api.Migrations
                     TopsideId = table.Column<Guid>(name: "Topside.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1207,7 +1280,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1229,7 +1301,6 @@ namespace api.Migrations
                     TopsideId = table.Column<Guid>(name: "Topside.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1251,7 +1322,6 @@ namespace api.Migrations
                     TransportId = table.Column<Guid>(name: "Transport.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1273,7 +1343,6 @@ namespace api.Migrations
                     TransportId = table.Column<Guid>(name: "Transport.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1296,7 +1365,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1417,7 +1485,6 @@ namespace api.Migrations
                     WellProjectId = table.Column<Guid>(name: "WellProject.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1440,7 +1507,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1462,7 +1528,6 @@ namespace api.Migrations
                     WellProjectId = table.Column<Guid>(name: "WellProject.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1485,7 +1550,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1507,7 +1571,6 @@ namespace api.Migrations
                     WellProjectId = table.Column<Guid>(name: "WellProject.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1530,7 +1593,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1552,7 +1614,6 @@ namespace api.Migrations
                     WellProjectId = table.Column<Guid>(name: "WellProject.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1575,7 +1636,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1655,7 +1715,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1677,7 +1736,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1699,7 +1757,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1721,7 +1778,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1744,7 +1800,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1766,7 +1821,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1788,7 +1842,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1811,7 +1864,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1833,7 +1885,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1876,7 +1927,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1899,7 +1949,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1921,7 +1970,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1943,7 +1991,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1966,7 +2013,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1988,7 +2034,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -2011,7 +2056,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -2033,7 +2077,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -2055,7 +2098,6 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -2078,7 +2120,6 @@ namespace api.Migrations
                     Override = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -2236,6 +2277,12 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Co2Intensity_DrainageStrategy.Id",
+                table: "Co2Intensity",
+                column: "DrainageStrategy.Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CountryOfficeCost_Exploration.Id",
                 table: "CountryOfficeCost",
                 column: "Exploration.Id",
@@ -2265,6 +2312,11 @@ namespace api.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ExceptionLogs_UtcTimestamp",
+                table: "ExceptionLogs",
+                column: "UtcTimestamp");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExplorationOperationalWellCosts_ProjectId",
                 table: "ExplorationOperationalWellCosts",
                 column: "ProjectId",
@@ -2290,6 +2342,11 @@ namespace api.Migrations
                 table: "ExplorationWellCostProfile",
                 column: "Exploration.Id",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FrontendExceptions_CreatedUtc",
+                table: "FrontendExceptions",
+                column: "CreatedUtc");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FuelFlaringAndLosses_DrainageStrategy.Id",
@@ -2471,6 +2528,11 @@ namespace api.Migrations
                 name: "IX_Projects_OriginalProjectId",
                 table: "Projects",
                 column: "OriginalProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RequestLogs_RequestStartUtc",
+                table: "RequestLogs",
+                column: "RequestStartUtc");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RevisionDetails_RevisionId",
@@ -2673,6 +2735,9 @@ namespace api.Migrations
                 name: "AppraisalWellCostProfile");
 
             migrationBuilder.DropTable(
+                name: "BackgroundJobMachineInstanceLogs");
+
+            migrationBuilder.DropTable(
                 name: "CalculatedTotalCostCostProfile");
 
             migrationBuilder.DropTable(
@@ -2703,6 +2768,12 @@ namespace api.Migrations
                 name: "Co2EmissionsOverride");
 
             migrationBuilder.DropTable(
+                name: "Co2Intensity");
+
+            migrationBuilder.DropTable(
+                name: "CompletedRecalculations");
+
+            migrationBuilder.DropTable(
                 name: "CountryOfficeCost");
 
             migrationBuilder.DropTable(
@@ -2725,6 +2796,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExplorationWellCostProfile");
+
+            migrationBuilder.DropTable(
+                name: "FrontendExceptions");
 
             migrationBuilder.DropTable(
                 name: "FuelFlaringAndLosses");
@@ -2791,6 +2865,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "OnshoreRelatedOPEXCostProfile");
+
+            migrationBuilder.DropTable(
+                name: "PendingRecalculations");
 
             migrationBuilder.DropTable(
                 name: "ProductionProfileGas");

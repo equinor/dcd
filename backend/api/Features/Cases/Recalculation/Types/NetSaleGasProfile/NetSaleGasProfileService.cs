@@ -21,6 +21,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileWaterInjection)
+            .Include(x => x.FuelFlaringAndLossesOverride)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         if (drainageStrategy.NetSalesGasOverride?.Override == true)
@@ -59,7 +60,9 @@ public class NetSaleGasProfileService(DcdDbContext context)
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
-        TimeSeries<double> fuelConsumption, TimeSeries<double> flarings, TimeSeries<double> losses)
+        TimeSeries<double> fuelConsumption,
+        TimeSeries<double> flarings,
+        TimeSeries<double> losses)
     {
         if (drainageStrategy.ProductionProfileGas == null)
         {
@@ -71,8 +74,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             return new TimeSeries<double>();
         }
 
-        var fuelFlaringLosses =
-            CostProfileMerger.MergeCostProfiles([fuelConsumption, flarings, losses]);
+        var fuelFlaringLosses = CostProfileMerger.MergeCostProfiles(fuelConsumption, flarings, losses);
 
         if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
         {
@@ -83,7 +85,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
         var negativeFuelFlaringLosses = new TimeSeriesVolume
         {
             StartYear = fuelFlaringLosses.StartYear,
-            Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray(),
+            Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()
         };
 
         var additionalProductionProfileGas = drainageStrategy.AdditionalProductionProfileGas ?? new TimeSeries<double>();

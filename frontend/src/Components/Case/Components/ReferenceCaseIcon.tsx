@@ -3,6 +3,8 @@ import { bookmark_filled, bookmark_outlined } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 
+import { useAppContext } from "@/Context/AppContext"
+
 const CaseViewIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 4px;
@@ -14,9 +16,10 @@ const CasesTableIcon = styled(Icon)`
     margin-left: -8px;
 `
 
-const SideBarIcon = styled(Icon)`
+const SideBarIcon = styled(Icon)<{ $sidebarOpen?: boolean }>`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-left: 6px;
+    margin-right: ${({ $sidebarOpen }) => (!$sidebarOpen ? "0px" : "6px")};
+    margin-left: ${({ $sidebarOpen }) => ($sidebarOpen ? "0px" : "6px")};
 `
 
 interface PropsChooseRefCase {
@@ -49,10 +52,11 @@ interface PropsShowIcon {
 }
 
 export const ReferenceCaseIcon = ({ iconPlacement }: PropsShowIcon) => {
+    const { sidebarOpen } = useAppContext()
     if (iconPlacement === "sideBar") {
         return (
             <Tooltip title="Reference case">
-                <SideBarIcon data={bookmark_filled} size={16} />
+                <SideBarIcon data={bookmark_filled} size={16} $sidebarOpen={sidebarOpen} />
             </Tooltip>
         )
     }

@@ -21,7 +21,6 @@ public class FusionPersonV1
 public class ApiProject
 {
     public required string Id { get; set; }
-    public bool? IsProjectManagementTeam { get; set; }
 }
 
 public class ApiPosition

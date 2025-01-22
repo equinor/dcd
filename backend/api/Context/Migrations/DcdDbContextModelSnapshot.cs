@@ -1158,6 +1158,41 @@ namespace api.Migrations
                     b.ToTable("ImportedElectricityOverride");
                 });
 
+            modelBuilder.Entity("api.Models.Infrastructure.BackgroundJobs.BackgroundJobLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ExceptionMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ExecutionDurationInMilliseconds")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("JobType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Success")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TimestampUtc");
+
+                    b.ToTable("BackgroundJobLogs");
+                });
+
             modelBuilder.Entity("api.Models.Infrastructure.BackgroundJobs.BackgroundJobMachineInstanceLog", b =>
                 {
                     b.Property<int>("Id")

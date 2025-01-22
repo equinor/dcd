@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations.Schema;
 
 using api.Models.Interfaces;
@@ -19,13 +18,8 @@ public class TimeSeries<T> : IChangeTrackable
     [NotMapped]
     public T[] Values
     {
-        get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), ConvertStringToGeneric);
+        get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), pf => (T)Convert.ChangeType(pf, typeof(T)));
         set => InternalData = string.Join(";", value.Select(p => p!.ToString()).ToArray());
-    }
-
-    private static T ConvertStringToGeneric(string pf)
-    {
-        return (T)Convert.ChangeType(pf, typeof(T));
     }
 }
 
