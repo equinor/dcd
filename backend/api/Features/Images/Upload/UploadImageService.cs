@@ -7,8 +7,6 @@ using api.Models;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Images.Upload;
 
 public class UploadImageService(DcdDbContext context, BlobServiceClient blobServiceClient)
@@ -41,8 +39,7 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
 
         if (imageEntity.CaseId.HasValue)
         {
-            var caseItem = await context.Cases.SingleAsync(c => c.Id == caseId);
-            caseItem.ModifyTime = DateTime.UtcNow;
+            await context.UpdateCaseModifyTime(imageEntity.CaseId!.Value);
         }
 
         await context.SaveChangesAsync();

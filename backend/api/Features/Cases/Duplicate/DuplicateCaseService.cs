@@ -26,9 +26,6 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
 
         ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem, duplicateCaseId);
 
-        var utcNow = DateTime.UtcNow;
-        caseItem.CreateTime = utcNow;
-        caseItem.ModifyTime = utcNow;
         caseItem.Name = GetUniqueCopyName(existingCaseNames, caseItem.Name);
 
         context.Cases.Add(caseItem);

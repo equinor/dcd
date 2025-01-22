@@ -61,14 +61,8 @@ public static class DcdDbContextExtensions
 
     public static async Task UpdateCaseModifyTime(this DcdDbContext context, Guid caseId)
     {
-        if (caseId == Guid.Empty)
-        {
-            throw new ArgumentException("The case id cannot be empty.", nameof(caseId));
-        }
+        var caseItem = await context.Cases.SingleAsync(c => c.Id == caseId);
 
-        var caseItem = await context.Cases.SingleOrDefaultAsync(c => c.Id == caseId)
-                       ?? throw new NotFoundInDbException($"Case with id {caseId} not found.");
-
-        caseItem.ModifyTime = DateTime.UtcNow;
+        caseItem.UpdatedUtc = DateTime.UtcNow;
     }
 }

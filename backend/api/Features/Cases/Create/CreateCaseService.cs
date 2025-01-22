@@ -22,7 +22,6 @@ public class CreateCaseService(DcdDbContext context)
             DG4Date = createCaseDto.DG4Date == DateTime.MinValue ? new DateTime(2030, 1, 1) : createCaseDto.DG4Date,
             CapexFactorFeasibilityStudies = 0.015,
             CapexFactorFEEDStudies = 0.015,
-            CreateTime = DateTime.UtcNow,
             DrainageStrategy = CreateDrainageStrategy(projectPk),
             Topside = CreateTopside(projectPk),
             Surf = CreateSurf(projectPk),
