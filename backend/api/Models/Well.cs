@@ -3,7 +3,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Well : IHasProjectId, IChangeTrackable
+public class Well : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -16,6 +16,11 @@ public class Well : IHasProjectId, IChangeTrackable
     public double DrillingDays { get; set; }
     public double PlugingAndAbandonmentCost { get; set; }
     public double WellInterventionCost { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual ICollection<WellProjectWell> WellProjectWells { get; set; } = [];
     public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];

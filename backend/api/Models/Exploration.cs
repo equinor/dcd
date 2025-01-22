@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Exploration : IHasProjectId, IChangeTrackable
+public class Exploration : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -14,6 +14,11 @@ public class Exploration : IHasProjectId, IChangeTrackable
     public string Name { get; set; } = string.Empty;
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual ExplorationWellCostProfile? ExplorationWellCostProfile { get; set; }
     public virtual AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }

@@ -50,7 +50,7 @@ public abstract class CaseProfileBaseService(
         var newProfile = mapperService.MapToEntity(createProfileDto, profile, caseId);
 
         Context.Add(newProfile);
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);
@@ -72,7 +72,7 @@ public abstract class CaseProfileBaseService(
 
         mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);

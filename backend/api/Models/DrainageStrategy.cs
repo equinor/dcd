@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DrainageStrategy : IHasProjectId, IChangeTrackable
+public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -19,6 +19,11 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable
     public int WaterInjectorCount { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public GasSolution GasSolution { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
     public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }

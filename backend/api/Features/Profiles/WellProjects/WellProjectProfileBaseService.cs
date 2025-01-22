@@ -38,7 +38,7 @@ public abstract class WellProjectProfileBaseService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
@@ -76,7 +76,7 @@ public abstract class WellProjectProfileBaseService(
         var newProfile = mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
 
         Context.Add(newProfile);
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);

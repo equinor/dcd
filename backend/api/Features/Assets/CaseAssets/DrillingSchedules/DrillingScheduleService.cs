@@ -37,7 +37,7 @@ public class DrillingScheduleService(
 
         mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<DrillingSchedule, TimeSeriesScheduleDto>(existingDrillingSchedule, drillingScheduleId);
@@ -67,7 +67,7 @@ public class DrillingScheduleService(
         };
 
         context.ExplorationWell.Add(newExplorationWell);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         if (newExplorationWell.DrillingSchedule == null)
@@ -98,7 +98,7 @@ public class DrillingScheduleService(
 
         mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<DrillingSchedule, TimeSeriesScheduleDto>(existingDrillingSchedule, drillingScheduleId);
@@ -128,7 +128,7 @@ public class DrillingScheduleService(
         };
 
         context.WellProjectWell.Add(newWellProjectWell);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         if (newWellProjectWell.DrillingSchedule == null)

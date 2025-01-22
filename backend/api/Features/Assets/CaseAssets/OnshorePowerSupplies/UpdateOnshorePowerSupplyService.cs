@@ -22,7 +22,7 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculatio
         existing.Source = updatedOnshorePowerSupplyDto.Source;
         existing.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -41,7 +41,7 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculatio
         existing.ProspVersion = updatedOnshorePowerSupplyDto.ProspVersion;
         existing.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

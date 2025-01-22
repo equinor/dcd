@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250122113403_MakeProjectMemberDateTracked")]
+    partial class MakeProjectMemberDateTracked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -647,12 +650,6 @@ namespace api.Migrations
                     b.Property<double>("AnnualWellInterventionCostPerWell")
                         .HasColumnType("float");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("PluggingAndAbandonment")
                         .HasColumnType("float");
 
@@ -664,12 +661,6 @@ namespace api.Migrations
 
                     b.Property<double>("RigUpgrading")
                         .HasColumnType("float");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -687,12 +678,6 @@ namespace api.Migrations
 
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -717,12 +702,6 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
 
@@ -739,24 +718,12 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StartYear")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -768,12 +735,6 @@ namespace api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
@@ -787,12 +748,6 @@ namespace api.Migrations
 
                     b.Property<double>("RigMobDemob")
                         .HasColumnType("float");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -813,12 +768,6 @@ namespace api.Migrations
                     b.Property<double>("AppraisalRigMobDemob")
                         .HasColumnType("float");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("ExplorationProjectDrillingCosts")
                         .HasColumnType("float");
 
@@ -830,12 +779,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -853,20 +796,8 @@ namespace api.Migrations
                     b.Property<Guid>("WellId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid?>("DrillingScheduleId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("ExplorationId", "WellId");
 
@@ -1719,12 +1650,6 @@ namespace api.Migrations
                     b.Property<int>("CostYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("DG3Date")
                         .HasColumnType("datetime2");
 
@@ -1746,12 +1671,6 @@ namespace api.Migrations
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -2230,12 +2149,6 @@ namespace api.Migrations
                     b.Property<int>("CostYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
@@ -2266,12 +2179,6 @@ namespace api.Migrations
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -2383,12 +2290,6 @@ namespace api.Migrations
                     b.Property<int>("CostYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
@@ -2437,12 +2338,6 @@ namespace api.Migrations
 
                     b.Property<double>("UmbilicalSystemLength")
                         .HasColumnType("float");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
@@ -2572,12 +2467,6 @@ namespace api.Migrations
                     b.Property<int>("CostYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
@@ -2632,12 +2521,6 @@ namespace api.Migrations
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.Property<double>("WaterInjectionCapacity")
                         .HasColumnType("float");
@@ -2886,12 +2769,6 @@ namespace api.Migrations
                     b.Property<int>("CostYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
@@ -2925,12 +2802,6 @@ namespace api.Migrations
 
                     b.Property<int>("Source")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -3086,12 +2957,6 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("DrillingDays")
                         .HasColumnType("float");
 
@@ -3103,12 +2968,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("WellCategory")
                         .HasColumnType("int");
@@ -3192,12 +3051,6 @@ namespace api.Migrations
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
@@ -3207,12 +3060,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -3229,20 +3076,8 @@ namespace api.Migrations
                     b.Property<Guid>("WellId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid?>("DrillingScheduleId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("WellProjectId", "WellId");
 

@@ -2,7 +2,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DevelopmentOperationalWellCosts : IHasProjectId, IChangeTrackable
+public class DevelopmentOperationalWellCosts : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -13,4 +13,9 @@ public class DevelopmentOperationalWellCosts : IHasProjectId, IChangeTrackable
     public double RigMobDemob { get; set; }
     public double AnnualWellInterventionCostPerWell { get; set; }
     public double PluggingAndAbandonment { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 }

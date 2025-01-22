@@ -4,7 +4,7 @@ using api.Models.Enums;
 using api.Models.Interfaces;
 namespace api.Models;
 
-public class Transport : IHasProjectId, IChangeTrackable
+public class Transport : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -22,6 +22,11 @@ public class Transport : IHasProjectId, IChangeTrackable
     public DateTime? ProspVersion { get; set; }
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual TransportCostProfile? CostProfile { get; set; }
     public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }

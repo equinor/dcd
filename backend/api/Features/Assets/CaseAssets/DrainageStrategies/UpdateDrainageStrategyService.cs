@@ -23,7 +23,7 @@ public class UpdateDrainageStrategyService(DcdDbContext context, IRecalculationS
         existingDrainageStrategy.ArtificialLift = updatedDrainageStrategyDto.ArtificialLift;
         existingDrainageStrategy.GasSolution = updatedDrainageStrategyDto.GasSolution;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

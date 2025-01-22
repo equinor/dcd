@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Case : IHasProjectId, IChangeTrackable
+public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -18,8 +18,6 @@ public class Case : IHasProjectId, IChangeTrackable
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-    public DateTime CreateTime { get; set; }
-    public DateTime ModifyTime { get; set; } = DateTime.UtcNow;
     public DateTime DGADate { get; set; }
     public DateTime DGBDate { get; set; }
     public DateTime DGCDate { get; set; }
@@ -44,8 +42,12 @@ public class Case : IHasProjectId, IChangeTrackable
     public double? NPVOverride { get; set; }
     public double BreakEven { get; set; }
     public double? BreakEvenOverride { get; set; }
-
     public string? Host { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual CessationWellsCost? CessationWellsCost { get; set; }
     public virtual CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
