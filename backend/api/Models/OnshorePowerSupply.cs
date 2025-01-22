@@ -19,7 +19,7 @@ public class OnshorePowerSupply : IHasProjectId, IChangeTrackable, IDateTrackedE
     public DateTime? ProspVersion { get; set; }
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
-    
+
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
