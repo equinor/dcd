@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.BackgroundServices.LogCleanup;
 
-public class JobCleanupService(IServiceScopeFactory serviceScopeFactory)
+public class JobCleanupBackgroundService(IServiceScopeFactory serviceScopeFactory)
     : DcdBackgroundService(serviceScopeFactory, executionFrequency: TimeSpan.FromMinutes(5))
 {
     protected override async Task ExecuteJob()
