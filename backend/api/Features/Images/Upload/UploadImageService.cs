@@ -30,7 +30,6 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
         {
             Id = imageId,
             Url = blobClient.Uri.ToString().Split('?')[0],
-            CreateTime = DateTime.UtcNow,
             CaseId = caseId,
             ProjectId = projectPk
         };

@@ -75,7 +75,6 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
                 Id = newImageId,
                 ProjectId = projectPk,
                 CaseId = destinationCaseId,
-                CreateTime = DateTime.UtcNow,
                 Description = image.Description,
                 Url = destinationUrl
             });

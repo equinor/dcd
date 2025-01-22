@@ -5,7 +5,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Image : IHasProjectId, IChangeTrackable
+public class Image : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     [Key]
     public Guid Id { get; set; }
@@ -18,6 +18,10 @@ public class Image : IHasProjectId, IChangeTrackable
 
     [Required]
     public string Url { get; set; } = null!;
-    public DateTime CreateTime { get; set; }
     public string? Description { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 }
