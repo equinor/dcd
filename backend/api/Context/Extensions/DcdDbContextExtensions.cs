@@ -59,7 +59,7 @@ public static class DcdDbContextExtensions
         throw new NotFoundInDbException($"Project id {projectId} not found in db for project or revision.");
     }
 
-    public static async Task UpdateCaseModifyTime(this DcdDbContext context, Guid caseId)
+    public static async Task UpdateCaseUpdatedUtc(this DcdDbContext context, Guid caseId)
     {
         var caseItem = await context.Cases.SingleAsync(c => c.Id == caseId);
 

@@ -38,7 +38,7 @@ public class SurfTimeSeriesService(
         var newProfile = mapperService.MapToEntity(dto, profile, surfId);
 
         context.SurfCostProfileOverride.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<SurfCostProfileOverride, TimeSeriesCostOverrideDto>(newProfile, newProfile.Id);
@@ -65,7 +65,7 @@ public class SurfTimeSeriesService(
 
         mapperService.MapToEntity(updatedSurfCostProfileOverrideDto, existingProfile, surfId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<SurfCostProfileOverride, TimeSeriesCostOverrideDto>(existingProfile, costProfileId);

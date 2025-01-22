@@ -38,7 +38,7 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
 
         if (imageEntity.CaseId.HasValue)
         {
-            await context.UpdateCaseModifyTime(imageEntity.CaseId!.Value);
+            await context.UpdateCaseUpdatedUtc(imageEntity.CaseId!.Value);
         }
 
         await context.SaveChangesAsync();

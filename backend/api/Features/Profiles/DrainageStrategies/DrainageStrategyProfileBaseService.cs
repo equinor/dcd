@@ -55,7 +55,7 @@ public abstract class DrainageStrategyProfileBaseService(
 
         Context.Add(newProfile);
 
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return conversionMapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id, project.PhysicalUnit);
@@ -83,7 +83,7 @@ public abstract class DrainageStrategyProfileBaseService(
 
         conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return conversionMapperService.MapToDto<TProfile, TDto>(existingProfile, productionProfileId, project.PhysicalUnit);

@@ -52,7 +52,7 @@ public abstract class ExplorationProfileBaseService(
         var newProfile = mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
 
         Context.Add(newProfile);
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(newProfile, newProfile.Id);
@@ -76,7 +76,7 @@ public abstract class ExplorationProfileBaseService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
-        await Context.UpdateCaseModifyTime(caseId);
+        await Context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
         return mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);

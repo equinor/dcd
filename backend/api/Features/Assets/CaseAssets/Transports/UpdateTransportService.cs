@@ -22,7 +22,7 @@ public class UpdateTransportService(DcdDbContext context, IRecalculationService 
         existing.Maturity = updatedTransportDto.Maturity;
         existing.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -40,7 +40,7 @@ public class UpdateTransportService(DcdDbContext context, IRecalculationService 
         existing.Source = updatedTransportDto.Source;
         existing.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

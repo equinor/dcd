@@ -53,7 +53,7 @@ public class SurfCostProfileService(
         }
 
         context.SurfCostProfile.Add(newProfile);
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -78,7 +78,7 @@ public class SurfCostProfileService(
 
         mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

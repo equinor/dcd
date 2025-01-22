@@ -20,7 +20,7 @@ public class UpdateWellProjectService(DcdDbContext context, IRecalculationServic
         existingWellProject.ArtificialLift = updatedWellProjectDto.ArtificialLift;
         existingWellProject.Currency = updatedWellProjectDto.Currency;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

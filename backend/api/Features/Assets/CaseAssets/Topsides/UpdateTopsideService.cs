@@ -43,7 +43,7 @@ public class UpdateTopsideService(DcdDbContext context, IRecalculationService re
         existingTopside.ApprovedBy = updatedTopsideDto.ApprovedBy;
         existingTopside.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
@@ -81,7 +81,7 @@ public class UpdateTopsideService(DcdDbContext context, IRecalculationService re
         existingTopside.ProspVersion = updatedTopsideDto.ProspVersion;
         existingTopside.LastChangedDate = DateTime.UtcNow;
 
-        await context.UpdateCaseModifyTime(caseId);
+        await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }
