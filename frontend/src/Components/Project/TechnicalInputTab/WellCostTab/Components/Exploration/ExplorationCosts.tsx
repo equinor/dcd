@@ -42,22 +42,24 @@ const ExplorationCosts = () => {
 
     useEffect(() => {
         if (explorationOperationalWellCosts) {
-            setCosts({
+            const newCosts = {
                 explorationRigUpgrading: explorationOperationalWellCosts.explorationRigUpgrading ?? 0,
                 explorationRigMobDemob: explorationOperationalWellCosts.explorationRigMobDemob ?? 0,
                 explorationProjectDrillingCosts: explorationOperationalWellCosts.explorationProjectDrillingCosts ?? 0,
                 appraisalRigMobDemob: explorationOperationalWellCosts.appraisalRigMobDemob ?? 0,
                 appraisalProjectDrillingCosts: explorationOperationalWellCosts.appraisalProjectDrillingCosts ?? 0,
-            } as ExplorationCostsState)
+            } as ExplorationCostsState
+            setCosts(newCosts)
+            previousCostsRef.current = newCosts
         }
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (explorationOperationalWellCostsId && projectId && debouncedCosts) {
+        if (explorationOperationalWellCostsId && projectId && debouncedCosts && editMode) {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof ExplorationCostsState] !== value,
             )
-            if (hasChanges && editMode) {
+            if (hasChanges) {
                 previousCostsRef.current = { ...debouncedCosts }
                 addExplorationWellCostEdit(projectId, explorationOperationalWellCostsId, debouncedCosts)
             }
