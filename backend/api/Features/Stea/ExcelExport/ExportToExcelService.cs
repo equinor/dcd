@@ -47,13 +47,13 @@ public static class ExportToExcelService
             businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount.ToString(), "Production And Sales Volumes");
 
             rowCount++;
-            businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear, c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1);
+            businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.TotalAndAnnualOil, 1_000_000), rowCount, 1);
 
             rowCount++;
-            businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear, c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1);
+            businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, 1_000_000_000), rowCount, 1);
 
             rowCount++;
-            businessCase.Co2Emissions = CreateExcelRow("Co2 Emissions [mill tonnes]", project.StartYear, c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1);
+            businessCase.Co2Emissions = CreateExcelRow("Co2 Emissions [mill tonnes]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.Co2Emissions, 1_000_000), rowCount, 1);
 
             rowCount++;
             businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", project.StartYear, c.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
@@ -167,6 +167,15 @@ public static class ExportToExcelService
         }
 
         return rv;
+    }
+
+    private static TimeSeriesDoubleDto DivideTimeSeriesValuesByFactor(TimeSeriesDoubleDto timeSeries, double factor)
+    {
+        return new TimeSeriesDoubleDto
+        {
+            StartYear = timeSeries.StartYear,
+            Values = timeSeries.Values.Select(v => v / factor).ToArray()
+        };
     }
 
     public static byte[] WriteExcelCellsToExcelDocument(List<BusinessCase> businessCases, string projectName)
