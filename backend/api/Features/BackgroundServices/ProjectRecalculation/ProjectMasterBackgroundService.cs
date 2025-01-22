@@ -1,41 +1,14 @@
 using api.Features.BackgroundServices.ProjectRecalculation.Services;
 
-using static api.Features.BackgroundServices.DisableConcurrentJobExecution.DisableConcurrentJobExecutionService;
-
 namespace api.Features.BackgroundServices.ProjectRecalculation;
 
-public class ProjectRecalculationBackgroundService(IServiceScopeFactory scopeFactory, ILogger<ProjectRecalculationBackgroundService> logger)
-    : BackgroundService
+public class ProjectRecalculationBackgroundService(IServiceScopeFactory serviceScopeFactory)
+    : DcdBackgroundService(serviceScopeFactory, executionFrequency: TimeSpan.FromSeconds(5))
 {
-    private readonly TimeSpan _executionFrequency = TimeSpan.FromSeconds(5);
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteJob()
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(_executionFrequency, stoppingToken);
+        using var scope = ServiceScopeFactory.CreateScope();
 
-            if (!IsJobRunnerInstance)
-            {
-                continue;
-            }
-
-            await RunProjectRecalculation();
-        }
-    }
-
-    private async Task RunProjectRecalculation()
-    {
-        using var scope = scopeFactory.CreateScope();
-        var recalculateProjectService = scope.ServiceProvider.GetRequiredService<RecalculateProjectService>();
-
-        try
-        {
-            await recalculateProjectService.RecalculateProjects();
-        }
-        catch (Exception e)
-        {
-            logger.LogCritical("Project recalculation failed: {}", e);
-        }
+        await scope.ServiceProvider.GetRequiredService<RecalculateProjectService>().RecalculateProjects();
     }
 }

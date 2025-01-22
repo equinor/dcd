@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.BackgroundServices.DisableConcurrentJobExecution;
 
-public class DisableConcurrentJobExecutionService(IServiceScopeFactory scopeFactory) : BackgroundService
+public class DisableConcurrentJobExecutionService(IServiceScopeFactory scopeFactory)
+    : BackgroundService
 {
     public static bool IsJobRunnerInstance { get; private set; }
     private static readonly TimeSpan Frequency = TimeSpan.FromSeconds(10);
