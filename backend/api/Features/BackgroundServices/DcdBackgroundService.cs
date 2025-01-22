@@ -24,7 +24,7 @@ public abstract class DcdBackgroundService(IServiceScopeFactory serviceScopeFact
 
             if (!IsJobRunnerInstance)
             {
-                return;
+                continue;
             }
 
             var stopwatch = Stopwatch.StartNew();

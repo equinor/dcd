@@ -17,7 +17,7 @@ public class DisableConcurrentJobExecutionService(IServiceScopeFactory scopeFact
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(Frequency, stoppingToken);
-            
+
             try
             {
                 await DeleteDeadInstances();
