@@ -64,7 +64,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             Values = convertedValues.ToArray()
         };
 
-        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, linkedWells);
+        var drillingEmissionsProfile = CalculateDrillingEmissions(project, linkedWells);
 
         var totalProfile = TimeSeriesMerger.MergeTimeSeries(newProfile, drillingEmissionsProfile);
 
@@ -142,6 +142,6 @@ public class Co2EmissionsProfileService(DcdDbContext context)
                 .ToArray()
         };
 
-        return Task.FromResult<TimeSeriesVolume>(drillingEmission);
+        return drillingEmission;
     }
 }
