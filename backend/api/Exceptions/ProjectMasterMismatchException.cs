@@ -1,3 +1,3 @@
 namespace api.Exceptions;
 
-public class ProjectMasterMismatchException (string message) : Exception(message);
+public class ProjectMasterMismatchException(string message) : Exception(message);
