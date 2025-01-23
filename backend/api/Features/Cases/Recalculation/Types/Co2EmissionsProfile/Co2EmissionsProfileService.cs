@@ -78,6 +78,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             StartYear = losses.StartYear,
             Values = losses.Values.Select(loss => loss * project.CO2Vented).ToArray()
         };
+
         return lossesProfile;
     }
 
@@ -123,7 +124,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             var timeSeries = new TimeSeriesCost
             {
                 StartYear = linkedWell.DrillingSchedule.StartYear,
-                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
+                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
             };
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
         }
@@ -133,7 +134,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             StartYear = wellDrillingSchedules.StartYear,
             Values = wellDrillingSchedules.Values
                 .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
-                .ToArray(),
+                .ToArray()
         };
 
         return drillingEmission;
