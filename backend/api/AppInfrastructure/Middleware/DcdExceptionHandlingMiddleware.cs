@@ -119,6 +119,7 @@ public class DcdExceptionHandlingMiddleware(
             case UnauthorizedAccessException:
                 return (HttpStatusCode.Unauthorized, exception.Message);
 
+            case ProjectMasterMismatchException:
             case InvalidInputException:
                 return (HttpStatusCode.BadRequest, exception.Message);
 
