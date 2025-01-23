@@ -47,9 +47,12 @@ public class ProjectExistsService(DcdDbContext context, IFusionService fusionSer
             return null;
         }
 
-        return projectClassification == ProjectClassification.Restricted
-            ? NoAccessReason.ClassificationRestricted
-            : NoAccessReason.ClassificationConfidential;
+        return projectClassification switch
+        {
+            ProjectClassification.Internal => NoAccessReason.ClassificationInternal,
+            ProjectClassification.Restricted => NoAccessReason.ClassificationRestricted,
+            _ => NoAccessReason.ClassificationConfidential
+        };
     }
 
     private async Task<(HashSet<ActionType>, ProjectClassification)> CalculateAccess(Guid fusionProjectId)
