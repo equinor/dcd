@@ -219,16 +219,16 @@ export const numberValueParser = (
     params: { newValue: any, oldValue: any, data: any },
 ) => {
     const { oldValue, newValue } = params
-    const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
-    const allCommasTurnedToDots = valueWithOnlyNumbersCommasAndDots.replace(/,/g, ".")
+    const valueWithOnlyValidChars = newValue.toString().replace(/[^0-9.,-]/g, "")
+    const allCommasTurnedToDots = valueWithOnlyValidChars.replace(/,/g, ".")
 
     if ((allCommasTurnedToDots.match(/\./g) || []).length > 1) {
         setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
         return oldValue
     }
 
-    if (valueWithOnlyNumbersCommasAndDots.toString() !== newValue.toString()) {
-        setSnackBarMessage("Only numbers, commas and dates are allowed. Invalid characters have been removed.")
+    if (valueWithOnlyValidChars.toString() !== newValue.toString()) {
+        setSnackBarMessage("Only numbers, commas, dots and minus signs are allowed. Invalid characters have been removed.")
     }
 
     return allCommasTurnedToDots
