@@ -112,3 +112,10 @@ export interface TableCase {
     createdAt?: string
     referenceCaseId?: string
 }
+
+export enum NoAccessReason {
+    ProjectDoesNotExist = 1,
+    ClassificationInternal = 2,
+    ClassificationRestricted = 3,
+    ClassificationConfidential = 4
+}

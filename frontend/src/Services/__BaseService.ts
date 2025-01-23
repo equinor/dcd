@@ -34,6 +34,7 @@ export class __BaseService {
             (error: any) => {
                 if (error.response.status === 403) {
                     console.error("Error: You don't have permission to access this resource. Please contact support.")
+                    window.location.reload()
                 } else if (error.response.status === 500) {
                     console.error("Error: An internal server error occurred. Please try again later.")
                 }

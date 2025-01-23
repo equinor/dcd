@@ -333,6 +333,7 @@ declare namespace Components {
         }
         export type InternalProjectPhase = 0 | 1 | 2; // int32
         export type Maturity = 0 | 1 | 2 | 3; // int32
+        export type NoAccessReason = 1 | 2 | 3; // int32
         export interface OnshorePowerSupplyDto {
             id: string; // uuid
             name: string;
@@ -364,6 +365,7 @@ declare namespace Components {
         export interface ProjectExistsDto {
             projectExists: boolean;
             canCreateProject: boolean;
+            noAccessReason: NoAccessReason /* int32 */;
         }
         export interface ProjectMemberDto {
             projectId: string; // uuid

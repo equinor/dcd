@@ -118,7 +118,8 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
     },
     "2.3.0": {
         "New Functionalities": [
-            { description: "Create project revision - Create revisions of the current project and view earlier revisions. Revisions are a snapshot of the project and all the cases at the time of creation" },
+            { description: "Create project revisions - Snapshots of projects and cases that preserve the state at time of creation" },
+            { description: "Access control enforcement based on project classification (Internal/Restricted/Confidential)" },
             { description: "Add caption to images" },
             { description: "Add selected project tab to the URL" },
 

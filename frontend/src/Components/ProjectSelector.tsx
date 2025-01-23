@@ -7,7 +7,9 @@ import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { NoAccessReason } from "@/Models/Interfaces"
 import CreateCaseModal from "./Modal/CreateCaseModal"
+import NoAccessErrorView from "@/Views/NoAccessErrorView"
 
 // Banner components
 const SelectProjectBanner = () => (
@@ -36,7 +38,7 @@ const NoAccessBanner = () => (
 
 const ProjectSelector = (): JSX.Element => {
     const [projectExists, setProjectExists] = useState<boolean>(false)
-
+    const [noAccessReason, setNoAccessReason] = useState<NoAccessReason | null>(null)
     const { setIsRevision } = useProjectContext()
     const {
         setIsCreating,
@@ -78,8 +80,8 @@ const ProjectSelector = (): JSX.Element => {
             try {
                 const projectService = await GetProjectService()
                 const results = await projectService.projectExists(currentContext.externalId)
-
                 setProjectExists(results.projectExists)
+                setNoAccessReason(results.noAccessReason)
 
                 if (results.projectExists) {
                     setIsLoading(false)
@@ -117,6 +119,10 @@ const ProjectSelector = (): JSX.Element => {
 
     if (isLoading) {
         return <LoadingBanner />
+    }
+
+    if (noAccessReason && noAccessReason !== NoAccessReason.ProjectDoesNotExist) {
+        return <NoAccessErrorView projectClassification={noAccessReason} />
     }
 
     if (projectExists) {
