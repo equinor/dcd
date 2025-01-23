@@ -1,4 +1,5 @@
 using api.Context;
+using api.Exceptions;
 using api.Features.ProjectMembers.Get.Sync.Models;
 using api.Models;
 
@@ -17,6 +18,8 @@ public class FusionOrgChartProjectMemberService(
 {
     public async Task SyncPmtMembersOnProject(Guid projectId, Guid fusionContextId)
     {
+        await VerifyProjectMasterId(projectId, fusionContextId);
+
         var pmtProjectMembers = await context.ProjectMembers
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.FromOrgChart)
@@ -50,6 +53,23 @@ public class FusionOrgChartProjectMemberService(
         }
 
         await context.SaveChangesAsync();
+    }
+
+    private async Task VerifyProjectMasterId(Guid projectId, Guid fusionContextId)
+    {
+        var projectProjectMasterId = await context.Projects
+            .Where(p => p.Id == projectId)
+            .Select(p => p.FusionProjectId)
+            .FirstAsync();
+
+        var fusionContext = await fusionContextResolver.GetContextAsync(fusionContextId);
+
+        var fusionProjectMasterId = fusionContext.ExternalId ?? throw new ProjectMasterMismatchException("Project master ID not found");
+
+        if (Guid.TryParse(fusionProjectMasterId, out var fusionProjectMasterGuid) && projectProjectMasterId != fusionProjectMasterGuid)
+        {
+            throw new ProjectMasterMismatchException("Project master ID mismatch");
+        }
     }
 
     private async Task<List<FusionPersonDto>> GetAllPersonsOnProject(Guid fusionContextId)
