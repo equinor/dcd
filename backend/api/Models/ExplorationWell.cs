@@ -5,7 +5,6 @@ namespace api.Models;
 
 public class ExplorationWell : IDateTrackedEntity
 {
-
     public Guid WellId { get; set; }
     public virtual Well Well { get; set; } = null!;
 

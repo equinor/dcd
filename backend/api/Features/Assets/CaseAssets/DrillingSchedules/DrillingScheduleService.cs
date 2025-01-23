@@ -3,19 +3,13 @@ using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.Features.ProjectIntegrity;
-using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.DrillingSchedules;
 
-public class DrillingScheduleService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IProjectIntegrityService projectIntegrityService,
-    IRecalculationService recalculationService)
+public class DrillingScheduleService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task<TimeSeriesScheduleDto> UpdateExplorationWellDrillingSchedule(
         Guid projectId,
@@ -23,24 +17,24 @@ public class DrillingScheduleService(
         Guid explorationId,
         Guid wellId,
         Guid drillingScheduleId,
-        UpdateTimeSeriesScheduleDto updatedExplorationWellDto)
+        UpdateTimeSeriesScheduleDto dto)
     {
         var existingExploration = await context.Explorations
-            .Include(e => e.ExplorationWells)
-            .ThenInclude(w => w.DrillingSchedule)
+            .Include(e => e.ExplorationWells).ThenInclude(w => w.DrillingSchedule)
+            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Id == explorationId)
             .SingleAsync(e => e.ExplorationWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
-
-        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, existingExploration.Id);
 
         var existingDrillingSchedule = existingExploration.ExplorationWells.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
                                        ?? throw new NotFoundInDbException($"Drilling schedule with id {drillingScheduleId} not found.");
 
-        mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
+        existingDrillingSchedule.StartYear = dto.StartYear;
+        existingDrillingSchedule.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<DrillingSchedule, TimeSeriesScheduleDto>(existingDrillingSchedule, drillingScheduleId);
+        return MapToDto(existingDrillingSchedule);
     }
 
     public async Task<TimeSeriesScheduleDto> CreateExplorationWellDrillingSchedule(
@@ -48,22 +42,21 @@ public class DrillingScheduleService(
         Guid caseId,
         Guid explorationId,
         Guid wellId,
-        CreateTimeSeriesScheduleDto updatedExplorationWellDto)
+        CreateTimeSeriesScheduleDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<Exploration>(projectId, explorationId);
+        var existingExploration = await context.Explorations.SingleAsync(x => x.ProjectId == projectId && x.Id == explorationId);
 
-        var existingExploration = await context.Explorations.SingleAsync(x => x.Id == explorationId);
+        var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
-        var existingWell = await context.Wells.SingleAsync(x => x.Id == wellId);
-
-        DrillingSchedule drillingSchedule = new();
-        var newDrillingSchedule = mapperService.MapToEntity(updatedExplorationWellDto, drillingSchedule, explorationId);
-
-        ExplorationWell newExplorationWell = new()
+        var newExplorationWell = new ExplorationWell
         {
             Well = existingWell,
             Exploration = existingExploration,
-            DrillingSchedule = newDrillingSchedule
+            DrillingSchedule = new DrillingSchedule
+            {
+                StartYear = dto.StartYear,
+                Values = dto.Values
+            }
         };
 
         context.ExplorationWell.Add(newExplorationWell);
@@ -75,7 +68,7 @@ public class DrillingScheduleService(
             throw new Exception(nameof(newExplorationWell.DrillingSchedule));
         }
 
-        return mapperService.MapToDto<DrillingSchedule, TimeSeriesScheduleDto>(newExplorationWell.DrillingSchedule, explorationId);
+        return MapToDto(newExplorationWell.DrillingSchedule);
     }
 
     public async Task<TimeSeriesScheduleDto> UpdateWellProjectWellDrillingSchedule(
@@ -84,24 +77,24 @@ public class DrillingScheduleService(
         Guid wellProjectId,
         Guid wellId,
         Guid drillingScheduleId,
-        UpdateTimeSeriesScheduleDto updatedWellProjectWellDto)
+        UpdateTimeSeriesScheduleDto dto)
     {
         var existingWellProject = await context.WellProjects
-            .Include(e => e.WellProjectWells)
-            .ThenInclude(w => w.DrillingSchedule)
+            .Include(e => e.WellProjectWells).ThenInclude(w => w.DrillingSchedule)
+            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Id == wellProjectId)
             .SingleAsync(e => e.WellProjectWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
-
-        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, existingWellProject.Id);
 
         var existingDrillingSchedule = existingWellProject.WellProjectWells.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
             ?? throw new NotFoundInDbException($"Drilling schedule with {drillingScheduleId} not found.");
 
-        mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
+        existingDrillingSchedule.StartYear = dto.StartYear;
+        existingDrillingSchedule.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
 
-        return mapperService.MapToDto<DrillingSchedule, TimeSeriesScheduleDto>(existingDrillingSchedule, drillingScheduleId);
+        return MapToDto(existingDrillingSchedule);
     }
 
     public async Task<TimeSeriesScheduleDto> CreateWellProjectWellDrillingSchedule(
@@ -109,22 +102,21 @@ public class DrillingScheduleService(
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,
-        CreateTimeSeriesScheduleDto updatedWellProjectWellDto)
+        CreateTimeSeriesScheduleDto dto)
     {
-        await projectIntegrityService.EntityIsConnectedToProject<WellProject>(projectId, wellProjectId);
+        var existingWellProject = await context.WellProjects.SingleAsync(x => x.ProjectId == projectId && x.Id == wellProjectId);
 
-        var existingWellProject = await context.WellProjects.SingleAsync(x => x.Id == wellProjectId);
-
-        var existingWell = await context.Wells.SingleAsync(x => x.Id == wellId);
-
-        DrillingSchedule drillingSchedule = new();
-        var newDrillingSchedule = mapperService.MapToEntity(updatedWellProjectWellDto, drillingSchedule, wellProjectId);
+        var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
         var newWellProjectWell = new WellProjectWell
         {
             Well = existingWell,
             WellProject = existingWellProject,
-            DrillingSchedule = newDrillingSchedule
+            DrillingSchedule = new DrillingSchedule
+            {
+                StartYear = dto.StartYear,
+                Values = dto.Values
+            }
         };
 
         context.WellProjectWell.Add(newWellProjectWell);
@@ -136,6 +128,16 @@ public class DrillingScheduleService(
             throw new Exception(nameof(newWellProjectWell.DrillingSchedule));
         }
 
-        return mapperService.MapToDto<DrillingSchedule, TimeSeriesScheduleDto>(newWellProjectWell.DrillingSchedule, wellProjectId);
+        return MapToDto(newWellProjectWell.DrillingSchedule);
+    }
+
+    private static TimeSeriesScheduleDto MapToDto(DrillingSchedule drillingSchedule)
+    {
+        return new TimeSeriesScheduleDto
+        {
+            Id = drillingSchedule.Id,
+            StartYear = drillingSchedule.StartYear,
+            Values = drillingSchedule.Values
+        };
     }
 }

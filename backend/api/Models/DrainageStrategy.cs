@@ -151,12 +151,6 @@ public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride
     public bool Override { get; set; }
 }
 
-public interface IDrainageStrategyTimeSeries
-{
-    DrainageStrategy DrainageStrategy { get; set; }
-    Guid Id { get; set; }
-}
-
 public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
@@ -167,4 +161,10 @@ public class DeferredGasProduction : TimeSeriesVolume, IDrainageStrategyTimeSeri
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public interface IDrainageStrategyTimeSeries
+{
+    DrainageStrategy DrainageStrategy { get; set; }
+    Guid Id { get; set; }
 }

@@ -10,7 +10,5 @@ public class WellProfile : Profile
     public WellProfile()
     {
         CreateMap<TimeSeriesScheduleDto, DrillingSchedule>().ReverseMap();
-        CreateMap<CreateTimeSeriesScheduleDto, DrillingSchedule>();
-        CreateMap<UpdateTimeSeriesScheduleDto, DrillingSchedule>();
     }
 }
