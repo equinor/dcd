@@ -142,6 +142,6 @@ public class Co2EmissionsProfileService(DcdDbContext context)
                 .ToArray()
         };
 
-        return Task.FromResult<TimeSeriesVolume>(drillingEmission);
+        return drillingEmission;
     }
 }
