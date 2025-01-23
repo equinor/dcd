@@ -8,10 +8,10 @@ public class WellProjectWell : IDateTrackedEntity
     public Guid? DrillingScheduleId { get; set; }
     public virtual DrillingSchedule? DrillingSchedule { get; set; }
 
-    public Guid WellProjectId { get; set; } = Guid.Empty;
+    public Guid WellProjectId { get; set; }
     public virtual WellProject WellProject { get; set; } = null!;
 
-    public Guid WellId { get; set; } = Guid.Empty;
+    public Guid WellId { get; set; }
     public virtual Well Well { get; set; } = null!;
 
     public DateTime CreatedUtc { get; set; }

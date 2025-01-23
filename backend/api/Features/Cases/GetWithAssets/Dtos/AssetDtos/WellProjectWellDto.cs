@@ -9,7 +9,7 @@ public class WellProjectWellDto
     [Required]
     public TimeSeriesScheduleDto DrillingSchedule { get; set; } = new();
     [Required]
-    public Guid WellProjectId { get; set; } = Guid.Empty;
+    public Guid WellProjectId { get; set; }
     [Required]
-    public Guid WellId { get; set; } = Guid.Empty;
+    public Guid WellId { get; set; }
 }
