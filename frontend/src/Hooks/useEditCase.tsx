@@ -70,8 +70,6 @@ const useEditCase = () => {
             return
         }
 
-        console.log("newEditId", newEditId)
-
         const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
         const activeEdit = getActiveEditFromIndexes()
 
