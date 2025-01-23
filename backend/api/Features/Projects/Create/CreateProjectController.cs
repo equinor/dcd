@@ -11,7 +11,6 @@ namespace api.Features.Projects.Create;
 public class CreateProjectController(CreateProjectService createProjectService, GetProjectDataService getProjectDataService, CurrentUser currentUser) : ControllerBase
 {
     [HttpPost("projects")]
-    [DisableLazyLoading]
     [Authorize]
     public async Task<ActionResult<ProjectDataDto>> CreateProject([FromQuery] Guid contextId)
     {

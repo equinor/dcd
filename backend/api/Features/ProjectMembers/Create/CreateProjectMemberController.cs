@@ -9,7 +9,6 @@ public class CreateProjectMemberController(CreateProjectMemberService createProj
 {
     [HttpPost("projects/{projectId:guid}/members")]
     [AuthorizeActionType(ActionType.EditProjectMembers)]
-    [DisableLazyLoading]
     public async Task<ProjectMemberDto> CreateProjectMember([FromRoute] Guid projectId, [FromBody] CreateProjectMemberDto createProjectMemberDto)
     {
         var projectMemberId = await createProjectMemberService.CreateProjectMember(projectId, createProjectMemberDto);

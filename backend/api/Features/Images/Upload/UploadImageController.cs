@@ -9,7 +9,6 @@ public class UploadImageController(UploadImageService uploadImageService, GetIma
 {
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/images")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableLazyLoading]
     public async Task<ImageDto> UploadCaseImage(Guid projectId, Guid caseId, IFormFile image)
     {
         UploadImageValidator.EnsureIsValid(image);
@@ -20,7 +19,6 @@ public class UploadImageController(UploadImageService uploadImageService, GetIma
 
     [HttpPost("projects/{projectId:guid}/images")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableLazyLoading]
     public async Task<ImageDto> UploadProjectImage(Guid projectId, IFormFile image)
     {
         UploadImageValidator.EnsureIsValid(image);

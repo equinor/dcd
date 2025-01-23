@@ -8,7 +8,6 @@ public class DeleteImageController(DeleteImageService deleteImageService) : Cont
 {
     [HttpDelete("projects/{projectId:guid}/images/{imageId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableLazyLoading]
     public async Task<ActionResult> DeleteImage(Guid projectId, Guid imageId)
     {
         await deleteImageService.DeleteImage(projectId, imageId);

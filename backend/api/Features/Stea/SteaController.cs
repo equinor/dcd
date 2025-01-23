@@ -8,7 +8,6 @@ public class SteaController(SteaService steaService) : ControllerBase
 {
     [HttpPost("stea/{projectId:guid}")]
     [AuthorizeActionType(ActionType.Read)]
-    [DisableLazyLoading]
     public async Task<FileResult> ExportSteaToExcel(Guid projectId)
     {
         var (bytes, filename) = await steaService.GetExcelFile(projectId);

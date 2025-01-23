@@ -8,7 +8,6 @@ public class GetImageController(GetImageService getImageService) : ControllerBas
 {
     [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
     [AuthorizeActionType(ActionType.Read)]
-    [DisableLazyLoading]
     public async Task<List<ImageDto>> GetCaseImages(Guid projectId, Guid caseId)
     {
         return await getImageService.GetImages(projectId, caseId);
@@ -16,7 +15,6 @@ public class GetImageController(GetImageService getImageService) : ControllerBas
 
     [HttpGet("projects/{projectId:guid}/images")]
     [AuthorizeActionType(ActionType.Read)]
-    [DisableLazyLoading]
     public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
     {
         return await getImageService.GetImages(projectId, null);

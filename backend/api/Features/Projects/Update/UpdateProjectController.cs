@@ -10,7 +10,6 @@ public class UpdateProjectController(UpdateProjectService updateProjectService, 
 {
     [HttpPut("projects/{projectId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableLazyLoading]
     public async Task<ProjectDataDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto updateProjectDto)
     {
         UpdateProjectDtoValidator.Validate(updateProjectDto);

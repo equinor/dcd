@@ -10,7 +10,6 @@ public class UpdateExplorationOperationalWellCostsController(UpdateExplorationOp
 {
     [HttpPut("projects/{projectId:guid}/exploration-operational-well-costs/{explorationOperationalWellCostsId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableLazyLoading]
     public async Task<ExplorationOperationalWellCostsOverviewDto> UpdateExplorationOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid explorationOperationalWellCostsId, [FromBody] UpdateExplorationOperationalWellCostsDto dto)
     {
         return await updateExplorationOperationalWellCostsService.UpdateExplorationOperationalWellCosts(projectId, explorationOperationalWellCostsId, dto);

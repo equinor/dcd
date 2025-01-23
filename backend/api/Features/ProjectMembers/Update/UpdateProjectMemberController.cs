@@ -9,7 +9,6 @@ public class UpdateProjectMemberController(UpdateProjectMemberService updateProj
 {
     [HttpPut("projects/{projectId:guid}/members")]
     [AuthorizeActionType(ActionType.EditProjectMembers)]
-    [DisableLazyLoading]
     public async Task<ProjectMemberDto> UpdateProjectMember([FromRoute] Guid projectId, [FromBody] UpdateProjectMemberDto updateProjectMemberDto)
     {
         await updateProjectMemberService.UpdateProjectMember(projectId, updateProjectMemberDto);

@@ -11,7 +11,6 @@ public class GetProjectMemberController(
 {
     [HttpGet("projects/{projectId:guid}/members")]
     [AuthorizeActionType(ActionType.EditProjectMembers)]
-    [DisableLazyLoading]
     public async Task<List<ProjectMemberDto>> GetProjectMembersWithoutUpdatingPmt([FromRoute] Guid projectId)
     {
         return await getProjectMemberService.GetProjectMembers(projectId);
@@ -19,7 +18,6 @@ public class GetProjectMemberController(
 
     [HttpGet("projects/{projectId:guid}/members/context/{contextId:guid}")]
     [AuthorizeActionType(ActionType.EditProjectMembers)]
-    [DisableLazyLoading]
     public async Task<List<ProjectMemberDto>> GetProjectMembersWithUpdatingPmt([FromRoute] Guid projectId, [FromRoute] Guid contextId)
     {
         await fusionOrgChartProjectMemberService.SyncPmtMembersOnProject(projectId, contextId);

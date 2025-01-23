@@ -8,7 +8,6 @@ public class GetIsWellInUseController(GetIsWellInUseService getIsWellInUseServic
 {
     [HttpGet("projects/{projectId:guid}/wells/{wellId:guid}/is-in-use")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableLazyLoading]
     public async Task<bool> IsWellInUse([FromRoute] Guid projectId, [FromRoute] Guid wellId)
     {
         return await getIsWellInUseService.IsWellInUse(wellId);
