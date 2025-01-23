@@ -66,10 +66,12 @@ const AccessManagementTab = () => {
     // This is used to synchronize PMT members to projects
     useEffect(
         () => {
-            if (!projectId || !currentContext?.id) { return }
+            if (!projectId || !currentContext?.id || !currentContext?.externalId) { return }
+            if (projectId !== currentContext.externalId) { return }
+
             syncPmtMembers(projectId, currentContext.id)
         },
-        [],
+        [projectId, currentContext],
     )
 
     if (!revisionAndProjectData) {
