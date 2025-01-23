@@ -38,13 +38,9 @@ export const useEditPeople = () => {
                     { queryKey: ["projectApiData", projectId] },
                 )
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Error syncing PMT members:", error)
-            if (error instanceof Error) {
-                setSnackBarMessage(error.message)
-            } else {
-                setSnackBarMessage("An unknown error occurred while syncing PMT members")
-            }
+            setSnackBarMessage((error as Error).message || "An unknown error occurred while syncing PMT members")
         }
     }
 
