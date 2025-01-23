@@ -58,6 +58,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public virtual ICollection<Exploration> Explorations { get; set; } = [];
     public virtual ICollection<Project> Revisions { get; set; } = [];
     public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = [];
+    public virtual ICollection<Image> Images { get; set; } = [];
 }
 
 public class RevisionDetails : IChangeTrackable, IDateTrackedEntity
