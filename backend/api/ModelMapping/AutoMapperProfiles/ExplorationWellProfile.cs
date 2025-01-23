@@ -12,6 +12,5 @@ public class ExplorationWellProfile : Profile
     {
         CreateMap<ExplorationWell, ExplorationWellDto>();
         CreateMap<DrillingSchedule, TimeSeriesScheduleDto>();
-        CreateMap<UpdateTimeSeriesScheduleDto, DrillingSchedule>();
     }
 }
