@@ -45,10 +45,15 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside);
-        var flaringsProfile = GetFlaringsProfile(project, caseItem, drainageStrategy);
-        var lossesProfile = GetLossesProfile(project, caseItem, drainageStrategy);
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .ToListAsync();
 
+        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside);
+        var flaringsProfile = GetFlaringsProfile(project, caseItem);
+        var lossesProfile = GetLossesProfile(project, caseItem);
+        
         var tempProfile = TimeSeriesMerger.MergeTimeSeries(fuelConsumptionsProfile, flaringsProfile, lossesProfile);
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
@@ -59,7 +64,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             Values = convertedValues.ToArray()
         };
 
-        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, caseItem.WellProjectLink);
+        var drillingEmissionsProfile = CalculateDrillingEmissions(project, linkedWells);
 
         var totalProfile = TimeSeriesMerger.MergeTimeSeries(newProfile, drillingEmissionsProfile);
 
@@ -69,21 +74,22 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         co2Emissions.StartYear = totalProfile.StartYear;
     }
 
-    private static TimeSeriesCost GetLossesProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
+    private static TimeSeriesCost GetLossesProfile(Project project, Case caseItem)
     {
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
 
         var lossesProfile = new TimeSeriesCost
         {
             StartYear = losses.StartYear,
             Values = losses.Values.Select(loss => loss * project.CO2Vented).ToArray()
         };
+
         return lossesProfile;
     }
 
-    private static TimeSeriesCost GetFlaringsProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
+    private static TimeSeriesCost GetFlaringsProfile(Project project, Case caseItem)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
 
         var flaringsProfile = new TimeSeriesCost
         {
@@ -123,7 +129,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             var timeSeries = new TimeSeriesCost
             {
                 StartYear = linkedWell.DrillingSchedule.StartYear,
-                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
+                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
             };
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
         }
@@ -133,7 +139,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             StartYear = wellDrillingSchedules.StartYear,
             Values = wellDrillingSchedules.Values
                 .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
-                .ToArray(),
+                .ToArray()
         };
 
         return drillingEmission;
