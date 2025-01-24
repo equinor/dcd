@@ -1056,10 +1056,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
                       ));
 
 
-        var totalFeedChanges = context.ChangeTracker.Entries<TotalFEEDStudies>()
+        var totalFeedChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFEEDStudies)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var totalFeedOverrideChanges = context.ChangeTracker.Entries<TotalFEEDStudiesOverride>()
+        var totalFeedOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFEEDStudiesOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var totalOtherStudiesChanges = context.ChangeTracker.Entries<TotalOtherStudiesCostProfile>()

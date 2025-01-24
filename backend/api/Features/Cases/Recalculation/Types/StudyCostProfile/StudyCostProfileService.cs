@@ -15,8 +15,6 @@ public class StudyCostProfileService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.TotalFEEDStudies)
-            .Include(c => c.TotalFEEDStudiesOverride)
             .SingleAsync(x => x.Id == caseId);
 
         var substructure = await context.Substructures
@@ -112,7 +110,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
     public static void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        if (caseItem.TotalFEEDStudiesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true)
         {
             return;
         }
@@ -124,7 +122,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
         if (dg2.Year == 1 || dg3.Year == 1)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.TotalFEEDStudies);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies));
             return;
         }
 
@@ -157,21 +155,10 @@ public class StudyCostProfileService(DcdDbContext context)
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeedStudies);
 
-        var totalFeedStudiesCost = new TotalFEEDStudies
-        {
-            StartYear = dg2.Year - caseItem.DG4Date.Year,
-            Values = valuesList.ToArray()
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFEEDStudies);
 
-        if (caseItem.TotalFEEDStudies != null)
-        {
-            caseItem.TotalFEEDStudies.Values = totalFeedStudiesCost.Values;
-            caseItem.TotalFEEDStudies.StartYear = totalFeedStudiesCost.StartYear;
-        }
-        else
-        {
-            caseItem.TotalFEEDStudies = totalFeedStudiesCost;
-        }
+        profile.StartYear = dg2.Year - caseItem.DG4Date.Year;
+        profile.Values = valuesList.ToArray();
     }
 
     private static double SumAllCostFacility(Substructure substructure,

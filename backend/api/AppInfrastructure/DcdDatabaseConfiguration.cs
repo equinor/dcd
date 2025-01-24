@@ -131,5 +131,7 @@ public static class DcdDatabaseConfiguration
         { "OffshoreFacilitiesOperationsCostProfileOverride", true },
         { "TotalFeasibilityAndConceptStudies", false },
         { "TotalFeasibilityAndConceptStudiesOverride", true },
+        { "TotalFEEDStudies", false },
+        { "TotalFEEDStudiesOverride", true },
     };
 }

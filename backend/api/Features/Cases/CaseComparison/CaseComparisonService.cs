@@ -139,7 +139,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         TimeSeriesCost? feasibility = feasibilityProfile == null ? null : new TimeSeriesCost(feasibilityProfile);
 
-        TimeSeriesCost? feed = caseItem.TotalFEEDStudiesOverride?.Override == true ? caseItem.TotalFEEDStudiesOverride : caseItem.TotalFEEDStudies;
+        TimeSeriesProfile? feedProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies);
+
+        TimeSeriesCost? feed = feedProfile == null ? null : new TimeSeriesCost(feedProfile);
+
         TimeSeriesCost? otherStudies = caseItem.TotalOtherStudiesCostProfile;
 
         var studyTimeSeries = CostProfileMerger.MergeCostProfiles(feasibility, feed, otherStudies);

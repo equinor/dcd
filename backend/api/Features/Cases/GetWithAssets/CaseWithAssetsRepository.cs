@@ -36,8 +36,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     {
         return await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.TotalFEEDStudies)
-            .Include(c => c.TotalFEEDStudiesOverride)
             .Include(c => c.TotalOtherStudiesCostProfile)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
