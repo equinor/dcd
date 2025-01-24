@@ -44,7 +44,6 @@ using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFu
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Cases.HistoricCostCostProfiles;
 using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles;
-using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides;
 using api.Features.Profiles.Cases.TotalFeedStudiesOverrides;
 using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles;
 using api.Features.Profiles.Create;
@@ -219,7 +218,6 @@ public static class DcdIocConfiguration
         services.AddScoped<CessationOnshoreFacilitiesCostProfileService>();
         services.AddScoped<HistoricCostCostProfileService>();
         services.AddScoped<OnshoreRelatedOpexCostProfileService>();
-        services.AddScoped<TotalFeasibilityAndConceptStudiesOverrideService>();
         services.AddScoped<TotalFeedStudiesOverrideService>();
         services.AddScoped<TotalOtherStudiesCostProfileService>();
 

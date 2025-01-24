@@ -127,5 +127,9 @@ public static class DcdDatabaseConfiguration
         { "CessationOffshoreFacilitiesCostOverride", true },
         { "WellInterventionCostProfile", false },
         { "WellInterventionCostProfileOverride", true },
+        { "OffshoreFacilitiesOperationsCostProfile", false },
+        { "OffshoreFacilitiesOperationsCostProfileOverride", true },
+        { "TotalFeasibilityAndConceptStudies", false },
+        { "TotalFeasibilityAndConceptStudiesOverride", true },
     };
 }

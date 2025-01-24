@@ -83,13 +83,13 @@ public static class SteaCaseDtoBuilder
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
 
-        if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.TotalFeasibilityAndConceptStudiesOverride));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)));
         }
-        else if (caseItem.TotalFeasibilityAndConceptStudies != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.TotalFeasibilityAndConceptStudies));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalFeasibilityAndConceptStudies)));
         }
 
         if (caseItem.TotalFEEDStudiesOverride?.Override == true)

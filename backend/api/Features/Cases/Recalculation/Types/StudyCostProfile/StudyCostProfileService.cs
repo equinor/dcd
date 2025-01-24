@@ -2,6 +2,7 @@ using System.Globalization;
 
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,7 @@ public class StudyCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
             .SingleAsync(x => x.Id == caseId);
@@ -64,7 +64,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
     public static void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true)
         {
             return;
         }
@@ -76,7 +76,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
         if (dg0.Year == 1 || dg2.Year == 1)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.TotalFeasibilityAndConceptStudies);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies));
             return;
         }
 
@@ -104,21 +104,10 @@ public class StudyCostProfileService(DcdDbContext context)
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
 
-        var feasibilityAndConceptStudiesCost = new TotalFeasibilityAndConceptStudies
-        {
-            StartYear = dg0.Year - caseItem.DG4Date.Year,
-            Values = valuesList.ToArray()
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeasibilityAndConceptStudies);
 
-        if (caseItem.TotalFeasibilityAndConceptStudies != null)
-        {
-            caseItem.TotalFeasibilityAndConceptStudies.Values = feasibilityAndConceptStudiesCost.Values;
-            caseItem.TotalFeasibilityAndConceptStudies.StartYear = feasibilityAndConceptStudiesCost.StartYear;
-        }
-        else
-        {
-            caseItem.TotalFeasibilityAndConceptStudies = feasibilityAndConceptStudiesCost;
-        }
+        profile.StartYear = dg0.Year - caseItem.DG4Date.Year;
+        profile.Values = valuesList.ToArray();
     }
 
     public static void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)

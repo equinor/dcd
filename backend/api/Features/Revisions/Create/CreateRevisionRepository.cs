@@ -33,8 +33,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     {
         await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
             .Include(c => c.TotalOtherStudiesCostProfile)

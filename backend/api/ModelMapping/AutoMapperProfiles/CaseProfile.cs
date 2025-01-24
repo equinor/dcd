@@ -10,8 +10,6 @@ public class CaseProfile : Profile
     public CaseProfile()
     {
         CreateMap<CessationOnshoreFacilitiesCostProfile, TimeSeriesCostDto>();
-        CreateMap<TotalFeasibilityAndConceptStudies, TimeSeriesCostDto>();
-        CreateMap<TotalFeasibilityAndConceptStudiesOverride, TimeSeriesCostOverrideDto>();
         CreateMap<TotalFEEDStudies, TimeSeriesCostDto>();
         CreateMap<TotalFEEDStudiesOverride, TimeSeriesCostOverrideDto>();
         CreateMap<TotalOtherStudiesCostProfile, TimeSeriesCostDto>();
@@ -22,7 +20,6 @@ public class CaseProfile : Profile
         CreateMap<CalculatedTotalCostCostProfile, TimeSeriesCostDto>();
 
         CreateMap<UpdateTimeSeriesCostDto, CessationOnshoreFacilitiesCostProfile>();
-        CreateMap<UpdateTimeSeriesCostOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<UpdateTimeSeriesCostOverrideDto, TotalFEEDStudiesOverride>();
         CreateMap<UpdateTimeSeriesCostOverrideDto, TotalOtherStudiesCostProfile>();
         CreateMap<UpdateTimeSeriesCostDto, HistoricCostCostProfile>();
@@ -30,7 +27,6 @@ public class CaseProfile : Profile
         CreateMap<UpdateTimeSeriesCostDto, AdditionalOPEXCostProfile>();
 
         CreateMap<CreateTimeSeriesCostDto, CessationOnshoreFacilitiesCostProfile>();
-        CreateMap<CreateTimeSeriesCostOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<CreateTimeSeriesCostOverrideDto, TotalFEEDStudiesOverride>();
         CreateMap<CreateTimeSeriesCostDto, TotalOtherStudiesCostProfile>();
         CreateMap<CreateTimeSeriesCostDto, HistoricCostCostProfile>();

@@ -1043,14 +1043,16 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
     private bool CalculateTotalCost()
     {
 
-        var totalFeasibilityAdded = context.ChangeTracker.Entries<TotalFeasibilityAndConceptStudies>()
+        var totalFeasibilityAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFeasibilityAndConceptStudies)
             .Any(e => e.State == EntityState.Added);
 
-        var totalFeasibilityOverrideChanges = context.ChangeTracker.Entries<TotalFeasibilityAndConceptStudiesOverride>()
+        var totalFeasibilityOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(TotalFeasibilityAndConceptStudiesOverride.Override)).IsModified
-                          || e.Property(nameof(TotalFeasibilityAndConceptStudiesOverride.InternalData)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
+                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
                       ));
 
 

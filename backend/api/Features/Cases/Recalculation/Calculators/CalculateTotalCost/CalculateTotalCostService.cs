@@ -13,8 +13,6 @@ public class CalculateTotalCostService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
             .Include(c => c.TotalOtherStudiesCostProfile)
@@ -154,8 +152,8 @@ public class CalculateTotalCostService(DcdDbContext context)
     private static TimeSeries<double> CalculateStudyCost(Case caseItem)
     {
         TimeSeries<double> feasibilityProfile = UseOverrideOrProfile(
-            caseItem.TotalFeasibilityAndConceptStudies,
-            caseItem.TotalFeasibilityAndConceptStudiesOverride
+            caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies),
+            caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)
         );
         TimeSeries<double> feedProfile = UseOverrideOrProfile(
             caseItem.TotalFEEDStudies,

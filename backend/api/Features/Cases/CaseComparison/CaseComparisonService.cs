@@ -133,9 +133,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        TimeSeriesCost? feasibility = caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true
-            ? caseItem.TotalFeasibilityAndConceptStudiesOverride
-            : caseItem.TotalFeasibilityAndConceptStudies;
+        TimeSeriesProfile? feasibilityProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies);
+
+        TimeSeriesCost? feasibility = feasibilityProfile == null ? null : new TimeSeriesCost(feasibilityProfile);
+
         TimeSeriesCost? feed = caseItem.TotalFEEDStudiesOverride?.Override == true ? caseItem.TotalFEEDStudiesOverride : caseItem.TotalFEEDStudies;
         TimeSeriesCost? otherStudies = caseItem.TotalOtherStudiesCostProfile;
 
