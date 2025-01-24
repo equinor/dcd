@@ -1,49 +1,47 @@
 using api.Context;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.CaseProfiles.Repositories;
-using api.Features.CaseProfiles.Services;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 
-public class Co2EmissionsProfileService(
-    DcdDbContext context,
-    ICaseService caseService,
-    IDrainageStrategyService drainageStrategyService,
-    IProjectWithAssetsRepository projectWithAssetsRepository,
-    ITopsideService topsideService)
-    : ICo2EmissionsProfileService
+public class Co2EmissionsProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(caseId);
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!,
-            d => d.ProductionProfileWaterInjection!,
-            d => d.Co2Emissions!,
-            d => d.Co2EmissionsOverride!
-        );
+        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .Include(d => d.ProductionProfileWaterInjection)
+            .Include(d => d.Co2Emissions)
+            .Include(d => d.Co2EmissionsOverride)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
+
         if (drainageStrategy.Co2EmissionsOverride?.Override == true)
         {
             return;
         }
 
-        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
+        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
+
+        var project = await context.Projects
+            .Include(p => p.Cases)
+            .Include(p => p.Wells)
+            .Include(p => p.ExplorationOperationalWellCosts)
+            .Include(p => p.DevelopmentOperationalWellCosts)
+            .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
 
-        var tempProfile = TimeSeriesCost.MergeCostProfilesList([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
+        var tempProfile = CostProfileMerger.MergeCostProfiles([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 
@@ -55,8 +53,7 @@ public class Co2EmissionsProfileService(
 
         var drillingEmissionsProfile = await CalculateDrillingEmissions(project, caseItem.WellProjectLink);
 
-        var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
+        var totalProfile = CostProfileMerger.MergeCostProfiles(newProfile, drillingEmissionsProfile);
 
         if (drainageStrategy.Co2Emissions != null)
         {
@@ -135,7 +132,7 @@ public class Co2EmissionsProfileService(
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
             };
-            wellDrillingSchedules = TimeSeriesCost.MergeCostProfiles(wellDrillingSchedules, timeSeries);
+            wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
         var drillingEmission = new ProductionProfileGas

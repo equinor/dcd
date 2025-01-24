@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler } from "react"
+import React, { ChangeEventHandler, useState } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
@@ -28,12 +28,16 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
 }: SwitchableDropdownInputProps) => {
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
+    const [localValue, setLocalValue] = useState(value)
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!caseId || !projectId) { return }
 
+        const newValue = e.currentTarget.value
+        setLocalValue(Number(newValue))
+
         const newResourceObject: any = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey] = Number(e.currentTarget.value)
+        newResourceObject[resourcePropertyKey] = Number(newValue)
 
         addEdit({
             newResourceObject,
@@ -44,7 +48,7 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId,
-            newDisplayValue: options[e.currentTarget.value],
+            newDisplayValue: options[newValue],
             previousDisplayValue: options[value],
             tabName: tab,
             inputFieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
@@ -53,13 +57,13 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
 
     return (
         <InputSwitcher
-            value={options[value]}
+            value={options[localValue]}
             label={label}
         >
             <NativeSelect
                 id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
                 label=""
-                value={value}
+                value={localValue}
                 onChange={addToEditsAndSubmit}
             >
                 {Object.entries(options).map(([key, val]) => (

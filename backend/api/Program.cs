@@ -1,9 +1,11 @@
 using System.Globalization;
 
 using api.AppInfrastructure;
-using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
+using api.Features.BackgroundServices.DisableConcurrentJobExecution;
+using api.Features.BackgroundServices.LogCleanup;
 using api.Features.BackgroundServices.ProjectMaster;
+using api.Features.BackgroundServices.ProjectRecalculation;
 using api.ModelMapping.AutoMapperProfiles;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -44,7 +46,10 @@ builder.AddDcdAuthentication();
 builder.Services.AddAutoMapper(typeof(CaseProfile));
 builder.Services.AddDcdIocConfiguration();
 
+builder.Services.AddHostedService<DisableConcurrentJobExecutionService>();
 builder.Services.AddHostedService<ProjectMasterBackgroundService>();
+builder.Services.AddHostedService<ProjectRecalculationBackgroundService>();
+builder.Services.AddHostedService<JobCleanupBackgroundService>();
 
 var app = builder.Build();
 

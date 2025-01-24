@@ -16,7 +16,8 @@ import { useProjectContext } from "@/Context/ProjectContext"
 import { useCaseContext } from "@/Context/CaseContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
+import { getYearFromDateString } from "@/Utils/DateUtils"
+import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
@@ -57,7 +58,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             const wellProjectDrillingSchedule = apiData.wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(apiData.case.dG4Date).getFullYear(),
+                getYearFromDateString(apiData.case.dG4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -218,10 +219,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 handleTableYearsClick={handleTableYearsClick}
             />
             <Grid item xs={12}>
-                <CaseDrillingScheduleTabTable
+                <CaseDrillingScheduleTable
                     addEdit={addEdit}
                     assetWells={explorationWellsData}
-                    dg4Year={caseData.dG4Date !== undefined ? new Date(caseData.dG4Date).getFullYear() : 2030}
+                    dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Exploration wells"
                     tableYears={tableYears}
                     resourceId={explorationData.id}
@@ -232,10 +233,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <CaseDrillingScheduleTabTable
+                <CaseDrillingScheduleTable
                     addEdit={addEdit}
                     assetWells={wellProjectWellsData}
-                    dg4Year={caseData.dG4Date !== undefined ? new Date(caseData.dG4Date).getFullYear() : 2030}
+                    dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"
                     tableYears={tableYears}
                     resourceId={wellProjectData.id}

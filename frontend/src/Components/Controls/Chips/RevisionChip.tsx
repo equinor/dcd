@@ -33,6 +33,7 @@ const StyledTypography = styled(Typography)`
     cursor: pointer;
     white-space: nowrap;
     font-weight: 500;
+    margin-right: 5px;
 `
 
 const RevisionChip = () => {
@@ -50,7 +51,7 @@ const RevisionChip = () => {
     const revisionName = revisionApiData?.revisionDetails.revisionName
 
     const revisionNameDisplay = () => (
-        <Tooltip title={`View details for ${revisionName}`}>
+        <Tooltip title={`View properties for ${revisionName}`}>
             <StyledTypography onClick={() => setIsMenuOpen(true)} color="primary">
                 {truncateText(revisionName ?? "", 25)}
             </StyledTypography>

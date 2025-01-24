@@ -7,7 +7,7 @@ class SubstructureService extends __BaseService {
         projectId: string,
         caseId: string,
         substructureId: string,
-        dto: Components.Schemas.APIUpdateSubstructureDto,
+        dto: Components.Schemas.UpdateSubstructureDto,
     ): Promise<Components.Schemas.SubstructureDto> {
         const res: Components.Schemas.SubstructureDto = await this.put(
             `projects/${projectId}/cases/${caseId}/substructures/${substructureId}`,
@@ -20,9 +20,9 @@ class SubstructureService extends __BaseService {
         projectId: string,
         caseId: string,
         substructureId: string,
-        dto: Components.Schemas.CreateSubstructureCostProfileOverrideDto,
-    ): Promise<Components.Schemas.SubstructureCostProfileOverrideDto> {
-        const res: Components.Schemas.SubstructureCostProfileOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/substructures/${substructureId}/cost-profile-override/`,
             { body: dto },
         )
@@ -34,9 +34,9 @@ class SubstructureService extends __BaseService {
         caseId: string,
         substructureId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateSubstructureCostProfileOverrideDto,
-    ): Promise<Components.Schemas.SubstructureCostProfileOverrideDto> {
-        const res: Components.Schemas.SubstructureCostProfileOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/substructures/${substructureId}/cost-profile-override/${costProfileId}`,
             { body: dto },
         )

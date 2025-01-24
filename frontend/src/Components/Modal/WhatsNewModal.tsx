@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
 import Modal from "./Modal"
 import { useModalContext } from "../../Context/ModalContext"
+import { useLocalStorage } from "../../Hooks/useLocalStorage"
 
 const Header = styled(Typography)`
     margin: 20px 0 10px 0;
@@ -101,7 +102,7 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Fix updating case from the cases table in project view" },
             { description: "Fix so the user can manually type dates in schedule tab" },
             { description: "Fix issue with case comparison graph showing wrong data for the cases" },
-            { description: "fix so that undo/redo on pasted range should update all values" },
+            { description: "Fix so that undo/redo on pasted range should update all values" },
         ],
     },
     "2.2.1": {
@@ -112,6 +113,23 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Minor UI Improvements" },
         ],
         Bugfixes: [
+            { description: "Minor bugfixes and performance improvements" },
+        ],
+    },
+    "2.3.0": {
+        "New Functionalities": [
+            { description: "Create project revisions - Snapshots of projects and cases that preserve the state at time of creation" },
+            { description: "Access control enforcement based on project classification (Internal/Restricted/Confidential)" },
+            { description: "Add caption to images" },
+            { description: "Add selected project tab to the URL" },
+
+        ],
+        "UI Improvements": [
+            { description: "Minor UI Improvements" },
+        ],
+        Bugfixes: [
+            { description: "Fix navigation between case and project with the browser's back button" },
+            { description: "Fix issue where the CO2 tab on project was reset when entering edit mode" },
             { description: "Minor bugfixes and performance improvements" },
         ],
     },
@@ -129,9 +147,9 @@ const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
 const WhatsNewModal: React.FC = () => {
     const { featuresModalIsOpen, setFeaturesModalIsOpen } = useModalContext()
     const [unseenVersions, setUnseenVersions] = useState<Version[]>([])
+    const [lastSeenVersion, setLastSeenVersion] = useLocalStorage<Version | null>("lastSeenWhatsNewVersion", null)
 
     useEffect(() => {
-        const lastSeenVersion = localStorage.getItem("lastSeenWhatsNewVersion") as Version | null
         const unseen = lastSeenVersion
             ? versions.filter((version) => {
                 const [lastMajor, lastMinor, lastPatch] = lastSeenVersion.split(".").map(Number)
@@ -149,10 +167,10 @@ const WhatsNewModal: React.FC = () => {
             setUnseenVersions(unseen)
             setFeaturesModalIsOpen(true)
         }
-    }, [])
+    }, [lastSeenVersion])
 
     const onClose = () => {
-        localStorage.setItem("lastSeenWhatsNewVersion", versions[0])
+        setLastSeenVersion(versions[0])
         setFeaturesModalIsOpen(false)
     }
 

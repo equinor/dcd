@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DrainageStrategy : IHasProjectId, IChangeTrackable
+public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -20,6 +20,11 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable
     public ArtificialLift ArtificialLift { get; set; }
     public GasSolution GasSolution { get; set; }
 
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
+
     public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
     public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
     public virtual ProductionProfileGas? ProductionProfileGas { get; set; }
@@ -32,6 +37,7 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable
     public virtual NetSalesGasOverride? NetSalesGasOverride { get; set; }
     public virtual Co2Emissions? Co2Emissions { get; set; }
     public virtual Co2EmissionsOverride? Co2EmissionsOverride { get; set; }
+    public virtual Co2Intensity? Co2Intensity { get; set; }
     public virtual ProductionProfileNgl? ProductionProfileNgl { get; set; }
     public virtual ImportedElectricity? ImportedElectricity { get; set; }
     public virtual ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
@@ -120,6 +126,12 @@ public class Co2EmissionsOverride : TimeSeriesMass, ITimeSeriesOverride, IDraina
     public bool Override { get; set; }
 }
 
+public class Co2Intensity : TimeSeriesMass, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
 public class ProductionProfileNgl : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
@@ -139,14 +151,6 @@ public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride
     public bool Override { get; set; }
 }
 
-public class Co2Intensity : TimeSeriesMass;
-
-public interface IDrainageStrategyTimeSeries
-{
-    DrainageStrategy DrainageStrategy { get; set; }
-    Guid Id { get; set; }
-}
-
 public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
@@ -157,4 +161,10 @@ public class DeferredGasProduction : TimeSeriesVolume, IDrainageStrategyTimeSeri
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public interface IDrainageStrategyTimeSeries
+{
+    DrainageStrategy DrainageStrategy { get; set; }
+    Guid Id { get; set; }
 }

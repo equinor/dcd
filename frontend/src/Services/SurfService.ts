@@ -7,7 +7,7 @@ class SurfService extends __BaseService {
         projectId: string,
         caseId: string,
         surfId: string,
-        dto: Components.Schemas.APIUpdateSurfDto,
+        dto: Components.Schemas.UpdateSurfDto,
     ): Promise<Components.Schemas.SurfDto> {
         const res: Components.Schemas.SurfDto = await this.put(
             `projects/${projectId}/cases/${caseId}/surfs/${surfId}`,
@@ -20,9 +20,9 @@ class SurfService extends __BaseService {
         projectId: string,
         caseId: string,
         surfId: string,
-        dto: Components.Schemas.CreateSurfCostProfileOverrideDto,
-    ): Promise<Components.Schemas.SurfCostProfileOverrideDto> {
-        const res: Components.Schemas.SurfCostProfileOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/surfs/${surfId}/cost-profile-override/`,
             { body: dto },
         )
@@ -34,9 +34,9 @@ class SurfService extends __BaseService {
         caseId: string,
         surfId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateSurfCostProfileOverrideDto,
-    ): Promise<Components.Schemas.SurfCostProfileOverrideDto> {
-        const res: Components.Schemas.SurfCostProfileOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/surfs/${surfId}/cost-profile-override/${costProfileId}`,
             { body: dto },
         )

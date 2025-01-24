@@ -7,10 +7,10 @@ class OnshorePowerSupplyService extends __BaseService {
         projectId: string,
         caseId: string,
         onshorePowerSupplyId: string,
-        dto: Components.Schemas.APIUpdateOnshorePowerSupplyDto,
+        dto: Components.Schemas.UpdateOnshorePowerSupplyDto,
     ): Promise<Components.Schemas.OnshorePowerSupplyDto> {
         const res: Components.Schemas.OnshorePowerSupplyDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}`,
+            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}`,
             { body: dto },
         )
         return res
@@ -20,10 +20,10 @@ class OnshorePowerSupplyService extends __BaseService {
         projectId: string,
         caseId: string,
         onshorePowerSupplyId: string,
-        dto: Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto,
-    ): Promise<Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto> {
-        const res: Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}/cost-profile-override/`,
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}/cost-profile-override/`,
             { body: dto },
         )
         return res
@@ -34,10 +34,10 @@ class OnshorePowerSupplyService extends __BaseService {
         caseId: string,
         onshorePowerSupplyId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto,
-    ): Promise<Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto> {
-        const res: Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/onshorePowerSupplys/${onshorePowerSupplyId}/cost-profile-override/${costProfileId}`,
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}/cost-profile-override/${costProfileId}`,
             { body: dto },
         )
         return res

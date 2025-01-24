@@ -1,6 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
+using api.Features.ProjectData.Dtos.AssetDtos;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 
 public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
 {
-    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(
+    public async Task<DevelopmentOperationalWellCostsOverviewDto> UpdateDevelopmentOperationalWellCosts(
         Guid projectId,
         Guid developmentOperationalWellCostsId,
         UpdateDevelopmentOperationalWellCostsDto dto)
@@ -23,14 +24,14 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
         existingDevelopmentOperationalWellCosts.PluggingAndAbandonment = dto.PluggingAndAbandonment;
 
         var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
-        project.ModifyTime = DateTime.UtcNow;
+        project.UpdatedUtc = DateTime.UtcNow;
 
         await context.SaveChangesAsync();
 
-        return new DevelopmentOperationalWellCostsDto
+        return new DevelopmentOperationalWellCostsOverviewDto
         {
-            Id = existingDevelopmentOperationalWellCosts.Id,
             ProjectId = existingDevelopmentOperationalWellCosts.ProjectId,
+            DevelopmentOperationalWellCostsId = existingDevelopmentOperationalWellCosts.Id,
             RigUpgrading = existingDevelopmentOperationalWellCosts.RigUpgrading,
             RigMobDemob = existingDevelopmentOperationalWellCosts.RigMobDemob,
             AnnualWellInterventionCostPerWell = existingDevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell,

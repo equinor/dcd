@@ -2,10 +2,12 @@ import React, { ChangeEventHandler, useState } from "react"
 import { Input, InputWrapper } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import {
-    formatDate,
-    dateFromString,
     isDefaultDate,
     toMonthDate,
+    formatDate,
+    dateStringToDateUtc,
+} from "@/Utils/DateUtils"
+import {
     isWithinRange,
 } from "../../Utils/common"
 import { ResourcePropertyKey } from "../../Models/Interfaces"
@@ -19,6 +21,15 @@ interface SwitchableDateInputProps {
     min?: string
     max?: string
 }
+
+const toScheduleValue = (date: string) => {
+    const dateString = dateStringToDateUtc(date)
+    if (isDefaultDate(dateString)) {
+        return undefined
+    }
+    return toMonthDate(dateString)
+}
+
 const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     value,
     label,
@@ -29,6 +40,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
 }) => {
     const [hasError, setHasError] = useState(false)
     const [helperText, setHelperText] = useState("\u200B")
+    const [localValue, setLocalValue] = useState(toScheduleValue(value || ""))
     const { setSnackBarMessage } = useAppContext()
 
     const validateInput = (newValue: number) => {
@@ -51,18 +63,12 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         }
     }
 
-    const toScheduleValue = (date: string) => {
-        const dateString = dateFromString(date)
-        if (isDefaultDate(dateString)) {
-            return undefined
-        }
-        return toMonthDate(dateString)
-    }
-
     const handleDateChange = (e: React.FocusEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
         if ((Number(dateValueYear) <= 2010 && Number(dateValueYear) >= 2110) || dateValueYear(e) !== "") {
             validateInput(Number(dateValueYear))
         }
+        setLocalValue(newValue)
         onChange(e)
     }
 
@@ -74,7 +80,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
             }}
         >
             <InputSwitcher
-                value={value ? formatDate(value) : ""}
+                value={localValue ? formatDate(localValue) : ""}
                 label={label}
             >
                 <Input
@@ -83,7 +89,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
                     id={resourcePropertyKey}
                     name={resourcePropertyKey}
                     onChange={(e: any) => handleDateChange(e)}
-                    defaultValue={toScheduleValue(value || "")}
+                    value={localValue || ""}
                     min={min}
                     max={max}
                 />

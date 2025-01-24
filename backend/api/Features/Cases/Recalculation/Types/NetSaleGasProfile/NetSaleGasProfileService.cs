@@ -1,38 +1,36 @@
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.CaseProfiles.Services;
+using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 
-public class NetSaleGasProfileService(
-    ICaseService caseService,
-    ITopsideService topsideService,
-    IDrainageStrategyService drainageStrategyService)
-    : INetSaleGasProfileService
+public class NetSaleGasProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCaseWithIncludes(caseId);
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.NetSalesGas!,
-            d => d.NetSalesGasOverride!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileWaterInjection!
-        );
+        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.NetSalesGas)
+            .Include(d => d.NetSalesGasOverride)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileWaterInjection)
+            .Include(x => x.FuelFlaringAndLossesOverride)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         if (drainageStrategy.NetSalesGasOverride?.Override == true)
         {
             return;
         }
 
-        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await caseService.GetProject(caseItem.ProjectId);
+        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
+        var project = await context.Projects.SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
@@ -59,11 +57,12 @@ public class NetSaleGasProfileService(
                 Values = netSaleGas.Values
             };
         }
-
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
-        TimeSeries<double> fuelConsumption, TimeSeries<double> flarings, TimeSeries<double> losses)
+        TimeSeries<double> fuelConsumption,
+        TimeSeries<double> flarings,
+        TimeSeries<double> losses)
     {
         if (drainageStrategy.ProductionProfileGas == null)
         {
@@ -75,8 +74,7 @@ public class NetSaleGasProfileService(
             return new TimeSeries<double>();
         }
 
-        var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfilesList([fuelConsumption, flarings, losses]);
+        var fuelFlaringLosses = CostProfileMerger.MergeCostProfiles(fuelConsumption, flarings, losses);
 
         if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
         {
@@ -87,13 +85,12 @@ public class NetSaleGasProfileService(
         var negativeFuelFlaringLosses = new TimeSeriesVolume
         {
             StartYear = fuelFlaringLosses.StartYear,
-            Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray(),
+            Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()
         };
 
         var additionalProductionProfileGas = drainageStrategy.AdditionalProductionProfileGas ?? new TimeSeries<double>();
 
-        var gasProduction = TimeSeriesCost.MergeCostProfiles(drainageStrategy.ProductionProfileGas, additionalProductionProfileGas);
-        return TimeSeriesCost.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
+        var gasProduction = CostProfileMerger.MergeCostProfiles(drainageStrategy.ProductionProfileGas, additionalProductionProfileGas);
+        return CostProfileMerger.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
     }
-
 }

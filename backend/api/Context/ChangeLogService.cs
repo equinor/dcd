@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 
 using api.AppInfrastructure.Authorization;
-using api.Models;
+using api.Models.Infrastructure;
 using api.Models.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,7 @@ namespace api.Context;
 
 public static class ChangeLogService
 {
-    private static readonly IReadOnlyList<string> PropertyNamesToIgnore = new List<string> { "ModifyTime" };
+    private static readonly IReadOnlyList<string> PropertyNamesToIgnore = new List<string> { "ModifyTime", "CreatedUtc", "UpdatedUtc" };
 
     public static List<ChangeLog> GenerateChangeLogs(DcdDbContext dbContext, CurrentUser? currentUser, DateTime utcNow)
     {
@@ -32,7 +32,10 @@ public static class ChangeLogService
                 EntityId = ((IChangeTrackable)x.Entity).Id,
                 EntityName = x.Entity.GetType().Name,
                 EntityState = x.State.ToString(),
-                Payload = GenerateInitialState(x.Properties)
+                Payload = GenerateInitialState(x.Properties),
+                NewValue = null,
+                OldValue = null,
+                PropertyName = null
             }));
 
         return changes;
@@ -95,7 +98,8 @@ public static class ChangeLogService
                     NewValue = currentValue?.ToString(),
                     Username = username,
                     TimestampUtc = utcNow,
-                    EntityState = EntityState.Modified.ToString()
+                    EntityState = EntityState.Modified.ToString(),
+                    Payload = null
                 });
             }
         }

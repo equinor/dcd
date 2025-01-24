@@ -3,7 +3,7 @@ import Grid2 from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
-import TechnicalInput from "@/Components/Project/CompareCasesTab/Tabs/TechnicalInput"
+import TechnicalInputTab from "@/Components/Project/TechnicalInputTab/TechnicalInputTab"
 import ProjectOverviewTab from "@/Components/Project/ProjectOverviewTab"
 import ProjectSettingsTab from "@/Components/Project/ProjectSettingsTab"
 import AccessManagementTab from "@/Components/Project/AccessManagementTab"
@@ -14,7 +14,7 @@ import { projectTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
 const Wrapper = styled(Grid2)`
-    padding: 0 16px;
+    padding: 0 16px 16px;
 `
 
 const ProjectView = () => {
@@ -44,7 +44,7 @@ const ProjectView = () => {
                 <ProjectCompareCasesTab />
             </div>
             <div role="tabpanel" hidden={activeTabProject !== 2}>
-                <TechnicalInput />
+                <TechnicalInputTab />
             </div>
             {/* <div role="tabpanel" hidden={activeTabProject !== 3}>
                 <EditHistoryOverviewTab />

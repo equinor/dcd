@@ -1,4 +1,6 @@
 using api.Models;
+using api.Models.Infrastructure;
+using api.Models.Infrastructure.BackgroundJobs;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -104,6 +106,38 @@ public class ChangeLogConfiguration : IEntityTypeConfiguration<ChangeLog>
         builder.HasIndex(x => x.EntityId);
         builder.HasIndex(x => x.EntityName);
         builder.HasIndex(x => x.PropertyName);
+        builder.HasIndex(x => x.TimestampUtc);
+    }
+}
+
+public class RequestLogConfiguration : IEntityTypeConfiguration<RequestLog>
+{
+    public void Configure(EntityTypeBuilder<RequestLog> builder)
+    {
+        builder.HasIndex(x => x.RequestStartUtc);
+    }
+}
+
+public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
+{
+    public void Configure(EntityTypeBuilder<ExceptionLog> builder)
+    {
+        builder.HasIndex(x => x.UtcTimestamp);
+    }
+}
+
+public class FrontendExceptionConfiguration : IEntityTypeConfiguration<FrontendException>
+{
+    public void Configure(EntityTypeBuilder<FrontendException> builder)
+    {
+        builder.HasIndex(x => x.CreatedUtc);
+    }
+}
+
+public class BackgroundJobLogConfiguration : IEntityTypeConfiguration<BackgroundJobLog>
+{
+    public void Configure(EntityTypeBuilder<BackgroundJobLog> builder)
+    {
         builder.HasIndex(x => x.TimestampUtc);
     }
 }

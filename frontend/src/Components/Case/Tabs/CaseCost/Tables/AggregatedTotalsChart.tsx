@@ -5,6 +5,7 @@ import { Grid } from "@mui/material"
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileNames } from "@/Models/Interfaces"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -58,7 +59,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     useEffect(() => {
         if (apiData) {
-            const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
+            const dg4Year = getYearFromDateString(apiData.case.dG4Date)
 
             const profiles = {
                 studyProfiles: [
@@ -127,14 +128,14 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     const chartData = useMemo(() => {
         const data: number[] = []
-        const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
+        const dg4Year = getYearFromDateString(apiData.case.dG4Date)
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
 
         const totalIncomeData = apiData.calculatedTotalIncomeCostProfile
 
         const income = {
             startYear: totalIncomeData?.startYear !== undefined
-                ? totalIncomeData.startYear + new Date(apiData.case.dG4Date).getFullYear()
+                ? totalIncomeData.startYear + dg4Year
                 : 0,
             values: (totalIncomeData?.values || []).map((v) => v) ?? [],
         }
@@ -171,6 +172,27 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 },
             },
             bar: { axes: { category: { label: { rotation: -20 } } } },
+        },
+    }
+
+    const axesConfig = {
+        type: "category",
+        position: "bottom",
+        title: { text: "Year" },
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
+        label: {
+            formatter: (label: any) => Math.floor(Number(label.value)),
         },
     }
 
@@ -214,23 +236,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         axes: [
-            {
-                type: "category",
-                position: "bottom",
-                title: { text: "Year" },
-                gridLine: {
-                    style: [
-                        {
-                            stroke: "rgba(0, 0, 0, 0.2)",
-                            lineDash: [3, 2],
-                        },
-                        {
-                            stroke: "rgba(0, 0, 0, 0.2)",
-                            lineDash: [3, 2],
-                        },
-                    ],
-                },
-            },
+            axesConfig,
             {
                 type: "number",
                 position: "left",

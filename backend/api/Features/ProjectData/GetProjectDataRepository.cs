@@ -15,6 +15,14 @@ public class GetProjectDataRepository(DcdDbContext context)
         return await context.GetPrimaryKeyForProjectId(projectId);
     }
 
+    public async Task<Guid> GetOriginalProjectIdForRevision(Guid revisionId)
+    {
+        return await context.Projects
+            .Where(x => x.Id == revisionId)
+            .Select(x => x.OriginalProjectId!.Value)
+            .SingleAsync();
+    }
+
     public async Task<List<ProjectMemberDto>> GetProjectMembers(Guid projectId)
     {
         return await context.ProjectMembers
@@ -37,10 +45,11 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
-                RevisionDate = x.RevisionDate,
+                RevisionDate = x.CreatedUtc,
                 Arena = x.Arena,
                 Mdqc = x.Mdqc
             })
+            .OrderBy(x => x.RevisionDate)
             .ToListAsync();
     }
 
@@ -52,7 +61,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
-                RevisionDate = x.RevisionDate,
+                RevisionDate = x.CreatedUtc,
                 Arena = x.Arena,
                 Mdqc = x.Mdqc
             })
@@ -65,7 +74,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.Id == projectId)
             .Select(x => new CommonProjectAndRevisionDto
             {
-                ModifyTime = x.ModifyTime,
+                ModifyTime = x.UpdatedUtc,
                 Classification = x.Classification,
                 Name = x.Name,
                 FusionProjectId = x.FusionProjectId,
@@ -91,7 +100,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SharepointSiteUrl = x.SharepointSiteUrl,
                 ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsOverviewDto
                 {
-                    ExplorationRigUpgrading = x.ExplorationOperationalWellCosts!.ExplorationRigUpgrading,
+                    ProjectId = x.ExplorationOperationalWellCosts!.ProjectId,
+                    ExplorationOperationalWellCostsId = x.ExplorationOperationalWellCosts.Id,
+                    ExplorationRigUpgrading = x.ExplorationOperationalWellCosts.ExplorationRigUpgrading,
                     ExplorationRigMobDemob = x.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
                     ExplorationProjectDrillingCosts = x.ExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,
                     AppraisalRigMobDemob = x.ExplorationOperationalWellCosts.AppraisalRigMobDemob,
@@ -99,7 +110,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 },
                 DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCostsOverviewDto
                 {
-                    RigUpgrading = x.DevelopmentOperationalWellCosts!.RigUpgrading,
+                    ProjectId = x.DevelopmentOperationalWellCosts!.ProjectId,
+                    DevelopmentOperationalWellCostsId = x.DevelopmentOperationalWellCosts.Id,
+                    RigUpgrading = x.DevelopmentOperationalWellCosts.RigUpgrading,
                     RigMobDemob = x.DevelopmentOperationalWellCosts.RigMobDemob,
                     AnnualWellInterventionCostPerWell = x.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell,
                     PluggingAndAbandonment = x.DevelopmentOperationalWellCosts.PluggingAndAbandonment
@@ -152,8 +165,8 @@ public class GetProjectDataRepository(DcdDbContext context)
                 DG2Date = x.DG2Date,
                 DG3Date = x.DG3Date,
                 DG4Date = x.DG4Date,
-                CreateTime = x.CreateTime,
-                ModifyTime = x.ModifyTime,
+                CreateTime = x.CreatedUtc,
+                ModifyTime = x.UpdatedUtc,
                 SurfLink = x.SurfLink,
                 SubstructureLink = x.SubstructureLink,
                 TopsideLink = x.TopsideLink,

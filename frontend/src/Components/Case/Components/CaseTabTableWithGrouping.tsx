@@ -17,7 +17,8 @@ import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { useAppContext } from "@/Context/AppContext"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
-import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
+import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
+import { gridRefArrayToAlignedGrid } from "@/Components/AgGrid/AgGridHelperFunctions"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -171,21 +172,6 @@ const CaseTabTableWithGrouping = ({
         enableCellChangeFlash: true,
     }), [])
 
-    const gridRefArrayToAlignedGrid = () => {
-        if (alignedGridsRef && alignedGridsRef.length > 0) {
-            const refArray: any[] = []
-            alignedGridsRef.forEach((agr: any) => {
-                if (agr && agr.current) {
-                    refArray.push(agr.current)
-                }
-            })
-            if (refArray.length > 0) {
-                return refArray
-            }
-        }
-        return undefined
-    }
-
     const getContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
         const defaultItems = params.defaultItems || []
 
@@ -238,7 +224,7 @@ const CaseTabTableWithGrouping = ({
                     suppressMovableColumns
                     suppressAggFuncInHeader
                     enableCharts
-                    alignedGrids={gridRefArrayToAlignedGrid()}
+                    alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
                     grandTotalRow={includeFooter ? "bottom" : undefined}
                     getRowStyle={getRowStyle}
                     suppressLastEmptyLineOnPaste

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Topside : IHasProjectId, IChangeTrackable
+public class Topside : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -39,6 +40,11 @@ public class Topside : IHasProjectId, IChangeTrackable
     public DateTime? DG4Date { get; set; }
     public double FacilityOpex { get; set; }
     public double PeakElectricityImported { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual TopsideCostProfile? CostProfile { get; set; }
     public virtual TopsideCostProfileOverride? CostProfileOverride { get; set; }

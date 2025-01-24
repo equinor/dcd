@@ -14,9 +14,8 @@ export class __ProjectService extends __BaseService {
         return revision
     }
 
-    async getAccess(projectId: string) {
-        const access: Components.Schemas.AccessRightsDto = await this.get<Components.Schemas.AccessRightsDto>(`/${projectId}/access`)
-        return access
+    public async projectExists(projectId: string): Promise<Components.Schemas.ProjectExistsDto> {
+        return this.get(`exists?contextId=${projectId}`)
     }
 
     public async createProject(contextId: string): Promise<Components.Schemas.ProjectDataDto> {

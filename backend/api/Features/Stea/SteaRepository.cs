@@ -34,16 +34,9 @@ public class SteaRepository(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
-        project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+        project.Cases = project.Cases.OrderBy(c => c.CreatedUtc).ToList();
 
         return project;
-    }
-
-    public async Task<List<Well>> GetWells(Guid projectPk)
-    {
-        return await context.Wells
-            .Where(d => d.ProjectId == projectPk)
-            .ToListAsync();
     }
 
     public async Task<List<Exploration>> GetExplorations(Guid projectPk)
@@ -115,6 +108,7 @@ public class SteaRepository(DcdDbContext context)
             .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
+            .Include(c => c.Co2Intensity)
             .Include(c => c.ProductionProfileNgl)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)

@@ -20,9 +20,9 @@ class ExplorationService extends __BaseService {
         projectId: string,
         caseId: string,
         explorationId: string,
-        dto: Components.Schemas.CreateGAndGAdminCostOverrideDto,
-    ): Promise<Components.Schemas.GAndGAdminCostOverrideDto> {
-        const res: Components.Schemas.GAndGAdminCostOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/g-and-g-and-admin-cost-override/`,
             { body: dto },
         )
@@ -34,9 +34,9 @@ class ExplorationService extends __BaseService {
         caseId: string,
         explorationId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateGAndGAdminCostOverrideDto,
-    ): Promise<Components.Schemas.GAndGAdminCostOverrideDto> {
-        const res: Components.Schemas.GAndGAdminCostOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/g-and-g-and-admin-cost-override/${costProfileId}`,
             { body: dto },
         )
@@ -47,9 +47,9 @@ class ExplorationService extends __BaseService {
         projectId: string,
         caseId: string,
         explorationId: string,
-        dto: Components.Schemas.CreateSeismicAcquisitionAndProcessingDto,
-    ): Promise<Components.Schemas.SeismicAcquisitionAndProcessingDto> {
-        const res: Components.Schemas.SeismicAcquisitionAndProcessingDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/seismic-acquisition-and-processing/`,
             { body: dto },
         )
@@ -61,9 +61,9 @@ class ExplorationService extends __BaseService {
         caseId: string,
         explorationId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateSeismicAcquisitionAndProcessingDto,
-    ): Promise<Components.Schemas.SeismicAcquisitionAndProcessingDto> {
-        const res: Components.Schemas.SeismicAcquisitionAndProcessingDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/seismic-acquisition-and-processing/${costProfileId}`,
             { body: dto },
         )
@@ -74,9 +74,9 @@ class ExplorationService extends __BaseService {
         projectId: string,
         caseId: string,
         topsideId: string,
-        dto: Components.Schemas.CreateCountryOfficeCostDto,
-    ): Promise<Components.Schemas.CountryOfficeCostDto> {
-        const res: Components.Schemas.CountryOfficeCostDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${topsideId}/country-office-cost/`,
             { body: dto },
         )
@@ -88,9 +88,9 @@ class ExplorationService extends __BaseService {
         caseId: string,
         topsideId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateCountryOfficeCostDto,
-    ): Promise<Components.Schemas.CountryOfficeCostDto> {
-        const res: Components.Schemas.CountryOfficeCostDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/explorations/${topsideId}/country-office-cost/${costProfileId}`,
             { body: dto },
         )
@@ -102,9 +102,9 @@ class ExplorationService extends __BaseService {
         caseId: string,
         explorationId: string,
         wellId: string,
-        dto: Components.Schemas.CreateDrillingScheduleDto,
-    ): Promise<Components.Schemas.DrillingScheduleDto> {
-        const res: Components.Schemas.ExplorationWellCostProfileDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesScheduleDto,
+    ): Promise<Components.Schemas.TimeSeriesScheduleDto> {
+        const res: Components.Schemas.TimeSeriesScheduleDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/wells/${wellId}/drilling-schedule/`,
             { body: dto },
         )
@@ -117,9 +117,9 @@ class ExplorationService extends __BaseService {
         explorationId: string,
         wellId: string,
         drillingScheuleId: string,
-        dto: Components.Schemas.UpdateDrillingScheduleDto,
-    ): Promise<Components.Schemas.DrillingScheduleDto> {
-        const res: Components.Schemas.ExplorationWellCostProfileDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesScheduleDto,
+    ): Promise<Components.Schemas.TimeSeriesScheduleDto> {
+        const res: Components.Schemas.TimeSeriesScheduleDto = await this.put(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/wells/${wellId}/drilling-schedule/${drillingScheuleId}`,
             { body: dto },
         )

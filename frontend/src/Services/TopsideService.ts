@@ -7,7 +7,7 @@ class TopsideService extends __BaseService {
         projectId: string,
         caseId: string,
         topsideId: string,
-        dto: Components.Schemas.APIUpdateTopsideDto,
+        dto: Components.Schemas.UpdateTopsideDto,
     ): Promise<Components.Schemas.TopsideDto> {
         const res: Components.Schemas.TopsideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/topsides/${topsideId}`,
@@ -20,9 +20,9 @@ class TopsideService extends __BaseService {
         projectId: string,
         caseId: string,
         topsideId: string,
-        dto: Components.Schemas.CreateTopsideCostProfileOverrideDto,
-    ): Promise<Components.Schemas.TopsideCostProfileOverrideDto> {
-        const res: Components.Schemas.TopsideCostProfileOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/topsides/${topsideId}/cost-profile-override/`,
             { body: dto },
         )
@@ -34,9 +34,9 @@ class TopsideService extends __BaseService {
         caseId: string,
         topsideId: string,
         costProfileId: string,
-        dto: Components.Schemas.UpdateTopsideCostProfileOverrideDto,
-    ): Promise<Components.Schemas.TopsideCostProfileOverrideDto> {
-        const res: Components.Schemas.TopsideCostProfileOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/topsides/${topsideId}/cost-profile-override/${costProfileId}`,
             { body: dto },
         )

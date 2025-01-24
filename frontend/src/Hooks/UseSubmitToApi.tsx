@@ -79,9 +79,10 @@ export const useSubmitToApi = () => {
             const payload: any = { projectId, caseId, serviceMethod }
             if (resourceId) { payload.resourceId = resourceId }
 
-            return await mutation.mutateAsync(payload)
+            const result = await mutation.mutateAsync(payload)
+            return { success: true, data: result }
         } catch (error) {
-            return false
+            return { success: false, error }
         }
     }
 
@@ -122,9 +123,9 @@ export const useSubmitToApi = () => {
                 serviceMethod: createOrUpdateFunction,
             })
             const returnValue = { ...result, resourceProfileId: result.id }
-            return returnValue
+            return { success: true, data: returnValue }
         } catch (error) {
-            return error
+            return { success: false, error }
         }
     }
 
@@ -147,9 +148,9 @@ export const useSubmitToApi = () => {
                 serviceMethod: createOrUpdateFunction,
             })
             const returnValue = { ...result, resourceProfileId: result.id }
-            return returnValue
+            return { success: true, data: returnValue }
         } catch (error) {
-            return error
+            return { success: false, error }
         }
     }
 
@@ -173,7 +174,7 @@ export const useSubmitToApi = () => {
         resourceProfileId,
         wellId,
         drillingScheduleId,
-    }: SubmitToApiParams): Promise<any> => {
+    }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
         }
@@ -184,48 +185,48 @@ export const useSubmitToApi = () => {
 
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
-            throw Error()
+            return { success: false, error: new Error("Asset ID is required for this service") }
         }
 
-        let success = {}
+        let result
         switch (resourceName) {
         case "case":
-            success = await updateCase({
+            result = await updateCase({
                 projectId, caseId, resourceObject,
             })
             break
         case "topside":
-            success = await updateTopside({
+            result = await updateTopside({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "surf":
-            success = await updateSurf({
+            result = await updateSurf({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "substructure":
-            success = await updateSubstructure({
+            result = await updateSubstructure({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "transport":
-            success = await updateTransport({
+            result = await updateTransport({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "onshorePowerSupply":
-            success = await updateOnshorePowerSupply({
+            result = await updateOnshorePowerSupply({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "drainageStrategy":
-            success = await updateDrainageStrategy({
+            result = await updateDrainageStrategy({
                 projectId, caseId, resourceId, resourceObject,
             })
             break
         case "productionProfileOil":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -235,19 +236,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateProductionProfileOilDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileOil(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId,
-                            resourceObject as Components.Schemas.UpdateProductionProfileOilDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "additionalProductionProfileOil":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -257,19 +258,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateAdditionalProductionProfileOilDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateAdditionalProductionProfileOil(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateAdditionalProductionProfileOilDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "productionProfileGas":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -279,19 +280,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateProductionProfileGasDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileGas(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateProductionProfileGasDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "additionalProductionProfileGas":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -301,19 +302,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateAdditionalProductionProfileGasDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateAdditionalProductionProfileGas(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateAdditionalProductionProfileGasDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "productionProfileWater":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -323,19 +324,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateProductionProfileWaterDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileWater(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateProductionProfileWaterDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "productionProfileWaterInjection":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -345,19 +346,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateProductionProfileWaterInjectionDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileWaterInjection(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateProductionProfileWaterInjectionDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "productionProfileFuelFlaringAndLossesOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -367,19 +368,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateFuelFlaringAndLossesOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeOverrideDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileFuelFlaringAndLossesOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateFuelFlaringAndLossesOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeOverrideDto,
                     ),
             })
             break
         case "productionProfileNetSalesGasOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -389,19 +390,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateNetSalesGasOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeOverrideDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileNetSalesGasOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateNetSalesGasOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeOverrideDto,
                     ),
             })
             break
         case "productionProfileImportedElectricityOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -411,19 +412,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateImportedElectricityOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesEnergyDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileImportedElectricityOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateImportedElectricityOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesEnergyOverrideDto,
                     ),
             })
             break
         case "deferredOilProduction":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -433,19 +434,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateDeferredOilProductionDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateDeferredOilProduction(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateDeferredOilProductionDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "deferredGasProduction":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -455,19 +456,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateDeferredGasProductionDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
                     )
                     : await (await GetDrainageStrategyService()).updateDeferredGasProduction(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateDeferredGasProductionDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
                     ),
             })
             break
         case "totalFeasibilityAndConceptStudiesOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -476,18 +477,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createTotalFeasibilityAndConceptStudiesOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateTotalFeasibilityAndConceptStudiesOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetCaseService()).updateTotalFeasibilityAndConceptStudiesOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTotalFeasibilityAndConceptStudiesOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "totalFEEDStudiesOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -496,18 +497,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createTotalFEEDStudiesOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateTotalFEEDStudiesOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetCaseService()).updateTotalFEEDStudiesOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTotalFEEDStudiesOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "totalOtherStudiesCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -516,18 +517,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createTotalOtherStudiesCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateTotalOtherStudiesCostProfileDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetCaseService()).updateTotalOtherStudiesCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTotalOtherStudiesCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "historicCostCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -536,18 +537,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createHistoricCostCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateHistoricCostCostProfileDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetCaseService()).updateHistoricCostCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateHistoricCostCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
         case "wellInterventionCostProfileOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -556,18 +557,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createWellInterventionCostProfileOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateWellInterventionCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetCaseService()).updateWellInterventionCostProfileOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateWellInterventionCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "offshoreFacilitiesOperationsCostProfileOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -576,18 +577,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createOffshoreFacilitiesOperationsCostProfileOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateOffshoreFacilitiesOperationsCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetCaseService()).updateOffshoreFacilitiesOperationsCostProfileOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "onshoreRelatedOPEXCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -596,18 +597,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createOnshoreRelatedOPEXCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateOnshoreRelatedOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetCaseService()).updateOnshoreRelatedOPEXCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateOnshoreRelatedOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
         case "additionalOPEXCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -616,18 +617,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createAdditionalOPEXCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateAdditionalOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetCaseService()).updateAdditionalOPEXCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateAdditionalOPEXCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
         case "cessationWellsCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -636,18 +637,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createCessationWellsCostOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateCessationWellsCostOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetCaseService()).updateCessationWellsCostOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateCessationWellsCostOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "cessationOffshoreFacilitiesCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -656,18 +657,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createCessationOffshoreFacilitiesCostOverride(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateCessationOffshoreFacilitiesCostOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetCaseService()).updateCessationOffshoreFacilitiesCostOverride(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateCessationOffshoreFacilitiesCostOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "cessationOnshoreFacilitiesCostProfile":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -676,18 +677,18 @@ export const useSubmitToApi = () => {
                     ? await (await GetCaseService()).createCessationOnshoreFacilitiesCostProfile(
                         projectId,
                         caseId,
-                            resourceObject as Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetCaseService()).updateCessationOnshoreFacilitiesCostProfile(
                         projectId,
                         caseId,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateCessationOnshoreFacilitiesCostProfileDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
         case "surfCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -697,19 +698,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateSurfCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetSurfService()).updateSurfCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateSurfCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "topsideCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -719,19 +720,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTopsideCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetTopsideService()).updateTopsideCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTopsideCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "substructureCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -741,19 +742,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateSubstructureCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetSubstructureService()).updateSubstructureCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateSubstructureCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "transportCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -763,19 +764,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTransportCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetTransportService()).updateTransportCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTransportCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "onshorePowerSupplyCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -785,19 +786,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetOnshorePowerSupplyService()).updateOnshorePowerSupplyCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "wellProjectOilProducerCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -807,19 +808,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateOilProducerCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetWellProjectService()).updateOilProducerCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateOilProducerCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "wellProjectGasProducerCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -829,19 +830,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateGasProducerCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetWellProjectService()).updateGasProducerCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateGasProducerCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "wellProjectWaterInjectorCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -851,19 +852,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateWaterInjectorCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetWellProjectService()).updateWaterInjectorCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateWaterInjectorCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "wellProjectGasInjectorCostOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -873,19 +874,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateGasInjectorCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetWellProjectService()).updateGasInjectorCostProfileOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateGasInjectorCostProfileOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "gAndGAdminCost":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -895,19 +896,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateGAndGAdminCostOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetExplorationService()).updateGAndGAdminCostOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateGAndGAdminCostOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
         case "seismicAcquisitionAndProcessing":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -917,19 +918,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateSeismicAcquisitionAndProcessingDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetExplorationService()).updateSeismicAcquisitionAndProcessing(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateSeismicAcquisitionAndProcessingDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
         case "countryOfficeCost":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -939,19 +940,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateCountryOfficeCostDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetExplorationService()).updateCountryOfficeCost(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateCountryOfficeCostDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
         case "co2EmissionsOverride":
-            success = await createOrUpdateTimeSeriesProfile({
+            result = await createOrUpdateTimeSeriesProfile({
                 projectId,
                 caseId,
                 resourceId,
@@ -961,19 +962,19 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateCo2EmissionsOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesMassOverrideDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileCo2EmissionsOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateCo2EmissionsOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesMassOverrideDto,
                     ),
             })
             break
         case "explorationWellDrillingSchedule":
-            success = await createOrUpdateDrillingSchedule(
+            result = await createOrUpdateDrillingSchedule(
                 projectId,
                 caseId,
                     resourceId!,
@@ -985,7 +986,7 @@ export const useSubmitToApi = () => {
                             caseId,
                             resourceId!,
                             wellId!,
-                            resourceObject as Components.Schemas.CreateDrillingScheduleDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
                         )
                         : await (await GetExplorationService()).updateExplorationWellDrillingSchedule(
                             projectId,
@@ -993,12 +994,12 @@ export const useSubmitToApi = () => {
                             resourceId!,
                             wellId!,
                             drillingScheduleId!,
-                            resourceObject as Components.Schemas.UpdateDrillingScheduleDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                         ),
             )
             break
         case "wellProjectWellDrillingSchedule":
-            success = await createOrUpdateDrillingSchedule(
+            result = await createOrUpdateDrillingSchedule(
                 projectId,
                 caseId,
                     resourceId!,
@@ -1010,7 +1011,7 @@ export const useSubmitToApi = () => {
                             caseId,
                             resourceId!,
                             wellId!,
-                            resourceObject as Components.Schemas.CreateDrillingScheduleDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
                         )
                         : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
                             projectId,
@@ -1018,15 +1019,16 @@ export const useSubmitToApi = () => {
                             resourceId!,
                             wellId!,
                             drillingScheduleId!,
-                            resourceObject as Components.Schemas.UpdateDrillingScheduleDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                         ),
             )
 
             break
         default:
             console.log("Service not found")
+            return { success: false, error: new Error("Service not found") }
         }
-        return success
+        return result
     }
 
     return { submitToApi, updateCase, mutation }

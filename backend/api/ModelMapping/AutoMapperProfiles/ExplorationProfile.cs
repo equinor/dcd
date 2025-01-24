@@ -1,7 +1,5 @@
-using api.Features.Assets.CaseAssets.Explorations.Dtos;
-using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
-using api.Features.CaseProfiles.Dtos;
-using api.Features.TechnicalInput.Dtos;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -13,28 +11,21 @@ public class ExplorationProfile : Profile
     public ExplorationProfile()
     {
         CreateMap<Exploration, ExplorationDto>();
-        CreateMap<Exploration, ExplorationWithProfilesDto>();
-        CreateMap<ExplorationWellCostProfile, ExplorationWellCostProfileDto>();
-        CreateMap<AppraisalWellCostProfile, AppraisalWellCostProfileDto>();
-        CreateMap<SidetrackCostProfile, SidetrackCostProfileDto>();
-        CreateMap<GAndGAdminCost, GAndGAdminCostDto>();
-        CreateMap<GAndGAdminCostOverride, GAndGAdminCostOverrideDto>();
-        CreateMap<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>();
-        CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
+        CreateMap<ExplorationWellCostProfile, TimeSeriesCostDto>();
+        CreateMap<AppraisalWellCostProfile, TimeSeriesCostDto>();
+        CreateMap<SidetrackCostProfile, TimeSeriesCostDto>();
+        CreateMap<GAndGAdminCost, TimeSeriesCostDto>();
+        CreateMap<GAndGAdminCostOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<SeismicAcquisitionAndProcessing, TimeSeriesCostDto>();
+        CreateMap<CountryOfficeCost, TimeSeriesCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
-        CreateMap<UpdateExplorationDto, Exploration>();
-        CreateMap<UpdateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
-        CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
-        CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
-        CreateMap<UpdateExplorationWellCostProfileDto, ExplorationWellCostProfile>();
-        CreateMap<UpdateAppraisalWellCostProfileDto, AppraisalWellCostProfile>();
-        CreateMap<UpdateSidetrackCostProfileDto, SidetrackCostProfile>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, GAndGAdminCostOverride>();
+        CreateMap<UpdateTimeSeriesCostDto, SeismicAcquisitionAndProcessing>();
+        CreateMap<UpdateTimeSeriesCostDto, CountryOfficeCost>();
 
-        CreateMap<CreateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
-        CreateMap<CreateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
-        CreateMap<CreateCountryOfficeCostDto, CountryOfficeCost>();
-
-        CreateMap<CreateExplorationDto, Exploration>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, GAndGAdminCostOverride>();
+        CreateMap<CreateTimeSeriesCostDto, SeismicAcquisitionAndProcessing>();
+        CreateMap<CreateTimeSeriesCostDto, CountryOfficeCost>();
     }
 }

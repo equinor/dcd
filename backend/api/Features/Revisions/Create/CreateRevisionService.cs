@@ -32,7 +32,6 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
             RevisionName = createRevisionDto.Name,
             Mdqc = createRevisionDto.Mdqc,
             Arena = createRevisionDto.Arena,
-            RevisionDate = DateTime.UtcNow,
             Classification = createRevisionDto.Classification
         };
 
@@ -68,7 +67,6 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
                 Id = newImageId,
                 ProjectId = revisionId,
                 CaseId = null,
-                CreateTime = DateTime.UtcNow,
                 Description = image.Description,
                 Url = destinationUrl
             });
@@ -95,7 +93,6 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
                 Id = newImageId,
                 ProjectId = revisionId,
                 CaseId = caseIdMapping[image.CaseId!.Value],
-                CreateTime = DateTime.UtcNow,
                 Description = image.Description,
                 Url = destinationUrl
             });

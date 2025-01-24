@@ -1,142 +1,6 @@
 declare namespace Components {
     namespace Schemas {
-        export interface APIUpdateOnshorePowerSupplyDto {
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-        }
-        export interface APIUpdateSubstructureDto {
-            dryWeight?: number; // double
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            concept?: Concept /* int32 */;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
-        }
-        export interface APIUpdateSurfDto {
-            cessationCost?: number; // double
-            infieldPipelineSystemLength?: number; // double
-            umbilicalSystemLength?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            riserCount?: number; // int32
-            templateCount?: number; // int32
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            productionFlowline?: ProductionFlowline /* int32 */;
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            approvedBy?: string | null;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-        }
-        export interface APIUpdateTopsideDto {
-            dryWeight?: number; // double
-            oilCapacity?: number; // double
-            gasCapacity?: number; // double
-            waterInjectionCapacity?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            currency?: Currency /* int32 */;
-            fuelConsumption?: number; // double
-            flaredGas?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            cO2ShareOilProfile?: number; // double
-            cO2ShareGasProfile?: number; // double
-            cO2ShareWaterInjectionProfile?: number; // double
-            cO2OnMaxOilProfile?: number; // double
-            cO2OnMaxGasProfile?: number; // double
-            cO2OnMaxWaterInjectionProfile?: number; // double
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            facilityOpex?: number; // double
-            peakElectricityImported?: number; // double
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
-        }
-        export interface APIUpdateTransportDto {
-            gasExportPipelineLength?: number; // double
-            oilExportPipelineLength?: number; // double
-            currency?: Currency /* int32 */;
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-        }
-        export interface AccessRightsDto {
-            canEdit: boolean;
-            canView: boolean;
-            isAdmin: boolean;
-        }
-        export interface AdditionalOPEXCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface AdditionalProductionProfileGasDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface AdditionalProductionProfileOilDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface AppraisalWellCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
-        export interface CalculatedTotalCostCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CalculatedTotalIncomeCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CapexDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            drilling?: TimeSeriesCostDto;
-            offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
-            cessationCost?: CessationCostDto;
-            onshorePowerSupplyCost?: OnshorePowerSupplyCostProfileDto;
-        }
         export interface CaseOverviewDto {
             caseId: string; // uuid
             projectId: string; // uuid
@@ -181,156 +45,87 @@ declare namespace Components {
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
-            cessationWellsCost?: CessationWellsCostDto;
-            cessationWellsCostOverride?: CessationWellsCostOverrideDto;
-            cessationOffshoreFacilitiesCost?: CessationOffshoreFacilitiesCostDto;
-            cessationOffshoreFacilitiesCostOverride?: CessationOffshoreFacilitiesCostOverrideDto;
-            cessationOnshoreFacilitiesCostProfile?: CessationOnshoreFacilitiesCostProfileDto;
-            totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudiesDto;
-            totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
-            totalFEEDStudies?: TotalFEEDStudiesDto;
-            totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
-            totalOtherStudiesCostProfile?: TotalOtherStudiesCostProfileDto;
-            historicCostCostProfile?: HistoricCostCostProfileDto;
-            wellInterventionCostProfile?: WellInterventionCostProfileDto;
-            wellInterventionCostProfileOverride?: WellInterventionCostProfileOverrideDto;
-            offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfileDto;
-            offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
-            onshoreRelatedOPEXCostProfile?: OnshoreRelatedOPEXCostProfileDto;
-            additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
-            calculatedTotalIncomeCostProfile?: CalculatedTotalIncomeCostProfileDto;
-            calculatedTotalCostCostProfile?: CalculatedTotalCostCostProfileDto;
+            cessationWellsCost?: TimeSeriesCostDto;
+            cessationWellsCostOverride?: TimeSeriesCostOverrideDto;
+            cessationOffshoreFacilitiesCost?: TimeSeriesCostDto;
+            cessationOffshoreFacilitiesCostOverride?: TimeSeriesCostOverrideDto;
+            cessationOnshoreFacilitiesCostProfile?: TimeSeriesCostDto;
+            totalFeasibilityAndConceptStudies?: TimeSeriesCostDto;
+            totalFeasibilityAndConceptStudiesOverride?: TimeSeriesCostOverrideDto;
+            totalFEEDStudies?: TimeSeriesCostDto;
+            totalFEEDStudiesOverride?: TimeSeriesCostOverrideDto;
+            totalOtherStudiesCostProfile?: TimeSeriesCostDto;
+            historicCostCostProfile?: TimeSeriesCostDto;
+            wellInterventionCostProfile?: TimeSeriesCostDto;
+            wellInterventionCostProfileOverride?: TimeSeriesCostOverrideDto;
+            offshoreFacilitiesOperationsCostProfile?: TimeSeriesCostDto;
+            offshoreFacilitiesOperationsCostProfileOverride?: TimeSeriesCostOverrideDto;
+            onshoreRelatedOPEXCostProfile?: TimeSeriesCostDto;
+            additionalOPEXCostProfile?: TimeSeriesCostDto;
+            calculatedTotalIncomeCostProfile?: TimeSeriesCostDto;
+            calculatedTotalCostCostProfile?: TimeSeriesCostDto;
             topside: TopsideDto;
-            topsideCostProfile?: TopsideCostProfileDto;
-            topsideCostProfileOverride?: TopsideCostProfileOverrideDto;
-            topsideCessationCostProfile?: TopsideCessationCostProfileDto;
+            topsideCostProfile?: TimeSeriesCostDto;
+            topsideCostProfileOverride?: TimeSeriesCostOverrideDto;
+            topsideCessationCostProfile?: TimeSeriesCostDto;
             drainageStrategy: DrainageStrategyDto;
-            productionProfileOil?: ProductionProfileOilDto;
-            additionalProductionProfileOil?: AdditionalProductionProfileOilDto;
-            productionProfileGas?: ProductionProfileGasDto;
-            additionalProductionProfileGas?: AdditionalProductionProfileGasDto;
-            productionProfileWater?: ProductionProfileWaterDto;
-            productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
-            fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
-            fuelFlaringAndLossesOverride?: FuelFlaringAndLossesOverrideDto;
-            netSalesGas?: NetSalesGasDto;
-            netSalesGasOverride?: NetSalesGasOverrideDto;
-            co2Emissions?: Co2EmissionsDto;
-            co2EmissionsOverride?: Co2EmissionsOverrideDto;
-            productionProfileNgl?: ProductionProfileNglDto;
-            importedElectricity?: ImportedElectricityDto;
-            importedElectricityOverride?: ImportedElectricityOverrideDto;
-            co2Intensity?: Co2IntensityDto;
-            deferredOilProduction?: DeferredOilProductionDto;
-            deferredGasProduction?: DeferredGasProductionDto;
+            productionProfileOil?: TimeSeriesVolumeDto;
+            additionalProductionProfileOil?: TimeSeriesVolumeDto;
+            productionProfileGas?: TimeSeriesVolumeDto;
+            additionalProductionProfileGas?: TimeSeriesVolumeDto;
+            productionProfileWater?: TimeSeriesVolumeDto;
+            productionProfileWaterInjection?: TimeSeriesVolumeDto;
+            fuelFlaringAndLosses?: TimeSeriesVolumeDto;
+            fuelFlaringAndLossesOverride?: TimeSeriesVolumeOverrideDto;
+            netSalesGas?: TimeSeriesVolumeDto;
+            netSalesGasOverride?: TimeSeriesVolumeOverrideDto;
+            co2Emissions?: TimeSeriesMassDto;
+            co2EmissionsOverride?: TimeSeriesMassOverrideDto;
+            productionProfileNgl?: TimeSeriesVolumeDto;
+            importedElectricity?: TimeSeriesEnergyDto;
+            importedElectricityOverride?: TimeSeriesEnergyOverrideDto;
+            co2Intensity?: TimeSeriesMassDto;
+            deferredOilProduction?: TimeSeriesVolumeDto;
+            deferredGasProduction?: TimeSeriesVolumeDto;
             substructure: SubstructureDto;
-            substructureCostProfile?: SubstructureCostProfileDto;
-            substructureCostProfileOverride?: SubstructureCostProfileOverrideDto;
-            substructureCessationCostProfile?: SubstructureCessationCostProfileDto;
+            substructureCostProfile?: TimeSeriesCostDto;
+            substructureCostProfileOverride?: TimeSeriesCostOverrideDto;
+            substructureCessationCostProfile?: TimeSeriesCostDto;
             surf: SurfDto;
-            surfCostProfile?: SurfCostProfileDto;
-            surfCostProfileOverride?: SurfCostProfileOverrideDto;
-            surfCessationCostProfile?: SurfCessationCostProfileDto;
+            surfCostProfile?: TimeSeriesCostDto;
+            surfCostProfileOverride?: TimeSeriesCostOverrideDto;
+            surfCessationCostProfile?: TimeSeriesCostDto;
             transport: TransportDto;
-            transportCostProfile?: TransportCostProfileDto;
-            transportCostProfileOverride?: TransportCostProfileOverrideDto;
-            transportCessationCostProfile?: TransportCessationCostProfileDto;
+            transportCostProfile?: TimeSeriesCostDto;
+            transportCostProfileOverride?: TimeSeriesCostOverrideDto;
+            transportCessationCostProfile?: TimeSeriesCostDto;
             onshorePowerSupply: OnshorePowerSupplyDto;
-            onshorePowerSupplyCostProfile?: OnshorePowerSupplyCostProfileDto;
-            onshorePowerSupplyCostProfileOverride?: OnshorePowerSupplyCostProfileOverrideDto;
+            onshorePowerSupplyCostProfile?: TimeSeriesCostDto;
+            onshorePowerSupplyCostProfileOverride?: TimeSeriesCostOverrideDto;
             exploration: ExplorationDto;
             explorationWells?: ExplorationWellDto[] | null;
-            explorationWellCostProfile?: ExplorationWellCostProfileDto;
-            appraisalWellCostProfile?: AppraisalWellCostProfileDto;
-            sidetrackCostProfile?: SidetrackCostProfileDto;
-            gAndGAdminCost?: GAndGAdminCostDto;
-            gAndGAdminCostOverride?: GAndGAdminCostOverrideDto;
-            seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
-            countryOfficeCost?: CountryOfficeCostDto;
+            explorationWellCostProfile?: TimeSeriesCostDto;
+            appraisalWellCostProfile?: TimeSeriesCostDto;
+            sidetrackCostProfile?: TimeSeriesCostDto;
+            gAndGAdminCost?: TimeSeriesCostDto;
+            gAndGAdminCostOverride?: TimeSeriesCostOverrideDto;
+            seismicAcquisitionAndProcessing?: TimeSeriesCostDto;
+            countryOfficeCost?: TimeSeriesCostDto;
             wellProject: WellProjectDto;
             wellProjectWells?: WellProjectWellDto[] | null;
-            oilProducerCostProfile?: OilProducerCostProfileDto;
-            oilProducerCostProfileOverride?: OilProducerCostProfileOverrideDto;
-            gasProducerCostProfile?: GasProducerCostProfileDto;
-            gasProducerCostProfileOverride?: GasProducerCostProfileOverrideDto;
-            waterInjectorCostProfile?: WaterInjectorCostProfileDto;
-            waterInjectorCostProfileOverride?: WaterInjectorCostProfileOverrideDto;
-            gasInjectorCostProfile?: GasInjectorCostProfileDto;
-            gasInjectorCostProfileOverride?: GasInjectorCostProfileOverrideDto;
-        }
-        export interface CessationCostDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CessationOffshoreFacilitiesCostDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CessationOffshoreFacilitiesCostOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface CessationOnshoreFacilitiesCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CessationWellsCostDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CessationWellsCostOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
+            oilProducerCostProfile?: TimeSeriesCostDto;
+            oilProducerCostProfileOverride?: TimeSeriesCostOverrideDto;
+            gasProducerCostProfile?: TimeSeriesCostDto;
+            gasProducerCostProfileOverride?: TimeSeriesCostOverrideDto;
+            waterInjectorCostProfile?: TimeSeriesCostDto;
+            waterInjectorCostProfileOverride?: TimeSeriesCostOverrideDto;
+            gasInjectorCostProfile?: TimeSeriesCostDto;
+            gasInjectorCostProfileOverride?: TimeSeriesCostOverrideDto;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
             co2Fuel: number; // double
             co2Flaring: number; // double
-        }
-        export interface Co2EmissionsDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface Co2EmissionsOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            override: boolean;
-        }
-        export interface Co2IntensityDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
         }
         export interface CommonProjectAndRevisionDto {
             modifyTime: string; // date-time
@@ -384,27 +179,6 @@ declare namespace Components {
             co2Intensity: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
-        export interface CountryOfficeCostDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface CreateAdditionalOPEXCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateAdditionalProductionProfileGasDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateAdditionalProductionProfileOilDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
         export interface CreateCaseDto {
             name: string;
             description: string;
@@ -413,122 +187,6 @@ declare namespace Components {
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
             dG4Date: string; // date-time
-        }
-        export interface CreateCessationOffshoreFacilitiesCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateCessationOnshoreFacilitiesCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateCessationWellsCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateCo2EmissionsOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface CreateCountryOfficeCostDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateDeferredGasProductionDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateDeferredOilProductionDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateDrillingScheduleDto {
-            startYear?: number; // int32
-            values?: number /* int32 */[] | null;
-        }
-        export interface CreateFuelFlaringAndLossesOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface CreateGAndGAdminCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateGasInjectorCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateGasProducerCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateHistoricCostCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateImportedElectricityOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface CreateNetSalesGasOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface CreateOffshoreFacilitiesOperationsCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateOilProducerCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateOnshorePowerSupplyCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateOnshoreRelatedOPEXCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateProductionProfileGasDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateProductionProfileOilDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateProductionProfileWaterDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateProductionProfileWaterInjectionDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
         }
         export interface CreateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
@@ -541,57 +199,38 @@ declare namespace Components {
             arena: boolean;
             mdqc: boolean;
         }
-        export interface CreateSeismicAcquisitionAndProcessingDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
+        export interface CreateTimeSeriesCostDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
         }
-        export interface CreateSubstructureCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+        export interface CreateTimeSeriesCostOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
+            override: boolean;
         }
-        export interface CreateSurfCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+        export interface CreateTimeSeriesEnergyDto {
+            startYear: number; // int32
+            values: number /* double */[];
         }
-        export interface CreateTopsideCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+        export interface CreateTimeSeriesMassOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
-        export interface CreateTotalFEEDStudiesOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+        export interface CreateTimeSeriesScheduleDto {
+            startYear: number; // int32
+            values: number /* int32 */[];
         }
-        export interface CreateTotalFeasibilityAndConceptStudiesOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+        export interface CreateTimeSeriesVolumeDto {
+            startYear: number; // int32
+            values: number /* double */[];
         }
-        export interface CreateTotalOtherStudiesCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateTransportCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface CreateWaterInjectorCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+        export interface CreateTimeSeriesVolumeOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface CreateWellDto {
             name: string;
@@ -601,37 +240,13 @@ declare namespace Components {
             wellCost?: number; // double
             drillingDays?: number; // double
         }
-        export interface CreateWellInterventionCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
         export type Currency = 1 | 2; // int32
-        export interface DeferredGasProductionDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface DeferredOilProductionDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
         export interface DeleteWellDto {
             id: string; // uuid
         }
-        export interface DevelopmentOperationalWellCostsDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            rigUpgrading: number; // double
-            rigMobDemob: number; // double
-            annualWellInterventionCostPerWell: number; // double
-            pluggingAndAbandonment: number; // double
-        }
         export interface DevelopmentOperationalWellCostsOverviewDto {
+            developmentOperationalWellCostsId: string; // uuid
+            projectId: string; // uuid
             rigUpgrading: number; // double
             rigMobDemob: number; // double
             annualWellInterventionCostPerWell: number; // double
@@ -652,11 +267,6 @@ declare namespace Components {
         export interface DrainageStrategyOverviewDto {
             id: string; // uuid
         }
-        export interface DrillingScheduleDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* int32 */[] | null;
-        }
         export interface DriveItemDto {
             name?: string | null;
             id?: string | null;
@@ -669,6 +279,11 @@ declare namespace Components {
             lastModifiedBy?: IdentitySet;
             lastModifiedDateTime?: string | null; // date-time
         }
+        export interface ExceptionDto {
+            details: {
+                [name: string]: string;
+            } | null;
+        }
         export interface ExplorationDto {
             id: string; // uuid
             projectId: string; // uuid
@@ -676,8 +291,8 @@ declare namespace Components {
             rigMobDemob: number; // double
             currency: Currency /* int32 */;
         }
-        export interface ExplorationOperationalWellCostsDto {
-            id: string; // uuid
+        export interface ExplorationOperationalWellCostsOverviewDto {
+            explorationOperationalWellCostsId: string; // uuid
             projectId: string; // uuid
             explorationRigUpgrading: number; // double
             explorationRigMobDemob: number; // double
@@ -685,23 +300,8 @@ declare namespace Components {
             appraisalRigMobDemob: number; // double
             appraisalProjectDrillingCosts: number; // double
         }
-        export interface ExplorationOperationalWellCostsOverviewDto {
-            explorationRigUpgrading: number; // double
-            explorationRigMobDemob: number; // double
-            explorationProjectDrillingCosts: number; // double
-            appraisalRigMobDemob: number; // double
-            appraisalProjectDrillingCosts: number; // double
-        }
-        export interface ExplorationWellCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
         export interface ExplorationWellDto {
-            drillingSchedule: DrillingScheduleDto;
+            drillingSchedule: TimeSeriesScheduleDto;
             explorationId: string; // uuid
             wellId: string; // uuid
         }
@@ -709,79 +309,7 @@ declare namespace Components {
             revisionEnabled?: boolean;
             environmentName?: string | null;
         }
-        export interface FuelFlaringAndLossesDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface FuelFlaringAndLossesOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            override: boolean;
-        }
-        export interface GAndGAdminCostDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface GAndGAdminCostOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface GasInjectorCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface GasInjectorCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface GasProducerCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface GasProducerCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
         export type GasSolution = 0 | 1; // int32
-        export interface HistoricCostCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
         export interface Identity {
             [name: string]: any;
             displayName?: string | null;
@@ -803,93 +331,9 @@ declare namespace Components {
             projectId: string; // uuid
             imageData: string;
         }
-        export interface ImportedElectricityDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface ImportedElectricityOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            override: boolean;
-        }
         export type InternalProjectPhase = 0 | 1 | 2; // int32
         export type Maturity = 0 | 1 | 2 | 3; // int32
-        export interface NetSalesGasDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface NetSalesGasOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            override: boolean;
-        }
-        export interface OffshoreFacilitiesCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface OffshoreFacilitiesOperationsCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface OffshoreFacilitiesOperationsCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface OilProducerCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface OilProducerCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface OnshorePowerSupplyCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface OnshorePowerSupplyCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
+        export type NoAccessReason = 1 | 2 | 3; // int32
         export interface OnshorePowerSupplyDto {
             id: string; // uuid
             name: string;
@@ -905,72 +349,23 @@ declare namespace Components {
             id: string; // uuid
             source: Source /* int32 */;
         }
-        export interface OnshoreRelatedOPEXCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface OpexCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
         export type PhysUnit = 0 | 1; // int32
-        export interface ProductionAndSalesVolumesDto {
-            startYear?: number; // int32
-            totalAndAnnualOil?: ProductionProfileOilDto;
-            totalAndAnnualSalesGas?: NetSalesGasDto;
-            co2Emissions?: Co2EmissionsDto;
-            importedElectricity?: ImportedElectricityDto;
-            additionalOil?: AdditionalProductionProfileOilDto;
-            additionalGas?: AdditionalProductionProfileGasDto;
-        }
         export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
-        export interface ProductionProfileGasDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface ProductionProfileNglDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface ProductionProfileOilDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface ProductionProfileWaterDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface ProductionProfileWaterInjectionDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export type ProjectClassification = 0 | 1 | 2 | 3; // int32
         export interface ProjectDataDto {
             projectId: string; // uuid
             dataType: string;
+            userActions: UserActionsDto;
             projectMembers: ProjectMemberDto[];
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
+        }
+        export interface ProjectExistsDto {
+            projectExists: boolean;
+            canCreateProject: boolean;
+            noAccessReason: NoAccessReason /* int32 */;
         }
         export interface ProjectMemberDto {
             projectId: string; // uuid
@@ -984,7 +379,9 @@ declare namespace Components {
             projectId: string; // uuid
             revisionId: string; // uuid
             dataType: string;
+            userActions: UserActionsDto;
             revisionDetails: RevisionDetailsDto;
+            revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
         export interface RevisionDetailsDto {
@@ -993,14 +390,6 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
-        }
-        export interface SeismicAcquisitionAndProcessingDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
         }
         export interface SharePointImportDto {
             id?: string | null;
@@ -1024,63 +413,7 @@ declare namespace Components {
             webId?: string | null;
             "@odata.type"?: string | null;
         }
-        export interface SidetrackCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
         export type Source = 0 | 1; // int32
-        export interface SteaCaseDto {
-            name?: string | null;
-            startYear?: number; // int32
-            exploration?: TimeSeriesCostDto;
-            capex?: CapexDto;
-            productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
-            offshoreFacilitiesCostProfileDto?: OffshoreFacilitiesCostProfileDto;
-            studyCostProfile?: StudyCostProfileDto;
-            opexCostProfile?: OpexCostProfileDto;
-        }
-        export interface SteaProjectDto {
-            name: string | null;
-            startYear: number; // int32
-            steaCases: SteaCaseDto[] | null;
-        }
-        export interface StudyCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface SubstructureCessationCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface SubstructureCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface SubstructureCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
         export interface SubstructureDto {
             id: string; // uuid
             name: string;
@@ -1100,31 +433,6 @@ declare namespace Components {
         export interface SubstructureOverviewDto {
             id: string; // uuid
             source: Source /* int32 */;
-        }
-        export interface SurfCessationCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface SurfCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface SurfCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
         }
         export interface SurfDto {
             id: string; // uuid
@@ -1158,34 +466,60 @@ declare namespace Components {
         export interface TimeSeriesCostDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
+            values: number /* double */[];
+            sum: number; // double
             currency: Currency /* int32 */;
         }
-        export interface TopsideCessationCostProfileDto {
+        export interface TimeSeriesCostOverrideDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
+            values: number /* double */[];
+            sum: number; // double
             currency: Currency /* int32 */;
+            override: boolean;
         }
-        export interface TopsideCostProfileDto {
+        export interface TimeSeriesEnergyDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
+            values: number /* double */[];
+            sum: number; // double
         }
-        export interface TopsideCostProfileOverrideDto {
+        export interface TimeSeriesEnergyOverrideDto {
             id: string; // uuid
             startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
+            values: number /* double */[];
+            sum: number; // double
+            override: boolean;
+        }
+        export interface TimeSeriesMassDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values: number /* double */[];
+            sum: number; // double
+        }
+        export interface TimeSeriesMassOverrideDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values: number /* double */[];
+            sum: number; // double
+            override: boolean;
+        }
+        export interface TimeSeriesScheduleDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values: number /* int32 */[];
+        }
+        export interface TimeSeriesVolumeDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values: number /* double */[];
+            sum: number; // double
+        }
+        export interface TimeSeriesVolumeOverrideDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values: number /* double */[];
+            sum: number; // double
             override: boolean;
         }
         export interface TopsideDto {
@@ -1231,73 +565,6 @@ declare namespace Components {
             cO2OnMaxWaterInjectionProfile: number; // double
             source: Source /* int32 */;
         }
-        export interface TotalFEEDStudiesDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface TotalFEEDStudiesOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface TotalFeasibilityAndConceptStudiesDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface TotalFeasibilityAndConceptStudiesOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
-        export interface TotalOtherStudiesCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface TransportCessationCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface TransportCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface TransportCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
         export interface TransportDto {
             id: string; // uuid
             name: string;
@@ -1316,19 +583,6 @@ declare namespace Components {
         export interface TransportOverviewDto {
             id: string; // uuid
             source: Source /* int32 */;
-        }
-        export interface UpdateAdditionalOPEXCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateAdditionalProductionProfileGasDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface UpdateAdditionalProductionProfileOilDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
         }
         export interface UpdateCaseDto {
             name: string;
@@ -1363,41 +617,6 @@ declare namespace Components {
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
         }
-        export interface UpdateCessationOffshoreFacilitiesCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateCessationOnshoreFacilitiesCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateCessationWellsCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateCo2EmissionsOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface UpdateCountryOfficeCostDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateDeferredGasProductionDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface UpdateDeferredOilProductionDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
         export interface UpdateDevelopmentOperationalWellCostsDto {
             rigUpgrading?: number; // double
             rigMobDemob?: number; // double
@@ -1412,10 +631,6 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             gasSolution?: GasSolution /* int32 */;
         }
-        export interface UpdateDrillingScheduleDto {
-            startYear?: number; // int32
-            values?: number /* int32 */[] | null;
-        }
         export interface UpdateExplorationDto {
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
@@ -1427,85 +642,14 @@ declare namespace Components {
             appraisalRigMobDemob?: number; // double
             appraisalProjectDrillingCosts?: number; // double
         }
-        export interface UpdateFuelFlaringAndLossesOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface UpdateGAndGAdminCostOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateGasInjectorCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateGasProducerCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateHistoricCostCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
         export interface UpdateImageDto {
             description: string | null;
         }
-        export interface UpdateImportedElectricityOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface UpdateNetSalesGasOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            override?: boolean;
-        }
-        export interface UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateOilProducerCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateOnshorePowerSupplyCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateOnshoreRelatedOPEXCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateProductionProfileGasDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface UpdateProductionProfileOilDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface UpdateProductionProfileWaterDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface UpdateProductionProfileWaterInjectionDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+        export interface UpdateOnshorePowerSupplyDto {
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
         }
         export interface UpdateProjectDto {
             name: string;
@@ -1540,65 +684,106 @@ declare namespace Components {
             arena: boolean;
             mdqc: boolean;
         }
-        export interface UpdateSeismicAcquisitionAndProcessingDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+        export interface UpdateSubstructureDto {
+            dryWeight?: number; // double
             currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            concept?: Concept /* int32 */;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
+            approvedBy?: string | null;
         }
-        export interface UpdateSubstructureCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+        export interface UpdateSurfDto {
+            cessationCost?: number; // double
+            infieldPipelineSystemLength?: number; // double
+            umbilicalSystemLength?: number; // double
+            artificialLift?: ArtificialLift /* int32 */;
+            riserCount?: number; // int32
+            templateCount?: number; // int32
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            productionFlowline?: ProductionFlowline /* int32 */;
             currency?: Currency /* int32 */;
-            override?: boolean;
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            maturity?: Maturity /* int32 */;
         }
-        export interface UpdateSurfCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+        export interface UpdateTimeSeriesCostDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
+        }
+        export interface UpdateTimeSeriesCostOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            currency: Currency /* int32 */;
+            override: boolean;
+        }
+        export interface UpdateTimeSeriesEnergyOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
+        }
+        export interface UpdateTimeSeriesMassOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
+        }
+        export interface UpdateTimeSeriesScheduleDto {
+            startYear: number; // int32
+            values: number /* int32 */[];
+        }
+        export interface UpdateTimeSeriesVolumeDto {
+            startYear: number; // int32
+            values: number /* double */[];
+        }
+        export interface UpdateTimeSeriesVolumeOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
+        }
+        export interface UpdateTopsideDto {
+            dryWeight?: number; // double
+            oilCapacity?: number; // double
+            gasCapacity?: number; // double
+            waterInjectionCapacity?: number; // double
+            artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
-            override?: boolean;
+            fuelConsumption?: number; // double
+            flaredGas?: number; // double
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            cO2ShareOilProfile?: number; // double
+            cO2ShareGasProfile?: number; // double
+            cO2ShareWaterInjectionProfile?: number; // double
+            cO2OnMaxOilProfile?: number; // double
+            cO2OnMaxGasProfile?: number; // double
+            cO2OnMaxWaterInjectionProfile?: number; // double
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            facilityOpex?: number; // double
+            peakElectricityImported?: number; // double
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
+            approvedBy?: string | null;
         }
-        export interface UpdateTechnicalInputDto {
-            projectDto: UpdateProjectDto;
-            developmentOperationalWellCostsDto: UpdateDevelopmentOperationalWellCostsDto;
-            explorationOperationalWellCostsDto: UpdateExplorationOperationalWellCostsDto;
-            updateWellDtos: UpdateWellDto[];
-            createWellDtos: CreateWellDto[];
-            deleteWellDtos: DeleteWellDto[];
-        }
-        export interface UpdateTopsideCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
+        export interface UpdateTransportDto {
+            gasExportPipelineLength?: number; // double
+            oilExportPipelineLength?: number; // double
             currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateTotalFEEDStudiesOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateTotalFeasibilityAndConceptStudiesOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateTotalOtherStudiesCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateTransportCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
-        export interface UpdateWaterInjectorCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
         }
         export interface UpdateWellDto {
             id: string; // uuid
@@ -1609,65 +794,26 @@ declare namespace Components {
             wellCost?: number; // double
             drillingDays?: number; // double
         }
-        export interface UpdateWellInterventionCostProfileOverrideDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
-        }
         export interface UpdateWellProjectDto {
             name?: string | null;
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
         }
+        export interface UpdateWellsDto {
+            updateWellDtos: UpdateWellDto[];
+            createWellDtos: CreateWellDto[];
+            deleteWellDtos: DeleteWellDto[];
+        }
         export interface UrlDto {
             url?: string | null;
         }
-        export interface WaterInjectorCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface WaterInjectorCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
+        export interface UserActionsDto {
+            canView: boolean;
+            canCreateRevision: boolean;
+            canEditProjectData: boolean;
+            canEditProjectMembers: boolean;
         }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
-        export interface WellDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            name: string;
-            wellInterventionCost: number; // double
-            plugingAndAbandonmentCost: number; // double
-            wellCategory: WellCategory /* int32 */;
-            wellCost: number; // double
-            drillingDays: number; // double
-        }
-        export interface WellInterventionCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
-        export interface WellInterventionCostProfileOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-            override: boolean;
-        }
         export interface WellOverviewDto {
             id: string; // uuid
             name: string;
@@ -1683,7 +829,7 @@ declare namespace Components {
             currency: Currency /* int32 */;
         }
         export interface WellProjectWellDto {
-            drillingSchedule: DrillingScheduleDto;
+            drillingSchedule: TimeSeriesScheduleDto;
             wellProjectId: string; // uuid
             wellId: string; // uuid
         }
@@ -1698,24 +844,23 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId /* uuid */;
+        }
         export type RequestBody = Components.Schemas.UrlDto;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
-    namespace Project$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
-        namespace Put {
-            namespace Parameters {
-                export type DevelopmentOperationalWellCostsId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                developmentOperationalWellCostsId: Parameters.DevelopmentOperationalWellCostsId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
+    namespace LogException {
+        namespace Post {
+            export type RequestBody = Components.Schemas.ExceptionDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -1754,19 +899,6 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateProjectDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDataDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdAccess {
-        namespace Get {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.AccessRightsDto;
             }
         }
     }
@@ -1837,9 +969,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateAdditionalOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1855,9 +987,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateAdditionalOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1886,9 +1018,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateCessationOffshoreFacilitiesCostOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1904,9 +1036,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCessationOffshoreFacilitiesCostOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1920,9 +1052,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CessationOnshoreFacilitiesCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1938,9 +1070,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCessationOnshoreFacilitiesCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CessationOnshoreFacilitiesCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1954,9 +1086,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateCessationWellsCostOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CessationWellsCostOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1972,9 +1104,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCessationWellsCostOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CessationWellsCostOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1982,44 +1114,14 @@ declare namespace Paths {
         namespace Get {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.Co2DrillingFlaringFuelTotalsDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdCo2intensity {
-        namespace Get {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string;
-            }
-            export interface PathParameters {
-                caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.Co2IntensityDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdCo2intensitytotal {
-        namespace Get {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string;
-            }
-            export interface PathParameters {
-                caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
-            }
-            namespace Responses {
-                export type $200 = number; // double
             }
         }
     }
@@ -2037,7 +1139,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateDrainageStrategyDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DrainageStrategyDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2053,9 +1156,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateAdditionalProductionProfileGasDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileGasDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2073,9 +1176,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateAdditionalProductionProfileGasDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileGasDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2091,9 +1194,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateAdditionalProductionProfileOilDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileOilDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2111,9 +1214,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateAdditionalProductionProfileOilDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileOilDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2129,9 +1232,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateCo2EmissionsOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesMassOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.Co2EmissionsOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesMassOverrideDto;
             }
         }
     }
@@ -2149,9 +1252,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCo2EmissionsOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesMassOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.Co2EmissionsOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesMassOverrideDto;
             }
         }
     }
@@ -2167,9 +1270,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateDeferredGasProductionDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DeferredGasProductionDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2187,9 +1290,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateDeferredGasProductionDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DeferredGasProductionDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2205,9 +1308,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateDeferredOilProductionDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DeferredOilProductionDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2225,9 +1328,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateDeferredOilProductionDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DeferredOilProductionDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2243,9 +1346,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateFuelFlaringAndLossesOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.FuelFlaringAndLossesOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
             }
         }
     }
@@ -2263,9 +1366,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateFuelFlaringAndLossesOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.FuelFlaringAndLossesOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
             }
         }
     }
@@ -2281,9 +1384,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateImportedElectricityOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesEnergyDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ImportedElectricityOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesEnergyOverrideDto;
             }
         }
     }
@@ -2301,9 +1404,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateImportedElectricityOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesEnergyOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ImportedElectricityOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesEnergyOverrideDto;
             }
         }
     }
@@ -2319,9 +1422,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateNetSalesGasOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.NetSalesGasOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
             }
         }
     }
@@ -2339,9 +1442,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateNetSalesGasOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.NetSalesGasOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
             }
         }
     }
@@ -2357,9 +1460,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateProductionProfileGasDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileGasDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2377,9 +1480,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateProductionProfileGasDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileGasDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2395,9 +1498,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateProductionProfileOilDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileOilDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2415,9 +1518,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateProductionProfileOilDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileOilDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2433,9 +1536,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateProductionProfileWaterDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileWaterDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2453,9 +1556,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateProductionProfileWaterDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileWaterDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2471,9 +1574,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateProductionProfileWaterInjectionDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileWaterInjectionDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2491,9 +1594,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateProductionProfileWaterInjectionDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProductionProfileWaterInjectionDto;
+                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
             }
         }
     }
@@ -2511,7 +1614,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateExplorationDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ExplorationDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2527,9 +1631,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 explorationId: Parameters.ExplorationId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateCountryOfficeCostDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CountryOfficeCostDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2547,9 +1651,9 @@ declare namespace Paths {
                 explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCountryOfficeCostDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CountryOfficeCostDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2565,9 +1669,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 explorationId: Parameters.ExplorationId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateGAndGAdminCostOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.GAndGAdminCostOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2585,9 +1689,9 @@ declare namespace Paths {
                 explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateGAndGAdminCostOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.GAndGAdminCostOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2603,9 +1707,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 explorationId: Parameters.ExplorationId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateSeismicAcquisitionAndProcessingDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SeismicAcquisitionAndProcessingDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2623,9 +1727,9 @@ declare namespace Paths {
                 explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateSeismicAcquisitionAndProcessingDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SeismicAcquisitionAndProcessingDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2643,9 +1747,9 @@ declare namespace Paths {
                 explorationId: Parameters.ExplorationId /* uuid */;
                 wellId: Parameters.WellId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateDrillingScheduleDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesScheduleDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DrillingScheduleDto;
+                export type $200 = Components.Schemas.TimeSeriesScheduleDto;
             }
         }
     }
@@ -2665,9 +1769,9 @@ declare namespace Paths {
                 wellId: Parameters.WellId /* uuid */;
                 drillingScheduleId: Parameters.DrillingScheduleId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateDrillingScheduleDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesScheduleDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DrillingScheduleDto;
+                export type $200 = Components.Schemas.TimeSeriesScheduleDto;
             }
         }
     }
@@ -2681,9 +1785,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateHistoricCostCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.HistoricCostCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2699,9 +1803,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateHistoricCostCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.HistoricCostCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2765,9 +1869,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateOffshoreFacilitiesOperationsCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2783,9 +1887,66 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyIdCostProfileOverride {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyIdCostProfileOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2799,9 +1960,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateOnshoreRelatedOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OnshoreRelatedOPEXCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2817,65 +1978,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateOnshoreRelatedOPEXCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OnshoreRelatedOPEXCostProfileDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.APIUpdateOnshorePowerSupplyDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyIdCostProfileOverride {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateOnshorePowerSupplyCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOnshorepowersupplys$OnshorePowerSupplyIdCostProfileOverride$CostProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -2891,9 +1996,10 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 substructureId: Parameters.SubstructureId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSubstructureDto;
+            export type RequestBody = Components.Schemas.UpdateSubstructureDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SubstructureDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2909,9 +2015,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 substructureId: Parameters.SubstructureId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateSubstructureCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SubstructureCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2929,9 +2035,9 @@ declare namespace Paths {
                 substructureId: Parameters.SubstructureId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateSubstructureCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SubstructureCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2947,9 +2053,10 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 surfId: Parameters.SurfId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateSurfDto;
+            export type RequestBody = Components.Schemas.UpdateSurfDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SurfDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -2965,9 +2072,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 surfId: Parameters.SurfId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateSurfCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SurfCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -2985,9 +2092,9 @@ declare namespace Paths {
                 surfId: Parameters.SurfId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateSurfCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.SurfCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3003,9 +2110,10 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 topsideId: Parameters.TopsideId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateTopsideDto;
+            export type RequestBody = Components.Schemas.UpdateTopsideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TopsideDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -3021,9 +2129,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 topsideId: Parameters.TopsideId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTopsideCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TopsideCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3041,9 +2149,9 @@ declare namespace Paths {
                 topsideId: Parameters.TopsideId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTopsideCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TopsideCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3057,9 +2165,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTotalFeasibilityAndConceptStudiesOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3075,9 +2183,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTotalFeasibilityAndConceptStudiesOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3091,9 +2199,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTotalFEEDStudiesOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalFEEDStudiesOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3109,9 +2217,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTotalFEEDStudiesOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalFEEDStudiesOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3125,9 +2233,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTotalOtherStudiesCostProfileDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalOtherStudiesCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -3143,9 +2251,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTotalOtherStudiesCostProfileDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TotalOtherStudiesCostProfileDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -3161,9 +2269,10 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 transportId: Parameters.TransportId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateTransportDto;
+            export type RequestBody = Components.Schemas.UpdateTransportDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TransportDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -3179,9 +2288,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 transportId: Parameters.TransportId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTransportCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TransportCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3199,9 +2308,9 @@ declare namespace Paths {
                 transportId: Parameters.TransportId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTransportCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TransportCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3215,9 +2324,9 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateWellInterventionCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WellInterventionCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3233,9 +2342,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateWellInterventionCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WellInterventionCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3253,7 +2362,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateWellProjectDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WellProjectDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -3269,9 +2379,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 wellProjectId: Parameters.WellProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateGasInjectorCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.GasInjectorCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3289,9 +2399,9 @@ declare namespace Paths {
                 wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateGasInjectorCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.GasInjectorCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3307,9 +2417,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 wellProjectId: Parameters.WellProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateGasProducerCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.GasProducerCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3327,9 +2437,9 @@ declare namespace Paths {
                 wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateGasProducerCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.GasProducerCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3345,9 +2455,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 wellProjectId: Parameters.WellProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateOilProducerCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OilProducerCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3365,9 +2475,9 @@ declare namespace Paths {
                 wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateOilProducerCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.OilProducerCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3383,9 +2493,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 wellProjectId: Parameters.WellProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateWaterInjectorCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WaterInjectorCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3403,9 +2513,9 @@ declare namespace Paths {
                 wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateWaterInjectorCostProfileOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WaterInjectorCostProfileOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -3423,9 +2533,9 @@ declare namespace Paths {
                 wellProjectId: Parameters.WellProjectId /* uuid */;
                 wellId: Parameters.WellId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateDrillingScheduleDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesScheduleDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DrillingScheduleDto;
+                export type $200 = Components.Schemas.TimeSeriesScheduleDto;
             }
         }
     }
@@ -3445,9 +2555,9 @@ declare namespace Paths {
                 wellId: Parameters.WellId /* uuid */;
                 drillingScheduleId: Parameters.DrillingScheduleId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateDrillingScheduleDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesScheduleDto;
             namespace Responses {
-                export type $200 = Components.Schemas.DrillingScheduleDto;
+                export type $200 = Components.Schemas.TimeSeriesScheduleDto;
             }
         }
     }
@@ -3468,6 +2578,22 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
+        namespace Put {
+            namespace Parameters {
+                export type DevelopmentOperationalWellCostsId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                developmentOperationalWellCostsId: Parameters.DevelopmentOperationalWellCostsId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DevelopmentOperationalWellCostsOverviewDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdExplorationOperationalWellCosts$ExplorationOperationalWellCostsId {
         namespace Put {
             namespace Parameters {
@@ -3480,7 +2606,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateExplorationOperationalWellCostsDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
+                export type $200 = Components.Schemas.ExplorationOperationalWellCostsOverviewDto;
             }
         }
     }
@@ -3653,7 +2779,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdTechnicalInput {
+    namespace Projects$ProjectIdWells {
         namespace Put {
             namespace Parameters {
                 export type ProjectId = string; // uuid
@@ -3661,53 +2787,9 @@ declare namespace Paths {
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTechnicalInputDto;
+            export type RequestBody = Components.Schemas.UpdateWellsDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDataDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdWells {
-        namespace Post {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateWellDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.WellDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdWells$WellId {
-        namespace Delete {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-                export type WellId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                wellId: Parameters.WellId /* uuid */;
-            }
-            namespace Responses {
-                export interface $200 {
-                }
-            }
-        }
-        namespace Put {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-                export type WellId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                wellId: Parameters.WellId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateWellDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.WellDto;
             }
         }
     }
@@ -3726,6 +2808,19 @@ declare namespace Paths {
             }
         }
     }
+    namespace ProjectsExists {
+        namespace Get {
+            namespace Parameters {
+                export type ContextId = string; // uuid
+            }
+            export interface QueryParameters {
+                contextId?: Parameters.ContextId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectExistsDto;
+            }
+        }
+    }
     namespace Prosp$ProjectIdSharepoint {
         namespace Post {
             namespace Parameters {
@@ -3741,17 +2836,6 @@ declare namespace Paths {
         }
     }
     namespace Stea$ProjectId {
-        namespace Get {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.SteaProjectDto;
-            }
-        }
         namespace Post {
             namespace Parameters {
                 export type ProjectId = string; // uuid

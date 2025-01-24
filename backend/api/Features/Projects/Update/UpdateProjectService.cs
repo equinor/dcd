@@ -1,4 +1,6 @@
 using api.Context;
+using api.Models;
+using api.Models.Infrastructure.ProjectRecalculation;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +12,8 @@ public class UpdateProjectService(DcdDbContext context)
     {
         var existingProject = await context.Projects.SingleAsync(p => p.Id == projectId);
 
-        existingProject.ModifyTime = DateTime.UtcNow;
+        var shouldTriggerRecalculation = ShouldTriggerRecalculation(existingProject, projectDto);
+
         existingProject.Name = projectDto.Name;
         existingProject.ReferenceCaseId = projectDto.ReferenceCaseId;
         existingProject.Description = projectDto.Description;
@@ -34,6 +37,57 @@ public class UpdateProjectService(DcdDbContext context)
         existingProject.DiscountRate = projectDto.DiscountRate;
         existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
 
+        if (shouldTriggerRecalculation)
+        {
+            context.PendingRecalculations.Add(new PendingRecalculation
+            {
+                ProjectId = existingProject.Id,
+                CreatedUtc = DateTime.UtcNow
+            });
+        }
+
         await context.SaveChangesAsync();
+    }
+
+    private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
+    {
+        if (existingProject.ExchangeRateUSDToNOK != projectDto.ExchangeRateUSDToNOK)
+        {
+            return true;
+        }
+        if (existingProject.DiscountRate != projectDto.DiscountRate)
+        {
+            return true;
+        }
+        if (existingProject.GasPriceNOK != projectDto.GasPriceNOK)
+        {
+            return true;
+        }
+        if (existingProject.OilPriceUSD != projectDto.OilPriceUSD)
+        {
+            return true;
+        }
+        if (existingProject.AverageDevelopmentDrillingDays != projectDto.AverageDevelopmentDrillingDays)
+        {
+            return true;
+        }
+        if (existingProject.DailyEmissionFromDrillingRig != projectDto.DailyEmissionFromDrillingRig)
+        {
+            return true;
+        }
+        if (existingProject.CO2EmissionFromFuelGas != projectDto.CO2EmissionFromFuelGas)
+        {
+            return true;
+        }
+        if (existingProject.CO2EmissionsFromFlaredGas != projectDto.CO2EmissionsFromFlaredGas)
+        {
+            return true;
+        }
+        if (existingProject.CO2Vented != projectDto.CO2Vented)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

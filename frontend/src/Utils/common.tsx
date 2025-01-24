@@ -1,9 +1,11 @@
 import { AxiosError } from "axios"
 import { Dispatch, SetStateAction } from "react"
+import isEqual from "lodash/isEqual"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"
+import { dateFromTimestamp } from "@/Utils/DateUtils"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -86,33 +88,6 @@ export const getProjectPhaseName = (key?: Components.Schemas.ProjectPhase): stri
     }[key]
 }
 
-export const toMonthDate = (date?: Date | null): string | undefined => {
-    if (Number.isNaN(date?.getTime())) {
-        return undefined
-    }
-
-    return date?.toISOString().substring(0, 7)
-}
-
-export const isDefaultDate = (date?: Date | null): boolean => {
-    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
-        return true
-    }
-    return false
-}
-
-export const isDefaultDateString = (dateString?: string | null): boolean => {
-    const date = new Date(dateString ?? "")
-    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
-        return true
-    }
-    return false
-}
-
-export const dateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
-
-export const defaultDate = () => new Date("0001-01-01")
-
 export const isInteger = (value: string) => /^-?\d+$/.test(value)
 
 export const productionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
@@ -182,47 +157,6 @@ export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[])
     return mergedTimeSeries
 }
 
-export function formatDate(isoDateString: string): string {
-    if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
-        return "_"
-    }
-    const date = new Date(isoDateString)
-    const options: Intl.DateTimeFormatOptions = {
-        month: "long",
-        year: "numeric",
-    }
-    return new Intl.DateTimeFormat("no-NO", options).format(date)
-}
-
-export const formatDateAndTime = (dateString: string | undefined | null) => {
-    if (!dateString) { return "" }
-    const date = new Date(dateString)
-    const options: Intl.DateTimeFormatOptions = {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    }
-    return new Intl.DateTimeFormat("en-GB", options)
-        .format(date)
-        .replace(",", "")
-}
-
-export const formatFullDate = (dateString: string | undefined | null) => {
-    if (!dateString) { return "" }
-    const date = new Date(dateString)
-    const options: Intl.DateTimeFormatOptions = {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    }
-    return new Intl.DateTimeFormat("en-GB", options)
-        .format(date)
-        .replace(",", "")
-}
-
 export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -285,16 +219,16 @@ export const numberValueParser = (
     params: { newValue: any, oldValue: any, data: any },
 ) => {
     const { oldValue, newValue } = params
-    const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
-    const allCommasTurnedToDots = valueWithOnlyNumbersCommasAndDots.replace(/,/g, ".")
+    const valueWithOnlyValidChars = newValue.toString().replace(/[^0-9.,-]/g, "")
+    const allCommasTurnedToDots = valueWithOnlyValidChars.replace(/,/g, ".")
 
     if ((allCommasTurnedToDots.match(/\./g) || []).length > 1) {
         setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
         return oldValue
     }
 
-    if (valueWithOnlyNumbersCommasAndDots !== newValue) {
-        setSnackBarMessage("Only numbers, commas and dates are allowed. Invalid characters have been removed.")
+    if (valueWithOnlyValidChars.toString() !== newValue.toString()) {
+        setSnackBarMessage("Only numbers, commas, dots and minus signs are allowed. Invalid characters have been removed.")
     }
 
     return allCommasTurnedToDots
@@ -325,7 +259,7 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
 }
 
 export const formatTime = (timestamp: number): string => {
-    const date = new Date(timestamp)
+    const date = dateFromTimestamp(timestamp)
     const hours = date.getHours()
     const minutes = date.getMinutes()
 
@@ -351,26 +285,25 @@ export const formatColumnSum = (params: { values: any[] }) => {
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
 }
 
-export const extractTableTimeSeriesValues = (data: any) => {
-    const tableTimeSeriesValues: { year: number, value: number }[] = []
+export const getValuesFromEntireRow = (tableData: any) => {
+    const valuePerYear: { year: number, value: number }[] = []
 
-    Object.keys(data).forEach((prop) => {
-        const value = data[prop]
+    Object.keys(tableData).forEach((columnName) => {
+        const cellValue = tableData[columnName]
 
         if (
-            isInteger(prop)
-            && value !== ""
-            && value !== null
-            && !Number.isNaN(Number(value.toString().replace(/,/g, ".")))
+            isInteger(columnName)
+            && cellValue !== ""
+            && cellValue !== null
+            && !Number.isNaN(Number(cellValue.toString().replace(/,/g, ".")))
         ) {
-            tableTimeSeriesValues.push({
-                year: parseInt(prop, 10),
-                value: Number(value.toString().replace(/,/g, ".")),
+            valuePerYear.push({
+                year: parseInt(columnName, 10),
+                value: Number(cellValue.toString().replace(/,/g, ".")),
             })
         }
     })
-
-    return tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+    return valuePerYear.sort((a, b) => a.year - b.year)
 }
 
 export const generateProfile = (
@@ -426,9 +359,97 @@ export const defaultAxesData = [
                 },
             ],
         },
+        label: {
+            formatter: (label: any) => Math.floor(Number(label.value)),
+        },
     },
     {
         type: "number",
         position: "left",
     },
 ]
+
+export const roundToFourDecimalsAndJoin = (values: string[]): string => values.map((value) => Math.floor(Number(value) * 10000) / 10000).join(" - ")
+
+export interface ITableCellChangeParams {
+    data: any
+    newValue: any
+    oldValue: any
+    profileName: string
+    profile?: any
+    resourceId?: string
+}
+
+export interface ITableCellChangeConfig {
+    dg4Year: number
+    caseId?: string
+    projectId?: string
+    tab?: string
+    tableName?: string
+    timeSeriesData: any[]
+    setSnackBarMessage?: (message: string) => void
+}
+
+export const validateTableCellChange = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
+    const { data, newValue, profileName } = params
+    const { setSnackBarMessage } = config
+
+    const rule = TABLE_VALIDATION_RULES[profileName]
+    if (rule && setSnackBarMessage && (newValue < rule.min || newValue > rule.max)) {
+        setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+        return false
+    }
+
+    return true
+}
+
+export const generateTableCellEdit = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
+    const { data, profileName } = params
+    const {
+        dg4Year, caseId, projectId, tab, tableName, timeSeriesData,
+    } = config
+
+    if (!caseId) { return null }
+
+    const rowValues = getValuesFromEntireRow(data)
+    const existingProfile = data.profile ? structuredClone(data.profile) : {
+        startYear: 0,
+        values: [],
+        id: data.resourceId,
+    }
+
+    let newProfile
+    if (rowValues.length > 0) {
+        const firstYear = rowValues[0].year
+        const lastYear = rowValues[rowValues.length - 1].year
+        const startYear = firstYear - dg4Year
+        newProfile = generateProfile(rowValues, data.profile, startYear, firstYear, lastYear)
+    } else {
+        newProfile = structuredClone(existingProfile)
+        newProfile.values = []
+    }
+
+    if (!newProfile || isEqual(newProfile.values, existingProfile.values)) {
+        return null
+    }
+
+    const profileInTimeSeriesData = timeSeriesData.find(
+        (v) => v.profileName === profileName,
+    )
+
+    return {
+        newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
+        previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
+        inputLabel: profileName,
+        projectId,
+        resourceName: profileInTimeSeriesData?.resourceName,
+        resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
+        caseId,
+        resourceId: profileInTimeSeriesData?.resourceId,
+        newResourceObject: newProfile,
+        previousResourceObject: existingProfile,
+        resourceProfileId: profileInTimeSeriesData?.resourceProfileId,
+        tabName: tab,
+        tableName,
+    }
+}

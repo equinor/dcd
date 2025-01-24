@@ -2,50 +2,51 @@ import { useEffect, useMemo } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { PersonSelectEvent } from "@equinor/fusion-react-person"
 import Grid from "@mui/material/Grid"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { UserRole } from "@/Models/AccessManagement"
-import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
 import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useEditPeople } from "@/Hooks/useEditPeople"
 
 const AccessManagementTab = () => {
     const { projectId } = useProjectContext()
-    const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { currentContext } = useModuleCurrentContext()
     const revisionAndProjectData = useDataFetch()
+    const fusionProjectId = revisionAndProjectData?.commonProjectAndRevisionData?.fusionProjectId
 
-    const { data: peopleApiData } = useQuery({
-        queryKey: ["peopleApiData", projectId],
-        queryFn: () => peopleQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
-    const viewers = useMemo(() => peopleApiData?.filter((m) => m.role === 0), [peopleApiData])
-    const editors = useMemo(() => peopleApiData?.filter((m) => m.role === 1), [peopleApiData])
-
-    const handleRemovePerson = async (userId: string) => {
-        await (await GetProjectMembersService()).deletePerson(projectId, userId).then(() => {
-            queryClient.invalidateQueries(
-                { queryKey: ["peopleApiData", projectId] },
-            )
-        })
-    }
+    const {
+        addPerson,
+        updatePerson,
+        deletePerson,
+        syncPmtMembers,
+    } = useEditPeople()
 
     const projectData = revisionAndProjectData?.dataType === "project"
         ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
         : null
 
-    const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
+    const viewers = useMemo(
+        () => projectData?.projectMembers?.filter((m) => m.role === 0) ?? [],
+        [projectData],
+    )
+    const editors = useMemo(
+        () => projectData?.projectMembers?.filter((m) => m.role === 1) ?? [],
+        [projectData],
+    )
+
+    const handleRemovePerson = (userId: string) => {
+        if (!projectId) { return }
+        deletePerson(projectId, userId)
+    }
+
+    const handleAddPerson = (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
 
         if (
@@ -55,38 +56,25 @@ const AccessManagementTab = () => {
         ) {
             return
         }
-        const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { userId: personToAdd || "", role })
-        if (addPerson) {
-            queryClient.invalidateQueries(
-                { queryKey: ["peopleApiData", projectId] },
-            )
-        }
+
+        addPerson(projectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = async (personId: string, role: UserRole) => {
-        if (!personId && !projectId) { return }
-
-        const switchRoles = await (await GetProjectMembersService()).updatePerson(projectId, { userId: personId, role })
-        if (switchRoles) {
-            queryClient.invalidateQueries(
-                { queryKey: ["peopleApiData", projectId] },
-            )
-        }
+    const handleSwitchPerson = (personId: string, role: UserRole) => {
+        if (!personId || !projectId) { return }
+        updatePerson(projectId, personId, role)
     }
 
     // This is used to synchronize PMT members to projects
-    useEffect(() => {
-        (async () => {
-            if (!projectId || !currentContext) { return }
-            const projectMembersService = await GetOrgChartMembersService()
-            const syncPmt = await projectMembersService.getOrgChartPeople(projectId, currentContext?.id)
-            if (syncPmt) {
-                queryClient.invalidateQueries(
-                    { queryKey: ["peopleApiData", projectId] },
-                )
-            }
-        })()
-    }, [])
+    useEffect(
+        () => {
+            if (!projectId || !fusionProjectId || !currentContext?.id || !currentContext?.externalId) { return }
+            if (fusionProjectId !== currentContext.externalId) { return }
+
+            syncPmtMembers(projectId, currentContext.id)
+        },
+        [projectId, currentContext, fusionProjectId],
+    )
 
     if (!revisionAndProjectData) {
         return <AccessManagementSkeleton />
@@ -100,9 +88,9 @@ const AccessManagementTab = () => {
             <Grid item>
                 <Typography variant="body_short">
                     On this page the project admins can add and remove members to the project.
-                    If the project classification is set to “restricted” or “confidential”,
+                    If the project classification is set to &quot;restricted&quot; or &quot;confidential&quot;,
                     only the project members and the application admin can access it.
-                    {/* Project members from Org chart with “PMT” are automatically added as project viewers after DG0. External users can also be added here. */}
+                    Project members from Org chart with &quot;PMT&quot; are automatically added as project viewers. External users can also be added here.
                 </Typography>
             </Grid>
             <EditorViewerContainer $isSmallScreen={isSmallScreen}>

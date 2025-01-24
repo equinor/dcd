@@ -1,55 +1,74 @@
 using api.Context;
-using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
-using api.Features.Assets.CaseAssets.Topsides.Services;
-using api.Features.CaseProfiles.Repositories;
-using api.Features.CaseProfiles.Services;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation.Types.OpexCostProfile;
 
-public class OpexCostProfileService(
-    DcdDbContext context,
-    ICaseService caseService,
-    IProjectWithAssetsRepository projectWithAssetsRepository,
-    IDrainageStrategyService drainageStrategyService,
-    ITopsideService topsideService)
-    : IOpexCostProfileService
+public class OpexCostProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await caseService.GetCase(caseId);
-        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
+        var caseItem = await context.Cases
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.HistoricCostCostProfile)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .SingleAsync(c => c.Id == caseId);
 
-        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
-            caseItem.DrainageStrategyLink,
-            d => d.ProductionProfileOil!,
-            d => d.AdditionalProductionProfileOil!,
-            d => d.ProductionProfileGas!,
-            d => d.AdditionalProductionProfileGas!
-        );
+        var project = await context.Projects
+            .Include(p => p.Cases)
+            .Include(p => p.Wells)
+            .Include(p => p.ExplorationOperationalWellCosts)
+            .Include(p => p.DevelopmentOperationalWellCosts)
+            .SingleAsync(p => p.Id == caseItem.ProjectId);
+
+        var drainageStrategy = await context.DrainageStrategies
+            .Include(d => d.ProductionProfileOil)
+            .Include(d => d.AdditionalProductionProfileOil)
+            .Include(d => d.ProductionProfileGas)
+            .Include(d => d.AdditionalProductionProfileGas)
+            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(drainageStrategy);
 
-        await CalculateWellInterventionCostProfile(caseItem, project, lastYearOfProduction);
-        await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .ToListAsync();
+
+        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
+
+        CalculateWellInterventionCostProfile(caseItem, project, linkedWells, lastYearOfProduction);
+        CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, topside, firstYearOfProduction, lastYearOfProduction);
     }
 
-    public async Task CalculateWellInterventionCostProfile(Case caseItem, Project project, int? lastYearofProduction)
+    public static void CalculateWellInterventionCostProfile(Case caseItem, Project project, List<WellProjectWell> linkedWells, int? lastYearOfProduction)
     {
         if (caseItem.WellInterventionCostProfileOverride?.Override == true)
         {
             return;
         }
 
-        var lastYear = lastYearofProduction ?? 0;
-
-        var linkedWells = await context.WellProjectWell
-            .Include(wpw => wpw.DrillingSchedule)
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink).ToListAsync();
+        var lastYear = lastYearOfProduction ?? 0;
 
         if (linkedWells.Count == 0)
         {
@@ -67,7 +86,7 @@ public class OpexCostProfileService(
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
             };
-            wellInterventionCostsFromDrillingSchedule = TimeSeriesCost.MergeCostProfiles(wellInterventionCostsFromDrillingSchedule, timeSeries);
+            wellInterventionCostsFromDrillingSchedule = CostProfileMerger.MergeCostProfiles(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
         var tempSeries = new TimeSeries<int>
@@ -120,23 +139,21 @@ public class OpexCostProfileService(
         }
     }
 
-    public async Task CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, int? firstYearOfProduction, int? lastYearofProduction)
+    public static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, Topside topside, int? firstYearOfProduction, int? lastYearOfProduction)
     {
         if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true)
         {
             return;
         }
 
-        if (!firstYearOfProduction.HasValue || !lastYearofProduction.HasValue)
+        if (!firstYearOfProduction.HasValue || !lastYearOfProduction.HasValue)
         {
             CalculationHelper.ResetTimeSeries(caseItem.OffshoreFacilitiesOperationsCostProfile);
             return;
         }
 
         int firstYear = firstYearOfProduction.Value;
-        int lastYear = lastYearofProduction.Value;
-
-        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        int lastYear = lastYearOfProduction.Value;
 
         var facilityOpex = topside.FacilityOpex;
 

@@ -16,6 +16,12 @@ Example: fix: correct the user authentication error
 
 # Front-End Development Guidelines
 
+## Activating dev mode in the UI
+
+Click the project title in the sidebar 5 times to enable Developer Mode. This adds a new section to the sidebar that visualizes the edit history and the current position in the history. It also shows how the history changes as you use undo/redo.
+
+To disable Developer Mode, click the project title 5 times again or refresh the page.
+
 ## Component Structure
 
 All components should follow this common structure:

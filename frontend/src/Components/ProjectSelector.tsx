@@ -1,15 +1,17 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation } from "react-router-dom"
 import { GetProjectService } from "../Services/ProjectService"
-import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { isAxiosError } from "@/Utils/common"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import IndexView from "@/Views/IndexView"
+import { NoAccessReason } from "@/Models/Interfaces"
+import CreateCaseModal from "./Modal/CreateCaseModal"
+import NoAccessErrorView from "@/Views/NoAccessErrorView"
+
 
 // Banner components
 const SelectProjectBanner = () => (
@@ -32,11 +34,9 @@ const NoAccessBanner = () => (
 )
 
 const ProjectSelector = (): JSX.Element => {
-    const {
-        setIsRevision,
-        setAccessRights,
-        accessRights,
-    } = useProjectContext()
+    const [projectExists, setProjectExists] = useState<boolean>(false)
+    const [noAccessReason, setNoAccessReason] = useState<NoAccessReason | null>(null)
+    const { setIsRevision } = useProjectContext()
     const {
         setIsCreating,
         setIsLoading,
@@ -47,41 +47,6 @@ const ProjectSelector = (): JSX.Element => {
     const { navigateToProject } = useAppNavigation()
     const location = useLocation()
     const previousContextRef = useRef(currentContext?.id)
-
-    const handleError = (message: string, error: unknown) => {
-        console.error(message, error)
-        setSnackBarMessage(message)
-        setIsLoading(false)
-    }
-
-    const createNewProject = async (projectService: any, externalId: string) => {
-        setIsCreating(true)
-        setSnackBarMessage("No project found for this search. Creating new.")
-        const createdProject = await projectService.createProject(externalId)
-        return projectService.getAccess(createdProject.commonProjectAndRevisionData.fusionProjectId)
-    }
-
-    const getProjectAccess = async (projectService: any, externalId: string) => {
-        try {
-            return await projectService.getAccess(externalId)
-        } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return createNewProject(projectService, externalId)
-            }
-            console.error("Error fetching project access:", error)
-            setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
-            setIsLoading(false)
-            return null
-        }
-    }
-
-    const fetchProjectData = async (projectService: any, externalId: string) => {
-        const fetchedProject = await projectService.getProject(externalId)
-        if (fetchedProject) {
-            setIsCreating(false)
-            setIsLoading(false)
-        }
-    }
 
     // Update revision state based on URL changes (including browser navigation)
     useEffect(() => {
@@ -97,32 +62,48 @@ const ProjectSelector = (): JSX.Element => {
         previousContextRef.current = currentContext.id
 
         if (isProjectChanged) {
+            setProjectExists(false)
             setIsRevision(false)
             navigateToProject(currentContext.id)
         }
     }, [currentContext])
 
-    // Initialize or update project data
     useEffect(() => {
         const initializeProject = async () => {
             if (!currentContext?.externalId) { return }
 
             setIsLoading(true)
-            const projectService = await GetProjectService()
 
             try {
-                const access = await getProjectAccess(projectService, currentContext.externalId)
-                setAccessRights(access)
+                const projectService = await GetProjectService()
+                const results = await projectService.projectExists(currentContext.externalId)
+                setProjectExists(results.projectExists)
+                setNoAccessReason(results.noAccessReason)
 
-                if (!access.canView) {
-                    setSnackBarMessage("You do not have access to view this project")
+                if (results.projectExists) {
                     setIsLoading(false)
                     return
                 }
 
-                await fetchProjectData(projectService, currentContext.externalId)
+                if (!results.projectExists && results.canCreateProject) {
+                    setSnackBarMessage("No project found for this search. Creating new.")
+                    setIsCreating(true)
+
+                    await projectService.createProject(currentContext.externalId)
+                    setProjectExists(true)
+                    setIsCreating(false)
+                    setIsLoading(false)
+                    return
+                }
+
+                if (!results.projectExists) {
+                    setSnackBarMessage("You do not have access to view this project")
+                    setIsLoading(false)
+                }
             } catch (error) {
-                handleError("Error fetching or setting project in context", error)
+                setSnackBarMessage("An error occurred while fetching project access. Please try again later.")
+                setIsLoading(false)
+                setIsCreating(false)
             }
         }
 
@@ -133,17 +114,21 @@ const ProjectSelector = (): JSX.Element => {
         return <SelectProjectBanner />
     }
 
-    if (accessRights?.canView) {
+    if (isLoading) {
+        return <LoadingBanner />
+    }
+
+    if (noAccessReason && noAccessReason !== NoAccessReason.ProjectDoesNotExist) {
+        return <NoAccessErrorView projectClassification={noAccessReason} />
+    }
+
+    if (projectExists) {
         return (
             <>
                 <CreateCaseModal />
                 <Outlet />
             </>
         )
-    }
-
-    if (isLoading) {
-        return <LoadingBanner />
     }
 
     return <NoAccessBanner />

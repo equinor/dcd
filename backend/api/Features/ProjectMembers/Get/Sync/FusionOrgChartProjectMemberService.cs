@@ -1,5 +1,5 @@
-using api.AppInfrastructure;
 using api.Context;
+using api.Exceptions;
 using api.Features.ProjectMembers.Get.Sync.Models;
 using api.Models;
 
@@ -10,13 +10,16 @@ using Microsoft.Identity.Abstractions;
 
 namespace api.Features.ProjectMembers.Get.Sync;
 
-public class FusionOrgChartProjectMemberService(DcdDbContext context,
+public class FusionOrgChartProjectMemberService(
+    DcdDbContext context,
     IDownstreamApi downstreamApi,
     IFusionContextResolver fusionContextResolver,
     ILogger<FusionOrgChartProjectMemberService> logger)
 {
     public async Task SyncPmtMembersOnProject(Guid projectId, Guid fusionContextId)
     {
+        await VerifyProjectMasterId(projectId, fusionContextId);
+
         var pmtProjectMembers = await context.ProjectMembers
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.FromOrgChart)
@@ -52,6 +55,23 @@ public class FusionOrgChartProjectMemberService(DcdDbContext context,
         await context.SaveChangesAsync();
     }
 
+    private async Task VerifyProjectMasterId(Guid projectId, Guid fusionContextId)
+    {
+        var projectProjectMasterId = await context.Projects
+            .Where(p => p.Id == projectId)
+            .Select(p => p.FusionProjectId)
+            .FirstAsync();
+
+        var fusionContext = await fusionContextResolver.GetContextAsync(fusionContextId);
+
+        var fusionProjectMasterId = fusionContext.ExternalId ?? throw new ProjectMasterMismatchException("Project master ID not found");
+
+        if (Guid.TryParse(fusionProjectMasterId, out var fusionProjectMasterGuid) && projectProjectMasterId != fusionProjectMasterGuid)
+        {
+            throw new ProjectMasterMismatchException("Project master ID mismatch");
+        }
+    }
+
     private async Task<List<FusionPersonDto>> GetAllPersonsOnProject(Guid fusionContextId)
     {
         var orgChartId = await TryGetOrgChartId(fusionContextId);
@@ -63,9 +83,9 @@ public class FusionOrgChartProjectMemberService(DcdDbContext context,
 
         var fusionSearchObject = new FusionSearchObject
         {
-            Filter = $"positions/any(p: p/isActive eq true and p/project/id eq '{orgChartId}' and p/contract eq null)",
+            Filter = $"positions/any(p: p/isActive eq true and p/isProjectManagementTeam eq true and p/project/id eq '{orgChartId}' and p/contract eq null) and accountClassification ne 'External'",
             Top = 100,
-            Skip = 0
+            Skip = 0,
         };
 
         var fusionPeople = await GetFusionPeople(fusionSearchObject);
@@ -125,20 +145,17 @@ public class FusionOrgChartProjectMemberService(DcdDbContext context,
                     continue;
                 }
 
-                if (projectPosition.Project!.IsProjectManagementTeam == true || DcdEnvironments.FeatureToggles.DisplayAllFusionUsersAsPmt)
+                if (pmtUsersForProject.Any(x => x.AzureUniqueId == fusionPerson.AzureUniqueId))
                 {
-                    if (pmtUsersForProject.Any(x => x.AzureUniqueId == fusionPerson.AzureUniqueId))
-                    {
-                        continue;
-                    }
-
-                    pmtUsersForProject.Add(new FusionPersonDto
-                    {
-                        Name = fusionPerson.Name!,
-                        Mail = fusionPerson.Mail!,
-                        AzureUniqueId = fusionPerson.AzureUniqueId
-                    });
+                    continue;
                 }
+
+                pmtUsersForProject.Add(new FusionPersonDto
+                {
+                    Name = fusionPerson.Name!,
+                    Mail = fusionPerson.Mail!,
+                    AzureUniqueId = fusionPerson.AzureUniqueId
+                });
             }
         }
 

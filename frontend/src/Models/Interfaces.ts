@@ -45,37 +45,12 @@ export type ResourceObject =
     ProfileObject
 
 export type ProfileObject =
-    Components.Schemas.CessationWellsCostOverrideDto |
-    Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto |
-    Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto |
-    Components.Schemas.TotalFEEDStudiesOverrideDto |
-    Components.Schemas.HistoricCostCostProfileDto |
-    Components.Schemas.WellInterventionCostProfileOverrideDto |
-    Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto |
-    Components.Schemas.OnshoreRelatedOPEXCostProfileDto |
-    Components.Schemas.AdditionalOPEXCostProfileDto |
-    Components.Schemas.TopsideCostProfileOverrideDto |
-    Components.Schemas.SurfCostProfileOverrideDto |
-    Components.Schemas.TransportCostProfileOverrideDto |
-    Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto |
-    Components.Schemas.SubstructureCostProfileOverrideDto |
-    Components.Schemas.AdditionalProductionProfileOilDto |
-    Components.Schemas.ProductionProfileGasDto |
-    Components.Schemas.AdditionalProductionProfileGasDto |
-    Components.Schemas.ProductionProfileGasDto |
-    Components.Schemas.ProductionProfileWaterDto |
-    Components.Schemas.ProductionProfileWaterInjectionDto |
-    Components.Schemas.NetSalesGasOverrideDto |
-    Components.Schemas.Co2EmissionsOverrideDto |
-    Components.Schemas.ImportedElectricityOverrideDto |
-    Components.Schemas.DeferredOilProductionDto |
-    Components.Schemas.DeferredGasProductionDto |
-    Components.Schemas.OilProducerCostProfileOverrideDto |
-    Components.Schemas.GasProducerCostProfileOverrideDto |
-    Components.Schemas.WaterInjectorCostProfileOverrideDto |
-    Components.Schemas.GasInjectorCostProfileOverrideDto |
-    Components.Schemas.SeismicAcquisitionAndProcessingDto |
-    Components.Schemas.CountryOfficeCostDto;
+    Components.Schemas.TimeSeriesVolumeOverrideDto |
+    Components.Schemas.TimeSeriesMassOverrideDto |
+    Components.Schemas.TimeSeriesEnergyOverrideDto |
+    Components.Schemas.TimeSeriesVolumeDto |
+    Components.Schemas.TimeSeriesCostOverrideDto |
+    Components.Schemas.TimeSeriesCostDto;
 
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
@@ -89,41 +64,16 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.ExplorationDto |
     keyof Components.Schemas.WellProjectWellDto |
     keyof Components.Schemas.ExplorationWellDto |
-    keyof Components.Schemas.DrillingScheduleDto |
+    keyof Components.Schemas.TimeSeriesScheduleDto |
     ProfilePropertyKey
 
 export type ProfilePropertyKey =
-    keyof Components.Schemas.CessationWellsCostOverrideDto |
-    keyof Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto |
-    keyof Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto |
-    keyof Components.Schemas.TotalFEEDStudiesOverrideDto |
-    keyof Components.Schemas.HistoricCostCostProfileDto |
-    keyof Components.Schemas.WellInterventionCostProfileOverrideDto |
-    keyof Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto |
-    keyof Components.Schemas.OnshoreRelatedOPEXCostProfileDto |
-    keyof Components.Schemas.AdditionalOPEXCostProfileDto |
-    keyof Components.Schemas.TopsideCostProfileOverrideDto |
-    keyof Components.Schemas.SurfCostProfileOverrideDto |
-    keyof Components.Schemas.TransportCostProfileOverrideDto |
-    keyof Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto |
-    keyof Components.Schemas.SubstructureCostProfileOverrideDto |
-    keyof Components.Schemas.ProductionProfileOilDto |
-    keyof Components.Schemas.AdditionalProductionProfileOilDto |
-    keyof Components.Schemas.ProductionProfileGasDto |
-    keyof Components.Schemas.AdditionalProductionProfileGasDto |
-    keyof Components.Schemas.ProductionProfileWaterDto |
-    keyof Components.Schemas.ProductionProfileWaterInjectionDto |
-    keyof Components.Schemas.NetSalesGasOverrideDto |
-    keyof Components.Schemas.Co2EmissionsOverrideDto |
-    keyof Components.Schemas.ImportedElectricityOverrideDto |
-    keyof Components.Schemas.DeferredOilProductionDto |
-    keyof Components.Schemas.DeferredGasProductionDto |
-    keyof Components.Schemas.OilProducerCostProfileOverrideDto |
-    keyof Components.Schemas.GasProducerCostProfileOverrideDto |
-    keyof Components.Schemas.WaterInjectorCostProfileOverrideDto |
-    keyof Components.Schemas.GasInjectorCostProfileOverrideDto |
-    keyof Components.Schemas.SeismicAcquisitionAndProcessingDto |
-    keyof Components.Schemas.CountryOfficeCostDto;
+    keyof Components.Schemas.TimeSeriesVolumeOverrideDto |
+    keyof Components.Schemas.TimeSeriesMassOverrideDto |
+    keyof Components.Schemas.TimeSeriesEnergyOverrideDto |
+    keyof Components.Schemas.TimeSeriesVolumeDto |
+    keyof Components.Schemas.TimeSeriesCostOverrideDto |
+    keyof Components.Schemas.TimeSeriesCostDto;
 
 export interface EditInstance {
     uuid: string; // unique identifier for the edit
@@ -161,4 +111,11 @@ export interface TableCase {
     gasInjectorCount: number
     createdAt?: string
     referenceCaseId?: string
+}
+
+export enum NoAccessReason {
+    ProjectDoesNotExist = 1,
+    ClassificationInternal = 2,
+    ClassificationRestricted = 3,
+    ClassificationConfidential = 4
 }

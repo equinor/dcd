@@ -4,6 +4,7 @@ import { Box } from "@mui/material"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import ExternalAccessInfo from "@/Components/Project/Components/ExternalAccessInfo"
+import { NoAccessReason } from "@/Models/Interfaces"
 
 const Container = styled.div`
   max-width: 800px;
@@ -19,15 +20,24 @@ const Header = styled(Box)`
 `
 
 interface Props {
-  projectClassification: number
+  projectClassification: NoAccessReason.ClassificationRestricted |
+      NoAccessReason.ClassificationConfidential |
+      NoAccessReason.ClassificationInternal
 }
 
-const ForbiddenAccess: React.FC<Props> = ({ projectClassification }) => {
-    const restrictionExplanations = [
-        "This project is classified as 'internal', and you can access it two ways: Either by joining an AccessIT group or by joining the project as a project member.",
-        "This project is classified as 'restricted' or 'confidential'. In order to access projects with these classifications, you need to be a project member. " +
-        "You can request to join this project by contacting the project's valuation lead / concept architect.",
-    ]
+const ACCESS_MESSAGES = {
+    [NoAccessReason.ClassificationRestricted]: `This project is classified as 'restricted'.
+    In order to access projects with this classification, you need to be a project member.
+    You can request to join this project by contacting the project's valuation lead / concept architect.`,
+    [NoAccessReason.ClassificationConfidential]: `This project is classified as 'confidential'.
+    In order to access projects with this classification, you need to be a project member.
+    You can request to join this project by contacting the project's valuation lead / concept architect.`,
+    [NoAccessReason.ClassificationInternal]: `This project is classified as 'internal', and you can access it two ways:
+    Either by joining an AccessIT group or by joining the project as a project member.`,
+} as const
+
+const NoAccessErrorView: React.FC<Props> = ({ projectClassification }) => {
+    const message = ACCESS_MESSAGES[projectClassification]
 
     return (
         <Container>
@@ -38,12 +48,11 @@ const ForbiddenAccess: React.FC<Props> = ({ projectClassification }) => {
                 </Typography>
             </Header>
             <Typography>
-                {projectClassification === 1 && restrictionExplanations[0]}
-                {projectClassification === 2 && restrictionExplanations[1]}
+                {message}
             </Typography>
             <ExternalAccessInfo />
         </Container>
     )
 }
 
-export default ForbiddenAccess
+export default NoAccessErrorView

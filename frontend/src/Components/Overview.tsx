@@ -10,22 +10,21 @@ import { clear } from "@equinor/eds-icons"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { useFeatureContext } from "@/Context/FeatureContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
-import { GetProjectService } from "@/Services/ProjectService"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-// import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useLocalStorage } from "@/Hooks/useLocalStorage"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -35,7 +34,7 @@ const ControlsWrapper = styled.div`
 
 const ContentWrapper = styled.div`
     display: flex;
-    padding-bottom: 20px;
+    width: 100%;
 `
 
 const MainView = styled.div`
@@ -54,8 +53,6 @@ interface WarnedProjectInterface {
 
 const Overview = () => {
     const currentUser = useCurrentUser()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
     const {
         isCreating,
         isLoading,
@@ -72,27 +69,17 @@ const Overview = () => {
         setIsCreateRevisionModalOpen,
     } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
-    const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
-    const [canCreateRevision, setCanCreateRevision] = useState<boolean>(false)
     const { Features } = useFeatureContext()
     const revisionAndProjectData = useDataFetch()
+    const [warnedProjects, setWarnedProjects] = useLocalStorage<WarnedProjectInterface | null>("pv", null)
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
         queryFn: () => peopleQueryFn(projectId),
         enabled: !!projectId,
     })
-
-    async function userCanCreateRevision() {
-        if (!externalId) { return }
-        const projectService = await GetProjectService()
-        const access = await projectService.getAccess(externalId)
-        if (access?.canEdit || access?.isAdmin) {
-            setCanCreateRevision(true)
-        }
-    }
 
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)
@@ -106,11 +93,11 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!projectData) { return }
 
-        const lastModified = new Date(projectData.commonProjectAndRevisionData.modifyTime)
+        const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)
@@ -129,31 +116,11 @@ const Overview = () => {
         }
     }
 
-    function fetchPV() {
-        setWarnedProjects(JSON.parse(String(localStorage.getItem("pv"))))
-        // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
-    }
-
-    useEffect(() => {
-        userCanCreateRevision()
-    }, [externalId])
-
-    useEffect(() => {
-        fetchPV()
-        window.addEventListener("storage", () => fetchPV())
-    }, [])
-
     useEffect(() => {
         if (currentUser && (!currentUserId || currentUser.localAccountId !== currentUserId)) {
             setCurrentUserId(currentUser.localAccountId as keyof typeof warnedProjects)
         }
     }, [currentUser])
-
-    useEffect(() => {
-        if (warnedProjects && JSON.stringify(warnedProjects) !== localStorage.getItem("pv")) {
-            localStorage.setItem("pv", JSON.stringify(warnedProjects))
-        }
-    }, [warnedProjects])
 
     useEffect(() => {
         if (revisionAndProjectData) {
@@ -194,17 +161,6 @@ const Overview = () => {
         )
     }
 
-    // const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
-    // const projectIsNotOpen = revisionAndProjectData.commonProjectAndRevisionData.classification !== 0
-
-    // if (projectIsNotOpen && !userIsPartOfProject) {
-    //     return (
-    //         <NoAccessErrorView
-    //             projectClassification={revisionAndProjectData.commonProjectAndRevisionData.classification}
-    //         />
-    //     )
-    // }
-
     return (
         <>
             <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
@@ -225,7 +181,7 @@ const Overview = () => {
                                     <Button
                                         variant="ghost"
                                         onClick={() => handleCreateRevision()}
-                                        disabled={!canCreateRevision}
+                                        disabled={!revisionAndProjectData?.userActions.canCreateRevision}
                                     >
                                         Create revision
                                     </Button>
@@ -237,7 +193,7 @@ const Overview = () => {
                 )}
             <ContentWrapper>
                 <Sidebar />
-                <MainView className="ag-theme-alpine-fusion ">
+                <MainView className="ag-theme-alpine-fusion container-padding">
                     {revisionAndProjectData && (
                         <Modal
                             isOpen={projectClassificationWarning}

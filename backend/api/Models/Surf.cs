@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Surf : IHasProjectId, IChangeTrackable
+public class Surf : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -31,6 +32,11 @@ public class Surf : IHasProjectId, IChangeTrackable
     public string ApprovedBy { get; set; } = string.Empty;
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public virtual SurfCostProfile? CostProfile { get; set; }
     public virtual SurfCostProfileOverride? CostProfileOverride { get; set; }

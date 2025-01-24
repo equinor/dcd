@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppContext } from "@/Context/AppContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
@@ -18,11 +19,11 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     const { isCalculatingProductionOverrides } = useAppContext()
     const revisionAndProjectData = useDataFetch()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
-    const calculatedFields = [
+    const calculatedFields = useMemo(() => [
         "productionProfileFuelFlaringAndLossesOverride",
         "productionProfileNetSalesGasOverride",
         "productionProfileImportedElectricityOverride",
-    ]
+    ], [])
 
     useEffect(() => {
         const drainageStrategyData = apiData.drainageStrategy
@@ -178,7 +179,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={CaseProductionProfilesData}
-            dg4Year={apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030}
+            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
             tableYears={tableYears}
             tableName="Production profiles"
             includeFooter={false}

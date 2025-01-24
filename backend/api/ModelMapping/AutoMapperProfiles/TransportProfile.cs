@@ -1,6 +1,5 @@
-using api.Features.Assets.CaseAssets.Transports.Dtos;
-using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
-using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -12,18 +11,12 @@ public class TransportProfile : Profile
     public TransportProfile()
     {
         CreateMap<Transport, TransportDto>();
-        CreateMap<Transport, TransportWithProfilesDto>();
-        CreateMap<TransportCostProfile, TransportCostProfileDto>();
-        CreateMap<TransportCostProfileOverride, TransportCostProfileOverrideDto>();
-        CreateMap<TransportCessationCostProfile, TransportCessationCostProfileDto>();
+        CreateMap<TransportCostProfile, TimeSeriesCostDto>();
+        CreateMap<TransportCostProfileOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<TransportCessationCostProfile, TimeSeriesCostDto>();
 
-        CreateMap<APIUpdateTransportDto, Transport>();
-        CreateMap<APIUpdateTransportWithProfilesDto, Transport>();
-        CreateMap<PROSPUpdateTransportDto, Transport>();
-        CreateMap<UpdateTransportCostProfileDto, TransportCostProfile>();
-        CreateMap<UpdateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
-        CreateMap<CreateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
-
-        CreateMap<CreateTransportDto, Transport>();
+        CreateMap<UpdateTimeSeriesCostDto, TransportCostProfile>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, TransportCostProfileOverride>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, TransportCostProfileOverride>();
     }
 }

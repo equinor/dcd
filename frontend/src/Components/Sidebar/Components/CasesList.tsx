@@ -14,6 +14,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { TimelineElement } from "../Sidebar"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -22,7 +23,7 @@ const SideBarRefCaseWrapper = styled.div`
 `
 
 const CasesList: React.FC = () => {
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, setEditMode } = useAppContext()
     const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()
@@ -32,6 +33,7 @@ const CasesList: React.FC = () => {
 
     const selectCase = (caseId: string) => {
         if (!caseId) { return null }
+        setEditMode(false)
         if (isRevision && revisionId) {
             navigateToRevisionCase(revisionId, caseId)
         } else {
@@ -54,7 +56,7 @@ const CasesList: React.FC = () => {
 
     return (
         <>
-            {cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
+            {cases.sort((a, b) => sortUtcDateStrings(a.createTime, b.createTime)).map((projectCase, index) => (
                 <Grid
                     item
                     container
@@ -74,10 +76,13 @@ const CasesList: React.FC = () => {
                             {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
+                                        {sidebarOpen && revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
+                                            <ReferenceCaseIcon iconPlacement="sideBar" />
+                                        )}
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
+                                        {!sidebarOpen && revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

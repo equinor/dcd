@@ -1,6 +1,5 @@
-using api.Features.Assets.CaseAssets.Surfs.Dtos;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
-using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -12,18 +11,12 @@ public class SurfProfile : Profile
     public SurfProfile()
     {
         CreateMap<Surf, SurfDto>();
-        CreateMap<Surf, SurfWithProfilesDto>();
-        CreateMap<SurfCostProfile, SurfCostProfileDto>();
-        CreateMap<SurfCostProfileOverride, SurfCostProfileOverrideDto>();
-        CreateMap<SurfCessationCostProfile, SurfCessationCostProfileDto>();
+        CreateMap<SurfCostProfile, TimeSeriesCostDto>();
+        CreateMap<SurfCostProfileOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<SurfCessationCostProfile, TimeSeriesCostDto>();
 
-        CreateMap<APIUpdateSurfDto, Surf>();
-        CreateMap<APIUpdateSurfWithProfilesDto, Surf>();
-        CreateMap<PROSPUpdateSurfDto, Surf>();
-        CreateMap<UpdateSurfCostProfileDto, SurfCostProfile>();
-        CreateMap<UpdateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
-        CreateMap<CreateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
-
-        CreateMap<CreateSurfDto, Surf>();
+        CreateMap<UpdateTimeSeriesCostDto, SurfCostProfile>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, SurfCostProfileOverride>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, SurfCostProfileOverride>();
     }
 }

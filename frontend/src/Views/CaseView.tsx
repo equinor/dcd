@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Grid from "@mui/material/Grid"
+import Grid2 from "@mui/material/Grid2"
 import styled from "styled-components"
 import CaseDrillingScheduleTab from "@/Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
 import CaseProductionProfilesTab from "@/Components/Case/Tabs/CaseProductionProfilesTab"
@@ -15,9 +15,10 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditCase from "@/Hooks/useEditCase"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useLocalStorage } from "@/Hooks/useLocalStorage"
 
-const Wrapper = styled(Grid)`
-    padding: 0 16px;
+const Wrapper = styled(Grid2)`
+    padding: 0 16px 16px;
 `
 const CaseView = () => {
     const { caseId, tab } = useParams()
@@ -30,6 +31,7 @@ const CaseView = () => {
         setCaseEditsBelongingToCurrentCase,
     } = useCaseContext()
     const { navigateToCase, navigateToProject } = useAppNavigation()
+    const [, setCaseEditsStorage] = useLocalStorage("caseEdits", caseEdits)
 
     // syncs the active tab with the url
     useEffect(() => {
@@ -54,7 +56,7 @@ const CaseView = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
+        setCaseEditsStorage(caseEdits)
     }, [caseEdits])
 
     useEffect(() => {
@@ -64,7 +66,7 @@ const CaseView = () => {
     }, [caseId, caseEdits])
 
     return (
-        <Wrapper item xs={12}>
+        <Wrapper size={{ xs: 12 }}>
             <div role="tabpanel" hidden={activeTabCase !== 0}>
                 <CaseDescriptionTab addEdit={addEdit} />
             </div>

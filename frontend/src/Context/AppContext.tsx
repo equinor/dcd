@@ -7,11 +7,14 @@ import {
     ReactNode,
     useContext,
     useMemo,
+    useEffect,
 } from "react"
 import { EditInstance } from "../Models/Interfaces"
+import { useLocalStorage } from "../Hooks/useLocalStorage"
 
 interface AppContextType {
     showEditHistory: boolean,
+    setShowEditHistory: Dispatch<SetStateAction<boolean>>,
     isCreating: boolean,
     setIsCreating: Dispatch<SetStateAction<boolean>>,
     isLoading: boolean,
@@ -32,18 +35,16 @@ interface AppContextType {
     setIsCalculatingTotalStudyCostOverrides: Dispatch<SetStateAction<boolean>>,
     apiQueue: EditInstance[],
     setApiQueue: Dispatch<SetStateAction<EditInstance[]>>,
-
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [showEditHistory] = useState<boolean>(false)
-
+    const [showEditHistory, setShowEditHistory] = useState<boolean>(false)
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSaving, setIsSaving] = useState<boolean>(false)
-    const [editMode, setEditMode] = useState<boolean>(false)
+    const [editMode, setEditMode] = useLocalStorage<boolean>("dcdEditMode", false)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [showRevisionReminder, setShowRevisionReminder] = useState<boolean>(false)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
@@ -53,6 +54,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const value = useMemo(() => ({
         showEditHistory,
+        setShowEditHistory,
         isCreating,
         setIsCreating,
         isLoading,
@@ -75,6 +77,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setApiQueue,
     }), [
         showEditHistory,
+        setShowEditHistory,
         isCreating,
         setIsCreating,
         isLoading,

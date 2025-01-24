@@ -1,6 +1,10 @@
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.Models;
+using api.Models.Infrastructure;
+using api.Models.Infrastructure.BackgroundJobs;
+using api.Models.Infrastructure.ProjectRecalculation;
+using api.Models.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -62,6 +66,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<NetSalesGasOverride> NetSalesGasOverride => Set<NetSalesGasOverride>();
     public DbSet<Co2Emissions> Co2Emissions => Set<Co2Emissions>();
     public DbSet<Co2EmissionsOverride> Co2EmissionsOverride => Set<Co2EmissionsOverride>();
+    public DbSet<Co2Intensity> Co2Intensity => Set<Co2Intensity>();
     public DbSet<ProductionProfileNgl> ProductionProfileNgl => Set<ProductionProfileNgl>();
     public DbSet<ImportedElectricity> ImportedElectricity => Set<ImportedElectricity>();
     public DbSet<ImportedElectricityOverride> ImportedElectricityOverride => Set<ImportedElectricityOverride>();
@@ -87,6 +92,11 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
     public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
+    public DbSet<PendingRecalculation> PendingRecalculations => Set<PendingRecalculation>();
+    public DbSet<CompletedRecalculation> CompletedRecalculations => Set<CompletedRecalculation>();
+    public DbSet<BackgroundJobMachineInstanceLog> BackgroundJobMachineInstanceLogs => Set<BackgroundJobMachineInstanceLog>();
+    public DbSet<FrontendException> FrontendExceptions => Set<FrontendException>();
+    public DbSet<BackgroundJobLog> BackgroundJobLogs => Set<BackgroundJobLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -98,6 +108,10 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
         modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
+        modelBuilder.ApplyConfiguration(new RequestLogConfiguration());
+        modelBuilder.ApplyConfiguration(new ExceptionLogConfiguration());
+        modelBuilder.ApplyConfiguration(new FrontendExceptionConfiguration());
+        modelBuilder.ApplyConfiguration(new BackgroundJobLogConfiguration());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -149,6 +163,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         dbContext.LazyLoadingOccurrences.Add(new LazyLoadingOccurrence
         {
             Message = message,
+            FullStackTrace = new System.Diagnostics.StackTrace().ToString(),
             TimestampUtc = DateTime.UtcNow
         });
 
@@ -162,6 +177,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         var utcNow = DateTime.UtcNow;
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
+        SetCreatedAndUpdatedDates(utcNow);
 
         return await base.SaveChangesAsync(cancellationToken);
     }
@@ -171,7 +187,33 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         var utcNow = DateTime.UtcNow;
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
+        SetCreatedAndUpdatedDates(utcNow);
 
         return base.SaveChanges();
+    }
+
+    private void SetCreatedAndUpdatedDates(DateTime utcNow)
+    {
+        var createdEntries = ChangeTracker.Entries()
+            .Where(x => x is { Entity: IDateTrackedEntity, State: EntityState.Added });
+
+        foreach (var entry in createdEntries)
+        {
+            var entity = (IDateTrackedEntity)entry.Entity;
+            entity.CreatedUtc = utcNow;
+            entity.UpdatedUtc = utcNow;
+            entity.CreatedBy = currentUser?.Username ?? "SYSTEM";
+            entity.UpdatedBy = currentUser?.Username ?? "SYSTEM";
+        }
+
+        var updatedEntries = ChangeTracker.Entries()
+            .Where(x => x is { Entity: IDateTrackedEntity, State: EntityState.Modified });
+
+        foreach (var entry in updatedEntries)
+        {
+            var entity = (IDateTrackedEntity)entry.Entity;
+            entity.UpdatedUtc = utcNow;
+            entity.UpdatedBy = currentUser?.Username ?? "SYSTEM";
+        }
     }
 }

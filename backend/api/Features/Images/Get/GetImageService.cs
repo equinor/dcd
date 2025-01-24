@@ -26,9 +26,8 @@ public class GetImageService(DcdDbContext context, BlobServiceClient blobService
 
         var images = await context.Images
             .Where(img => img.ProjectId == projectPk && img.CaseId == caseId)
+            .OrderBy(c => c.CreatedUtc)
             .ToListAsync();
-
-        images = images.OrderBy(x => x.CreateTime).ToList();
 
         var dtos = new List<ImageDto>();
 
@@ -63,7 +62,7 @@ public class GetImageService(DcdDbContext context, BlobServiceClient blobService
         return new ImageDto
         {
             ImageId = imageEntity.Id,
-            CreateTime = imageEntity.CreateTime,
+            CreateTime = imageEntity.CreatedUtc,
             Description = imageEntity.Description,
             CaseId = imageEntity.CaseId,
             ProjectId = imageEntity.ProjectId,

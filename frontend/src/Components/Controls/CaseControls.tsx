@@ -18,7 +18,7 @@ import CaseDropMenu from "@/Components/Case/Components/CaseDropMenu"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"
-import { formatDateAndTime } from "@/Utils/common"
+import { formatDateAndTime } from "@/Utils/DateUtils"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
@@ -34,6 +34,16 @@ const Header = styled.div`
     justify-content: space-between;
     gap: 10px;
     padding: 0 5px;
+`
+
+const BackButton = styled(Button)`
+    min-width: 40px;
+`
+
+const TabContainer = styled.div`
+    display: flex;
+    margin-top: 8px;
+    border-bottom: 1px solid #DCDCDC;
 `
 
 const CenteringContainer = styled.div`
@@ -146,9 +156,9 @@ const CaseControls: React.FC<props> = ({
             <Header>
                 <CaseContainer>
                     <CenteringContainer>
-                        <Button onClick={backToProject} variant="ghost_icon">
+                        <BackButton onClick={backToProject} variant="ghost_icon">
                             <Icon data={arrow_back} />
-                        </Button>
+                        </BackButton>
                         <CenteringContainer>
                             {editMode ? (
                                 <CaseTitleEdit>
@@ -225,9 +235,11 @@ const CaseControls: React.FC<props> = ({
                     />
                 </CenteringContainer>
             </Header>
-            <CaseTabs
-                caseId={caseId}
-            />
+            <TabContainer>
+                <CaseTabs
+                    caseId={caseId}
+                />
+            </TabContainer>
         </>
     )
 }

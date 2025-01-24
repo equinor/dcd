@@ -3,42 +3,19 @@ using api.Features.BackgroundServices.ProjectMaster.Services;
 
 namespace api.Features.BackgroundServices.ProjectMaster;
 
-public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, ILogger<ProjectMasterBackgroundService> logger)
-    : BackgroundService
+public class ProjectMasterBackgroundService(IServiceScopeFactory serviceScopeFactory)
+    : DcdBackgroundService(serviceScopeFactory, executionFrequency: TimeSpan.FromHours(1))
 {
-    private readonly TimeSpan _executionFrequency = TimeSpan.FromHours(1);
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteJob()
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(_executionFrequency, stoppingToken);
-            await UpdateProjects();
-        }
-    }
-
-    private async Task UpdateProjects()
-    {
-        logger.LogInformation("ProjectMasterBackgroundService: Running");
-
         if (!ShouldRunAtThisTimeOfDay())
         {
             return;
         }
 
-        using var scope = scopeFactory.CreateScope();
-        var updateService = scope.ServiceProvider.GetRequiredService<UpdateProjectFromProjectMasterService>();
+        using var scope = ServiceScopeFactory.CreateScope();
 
-        try
-        {
-            await updateService.UpdateProjectFromProjectMaster();
-
-            logger.LogInformation("Updated all projects from project master.");
-        }
-        catch (Exception e)
-        {
-            logger.LogCritical("Update from Project Master failed: {}", e);
-        }
+        await scope.ServiceProvider.GetRequiredService<UpdateProjectFromProjectMasterService>().UpdateProjectFromProjectMaster();
     }
 
     private static bool ShouldRunAtThisTimeOfDay()

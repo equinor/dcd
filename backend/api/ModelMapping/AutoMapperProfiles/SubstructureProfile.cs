@@ -1,6 +1,5 @@
-using api.Features.Assets.CaseAssets.Substructures.Dtos;
-using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
-using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
+using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
@@ -11,19 +10,13 @@ public class SubstructureProfile : Profile
 {
     public SubstructureProfile()
     {
-        CreateMap<Substructure, SubstructureWithProfilesDto>();
         CreateMap<Substructure, SubstructureDto>();
-        CreateMap<SubstructureCostProfile, SubstructureCostProfileDto>();
-        CreateMap<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>();
-        CreateMap<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>();
+        CreateMap<SubstructureCostProfile, TimeSeriesCostDto>();
+        CreateMap<SubstructureCostProfileOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<SubstructureCessationCostProfile, TimeSeriesCostDto>();
 
-        CreateMap<APIUpdateSubstructureWithProfilesDto, Substructure>();
-        CreateMap<APIUpdateSubstructureDto, Substructure>();
-        CreateMap<PROSPUpdateSubstructureDto, Substructure>();
-        CreateMap<UpdateSubstructureCostProfileDto, SubstructureCostProfile>();
-        CreateMap<UpdateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
-        CreateMap<CreateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
-
-        CreateMap<CreateSubstructureDto, Substructure>();
+        CreateMap<UpdateTimeSeriesCostDto, SubstructureCostProfile>();
+        CreateMap<UpdateTimeSeriesCostOverrideDto, SubstructureCostProfileOverride>();
+        CreateMap<CreateTimeSeriesCostOverrideDto, SubstructureCostProfileOverride>();
     }
 }
