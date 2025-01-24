@@ -19,6 +19,8 @@ const AccessManagementTab = () => {
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { currentContext } = useModuleCurrentContext()
     const revisionAndProjectData = useDataFetch()
+    const fusionProjectId = revisionAndProjectData?.commonProjectAndRevisionData?.fusionProjectId
+
     const {
         addPerson,
         updatePerson,
@@ -66,12 +68,12 @@ const AccessManagementTab = () => {
     // This is used to synchronize PMT members to projects
     useEffect(
         () => {
-            if (!projectId || !currentContext?.id || !currentContext?.externalId) { return }
-            if (projectId !== currentContext.externalId) { return }
+            if (!projectId || !fusionProjectId || !currentContext?.id || !currentContext?.externalId) { return }
+            if (fusionProjectId !== currentContext.externalId) { return }
 
             syncPmtMembers(projectId, currentContext.id)
         },
-        [projectId, currentContext],
+        [projectId, currentContext, fusionProjectId],
     )
 
     if (!revisionAndProjectData) {
