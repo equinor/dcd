@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -165,7 +166,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
     private static double CalculateTotalCessationCosts(Case caseItem)
     {
-        TimeSeriesCost? cessationWellsCost = caseItem.CessationWellsCostOverride?.Override == true ? caseItem.CessationWellsCostOverride : caseItem.CessationWellsCost;
+        var cessationWellsCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost);
+
+        TimeSeriesCost? cessationWellsCost = cessationWellsCostProfile == null ? null : new TimeSeriesCost(cessationWellsCostProfile);
+
         TimeSeriesCost? cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true
             ? caseItem.CessationOffshoreFacilitiesCostOverride
             : caseItem.CessationOffshoreFacilitiesCost;

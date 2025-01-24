@@ -41,7 +41,6 @@ using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles;
 using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides;
 using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles;
-using api.Features.Profiles.Cases.CessationWellsCostOverrides;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Cases.HistoricCostCostProfiles;
@@ -222,7 +221,6 @@ public static class DcdIocConfiguration
         services.AddScoped<AdditionalOpexCostProfileService>();
         services.AddScoped<CessationOffshoreFacilitiesCostOverrideService>();
         services.AddScoped<CessationOnshoreFacilitiesCostProfileService>();
-        services.AddScoped<CessationWellsCostOverrideService>();
         services.AddScoped<HistoricCostCostProfileService>();
         services.AddScoped<OffshoreFacilitiesOperationsCostProfileOverrideService>();
         services.AddScoped<OnshoreRelatedOpexCostProfileService>();

@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
@@ -28,8 +29,8 @@ public class CaseWithAssetsService(
         return new CaseWithAssetsDto
         {
             Case = MapToCaseOverviewDto(caseItem),
-            CessationWellsCost = MapToDto<CessationWellsCost, TimeSeriesCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
-            CessationWellsCostOverride = MapToDto<CessationWellsCostOverride, TimeSeriesCostOverrideDto>(caseItem.CessationWellsCostOverride, caseItem.CessationWellsCostOverride?.Id),
+            CessationWellsCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost)),
+            CessationWellsCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)),
             CessationOffshoreFacilitiesCost = MapToDto<CessationOffshoreFacilitiesCost, TimeSeriesCostDto>(caseItem.CessationOffshoreFacilitiesCost, caseItem.CessationOffshoreFacilitiesCost?.Id),
             CessationOffshoreFacilitiesCostOverride = MapToDto<CessationOffshoreFacilitiesCostOverride, TimeSeriesCostOverrideDto>(caseItem.CessationOffshoreFacilitiesCostOverride, caseItem.CessationOffshoreFacilitiesCostOverride?.Id),
             CessationOnshoreFacilitiesCostProfile = MapToDto<CessationOnshoreFacilitiesCostProfile, TimeSeriesCostDto>(caseItem.CessationOnshoreFacilitiesCostProfile, caseItem.CessationOnshoreFacilitiesCostProfile?.Id),

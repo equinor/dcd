@@ -1,11 +1,15 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.Cases.CessationWellsCostOverrides;
 
-public class CessationWellsCostOverrideController(CessationWellsCostOverrideService service) : ControllerBase
+public class CessationWellsCostOverrideController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/cessation-wells-cost-override")]
@@ -14,7 +18,7 @@ public class CessationWellsCostOverrideController(CessationWellsCostOverrideServ
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await service.CreateCessationWellsCostOverride(projectId, caseId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.CessationWellsCostOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -25,6 +29,6 @@ public class CessationWellsCostOverrideController(CessationWellsCostOverrideServ
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await service.UpdateCessationWellsCostOverride(projectId, caseId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesOverrideProfile(projectId, caseId, costProfileId, ProfileTypes.CessationWellsCostOverride, dto);
     }
 }

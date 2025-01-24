@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -24,8 +25,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CessationWellsCost)
-            .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
@@ -213,8 +212,8 @@ public class CalculateTotalCostService(DcdDbContext context)
     private static TimeSeries<double> CalculateCessationCost(Case caseItem)
     {
         TimeSeries<double> cessationWellsProfile = UseOverrideOrProfile(
-            caseItem.CessationWellsCost,
-            caseItem.CessationWellsCostOverride
+            caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost),
+            caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)
         );
         TimeSeries<double> cessationOffshoreFacilitiesProfile = UseOverrideOrProfile(
             caseItem.CessationOffshoreFacilitiesCost,
@@ -359,5 +358,27 @@ public class CalculateTotalCostService(DcdDbContext context)
 
         return new TimeSeries<double> { StartYear = 0, Values = [] };
     }
-}
 
+    private static TimeSeries<double> UseOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
+    {
+        if (profileOverride?.Override == true)
+        {
+            return new TimeSeries<double>
+            {
+                StartYear = profileOverride.StartYear,
+                Values = profileOverride.Values
+            };
+        }
+
+        if (profile != null)
+        {
+            return new TimeSeries<double>
+            {
+                StartYear = profile.StartYear,
+                Values = profile.Values
+            };
+        }
+
+        return new TimeSeries<double> { StartYear = 0, Values = [] };
+    }
+}

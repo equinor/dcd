@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Profiles;
 using api.Models;
 
 using Xunit;
@@ -42,10 +43,14 @@ public class CalculateTotalCostServiceTests
                 StartYear = 2020,
                 Values = [500.0, 600.0, 700.0]
             },
-            CessationWellsCost = new CessationWellsCost
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 2020,
-                Values = [300.0, 400.0, 500.0]
+                new()
+                {
+                    ProfileType = ProfileTypes.CessationWellsCost,
+                    StartYear = 2020,
+                    Values = [300.0, 400.0, 500.0]
+                }
             }
         };
 

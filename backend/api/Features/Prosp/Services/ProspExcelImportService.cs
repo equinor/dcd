@@ -369,8 +369,6 @@ public class ProspExcelImportService(
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CessationWellsCost)
-            .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)

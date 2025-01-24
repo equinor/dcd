@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
@@ -118,13 +119,13 @@ public static class SteaCaseDtoBuilder
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
 
-        if (caseItem.CessationWellsCostOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.CessationWellsCostOverride));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationWellsCostOverride)));
         }
-        else if (caseItem.CessationWellsCost != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.CessationWellsCost));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationWellsCost)));
         }
 
         if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
