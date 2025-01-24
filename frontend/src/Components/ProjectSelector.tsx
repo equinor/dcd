@@ -7,18 +7,15 @@ import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import IndexView from "@/Views/IndexView"
 import { NoAccessReason } from "@/Models/Interfaces"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
 
+
 // Banner components
 const SelectProjectBanner = () => (
-    <Banner>
-        <Banner.Icon variant="info">
-            <Icon data={info_circle} />
-        </Banner.Icon>
-        <Banner.Message>Select a project to view</Banner.Message>
-    </Banner>
+    <IndexView />
 )
 
 const LoadingBanner = () => (
