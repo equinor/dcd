@@ -107,6 +107,37 @@ public class CaseWithAssetsService(
         };
     }
 
+    private static TimeSeriesCostDto? MapToDto(TimeSeriesProfile? timeSeriesProfile)
+    {
+        if (timeSeriesProfile == null)
+        {
+            return null;
+        }
+
+        return new TimeSeriesCostDto
+        {
+            Id = timeSeriesProfile.Id,
+            StartYear = timeSeriesProfile.StartYear,
+            Values = timeSeriesProfile.Values
+        };
+    }
+
+    private static TimeSeriesCostOverrideDto? MapToOverrideDto(TimeSeriesProfile? timeSeriesProfile)
+    {
+        if (timeSeriesProfile == null)
+        {
+            return null;
+        }
+
+        return new TimeSeriesCostOverrideDto
+        {
+            Id = timeSeriesProfile.Id,
+            StartYear = timeSeriesProfile.StartYear,
+            Values = timeSeriesProfile.Values,
+            Override = timeSeriesProfile.Override
+        };
+    }
+
     private static CaseOverviewDto MapToCaseOverviewDto(Case caseItem)
     {
         return new CaseOverviewDto

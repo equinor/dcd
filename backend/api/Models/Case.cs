@@ -103,6 +103,25 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual Exploration? Exploration { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = [];
+
+    public virtual ICollection<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
+
+    public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
+    public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);
+    public TimeSeriesProfile CreateProfileIfNotExists(string profileType)
+    {
+        var profile = TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
+
+        if (profile != null)
+        {
+            return profile;
+        }
+
+        var newProfile = new TimeSeriesProfile { ProfileType = profileType, Values = [] };
+        TimeSeriesProfiles.Add(newProfile);
+
+        return newProfile;
+    }
 }
 
 public enum ArtificialLift

@@ -9,6 +9,13 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
 {
     public TimeSeriesCostDto() { }
 
+    public TimeSeriesCostDto(TimeSeriesProfile timeSeriesProfile)
+    {
+        Id = timeSeriesProfile.Id;
+        StartYear = timeSeriesProfile.StartYear;
+        Values = timeSeriesProfile.Values;
+    }
+
     public TimeSeriesCostDto(TimeSeriesCost timeSeriesCost)
     {
         StartYear = timeSeriesCost.StartYear;

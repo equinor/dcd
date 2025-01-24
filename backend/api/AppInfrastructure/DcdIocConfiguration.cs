@@ -51,6 +51,7 @@ using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides;
 using api.Features.Profiles.Cases.TotalFeedStudiesOverrides;
 using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles;
 using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
@@ -76,6 +77,7 @@ using api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides;
 using api.Features.Profiles.Transports.TransportCostProfiles;
+using api.Features.Profiles.Update;
 using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
 using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides;
@@ -211,6 +213,10 @@ public static class DcdIocConfiguration
 
         /* Drilling schedules */
         services.AddScoped<DrillingScheduleService>();
+
+        /* Time series profiles */
+        services.AddScoped<CreateTimeSeriesProfileService>();
+        services.AddScoped<UpdateTimeSeriesProfileService>();
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();
