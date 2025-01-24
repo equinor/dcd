@@ -49,13 +49,13 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    /* Migrated profiles, do not access. */
+    #region Migrated profiles, do not access.
     public virtual CessationWellsCost? CessationWellsCost { get; set; }
     public virtual CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
-    /* End migrated profiles */
-
     public virtual CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
     public virtual CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
+    #endregion End migrated profiles
+
     public virtual CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
     public virtual TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
     public virtual TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
@@ -144,7 +144,7 @@ public enum ProductionStrategyOverview
     Mixed
 }
 
-/* Converted */
+#region Migrated profiles, do not access.
 public class CessationWellsCost : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
@@ -157,7 +157,6 @@ public class CessationWellsCostOverride : TimeSeriesCost, ICaseTimeSeries, ITime
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
-/* End converted */
 
 public class CessationOffshoreFacilitiesCost : TimeSeriesCost, ICaseTimeSeries
 {
@@ -171,6 +170,7 @@ public class CessationOffshoreFacilitiesCostOverride : TimeSeriesCost, ICaseTime
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
+#endregion End migrated profiles
 
 public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
 {

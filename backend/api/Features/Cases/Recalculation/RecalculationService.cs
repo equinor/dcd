@@ -737,14 +737,16 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.CessationWellsCostOverride)
             .Any(e => e.State == EntityState.Added);
 
-        var caseCessationOffshoreFacilitiesCostOverrideChanges = context.ChangeTracker.Entries<CessationOffshoreFacilitiesCostOverride>()
+        var caseCessationOffshoreFacilitiesCostOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCostOverride)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(CessationOffshoreFacilitiesCostOverride.InternalData)).IsModified
-                          || e.Property(nameof(CessationOffshoreFacilitiesCostOverride.Override)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
+                          || e.Property(nameof(TimeSeriesProfile.Override)).IsModified
                       ));
 
-        var cessationOffshoreFacilitiesCostAdded = context.ChangeTracker.Entries<CessationOffshoreFacilitiesCostOverride>()
+        var cessationOffshoreFacilitiesCostAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCostOverride)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileOilChanges = context.ChangeTracker.Entries<ProductionProfileOil>()
@@ -1090,10 +1092,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.CessationWellsCostOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var cessationOffshoreFacilitiesChanges = context.ChangeTracker.Entries<CessationOffshoreFacilitiesCost>()
+        var cessationOffshoreFacilitiesChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCost)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var cessationOffshoreFacilitiesOverrideChanges = context.ChangeTracker.Entries<CessationOffshoreFacilitiesCostOverride>()
+        var cessationOffshoreFacilitiesOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCost)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var cessationOnshoreFacilitiesChanges = context.ChangeTracker.Entries<CessationOnshoreFacilitiesCostProfile>()

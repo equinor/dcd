@@ -219,7 +219,6 @@ public static class DcdIocConfiguration
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();
-        services.AddScoped<CessationOffshoreFacilitiesCostOverrideService>();
         services.AddScoped<CessationOnshoreFacilitiesCostProfileService>();
         services.AddScoped<HistoricCostCostProfileService>();
         services.AddScoped<OffshoreFacilitiesOperationsCostProfileOverrideService>();

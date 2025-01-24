@@ -25,8 +25,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CessationOffshoreFacilitiesCost)
-            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
@@ -216,8 +214,8 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)
         );
         TimeSeries<double> cessationOffshoreFacilitiesProfile = UseOverrideOrProfile(
-            caseItem.CessationOffshoreFacilitiesCost,
-            caseItem.CessationOffshoreFacilitiesCostOverride
+            caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost),
+            caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)
         );
         TimeSeries<double> cessationOnshoreFacilitiesProfile = caseItem.CessationOnshoreFacilitiesCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };

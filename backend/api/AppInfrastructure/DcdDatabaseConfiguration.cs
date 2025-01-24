@@ -70,5 +70,61 @@ public static class DcdDatabaseConfiguration
         using var context = new DcdDbContext(dbBuilder.Options, null, null);
 
         context.Database.Migrate();
+
+        MigrateProfileData(dbBuilder.Options);
     }
+
+    private static void MigrateProfileData(DbContextOptions<DcdDbContext> dbBuilderOptions)
+    {
+        using var context = new DcdDbContext(dbBuilderOptions, null, null);
+
+        foreach (var migrationQuery in MigrationQueries)
+        {
+            var type = migrationQuery.Key;
+            var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{type}'";
+
+            var itemsFound = context.Database.SqlQueryRaw<int>(countQuery).First();
+
+            if (itemsFound != 0)
+            {
+                continue;
+            }
+
+            var insertQuery = migrationQuery.Value
+                    ? $"""
+                       insert into TimeSeriesProfiles
+                       (
+                           Id, StartYear, InternalData, CaseId, CreatedUtc, UpdatedUtc,
+                           Override, ProfileType
+                       )
+                       select
+                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
+                       Override, '{type}'
+                       from
+                           {type};
+                       """
+                    : $"""
+                       insert into TimeSeriesProfiles
+                       (
+                           Id, StartYear, InternalData, CaseId, CreatedUtc, UpdatedUtc,
+                           Override, ProfileType
+                       )
+                       select
+                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
+                       0, '{type}'
+                       from {type};
+                       """;
+
+            context.Database.ExecuteSqlRaw(insertQuery);
+        }
+    }
+
+    private static readonly Dictionary<string, bool> MigrationQueries = new()
+    {
+        { "CessationWellsCost", false },
+        { "CessationWellsCostOverride", true },
+        { "CessationOffshoreFacilitiesCost", false },
+        { "CessationOffshoreFacilitiesCostOverride", true }
+    };
 }
+

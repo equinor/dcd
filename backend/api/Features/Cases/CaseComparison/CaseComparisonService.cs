@@ -172,9 +172,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         TimeSeriesCost? cessationWellsCost = cessationWellsCostProfile == null ? null : new TimeSeriesCost(cessationWellsCostProfile);
 
-        TimeSeriesCost? cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true
-            ? caseItem.CessationOffshoreFacilitiesCostOverride
-            : caseItem.CessationOffshoreFacilitiesCost;
+        var cessationOffshoreFacilitiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost);
+
+        TimeSeriesCost? cessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCostProfile == null ? null : new TimeSeriesCost(cessationOffshoreFacilitiesCostProfile);
+
         TimeSeriesCost? cessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile;
 
         var cessationTimeSeries = CostProfileMerger.MergeCostProfiles([cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile]);
