@@ -15,8 +15,6 @@ public class CaseProfile : Profile
         CreateMap<TotalFEEDStudies, TimeSeriesCostDto>();
         CreateMap<TotalFEEDStudiesOverride, TimeSeriesCostOverrideDto>();
         CreateMap<TotalOtherStudiesCostProfile, TimeSeriesCostDto>();
-        CreateMap<WellInterventionCostProfile, TimeSeriesCostDto>();
-        CreateMap<WellInterventionCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfile, TimeSeriesCostDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<HistoricCostCostProfile, TimeSeriesCostDto>();
@@ -29,7 +27,6 @@ public class CaseProfile : Profile
         CreateMap<UpdateTimeSeriesCostOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<UpdateTimeSeriesCostOverrideDto, TotalFEEDStudiesOverride>();
         CreateMap<UpdateTimeSeriesCostOverrideDto, TotalOtherStudiesCostProfile>();
-        CreateMap<UpdateTimeSeriesCostOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<UpdateTimeSeriesCostOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<UpdateTimeSeriesCostDto, HistoricCostCostProfile>();
         CreateMap<UpdateTimeSeriesCostDto, OnshoreRelatedOPEXCostProfile>();
@@ -39,7 +36,6 @@ public class CaseProfile : Profile
         CreateMap<CreateTimeSeriesCostOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<CreateTimeSeriesCostOverrideDto, TotalFEEDStudiesOverride>();
         CreateMap<CreateTimeSeriesCostDto, TotalOtherStudiesCostProfile>();
-        CreateMap<CreateTimeSeriesCostOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<CreateTimeSeriesCostOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<CreateTimeSeriesCostDto, HistoricCostCostProfile>();
         CreateMap<CreateTimeSeriesCostDto, OnshoreRelatedOPEXCostProfile>();

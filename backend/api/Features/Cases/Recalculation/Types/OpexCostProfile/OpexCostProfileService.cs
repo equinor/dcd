@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -19,8 +20,6 @@ public class OpexCostProfileService(DcdDbContext context)
             .Include(c => c.TotalFEEDStudiesOverride)
             .Include(c => c.TotalOtherStudiesCostProfile)
             .Include(c => c.HistoricCostCostProfile)
-            .Include(c => c.WellInterventionCostProfile)
-            .Include(c => c.WellInterventionCostProfileOverride)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
@@ -60,7 +59,7 @@ public class OpexCostProfileService(DcdDbContext context)
 
     public static void CalculateWellInterventionCostProfile(Case caseItem, Project project, List<WellProjectWell> linkedWells, int? lastYearOfProduction)
     {
-        if (caseItem.WellInterventionCostProfileOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
             return;
         }
@@ -69,7 +68,7 @@ public class OpexCostProfileService(DcdDbContext context)
 
         if (linkedWells.Count == 0)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.WellInterventionCostProfile);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
             return;
         }
 
@@ -119,21 +118,10 @@ public class OpexCostProfileService(DcdDbContext context)
 
         wellInterventionCostsFromDrillingSchedule.Values = valuesList.ToArray();
 
-        var result = new WellInterventionCostProfile
-        {
-            Values = wellInterventionCostsFromDrillingSchedule.Values,
-            StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.WellInterventionCostProfile);
 
-        if (caseItem.WellInterventionCostProfile != null)
-        {
-            caseItem.WellInterventionCostProfile.Values = result.Values;
-            caseItem.WellInterventionCostProfile.StartYear = result.StartYear;
-        }
-        else
-        {
-            caseItem.WellInterventionCostProfile = result;
-        }
+        profile.Values = wellInterventionCostsFromDrillingSchedule.Values;
+        profile.StartYear = wellInterventionCostsFromDrillingSchedule.StartYear;
     }
 
     public static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, Topside topside, int? firstYearOfProduction, int? lastYearOfProduction)

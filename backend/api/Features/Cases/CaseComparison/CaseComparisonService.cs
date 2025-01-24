@@ -141,7 +141,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         var studyTimeSeries = CostProfileMerger.MergeCostProfiles(feasibility, feed, otherStudies);
 
-        TimeSeriesCost? wellIntervention = caseItem.WellInterventionCostProfileOverride?.Override == true ? caseItem.WellInterventionCostProfileOverride : caseItem.WellInterventionCostProfile;
+        TimeSeriesProfile? wellInterventionProfile = caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile);
+
+        TimeSeriesCost? wellIntervention = wellInterventionProfile == null ? null : new TimeSeriesCost(wellInterventionProfile);
+
         TimeSeriesCost? offshoreFacilities = caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true
             ? caseItem.OffshoreFacilitiesOperationsCostProfileOverride
             : caseItem.OffshoreFacilitiesOperationsCostProfile;

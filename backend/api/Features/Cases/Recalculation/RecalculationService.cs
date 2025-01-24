@@ -1066,10 +1066,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var historicCostChanges = context.ChangeTracker.Entries<HistoricCostCostProfile>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var wellInterventionChanges = context.ChangeTracker.Entries<WellInterventionCostProfile>()
+        var wellInterventionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.WellInterventionCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var wellInterventionOverrideChanges = context.ChangeTracker.Entries<WellInterventionCostProfileOverride>()
+        var wellInterventionOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.WellInterventionCostProfileOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var offshoreFacilitiesOperationsChanges = context.ChangeTracker.Entries<OffshoreFacilitiesOperationsCostProfile>()

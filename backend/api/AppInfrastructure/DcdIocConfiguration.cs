@@ -39,7 +39,6 @@ using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles;
-using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides;
 using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
@@ -49,7 +48,6 @@ using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles;
 using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides;
 using api.Features.Profiles.Cases.TotalFeedStudiesOverrides;
 using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles;
-using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides;
 using api.Features.Profiles.Create;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
@@ -226,7 +224,6 @@ public static class DcdIocConfiguration
         services.AddScoped<TotalFeasibilityAndConceptStudiesOverrideService>();
         services.AddScoped<TotalFeedStudiesOverrideService>();
         services.AddScoped<TotalOtherStudiesCostProfileService>();
-        services.AddScoped<WellInterventionCostProfileOverrideService>();
 
         /* Drainage strategy profiles */
         services.AddScoped<AdditionalProductionProfileGasService>();

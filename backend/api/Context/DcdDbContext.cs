@@ -24,7 +24,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<TotalFEEDStudiesOverride> TotalFEEDStudiesOverride => Set<TotalFEEDStudiesOverride>();
     public DbSet<TotalOtherStudiesCostProfile> TotalOtherStudiesCostProfile => Set<TotalOtherStudiesCostProfile>();
     public DbSet<HistoricCostCostProfile> HistoricCostCostProfile => Set<HistoricCostCostProfile>();
-    public DbSet<WellInterventionCostProfileOverride> WellInterventionCostProfileOverride => Set<WellInterventionCostProfileOverride>();
     public DbSet<OffshoreFacilitiesOperationsCostProfileOverride> OffshoreFacilitiesOperationsCostProfileOverride => Set<OffshoreFacilitiesOperationsCostProfileOverride>();
     public DbSet<OnshoreRelatedOPEXCostProfile> OnshoreRelatedOPEXCostProfile => Set<OnshoreRelatedOPEXCostProfile>();
     public DbSet<AdditionalOPEXCostProfile> AdditionalOPEXCostProfile => Set<AdditionalOPEXCostProfile>();
