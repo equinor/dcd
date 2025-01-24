@@ -202,12 +202,10 @@ declare namespace Components {
         export interface CreateTimeSeriesCostDto {
             startYear: number; // int32
             values: number /* double */[];
-            currency: Currency /* int32 */;
         }
         export interface CreateTimeSeriesCostOverrideDto {
             startYear: number; // int32
             values: number /* double */[];
-            currency: Currency /* int32 */;
             override: boolean;
         }
         export interface CreateTimeSeriesEnergyDto {
@@ -468,14 +466,12 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
             sum: number; // double
-            currency: Currency /* int32 */;
         }
         export interface TimeSeriesCostOverrideDto {
             id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
             sum: number; // double
-            currency: Currency /* int32 */;
             override: boolean;
         }
         export interface TimeSeriesEnergyDto {
@@ -717,12 +713,10 @@ declare namespace Components {
         export interface UpdateTimeSeriesCostDto {
             startYear: number; // int32
             values: number /* double */[];
-            currency: Currency /* int32 */;
         }
         export interface UpdateTimeSeriesCostOverrideDto {
             startYear: number; // int32
             values: number /* double */[];
-            currency: Currency /* int32 */;
             override: boolean;
         }
         export interface UpdateTimeSeriesEnergyOverrideDto {
