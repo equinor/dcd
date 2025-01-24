@@ -1074,10 +1074,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.WellInterventionCostProfileOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var offshoreFacilitiesOperationsChanges = context.ChangeTracker.Entries<OffshoreFacilitiesOperationsCostProfile>()
+        var offshoreFacilitiesOperationsChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OffshoreFacilitiesOperationsCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var offshoreFacilitiesOperationsOverrideChanges = context.ChangeTracker.Entries<OffshoreFacilitiesOperationsCostProfileOverride>()
+        var offshoreFacilitiesOperationsOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OffshoreFacilitiesOperationsCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var onshoreRelatedOpexChanges = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()

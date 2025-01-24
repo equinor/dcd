@@ -147,9 +147,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         TimeSeriesCost? wellIntervention = wellInterventionProfile == null ? null : new TimeSeriesCost(wellInterventionProfile);
 
-        TimeSeriesCost? offshoreFacilities = caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true
-            ? caseItem.OffshoreFacilitiesOperationsCostProfileOverride
-            : caseItem.OffshoreFacilitiesOperationsCostProfile;
+        TimeSeriesProfile? offshoreFacilitiesProfile = caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
+
+        TimeSeriesCost? offshoreFacilities = offshoreFacilitiesProfile == null ? null : new TimeSeriesCost(offshoreFacilitiesProfile);
+
         TimeSeriesCost? historicCost = caseItem.HistoricCostCostProfile;
         TimeSeriesCost? onshoreOpex = caseItem.OnshoreRelatedOPEXCostProfile;
         TimeSeriesCost? additionalOpex = caseItem.AdditionalOPEXCostProfile;

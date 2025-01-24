@@ -19,8 +19,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.TotalFEEDStudiesOverride)
             .Include(c => c.TotalOtherStudiesCostProfile)
             .Include(c => c.HistoricCostCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
@@ -183,8 +181,8 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)
         );
         TimeSeries<double> offshoreFacilitiesProfile = UseOverrideOrProfile(
-            caseItem.OffshoreFacilitiesOperationsCostProfile,
-            caseItem.OffshoreFacilitiesOperationsCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)
         );
 
         TimeSeries<double> historicCostProfile = caseItem.HistoricCostCostProfile

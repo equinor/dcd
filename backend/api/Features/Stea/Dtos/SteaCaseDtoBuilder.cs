@@ -51,13 +51,13 @@ public static class SteaCaseDtoBuilder
             costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.WellInterventionCostProfile)));
         }
 
-        if (caseDto.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true)
+        if (caseDto.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.OffshoreFacilitiesOperationsCostProfileOverride));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)));
         }
-        else if (caseDto.OffshoreFacilitiesOperationsCostProfile != null)
+        else if (caseDto.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.OffshoreFacilitiesOperationsCostProfile));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfile)));
         }
 
         if (caseDto.OnshoreRelatedOPEXCostProfile != null)

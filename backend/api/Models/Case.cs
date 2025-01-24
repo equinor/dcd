@@ -56,6 +56,8 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
     public virtual WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
     public virtual WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
+    public virtual OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    public virtual OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     #endregion End migrated profiles
 
     public virtual CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
@@ -65,8 +67,6 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
     public virtual TotalOtherStudiesCostProfile? TotalOtherStudiesCostProfile { get; set; }
     public virtual HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
-    public virtual OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
-    public virtual OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public virtual OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
     public virtual AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
     public virtual CalculatedTotalIncomeCostProfile? CalculatedTotalIncomeCostProfile { get; set; }
@@ -183,19 +183,6 @@ public class WellInterventionCostProfileOverride : TimeSeriesCost, ICaseTimeSeri
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
-#endregion End migrated profiles
-
-public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
-{
-    [ForeignKey("Case.Id")]
-    public virtual Case Case { get; set; } = null!;
-}
-
-public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
-{
-    [ForeignKey("Case.Id")]
-    public virtual Case Case { get; set; } = null!;
-}
 
 public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
@@ -208,6 +195,19 @@ public class OffshoreFacilitiesOperationsCostProfileOverride : TimeSeriesCost, I
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
+}
+#endregion End migrated profiles
+
+public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public virtual Case Case { get; set; } = null!;
+}
+
+public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public virtual Case Case { get; set; } = null!;
 }
 
 public class OnshoreRelatedOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries

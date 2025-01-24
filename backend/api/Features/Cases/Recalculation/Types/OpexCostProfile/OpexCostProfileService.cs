@@ -20,8 +20,6 @@ public class OpexCostProfileService(DcdDbContext context)
             .Include(c => c.TotalFEEDStudiesOverride)
             .Include(c => c.TotalOtherStudiesCostProfile)
             .Include(c => c.HistoricCostCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
@@ -126,14 +124,14 @@ public class OpexCostProfileService(DcdDbContext context)
 
     public static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, Topside topside, int? firstYearOfProduction, int? lastYearOfProduction)
     {
-        if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true)
         {
             return;
         }
 
         if (!firstYearOfProduction.HasValue || !lastYearOfProduction.HasValue)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.OffshoreFacilitiesOperationsCostProfile);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile));
             return;
         }
 
@@ -162,21 +160,11 @@ public class OpexCostProfileService(DcdDbContext context)
 
         const int preOpexCostYearOffset = 3;
 
-        var offshoreFacilitiesOperationsCost = new OffshoreFacilitiesOperationsCostProfile
-        {
-            StartYear = firstYear - preOpexCostYearOffset,
-            Values = values.ToArray()
-        };
 
-        if (caseItem.OffshoreFacilitiesOperationsCostProfile != null)
-        {
-            caseItem.OffshoreFacilitiesOperationsCostProfile.Values = offshoreFacilitiesOperationsCost.Values;
-            caseItem.OffshoreFacilitiesOperationsCostProfile.StartYear = offshoreFacilitiesOperationsCost.StartYear;
-        }
-        else
-        {
-            caseItem.OffshoreFacilitiesOperationsCostProfile = offshoreFacilitiesOperationsCost;
-        }
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
+
+        profile.Values = values.ToArray();
+        profile.StartYear = firstYear - preOpexCostYearOffset;
     }
 
     /*
