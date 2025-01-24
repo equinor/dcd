@@ -32,6 +32,7 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadCases(Guid projectPk)
     {
         await context.Cases
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)

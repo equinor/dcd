@@ -11,6 +11,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
     public async Task CalculateCo2IntensityProfile(Guid caseId)
     {
         var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles)
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)

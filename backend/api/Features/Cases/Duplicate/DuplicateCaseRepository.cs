@@ -29,6 +29,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task<Case> LoadCase(Guid projectId, Guid caseId)
     {
         return await context.Cases
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)

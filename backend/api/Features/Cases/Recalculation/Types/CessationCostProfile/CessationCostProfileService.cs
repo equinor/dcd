@@ -13,6 +13,7 @@ public class CessationCostProfileService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationWellsCost)
+            .Include(x => x.TimeSeriesProfiles)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .SingleAsync(x => x.Id == caseId);

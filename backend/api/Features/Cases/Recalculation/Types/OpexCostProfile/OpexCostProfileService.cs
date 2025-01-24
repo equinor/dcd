@@ -12,6 +12,7 @@ public class OpexCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)

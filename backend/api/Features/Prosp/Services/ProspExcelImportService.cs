@@ -356,6 +356,7 @@ public class ProspExcelImportService(
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
         var caseItem = await context.Cases
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)

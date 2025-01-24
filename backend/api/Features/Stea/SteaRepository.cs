@@ -10,6 +10,7 @@ public class SteaRepository(DcdDbContext context)
     public async Task<Project> GetProjectWithCasesAndAssets(Guid projectPk)
     {
         var project = await context.Projects
+            .Include(p => p.Cases).ThenInclude(c => c.TimeSeriesProfiles)
             .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
             .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(p => p.Cases).ThenInclude(c => c.TotalFEEDStudies)

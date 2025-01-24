@@ -26,6 +26,7 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Cases
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationWellsCost)
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)

@@ -35,6 +35,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<Case> GetCaseNoTracking(Guid caseId)
     {
         return await context.Cases
+            .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
