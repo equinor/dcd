@@ -5,7 +5,7 @@ const MakeEdits = () => (
     <Article>
         <Article.Header>How to edit data</Article.Header>
         <Article.Body>
-            <VideoPlayer src="https://dcdstorageaccount.blob.core.windows.net/user-guide/claudia%20-%20how%20to%20make%20edits.mp4" />
+            <VideoPlayer src="claudia%20-%20how%20to%20make%20edits.mp4" />
             <div>
                 <p>
                     The project and case dashboards have two primary modes:

@@ -5,7 +5,7 @@ const CreateCase = () => (
     <Article>
         <Article.Header>How to create a case</Article.Header>
         <Article.Body>
-            <VideoPlayer src="https://dcdstorageaccount.blob.core.windows.net/user-guide/How%20t%20o%20create%20case.mp4" />
+            <VideoPlayer src="How%20t%20o%20create%20case.mp4" />
             <ol>
                 <li>
                     <p><strong>Go to the Project Overview Page:</strong></p>

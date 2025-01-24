@@ -2,7 +2,6 @@ import React from "react"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
-import UserGuideView from "../Components/Guide/UserGuide"
 
 const StickyBanner = styled(Banner)`
     position: sticky;
@@ -20,7 +19,6 @@ const IndexView: React.FC = () => (
                 Select a project to view
             </Banner.Message>
         </StickyBanner>
-        <UserGuideView />
     </div>
 )
 
