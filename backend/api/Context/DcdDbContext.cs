@@ -75,7 +75,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ExplorationWellCostProfile> ExplorationWellCostProfile => Set<ExplorationWellCostProfile>();
     public DbSet<AppraisalWellCostProfile> AppraisalWellCostProfile => Set<AppraisalWellCostProfile>();
     public DbSet<SidetrackCostProfile> SidetrackCostProfile => Set<SidetrackCostProfile>();
-    public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile => Set<CalculatedTotalIncomeCostProfile>();
     public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile => Set<CalculatedTotalCostCostProfile>();
     public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();

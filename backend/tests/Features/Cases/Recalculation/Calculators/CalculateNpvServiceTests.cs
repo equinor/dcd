@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
+using api.Features.Profiles;
 using api.Models;
 
 using Xunit;
@@ -31,11 +32,15 @@ public class CalculateNpvServiceTests
                 StartYear = -3,
                 Values = [2000.0, 4000.0, 1000.0, 1000.0]
             },
-            CalculatedTotalIncomeCostProfile = new CalculatedTotalIncomeCostProfile
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 0,
-                Values = [6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75]
-            },
+                new()
+                {
+                    ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,
+                    StartYear = 0,
+                    Values = [6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75]
+                }
+            }
         };
 
         CalculateNpvService.CalculateNpv(caseItem);

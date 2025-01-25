@@ -138,5 +138,6 @@ public static class DcdDatabaseConfiguration
         { "OnshoreRelatedOPEXCostProfile", false },
         { "AdditionalOPEXCostProfile", false },
         { "TotalOtherStudiesCostProfile", false },
+        { "CalculatedTotalIncomeCostProfile", false },
     };
 }

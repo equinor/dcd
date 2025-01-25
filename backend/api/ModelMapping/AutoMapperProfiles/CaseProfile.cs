@@ -9,7 +9,6 @@ public class CaseProfile : Profile
 {
     public CaseProfile()
     {
-        CreateMap<CalculatedTotalIncomeCostProfile, TimeSeriesCostDto>();
         CreateMap<CalculatedTotalCostCostProfile, TimeSeriesCostDto>();
     }
 }

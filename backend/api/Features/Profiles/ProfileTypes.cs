@@ -29,4 +29,6 @@ public static class ProfileTypes
     public const string AdditionalOPEXCostProfile = "AdditionalOPEXCostProfile";
 
     public const string TotalOtherStudiesCostProfile = "TotalOtherStudiesCostProfile";
+
+    public const string CalculatedTotalIncomeCostProfile = "CalculatedTotalIncomeCostProfile";
 }

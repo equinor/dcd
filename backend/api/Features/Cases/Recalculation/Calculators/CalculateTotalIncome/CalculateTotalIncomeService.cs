@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -13,7 +14,7 @@ public class CalculateTotalIncomeService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(x => x.Project)
-            .Include(x => x.CalculatedTotalIncomeCostProfile)
+            .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
@@ -63,19 +64,10 @@ public class CalculateTotalIncomeService(DcdDbContext context)
         // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfile to get correct unit
         var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();
 
-        if (caseItem.CalculatedTotalIncomeCostProfile != null)
-        {
-            caseItem.CalculatedTotalIncomeCostProfile.Values = scaledTotalIncomeValues;
-            caseItem.CalculatedTotalIncomeCostProfile.StartYear = totalIncome.StartYear;
-        }
-        else
-        {
-            caseItem.CalculatedTotalIncomeCostProfile = new CalculatedTotalIncomeCostProfile
-            {
-                Values = scaledTotalIncomeValues,
-                StartYear = totalIncome.StartYear
-            };
-        }
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalIncomeCostProfile);
+
+        profile.Values = scaledTotalIncomeValues;
+        profile.StartYear = totalIncome.StartYear;
     }
 }
 

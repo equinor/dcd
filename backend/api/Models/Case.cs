@@ -67,9 +67,9 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
     public virtual AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
     public virtual TotalOtherStudiesCostProfile? TotalOtherStudiesCostProfile { get; set; }
+    public virtual CalculatedTotalIncomeCostProfile? CalculatedTotalIncomeCostProfile { get; set; }
     #endregion End migrated profiles
 
-    public virtual CalculatedTotalIncomeCostProfile? CalculatedTotalIncomeCostProfile { get; set; }
     public virtual CalculatedTotalCostCostProfile? CalculatedTotalCostCostProfile { get; set; }
 
     public Guid DrainageStrategyLink { get; set; }
@@ -252,13 +252,13 @@ public class TotalOtherStudiesCostProfile : TimeSeriesCost, ICaseTimeSeries
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
-#endregion End migrated profiles
 
 public class CalculatedTotalIncomeCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+#endregion End migrated profiles
 
 public class CalculatedTotalCostCostProfile : TimeSeriesCost, ICaseTimeSeries
 {

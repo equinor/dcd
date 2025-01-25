@@ -26,7 +26,6 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Cases
             .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.CalculatedTotalCostCostProfile)
-            .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Where(x => caseIds.Contains(x.Id))
             .LoadAsync();
 
