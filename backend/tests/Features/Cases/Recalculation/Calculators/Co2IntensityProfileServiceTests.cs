@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Models;
 
@@ -27,11 +28,15 @@ public class Co2IntensityProfileServiceTests
 
             DG4Date = new DateTime(2030, 1, 1),
             DrainageStrategyLink = Guid.NewGuid(),
-            CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 2027,
-                Values = [2000.0, 4000.0, 1000.0, 1000.0]
-            },
+                new()
+                {
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
+                    StartYear = 2027,
+                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                }
+            }
         };
 
         var drainageStrategy = new DrainageStrategy

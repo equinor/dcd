@@ -27,13 +27,14 @@ public class CalculateNpvServiceTests
             Project = project,
             DG4Date = new DateTime(DateTime.Now.Year + 6, 1, 1),
             DrainageStrategyLink = Guid.NewGuid(),
-            CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
-            {
-                StartYear = -3,
-                Values = [2000.0, 4000.0, 1000.0, 1000.0]
-            },
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
+                new()
+                {
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
+                    StartYear = -3,
+                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                },
                 new()
                 {
                     ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,

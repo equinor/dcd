@@ -11,7 +11,6 @@ public class SteaRepository(DcdDbContext context)
     {
         var project = await context.Projects
             .Include(p => p.Cases).ThenInclude(c => c.TimeSeriesProfiles)
-            .Include(p => p.Cases).ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)

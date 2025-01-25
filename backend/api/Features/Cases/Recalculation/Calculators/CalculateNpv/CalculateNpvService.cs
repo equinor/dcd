@@ -14,7 +14,6 @@ public class CalculateNpvService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(c => c.Project)
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
 
         CalculateNpv(caseItem);
@@ -54,13 +53,15 @@ public class CalculateNpvService(DcdDbContext context)
 
     private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
     {
-        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile) == null || caseItem.CalculatedTotalCostCostProfile == null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile) == null ||
+            caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile) == null)
         {
             return null;
         }
 
         var calculatedTotalIncomeCostProfile = new TimeSeriesCost(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
+        var calculatedTotalCostCostProfile = new TimeSeriesCost(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
 
-        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile);
+        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfile, calculatedTotalCostCostProfile);
     }
 }

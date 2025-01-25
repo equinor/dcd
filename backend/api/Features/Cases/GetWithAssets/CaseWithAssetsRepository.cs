@@ -36,7 +36,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     {
         return await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.CalculatedTotalCostCostProfile)
             .AsNoTracking()
             .SingleAsync(c => c.Id == caseId);
     }

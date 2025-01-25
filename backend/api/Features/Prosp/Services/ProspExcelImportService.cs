@@ -357,7 +357,6 @@ public class ProspExcelImportService(
 
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(c => c.Id == sourceCaseId);
 
         caseItem.SharepointFileId = sharepointFileId;

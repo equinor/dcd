@@ -13,7 +13,6 @@ public class CalculateTotalCostService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
 
         var substructure = await context.Substructures
@@ -127,19 +126,10 @@ public class CalculateTotalCostService(DcdDbContext context)
             explorationProfile
         ]);
 
-        if (caseItem.CalculatedTotalCostCostProfile != null)
-        {
-            caseItem.CalculatedTotalCostCostProfile.Values = totalCost.Values;
-            caseItem.CalculatedTotalCostCostProfile.StartYear = totalCost.StartYear;
-        }
-        else
-        {
-            caseItem.CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
-            {
-                Values = totalCost.Values,
-                StartYear = totalCost.StartYear
-            };
-        }
+        var calculatedTotalCostCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfile);
+
+        calculatedTotalCostCostProfile.Values = totalCost.Values;
+        calculatedTotalCostCostProfile.StartYear = totalCost.StartYear;
     }
 
     private static TimeSeries<double> CalculateStudyCost(Case caseItem)

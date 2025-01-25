@@ -12,7 +12,6 @@ public class Co2IntensityProfileService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles)
-            .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(c => c.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies

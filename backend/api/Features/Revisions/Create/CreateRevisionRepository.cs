@@ -33,7 +33,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     {
         await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.CalculatedTotalCostCostProfile)
             .Include(c => c.WellProject).ThenInclude(wp => wp!.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.Exploration).ThenInclude(wp => wp!.ExplorationWells).ThenInclude(c => c.Well)
             .Where(x => x.ProjectId == projectPk)

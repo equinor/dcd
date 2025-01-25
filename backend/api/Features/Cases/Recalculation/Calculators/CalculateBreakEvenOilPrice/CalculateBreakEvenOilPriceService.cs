@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
+using api.Features.Profiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(x => x.Project)
-            .Include(x => x.CalculatedTotalCostCostProfile)
+            .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
@@ -73,10 +74,12 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
             return;
         }
 
+        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
+
         var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
-            caseItem.CalculatedTotalCostCostProfile?.Values ?? [],
+            calculatedTotalCostCostProfile?.Values ?? [],
             discountRate,
-            (caseItem.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year)
+            (calculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year)
         );
 
         var gor = discountedGasVolume / discountedOilVolume;

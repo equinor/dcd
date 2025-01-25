@@ -174,13 +174,15 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.CalculateTotalCost(caseItem, substructure, surf, topside, transport, onshorePowerSupply, wellProject, exploration);
 
         // Assert
-        Assert.Equal(2020, caseItem.CalculatedTotalCostCostProfile!.StartYear);
-        Assert.Equal(3, caseItem.CalculatedTotalCostCostProfile.Values.Length);
+        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
+        Assert.NotNull(calculatedTotalCostCostProfile);
+        Assert.Equal(2020, calculatedTotalCostCostProfile.StartYear);
+        Assert.Equal(3, calculatedTotalCostCostProfile.Values.Length);
 
         var expectedValues = new[] { 2950.0, 4150.0, 4980.0 };
         for (int i = 0; i < expectedValues.Length; i++)
         {
-            Assert.Equal(expectedValues[i], caseItem.CalculatedTotalCostCostProfile.Values[i]);
+            Assert.Equal(expectedValues[i], calculatedTotalCostCostProfile.Values[i]);
         }
     }
 
