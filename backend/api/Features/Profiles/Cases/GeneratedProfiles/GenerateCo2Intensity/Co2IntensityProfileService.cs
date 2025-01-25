@@ -16,7 +16,6 @@ public class Co2IntensityProfileService(DcdDbContext context)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(c => c.Id == caseId);

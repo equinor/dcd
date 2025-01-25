@@ -194,9 +194,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         TimeSeriesCost? cessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCostProfile == null ? null : new TimeSeriesCost(cessationOffshoreFacilitiesCostProfile);
 
-        TimeSeriesCost? cessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile;
+        var cessationOnshoreFacilitiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
+        TimeSeriesCost? cessationOnshoreFacilitiesCost = cessationOnshoreFacilitiesCostProfile == null ? null : new TimeSeriesCost(cessationOnshoreFacilitiesCostProfile);
 
-        var cessationTimeSeries = CostProfileMerger.MergeCostProfiles([cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile]);
+        var cessationTimeSeries = CostProfileMerger.MergeCostProfiles(cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
 
         return cessationTimeSeries.Values.Sum();
     }

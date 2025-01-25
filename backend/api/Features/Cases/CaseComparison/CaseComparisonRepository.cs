@@ -25,7 +25,6 @@ public class CaseComparisonRepository(DcdDbContext context)
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .Include(c => c.TotalOtherStudiesCostProfile)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)

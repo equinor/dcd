@@ -19,4 +19,6 @@ public static class ProfileTypes
 
     public const string TotalFEEDStudies = "TotalFEEDStudies";
     public const string TotalFEEDStudiesOverride = "TotalFEEDStudiesOverride";
+
+    public const string CessationOnshoreFacilitiesCostProfile = "CessationOnshoreFacilitiesCostProfile";
 }

@@ -19,7 +19,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts => Set<ExplorationOperationalWellCosts>();
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts => Set<DevelopmentOperationalWellCosts>();
     public DbSet<Case> Cases => Set<Case>();
-    public DbSet<CessationOnshoreFacilitiesCostProfile> CessationOnshoreFacilitiesCostProfile => Set<CessationOnshoreFacilitiesCostProfile>();
     public DbSet<TotalOtherStudiesCostProfile> TotalOtherStudiesCostProfile => Set<TotalOtherStudiesCostProfile>();
     public DbSet<HistoricCostCostProfile> HistoricCostCostProfile => Set<HistoricCostCostProfile>();
     public DbSet<OnshoreRelatedOPEXCostProfile> OnshoreRelatedOPEXCostProfile => Set<OnshoreRelatedOPEXCostProfile>();

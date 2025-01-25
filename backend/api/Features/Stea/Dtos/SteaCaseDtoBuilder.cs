@@ -137,9 +137,9 @@ public static class SteaCaseDtoBuilder
             costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationOffshoreFacilitiesCost)));
         }
 
-        if (caseItem.CessationOnshoreFacilitiesCostProfile != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.CessationOnshoreFacilitiesCostProfile));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationOnshoreFacilitiesCostProfile)));
         }
 
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);

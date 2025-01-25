@@ -1108,7 +1108,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCost)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var cessationOnshoreFacilitiesChanges = context.ChangeTracker.Entries<CessationOnshoreFacilitiesCostProfile>()
+        var cessationOnshoreFacilitiesChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOnshoreFacilitiesCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var surfChanges = context.ChangeTracker.Entries<SurfCostProfile>()

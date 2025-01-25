@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
@@ -29,6 +30,7 @@ public class CreateTimeSeriesProfileService(DcdDbContext context)
 
         caseItem.TimeSeriesProfiles.Add(entity);
 
+        await context.UpdateCaseUpdatedUtc(caseId);
         await context.SaveChangesAsync();
 
         return new TimeSeriesCostOverrideDto
@@ -62,6 +64,7 @@ public class CreateTimeSeriesProfileService(DcdDbContext context)
 
         caseItem.TimeSeriesProfiles.Add(entity);
 
+        await context.UpdateCaseUpdatedUtc(caseId);
         await context.SaveChangesAsync();
 
         return new TimeSeriesCostOverrideDto

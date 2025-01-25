@@ -17,7 +17,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
 
@@ -209,14 +208,17 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost),
             caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)
         );
-        TimeSeries<double> cessationOnshoreFacilitiesProfile = caseItem.CessationOnshoreFacilitiesCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+
+        var cessationOnshoreFacilitiesProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
+        TimeSeries<double> cessationOnshoreFacilitiesCost = cessationOnshoreFacilitiesProfile != null
+            ? new TimeSeriesCost(cessationOnshoreFacilitiesProfile)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
         var totalCessationCost = CostProfileMerger.MergeCostProfiles(
         [
             cessationWellsProfile,
             cessationOffshoreFacilitiesProfile,
-            cessationOnshoreFacilitiesProfile
+            cessationOnshoreFacilitiesCost
         ]);
         return totalCessationCost;
     }

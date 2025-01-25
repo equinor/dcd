@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Profiles.Dtos;
 
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context)
         entity.StartYear = dto.StartYear;
         entity.Values = dto.Values;
 
+        await context.UpdateCaseUpdatedUtc(caseId);
         await context.SaveChangesAsync();
 
         return new TimeSeriesCostDto
@@ -52,6 +54,7 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context)
         entity.Values = dto.Values;
         entity.Override = dto.Override;
 
+        await context.UpdateCaseUpdatedUtc(caseId);
         await context.SaveChangesAsync();
 
         return new TimeSeriesCostOverrideDto
