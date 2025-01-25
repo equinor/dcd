@@ -15,7 +15,6 @@ public class OpexCostProfileService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalOtherStudiesCostProfile)
-            .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(c => c.Id == caseId);

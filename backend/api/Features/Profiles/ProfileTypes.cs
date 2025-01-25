@@ -25,4 +25,6 @@ public static class ProfileTypes
     public const string HistoricCostCostProfile = "HistoricCostCostProfile";
 
     public const string OnshoreRelatedOPEXCostProfile = "OnshoreRelatedOPEXCostProfile";
+
+    public const string AdditionalOPEXCostProfile = "AdditionalOPEXCostProfile";
 }

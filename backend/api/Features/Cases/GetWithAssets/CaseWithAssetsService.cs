@@ -45,7 +45,7 @@ public class CaseWithAssetsService(
             OffshoreFacilitiesOperationsCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile)),
             OffshoreFacilitiesOperationsCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)),
             OnshoreRelatedOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile)),
-            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, TimeSeriesCostDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
+            AdditionalOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
             CalculatedTotalIncomeCostProfile = MapToDto<CalculatedTotalIncomeCostProfile, TimeSeriesCostDto>(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalIncomeCostProfile?.Id),
             CalculatedTotalCostCostProfile = MapToDto<CalculatedTotalCostCostProfile, TimeSeriesCostDto>(caseItem.CalculatedTotalCostCostProfile, caseItem.CalculatedTotalCostCostProfile?.Id),
             DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),

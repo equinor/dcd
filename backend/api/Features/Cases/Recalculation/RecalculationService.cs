@@ -378,12 +378,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
             .Any(e => e.State == EntityState.Added);
 
-        var additionalOpexChanges = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
+        var additionalOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalOPEXCostProfile)
             .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(AdditionalOPEXCostProfile.StartYear)).IsModified
-                      || e.Property(nameof(AdditionalOPEXCostProfile.InternalData)).IsModified);
+                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
+                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
 
-        var additionalOpexAdded = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
+        var additionalOpexAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalOPEXCostProfile)
             .Any(e => e.State == EntityState.Added);
 
         var developmentOperationalWellCostsChanges = context.ChangeTracker.Entries<DevelopmentOperationalWellCosts>()
@@ -1095,7 +1097,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var additionalOpexChanges = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
+        var additionalOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalOPEXCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var cessationWellsChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()

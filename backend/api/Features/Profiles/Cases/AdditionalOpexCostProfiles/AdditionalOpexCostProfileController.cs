@@ -1,11 +1,15 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.Cases.AdditionalOpexCostProfiles;
 
-public class AdditionalOpexCostProfileController(AdditionalOpexCostProfileService service) : ControllerBase
+public class AdditionalOpexCostProfileController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/additional-opex-cost-profile")]
@@ -14,7 +18,7 @@ public class AdditionalOpexCostProfileController(AdditionalOpexCostProfileServic
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostDto dto)
     {
-        return await service.CreateAdditionalOpexCostProfile(projectId, caseId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.AdditionalOPEXCostProfile, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -25,6 +29,6 @@ public class AdditionalOpexCostProfileController(AdditionalOpexCostProfileServic
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostDto dto)
     {
-        return await service.UpdateAdditionalOpexCostProfile(projectId, caseId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesProfile(projectId, caseId, costProfileId, ProfileTypes.AdditionalOPEXCostProfile, dto);
     }
 }

@@ -136,5 +136,6 @@ public static class DcdDatabaseConfiguration
         { "CessationOnshoreFacilitiesCostProfile", false },
         { "HistoricCostCostProfile", false },
         { "OnshoreRelatedOPEXCostProfile", false },
+        { "AdditionalOPEXCostProfile", false },
     };
 }

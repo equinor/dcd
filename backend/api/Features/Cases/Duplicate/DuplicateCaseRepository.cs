@@ -31,7 +31,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
         return await context.Cases
             .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalOtherStudiesCostProfile)
-            .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
