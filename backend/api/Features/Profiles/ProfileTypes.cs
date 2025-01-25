@@ -27,4 +27,6 @@ public static class ProfileTypes
     public const string OnshoreRelatedOPEXCostProfile = "OnshoreRelatedOPEXCostProfile";
 
     public const string AdditionalOPEXCostProfile = "AdditionalOPEXCostProfile";
+
+    public const string TotalOtherStudiesCostProfile = "TotalOtherStudiesCostProfile";
 }

@@ -33,13 +33,14 @@ public class CalculateTotalCostServiceTests
             TransportLink = Guid.NewGuid(),
             OnshorePowerSupplyLink = Guid.NewGuid(),
             ExplorationLink = Guid.NewGuid(),
-            TotalOtherStudiesCostProfile = new TotalOtherStudiesCostProfile
-            {
-                StartYear = 2020,
-                Values = [1000.0, 1500.0, 2000.0]
-            },
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
+                new()
+                {
+                    ProfileType = ProfileTypes.TotalOtherStudiesCostProfile,
+                    StartYear = 2020,
+                    Values = [1000.0, 1500.0, 2000.0]
+                },
                 new()
                 {
                     ProfileType = ProfileTypes.OnshoreRelatedOPEXCostProfile,

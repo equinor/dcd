@@ -1070,7 +1070,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFEEDStudiesOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var totalOtherStudiesChanges = context.ChangeTracker.Entries<TotalOtherStudiesCostProfile>()
+        var totalOtherStudiesChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalOtherStudiesCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var historicCostChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()

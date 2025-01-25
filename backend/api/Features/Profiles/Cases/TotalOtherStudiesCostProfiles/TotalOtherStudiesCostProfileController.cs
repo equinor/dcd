@@ -1,11 +1,15 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles;
 
-public class TotalOtherStudiesCostProfileController(TotalOtherStudiesCostProfileService service) : ControllerBase
+public class TotalOtherStudiesCostProfileController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/total-other-studies-cost-profile")]
@@ -14,7 +18,7 @@ public class TotalOtherStudiesCostProfileController(TotalOtherStudiesCostProfile
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostDto dto)
     {
-        return await service.CreateTotalOtherStudiesCostProfile(projectId, caseId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.TotalOtherStudiesCostProfile, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -25,6 +29,6 @@ public class TotalOtherStudiesCostProfileController(TotalOtherStudiesCostProfile
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostDto dto)
     {
-        return await service.UpdateTotalOtherStudiesCostProfile(projectId, caseId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesProfile(projectId, caseId, costProfileId, ProfileTypes.TotalOtherStudiesCostProfile, dto);
     }
 }

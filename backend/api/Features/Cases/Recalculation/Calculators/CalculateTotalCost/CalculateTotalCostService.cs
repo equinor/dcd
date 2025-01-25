@@ -13,7 +13,6 @@ public class CalculateTotalCostService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.TotalOtherStudiesCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
 
@@ -154,14 +153,17 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)
         );
 
-        TimeSeries<double> otherStudiesProfile = caseItem.TotalOtherStudiesCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
+
+        TimeSeries<double> otherStudies = totalOtherStudiesCostProfile != null
+            ? new TimeSeriesCost(totalOtherStudiesCostProfile)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
         var totalStudyCost = CostProfileMerger.MergeCostProfiles(
         [
             feasibilityProfile,
             feedProfile,
-            otherStudiesProfile
+            otherStudies
         ]);
         return totalStudyCost;
     }

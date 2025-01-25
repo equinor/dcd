@@ -145,7 +145,8 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         TimeSeriesCost? feed = feedProfile == null ? null : new TimeSeriesCost(feedProfile);
 
-        TimeSeriesCost? otherStudies = caseItem.TotalOtherStudiesCostProfile;
+        var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
+        TimeSeriesCost? otherStudies = totalOtherStudiesCostProfile == null ? null : new TimeSeriesCost(totalOtherStudiesCostProfile);
 
         var studyTimeSeries = CostProfileMerger.MergeCostProfiles(feasibility, feed, otherStudies);
 
