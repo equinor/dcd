@@ -164,7 +164,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         var historicCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile);
         TimeSeriesCost? historicCost = historicCostCostProfile == null ? null : new TimeSeriesCost(historicCostCostProfile);
 
-        TimeSeriesCost? onshoreOpex = caseItem.OnshoreRelatedOPEXCostProfile;
+        var onshoreRelatedOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        TimeSeriesCost? onshoreOpex = onshoreRelatedOpexCostProfile == null ? null : new TimeSeriesCost(onshoreRelatedOpexCostProfile);
+
         TimeSeriesCost? additionalOpex = caseItem.AdditionalOPEXCostProfile;
 
         var opexTimeSeries = CostProfileMerger.MergeCostProfiles(

@@ -38,13 +38,14 @@ public class CalculateTotalCostServiceTests
                 StartYear = 2020,
                 Values = [1000.0, 1500.0, 2000.0]
             },
-            OnshoreRelatedOPEXCostProfile = new OnshoreRelatedOPEXCostProfile
-            {
-                StartYear = 2020,
-                Values = [500.0, 600.0, 700.0]
-            },
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
+                new()
+                {
+                    ProfileType = ProfileTypes.OnshoreRelatedOPEXCostProfile,
+                    StartYear = 2020,
+                    Values = [500.0, 600.0, 700.0]
+                },
                 new()
                 {
                     ProfileType = ProfileTypes.CessationWellsCost,

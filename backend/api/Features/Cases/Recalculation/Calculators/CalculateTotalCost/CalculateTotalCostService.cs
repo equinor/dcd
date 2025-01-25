@@ -14,7 +14,6 @@ public class CalculateTotalCostService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(c => c.TimeSeriesProfiles)
             .Include(c => c.TotalOtherStudiesCostProfile)
-            .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .SingleAsync(x => x.Id == caseId);
@@ -184,8 +183,11 @@ public class CalculateTotalCostService(DcdDbContext context)
             ? new TimeSeriesCost(historicCostProfile)
             : new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        TimeSeries<double> onshoreRelatedOpexProfile = caseItem.OnshoreRelatedOPEXCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        var onshoreRelatedOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        TimeSeries<double> onshoreRelatedOpex = onshoreRelatedOpexProfile != null
+            ? new TimeSeriesCost(onshoreRelatedOpexProfile)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
+
         TimeSeries<double> additionalOpexProfile = caseItem.AdditionalOPEXCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
@@ -194,7 +196,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             historicCost,
             wellInterventionProfile,
             offshoreFacilitiesProfile,
-            onshoreRelatedOpexProfile,
+            onshoreRelatedOpex,
             additionalOpexProfile
         ]);
         return totalOpexCost;

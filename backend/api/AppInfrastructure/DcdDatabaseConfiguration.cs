@@ -135,5 +135,6 @@ public static class DcdDatabaseConfiguration
         { "TotalFEEDStudiesOverride", true },
         { "CessationOnshoreFacilitiesCostProfile", false },
         { "HistoricCostCostProfile", false },
+        { "OnshoreRelatedOPEXCostProfile", false },
     };
 }

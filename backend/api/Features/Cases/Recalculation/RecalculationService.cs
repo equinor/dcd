@@ -368,12 +368,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
             .Any(e => e.State == EntityState.Added);
 
-        var onshoreOpexChanges = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
+        var onshoreOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
             .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(OnshoreRelatedOPEXCostProfile.StartYear)).IsModified
-                      || e.Property(nameof(OnshoreRelatedOPEXCostProfile.InternalData)).IsModified);
+                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
+                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
 
-        var onshoreOpexAdded = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
+        var onshoreOpexAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
             .Any(e => e.State == EntityState.Added);
 
         var additionalOpexChanges = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
@@ -1089,7 +1091,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.OffshoreFacilitiesOperationsCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var onshoreRelatedOpexChanges = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
+        var onshoreRelatedOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var additionalOpexChanges = context.ChangeTracker.Entries<AdditionalOPEXCostProfile>()
