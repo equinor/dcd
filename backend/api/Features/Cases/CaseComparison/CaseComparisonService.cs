@@ -161,7 +161,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         TimeSeriesCost? offshoreFacilities = offshoreFacilitiesProfile == null ? null : new TimeSeriesCost(offshoreFacilitiesProfile);
 
-        TimeSeriesCost? historicCost = caseItem.HistoricCostCostProfile;
+        var historicCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile);
+        TimeSeriesCost? historicCost = historicCostCostProfile == null ? null : new TimeSeriesCost(historicCostCostProfile);
+
         TimeSeriesCost? onshoreOpex = caseItem.OnshoreRelatedOPEXCostProfile;
         TimeSeriesCost? additionalOpex = caseItem.AdditionalOPEXCostProfile;
 

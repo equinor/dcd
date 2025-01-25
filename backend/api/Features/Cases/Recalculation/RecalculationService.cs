@@ -358,12 +358,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
 
     private bool CalculateOpex()
     {
-        var historicCostChanges = context.ChangeTracker.Entries<HistoricCostCostProfile>()
+        var historicCostChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
             .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(HistoricCostCostProfile.StartYear)).IsModified
-                      || e.Property(nameof(HistoricCostCostProfile.InternalData)).IsModified);
+                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
+                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
 
-        var historicCostAdded = context.ChangeTracker.Entries<HistoricCostCostProfile>()
+        var historicCostAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
             .Any(e => e.State == EntityState.Added);
 
         var onshoreOpexChanges = context.ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
@@ -1067,7 +1069,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var totalOtherStudiesChanges = context.ChangeTracker.Entries<TotalOtherStudiesCostProfile>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var historicCostChanges = context.ChangeTracker.Entries<HistoricCostCostProfile>()
+        var historicCostChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var wellInterventionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()

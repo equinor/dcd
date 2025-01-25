@@ -13,7 +13,6 @@ public class Co2IntensityProfileService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles)
             .Include(c => c.TotalOtherStudiesCostProfile)
-            .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)

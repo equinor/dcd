@@ -37,9 +37,9 @@ public static class SteaCaseDtoBuilder
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
 
-        if (caseDto.HistoricCostCostProfile != null)
+        if (caseDto.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.HistoricCostCostProfile));
+            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.HistoricCostCostProfile)));
         }
 
         if (caseDto.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)

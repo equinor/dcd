@@ -63,10 +63,10 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual TotalFEEDStudies? TotalFEEDStudies { get; set; }
     public virtual TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
     public virtual CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
+    public virtual HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
     #endregion End migrated profiles
 
     public virtual TotalOtherStudiesCostProfile? TotalOtherStudiesCostProfile { get; set; }
-    public virtual HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
     public virtual OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
     public virtual AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
     public virtual CalculatedTotalIncomeCostProfile? CalculatedTotalIncomeCostProfile { get; set; }
@@ -228,13 +228,13 @@ public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSe
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
-#endregion End migrated profiles
 
 public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+#endregion End migrated profiles
 
 public class OnshoreRelatedOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {

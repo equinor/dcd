@@ -41,7 +41,6 @@ using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.AdditionalOpexCostProfiles;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
-using api.Features.Profiles.Cases.HistoricCostCostProfiles;
 using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles;
 using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles;
 using api.Features.Profiles.Create;
@@ -213,7 +212,6 @@ public static class DcdIocConfiguration
 
         /* Case profiles */
         services.AddScoped<AdditionalOpexCostProfileService>();
-        services.AddScoped<HistoricCostCostProfileService>();
         services.AddScoped<OnshoreRelatedOpexCostProfileService>();
         services.AddScoped<TotalOtherStudiesCostProfileService>();
 

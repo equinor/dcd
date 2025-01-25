@@ -39,7 +39,7 @@ public class CaseWithAssetsService(
             TotalFEEDStudies = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies)),
             TotalFEEDStudiesOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)),
             TotalOtherStudiesCostProfile = MapToDto<TotalOtherStudiesCostProfile, TimeSeriesCostDto>(caseItem.TotalOtherStudiesCostProfile, caseItem.TotalOtherStudiesCostProfile?.Id),
-            HistoricCostCostProfile = MapToDto<HistoricCostCostProfile, TimeSeriesCostDto>(caseItem.HistoricCostCostProfile, caseItem.HistoricCostCostProfile?.Id),
+            HistoricCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile)),
             WellInterventionCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile)),
             WellInterventionCostProfileOverride =  MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)),
             OffshoreFacilitiesOperationsCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile)),
