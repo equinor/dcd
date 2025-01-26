@@ -9,7 +9,7 @@ namespace api.Features.Profiles.Create;
 
 public class CreateTimeSeriesProfileService(DcdDbContext context)
 {
-    public async Task<TimeSeriesCostOverrideDto> CreateTimeSeriesProfile(
+    public async Task<TimeSeriesCostDto> CreateTimeSeriesProfile(
         Guid projectId,
         Guid caseId,
         string profileType,
@@ -33,12 +33,11 @@ public class CreateTimeSeriesProfileService(DcdDbContext context)
         await context.UpdateCaseUpdatedUtc(caseId);
         await context.SaveChangesAsync();
 
-        return new TimeSeriesCostOverrideDto
+        return new TimeSeriesCostDto
         {
             Id = entity.Id,
             StartYear = entity.StartYear,
-            Values = entity.Values,
-            Override = entity.Override
+            Values = entity.Values
         };
     }
 

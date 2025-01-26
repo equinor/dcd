@@ -39,35 +39,35 @@ public static class SteaCaseDtoBuilder
 
         if (caseDto.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.HistoricCostCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.HistoricCostCostProfile)));
         }
 
         if (caseDto.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.WellInterventionCostProfileOverride)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.WellInterventionCostProfileOverride)));
         }
         else if (caseDto.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.WellInterventionCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.WellInterventionCostProfile)));
         }
 
         if (caseDto.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)));
         }
         else if (caseDto.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfile)));
         }
 
         if (caseDto.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.OnshoreRelatedOPEXCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.OnshoreRelatedOPEXCostProfile)));
         }
 
         if (caseDto.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseDto.GetProfile(ProfileTypes.AdditionalOPEXCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseDto.GetProfile(ProfileTypes.AdditionalOPEXCostProfile)));
         }
 
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);
@@ -85,25 +85,25 @@ public static class SteaCaseDtoBuilder
 
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)));
         }
         else if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalFeasibilityAndConceptStudies)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.TotalFeasibilityAndConceptStudies)));
         }
 
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalFEEDStudiesOverride)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.TotalFEEDStudiesOverride)));
         }
         else if (caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalFEEDStudies)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.TotalFEEDStudies)));
         }
 
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile)?.Values.Length > 0)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.TotalOtherStudiesCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.TotalOtherStudiesCostProfile)));
         }
 
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);
@@ -121,25 +121,25 @@ public static class SteaCaseDtoBuilder
 
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationWellsCostOverride)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.CessationWellsCostOverride)));
         }
         else if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationWellsCost)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.CessationWellsCost)));
         }
 
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationOffshoreFacilitiesCostOverride)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.CessationOffshoreFacilitiesCostOverride)));
         }
         else if (caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationOffshoreFacilitiesCost)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.CessationOffshoreFacilitiesCost)));
         }
 
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile) != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(caseItem.GetProfile(ProfileTypes.CessationOnshoreFacilitiesCostProfile)));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.CessationOnshoreFacilitiesCostProfile)));
         }
 
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);
@@ -166,38 +166,38 @@ public static class SteaCaseDtoBuilder
 
         if (wellProject.OilProducerCostProfileOverride?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.OilProducerCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(wellProject.OilProducerCostProfileOverride));
         }
         else if (wellProject.OilProducerCostProfile != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.OilProducerCostProfile));
+            costProfileDtos.Add(ToTimeSeries(wellProject.OilProducerCostProfile));
         }
 
         if (wellProject.GasProducerCostProfileOverride?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.GasProducerCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(wellProject.GasProducerCostProfileOverride));
         }
         else if (wellProject.GasProducerCostProfile != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.GasProducerCostProfile));
+            costProfileDtos.Add(ToTimeSeries(wellProject.GasProducerCostProfile));
         }
 
         if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.WaterInjectorCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(wellProject.WaterInjectorCostProfileOverride));
         }
         else if (wellProject.WaterInjectorCostProfile != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.WaterInjectorCostProfile));
+            costProfileDtos.Add(ToTimeSeries(wellProject.WaterInjectorCostProfile));
         }
 
         if (wellProject.GasInjectorCostProfileOverride?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.GasInjectorCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(wellProject.GasInjectorCostProfileOverride));
         }
         else if (wellProject.GasInjectorCostProfile != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(wellProject.GasInjectorCostProfile));
+            costProfileDtos.Add(ToTimeSeries(wellProject.GasInjectorCostProfile));
         }
 
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);
@@ -212,12 +212,12 @@ public static class SteaCaseDtoBuilder
         if (substructure.CostProfileOverride?.Override == true)
         {
             substructure.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(substructure.CostProfileOverride));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(substructure.CostProfileOverride));
         }
         else if (substructure.CostProfile != null)
         {
             substructure.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(substructure.CostProfile));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(substructure.CostProfile));
         }
 
         var surf = steaDbData.Surfs.First(l => l.Id == caseItem.SurfLink);
@@ -225,12 +225,12 @@ public static class SteaCaseDtoBuilder
         if (surf.CostProfileOverride?.Override == true)
         {
             surf.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(surf.CostProfileOverride));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surf.CostProfileOverride));
         }
         else if (surf.CostProfile != null)
         {
             surf.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(surf.CostProfile));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surf.CostProfile));
         }
 
         var topside = steaDbData.Topsides.First(l => l.Id == caseItem.TopsideLink);
@@ -238,12 +238,12 @@ public static class SteaCaseDtoBuilder
         if (topside.CostProfileOverride?.Override == true)
         {
             topside.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(topside.CostProfileOverride));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(topside.CostProfileOverride));
         }
         else if (topside.CostProfile != null)
         {
             topside.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(topside.CostProfile));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(topside.CostProfile));
         }
 
         var transport = steaDbData.Transports.First(l => l.Id == caseItem.TransportLink);
@@ -251,12 +251,12 @@ public static class SteaCaseDtoBuilder
         if (transport.CostProfileOverride?.Override == true)
         {
             transport.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(transport.CostProfileOverride));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transport.CostProfileOverride));
         }
         else if (transport.CostProfile != null)
         {
             transport.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, new TimeSeriesCostDto(transport.CostProfile));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transport.CostProfile));
         }
 
         var onshorePowerSupply = steaDbData.OnshorePowerSupplies.First(l => l.Id == caseItem.OnshorePowerSupplyLink);
@@ -264,12 +264,12 @@ public static class SteaCaseDtoBuilder
         if (onshorePowerSupply.CostProfileOverride?.Override == true)
         {
             onshorePowerSupply.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, new TimeSeriesCostDto(onshorePowerSupply.CostProfileOverride));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, ToTimeSeries(onshorePowerSupply.CostProfileOverride));
         }
         else if (onshorePowerSupply.CostProfile != null)
         {
             onshorePowerSupply.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, new TimeSeriesCostDto(onshorePowerSupply.CostProfile));
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, ToTimeSeries(onshorePowerSupply.CostProfile));
         }
 
         TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.Summary, steaCaseDto.Capex.OffshoreFacilities);
@@ -410,34 +410,47 @@ public static class SteaCaseDtoBuilder
         var costProfileDtos = new List<TimeSeriesCostDto>();
         if (exploration.ExplorationWellCostProfile?.Values.Length > 0)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.ExplorationWellCostProfile));
+            costProfileDtos.Add(ToTimeSeries(exploration.ExplorationWellCostProfile));
         }
         if (exploration.AppraisalWellCostProfile?.Values.Length > 0)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.AppraisalWellCostProfile));
+            costProfileDtos.Add(ToTimeSeries(exploration.AppraisalWellCostProfile));
         }
         if (exploration.SidetrackCostProfile?.Values.Length > 0)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.SidetrackCostProfile));
+            costProfileDtos.Add(ToTimeSeries(exploration.SidetrackCostProfile));
         }
         if (exploration.GAndGAdminCostOverride?.Override == true)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.GAndGAdminCostOverride));
+            costProfileDtos.Add(ToTimeSeries(exploration.GAndGAdminCostOverride));
         }
         else if (exploration.GAndGAdminCost != null)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.GAndGAdminCost));
+            costProfileDtos.Add(ToTimeSeries(exploration.GAndGAdminCost));
         }
         if (exploration.SeismicAcquisitionAndProcessing?.Values.Length > 0)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.SeismicAcquisitionAndProcessing));
+            costProfileDtos.Add(ToTimeSeries(exploration.SeismicAcquisitionAndProcessing));
         }
         if (exploration.CountryOfficeCost?.Values.Length > 0)
         {
-            costProfileDtos.Add(new TimeSeriesCostDto(exploration.CountryOfficeCost));
+            costProfileDtos.Add(ToTimeSeries(exploration.CountryOfficeCost));
         }
 
         steaCaseDto.Exploration = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);
         steaCaseDto.Exploration.StartYear += caseItem.DG4Date.Year;
     }
+
+    private static TimeSeriesCostDto ToTimeSeries(TimeSeriesProfile timeSeriesProfile) => new()
+    {
+        Id = timeSeriesProfile.Id,
+        StartYear = timeSeriesProfile.StartYear,
+        Values = timeSeriesProfile.Values
+    };
+
+    private static TimeSeriesCostDto ToTimeSeries(TimeSeriesCost timeSeriesCost) => new()
+    {
+        StartYear = timeSeriesCost.StartYear,
+        Values = timeSeriesCost.Values ?? []
+    };
 }
