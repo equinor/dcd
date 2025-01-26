@@ -331,7 +331,7 @@ declare namespace Components {
         }
         export type InternalProjectPhase = 0 | 1 | 2; // int32
         export type Maturity = 0 | 1 | 2 | 3; // int32
-        export type NoAccessReason = 1 | 2 | 3; // int32
+        export type NoAccessReason = 1 | 2 | 3 | 4; // int32
         export interface OnshorePowerSupplyDto {
             id: string; // uuid
             name: string;
@@ -2245,7 +2245,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesCostDto;
             }

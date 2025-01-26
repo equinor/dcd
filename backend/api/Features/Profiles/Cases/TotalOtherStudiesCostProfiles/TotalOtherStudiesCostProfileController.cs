@@ -23,7 +23,7 @@ public class TotalOtherStudiesCostProfileController(TotalOtherStudiesCostProfile
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid costProfileId,
-        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostDto dto)
     {
         return await service.UpdateTotalOtherStudiesCostProfile(projectId, caseId, costProfileId, dto);
     }
