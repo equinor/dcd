@@ -852,14 +852,16 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var substructureCostProfileAdded = context.ChangeTracker.Entries<SubstructureCostProfileOverride>()
             .Any(e => e.State == EntityState.Added);
 
-        var surfChanges = context.ChangeTracker.Entries<SurfCostProfileOverride>()
+        var surfChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfileOverride)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(SurfCostProfileOverride.Override)).IsModified
-                          || e.Property(nameof(SurfCostProfileOverride.InternalData)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
+                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
                       ));
 
-        var surfCostProfileAdded = context.ChangeTracker.Entries<SurfCostProfileOverride>()
+        var surfCostProfileAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfileOverride)
             .Any(e => e.State == EntityState.Added);
 
         var topsideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
@@ -1126,10 +1128,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOnshoreFacilitiesCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var surfChanges = context.ChangeTracker.Entries<SurfCostProfile>()
+        var surfChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var surfOverrideChanges = context.ChangeTracker.Entries<SurfCostProfileOverride>()
+        var surfOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfileOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var substructureChanges = context.ChangeTracker.Entries<SubstructureCostProfile>()

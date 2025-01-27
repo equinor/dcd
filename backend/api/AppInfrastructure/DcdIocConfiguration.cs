@@ -60,7 +60,6 @@ using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOv
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
 using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
-using api.Features.Profiles.Surfs.SurfCostProfileOverrides;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfiles;
@@ -234,7 +233,6 @@ public static class DcdIocConfiguration
 
         /* Surf profiles */
         services.AddScoped<SurfCostProfileService>();
-        services.AddScoped<SurfTimeSeriesService>();
 
         /* Topside profiles */
         services.AddScoped<TopsideCostProfileService>();

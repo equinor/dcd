@@ -30,10 +30,10 @@ public class TransportCostProfileService(DcdDbContext context, IRecalculationSer
 
     private async Task CreateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var transportCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TransportCostProfile);
+        var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TransportCostProfile);
 
-        transportCostProfile.StartYear = dto.StartYear;
-        transportCostProfile.Values = dto.Values;
+        costProfile.StartYear = dto.StartYear;
+        costProfile.Values = dto.Values;
 
         var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride);
 

@@ -53,8 +53,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Surf>> GetSurfs(Guid projectPk)
     {
         return await context.Surfs
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();

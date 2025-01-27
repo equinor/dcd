@@ -114,8 +114,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadSurfs(Guid projectPk)
     {
         await context.Surfs
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();

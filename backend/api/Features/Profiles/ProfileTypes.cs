@@ -41,9 +41,13 @@ public static class ProfileTypes
 
     public const string TopsideCessationCostProfile = "TopsideCessationCostProfile";
 
-    /* TransportCostProfile */
+    /* Transport profiles */
     public const string TransportCostProfile = "TransportCostProfile";
     public const string TransportCostProfileOverride = "TransportCostProfileOverride";
 
     public const string TransportCessationCostProfile = "TransportCessationCostProfile";
+
+    /* Surf profiles */
+    public const string SurfCostProfile = "SurfCostProfile";
+    public const string SurfCostProfileOverride = "SurfCostProfileOverride";
 }

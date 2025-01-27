@@ -24,8 +24,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<WellProjectWell> WellProjectWell => Set<WellProjectWell>();
     public DbSet<ExplorationWell> ExplorationWell => Set<ExplorationWell>();
     public DbSet<Surf> Surfs => Set<Surf>();
-    public DbSet<SurfCostProfile> SurfCostProfile => Set<SurfCostProfile>();
-    public DbSet<SurfCostProfileOverride> SurfCostProfileOverride => Set<SurfCostProfileOverride>();
     public DbSet<SurfCessationCostProfile> SurfCessationCostProfiles => Set<SurfCessationCostProfile>();
     public DbSet<Substructure> Substructures => Set<Substructure>();
     public DbSet<SubstructureCostProfile> SubstructureCostProfiles => Set<SubstructureCostProfile>();

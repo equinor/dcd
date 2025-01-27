@@ -11,12 +11,6 @@ public class SurfProfile : Profile
     public SurfProfile()
     {
         CreateMap<Surf, SurfDto>();
-        CreateMap<SurfCostProfile, TimeSeriesCostDto>();
-        CreateMap<SurfCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<SurfCessationCostProfile, TimeSeriesCostDto>();
-
-        CreateMap<UpdateTimeSeriesCostDto, SurfCostProfile>();
-        CreateMap<UpdateTimeSeriesCostOverrideDto, SurfCostProfileOverride>();
-        CreateMap<CreateTimeSeriesCostOverrideDto, SurfCostProfileOverride>();
     }
 }

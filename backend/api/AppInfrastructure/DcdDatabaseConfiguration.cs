@@ -140,5 +140,9 @@ public static class DcdDatabaseConfiguration
 
         ("TransportCostProfile", "TransportCostProfile", false, "Transport"),
         ("TransportCostProfileOverride", "TransportCostProfileOverride", true, "Transport"),
+        ("TransportCessationCostProfiles", "TransportCessationCostProfile", false, "Transport"),
+
+        ("SurfCostProfile", "SurfCostProfile", false, "Surf"),
+        ("SurfCostProfileOverride", "SurfCostProfileOverride", true, "Surf"),
     ];
 }

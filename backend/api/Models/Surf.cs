@@ -38,11 +38,14 @@ public class Surf : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
     public virtual SurfCostProfile? CostProfile { get; set; }
     public virtual SurfCostProfileOverride? CostProfileOverride { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual SurfCessationCostProfile? CessationCostProfile { get; set; }
 }
 
+#region Migrated profiles, do not access.
 public class SurfCostProfile : TimeSeriesCost, ISurfTimeSeries
 {
     [ForeignKey("Surf.Id")]
@@ -55,6 +58,7 @@ public class SurfCostProfileOverride : TimeSeriesCost, ISurfTimeSeries, ITimeSer
     public virtual Surf Surf { get; set; } = null!;
     public bool Override { get; set; }
 }
+#endregion Migrated profiles, do not access.
 
 public class SurfCessationCostProfile : TimeSeriesCost, ISurfTimeSeries
 {

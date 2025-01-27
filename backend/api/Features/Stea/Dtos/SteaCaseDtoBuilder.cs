@@ -222,15 +222,18 @@ public static class SteaCaseDtoBuilder
 
         var surf = steaDbData.Surfs.First(l => l.Id == caseItem.SurfLink);
 
-        if (surf.CostProfileOverride?.Override == true)
+        var surfCostProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride);
+        var surfCostProfile = caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile);
+
+        if (surfCostProfileOverride?.Override == true)
         {
-            surf.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surf.CostProfileOverride));
+            surfCostProfileOverride.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surfCostProfileOverride));
         }
-        else if (surf.CostProfile != null)
+        else if (surfCostProfile != null)
         {
-            surf.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surf.CostProfile));
+            surfCostProfile.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surfCostProfile));
         }
 
         var topsideCostProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride);

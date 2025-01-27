@@ -2,17 +2,13 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Surfs.SurfCostProfiles;
 
-public class SurfCostProfileService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IRecalculationService recalculationService)
+public class SurfCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task AddOrUpdateSurfCostProfile(
         Guid projectId,
@@ -20,65 +16,56 @@ public class SurfCostProfileService(
         Guid surfId,
         UpdateTimeSeriesCostDto dto)
     {
-        var surf = await context.Surfs
-            .Include(t => t.CostProfile)
-            .Include(x => x.CostProfileOverride)
-            .SingleAsync(t => t.ProjectId == projectId && t.Id == surfId);
+        var profileTypes = new List<string> { ProfileTypes.SurfCostProfile, ProfileTypes.SurfCostProfileOverride };
 
-        if (surf.CostProfile != null)
+        var caseItem = await context.Cases
+            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
+            .Include(x => x.Surf)
+            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+
+        if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile) != null)
         {
-            await UpdateSurfTimeSeries(projectId, caseId, surfId, surf.CostProfile.Id, dto);
+            await UpdateSurfTimeSeries(caseItem, dto);
             return;
         }
 
-        await CreateSurfCostProfile(caseId, surfId, dto, surf);
+        await CreateSurfCostProfile(caseItem, dto);
     }
 
-    private async Task CreateSurfCostProfile(
-        Guid caseId,
-        Guid surfId,
-        UpdateTimeSeriesCostDto dto,
-        Surf surf)
+    private async Task CreateSurfCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var surfCostProfile = new SurfCostProfile
-        {
-            Surf = surf
-        };
+        var surfCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SurfCostProfile);
 
-        var newProfile = mapperService.MapToEntity(dto, surfCostProfile, surfId);
+        surfCostProfile.StartYear = dto.StartYear;
+        surfCostProfile.Values = dto.Values;
 
-        if (newProfile.Surf.CostProfileOverride != null)
+        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride);
+
+        if (costProfileOverride != null)
         {
-            newProfile.Surf.CostProfileOverride.Override = false;
+            costProfileOverride.Override = false;
         }
 
-        context.SurfCostProfile.Add(newProfile);
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 
-    private async Task UpdateSurfTimeSeries(
-        Guid projectId,
-        Guid caseId,
-        Guid surfId,
-        Guid profileId,
-        UpdateTimeSeriesCostDto updatedProfileDto)
+    private async Task UpdateSurfTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var existingProfile = await context.SurfCostProfile
-            .Include(x => x.Surf).ThenInclude(surf => surf.CostProfileOverride)
-            .SingleAsync(x => x.Surf.ProjectId == projectId && x.Id == profileId);
-
-        if (existingProfile.Surf.ProspVersion == null)
+        if (caseItem.Surf!.ProspVersion == null)
         {
-            if (existingProfile.Surf.CostProfileOverride != null)
+            if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride) != null)
             {
-                existingProfile.Surf.CostProfileOverride.Override = true;
+                caseItem.GetProfile(ProfileTypes.SurfCostProfileOverride).Override = true;
             }
         }
 
-        mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
+        var existingProfile = caseItem.GetProfile(ProfileTypes.SurfCostProfile);
 
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        existingProfile.StartYear = dto.StartYear;
+        existingProfile.Values = dto.Values;
+
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 }

@@ -30,10 +30,10 @@ public class TopsideCostProfileService(DcdDbContext context, IRecalculationServi
 
     private async Task CreateTopsideCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var topsideCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TopsideCostProfile);
+        var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TopsideCostProfile);
 
-        topsideCostProfile.StartYear = dto.StartYear;
-        topsideCostProfile.Values = dto.Values;
+        costProfile.StartYear = dto.StartYear;
+        costProfile.Values = dto.Values;
 
         var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride);
 
