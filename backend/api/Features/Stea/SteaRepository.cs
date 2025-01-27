@@ -110,8 +110,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Substructure>> GetSubstructures(Guid projectPk)
     {
         return await context.Substructures
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();

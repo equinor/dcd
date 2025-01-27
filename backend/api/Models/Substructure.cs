@@ -30,8 +30,10 @@ public class Substructure : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
     public virtual SubstructureCostProfile? CostProfile { get; set; }
     public virtual SubstructureCostProfileOverride? CostProfileOverride { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual SubstructureCessationCostProfile? CessationCostProfile { get; set; }
 }
 
@@ -52,6 +54,7 @@ public enum Concept
     SUBSEA_TO_SHORE
 }
 
+#region Migrated profiles, do not access.
 public class SubstructureCostProfile : TimeSeriesCost, ISubstructureTimeSeries
 {
     [ForeignKey("Substructure.Id")]
@@ -64,6 +67,7 @@ public class SubstructureCostProfileOverride : TimeSeriesCost, ISubstructureTime
     public virtual Substructure Substructure { get; set; } = null!;
     public bool Override { get; set; }
 }
+#endregion Migrated profiles, do not access.
 
 public class SubstructureCessationCostProfile : TimeSeriesCost, ISubstructureTimeSeries
 {

@@ -11,12 +11,6 @@ public class SubstructureProfile : Profile
     public SubstructureProfile()
     {
         CreateMap<Substructure, SubstructureDto>();
-        CreateMap<SubstructureCostProfile, TimeSeriesCostDto>();
-        CreateMap<SubstructureCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<SubstructureCessationCostProfile, TimeSeriesCostDto>();
-
-        CreateMap<UpdateTimeSeriesCostDto, SubstructureCostProfile>();
-        CreateMap<UpdateTimeSeriesCostOverrideDto, SubstructureCostProfileOverride>();
-        CreateMap<CreateTimeSeriesCostOverrideDto, SubstructureCostProfileOverride>();
     }
 }

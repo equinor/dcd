@@ -52,4 +52,10 @@ public static class ProfileTypes
     public const string SurfCostProfileOverride = "SurfCostProfileOverride";
 
     public const string SurfCessationCostProfile = "SurfCessationCostProfile";
+
+    /* Substructure profiles */
+    public const string SubstructureCostProfile = "SubstructureCostProfile";
+    public const string SubstructureCostProfileOverride = "SubstructureCostProfileOverride";
+
+    //public const string SubstructureCessationCostProfile = "SubstructureCessationCostProfile";
 }

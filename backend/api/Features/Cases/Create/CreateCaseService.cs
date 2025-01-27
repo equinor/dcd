@@ -47,6 +47,11 @@ public class CreateCaseService(DcdDbContext context)
                 {
                     ProfileType = ProfileTypes.SurfCostProfileOverride,
                     Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.SubstructureCostProfileOverride,
+                    Override = true
                 }
             }
         };
@@ -89,11 +94,7 @@ public class CreateCaseService(DcdDbContext context)
         return new Substructure
         {
             Name = "Substructure",
-            ProjectId = projectPk,
-            CostProfileOverride = new SubstructureCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 

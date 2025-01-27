@@ -15,11 +15,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var substructure = await context.Substructures
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.SubstructureLink);
-
         var onshorePowerSupply = await context.OnshorePowerSupplies
             .Include(x => x.CostProfile)
             .Include(x => x.CostProfileOverride)
@@ -46,11 +41,10 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(e => e.SidetrackCostProfile)
             .SingleAsync(x => x.Id == caseItem.ExplorationLink);
 
-        CalculateTotalCost(caseItem, substructure, onshorePowerSupply, wellProject, exploration);
+        CalculateTotalCost(caseItem, onshorePowerSupply, wellProject, exploration);
     }
 
     public static void CalculateTotalCost(Case caseItem,
-        Substructure substructure,
         OnshorePowerSupply onshorePowerSupply,
         WellProject wellProject,
         Exploration exploration)
@@ -77,7 +71,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalCessationCost.Values ?? []
         };
 
-        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem, substructure, onshorePowerSupply);
+        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem, onshorePowerSupply);
         var totalOffshoreFacilityProfile = new TimeSeries<double>
         {
             StartYear = totalOffshoreFacilityCost.StartYear,
@@ -202,14 +196,11 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalCessationCost;
     }
 
-    private static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
-        Case caseItem,
-        Substructure? substructure,
-        OnshorePowerSupply? onshorePowerSupply)
+    private static TimeSeries<double> CalculateTotalOffshoreFacilityCost(Case caseItem, OnshorePowerSupply? onshorePowerSupply)
     {
         TimeSeries<double> substructureProfile = UseOverrideOrProfile(
-            substructure?.CostProfile,
-            substructure?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride)
         );
         TimeSeries<double> surfProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile),

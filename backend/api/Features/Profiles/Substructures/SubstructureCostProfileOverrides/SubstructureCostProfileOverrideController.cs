@@ -1,21 +1,24 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.Substructures.SubstructureCostProfileOverrides;
 
-public class SubstructureCostProfileOverrideController(SubstructureCostProfileOverrideService substructureCostProfileOverrideService) : ControllerBase
+public class SubstructureCostProfileOverrideController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/substructures/{substructureId:guid}/cost-profile-override")]
     public async Task<TimeSeriesCostOverrideDto> CreateSubstructureCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid substructureId,
         [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await substructureCostProfileOverrideService.CreateSubstructureCostProfileOverride(projectId, caseId, substructureId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.SubstructureCostProfileOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -23,10 +26,9 @@ public class SubstructureCostProfileOverrideController(SubstructureCostProfileOv
     public async Task<TimeSeriesCostOverrideDto> UpdateSubstructureCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid substructureId,
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await substructureCostProfileOverrideService.UpdateSubstructureCostProfileOverride(projectId, caseId, substructureId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesOverrideProfile(projectId, caseId, costProfileId, ProfileTypes.SubstructureCostProfileOverride, dto);
     }
 }

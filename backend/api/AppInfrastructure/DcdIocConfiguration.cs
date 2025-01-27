@@ -58,7 +58,6 @@ using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
-using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
@@ -229,7 +228,6 @@ public static class DcdIocConfiguration
 
         /* Substructure profiles */
         services.AddScoped<SubstructureCostProfileService>();
-        services.AddScoped<SubstructureCostProfileOverrideService>();
 
         /* Surf profiles */
         services.AddScoped<SurfCostProfileService>();
