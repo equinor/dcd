@@ -16,8 +16,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var wellProject = await context.WellProjects
-            .Include(x => x.OilProducerCostProfileOverride)
-            .Include(x => x.OilProducerCostProfile)
             .Include(x => x.GasProducerCostProfileOverride)
             .Include(x => x.GasProducerCostProfile)
             .Include(x => x.WaterInjectorCostProfileOverride)
@@ -60,7 +58,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalOffshoreFacilityCost.Values
         };
 
-        var totalDevelopmentCost = CalculateTotalDevelopmentCost(wellProject);
+        var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem, wellProject);
         var developmentProfile = new TimeSeries<double>
         {
             StartYear = totalDevelopmentCost.StartYear,
@@ -213,11 +211,11 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalOffshoreFacilityCost;
     }
 
-    private static TimeSeries<double> CalculateTotalDevelopmentCost(WellProject wellProject)
+    private static TimeSeries<double> CalculateTotalDevelopmentCost(Case caseItem, WellProject wellProject)
     {
         TimeSeries<double> oilProducerProfile = UseOverrideOrProfile(
-            wellProject.OilProducerCostProfile,
-            wellProject.OilProducerCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)
         );
         TimeSeries<double> gasProducerProfile = UseOverrideOrProfile(
             wellProject.GasProducerCostProfile,

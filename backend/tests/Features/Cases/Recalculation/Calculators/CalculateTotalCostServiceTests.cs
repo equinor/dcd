@@ -124,18 +124,19 @@ public class CalculateTotalCostServiceTests
                     ProfileType = ProfileTypes.CountryOfficeCost,
                     StartYear = 2020,
                     Values = [50.0, 100.0]
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.OilProducerCostProfileOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 150.0, 200.0]
+                },
             }
         };
 
         var wellProject = new WellProject
         {
-            OilProducerCostProfileOverride = new OilProducerCostProfileOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [100.0, 150.0, 200.0]
-            },
             GasProducerCostProfileOverride = new GasProducerCostProfileOverride
             {
                 Override = true,

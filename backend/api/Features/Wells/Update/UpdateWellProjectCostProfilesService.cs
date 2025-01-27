@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -31,7 +32,6 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
     public async Task UpdateWellProjectCostProfiles(Guid wellProjectId)
     {
         var wellProject = await context.WellProjects
-            .Include(x => x.OilProducerCostProfile)
             .Include(x => x.GasProducerCostProfile)
             .Include(x => x.WaterInjectorCostProfile)
             .Include(x => x.GasInjectorCostProfile)
@@ -53,19 +53,14 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
         var (oilProducerWells, wellProjectWellOilProducer) = await GetWellData(wellIds, wellProject.Id, WellCategory.Oil_Producer);
         var oilProducerTimeSeries = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(oilProducerWells, wellProjectWellOilProducer);
 
-        if (wellProject.OilProducerCostProfile == null)
-        {
-            wellProject.OilProducerCostProfile = new OilProducerCostProfile
-            {
-                StartYear = oilProducerTimeSeries.StartYear,
-                Values = oilProducerTimeSeries.Values
-            };
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.OilProducerCostProfile))
+            .SingleAsync(x => x.WellProjectLink == wellProject.Id);
 
-            return;
-        }
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.OilProducerCostProfile);
 
-        wellProject.OilProducerCostProfile.StartYear = oilProducerTimeSeries.StartYear;
-        wellProject.OilProducerCostProfile.Values = oilProducerTimeSeries.Values;
+        profile.StartYear = oilProducerTimeSeries.StartYear;
+        profile.Values = oilProducerTimeSeries.Values;
     }
 
     private async Task HandleGasProducerCostProfile(WellProject wellProject, List<Guid> wellIds)

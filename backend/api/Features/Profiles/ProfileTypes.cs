@@ -76,4 +76,9 @@ public static class ProfileTypes
     public const string SeismicAcquisitionAndProcessing = "SeismicAcquisitionAndProcessing";
 
     public const string CountryOfficeCost = "CountryOfficeCost";
+
+    /* Well project profiles */
+    public const string OilProducerCostProfile = "OilProducerCostProfile";
+    public const string OilProducerCostProfileOverride = "OilProducerCostProfileOverride";
+
 }

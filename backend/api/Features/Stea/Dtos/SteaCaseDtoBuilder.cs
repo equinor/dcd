@@ -164,13 +164,13 @@ public static class SteaCaseDtoBuilder
 
         var costProfileDtos = new List<TimeSeriesCostDto>();
 
-        if (wellProject.OilProducerCostProfileOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)?.Override == true)
         {
-            costProfileDtos.Add(ToTimeSeries(wellProject.OilProducerCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.OilProducerCostProfileOverride)));
         }
-        else if (wellProject.OilProducerCostProfile != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile) != null)
         {
-            costProfileDtos.Add(ToTimeSeries(wellProject.OilProducerCostProfile));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.OilProducerCostProfile)));
         }
 
         if (wellProject.GasProducerCostProfileOverride?.Override == true)

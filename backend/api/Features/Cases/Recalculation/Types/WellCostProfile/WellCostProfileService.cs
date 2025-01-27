@@ -51,7 +51,6 @@ public class WellCostProfileService(DcdDbContext context)
         var wellProjectWells = await context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject).ThenInclude(e => e.OilProducerCostProfile)
             .Include(ew => ew.WellProject).ThenInclude(e => e.GasProducerCostProfile)
             .Include(ew => ew.WellProject).ThenInclude(e => e.WaterInjectorCostProfile)
             .Include(ew => ew.WellProject).ThenInclude(e => e.GasInjectorCostProfile)
@@ -88,13 +87,14 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Oil_Producer);
             var wellProjectWellCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedWellProjectCategoryWells);
 
-            wellProject.OilProducerCostProfile ??= new OilProducerCostProfile
-            {
-                WellProject = wellProject
-            };
+            var caseItem = await context.Cases
+                .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.OilProducerCostProfile))
+                .SingleAsync(x => x.WellProjectLink == wellProject.Id);
 
-            wellProject.OilProducerCostProfile.Values = wellProjectWellCostProfileValues.Values;
-            wellProject.OilProducerCostProfile.StartYear = wellProjectWellCostProfileValues.StartYear;
+            var oilProducerCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.OilProducerCostProfile);
+
+            oilProducerCostProfile.Values = wellProjectWellCostProfileValues.Values;
+            oilProducerCostProfile.StartYear = wellProjectWellCostProfileValues.StartYear;
 
             var connectedGasProducerWells = connectedWellProjectWells
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Gas_Producer);
@@ -257,8 +257,6 @@ public class WellCostProfileService(DcdDbContext context)
         return context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject)
-                .ThenInclude(e => e.OilProducerCostProfile)
             .Include(ew => ew.WellProject)
                 .ThenInclude(e => e.GasProducerCostProfile)
             .Include(ew => ew.WellProject)

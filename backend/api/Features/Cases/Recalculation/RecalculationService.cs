@@ -902,23 +902,27 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.OnshorePowerSupplyCostProfileOverride)
             .Any(e => e.State == EntityState.Added);
 
-        var wellProjectOilProducerChanges = context.ChangeTracker.Entries<OilProducerCostProfile>()
+        var wellProjectOilProducerChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfile)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(OilProducerCostProfileOverride.InternalData)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
                       ));
 
-        var wellProjectOilProducerAdded = context.ChangeTracker.Entries<OilProducerCostProfile>()
+        var wellProjectOilProducerAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfile)
             .Any(e => e.State == EntityState.Added);
 
-        var wellProjectOilProducerOverrideChanges = context.ChangeTracker.Entries<OilProducerCostProfileOverride>()
+        var wellProjectOilProducerOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfileOverride)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(OilProducerCostProfileOverride.Override)).IsModified
-                          || e.Property(nameof(OilProducerCostProfileOverride.InternalData)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
+                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
                       ));
 
-        var wellProjectOilProducerOverrideAdded = context.ChangeTracker.Entries<OilProducerCostProfileOverride>()
+        var wellProjectOilProducerOverrideAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfileOverride)
             .Any(e => e.State == EntityState.Added);
 
         var wellProjectGasProducerChanges = context.ChangeTracker.Entries<GasProducerCostProfile>()
@@ -1172,10 +1176,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.OnshorePowerSupplyCostProfileOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var oilProducerChanges = context.ChangeTracker.Entries<OilProducerCostProfile>()
+        var oilProducerChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var oilProducerOverrideChanges = context.ChangeTracker.Entries<OilProducerCostProfileOverride>()
+        var oilProducerOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfileOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var gasProducerChanges = context.ChangeTracker.Entries<GasProducerCostProfile>()

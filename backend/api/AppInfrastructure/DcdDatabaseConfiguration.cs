@@ -162,5 +162,8 @@ public static class DcdDatabaseConfiguration
         ("SidetrackCostProfile", ProfileTypes.SidetrackCostProfile, false, "Exploration", "Explorations"),
         ("SeismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing, false, "Exploration", "Explorations"),
         ("CountryOfficeCost", ProfileTypes.CountryOfficeCost, false, "Exploration", "Explorations"),
+
+        ("OilProducerCostProfile", ProfileTypes.OilProducerCostProfile, false, "WellProject", "WellProjects"),
+        ("OilProducerCostProfileOverride", ProfileTypes.OilProducerCostProfileOverride, true, "WellProject", "WellProjects"),
     ];
 }

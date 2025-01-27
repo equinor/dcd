@@ -20,8 +20,10 @@ public class WellProject : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
     public virtual OilProducerCostProfile? OilProducerCostProfile { get; set; }
     public virtual OilProducerCostProfileOverride? OilProducerCostProfileOverride { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual GasProducerCostProfile? GasProducerCostProfile { get; set; }
     public virtual GasProducerCostProfileOverride? GasProducerCostProfileOverride { get; set; }
     public virtual WaterInjectorCostProfile? WaterInjectorCostProfile { get; set; }
@@ -31,16 +33,18 @@ public class WellProject : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual ICollection<WellProjectWell> WellProjectWells { get; set; } = [];
 }
 
+#region Migrated profiles, do not access.
 public class OilProducerCostProfile : TimeSeriesCost, IWellProjectTimeSeries
 {
     [ForeignKey("WellProject.Id")] public virtual WellProject WellProject { get; set; } = null!;
 }
-
 public class OilProducerCostProfileOverride : TimeSeriesCost, IWellProjectTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("WellProject.Id")] public virtual WellProject WellProject { get; set; } = null!;
     public bool Override { get; set; }
 }
+
+#endregion Migrated profiles, do not access.
 
 public class GasProducerCostProfile : TimeSeriesCost, IWellProjectTimeSeries
 {
