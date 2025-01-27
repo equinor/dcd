@@ -11,25 +11,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
     public async Task CalculateCo2IntensityProfile(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(c => c.TotalFEEDStudies)
-            .Include(c => c.TotalFEEDStudiesOverride)
-            .Include(c => c.TotalOtherStudiesCostProfile)
-            .Include(c => c.HistoricCostCostProfile)
-            .Include(c => c.WellInterventionCostProfile)
-            .Include(c => c.WellInterventionCostProfileOverride)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(c => c.OnshoreRelatedOPEXCostProfile)
-            .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CessationWellsCost)
-            .Include(c => c.CessationWellsCostOverride)
-            .Include(c => c.CessationOffshoreFacilitiesCost)
-            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
-            .Include(c => c.CalculatedTotalIncomeCostProfile)
-            .Include(c => c.CalculatedTotalCostCostProfile)
+            .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(c => c.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies

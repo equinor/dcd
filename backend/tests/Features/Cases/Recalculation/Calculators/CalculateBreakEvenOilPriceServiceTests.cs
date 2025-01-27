@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
+using api.Features.Profiles;
 using api.Models;
 
 using Xunit;
@@ -26,11 +27,15 @@ public class CalculateBreakEvenOilPriceServiceTests
             Project = project,
             DG4Date = new DateTime(2030, 1, 1),
             DrainageStrategyLink = Guid.NewGuid(),
-            CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 2027,
-                Values = [2000.0, 4000.0, 1000.0, 1000.0]
-            },
+                new()
+                {
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
+                    StartYear = 2027,
+                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                }
+            }
         };
 
         var drainageStrategy = new DrainageStrategy

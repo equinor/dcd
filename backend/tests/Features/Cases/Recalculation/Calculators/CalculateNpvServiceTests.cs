@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
+using api.Features.Profiles;
 using api.Models;
 
 using Xunit;
@@ -26,16 +27,21 @@ public class CalculateNpvServiceTests
             Project = project,
             DG4Date = new DateTime(DateTime.Now.Year + 6, 1, 1),
             DrainageStrategyLink = Guid.NewGuid(),
-            CalculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = -3,
-                Values = [2000.0, 4000.0, 1000.0, 1000.0]
-            },
-            CalculatedTotalIncomeCostProfile = new CalculatedTotalIncomeCostProfile
-            {
-                StartYear = 0,
-                Values = [6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75]
-            },
+                new()
+                {
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
+                    StartYear = -3,
+                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,
+                    StartYear = 0,
+                    Values = [6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75]
+                }
+            }
         };
 
         CalculateNpvService.CalculateNpv(caseItem);

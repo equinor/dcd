@@ -19,17 +19,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts => Set<ExplorationOperationalWellCosts>();
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts => Set<DevelopmentOperationalWellCosts>();
     public DbSet<Case> Cases => Set<Case>();
-    public DbSet<CessationWellsCostOverride> CessationWellsCostOverride => Set<CessationWellsCostOverride>();
-    public DbSet<CessationOffshoreFacilitiesCostOverride> CessationOffshoreFacilitiesCostOverride => Set<CessationOffshoreFacilitiesCostOverride>();
-    public DbSet<CessationOnshoreFacilitiesCostProfile> CessationOnshoreFacilitiesCostProfile => Set<CessationOnshoreFacilitiesCostProfile>();
-    public DbSet<TotalFeasibilityAndConceptStudiesOverride> TotalFeasibilityAndConceptStudiesOverride => Set<TotalFeasibilityAndConceptStudiesOverride>();
-    public DbSet<TotalFEEDStudiesOverride> TotalFEEDStudiesOverride => Set<TotalFEEDStudiesOverride>();
-    public DbSet<TotalOtherStudiesCostProfile> TotalOtherStudiesCostProfile => Set<TotalOtherStudiesCostProfile>();
-    public DbSet<HistoricCostCostProfile> HistoricCostCostProfile => Set<HistoricCostCostProfile>();
-    public DbSet<WellInterventionCostProfileOverride> WellInterventionCostProfileOverride => Set<WellInterventionCostProfileOverride>();
-    public DbSet<OffshoreFacilitiesOperationsCostProfileOverride> OffshoreFacilitiesOperationsCostProfileOverride => Set<OffshoreFacilitiesOperationsCostProfileOverride>();
-    public DbSet<OnshoreRelatedOPEXCostProfile> OnshoreRelatedOPEXCostProfile => Set<OnshoreRelatedOPEXCostProfile>();
-    public DbSet<AdditionalOPEXCostProfile> AdditionalOPEXCostProfile => Set<AdditionalOPEXCostProfile>();
     public DbSet<Image> Images => Set<Image>();
     public DbSet<Well> Wells => Set<Well>();
     public DbSet<WellProjectWell> WellProjectWell => Set<WellProjectWell>();
@@ -86,8 +75,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ExplorationWellCostProfile> ExplorationWellCostProfile => Set<ExplorationWellCostProfile>();
     public DbSet<AppraisalWellCostProfile> AppraisalWellCostProfile => Set<AppraisalWellCostProfile>();
     public DbSet<SidetrackCostProfile> SidetrackCostProfile => Set<SidetrackCostProfile>();
-    public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile => Set<CalculatedTotalIncomeCostProfile>();
-    public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile => Set<CalculatedTotalCostCostProfile>();
+    public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
@@ -107,6 +95,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
+        modelBuilder.ApplyConfiguration(new TimeSeriesProfileConfiguration());
         modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
         modelBuilder.ApplyConfiguration(new RequestLogConfiguration());
         modelBuilder.ApplyConfiguration(new ExceptionLogConfiguration());

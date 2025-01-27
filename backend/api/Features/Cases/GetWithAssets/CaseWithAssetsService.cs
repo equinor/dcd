@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
@@ -28,25 +29,25 @@ public class CaseWithAssetsService(
         return new CaseWithAssetsDto
         {
             Case = MapToCaseOverviewDto(caseItem),
-            CessationWellsCost = MapToDto<CessationWellsCost, TimeSeriesCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
-            CessationWellsCostOverride = MapToDto<CessationWellsCostOverride, TimeSeriesCostOverrideDto>(caseItem.CessationWellsCostOverride, caseItem.CessationWellsCostOverride?.Id),
-            CessationOffshoreFacilitiesCost = MapToDto<CessationOffshoreFacilitiesCost, TimeSeriesCostDto>(caseItem.CessationOffshoreFacilitiesCost, caseItem.CessationOffshoreFacilitiesCost?.Id),
-            CessationOffshoreFacilitiesCostOverride = MapToDto<CessationOffshoreFacilitiesCostOverride, TimeSeriesCostOverrideDto>(caseItem.CessationOffshoreFacilitiesCostOverride, caseItem.CessationOffshoreFacilitiesCostOverride?.Id),
-            CessationOnshoreFacilitiesCostProfile = MapToDto<CessationOnshoreFacilitiesCostProfile, TimeSeriesCostDto>(caseItem.CessationOnshoreFacilitiesCostProfile, caseItem.CessationOnshoreFacilitiesCostProfile?.Id),
-            TotalFeasibilityAndConceptStudies = MapToDto<TotalFeasibilityAndConceptStudies, TimeSeriesCostDto>(caseItem.TotalFeasibilityAndConceptStudies, caseItem.TotalFeasibilityAndConceptStudies?.Id),
-            TotalFeasibilityAndConceptStudiesOverride = MapToDto<TotalFeasibilityAndConceptStudiesOverride, TimeSeriesCostOverrideDto>(caseItem.TotalFeasibilityAndConceptStudiesOverride, caseItem.TotalFeasibilityAndConceptStudiesOverride?.Id),
-            TotalFEEDStudies = MapToDto<TotalFEEDStudies, TimeSeriesCostDto>(caseItem.TotalFEEDStudies, caseItem.TotalFEEDStudies?.Id),
-            TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TimeSeriesCostOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
-            TotalOtherStudiesCostProfile = MapToDto<TotalOtherStudiesCostProfile, TimeSeriesCostDto>(caseItem.TotalOtherStudiesCostProfile, caseItem.TotalOtherStudiesCostProfile?.Id),
-            HistoricCostCostProfile = MapToDto<HistoricCostCostProfile, TimeSeriesCostDto>(caseItem.HistoricCostCostProfile, caseItem.HistoricCostCostProfile?.Id),
-            WellInterventionCostProfile = MapToDto<WellInterventionCostProfile, TimeSeriesCostDto>(caseItem.WellInterventionCostProfile, caseItem.WellInterventionCostProfile?.Id),
-            WellInterventionCostProfileOverride = MapToDto<WellInterventionCostProfileOverride, TimeSeriesCostOverrideDto>(caseItem.WellInterventionCostProfileOverride, caseItem.WellInterventionCostProfileOverride?.Id),
-            OffshoreFacilitiesOperationsCostProfile = MapToDto<OffshoreFacilitiesOperationsCostProfile, TimeSeriesCostDto>(caseItem.OffshoreFacilitiesOperationsCostProfile, caseItem.OffshoreFacilitiesOperationsCostProfile?.Id),
-            OffshoreFacilitiesOperationsCostProfileOverride = MapToDto<OffshoreFacilitiesOperationsCostProfileOverride, TimeSeriesCostOverrideDto>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride, caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Id),
-            OnshoreRelatedOPEXCostProfile = MapToDto<OnshoreRelatedOPEXCostProfile, TimeSeriesCostDto>(caseItem.OnshoreRelatedOPEXCostProfile, caseItem.OnshoreRelatedOPEXCostProfile?.Id),
-            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, TimeSeriesCostDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
-            CalculatedTotalIncomeCostProfile = MapToDto<CalculatedTotalIncomeCostProfile, TimeSeriesCostDto>(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalIncomeCostProfile?.Id),
-            CalculatedTotalCostCostProfile = MapToDto<CalculatedTotalCostCostProfile, TimeSeriesCostDto>(caseItem.CalculatedTotalCostCostProfile, caseItem.CalculatedTotalCostCostProfile?.Id),
+            CessationWellsCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost)),
+            CessationWellsCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)),
+            CessationOffshoreFacilitiesCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost)),
+            CessationOffshoreFacilitiesCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)),
+            CessationOnshoreFacilitiesCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile)),
+            TotalFeasibilityAndConceptStudies = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies)),
+            TotalFeasibilityAndConceptStudiesOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)),
+            TotalFEEDStudies = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies)),
+            TotalFEEDStudiesOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)),
+            TotalOtherStudiesCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile)),
+            HistoricCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile)),
+            WellInterventionCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile)),
+            WellInterventionCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)),
+            OffshoreFacilitiesOperationsCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile)),
+            OffshoreFacilitiesOperationsCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)),
+            OnshoreRelatedOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile)),
+            AdditionalOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
+            CalculatedTotalIncomeCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile)),
+            CalculatedTotalCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile)),
             DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
             ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, TimeSeriesVolumeDto>(drainageStrategy.ProductionProfileOil, drainageStrategy.ProductionProfileOil?.Id, project.PhysicalUnit),
             AdditionalProductionProfileOil = ConversionMapToDto<AdditionalProductionProfileOil, TimeSeriesVolumeDto>(drainageStrategy.AdditionalProductionProfileOil, drainageStrategy.AdditionalProductionProfileOil?.Id, project.PhysicalUnit),
@@ -104,6 +105,37 @@ public class CaseWithAssetsService(
             WaterInjectorCostProfileOverride = MapToDto<WaterInjectorCostProfileOverride, TimeSeriesCostOverrideDto>(wellProject.WaterInjectorCostProfileOverride, wellProject.WaterInjectorCostProfileOverride?.Id),
             GasInjectorCostProfile = MapToDto<GasInjectorCostProfile, TimeSeriesCostDto>(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfile?.Id),
             GasInjectorCostProfileOverride = MapToDto<GasInjectorCostProfileOverride, TimeSeriesCostOverrideDto>(wellProject.GasInjectorCostProfileOverride, wellProject.GasInjectorCostProfileOverride?.Id)
+        };
+    }
+
+    private static TimeSeriesCostDto? MapToDto(TimeSeriesProfile? timeSeriesProfile)
+    {
+        if (timeSeriesProfile == null)
+        {
+            return null;
+        }
+
+        return new TimeSeriesCostDto
+        {
+            Id = timeSeriesProfile.Id,
+            StartYear = timeSeriesProfile.StartYear,
+            Values = timeSeriesProfile.Values
+        };
+    }
+
+    private static TimeSeriesCostOverrideDto? MapToOverrideDto(TimeSeriesProfile? timeSeriesProfile)
+    {
+        if (timeSeriesProfile == null)
+        {
+            return null;
+        }
+
+        return new TimeSeriesCostOverrideDto
+        {
+            Id = timeSeriesProfile.Id,
+            StartYear = timeSeriesProfile.StartYear,
+            Values = timeSeriesProfile.Values,
+            Override = timeSeriesProfile.Override
         };
     }
 

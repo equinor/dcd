@@ -38,19 +38,9 @@ using api.Features.Images.Delete;
 using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
-using api.Features.Profiles.Cases.AdditionalOpexCostProfiles;
-using api.Features.Profiles.Cases.CessationOffshoreFacilitiesCostOverrides;
-using api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles;
-using api.Features.Profiles.Cases.CessationWellsCostOverrides;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
-using api.Features.Profiles.Cases.HistoricCostCostProfiles;
-using api.Features.Profiles.Cases.OffshoreFacilitiesOperationsCostProfileOverrides;
-using api.Features.Profiles.Cases.OnshoreRelatedOpexCostProfiles;
-using api.Features.Profiles.Cases.TotalFeasibilityAndConceptStudiesOverrides;
-using api.Features.Profiles.Cases.TotalFeedStudiesOverrides;
-using api.Features.Profiles.Cases.TotalOtherStudiesCostProfiles;
-using api.Features.Profiles.Cases.WellInterventionCostProfileOverrides;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
@@ -76,6 +66,7 @@ using api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides;
 using api.Features.Profiles.Transports.TransportCostProfiles;
+using api.Features.Profiles.Update;
 using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
 using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides;
 using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides;
@@ -212,18 +203,9 @@ public static class DcdIocConfiguration
         /* Drilling schedules */
         services.AddScoped<DrillingScheduleService>();
 
-        /* Case profiles */
-        services.AddScoped<AdditionalOpexCostProfileService>();
-        services.AddScoped<CessationOffshoreFacilitiesCostOverrideService>();
-        services.AddScoped<CessationOnshoreFacilitiesCostProfileService>();
-        services.AddScoped<CessationWellsCostOverrideService>();
-        services.AddScoped<HistoricCostCostProfileService>();
-        services.AddScoped<OffshoreFacilitiesOperationsCostProfileOverrideService>();
-        services.AddScoped<OnshoreRelatedOpexCostProfileService>();
-        services.AddScoped<TotalFeasibilityAndConceptStudiesOverrideService>();
-        services.AddScoped<TotalFeedStudiesOverrideService>();
-        services.AddScoped<TotalOtherStudiesCostProfileService>();
-        services.AddScoped<WellInterventionCostProfileOverrideService>();
+        /* Time series profiles */
+        services.AddScoped<CreateTimeSeriesProfileService>();
+        services.AddScoped<UpdateTimeSeriesProfileService>();
 
         /* Drainage strategy profiles */
         services.AddScoped<AdditionalProductionProfileGasService>();

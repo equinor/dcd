@@ -1,11 +1,15 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.Cases.CessationOnshoreFacilitiesCostProfiles;
 
-public class CessationOnshoreFacilitiesCostProfileController(CessationOnshoreFacilitiesCostProfileService service) : ControllerBase
+public class CessationOnshoreFacilitiesCostProfileController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/cessation-onshore-facilities-cost-profile")]
@@ -14,7 +18,7 @@ public class CessationOnshoreFacilitiesCostProfileController(CessationOnshoreFac
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostDto dto)
     {
-        return await service.CreateCessationOnshoreFacilitiesCostProfile(projectId, caseId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.CessationOnshoreFacilitiesCostProfile, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -25,6 +29,6 @@ public class CessationOnshoreFacilitiesCostProfileController(CessationOnshoreFac
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostDto dto)
     {
-        return await service.UpdateCessationOnshoreFacilitiesCostProfile(projectId, caseId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesProfile(projectId, caseId, costProfileId, ProfileTypes.CessationOnshoreFacilitiesCostProfile, dto);
     }
 }

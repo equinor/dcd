@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
+using api.Features.Profiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,7 @@ public class CalculateNpvService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(c => c.Project)
-            .Include(c => c.CalculatedTotalIncomeCostProfile)
-            .Include(c => c.CalculatedTotalCostCostProfile)
+            .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
         CalculateNpv(caseItem);
@@ -53,11 +53,15 @@ public class CalculateNpvService(DcdDbContext context)
 
     private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
     {
-        if (caseItem.CalculatedTotalIncomeCostProfile == null || caseItem.CalculatedTotalCostCostProfile == null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile) == null ||
+            caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile) == null)
         {
             return null;
         }
 
-        return EconomicsHelper.CalculateCashFlow(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile);
+        var calculatedTotalIncomeCostProfile = new TimeSeriesCost(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
+        var calculatedTotalCostCostProfile = new TimeSeriesCost(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
+
+        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfile, calculatedTotalCostCostProfile);
     }
 }

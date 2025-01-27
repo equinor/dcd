@@ -24,25 +24,7 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
-            .Include(c => c.CessationWellsCostOverride)
-            .Include(c => c.CessationWellsCost)
-            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(c => c.CessationOffshoreFacilitiesCost)
-            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(c => c.TotalFEEDStudies)
-            .Include(c => c.TotalFEEDStudiesOverride)
-            .Include(c => c.TotalOtherStudiesCostProfile)
-            .Include(c => c.WellInterventionCostProfile)
-            .Include(c => c.WellInterventionCostProfileOverride)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(c => c.HistoricCostCostProfile)
-            .Include(c => c.OnshoreRelatedOPEXCostProfile)
-            .Include(c => c.AdditionalOPEXCostProfile)
-            .Include(c => c.CalculatedTotalCostCostProfile)
-            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.TimeSeriesProfiles)
             .Where(x => caseIds.Contains(x.Id))
             .LoadAsync();
 

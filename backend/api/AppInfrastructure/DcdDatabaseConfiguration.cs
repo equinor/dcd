@@ -70,5 +70,83 @@ public static class DcdDatabaseConfiguration
         using var context = new DcdDbContext(dbBuilder.Options, null, null);
 
         context.Database.Migrate();
+
+        MigrateProfileData(dbBuilder.Options);
     }
+
+    private static void MigrateProfileData(DbContextOptions<DcdDbContext> dbBuilderOptions)
+    {
+        using var context = new DcdDbContext(dbBuilderOptions, null, null);
+
+        foreach (var (tableName, isOverride) in MigrationQueries)
+        {
+            var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{tableName}'";
+
+            var itemsFound = context.Database.SqlQueryRaw<int>(countQuery).First();
+
+            if (itemsFound != 0)
+            {
+                continue;
+            }
+
+            var insertQuery = isOverride
+                    ? $"""
+                       insert into TimeSeriesProfiles
+                       (
+                           Id, StartYear, InternalData, CaseId, CreatedUtc, UpdatedUtc,
+                           Override, ProfileType
+                       )
+                       select
+                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
+                       Override, '{tableName}'
+                       from
+                           {tableName};
+                       """
+                    : $"""
+                       insert into TimeSeriesProfiles
+                       (
+                           Id, StartYear, InternalData, CaseId, CreatedUtc, UpdatedUtc,
+                           Override, ProfileType
+                       )
+                       select
+                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
+                       0, '{tableName}'
+                       from {tableName};
+                       """;
+
+            context.Database.ExecuteSqlRaw(insertQuery);
+
+            var backupQuery = $"""
+                              if not exists (select * from sys.objects where object_id = object_id('z_backup_{tableName}'))
+                              begin
+                                  select * into dbo.z_backup_{tableName} from {tableName}
+                              end
+                              """;
+
+            context.Database.ExecuteSqlRaw(backupQuery);
+        }
+    }
+
+    private static readonly Dictionary<string, bool> MigrationQueries = new()
+    {
+        { "CessationWellsCost", false },
+        { "CessationWellsCostOverride", true },
+        { "CessationOffshoreFacilitiesCost", false },
+        { "CessationOffshoreFacilitiesCostOverride", true },
+        { "WellInterventionCostProfile", false },
+        { "WellInterventionCostProfileOverride", true },
+        { "OffshoreFacilitiesOperationsCostProfile", false },
+        { "OffshoreFacilitiesOperationsCostProfileOverride", true },
+        { "TotalFeasibilityAndConceptStudies", false },
+        { "TotalFeasibilityAndConceptStudiesOverride", true },
+        { "TotalFEEDStudies", false },
+        { "TotalFEEDStudiesOverride", true },
+        { "CessationOnshoreFacilitiesCostProfile", false },
+        { "HistoricCostCostProfile", false },
+        { "OnshoreRelatedOPEXCostProfile", false },
+        { "AdditionalOPEXCostProfile", false },
+        { "TotalOtherStudiesCostProfile", false },
+        { "CalculatedTotalIncomeCostProfile", false },
+        { "CalculatedTotalCostCostProfile", false },
+    };
 }

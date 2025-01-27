@@ -31,6 +31,15 @@ public class TimeSeriesEnergy : TimeSeries<double>;
 
 public class TimeSeriesCost : TimeSeries<double>
 {
+    public TimeSeriesCost() { }
+
+    public TimeSeriesCost(TimeSeriesProfile timeSeriesProfile)
+    {
+        Id = timeSeriesProfile.Id;
+        StartYear = timeSeriesProfile.StartYear;
+        InternalData = timeSeriesProfile.InternalData;
+    }
+
     public Currency Currency { get; set; }
 }
 

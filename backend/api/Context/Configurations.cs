@@ -99,6 +99,14 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
     }
 }
 
+public class TimeSeriesProfileConfiguration : IEntityTypeConfiguration<TimeSeriesProfile>
+{
+    public void Configure(EntityTypeBuilder<TimeSeriesProfile> builder)
+    {
+        builder.HasIndex(x => new { x.CaseId, x.ProfileType }).IsUnique();
+    }
+}
+
 public class ChangeLogConfiguration : IEntityTypeConfiguration<ChangeLog>
 {
     public void Configure(EntityTypeBuilder<ChangeLog> builder)

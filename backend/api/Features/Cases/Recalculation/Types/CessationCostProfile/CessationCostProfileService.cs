@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,7 @@ public class CessationCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.CessationWellsCostOverride)
-            .Include(c => c.CessationWellsCost)
-            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
@@ -47,46 +45,50 @@ public class CessationCostProfileService(DcdDbContext context)
 
     private static void CalculateCessationWellsCost(Case caseItem, Project project, List<WellProjectWell> linkedWells, int? lastYear)
     {
-        if (caseItem.CessationWellsCostOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true)
         {
             return;
         }
 
         if (!lastYear.HasValue)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.CessationWellsCost);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost));
             return;
         }
 
-        caseItem.CessationWellsCost = GenerateCessationWellsCost(
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationWellsCost);
+
+        GenerateCessationWellsCost(
             project,
             linkedWells,
             lastYear.Value,
-            caseItem.CessationWellsCost ?? new CessationWellsCost()
+            profile
         );
     }
 
     private static void GetCessationOffshoreFacilitiesCost(Case caseItem, Surf surf, int? lastYear)
     {
-        if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)?.Override == true)
         {
             return;
         }
 
         if (!lastYear.HasValue)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.CessationOffshoreFacilitiesCost);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost));
             return;
         }
 
-        caseItem.CessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationOffshoreFacilitiesCost);
+
+        GenerateCessationOffshoreFacilitiesCost(
             surf,
             lastYear.Value,
-            caseItem.CessationOffshoreFacilitiesCost ?? new CessationOffshoreFacilitiesCost()
+            profile
         );
     }
 
-    private static CessationWellsCost GenerateCessationWellsCost(Project project, List<WellProjectWell> linkedWells, int lastYear, CessationWellsCost cessationWells)
+    private static void GenerateCessationWellsCost(Project project, List<WellProjectWell> linkedWells, int lastYear, TimeSeriesProfile cessationWells)
     {
         var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 
@@ -97,16 +99,13 @@ public class CessationCostProfileService(DcdDbContext context)
         var totalCost = sumDrilledWells * pluggingAndAbandonment;
         cessationWells.StartYear = lastYear;
         cessationWells.Values = [totalCost / 2, totalCost / 2];
-
-        return cessationWells;
     }
 
-    private static CessationOffshoreFacilitiesCost GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear, CessationOffshoreFacilitiesCost cessationOffshoreFacilities)
+    private static void GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear, TimeSeriesProfile cessationOffshoreFacilities)
     {
         var surfCessationCost = surf.CessationCost;
 
         cessationOffshoreFacilities.StartYear = lastYear + 1;
         cessationOffshoreFacilities.Values = [surfCessationCost / 2, surfCessationCost / 2];
-        return cessationOffshoreFacilities;
     }
 }

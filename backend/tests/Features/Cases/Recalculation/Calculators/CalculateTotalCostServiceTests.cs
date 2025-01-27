@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Profiles;
 using api.Models;
 
 using Xunit;
@@ -32,20 +33,26 @@ public class CalculateTotalCostServiceTests
             TransportLink = Guid.NewGuid(),
             OnshorePowerSupplyLink = Guid.NewGuid(),
             ExplorationLink = Guid.NewGuid(),
-            TotalOtherStudiesCostProfile = new TotalOtherStudiesCostProfile
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 2020,
-                Values = [1000.0, 1500.0, 2000.0]
-            },
-            OnshoreRelatedOPEXCostProfile = new OnshoreRelatedOPEXCostProfile
-            {
-                StartYear = 2020,
-                Values = [500.0, 600.0, 700.0]
-            },
-            CessationWellsCost = new CessationWellsCost
-            {
-                StartYear = 2020,
-                Values = [300.0, 400.0, 500.0]
+                new()
+                {
+                    ProfileType = ProfileTypes.TotalOtherStudiesCostProfile,
+                    StartYear = 2020,
+                    Values = [1000.0, 1500.0, 2000.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.OnshoreRelatedOPEXCostProfile,
+                    StartYear = 2020,
+                    Values = [500.0, 600.0, 700.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.CessationWellsCost,
+                    StartYear = 2020,
+                    Values = [300.0, 400.0, 500.0]
+                }
             }
         };
 
@@ -167,13 +174,15 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.CalculateTotalCost(caseItem, substructure, surf, topside, transport, onshorePowerSupply, wellProject, exploration);
 
         // Assert
-        Assert.Equal(2020, caseItem.CalculatedTotalCostCostProfile!.StartYear);
-        Assert.Equal(3, caseItem.CalculatedTotalCostCostProfile.Values.Length);
+        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
+        Assert.NotNull(calculatedTotalCostCostProfile);
+        Assert.Equal(2020, calculatedTotalCostCostProfile.StartYear);
+        Assert.Equal(3, calculatedTotalCostCostProfile.Values.Length);
 
         var expectedValues = new[] { 2950.0, 4150.0, 4980.0 };
         for (int i = 0; i < expectedValues.Length; i++)
         {
-            Assert.Equal(expectedValues[i], caseItem.CalculatedTotalCostCostProfile.Values[i]);
+            Assert.Equal(expectedValues[i], calculatedTotalCostCostProfile.Values[i]);
         }
     }
 

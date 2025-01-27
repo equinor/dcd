@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Profiles;
 using api.Models;
 
 using Xunit;
@@ -61,12 +62,13 @@ public class CalculateTotalIncomeServiceTests
         var expectedSecondYearIncome = (4 * 1000000.0 * 75 * 6.29 * 10 + 4 * 1000000000.0 * 3) / 1000000;
         var expectedThirdYearIncome = (3 * 1000000.0 * 75 * 6.29 * 10 + 3 * 1000000000.0 * 3) / 1000000;
 
-        Assert.NotNull(caseItem.CalculatedTotalIncomeCostProfile);
-        Assert.Equal(2020, caseItem.CalculatedTotalIncomeCostProfile.StartYear);
-        Assert.Equal(3, caseItem.CalculatedTotalIncomeCostProfile.Values.Length);
-        Assert.Equal(expectedFirstYearIncome, caseItem.CalculatedTotalIncomeCostProfile.Values[0], precision: 0);
-        Assert.Equal(expectedSecondYearIncome, caseItem.CalculatedTotalIncomeCostProfile.Values[1], precision: 0);
-        Assert.Equal(expectedThirdYearIncome, caseItem.CalculatedTotalIncomeCostProfile.Values[2], precision: 0);
+        var calculatedTotalIncomeCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);
+        Assert.NotNull(calculatedTotalIncomeCostProfile);
+        Assert.Equal(2020, calculatedTotalIncomeCostProfile.StartYear);
+        Assert.Equal(3, calculatedTotalIncomeCostProfile.Values.Length);
+        Assert.Equal(expectedFirstYearIncome, calculatedTotalIncomeCostProfile.Values[0], precision: 0);
+        Assert.Equal(expectedSecondYearIncome, calculatedTotalIncomeCostProfile.Values[1], precision: 0);
+        Assert.Equal(expectedThirdYearIncome, calculatedTotalIncomeCostProfile.Values[2], precision: 0);
     }
 
     [Fact]
@@ -109,8 +111,9 @@ public class CalculateTotalIncomeServiceTests
         CalculateTotalIncomeService.CalculateTotalIncome(caseItem, drainageStrategy);
 
         // Assert
-        Assert.NotNull(caseItem.CalculatedTotalIncomeCostProfile);
-        Assert.Equal(2020, caseItem.CalculatedTotalIncomeCostProfile.StartYear);
-        Assert.All(caseItem.CalculatedTotalIncomeCostProfile.Values, value => Assert.Equal(0.0, value));
+        var calculatedTotalIncomeCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);
+        Assert.NotNull(calculatedTotalIncomeCostProfile);
+        Assert.Equal(2020, calculatedTotalIncomeCostProfile.StartYear);
+        Assert.All(calculatedTotalIncomeCostProfile.Values, value => Assert.Equal(0.0, value));
     }
 }

@@ -38,4 +38,13 @@ public static class CalculationHelper
             timeSeries.StartYear = 0;
         }
     }
+
+    public static void ResetTimeSeries(TimeSeriesProfile? timeSeries)
+    {
+        if (timeSeries != null)
+        {
+            timeSeries.Values = [];
+            timeSeries.StartYear = 0;
+        }
+    }
 }

@@ -2,6 +2,7 @@ using System.Globalization;
 
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,7 @@ public class StudyCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(c => c.TotalFEEDStudies)
-            .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
         var substructure = await context.Substructures
@@ -64,7 +62,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
     public static void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true)
         {
             return;
         }
@@ -76,7 +74,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
         if (dg0.Year == 1 || dg2.Year == 1)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.TotalFeasibilityAndConceptStudies);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies));
             return;
         }
 
@@ -104,26 +102,15 @@ public class StudyCostProfileService(DcdDbContext context)
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
 
-        var feasibilityAndConceptStudiesCost = new TotalFeasibilityAndConceptStudies
-        {
-            StartYear = dg0.Year - caseItem.DG4Date.Year,
-            Values = valuesList.ToArray()
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeasibilityAndConceptStudies);
 
-        if (caseItem.TotalFeasibilityAndConceptStudies != null)
-        {
-            caseItem.TotalFeasibilityAndConceptStudies.Values = feasibilityAndConceptStudiesCost.Values;
-            caseItem.TotalFeasibilityAndConceptStudies.StartYear = feasibilityAndConceptStudiesCost.StartYear;
-        }
-        else
-        {
-            caseItem.TotalFeasibilityAndConceptStudies = feasibilityAndConceptStudiesCost;
-        }
+        profile.StartYear = dg0.Year - caseItem.DG4Date.Year;
+        profile.Values = valuesList.ToArray();
     }
 
     public static void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        if (caseItem.TotalFEEDStudiesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true)
         {
             return;
         }
@@ -135,7 +122,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
         if (dg2.Year == 1 || dg3.Year == 1)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.TotalFEEDStudies);
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies));
             return;
         }
 
@@ -168,21 +155,10 @@ public class StudyCostProfileService(DcdDbContext context)
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeedStudies);
 
-        var totalFeedStudiesCost = new TotalFEEDStudies
-        {
-            StartYear = dg2.Year - caseItem.DG4Date.Year,
-            Values = valuesList.ToArray()
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFEEDStudies);
 
-        if (caseItem.TotalFEEDStudies != null)
-        {
-            caseItem.TotalFEEDStudies.Values = totalFeedStudiesCost.Values;
-            caseItem.TotalFEEDStudies.StartYear = totalFeedStudiesCost.StartYear;
-        }
-        else
-        {
-            caseItem.TotalFEEDStudies = totalFeedStudiesCost;
-        }
+        profile.StartYear = dg2.Year - caseItem.DG4Date.Year;
+        profile.Values = valuesList.ToArray();
     }
 
     private static double SumAllCostFacility(Substructure substructure,
