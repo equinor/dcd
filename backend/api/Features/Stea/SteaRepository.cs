@@ -60,8 +60,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<OnshorePowerSupply>> GetOnshorePowerSupplies(Guid projectPk)
     {
         return await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();
     }

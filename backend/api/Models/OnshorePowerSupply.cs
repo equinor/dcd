@@ -25,10 +25,13 @@ public class OnshorePowerSupply : IHasProjectId, IChangeTrackable, IDateTrackedE
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
     public virtual OnshorePowerSupplyCostProfile? CostProfile { get; set; }
     public virtual OnshorePowerSupplyCostProfileOverride? CostProfileOverride { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
+#region Migrated profiles, do not access.
 public class OnshorePowerSupplyCostProfile : TimeSeriesCost, IOnshorePowerSupplyTimeSeries
 {
     [ForeignKey("OnshorePowerSupply.Id")]
@@ -41,6 +44,7 @@ public class OnshorePowerSupplyCostProfileOverride : TimeSeriesCost, IOnshorePow
     public virtual OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
     public bool Override { get; set; }
 }
+#endregion Migrated profiles, do not access.
 
 public interface IOnshorePowerSupplyTimeSeries
 {

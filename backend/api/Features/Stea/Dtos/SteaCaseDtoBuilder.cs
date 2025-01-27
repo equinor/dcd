@@ -264,17 +264,18 @@ public static class SteaCaseDtoBuilder
             TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transportCostProfile));
         }
 
-        var onshorePowerSupply = steaDbData.OnshorePowerSupplies.First(l => l.Id == caseItem.OnshorePowerSupplyLink);
+        var onshorePowerSupplyCostProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
+        var onshorePowerSupplyCostProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile);
 
-        if (onshorePowerSupply.CostProfileOverride?.Override == true)
+        if (onshorePowerSupplyCostProfileOverride?.Override == true)
         {
-            onshorePowerSupply.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, ToTimeSeries(onshorePowerSupply.CostProfileOverride));
+            onshorePowerSupplyCostProfileOverride.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, ToTimeSeries(onshorePowerSupplyCostProfileOverride));
         }
-        else if (onshorePowerSupply.CostProfile != null)
+        else if (onshorePowerSupplyCostProfile != null)
         {
-            onshorePowerSupply.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, ToTimeSeries(onshorePowerSupply.CostProfile));
+            onshorePowerSupplyCostProfile.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost, ToTimeSeries(onshorePowerSupplyCostProfile));
         }
 
         TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.Summary, steaCaseDto.Capex.OffshoreFacilities);

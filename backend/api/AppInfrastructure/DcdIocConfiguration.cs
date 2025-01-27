@@ -56,7 +56,6 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.Explorations.CountryOfficeCosts;
 using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
 using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
@@ -224,7 +223,6 @@ public static class DcdIocConfiguration
 
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();
-        services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
 
         /* Substructure profiles */
         services.AddScoped<SubstructureCostProfileService>();

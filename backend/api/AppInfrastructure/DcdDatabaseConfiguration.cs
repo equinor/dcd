@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.Profiles;
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -78,7 +79,7 @@ public static class DcdDatabaseConfiguration
     {
         using var context = new DcdDbContext(dbBuilderOptions, null, null);
 
-        foreach (var (tableName, profileName, isOverride, entityName) in MigrationQueries)
+        foreach (var (tableName, profileName, isOverride, entityName, entityNamePlural) in MigrationQueries)
         {
             var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{tableName}'";
 
@@ -101,7 +102,7 @@ public static class DcdDatabaseConfiguration
                         p.Override, '{profileName}'
                        from
                            {tableName} p
-                           inner join {entityName}s t on t.Id = p.[{entityName}.Id]
+                           inner join {entityNamePlural} t on t.Id = p.[{entityName}.Id]
                            inner join Cases c on c.{entityName}Link = t.Id;
                        """
                     : $"""
@@ -115,7 +116,7 @@ public static class DcdDatabaseConfiguration
                         0, '{profileName}'
                        from
                            {tableName} p
-                           inner join {entityName}s t on t.Id = p.[{entityName}.Id]
+                           inner join {entityNamePlural} t on t.Id = p.[{entityName}.Id]
                            inner join Cases c on c.{entityName}Link = t.Id;
                        """;
 
@@ -132,22 +133,25 @@ public static class DcdDatabaseConfiguration
         }
     }
 
-    private static readonly List<(string tableName, string profileName, bool isOverride, string entityName)> MigrationQueries =
+    private static readonly List<(string tableName, string profileName, bool isOverride, string entityName, string entityNamePlural)> MigrationQueries =
     [
-        ("TopsideCostProfiles", "TopsideCostProfile", false, "Topside"),
-        ("TopsideCostProfileOverride", "TopsideCostProfileOverride", true, "Topside"),
-        ("TopsideCessationCostProfiles", "TopsideCessationCostProfile", false, "Topside"),
+        ("TopsideCostProfiles", ProfileTypes.TopsideCostProfile, false, "Topside", "Topsides"),
+        ("TopsideCostProfileOverride", ProfileTypes.TopsideCostProfileOverride, true, "Topside", "Topsides"),
+        ("TopsideCessationCostProfiles", ProfileTypes.TopsideCessationCostProfile, false, "Topside", "Topsides"),
 
-        ("TransportCostProfile", "TransportCostProfile", false, "Transport"),
-        ("TransportCostProfileOverride", "TransportCostProfileOverride", true, "Transport"),
-        ("TransportCessationCostProfiles", "TransportCessationCostProfile", false, "Transport"),
+        ("TransportCostProfile", ProfileTypes.TransportCostProfile, false, "Transport", "Transports"),
+        ("TransportCostProfileOverride", ProfileTypes.TransportCostProfileOverride, true, "Transport", "Transports"),
+        ("TransportCessationCostProfiles", ProfileTypes.TransportCessationCostProfile, false, "Transport", "Transports"),
 
-        ("SurfCostProfile", "SurfCostProfile", false, "Surf"),
-        ("SurfCostProfileOverride", "SurfCostProfileOverride", true, "Surf"),
-        ("SurfCessationCostProfiles", "SurfCessationCostProfile", false, "Surf"),
+        ("SurfCostProfile", ProfileTypes.SurfCostProfile, false, "Surf", "Surfs"),
+        ("SurfCostProfileOverride", ProfileTypes.SurfCostProfileOverride, true, "Surf", "Surfs"),
+        ("SurfCessationCostProfiles", ProfileTypes.SurfCessationCostProfile, false, "Surf", "Surfs"),
 
-        ("SubstructureCostProfiles", "SubstructureCostProfile", false, "Substructure"),
-        ("SubstructureCostProfileOverride", "SubstructureCostProfileOverride", true, "Substructure"),
-        ("SubstructureCessationCostProfiles", "SubstructureCessationCostProfile", false, "Substructure"),
+        ("SubstructureCostProfiles", ProfileTypes.SubstructureCostProfile, false, "Substructure", "Substructures"),
+        ("SubstructureCostProfileOverride", ProfileTypes.SubstructureCostProfileOverride, true, "Substructure", "Substructures"),
+        ("SubstructureCessationCostProfiles", ProfileTypes.SubstructureCessationCostProfile, false, "Substructure", "Substructures"),
+
+        ("OnshorePowerSupplyCostProfile", ProfileTypes.OnshorePowerSupplyCostProfile, false, "OnshorePowerSupply", "OnshorePowerSupplies"),
+        ("OnshorePowerSupplyCostProfileOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride, true, "OnshorePowerSupply", "OnshorePowerSupplies"),
     ];
 }

@@ -52,6 +52,11 @@ public class CreateCaseService(DcdDbContext context)
                 {
                     ProfileType = ProfileTypes.SubstructureCostProfileOverride,
                     Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.OnshorePowerSupplyCostProfileOverride,
+                    Override = true
                 }
             }
         };
@@ -112,11 +117,7 @@ public class CreateCaseService(DcdDbContext context)
         return new OnshorePowerSupply
         {
             Name = "OnshorePowerSupply",
-            ProjectId = projectPk,
-            CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 

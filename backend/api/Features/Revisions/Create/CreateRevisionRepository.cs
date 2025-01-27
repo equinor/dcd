@@ -128,8 +128,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadOnshorePowerSupplies(Guid projectPk)
     {
         await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }

@@ -124,8 +124,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadOnshorePowerSupplies(Guid onshorePowerSupplyLink)
     {
         await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Where(x => x.Id == onshorePowerSupplyLink)
             .LoadAsync();
     }

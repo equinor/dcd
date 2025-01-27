@@ -50,8 +50,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<OnshorePowerSupply> GetOnshorePowerSupplyNoTracking(Guid onshorePowerSupplyLink)
     {
         return await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .AsNoTracking()
             .FirstAsync(o => o.Id == onshorePowerSupplyLink);
     }

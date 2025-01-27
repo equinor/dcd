@@ -58,4 +58,8 @@ public static class ProfileTypes
     public const string SubstructureCostProfileOverride = "SubstructureCostProfileOverride";
 
     public const string SubstructureCessationCostProfile = "SubstructureCessationCostProfile";
+
+    /* Onshore power supply profiles */
+    public const string OnshorePowerSupplyCostProfile = "OnshorePowerSupplyCostProfile";
+    public const string OnshorePowerSupplyCostProfileOverride = "OnshorePowerSupplyCostProfileOverride";
 }

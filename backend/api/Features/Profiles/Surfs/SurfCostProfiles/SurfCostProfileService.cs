@@ -10,11 +10,7 @@ namespace api.Features.Profiles.Surfs.SurfCostProfiles;
 
 public class SurfCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
 {
-    public async Task AddOrUpdateSurfCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid surfId,
-        UpdateTimeSeriesCostDto dto)
+    public async Task AddOrUpdateSurfCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
     {
         var profileTypes = new List<string> { ProfileTypes.SurfCostProfile, ProfileTypes.SurfCostProfileOverride };
 
@@ -34,10 +30,10 @@ public class SurfCostProfileService(DcdDbContext context, IRecalculationService 
 
     private async Task CreateSurfCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var surfCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SurfCostProfile);
+        var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SurfCostProfile);
 
-        surfCostProfile.StartYear = dto.StartYear;
-        surfCostProfile.Values = dto.Values;
+        costProfile.StartYear = dto.StartYear;
+        costProfile.Values = dto.Values;
 
         var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride);
 

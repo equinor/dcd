@@ -80,18 +80,14 @@ public class CalculateTotalCostServiceTests
                     Override = true,
                     StartYear = 2020,
                     Values = [70.0, 110.0, 150.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.OnshorePowerSupplyCostProfileOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 70.0, 100.0]
                 }
-            }
-        };
-
-        var onshorePowerSupply = new OnshorePowerSupply
-        {
-            Name = "TestName",
-            CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [50.0, 70.0, 100.0]
             }
         };
 
@@ -159,7 +155,7 @@ public class CalculateTotalCostServiceTests
         };
 
         // Act
-        CalculateTotalCostService.CalculateTotalCost(caseItem, onshorePowerSupply, wellProject, exploration);
+        CalculateTotalCostService.CalculateTotalCost(caseItem, wellProject, exploration);
 
         // Assert
         var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);

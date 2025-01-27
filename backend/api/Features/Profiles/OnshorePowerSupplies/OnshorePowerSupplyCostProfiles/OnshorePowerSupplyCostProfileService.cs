@@ -2,83 +2,66 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
 
-public class OnshorePowerSupplyCostProfileService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IRecalculationService recalculationService)
+public class OnshorePowerSupplyCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
 {
-    public async Task AddOrUpdateOnshorePowerSupplyCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        UpdateTimeSeriesCostDto dto)
+    public async Task AddOrUpdateOnshorePowerSupplyCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
     {
-        var onshorePowerSupply = await context.OnshorePowerSupplies
-            .Include(t => t.CostProfile)
-            .SingleAsync(t => t.Id == onshorePowerSupplyId);
+        var profileTypes = new List<string> { ProfileTypes.OnshorePowerSupplyCostProfile, ProfileTypes.OnshorePowerSupplyCostProfileOverride };
 
-        if (onshorePowerSupply.CostProfile != null)
+        var caseItem = await context.Cases
+            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
+            .Include(x => x.OnshorePowerSupply)
+            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+
+        if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile) != null)
         {
-            await UpdateOnshorePowerSupplyTimeSeries(projectId, caseId, onshorePowerSupplyId, onshorePowerSupply.CostProfile.Id, dto);
+            await UpdateOnshorePowerSupplyTimeSeries(caseItem, dto);
             return;
         }
 
-        await CreateOnshorePowerSupplyCostProfile(caseId, onshorePowerSupplyId, dto, onshorePowerSupply);
+        await CreateOnshorePowerSupplyCostProfile(caseItem, dto);
     }
 
-    private async Task CreateOnshorePowerSupplyCostProfile(
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        UpdateTimeSeriesCostDto dto,
-        OnshorePowerSupply onshorePowerSupply)
+    private async Task CreateOnshorePowerSupplyCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var onshorePowerSupplyCostProfile = new OnshorePowerSupplyCostProfile
-        {
-            OnshorePowerSupply = onshorePowerSupply
-        };
+        var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.OnshorePowerSupplyCostProfile);
 
-        var newProfile = mapperService.MapToEntity(dto, onshorePowerSupplyCostProfile, onshorePowerSupplyId);
+        costProfile.StartYear = dto.StartYear;
+        costProfile.Values = dto.Values;
 
-        if (newProfile.OnshorePowerSupply.CostProfileOverride != null)
+        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
+
+        if (costProfileOverride != null)
         {
-            newProfile.OnshorePowerSupply.CostProfileOverride.Override = false;
+            costProfileOverride.Override = false;
         }
 
-        context.OnshorePowerSupplyCostProfile.Add(newProfile);
-
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 
-    private async Task UpdateOnshorePowerSupplyTimeSeries(
-        Guid projectId,
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        Guid profileId,
-        UpdateTimeSeriesCostDto updatedProfileDto)
+    private async Task UpdateOnshorePowerSupplyTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var existingProfile = await context.OnshorePowerSupplyCostProfile
-            .Include(x => x.OnshorePowerSupply).ThenInclude(onshorePowerSupply => onshorePowerSupply.CostProfileOverride)
-            .SingleAsync(x => x.OnshorePowerSupply.ProjectId == projectId && x.Id == profileId);
-
-        if (existingProfile.OnshorePowerSupply.ProspVersion == null)
+        if (caseItem.Surf!.ProspVersion == null)
         {
-            if (existingProfile.OnshorePowerSupply.CostProfileOverride != null)
+            if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride) != null)
             {
-                existingProfile.OnshorePowerSupply.CostProfileOverride.Override = true;
+                caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfileOverride).Override = true;
             }
         }
 
-        mapperService.MapToEntity(updatedProfileDto, existingProfile, onshorePowerSupplyId);
+        var existingProfile = caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfile);
 
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        existingProfile.StartYear = dto.StartYear;
+        existingProfile.Values = dto.Values;
+
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 }

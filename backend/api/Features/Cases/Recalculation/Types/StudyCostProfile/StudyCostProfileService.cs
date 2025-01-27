@@ -17,11 +17,6 @@ public class StudyCostProfileService(DcdDbContext context)
             .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var onshorePowerSupply = await context.OnshorePowerSupplies
-            .Include(o => o.CostProfileOverride)
-            .Include(o => o.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.OnshorePowerSupplyLink);
-
         var wellProject = await context.WellProjects
             .Include(w => w.OilProducerCostProfileOverride)
             .Include(w => w.OilProducerCostProfile)
@@ -33,7 +28,7 @@ public class StudyCostProfileService(DcdDbContext context)
             .Include(w => w.GasInjectorCostProfile)
             .SingleAsync(x => x.Id == caseItem.WellProjectLink);
 
-        var sumFacilityCost = SumAllCostFacility(caseItem, onshorePowerSupply);
+        var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(wellProject);
 
         CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
@@ -141,7 +136,7 @@ public class StudyCostProfileService(DcdDbContext context)
         profile.Values = valuesList.ToArray();
     }
 
-    private static double SumAllCostFacility(Case caseItem, OnshorePowerSupply onshorePowerSupply)
+    private static double SumAllCostFacility(Case caseItem)
     {
         var sumFacilityCost = 0.0;
 
@@ -149,7 +144,7 @@ public class StudyCostProfileService(DcdDbContext context)
         sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride));
         sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
         sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride));
 
         return sumFacilityCost;
     }
