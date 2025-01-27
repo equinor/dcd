@@ -53,7 +53,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var explorationLinks = project.Cases.Select(x => x.ExplorationLink).ToList();
         await context.Explorations
-            .Include(e => e.CountryOfficeCost)
             .Where(x => explorationLinks.Contains(x.Id))
             .LoadAsync();
 

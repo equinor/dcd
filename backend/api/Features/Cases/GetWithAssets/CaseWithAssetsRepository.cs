@@ -120,7 +120,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     {
         return await context.Explorations
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
-            .Include(c => c.CountryOfficeCost)
             .AsNoTracking()
             .SingleAsync(o => o.Id == explorationLink);
     }

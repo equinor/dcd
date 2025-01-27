@@ -11,11 +11,6 @@ public class ExplorationProfile : Profile
     public ExplorationProfile()
     {
         CreateMap<Exploration, ExplorationDto>();
-        CreateMap<CountryOfficeCost, TimeSeriesCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
-
-        CreateMap<UpdateTimeSeriesCostDto, CountryOfficeCost>();
-
-        CreateMap<CreateTimeSeriesCostDto, CountryOfficeCost>();
     }
 }

@@ -74,4 +74,6 @@ public static class ProfileTypes
     public const string SidetrackCostProfile = "SidetrackCostProfile";
 
     public const string SeismicAcquisitionAndProcessing = "SeismicAcquisitionAndProcessing";
+
+    public const string CountryOfficeCost = "CountryOfficeCost";
 }

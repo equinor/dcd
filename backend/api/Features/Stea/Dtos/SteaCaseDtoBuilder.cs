@@ -17,7 +17,7 @@ public static class SteaCaseDtoBuilder
         AddOpexCost(steaCaseDto, caseItem);
         AddCapex(steaDbData, steaCaseDto, caseItem);
         AddCessationCost(steaCaseDto, caseItem);
-        AddExploration(steaDbData, steaCaseDto, caseItem);
+        AddExploration(steaCaseDto, caseItem);
         AddProductionSalesAndVolumes(steaDbData, steaCaseDto, caseItem);
 
         steaCaseDto.StartYear = new[]
@@ -407,11 +407,9 @@ public static class SteaCaseDtoBuilder
         }
     }
 
-    private static void AddExploration(SteaDbData steaDbData, SteaCaseDto steaCaseDto, Case caseItem)
+    private static void AddExploration(SteaCaseDto steaCaseDto, Case caseItem)
     {
         steaCaseDto.Exploration = new TimeSeriesCostDto();
-
-        var exploration = steaDbData.Explorations.First(e => e.Id == caseItem.ExplorationLink);
 
         var costProfileDtos = new List<TimeSeriesCostDto>();
         if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)?.Values.Length > 0)
@@ -438,9 +436,9 @@ public static class SteaCaseDtoBuilder
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.SeismicAcquisitionAndProcessing)));
         }
-        if (exploration.CountryOfficeCost?.Values.Length > 0)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost)?.Values.Length > 0)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.CountryOfficeCost));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.CountryOfficeCost)));
         }
 
         steaCaseDto.Exploration = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);

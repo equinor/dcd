@@ -27,7 +27,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             }
 
             var drainageStrategy = caseItem.DrainageStrategy!;
-            var exploration = caseItem.Exploration!;
 
             var totalOilProduction = drainageStrategy.ProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
             var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
@@ -35,7 +34,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, false);
 
-            var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
+            var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
             TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
@@ -208,7 +207,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return cessationTimeSeries.Values.Sum();
     }
 
-    private static double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
+    private static double CalculateExplorationWellCosts(Case caseItem)
     {
         var sumExplorationWellCost = 0.0;
 
@@ -217,9 +216,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.GAndGAdminCost).Values.Sum();
         }
 
-        if (exploration.CountryOfficeCost != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost) != null)
         {
-            sumExplorationWellCost += exploration.CountryOfficeCost.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.CountryOfficeCost).Values.Sum();
         }
 
         if (caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing) != null)

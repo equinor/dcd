@@ -26,14 +26,10 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(x => x.GasInjectorCostProfile)
             .SingleAsync(x => x.Id == caseItem.WellProjectLink);
 
-        var exploration = await context.Explorations
-            .Include(e => e.CountryOfficeCost)
-            .SingleAsync(x => x.Id == caseItem.ExplorationLink);
-
-        CalculateTotalCost(caseItem, wellProject, exploration);
+        CalculateTotalCost(caseItem, wellProject);
     }
 
-    public static void CalculateTotalCost(Case caseItem, WellProject wellProject, Exploration exploration)
+    public static void CalculateTotalCost(Case caseItem, WellProject wellProject)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
 
@@ -71,7 +67,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalDevelopmentCost.Values
         };
 
-        var explorationCost = CalculateTotalExplorationCost(caseItem, exploration);
+        var explorationCost = CalculateTotalExplorationCost(caseItem);
         var explorationProfile = new TimeSeries<double>
         {
             StartYear = explorationCost.StartYear,
@@ -247,7 +243,7 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalDevelopmentCost;
     }
 
-    public static TimeSeries<double> CalculateTotalExplorationCost(Case caseItem, Exploration exploration)
+    public static TimeSeries<double> CalculateTotalExplorationCost(Case caseItem)
     {
         TimeSeries<double> gAndGAdminCostProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost),
@@ -260,8 +256,11 @@ public class CalculateTotalCostService(DcdDbContext context)
             ? new TimeSeriesCost(seismicAcquisitionAndProcessingTimeSeries)
             : new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        TimeSeries<double> countryOfficeCostProfile = exploration?.CountryOfficeCost
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        var countryOfficeTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost);
+
+        TimeSeries<double> countryOfficeCostProfile = countryOfficeTimeSeries != null
+            ? new TimeSeriesCost(countryOfficeTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
         var explorationWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile);
 

@@ -27,8 +27,8 @@ public class Exploration : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public virtual AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }
     public virtual SidetrackCostProfile? SidetrackCostProfile { get; set; }
     public virtual SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
-    #endregion Migrated profiles, do not access.
     public virtual CountryOfficeCost? CountryOfficeCost { get; set; }
+    #endregion Migrated profiles, do not access.
 
     public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
 }
@@ -72,14 +72,13 @@ public class SeismicAcquisitionAndProcessing : TimeSeriesCost, IExplorationTimeS
     [ForeignKey("Exploration.Id")]
     public virtual Exploration Exploration { get; set; } = null!;
 }
-#endregion Migrated profiles, do not access.
-
 
 public class CountryOfficeCost : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public virtual Exploration Exploration { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
 
 public interface IExplorationTimeSeries
 {

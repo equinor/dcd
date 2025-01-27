@@ -119,6 +119,12 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [150.0, 250.0, 350.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.CountryOfficeCost,
+                    StartYear = 2020,
+                    Values = [50.0, 100.0]
+                }
             }
         };
 
@@ -150,18 +156,8 @@ public class CalculateTotalCostServiceTests
             },
         };
 
-        var exploration = new Exploration
-        {
-
-            CountryOfficeCost = new CountryOfficeCost
-            {
-                StartYear = 2020,
-                Values = [50.0, 100.0]
-            }
-        };
-
         // Act
-        CalculateTotalCostService.CalculateTotalCost(caseItem, wellProject, exploration);
+        CalculateTotalCostService.CalculateTotalCost(caseItem, wellProject);
 
         // Assert
         var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
@@ -215,20 +211,17 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2021,
                     Values = [15.0, 25.0, 35.0]
                 },
-            }
-        };
-
-        var exploration = new Exploration
-        {
-            CountryOfficeCost = new CountryOfficeCost
-            {
-                StartYear = 2020,
-                Values = [5.0, 10.0]
+                new()
+                {
+                    ProfileType = ProfileTypes.CountryOfficeCost,
+                    StartYear = 2020,
+                    Values = [5.0, 10.0]
+                }
             }
         };
 
         // Act
-        var result = CalculateTotalCostService.CalculateTotalExplorationCost(caseItem, exploration);
+        var result = CalculateTotalCostService.CalculateTotalExplorationCost(caseItem);
 
         // Assert
         var expectedStartYear = 2020;

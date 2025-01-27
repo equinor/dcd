@@ -53,7 +53,6 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
-using api.Features.Profiles.Explorations.CountryOfficeCosts;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
@@ -213,9 +212,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ProductionProfileOilService>();
         services.AddScoped<ProductionProfileWaterInjectionService>();
         services.AddScoped<ProductionProfileWaterService>();
-
-        /* Exploration profiles */
-        services.AddScoped<CountryOfficeCostService>();
 
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();

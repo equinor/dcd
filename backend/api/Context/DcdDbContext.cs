@@ -54,7 +54,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<GasInjectorCostProfileOverride> GasInjectorCostProfileOverride => Set<GasInjectorCostProfileOverride>();
     public DbSet<DrillingSchedule> DrillingSchedule => Set<DrillingSchedule>();
     public DbSet<Exploration> Explorations => Set<Exploration>();
-    public DbSet<CountryOfficeCost> CountryOfficeCost => Set<CountryOfficeCost>();
     public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
