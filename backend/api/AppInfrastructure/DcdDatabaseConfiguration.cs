@@ -78,10 +78,9 @@ public static class DcdDatabaseConfiguration
     {
         using var context = new DcdDbContext(dbBuilderOptions, null, null);
 
-        foreach (var migrationQuery in MigrationQueries)
+        foreach (var (tableName, isOverride) in MigrationQueries)
         {
-            var type = migrationQuery.Key;
-            var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{type}'";
+            var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{tableName}'";
 
             var itemsFound = context.Database.SqlQueryRaw<int>(countQuery).First();
 
@@ -90,7 +89,7 @@ public static class DcdDatabaseConfiguration
                 continue;
             }
 
-            var insertQuery = migrationQuery.Value
+            var insertQuery = isOverride
                     ? $"""
                        insert into TimeSeriesProfiles
                        (
@@ -99,9 +98,9 @@ public static class DcdDatabaseConfiguration
                        )
                        select
                            Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
-                       Override, '{type}'
+                       Override, '{tableName}'
                        from
-                           {type};
+                           {tableName};
                        """
                     : $"""
                        insert into TimeSeriesProfiles
@@ -111,11 +110,20 @@ public static class DcdDatabaseConfiguration
                        )
                        select
                            Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
-                       0, '{type}'
-                       from {type};
+                       0, '{tableName}'
+                       from {tableName};
                        """;
 
             context.Database.ExecuteSqlRaw(insertQuery);
+
+            var backupQuery = $"""
+                              if not exists (select * from sys.objects where object_id = object_id('z_backup_{tableName}'))
+                              begin
+                                  select * into dbo.z_backup_{tableName} from {tableName}
+                              end
+                              """;
+
+            context.Database.ExecuteSqlRaw(backupQuery);
         }
     }
 
