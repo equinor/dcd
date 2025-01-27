@@ -67,7 +67,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadExplorations(Guid projectPk)
     {
         await context.Explorations
-            .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)

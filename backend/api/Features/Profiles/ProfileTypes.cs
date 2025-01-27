@@ -68,4 +68,6 @@ public static class ProfileTypes
     public const string GAndGAdminCostOverride = "GAndGAdminCostOverride";
 
     public const string ExplorationWellCostProfile = "ExplorationWellCostProfile";
+
+    public const string AppraisalWellCostProfile = "AppraisalWellCostProfile";
 }

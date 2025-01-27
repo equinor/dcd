@@ -418,9 +418,9 @@ public static class SteaCaseDtoBuilder
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile)));
         }
-        if (exploration.AppraisalWellCostProfile?.Values.Length > 0)
+        if (caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)?.Values.Length > 0)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.AppraisalWellCostProfile));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.AppraisalWellCostProfile)));
         }
         if (exploration.SidetrackCostProfile?.Values.Length > 0)
         {

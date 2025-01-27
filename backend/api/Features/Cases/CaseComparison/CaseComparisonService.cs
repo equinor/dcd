@@ -232,9 +232,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile).Values.Sum();
         }
 
-        if (exploration.AppraisalWellCostProfile != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile) != null)
         {
-            sumExplorationWellCost += exploration.AppraisalWellCostProfile.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.AppraisalWellCostProfile).Values.Sum();
         }
 
         if (exploration.SidetrackCostProfile != null)

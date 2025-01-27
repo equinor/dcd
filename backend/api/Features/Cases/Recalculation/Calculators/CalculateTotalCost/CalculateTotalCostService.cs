@@ -29,7 +29,6 @@ public class CalculateTotalCostService(DcdDbContext context)
         var exploration = await context.Explorations
             .Include(e => e.CountryOfficeCost)
             .Include(e => e.SeismicAcquisitionAndProcessing)
-            .Include(e => e.AppraisalWellCostProfile)
             .Include(e => e.SidetrackCostProfile)
             .SingleAsync(x => x.Id == caseItem.ExplorationLink);
 
@@ -265,11 +264,14 @@ public class CalculateTotalCostService(DcdDbContext context)
         var explorationWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile);
 
         TimeSeries<double> explorationWellCostProfile = explorationWellTimeSeries != null
-                                                        ? new TimeSeriesCost(explorationWellTimeSeries)
-                                                        : new TimeSeries<double> { StartYear = 0, Values = [] };
+            ? new TimeSeriesCost(explorationWellTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        TimeSeries<double> appraisalWellCostProfile = exploration?.AppraisalWellCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        var appraisalWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile);
+
+        TimeSeries<double> appraisalWellCostProfile = appraisalWellTimeSeries != null
+            ? new TimeSeriesCost(appraisalWellTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
         TimeSeries<double> sidetrackCostProfile = exploration?.SidetrackCostProfile
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };

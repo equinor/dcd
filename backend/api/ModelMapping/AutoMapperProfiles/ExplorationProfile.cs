@@ -11,7 +11,6 @@ public class ExplorationProfile : Profile
     public ExplorationProfile()
     {
         CreateMap<Exploration, ExplorationDto>();
-        CreateMap<AppraisalWellCostProfile, TimeSeriesCostDto>();
         CreateMap<SidetrackCostProfile, TimeSeriesCostDto>();
         CreateMap<SeismicAcquisitionAndProcessing, TimeSeriesCostDto>();
         CreateMap<CountryOfficeCost, TimeSeriesCostDto>();
