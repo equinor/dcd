@@ -165,5 +165,7 @@ public static class DcdDatabaseConfiguration
 
         ("OilProducerCostProfile", ProfileTypes.OilProducerCostProfile, false, "WellProject", "WellProjects"),
         ("OilProducerCostProfileOverride", ProfileTypes.OilProducerCostProfileOverride, true, "WellProject", "WellProjects"),
+        ("GasProducerCostProfile", ProfileTypes.GasProducerCostProfile, false, "WellProject", "WellProjects"),
+        ("GasProducerCostProfileOverride", ProfileTypes.GasProducerCostProfileOverride, true, "WellProject", "WellProjects"),
     ];
 }

@@ -51,7 +51,6 @@ public class WellCostProfileService(DcdDbContext context)
         var wellProjectWells = await context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject).ThenInclude(e => e.GasProducerCostProfile)
             .Include(ew => ew.WellProject).ThenInclude(e => e.WaterInjectorCostProfile)
             .Include(ew => ew.WellProject).ThenInclude(e => e.GasInjectorCostProfile)
             .Where(x => wellIds.Contains(x.WellId))
@@ -81,15 +80,21 @@ public class WellCostProfileService(DcdDbContext context)
 
         foreach (var wellProject in wellProjects)
         {
+            var profileTypes = new List<string>
+            {
+                ProfileTypes.OilProducerCostProfile,
+                ProfileTypes.GasProducerCostProfile
+            };
+
+            var caseItem = await context.Cases
+                .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+                .SingleAsync(x => x.WellProjectLink == wellProject.Id);
+
             var connectedWellProjectWells = await GetAllWellProjectWellsForWellProject(wellProject.Id);
 
             var connectedWellProjectCategoryWells = connectedWellProjectWells
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Oil_Producer);
             var wellProjectWellCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedWellProjectCategoryWells);
-
-            var caseItem = await context.Cases
-                .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.OilProducerCostProfile))
-                .SingleAsync(x => x.WellProjectLink == wellProject.Id);
 
             var oilProducerCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.OilProducerCostProfile);
 
@@ -100,13 +105,10 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Gas_Producer);
             var gasProducerCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedGasProducerWells);
 
-            wellProject.GasProducerCostProfile ??= new GasProducerCostProfile
-            {
-                WellProject = wellProject
-            };
+            var gasProducerCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.GasProducerCostProfile);
 
-            wellProject.GasProducerCostProfile.Values = gasProducerCostProfileValues.Values;
-            wellProject.GasProducerCostProfile.StartYear = gasProducerCostProfileValues.StartYear;
+            gasProducerCostProfile.Values = gasProducerCostProfileValues.Values;
+            gasProducerCostProfile.StartYear = gasProducerCostProfileValues.StartYear;
 
             var connectedWaterInjectorWells = connectedWellProjectWells
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Water_Injector);
@@ -257,8 +259,6 @@ public class WellCostProfileService(DcdDbContext context)
         return context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject)
-                .ThenInclude(e => e.GasProducerCostProfile)
             .Include(ew => ew.WellProject)
                 .ThenInclude(e => e.WaterInjectorCostProfile)
             .Include(ew => ew.WellProject)

@@ -58,8 +58,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var wellProjectLinks = project.Cases.Select(x => x.WellProjectLink).ToList();
         await context.WellProjects
-            .Include(w => w.GasProducerCostProfileOverride)
-            .Include(w => w.GasProducerCostProfile)
             .Include(w => w.WaterInjectorCostProfileOverride)
             .Include(w => w.WaterInjectorCostProfile)
             .Include(w => w.GasInjectorCostProfileOverride)

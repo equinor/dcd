@@ -76,8 +76,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadWellProjects(Guid projectPk)
     {
         await context.WellProjects
-            .Include(c => c.GasProducerCostProfile)
-            .Include(c => c.GasProducerCostProfileOverride)
             .Include(c => c.WaterInjectorCostProfile)
             .Include(c => c.WaterInjectorCostProfileOverride)
             .Include(c => c.GasInjectorCostProfile)
