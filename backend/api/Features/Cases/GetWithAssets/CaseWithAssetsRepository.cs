@@ -59,7 +59,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<Surf> GetSurfNoTracking(Guid surfLink)
     {
         return await context.Surfs
-            .Include(c => c.CessationCostProfile)
             .AsNoTracking()
             .SingleAsync(o => o.Id == surfLink);
     }

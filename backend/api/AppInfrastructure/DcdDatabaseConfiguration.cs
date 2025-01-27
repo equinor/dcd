@@ -144,5 +144,6 @@ public static class DcdDatabaseConfiguration
 
         ("SurfCostProfile", "SurfCostProfile", false, "Surf"),
         ("SurfCostProfileOverride", "SurfCostProfileOverride", true, "Surf"),
+        ("SurfCessationCostProfiles", "SurfCessationCostProfile", false, "Surf"),
     ];
 }

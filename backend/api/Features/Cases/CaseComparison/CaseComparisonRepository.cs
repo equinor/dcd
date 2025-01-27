@@ -86,7 +86,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var surfLinkIds = project.Cases.Select(x => x.SurfLink).ToList();
         await context.Surfs
-            .Include(x => x.CessationCostProfile)
             .Where(x => surfLinkIds.Contains(x.Id))
             .LoadAsync();
 

@@ -41,8 +41,8 @@ public class Surf : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     #region Migrated profiles, do not access.
     public virtual SurfCostProfile? CostProfile { get; set; }
     public virtual SurfCostProfileOverride? CostProfileOverride { get; set; }
-    #endregion Migrated profiles, do not access.
     public virtual SurfCessationCostProfile? CessationCostProfile { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
 #region Migrated profiles, do not access.
@@ -58,13 +58,13 @@ public class SurfCostProfileOverride : TimeSeriesCost, ISurfTimeSeries, ITimeSer
     public virtual Surf Surf { get; set; } = null!;
     public bool Override { get; set; }
 }
-#endregion Migrated profiles, do not access.
 
 public class SurfCessationCostProfile : TimeSeriesCost, ISurfTimeSeries
 {
     [ForeignKey("Surf.Id")]
     public virtual Surf Surf { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
 
 public enum ProductionFlowline
 {

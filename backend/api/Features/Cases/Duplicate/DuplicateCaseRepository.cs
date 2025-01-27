@@ -110,7 +110,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadSurfs(Guid surfLink)
     {
         await context.Surfs
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == surfLink)
             .LoadAsync();
     }

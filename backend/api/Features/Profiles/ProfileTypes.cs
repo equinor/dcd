@@ -50,4 +50,6 @@ public static class ProfileTypes
     /* Surf profiles */
     public const string SurfCostProfile = "SurfCostProfile";
     public const string SurfCostProfileOverride = "SurfCostProfileOverride";
+
+    public const string SurfCessationCostProfile = "SurfCessationCostProfile";
 }
