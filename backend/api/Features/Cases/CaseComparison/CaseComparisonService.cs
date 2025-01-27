@@ -227,9 +227,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumExplorationWellCost += exploration.SeismicAcquisitionAndProcessing.Values.Sum();
         }
 
-        if (exploration.ExplorationWellCostProfile != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile) != null)
         {
-            sumExplorationWellCost += exploration.ExplorationWellCostProfile.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile).Values.Sum();
         }
 
         if (exploration.AppraisalWellCostProfile != null)

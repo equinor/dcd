@@ -1210,7 +1210,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var countryOfficeChanges = context.ChangeTracker.Entries<CountryOfficeCost>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var explorationWellChanges = context.ChangeTracker.Entries<ExplorationWellCostProfile>()
+        var explorationWellChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ExplorationWellCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var appraisalWellChanges = context.ChangeTracker.Entries<AppraisalWellCostProfile>()

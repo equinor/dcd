@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -31,7 +32,6 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
     public async Task UpdateExplorationCostProfiles(Guid explorationId)
     {
         var exploration = await context.Explorations
-            .Include(x => x.ExplorationWellCostProfile)
             .Include(x => x.AppraisalWellCostProfile)
             .Include(x => x.SidetrackCostProfile)
             .SingleAsync(x => x.Id == explorationId);
@@ -51,19 +51,15 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
         var (explorationCategoryWells, explorationWellExplorationCategoryWells) = await GetWellData(wellIds, exploration.Id, WellCategory.Exploration_Well);
         var explorationCategoryTimeSeries = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(explorationCategoryWells, explorationWellExplorationCategoryWells);
 
-        if (exploration.ExplorationWellCostProfile == null)
-        {
-            exploration.ExplorationWellCostProfile = new ExplorationWellCostProfile
-            {
-                StartYear = explorationCategoryTimeSeries.StartYear,
-                Values = explorationCategoryTimeSeries.Values
-            };
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.ExplorationWellCostProfile))
+            .Where(x => x.ExplorationLink == exploration.Id)
+            .SingleAsync();
 
-            return;
-        }
+        var explorationWellCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.ExplorationWellCostProfile);
 
-        exploration.ExplorationWellCostProfile.StartYear = explorationCategoryTimeSeries.StartYear;
-        exploration.ExplorationWellCostProfile.Values = explorationCategoryTimeSeries.Values;
+        explorationWellCostProfile.StartYear = explorationCategoryTimeSeries.StartYear;
+        explorationWellCostProfile.Values = explorationCategoryTimeSeries.Values;
     }
 
     private async Task HandleAppraisalWellCostProfile(Exploration exploration, List<Guid> wellIds)

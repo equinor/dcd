@@ -414,9 +414,9 @@ public static class SteaCaseDtoBuilder
         var exploration = steaDbData.Explorations.First(e => e.Id == caseItem.ExplorationLink);
 
         var costProfileDtos = new List<TimeSeriesCostDto>();
-        if (exploration.ExplorationWellCostProfile?.Values.Length > 0)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)?.Values.Length > 0)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.ExplorationWellCostProfile));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile)));
         }
         if (exploration.AppraisalWellCostProfile?.Values.Length > 0)
         {

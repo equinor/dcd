@@ -156,5 +156,7 @@ public static class DcdDatabaseConfiguration
 
         ("GAndGAdminCost", ProfileTypes.GAndGAdminCost, false, "Exploration", "Explorations"),
         ("GAndGAdminCostOverride", ProfileTypes.GAndGAdminCostOverride, true, "Exploration", "Explorations"),
+
+        ("ExplorationWellCostProfile", ProfileTypes.ExplorationWellCostProfile, true, "Exploration", "Explorations"),
     ];
 }

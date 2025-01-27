@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -43,7 +44,6 @@ public class WellCostProfileService(DcdDbContext context)
         var explorationWells = await context.ExplorationWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.Exploration).ThenInclude(e => e.ExplorationWellCostProfile)
             .Include(ew => ew.Exploration).ThenInclude(e => e.AppraisalWellCostProfile)
             .Include(ew => ew.Exploration).ThenInclude(e => e.SidetrackCostProfile)
             .Where(x => wellIds.Contains(x.WellId))
@@ -147,13 +147,15 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well);
             var explorationWellCostProfileValues = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(connectedExplorationCategoryWells);
 
-            exploration.ExplorationWellCostProfile ??= new ExplorationWellCostProfile
-            {
-                Exploration = exploration
-            };
+            var caseItem = await context.Cases
+                .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.ExplorationWellCostProfile))
+                .Where(x => x.ExplorationLink == exploration.Id)
+                .SingleAsync();
 
-            exploration.ExplorationWellCostProfile.Values = explorationWellCostProfileValues.Values;
-            exploration.ExplorationWellCostProfile.StartYear = explorationWellCostProfileValues.StartYear;
+            var explorationWellCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.ExplorationWellCostProfile);
+
+            explorationWellCostProfile.Values = explorationWellCostProfileValues.Values;
+            explorationWellCostProfile.StartYear = explorationWellCostProfileValues.StartYear;
 
             var connectedAppraisalWells = connectedExplorationWells
                 .Where(ew => ew.Well.WellCategory == WellCategory.Appraisal_Well);
@@ -238,8 +240,6 @@ public class WellCostProfileService(DcdDbContext context)
         return context.ExplorationWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.Exploration)
-                .ThenInclude(e => e.ExplorationWellCostProfile)
             .Include(ew => ew.Exploration)
                 .ThenInclude(e => e.AppraisalWellCostProfile)
             .Include(ew => ew.Exploration)

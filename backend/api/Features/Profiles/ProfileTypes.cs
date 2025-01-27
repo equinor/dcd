@@ -66,4 +66,6 @@ public static class ProfileTypes
     /* Exploration profiles */
     public const string GAndGAdminCost = "GAndGAdminCost";
     public const string GAndGAdminCostOverride = "GAndGAdminCostOverride";
+
+    public const string ExplorationWellCostProfile = "ExplorationWellCostProfile";
 }

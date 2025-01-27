@@ -21,10 +21,10 @@ public class Exploration : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public string? UpdatedBy { get; set; }
 
     #region Migrated profiles, do not access.
-    // public virtual GAndGAdminCost? GAndGAdminCost { get; set; }
-    // public virtual GAndGAdminCostOverride? GAndGAdminCostOverride { get; set; }
-    #endregion Migrated profiles, do not access.
+    public virtual GAndGAdminCost? GAndGAdminCost { get; set; }
+    public virtual GAndGAdminCostOverride? GAndGAdminCostOverride { get; set; }
     public virtual ExplorationWellCostProfile? ExplorationWellCostProfile { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }
     public virtual SidetrackCostProfile? SidetrackCostProfile { get; set; }
     public virtual SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
@@ -34,26 +34,26 @@ public class Exploration : IHasProjectId, IChangeTrackable, IDateTrackedEntity
 }
 
 #region Migrated profiles, do not access.
-// public class GAndGAdminCost : TimeSeriesCost, IExplorationTimeSeries
-// {
-//     [ForeignKey("Exploration.Id")]
-//     public virtual Exploration Exploration { get; set; } = null!;
-// }
-//
-// public class GAndGAdminCostOverride : TimeSeriesCost, IExplorationTimeSeries, ITimeSeriesOverride
-// {
-//     [ForeignKey("Exploration.Id")]
-//     public virtual Exploration Exploration { get; set; } = null!;
-//     public bool Override { get; set; }
-// }
-#endregion Migrated profiles, do not access.
+public class GAndGAdminCost : TimeSeriesCost, IExplorationTimeSeries
+{
+    [ForeignKey("Exploration.Id")]
+    public virtual Exploration Exploration { get; set; } = null!;
+}
 
+public class GAndGAdminCostOverride : TimeSeriesCost, IExplorationTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("Exploration.Id")]
+    public virtual Exploration Exploration { get; set; } = null!;
+    public bool Override { get; set; }
+}
 public class ExplorationWellCostProfile : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public virtual Exploration Exploration { get; set; } = null!;
     public bool Override { get; set; }
 }
+#endregion Migrated profiles, do not access.
+
 public class AppraisalWellCostProfile : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]

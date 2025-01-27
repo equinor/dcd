@@ -24,7 +24,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Exploration>> GetExplorations(Guid projectPk)
     {
         return await context.Explorations
-            .Include(c => c.ExplorationWellCostProfile)
             .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)
             .Include(c => c.SeismicAcquisitionAndProcessing)

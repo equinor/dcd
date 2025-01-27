@@ -63,7 +63,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadExplorations(Guid explorationLink)
     {
         await context.Explorations
-            .Include(c => c.ExplorationWellCostProfile)
             .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)
             .Include(c => c.SeismicAcquisitionAndProcessing)

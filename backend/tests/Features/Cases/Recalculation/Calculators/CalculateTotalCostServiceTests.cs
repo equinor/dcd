@@ -95,6 +95,12 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [100.0, 200.0, 300.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.ExplorationWellCostProfile,
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                },
             }
         };
 
@@ -139,11 +145,6 @@ public class CalculateTotalCostServiceTests
                 StartYear = 2020,
                 Values = [50.0, 100.0]
             },
-            ExplorationWellCostProfile = new ExplorationWellCostProfile
-            {
-                StartYear = 2020,
-                Values = [100.0, 100.0]
-            },
             AppraisalWellCostProfile = new AppraisalWellCostProfile
             {
                 StartYear = 2020,
@@ -187,6 +188,12 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [10.0, 20.0, 30.0]
                 },
+                new()
+                {
+                    ProfileType= ProfileTypes.ExplorationWellCostProfile,
+                    StartYear = 2021,
+                    Values = [50.0, 80.0]
+                },
             }
         };
 
@@ -201,11 +208,6 @@ public class CalculateTotalCostServiceTests
             {
                 StartYear = 2020,
                 Values = [5.0, 10.0]
-            },
-            ExplorationWellCostProfile = new ExplorationWellCostProfile
-            {
-                StartYear = 2021,
-                Values = [50.0, 80.0]
             },
             AppraisalWellCostProfile = new AppraisalWellCostProfile
             {
