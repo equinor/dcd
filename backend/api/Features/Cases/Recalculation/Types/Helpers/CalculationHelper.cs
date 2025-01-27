@@ -30,15 +30,6 @@ public static class CalculationHelper
         return firstYear;
     }
 
-    public static void ResetTimeSeries(TimeSeries<double>? timeSeries)
-    {
-        if (timeSeries != null)
-        {
-            timeSeries.Values = [];
-            timeSeries.StartYear = 0;
-        }
-    }
-
     public static void ResetTimeSeries(TimeSeriesProfile? timeSeries)
     {
         if (timeSeries != null)
