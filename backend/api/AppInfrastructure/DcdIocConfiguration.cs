@@ -53,24 +53,12 @@ using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
-using api.Features.Profiles.Explorations.CountryOfficeCosts;
-using api.Features.Profiles.Explorations.GAndGAdminCostOverrides;
-using api.Features.Profiles.Explorations.SeismicAcquisitionAndProcessings;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfileOverrides;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
-using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
-using api.Features.Profiles.Surfs.SurfCostProfileOverrides;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
-using api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
-using api.Features.Profiles.Transports.TransportCostProfileOverrides;
 using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Profiles.Update;
-using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
-using api.Features.Profiles.WellProjects.GasProducerCostProfileOverrides;
-using api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides;
-using api.Features.Profiles.WellProjects.WaterInjectorCostProfileOverrides;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectIntegrity;
@@ -221,36 +209,20 @@ public static class DcdIocConfiguration
         services.AddScoped<ProductionProfileWaterInjectionService>();
         services.AddScoped<ProductionProfileWaterService>();
 
-        /* Exploration profiles */
-        services.AddScoped<CountryOfficeCostService>();
-        services.AddScoped<GAndGAdminCostOverrideService>();
-        services.AddScoped<SeismicAcquisitionAndProcessingService>();
-
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();
-        services.AddScoped<OnshorePowerSupplyTimeSeriesService>();
 
         /* Substructure profiles */
         services.AddScoped<SubstructureCostProfileService>();
-        services.AddScoped<SubstructureCostProfileOverrideService>();
 
         /* Surf profiles */
         services.AddScoped<SurfCostProfileService>();
-        services.AddScoped<SurfTimeSeriesService>();
 
         /* Topside profiles */
         services.AddScoped<TopsideCostProfileService>();
-        services.AddScoped<TopsideCostProfileOverrideService>();
 
         /* Transport profiles */
         services.AddScoped<TransportCostProfileService>();
-        services.AddScoped<TransportCostProfileOverrideService>();
-
-        /* Well project profiles */
-        services.AddScoped<GasInjectorCostProfileOverrideService>();
-        services.AddScoped<GasProducerCostProfileOverrideService>();
-        services.AddScoped<OilProducerCostProfileOverrideService>();
-        services.AddScoped<WaterInjectorCostProfileOverrideService>();
 
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
     }

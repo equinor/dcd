@@ -1,7 +1,7 @@
 using System.Globalization;
 
 using api.Context;
-using api.Models;
+using api.Features.Profiles;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -11,14 +11,14 @@ public class GenerateGAndGAdminCostProfile(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.GAndGAdminCost || y.ProfileType == ProfileTypes.GAndGAdminCostOverride))
+            .SingleAsync(x => x.Id == caseId);
 
         var exploration = await context.Explorations
-            .Include(e => e.GAndGAdminCost)
-            .Include(e => e.GAndGAdminCostOverride)
             .SingleAsync(x => x.Id == caseItem.ExplorationLink);
 
-        if (exploration.GAndGAdminCostOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {
             return;
         }
@@ -43,7 +43,7 @@ public class GenerateGAndGAdminCostProfile(DcdDbContext context)
                 var totalMinutesLastYear = new TimeSpan(DateTime.IsLeapYear(lastYear.Year) ? 366 : 365, 0, 0, 0).TotalMinutes;
                 var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
 
-                var gAndGAdminCost = new GAndGAdminCost();
+                var gAndGAdminCost = caseItem.CreateProfileIfNotExists(ProfileTypes.GAndGAdminCost);
 
                 gAndGAdminCost.StartYear = (int)earliestYear - caseItem.DG4Date.Year;
 
@@ -54,17 +54,9 @@ public class GenerateGAndGAdminCostProfile(DcdDbContext context)
                     values.Add(countryCost);
                 }
                 values.Add(countryCost * percentageOfLastYear);
-                gAndGAdminCost.Values = values.ToArray();
 
-                if (exploration.GAndGAdminCost != null)
-                {
-                    exploration.GAndGAdminCost.Values = gAndGAdminCost.Values;
-                    exploration.GAndGAdminCost.StartYear = gAndGAdminCost.StartYear;
-                }
-                else
-                {
-                    exploration.GAndGAdminCost = gAndGAdminCost;
-                }
+                gAndGAdminCost.Values = values.ToArray();
+                gAndGAdminCost.StartYear = gAndGAdminCost.StartYear;
             }
         }
     }

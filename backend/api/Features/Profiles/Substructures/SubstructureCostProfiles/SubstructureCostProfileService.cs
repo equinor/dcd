@@ -2,81 +2,66 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Substructures.SubstructureCostProfiles;
 
-public class SubstructureCostProfileService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IRecalculationService recalculationService)
+public class SubstructureCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
 {
-    public async Task AddOrUpdateSubstructureCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid substructureId,
-        UpdateTimeSeriesCostDto dto)
+    public async Task AddOrUpdateSubstructureCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
     {
-        var substructure = await context.Substructures
-            .Include(t => t.CostProfile)
-            .SingleAsync(t => t.ProjectId == projectId && t.Id == substructureId);
+        var profileTypes = new List<string> { ProfileTypes.SubstructureCostProfile, ProfileTypes.SubstructureCostProfileOverride };
 
-        if (substructure.CostProfile != null)
+        var caseItem = await context.Cases
+            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
+            .Include(x => x.Substructure)
+            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+
+        if (caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile) != null)
         {
-            await UpdateSubstructureTimeSeries(projectId, caseId, substructureId, substructure.CostProfile.Id, dto);
+            await UpdateSubstructureTimeSeries(caseItem, dto);
             return;
         }
 
-        await CreateSubstructureCostProfile(caseId, substructureId, dto, substructure);
+        await CreateSubstructureCostProfile(caseItem, dto);
     }
 
-    private async Task CreateSubstructureCostProfile(
-        Guid caseId,
-        Guid substructureId,
-        UpdateTimeSeriesCostDto dto,
-        Substructure substructure)
+    private async Task CreateSubstructureCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var substructureCostProfile = new SubstructureCostProfile
-        {
-            Substructure = substructure
-        };
+        var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SubstructureCostProfile);
 
-        var newProfile = mapperService.MapToEntity(dto, substructureCostProfile, substructureId);
-        if (newProfile.Substructure.CostProfileOverride != null)
+        costProfile.StartYear = dto.StartYear;
+        costProfile.Values = dto.Values;
+
+        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride);
+
+        if (costProfileOverride != null)
         {
-            newProfile.Substructure.CostProfileOverride.Override = false;
+            costProfileOverride.Override = false;
         }
 
-        context.SubstructureCostProfiles.Add(newProfile);
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 
-    private async Task UpdateSubstructureTimeSeries(
-        Guid projectId,
-        Guid caseId,
-        Guid substructureId,
-        Guid profileId,
-        UpdateTimeSeriesCostDto updatedProfileDto)
+    private async Task UpdateSubstructureTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var existingProfile = await context.SubstructureCostProfiles
-            .Include(x => x.Substructure).ThenInclude(x => x.CostProfileOverride)
-            .SingleAsync(x => x.Substructure.ProjectId == projectId && x.Id == profileId);
-
-        if (existingProfile.Substructure.ProspVersion == null)
+        if (caseItem.Substructure!.ProspVersion == null)
         {
-            if (existingProfile.Substructure.CostProfileOverride != null)
+            if (caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride) != null)
             {
-                existingProfile.Substructure.CostProfileOverride.Override = true;
+                caseItem.GetProfile(ProfileTypes.SubstructureCostProfileOverride).Override = true;
             }
         }
 
-        mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
+        var existingProfile = caseItem.GetProfile(ProfileTypes.SubstructureCostProfile);
 
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        existingProfile.StartYear = dto.StartYear;
+        existingProfile.Values = dto.Values;
+
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 }

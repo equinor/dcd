@@ -15,63 +15,10 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var substructure = await context.Substructures
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.SubstructureLink);
-
-        var surf = await context.Surfs
-            .Include(x => x.CostProfile)
-            .Include(x => x.CostProfileOverride)
-            .SingleAsync(x => x.Id == caseItem.SurfLink);
-
-        var topside = await context.Topsides
-            .Include(x => x.CostProfile)
-            .Include(x => x.CostProfileOverride)
-            .SingleAsync(x => x.Id == caseItem.TopsideLink);
-
-        var transport = await context.Transports
-            .Include(x => x.CostProfile)
-            .Include(x => x.CostProfileOverride)
-            .SingleAsync(x => x.Id == caseItem.TransportLink);
-
-        var onshorePowerSupply = await context.OnshorePowerSupplies
-            .Include(x => x.CostProfile)
-            .Include(x => x.CostProfileOverride)
-            .SingleAsync(x => x.Id == caseItem.OnshorePowerSupplyLink);
-
-        var wellProject = await context.WellProjects
-            .Include(x => x.OilProducerCostProfileOverride)
-            .Include(x => x.OilProducerCostProfile)
-            .Include(x => x.GasProducerCostProfileOverride)
-            .Include(x => x.GasProducerCostProfile)
-            .Include(x => x.WaterInjectorCostProfileOverride)
-            .Include(x => x.WaterInjectorCostProfile)
-            .Include(x => x.GasInjectorCostProfileOverride)
-            .Include(x => x.GasInjectorCostProfile)
-            .SingleAsync(x => x.Id == caseItem.WellProjectLink);
-
-        var exploration = await context.Explorations
-            .Include(e => e.GAndGAdminCost)
-            .Include(e => e.GAndGAdminCostOverride)
-            .Include(e => e.CountryOfficeCost)
-            .Include(e => e.SeismicAcquisitionAndProcessing)
-            .Include(e => e.ExplorationWellCostProfile)
-            .Include(e => e.AppraisalWellCostProfile)
-            .Include(e => e.SidetrackCostProfile)
-            .SingleAsync(x => x.Id == caseItem.ExplorationLink);
-
-        CalculateTotalCost(caseItem, substructure, surf, topside, transport, onshorePowerSupply, wellProject, exploration);
+        CalculateTotalCost(caseItem);
     }
 
-    public static void CalculateTotalCost(Case caseItem,
-        Substructure substructure,
-        Surf surf,
-        Topside topside,
-        Transport transport,
-        OnshorePowerSupply onshorePowerSupply,
-        WellProject wellProject,
-        Exploration exploration)
+    public static void CalculateTotalCost(Case caseItem)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
 
@@ -95,21 +42,21 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalCessationCost.Values ?? []
         };
 
-        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport, onshorePowerSupply);
+        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem);
         var totalOffshoreFacilityProfile = new TimeSeries<double>
         {
             StartYear = totalOffshoreFacilityCost.StartYear,
             Values = totalOffshoreFacilityCost.Values
         };
 
-        var totalDevelopmentCost = CalculateTotalDevelopmentCost(wellProject);
+        var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);
         var developmentProfile = new TimeSeries<double>
         {
             StartYear = totalDevelopmentCost.StartYear,
             Values = totalDevelopmentCost.Values
         };
 
-        var explorationCost = CalculateTotalExplorationCost(exploration);
+        var explorationCost = CalculateTotalExplorationCost(caseItem);
         var explorationProfile = new TimeSeries<double>
         {
             StartYear = explorationCost.StartYear,
@@ -220,32 +167,27 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalCessationCost;
     }
 
-    private static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
-        Substructure? substructure,
-        Surf? surf,
-        Topside? topside,
-        Transport? transport,
-        OnshorePowerSupply? onshorePowerSupply)
+    private static TimeSeries<double> CalculateTotalOffshoreFacilityCost(Case caseItem)
     {
         TimeSeries<double> substructureProfile = UseOverrideOrProfile(
-            substructure?.CostProfile,
-            substructure?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride)
         );
         TimeSeries<double> surfProfile = UseOverrideOrProfile(
-            surf?.CostProfile,
-            surf?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride)
         );
         TimeSeries<double> topsideProfile = UseOverrideOrProfile(
-            topside?.CostProfile,
-            topside?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)
         );
         TimeSeries<double> transportProfile = UseOverrideOrProfile(
-            transport?.CostProfile,
-            transport?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride)
         );
         TimeSeries<double> onshorePowerSupplyProfile = UseOverrideOrProfile(
-            onshorePowerSupply?.CostProfile,
-            onshorePowerSupply?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)
         );
 
         var totalOffshoreFacilityCost = CostProfileMerger.MergeCostProfiles(
@@ -260,23 +202,23 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalOffshoreFacilityCost;
     }
 
-    private static TimeSeries<double> CalculateTotalDevelopmentCost(WellProject wellProject)
+    private static TimeSeries<double> CalculateTotalDevelopmentCost(Case caseItem)
     {
         TimeSeries<double> oilProducerProfile = UseOverrideOrProfile(
-            wellProject.OilProducerCostProfile,
-            wellProject.OilProducerCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)
         );
         TimeSeries<double> gasProducerProfile = UseOverrideOrProfile(
-            wellProject.GasProducerCostProfile,
-            wellProject.GasProducerCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride)
         );
         TimeSeries<double> waterInjectorProfile = UseOverrideOrProfile(
-            wellProject.WaterInjectorCostProfile,
-            wellProject.WaterInjectorCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)
         );
         TimeSeries<double> gasInjectorProfile = UseOverrideOrProfile(
-            wellProject.GasInjectorCostProfile,
-            wellProject.GasInjectorCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride)
         );
 
         var totalDevelopmentCost = CostProfileMerger.MergeCostProfiles(
@@ -290,26 +232,42 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalDevelopmentCost;
     }
 
-    public static TimeSeries<double> CalculateTotalExplorationCost(Exploration exploration)
+    public static TimeSeries<double> CalculateTotalExplorationCost(Case caseItem)
     {
         TimeSeries<double> gAndGAdminCostProfile = UseOverrideOrProfile(
-            exploration.GAndGAdminCost,
-            exploration.GAndGAdminCostOverride
+            caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost),
+            caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)
         );
-        TimeSeries<double> seismicAcquisitionAndProcessingProfile = exploration?.SeismicAcquisitionAndProcessing
-             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        TimeSeries<double> countryOfficeCostProfile = exploration?.CountryOfficeCost
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        var seismicAcquisitionAndProcessingTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing);
 
-        TimeSeries<double> explorationWellCostProfile = exploration?.ExplorationWellCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        TimeSeries<double> seismicAcquisitionAndProcessingProfile = seismicAcquisitionAndProcessingTimeSeries != null
+            ? new TimeSeriesCost(seismicAcquisitionAndProcessingTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
-        TimeSeries<double> appraisalWellCostProfile = exploration?.AppraisalWellCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        var countryOfficeTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost);
 
-        TimeSeries<double> sidetrackCostProfile = exploration?.SidetrackCostProfile
-            ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+        TimeSeries<double> countryOfficeCostProfile = countryOfficeTimeSeries != null
+            ? new TimeSeriesCost(countryOfficeTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
+
+        var explorationWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile);
+
+        TimeSeries<double> explorationWellCostProfile = explorationWellTimeSeries != null
+            ? new TimeSeriesCost(explorationWellTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
+
+        var appraisalWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile);
+
+        TimeSeries<double> appraisalWellCostProfile = appraisalWellTimeSeries != null
+            ? new TimeSeriesCost(appraisalWellTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
+
+        var sidetrackTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile);
+
+        TimeSeries<double> sidetrackCostProfile = sidetrackTimeSeries != null
+            ? new TimeSeriesCost(sidetrackTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
         var totalExploration = CostProfileMerger.MergeCostProfiles(
         [

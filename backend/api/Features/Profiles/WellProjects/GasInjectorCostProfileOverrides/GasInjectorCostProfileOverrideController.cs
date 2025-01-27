@@ -1,11 +1,15 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
 
-public class GasInjectorCostProfileOverrideController(GasInjectorCostProfileOverrideService service) : ControllerBase
+public class GasInjectorCostProfileOverrideController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/gas-injector-cost-profile-override")]
@@ -15,7 +19,7 @@ public class GasInjectorCostProfileOverrideController(GasInjectorCostProfileOver
         [FromRoute] Guid wellProjectId,
         [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await service.CreateGasInjectorCostProfileOverride(projectId, caseId, wellProjectId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.GasInjectorCostProfileOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -27,6 +31,6 @@ public class GasInjectorCostProfileOverrideController(GasInjectorCostProfileOver
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await service.UpdateGasInjectorCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesOverrideProfile(projectId, caseId, costProfileId, ProfileTypes.GasInjectorCostProfileOverride, dto);
     }
 }

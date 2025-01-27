@@ -1,4 +1,5 @@
 using api.Context;
+using api.Features.Profiles;
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -78,13 +79,13 @@ public static class DcdDatabaseConfiguration
     {
         using var context = new DcdDbContext(dbBuilderOptions, null, null);
 
-        foreach (var (tableName, isOverride) in MigrationQueries)
+        foreach (var (tableName, profileName, isOverride, entityName, entityNamePlural) in MigrationQueries)
         {
-            var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{tableName}'";
+            var countQuery = $"select count(*) as Value from sys.objects where object_id = object_id('z_backup_{tableName}')";
 
             var itemsFound = context.Database.SqlQueryRaw<int>(countQuery).First();
 
-            if (itemsFound != 0)
+            if (itemsFound > 0)
             {
                 continue;
             }
@@ -97,10 +98,12 @@ public static class DcdDatabaseConfiguration
                            Override, ProfileType
                        )
                        select
-                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
-                       Override, '{tableName}'
+                        p.Id, StartYear, InternalData, c.Id, getutcdate(), getutcdate(),
+                        p.Override, '{profileName}'
                        from
-                           {tableName};
+                           {tableName} p
+                           inner join {entityNamePlural} t on t.Id = p.[{entityName}.Id]
+                           inner join Cases c on c.{entityName}Link = t.Id;
                        """
                     : $"""
                        insert into TimeSeriesProfiles
@@ -109,9 +112,12 @@ public static class DcdDatabaseConfiguration
                            Override, ProfileType
                        )
                        select
-                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
-                       0, '{tableName}'
-                       from {tableName};
+                        p.Id, StartYear, InternalData, c.Id, getutcdate(), getutcdate(),
+                        0, '{profileName}'
+                       from
+                           {tableName} p
+                           inner join {entityNamePlural} t on t.Id = p.[{entityName}.Id]
+                           inner join Cases c on c.{entityName}Link = t.Id;
                        """;
 
             context.Database.ExecuteSqlRaw(insertQuery);
@@ -127,26 +133,43 @@ public static class DcdDatabaseConfiguration
         }
     }
 
-    private static readonly Dictionary<string, bool> MigrationQueries = new()
-    {
-        { "CessationWellsCost", false },
-        { "CessationWellsCostOverride", true },
-        { "CessationOffshoreFacilitiesCost", false },
-        { "CessationOffshoreFacilitiesCostOverride", true },
-        { "WellInterventionCostProfile", false },
-        { "WellInterventionCostProfileOverride", true },
-        { "OffshoreFacilitiesOperationsCostProfile", false },
-        { "OffshoreFacilitiesOperationsCostProfileOverride", true },
-        { "TotalFeasibilityAndConceptStudies", false },
-        { "TotalFeasibilityAndConceptStudiesOverride", true },
-        { "TotalFEEDStudies", false },
-        { "TotalFEEDStudiesOverride", true },
-        { "CessationOnshoreFacilitiesCostProfile", false },
-        { "HistoricCostCostProfile", false },
-        { "OnshoreRelatedOPEXCostProfile", false },
-        { "AdditionalOPEXCostProfile", false },
-        { "TotalOtherStudiesCostProfile", false },
-        { "CalculatedTotalIncomeCostProfile", false },
-        { "CalculatedTotalCostCostProfile", false },
-    };
+    private static readonly List<(string tableName, string profileName, bool isOverride, string entityName, string entityNamePlural)> MigrationQueries =
+    [
+        ("TopsideCostProfiles", ProfileTypes.TopsideCostProfile, false, "Topside", "Topsides"),
+        ("TopsideCostProfileOverride", ProfileTypes.TopsideCostProfileOverride, true, "Topside", "Topsides"),
+        ("TopsideCessationCostProfiles", ProfileTypes.TopsideCessationCostProfile, false, "Topside", "Topsides"),
+
+        ("TransportCostProfile", ProfileTypes.TransportCostProfile, false, "Transport", "Transports"),
+        ("TransportCostProfileOverride", ProfileTypes.TransportCostProfileOverride, true, "Transport", "Transports"),
+        ("TransportCessationCostProfiles", ProfileTypes.TransportCessationCostProfile, false, "Transport", "Transports"),
+
+        ("SurfCostProfile", ProfileTypes.SurfCostProfile, false, "Surf", "Surfs"),
+        ("SurfCostProfileOverride", ProfileTypes.SurfCostProfileOverride, true, "Surf", "Surfs"),
+        ("SurfCessationCostProfiles", ProfileTypes.SurfCessationCostProfile, false, "Surf", "Surfs"),
+
+        ("SubstructureCostProfiles", ProfileTypes.SubstructureCostProfile, false, "Substructure", "Substructures"),
+        ("SubstructureCostProfileOverride", ProfileTypes.SubstructureCostProfileOverride, true, "Substructure", "Substructures"),
+        ("SubstructureCessationCostProfiles", ProfileTypes.SubstructureCessationCostProfile, false, "Substructure", "Substructures"),
+
+        ("OnshorePowerSupplyCostProfile", ProfileTypes.OnshorePowerSupplyCostProfile, false, "OnshorePowerSupply", "OnshorePowerSupplies"),
+        ("OnshorePowerSupplyCostProfileOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride, true, "OnshorePowerSupply", "OnshorePowerSupplies"),
+
+        ("GAndGAdminCost", ProfileTypes.GAndGAdminCost, false, "Exploration", "Explorations"),
+        ("GAndGAdminCostOverride", ProfileTypes.GAndGAdminCostOverride, true, "Exploration", "Explorations"),
+
+        ("ExplorationWellCostProfile", ProfileTypes.ExplorationWellCostProfile, false, "Exploration", "Explorations"),
+        ("AppraisalWellCostProfile", ProfileTypes.AppraisalWellCostProfile, false, "Exploration", "Explorations"),
+        ("SidetrackCostProfile", ProfileTypes.SidetrackCostProfile, false, "Exploration", "Explorations"),
+        ("SeismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing, false, "Exploration", "Explorations"),
+        ("CountryOfficeCost", ProfileTypes.CountryOfficeCost, false, "Exploration", "Explorations"),
+
+        ("OilProducerCostProfile", ProfileTypes.OilProducerCostProfile, false, "WellProject", "WellProjects"),
+        ("OilProducerCostProfileOverride", ProfileTypes.OilProducerCostProfileOverride, true, "WellProject", "WellProjects"),
+        ("GasProducerCostProfile", ProfileTypes.GasProducerCostProfile, false, "WellProject", "WellProjects"),
+        ("GasProducerCostProfileOverride", ProfileTypes.GasProducerCostProfileOverride, true, "WellProject", "WellProjects"),
+        ("WaterInjectorCostProfile", ProfileTypes.WaterInjectorCostProfile, false, "WellProject", "WellProjects"),
+        ("WaterInjectorCostProfileOverride", ProfileTypes.WaterInjectorCostProfileOverride, true, "WellProject", "WellProjects"),
+        ("GasInjectorCostProfile", ProfileTypes.GasInjectorCostProfile, false, "WellProject", "WellProjects"),
+        ("GasInjectorCostProfileOverride", ProfileTypes.GasInjectorCostProfileOverride, true, "WellProject", "WellProjects"),
+    ];
 }

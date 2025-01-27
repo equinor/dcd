@@ -67,13 +67,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadExplorations(Guid projectPk)
     {
         await context.Explorations
-            .Include(c => c.ExplorationWellCostProfile)
-            .Include(c => c.AppraisalWellCostProfile)
-            .Include(c => c.SidetrackCostProfile)
-            .Include(c => c.GAndGAdminCost)
-            .Include(c => c.GAndGAdminCostOverride)
-            .Include(c => c.SeismicAcquisitionAndProcessing)
-            .Include(c => c.CountryOfficeCost)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
             .Where(x => x.ProjectId == projectPk)
@@ -83,14 +76,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadWellProjects(Guid projectPk)
     {
         await context.WellProjects
-            .Include(c => c.OilProducerCostProfile)
-            .Include(c => c.OilProducerCostProfileOverride)
-            .Include(c => c.GasProducerCostProfile)
-            .Include(c => c.GasProducerCostProfileOverride)
-            .Include(c => c.WaterInjectorCostProfile)
-            .Include(c => c.WaterInjectorCostProfileOverride)
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.ProjectId == projectPk)
@@ -100,9 +85,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadTransports(Guid projectPk)
     {
         await context.Transports
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
@@ -110,9 +92,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadTopsides(Guid projectPk)
     {
         await context.Topsides
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
@@ -120,9 +99,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadSurfs(Guid projectPk)
     {
         await context.Surfs
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
@@ -130,9 +106,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadSubstructures(Guid projectPk)
     {
         await context.Substructures
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
@@ -140,8 +113,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadOnshorePowerSupplies(Guid projectPk)
     {
         await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }

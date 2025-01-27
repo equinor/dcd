@@ -1,21 +1,24 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.WellProjects.OilProducerCostProfileOverrides;
 
-public class OilProducerCostProfileOverrideController(OilProducerCostProfileOverrideService service) : ControllerBase
+public class OilProducerCostProfileOverrideController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/oil-producer-cost-profile-override")]
     public async Task<TimeSeriesCostOverrideDto> CreateOilProducerCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid wellProjectId,
         [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await service.CreateOilProducerCostProfileOverride(projectId, caseId, wellProjectId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.OilProducerCostProfileOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -23,10 +26,9 @@ public class OilProducerCostProfileOverrideController(OilProducerCostProfileOver
     public async Task<TimeSeriesCostOverrideDto> UpdateOilProducerCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid wellProjectId,
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await service.UpdateOilProducerCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesOverrideProfile(projectId, caseId, costProfileId, ProfileTypes.OilProducerCostProfileOverride, dto);
     }
 }

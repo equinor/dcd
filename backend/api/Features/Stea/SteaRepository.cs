@@ -24,13 +24,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Exploration>> GetExplorations(Guid projectPk)
     {
         return await context.Explorations
-            .Include(c => c.ExplorationWellCostProfile)
-            .Include(c => c.AppraisalWellCostProfile)
-            .Include(c => c.SidetrackCostProfile)
-            .Include(c => c.GAndGAdminCost)
-            .Include(c => c.GAndGAdminCostOverride)
-            .Include(c => c.SeismicAcquisitionAndProcessing)
-            .Include(c => c.CountryOfficeCost)
             .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
             .Where(d => d.ProjectId == projectPk)
             .ToListAsync();
@@ -39,9 +32,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Transport>> GetTransports(Guid projectPk)
     {
         return await context.Transports
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();
     }
@@ -49,9 +39,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Topside>> GetTopsides(Guid projectPk)
     {
         return await context.Topsides
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();
     }
@@ -59,9 +46,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Surf>> GetSurfs(Guid projectPk)
     {
         return await context.Surfs
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();
     }
@@ -69,8 +53,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<OnshorePowerSupply>> GetOnshorePowerSupplies(Guid projectPk)
     {
         return await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();
     }
@@ -103,14 +85,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<WellProject>> GetWellProjects(Guid projectPk)
     {
         return await context.WellProjects
-            .Include(c => c.OilProducerCostProfile)
-            .Include(c => c.OilProducerCostProfileOverride)
-            .Include(c => c.GasProducerCostProfile)
-            .Include(c => c.GasProducerCostProfileOverride)
-            .Include(c => c.WaterInjectorCostProfile)
-            .Include(c => c.WaterInjectorCostProfileOverride)
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
             .Where(d => d.ProjectId == projectPk)
             .ToListAsync();
@@ -119,9 +93,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Substructure>> GetSubstructures(Guid projectPk)
     {
         return await context.Substructures
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();
     }

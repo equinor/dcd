@@ -1,5 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Profiles;
 using api.Models;
 
 namespace api.Features.Cases.Create;
@@ -29,7 +30,35 @@ public class CreateCaseService(DcdDbContext context)
             Transport = CreateTransport(projectPk),
             Exploration = CreateExploration(projectPk),
             WellProject = CreateWellProject(projectPk),
-            OnshorePowerSupply = CreateOnshorePowerSupply(projectPk)
+            OnshorePowerSupply = CreateOnshorePowerSupply(projectPk),
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
+            {
+                new()
+                {
+                    ProfileType = ProfileTypes.TopsideCostProfileOverride,
+                    Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.TransportCostProfileOverride,
+                    Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.SurfCostProfileOverride,
+                    Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.SubstructureCostProfileOverride,
+                    Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.OnshorePowerSupplyCostProfileOverride,
+                    Override = true
+                }
+            }
         };
 
         context.Cases.Add(createdCase);
@@ -52,11 +81,7 @@ public class CreateCaseService(DcdDbContext context)
         return new Topside
         {
             Name = "Topside",
-            ProjectId = projectPk,
-            CostProfileOverride = new TopsideCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 
@@ -65,11 +90,7 @@ public class CreateCaseService(DcdDbContext context)
         return new Surf
         {
             Name = "Surf",
-            ProjectId = projectPk,
-            CostProfileOverride = new SurfCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 
@@ -78,11 +99,7 @@ public class CreateCaseService(DcdDbContext context)
         return new Substructure
         {
             Name = "Substructure",
-            ProjectId = projectPk,
-            CostProfileOverride = new SubstructureCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 
@@ -91,11 +108,7 @@ public class CreateCaseService(DcdDbContext context)
         return new Transport
         {
             Name = "Transport",
-            ProjectId = projectPk,
-            CostProfileOverride = new TransportCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 
@@ -104,11 +117,7 @@ public class CreateCaseService(DcdDbContext context)
         return new OnshorePowerSupply
         {
             Name = "OnshorePowerSupply",
-            ProjectId = projectPk,
-            CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 

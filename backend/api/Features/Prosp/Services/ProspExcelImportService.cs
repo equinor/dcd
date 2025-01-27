@@ -146,7 +146,7 @@ public class ProspExcelImportService(
         };
 
         await updateSurfService.UpdateSurf(projectId, caseItem.Id, caseItem.SurfLink, updatedSurfDto);
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, caseItem.Id, caseItem.SurfLink, costProfile);
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     private async Task ImportTopside(List<Cell> cellData, Guid projectId, Case caseItem)
@@ -225,7 +225,7 @@ public class ProspExcelImportService(
         };
 
         await updateTopsideService.UpdateTopside(projectId, caseItem.Id, caseItem.TopsideLink, updateTopsideDto);
-        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, caseItem.Id, caseItem.TopsideLink, costProfile);
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid projectId, Case caseItem)
@@ -271,7 +271,7 @@ public class ProspExcelImportService(
         };
 
         await updateSubstructureService.UpdateSubstructure(projectId, caseItem.Id, caseItem.SubstructureLink, updateSubstructureDto);
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(projectId, caseItem.Id, caseItem.SubstructureLink, costProfile);
+        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     private async Task ImportTransport(List<Cell> cellData, Guid projectId, Case caseItem)
@@ -315,7 +315,7 @@ public class ProspExcelImportService(
         };
 
         await updateTransportService.UpdateTransport(projectId, caseItem.Id, caseItem.TransportLink, updateTransportDto);
-        await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, caseItem.TransportLink, costProfile);
+        await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     private async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid projectId, Case caseItem)
@@ -339,7 +339,7 @@ public class ProspExcelImportService(
             StartYear = costProfileStartYear - dG4Date.Year,
         };
 
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, caseItem.Id, caseItem.OnshorePowerSupplyLink, costProfile);
+        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     public async Task ImportProsp(Stream stream,
@@ -478,10 +478,7 @@ public class ProspExcelImportService(
                 Source = Source.ConceptApp
             });
 
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId,
-            caseItem.Id,
-            caseItem.SurfLink,
-            new UpdateTimeSeriesCostDto());
+        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedTopside(Case caseItem)
@@ -494,10 +491,7 @@ public class ProspExcelImportService(
                 Source = Source.ConceptApp
             });
 
-        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId,
-            caseItem.Id,
-            caseItem.TopsideLink,
-            new UpdateTimeSeriesCostDto());
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedSubstructure(Case caseItem)
@@ -510,10 +504,7 @@ public class ProspExcelImportService(
                 Source = Source.ConceptApp
             });
 
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId,
-            caseItem.Id,
-            caseItem.SubstructureLink,
-            new UpdateTimeSeriesCostDto());
+        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedTransport(Case caseItem)
@@ -526,10 +517,7 @@ public class ProspExcelImportService(
                 Source = Source.ConceptApp
             });
 
-        await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId,
-            caseItem.Id,
-            caseItem.TransportLink,
-            new UpdateTimeSeriesCostDto());
+        await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
     }
 
     private async Task ClearImportedOnshorePowerSupply(Case caseItem)
@@ -542,10 +530,7 @@ public class ProspExcelImportService(
                 Source = Source.ConceptApp
             });
 
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId,
-            caseItem.Id,
-            caseItem.OnshorePowerSupplyLink,
-            new UpdateTimeSeriesCostDto());
+        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
     }
 
     private static Concept MapSubstructureConcept(int importValue)

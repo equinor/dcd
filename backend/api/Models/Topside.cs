@@ -46,11 +46,14 @@ public class Topside : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
     public virtual TopsideCostProfile? CostProfile { get; set; }
     public virtual TopsideCostProfileOverride? CostProfileOverride { get; set; }
     public virtual TopsideCessationCostProfile? CessationCostProfile { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
+#region Migrated profiles, do not access.
 public class TopsideCostProfile : TimeSeriesCost, ITopsideTimeSeries
 {
     [ForeignKey("Topside.Id")]
@@ -69,6 +72,7 @@ public class TopsideCessationCostProfile : TimeSeriesCost, ITopsideTimeSeries
     [ForeignKey("Topside.Id")]
     public virtual Topside Topside { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
 
 public interface ITopsideTimeSeries
 {

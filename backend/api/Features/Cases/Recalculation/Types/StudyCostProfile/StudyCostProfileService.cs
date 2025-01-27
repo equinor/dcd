@@ -17,44 +17,8 @@ public class StudyCostProfileService(DcdDbContext context)
             .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var substructure = await context.Substructures
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.SubstructureLink);
-
-        var surf = await context.Surfs
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.SurfLink);
-
-        var topside = await context.Topsides
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.TopsideLink);
-
-        var transport = await context.Transports
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.TransportLink);
-
-        var onshorePowerSupply = await context.OnshorePowerSupplies
-            .Include(o => o.CostProfileOverride)
-            .Include(o => o.CostProfile)
-            .SingleAsync(x => x.Id == caseItem.OnshorePowerSupplyLink);
-
-        var wellProject = await context.WellProjects
-            .Include(w => w.OilProducerCostProfileOverride)
-            .Include(w => w.OilProducerCostProfile)
-            .Include(w => w.GasProducerCostProfileOverride)
-            .Include(w => w.GasProducerCostProfile)
-            .Include(w => w.WaterInjectorCostProfileOverride)
-            .Include(w => w.WaterInjectorCostProfile)
-            .Include(w => w.GasInjectorCostProfileOverride)
-            .Include(w => w.GasInjectorCostProfile)
-            .SingleAsync(x => x.Id == caseItem.WellProjectLink);
-
-        var sumFacilityCost = SumAllCostFacility(substructure, surf, topside, transport, onshorePowerSupply);
-        var sumWellCost = SumWellCost(wellProject);
+        var sumFacilityCost = SumAllCostFacility(caseItem);
+        var sumWellCost = SumWellCost(caseItem);
 
         CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
@@ -161,31 +125,27 @@ public class StudyCostProfileService(DcdDbContext context)
         profile.Values = valuesList.ToArray();
     }
 
-    private static double SumAllCostFacility(Substructure substructure,
-        Surf surf,
-        Topside topside,
-        Transport transport,
-        OnshorePowerSupply onshorePowerSupply)
+    private static double SumAllCostFacility(Case caseItem)
     {
         var sumFacilityCost = 0.0;
 
-        sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride));
 
         return sumFacilityCost;
     }
 
-    public static double SumWellCost(WellProject wellProject)
+    public static double SumWellCost(Case caseItem)
     {
         var sumWellCost = 0.0;
 
-        sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
-        sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
-        sumWellCost += SumOverrideOrProfile(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfileOverride);
-        sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride));
 
         return sumWellCost;
     }
@@ -197,6 +157,21 @@ public class StudyCostProfileService(DcdDbContext context)
 
     private static double SumOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
         where T : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (profileOverride?.Override == true)
+        {
+            return profileOverride.Values.Sum();
+        }
+
+        if (profile != null)
+        {
+            return profile.Values.Sum();
+        }
+
+        return 0;
+    }
+
+    private static double SumOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
     {
         if (profileOverride?.Override == true)
         {

@@ -28,11 +28,14 @@ public class Transport : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
     public virtual TransportCostProfile? CostProfile { get; set; }
     public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }
     public virtual TransportCessationCostProfile? CessationCostProfile { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
+#region Migrated profiles, do not access.
 public class TransportCostProfile : TimeSeriesCost, ITransportTimeSeries
 {
     [ForeignKey("Transport.Id")]
@@ -51,6 +54,7 @@ public class TransportCessationCostProfile : TimeSeriesCost, ITransportTimeSerie
     [ForeignKey("Transport.Id")]
     public virtual Transport Transport { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
 
 public interface ITransportTimeSeries
 {

@@ -2,81 +2,66 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Topsides.TopsideCostProfiles;
 
-public class TopsideCostProfileService(
-    DcdDbContext context,
-    IMapperService mapperService,
-    IRecalculationService recalculationService)
+public class TopsideCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
 {
-    public async Task AddOrUpdateTopsideCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        UpdateTimeSeriesCostDto dto)
+    public async Task AddOrUpdateTopsideCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
     {
-        var topside = await context.Topsides
-            .Include(t => t.CostProfile)
-            .SingleAsync(t => t.ProjectId == projectId && t.Id == topsideId);
+        var profileTypes = new List<string> { ProfileTypes.TopsideCostProfile, ProfileTypes.TopsideCostProfileOverride };
 
-        if (topside.CostProfile != null)
+        var caseItem = await context.Cases
+            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
+            .Include(x => x.Topside)
+            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+
+        if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile) != null)
         {
-            await UpdateTopsideTimeSeries(projectId, caseId, topsideId, topside.CostProfile.Id, dto);
+            await UpdateTopsideTimeSeries(caseItem, dto);
             return;
         }
 
-        await CreateTopsideCostProfile(caseId, topsideId, dto, topside);
+        await CreateTopsideCostProfile(caseItem, dto);
     }
 
-    private async Task CreateTopsideCostProfile(
-        Guid caseId,
-        Guid topsideId,
-        UpdateTimeSeriesCostDto dto,
-        Topside topside)
+    private async Task CreateTopsideCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var topsideCostProfile = new TopsideCostProfile
-        {
-            Topside = topside
-        };
+        var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TopsideCostProfile);
 
-        var newProfile = mapperService.MapToEntity(dto, topsideCostProfile, topsideId);
-        if (newProfile.Topside.CostProfileOverride != null)
+        costProfile.StartYear = dto.StartYear;
+        costProfile.Values = dto.Values;
+
+        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride);
+
+        if (costProfileOverride != null)
         {
-            newProfile.Topside.CostProfileOverride.Override = false;
+            costProfileOverride.Override = false;
         }
 
-        context.TopsideCostProfiles.Add(newProfile);
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 
-    private async Task UpdateTopsideTimeSeries(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        Guid profileId,
-        UpdateTimeSeriesCostDto updatedProfileDto)
+    private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var existingProfile = await context.TopsideCostProfiles
-            .Include(x => x.Topside).ThenInclude(topside => topside.CostProfileOverride)
-            .SingleAsync(x => x.Topside.ProjectId == projectId && x.Id == profileId);
-
-        if (existingProfile.Topside.ProspVersion == null)
+        if (caseItem.Topside!.ProspVersion == null)
         {
-            if (existingProfile.Topside.CostProfileOverride != null)
+            if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride) != null)
             {
-                existingProfile.Topside.CostProfileOverride.Override = true;
+                caseItem.GetProfile(ProfileTypes.TopsideCostProfileOverride).Override = true;
             }
         }
 
-        mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
+        var existingProfile = caseItem.GetProfile(ProfileTypes.TopsideCostProfile);
 
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        existingProfile.StartYear = dto.StartYear;
+        existingProfile.Values = dto.Values;
+
+        await context.UpdateCaseUpdatedUtc(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 }

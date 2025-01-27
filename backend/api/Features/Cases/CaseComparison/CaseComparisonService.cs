@@ -27,7 +27,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             }
 
             var drainageStrategy = caseItem.DrainageStrategy!;
-            var exploration = caseItem.Exploration!;
 
             var totalOilProduction = drainageStrategy.ProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
             var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
@@ -35,7 +34,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, false);
 
-            var explorationCosts = CalculateExplorationWellCosts(exploration);
+            var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
             TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
@@ -208,38 +207,38 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return cessationTimeSeries.Values.Sum();
     }
 
-    private static double CalculateExplorationWellCosts(Exploration exploration)
+    private static double CalculateExplorationWellCosts(Case caseItem)
     {
         var sumExplorationWellCost = 0.0;
 
-        if (exploration.GAndGAdminCost != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost) != null)
         {
-            sumExplorationWellCost += exploration.GAndGAdminCost.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.GAndGAdminCost).Values.Sum();
         }
 
-        if (exploration.CountryOfficeCost != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost) != null)
         {
-            sumExplorationWellCost += exploration.CountryOfficeCost.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.CountryOfficeCost).Values.Sum();
         }
 
-        if (exploration.SeismicAcquisitionAndProcessing != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing) != null)
         {
-            sumExplorationWellCost += exploration.SeismicAcquisitionAndProcessing.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SeismicAcquisitionAndProcessing).Values.Sum();
         }
 
-        if (exploration.ExplorationWellCostProfile != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile) != null)
         {
-            sumExplorationWellCost += exploration.ExplorationWellCostProfile.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile).Values.Sum();
         }
 
-        if (exploration.AppraisalWellCostProfile != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile) != null)
         {
-            sumExplorationWellCost += exploration.AppraisalWellCostProfile.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.AppraisalWellCostProfile).Values.Sum();
         }
 
-        if (exploration.SidetrackCostProfile != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile) != null)
         {
-            sumExplorationWellCost += exploration.SidetrackCostProfile.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SidetrackCostProfile).Values.Sum();
         }
 
         return sumExplorationWellCost;
@@ -249,12 +248,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     {
         var sumWellCost = 0.0;
 
-        var wellProject = caseItem.WellProject!;
-
-        sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
-        sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
-        sumWellCost += SumOverrideOrProfile(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfileOverride);
-        sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride));
 
         return sumWellCost;
     }
@@ -263,23 +260,32 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     {
         var sumFacilityCost = 0.0;
 
-        var substructure = caseItem.Substructure!;
-        var surf = caseItem.Surf!;
-        var topside = caseItem.Topside!;
-        var transport = caseItem.Transport!;
-        var onshorePowerSupply = caseItem.OnshorePowerSupply!;
-
-        sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
-        sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride));
 
         return sumFacilityCost;
     }
 
     private static double SumOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
         where T : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (profileOverride?.Override == true)
+        {
+            return profileOverride.Values.Sum();
+        }
+
+        if (profile != null)
+        {
+            return profile.Values.Sum();
+        }
+
+        return 0;
+    }
+
+    private static double SumOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
     {
         if (profileOverride?.Override == true)
         {

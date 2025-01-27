@@ -63,13 +63,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadExplorations(Guid explorationLink)
     {
         await context.Explorations
-            .Include(c => c.ExplorationWellCostProfile)
-            .Include(c => c.AppraisalWellCostProfile)
-            .Include(c => c.SidetrackCostProfile)
-            .Include(c => c.GAndGAdminCost)
-            .Include(c => c.GAndGAdminCostOverride)
-            .Include(c => c.SeismicAcquisitionAndProcessing)
-            .Include(c => c.CountryOfficeCost)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
             .Where(x => x.Id == explorationLink)
@@ -79,14 +72,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadWellProjects(Guid wellProjectLink)
     {
         await context.WellProjects
-            .Include(c => c.OilProducerCostProfile)
-            .Include(c => c.OilProducerCostProfileOverride)
-            .Include(c => c.GasProducerCostProfile)
-            .Include(c => c.GasProducerCostProfileOverride)
-            .Include(c => c.WaterInjectorCostProfile)
-            .Include(c => c.WaterInjectorCostProfileOverride)
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.Id == wellProjectLink)
@@ -96,9 +81,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadTransports(Guid transportLink)
     {
         await context.Transports
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == transportLink)
             .LoadAsync();
     }
@@ -106,9 +88,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadTopsides(Guid topsideLink)
     {
         await context.Topsides
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == topsideLink)
             .LoadAsync();
     }
@@ -116,9 +95,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadSurfs(Guid surfLink)
     {
         await context.Surfs
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == surfLink)
             .LoadAsync();
     }
@@ -126,9 +102,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadSubstructures(Guid substructureLink)
     {
         await context.Substructures
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == substructureLink)
             .LoadAsync();
     }
@@ -136,8 +109,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadOnshorePowerSupplies(Guid onshorePowerSupplyLink)
     {
         await context.OnshorePowerSupplies
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Where(x => x.Id == onshorePowerSupplyLink)
             .LoadAsync();
     }
