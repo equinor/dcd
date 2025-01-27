@@ -51,7 +51,6 @@ public class WellCostProfileService(DcdDbContext context)
         var wellProjectWells = await context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject).ThenInclude(e => e.WaterInjectorCostProfile)
             .Include(ew => ew.WellProject).ThenInclude(e => e.GasInjectorCostProfile)
             .Where(x => wellIds.Contains(x.WellId))
             .ToListAsync();
@@ -83,7 +82,8 @@ public class WellCostProfileService(DcdDbContext context)
             var profileTypes = new List<string>
             {
                 ProfileTypes.OilProducerCostProfile,
-                ProfileTypes.GasProducerCostProfile
+                ProfileTypes.GasProducerCostProfile,
+                ProfileTypes.WaterInjectorCostProfile
             };
 
             var caseItem = await context.Cases
@@ -114,13 +114,10 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Water_Injector);
             var waterInjectorCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedWaterInjectorWells);
 
-            wellProject.WaterInjectorCostProfile ??= new WaterInjectorCostProfile
-            {
-                WellProject = wellProject
-            };
+            var waterInjectorCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.WaterInjectorCostProfile);
 
-            wellProject.WaterInjectorCostProfile.Values = waterInjectorCostProfileValues.Values;
-            wellProject.WaterInjectorCostProfile.StartYear = waterInjectorCostProfileValues.StartYear;
+            waterInjectorCostProfile.Values = waterInjectorCostProfileValues.Values;
+            waterInjectorCostProfile.StartYear = waterInjectorCostProfileValues.StartYear;
 
             var connectedGasInjectorWells = connectedWellProjectWells
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Gas_Injector);
@@ -259,8 +256,6 @@ public class WellCostProfileService(DcdDbContext context)
         return context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject)
-                .ThenInclude(e => e.WaterInjectorCostProfile)
             .Include(ew => ew.WellProject)
                 .ThenInclude(e => e.GasInjectorCostProfile);
     }

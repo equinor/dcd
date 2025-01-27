@@ -72,8 +72,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadWellProjects(Guid wellProjectLink)
     {
         await context.WellProjects
-            .Include(c => c.WaterInjectorCostProfile)
-            .Include(c => c.WaterInjectorCostProfileOverride)
             .Include(c => c.GasInjectorCostProfile)
             .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)

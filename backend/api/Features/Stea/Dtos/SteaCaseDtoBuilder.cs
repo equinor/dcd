@@ -182,13 +182,13 @@ public static class SteaCaseDtoBuilder
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GasProducerCostProfile)));
         }
 
-        if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)?.Override == true)
         {
-            costProfileDtos.Add(ToTimeSeries(wellProject.WaterInjectorCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.WaterInjectorCostProfileOverride)));
         }
-        else if (wellProject.WaterInjectorCostProfile != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile) != null)
         {
-            costProfileDtos.Add(ToTimeSeries(wellProject.WaterInjectorCostProfile));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.WaterInjectorCostProfile)));
         }
 
         if (wellProject.GasInjectorCostProfileOverride?.Override == true)

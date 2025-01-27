@@ -84,4 +84,7 @@ public static class ProfileTypes
     public const string GasProducerCostProfile = "GasProducerCostProfile";
     public const string GasProducerCostProfileOverride = "GasProducerCostProfileOverride";
 
+    public const string WaterInjectorCostProfile = "WaterInjectorCostProfile";
+    public const string WaterInjectorCostProfileOverride = "WaterInjectorCostProfileOverride";
+
 }

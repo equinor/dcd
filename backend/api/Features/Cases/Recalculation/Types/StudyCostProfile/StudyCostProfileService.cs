@@ -18,8 +18,6 @@ public class StudyCostProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var wellProject = await context.WellProjects
-            .Include(w => w.WaterInjectorCostProfileOverride)
-            .Include(w => w.WaterInjectorCostProfile)
             .Include(w => w.GasInjectorCostProfileOverride)
             .Include(w => w.GasInjectorCostProfile)
             .SingleAsync(x => x.Id == caseItem.WellProjectLink);
@@ -151,7 +149,7 @@ public class StudyCostProfileService(DcdDbContext context)
 
         sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
         sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
         sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
 
         return sumWellCost;

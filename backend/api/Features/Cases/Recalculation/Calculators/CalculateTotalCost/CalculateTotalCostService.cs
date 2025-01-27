@@ -16,8 +16,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var wellProject = await context.WellProjects
-            .Include(x => x.WaterInjectorCostProfileOverride)
-            .Include(x => x.WaterInjectorCostProfile)
             .Include(x => x.GasInjectorCostProfileOverride)
             .Include(x => x.GasInjectorCostProfile)
             .SingleAsync(x => x.Id == caseItem.WellProjectLink);
@@ -220,8 +218,8 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride)
         );
         TimeSeries<double> waterInjectorProfile = UseOverrideOrProfile(
-            wellProject.WaterInjectorCostProfile,
-            wellProject.WaterInjectorCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)
         );
         TimeSeries<double> gasInjectorProfile = UseOverrideOrProfile(
             wellProject.GasInjectorCostProfile,

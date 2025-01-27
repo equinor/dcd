@@ -139,17 +139,18 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [50.0, 80.0, 120.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.WaterInjectorCostProfileOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 100.0, 130.0]
+                },
             }
         };
 
         var wellProject = new WellProject
         {
-            WaterInjectorCostProfileOverride = new WaterInjectorCostProfileOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [100.0, 100.0, 130.0]
-            },
             GasInjectorCostProfileOverride = new GasInjectorCostProfileOverride
             {
                 Override = true,

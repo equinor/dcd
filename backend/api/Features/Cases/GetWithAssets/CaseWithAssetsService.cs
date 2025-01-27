@@ -101,8 +101,8 @@ public class CaseWithAssetsService(
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),
             GasProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride)),
-            WaterInjectorCostProfile = MapToDto<WaterInjectorCostProfile, TimeSeriesCostDto>(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfile?.Id),
-            WaterInjectorCostProfileOverride = MapToDto<WaterInjectorCostProfileOverride, TimeSeriesCostOverrideDto>(wellProject.WaterInjectorCostProfileOverride, wellProject.WaterInjectorCostProfileOverride?.Id),
+            WaterInjectorCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile)),
+            WaterInjectorCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)),
             GasInjectorCostProfile = MapToDto<GasInjectorCostProfile, TimeSeriesCostDto>(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfile?.Id),
             GasInjectorCostProfileOverride = MapToDto<GasInjectorCostProfileOverride, TimeSeriesCostOverrideDto>(wellProject.GasInjectorCostProfileOverride, wellProject.GasInjectorCostProfileOverride?.Id)
         };
