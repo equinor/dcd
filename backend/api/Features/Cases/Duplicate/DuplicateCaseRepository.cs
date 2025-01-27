@@ -106,8 +106,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadTopsides(Guid topsideLink)
     {
         await context.Topsides
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == topsideLink)
             .LoadAsync();

@@ -94,8 +94,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var topsideLinks = project.Cases.Select(x => x.TopsideLink).ToList();
         await context.Topsides
-            .Include(x => x.CostProfileOverride)
-            .Include(x => x.CostProfile)
             .Include(x => x.CessationCostProfile)
             .Where(x => topsideLinks.Contains(x.Id))
             .LoadAsync();

@@ -233,17 +233,18 @@ public static class SteaCaseDtoBuilder
             TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(surf.CostProfile));
         }
 
-        var topside = steaDbData.Topsides.First(l => l.Id == caseItem.TopsideLink);
+        var topsideCostProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride);
+        var topsideCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile);
 
-        if (topside.CostProfileOverride?.Override == true)
+        if (topsideCostProfileOverride?.Override == true)
         {
-            topside.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(topside.CostProfileOverride));
+            topsideCostProfileOverride.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(topsideCostProfileOverride));
         }
-        else if (topside.CostProfile != null)
+        else if (topsideCostProfile != null)
         {
-            topside.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(topside.CostProfile));
+            topsideCostProfile.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(topsideCostProfile));
         }
 
         var transport = steaDbData.Transports.First(l => l.Id == caseItem.TransportLink);

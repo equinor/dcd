@@ -11,12 +11,6 @@ public class TopsideProfile : Profile
     public TopsideProfile()
     {
         CreateMap<Topside, TopsideDto>();
-        CreateMap<TopsideCostProfile, TimeSeriesCostDto>();
-        CreateMap<TopsideCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<TopsideCessationCostProfile, TimeSeriesCostDto>();
-
-        CreateMap<UpdateTimeSeriesCostDto, TopsideCostProfile>();
-        CreateMap<UpdateTimeSeriesCostOverrideDto, TopsideCostProfileOverride>();
-        CreateMap<CreateTimeSeriesCostOverrideDto, TopsideCostProfileOverride>();
     }
 }

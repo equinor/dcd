@@ -225,7 +225,7 @@ public class ProspExcelImportService(
         };
 
         await updateTopsideService.UpdateTopside(projectId, caseItem.Id, caseItem.TopsideLink, updateTopsideDto);
-        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, caseItem.Id, caseItem.TopsideLink, costProfile);
+        await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid projectId, Case caseItem)
@@ -496,7 +496,6 @@ public class ProspExcelImportService(
 
         await topsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.TopsideLink,
             new UpdateTimeSeriesCostDto());
     }
 

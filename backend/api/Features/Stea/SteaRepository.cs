@@ -49,8 +49,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Topside>> GetTopsides(Guid projectPk)
     {
         return await context.Topsides
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();

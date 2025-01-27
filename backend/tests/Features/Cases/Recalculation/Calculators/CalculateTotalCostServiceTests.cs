@@ -52,6 +52,13 @@ public class CalculateTotalCostServiceTests
                     ProfileType = ProfileTypes.CessationWellsCost,
                     StartYear = 2020,
                     Values = [300.0, 400.0, 500.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.TopsideCostProfileOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
                 }
             }
         };
@@ -76,15 +83,7 @@ public class CalculateTotalCostServiceTests
             }
         };
 
-        var topside = new Topside
-        {
-            CostProfileOverride = new TopsideCostProfileOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [50.0, 80.0, 120.0]
-            }
-        };
+        var topside = new Topside();
 
         var transport = new Transport
         {

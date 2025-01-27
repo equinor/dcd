@@ -62,7 +62,6 @@ using api.Features.Profiles.Substructures.SubstructureCostProfileOverrides;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfileOverrides;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
-using api.Features.Profiles.Topsides.TopsideCostProfileOverrides;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
 using api.Features.Profiles.Transports.TransportCostProfileOverrides;
 using api.Features.Profiles.Transports.TransportCostProfiles;
@@ -240,7 +239,6 @@ public static class DcdIocConfiguration
 
         /* Topside profiles */
         services.AddScoped<TopsideCostProfileService>();
-        services.AddScoped<TopsideCostProfileOverrideService>();
 
         /* Transport profiles */
         services.AddScoped<TransportCostProfileService>();

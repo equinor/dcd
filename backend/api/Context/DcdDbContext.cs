@@ -32,8 +32,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<SubstructureCostProfileOverride> SubstructureCostProfileOverride => Set<SubstructureCostProfileOverride>();
     public DbSet<SubstructureCessationCostProfile> SubstructureCessationCostProfiles => Set<SubstructureCessationCostProfile>();
     public DbSet<Topside> Topsides => Set<Topside>();
-    public DbSet<TopsideCostProfile> TopsideCostProfiles => Set<TopsideCostProfile>();
-    public DbSet<TopsideCostProfileOverride> TopsideCostProfileOverride => Set<TopsideCostProfileOverride>();
     public DbSet<TopsideCessationCostProfile> TopsideCessationCostProfiles => Set<TopsideCessationCostProfile>();
     public DbSet<Transport> Transports => Set<Transport>();
     public DbSet<TransportCostProfile> TransportCostProfile => Set<TransportCostProfile>();

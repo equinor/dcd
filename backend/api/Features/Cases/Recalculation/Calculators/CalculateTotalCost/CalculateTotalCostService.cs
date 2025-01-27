@@ -26,8 +26,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseItem.SurfLink);
 
         var topside = await context.Topsides
-            .Include(x => x.CostProfile)
-            .Include(x => x.CostProfileOverride)
             .SingleAsync(x => x.Id == caseItem.TopsideLink);
 
         var transport = await context.Transports
@@ -95,7 +93,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalCessationCost.Values ?? []
         };
 
-        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport, onshorePowerSupply);
+        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem, substructure, surf, topside, transport, onshorePowerSupply);
         var totalOffshoreFacilityProfile = new TimeSeries<double>
         {
             StartYear = totalOffshoreFacilityCost.StartYear,
@@ -221,6 +219,7 @@ public class CalculateTotalCostService(DcdDbContext context)
     }
 
     private static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
+        Case caseItem,
         Substructure? substructure,
         Surf? surf,
         Topside? topside,
@@ -236,8 +235,8 @@ public class CalculateTotalCostService(DcdDbContext context)
             surf?.CostProfileOverride
         );
         TimeSeries<double> topsideProfile = UseOverrideOrProfile(
-            topside?.CostProfile,
-            topside?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)
         );
         TimeSeries<double> transportProfile = UseOverrideOrProfile(
             transport?.CostProfile,

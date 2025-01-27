@@ -78,7 +78,7 @@ public static class DcdDatabaseConfiguration
     {
         using var context = new DcdDbContext(dbBuilderOptions, null, null);
 
-        foreach (var (tableName, isOverride) in MigrationQueries)
+        foreach (var (tableName, profileName, isOverride) in MigrationQueries)
         {
             var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{tableName}'";
 
@@ -97,10 +97,12 @@ public static class DcdDatabaseConfiguration
                            Override, ProfileType
                        )
                        select
-                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
-                       Override, '{tableName}'
+                        p.Id, StartYear, InternalData, c.Id, getutcdate(), getutcdate(),
+                        p.Override, '{profileName}'
                        from
-                           {tableName};
+                           {tableName} p
+                           inner join Topsides t on t.Id = p.[Topside.Id]
+                           inner join Cases c on c.TopsideLink = t.Id;
                        """
                     : $"""
                        insert into TimeSeriesProfiles
@@ -109,9 +111,12 @@ public static class DcdDatabaseConfiguration
                            Override, ProfileType
                        )
                        select
-                           Id, StartYear, InternalData, [Case.Id], getutcdate(), getutcdate(),
-                       0, '{tableName}'
-                       from {tableName};
+                        p.Id, StartYear, InternalData, c.Id, getutcdate(), getutcdate(),
+                        0, '{profileName}'
+                       from
+                           {tableName} p
+                           inner join Topsides t on t.Id = p.[Topside.Id]
+                           inner join Cases c on c.TopsideLink = t.Id;
                        """;
 
             context.Database.ExecuteSqlRaw(insertQuery);
@@ -127,26 +132,9 @@ public static class DcdDatabaseConfiguration
         }
     }
 
-    private static readonly Dictionary<string, bool> MigrationQueries = new()
-    {
-        { "CessationWellsCost", false },
-        { "CessationWellsCostOverride", true },
-        { "CessationOffshoreFacilitiesCost", false },
-        { "CessationOffshoreFacilitiesCostOverride", true },
-        { "WellInterventionCostProfile", false },
-        { "WellInterventionCostProfileOverride", true },
-        { "OffshoreFacilitiesOperationsCostProfile", false },
-        { "OffshoreFacilitiesOperationsCostProfileOverride", true },
-        { "TotalFeasibilityAndConceptStudies", false },
-        { "TotalFeasibilityAndConceptStudiesOverride", true },
-        { "TotalFEEDStudies", false },
-        { "TotalFEEDStudiesOverride", true },
-        { "CessationOnshoreFacilitiesCostProfile", false },
-        { "HistoricCostCostProfile", false },
-        { "OnshoreRelatedOPEXCostProfile", false },
-        { "AdditionalOPEXCostProfile", false },
-        { "TotalOtherStudiesCostProfile", false },
-        { "CalculatedTotalIncomeCostProfile", false },
-        { "CalculatedTotalCostCostProfile", false },
-    };
+    private static readonly List<(string tableName, string profileName, bool isOverride)> MigrationQueries =
+    [
+        ("TopsideCostProfiles", "TopsideCostProfile", false),
+        ("TopsideCostProfileOverride", "TopsideCostProfileOverride", true)
+    ];
 }
