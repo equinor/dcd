@@ -43,7 +43,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<Transport> GetTransportNoTracking(Guid transportLink)
     {
         return await context.Transports
-            .Include(c => c.CessationCostProfile)
             .AsNoTracking()
             .SingleAsync(o => o.Id == transportLink);
     }

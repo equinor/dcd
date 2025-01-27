@@ -100,7 +100,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadTransports(Guid projectPk)
     {
         await context.Transports
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }

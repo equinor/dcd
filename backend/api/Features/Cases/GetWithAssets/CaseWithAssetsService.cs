@@ -82,7 +82,7 @@ public class CaseWithAssetsService(
             Transport = mapperService.MapToDto<Transport, TransportDto>(transport, transport.Id),
             TransportCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile)),
             TransportCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride)),
-            TransportCessationCostProfile = MapToDto<TransportCessationCostProfile, TimeSeriesCostDto>(transport.CessationCostProfile, transport.CessationCostProfile?.Id),
+            TransportCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TransportCessationCostProfile)),
             OnshorePowerSupply = mapperService.MapToDto<OnshorePowerSupply, OnshorePowerSupplyDto>(onshorePowerSupply, onshorePowerSupply.Id),
             OnshorePowerSupplyCostProfile = MapToDto<OnshorePowerSupplyCostProfile, TimeSeriesCostDto>(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfile?.Id),
             OnshorePowerSupplyCostProfileOverride = MapToDto<OnshorePowerSupplyCostProfileOverride, TimeSeriesCostOverrideDto>(onshorePowerSupply.CostProfileOverride, onshorePowerSupply.CostProfileOverride?.Id),

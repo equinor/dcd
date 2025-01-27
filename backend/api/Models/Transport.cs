@@ -31,8 +31,8 @@ public class Transport : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     #region Migrated profiles, do not access.
     public virtual TransportCostProfile? CostProfile { get; set; }
     public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }
-    #endregion Migrated profiles, do not access.
     public virtual TransportCessationCostProfile? CessationCostProfile { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
 #region Migrated profiles, do not access.
@@ -48,13 +48,13 @@ public class TransportCostProfileOverride : TimeSeriesCost, ITransportTimeSeries
     public virtual Transport Transport { get; set; } = null!;
     public bool Override { get; set; }
 }
-#endregion Migrated profiles, do not access.
 
 public class TransportCessationCostProfile : TimeSeriesCost, ITransportTimeSeries
 {
     [ForeignKey("Transport.Id")]
     public virtual Transport Transport { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
 
 public interface ITransportTimeSeries
 {
