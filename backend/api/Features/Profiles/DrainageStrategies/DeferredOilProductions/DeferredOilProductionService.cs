@@ -16,13 +16,13 @@ public class DeferredOilProductionService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<TimeSeriesVolumeDto> CreateDeferredOilProduction(
+    public async Task<TimeSeriesCostDto> CreateDeferredOilProduction(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateTimeSeriesVolumeDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<DeferredOilProduction, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
+        return await CreateDrainageStrategyProfile<DeferredOilProduction, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class DeferredOilProductionService(
             d => d.DeferredOilProduction != null);
     }
 
-    public async Task<TimeSeriesVolumeDto> UpdateDeferredOilProduction(
+    public async Task<TimeSeriesCostDto> UpdateDeferredOilProduction(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateTimeSeriesVolumeDto updatedDeferredOilProductionDto)
+        UpdateTimeSeriesCostDto updatedDeferredOilProductionDto)
     {
-        return await UpdateDrainageStrategyProfile<DeferredOilProduction, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
+        return await UpdateDrainageStrategyProfile<DeferredOilProduction, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,

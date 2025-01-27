@@ -284,11 +284,11 @@ public static class SteaCaseDtoBuilder
     {
         steaCaseDto.ProductionAndSalesVolumes = new ProductionAndSalesVolumesDto
         {
-            TotalAndAnnualOil = new TimeSeriesVolumeDto(),
-            TotalAndAnnualSalesGas = new TimeSeriesVolumeDto(),
-            Co2Emissions = new TimeSeriesMassDto(),
-            AdditionalOil = new TimeSeriesVolumeDto(),
-            AdditionalGas = new TimeSeriesVolumeDto()
+            TotalAndAnnualOil = new TimeSeriesCostDto(),
+            TotalAndAnnualSalesGas = new TimeSeriesCostDto(),
+            Co2Emissions = new TimeSeriesCostDto(),
+            AdditionalOil = new TimeSeriesCostDto(),
+            AdditionalGas = new TimeSeriesCostDto()
         };
 
         var dg4Year = caseItem.DG4Date.Year;
@@ -316,7 +316,7 @@ public static class SteaCaseDtoBuilder
 
             var mergedOilProfile = TimeSeriesCostMerger.MergeCostProfiles(oilProfile, additionalOilProfile);
 
-            steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = new TimeSeriesVolumeDto
+            steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = new TimeSeriesCostDto
             {
                 StartYear = mergedOilProfile.StartYear + dg4Year,
                 Values = mergedOilProfile.Values
@@ -326,7 +326,7 @@ public static class SteaCaseDtoBuilder
 
         if (drainageStrategy.NetSalesGasOverride?.Override == true)
         {
-            steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new TimeSeriesVolumeDto
+            steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.NetSalesGasOverride.StartYear + dg4Year,
                 Values = drainageStrategy.NetSalesGasOverride.Values
@@ -335,7 +335,7 @@ public static class SteaCaseDtoBuilder
         }
         else if (drainageStrategy.NetSalesGas != null)
         {
-            steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new TimeSeriesVolumeDto
+            steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.NetSalesGas.StartYear + dg4Year,
                 Values = drainageStrategy.NetSalesGas.Values
@@ -345,7 +345,7 @@ public static class SteaCaseDtoBuilder
 
         if (drainageStrategy.ImportedElectricityOverride?.Override == true)
         {
-            steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity = new TimeSeriesEnergyDto
+            steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.ImportedElectricityOverride.StartYear + dg4Year,
                 Values = drainageStrategy.ImportedElectricityOverride.Values
@@ -354,7 +354,7 @@ public static class SteaCaseDtoBuilder
         }
         else if (drainageStrategy.ImportedElectricity != null)
         {
-            steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity = new TimeSeriesEnergyDto
+            steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.ImportedElectricity.StartYear + dg4Year,
                 Values = drainageStrategy.ImportedElectricity.Values
@@ -364,7 +364,7 @@ public static class SteaCaseDtoBuilder
 
         if (drainageStrategy.Co2EmissionsOverride?.Override == true)
         {
-            steaCaseDto.ProductionAndSalesVolumes.Co2Emissions = new TimeSeriesMassDto
+            steaCaseDto.ProductionAndSalesVolumes.Co2Emissions = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.Co2EmissionsOverride.StartYear + dg4Year,
                 Values = drainageStrategy.Co2EmissionsOverride.Values
@@ -373,7 +373,7 @@ public static class SteaCaseDtoBuilder
         }
         else if (drainageStrategy.Co2Emissions != null)
         {
-            steaCaseDto.ProductionAndSalesVolumes.Co2Emissions = new TimeSeriesMassDto
+            steaCaseDto.ProductionAndSalesVolumes.Co2Emissions = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.Co2Emissions.StartYear + dg4Year,
                 Values = drainageStrategy.Co2Emissions.Values
@@ -388,7 +388,7 @@ public static class SteaCaseDtoBuilder
 
         if (drainageStrategy.AdditionalProductionProfileOil != null)
         {
-            steaCaseDto.ProductionAndSalesVolumes.AdditionalOil = new TimeSeriesVolumeDto
+            steaCaseDto.ProductionAndSalesVolumes.AdditionalOil = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.AdditionalProductionProfileOil.StartYear + dg4Year,
                 Values = drainageStrategy.AdditionalProductionProfileOil.Values
@@ -397,7 +397,7 @@ public static class SteaCaseDtoBuilder
 
         if (drainageStrategy.AdditionalProductionProfileGas != null)
         {
-            steaCaseDto.ProductionAndSalesVolumes.AdditionalGas = new TimeSeriesVolumeDto
+            steaCaseDto.ProductionAndSalesVolumes.AdditionalGas = new TimeSeriesCostDto
             {
                 StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear + dg4Year,
                 Values = drainageStrategy.AdditionalProductionProfileGas.Values

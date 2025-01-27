@@ -16,13 +16,13 @@ public class AdditionalProductionProfileOilService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<TimeSeriesVolumeDto> CreateAdditionalProductionProfileOil(
+    public async Task<TimeSeriesCostDto> CreateAdditionalProductionProfileOil(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateTimeSeriesVolumeDto createAdditionalProductionProfileOilDto)
+        CreateTimeSeriesCostDto createAdditionalProductionProfileOilDto)
     {
-        return await CreateDrainageStrategyProfile<AdditionalProductionProfileOil, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
+        return await CreateDrainageStrategyProfile<AdditionalProductionProfileOil, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class AdditionalProductionProfileOilService(
             d => d.AdditionalProductionProfileOil != null);
     }
 
-    public async Task<TimeSeriesVolumeDto> UpdateAdditionalProductionProfileOil(
+    public async Task<TimeSeriesCostDto> UpdateAdditionalProductionProfileOil(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid additionalProductionProfileOilId,
-        UpdateTimeSeriesVolumeDto updatedAdditionalProductionProfileOilDto)
+        UpdateTimeSeriesCostDto updatedAdditionalProductionProfileOilDto)
     {
-        return await UpdateDrainageStrategyProfile<AdditionalProductionProfileOil, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
+        return await UpdateDrainageStrategyProfile<AdditionalProductionProfileOil, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,

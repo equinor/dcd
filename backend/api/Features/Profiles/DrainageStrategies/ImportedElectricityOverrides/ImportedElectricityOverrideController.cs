@@ -9,23 +9,23 @@ public class ImportedElectricityOverrideController(ImportedElectricityOverrideSe
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override")]
-    public async Task<TimeSeriesEnergyOverrideDto> CreateImportedElectricityOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateImportedElectricityOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesEnergyDto dto)
+        [FromBody] CreateTimeSeriesCostDto dto)
     {
         return await service.CreateImportedElectricityOverride(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override/{profileId:guid}")]
-    public async Task<TimeSeriesEnergyOverrideDto> UpdateImportedElectricityOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateImportedElectricityOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesEnergyOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
         return await service.UpdateImportedElectricityOverride(projectId, caseId, drainageStrategyId, profileId, dto);
     }

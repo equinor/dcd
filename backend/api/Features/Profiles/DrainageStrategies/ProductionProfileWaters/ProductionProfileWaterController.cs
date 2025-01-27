@@ -9,23 +9,23 @@ public class ProductionProfileWaterController(ProductionProfileWaterService serv
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water")]
-    public async Task<TimeSeriesVolumeDto> CreateProductionProfileWater(
+    public async Task<TimeSeriesCostDto> CreateProductionProfileWater(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesVolumeDto dto)
+        [FromBody] CreateTimeSeriesCostDto dto)
     {
         return await service.CreateProductionProfileWater(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water/{profileId:guid}")]
-    public async Task<TimeSeriesVolumeDto> UpdateProductionProfileWater(
+    public async Task<TimeSeriesCostDto> UpdateProductionProfileWater(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesVolumeDto dto)
+        [FromBody] UpdateTimeSeriesCostDto dto)
     {
         return await service.UpdateProductionProfileWater(projectId, caseId, drainageStrategyId, profileId, dto);
     }

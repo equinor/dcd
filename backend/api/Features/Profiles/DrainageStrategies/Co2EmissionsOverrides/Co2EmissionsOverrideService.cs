@@ -16,13 +16,13 @@ public class Co2EmissionsOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<TimeSeriesMassOverrideDto> CreateCo2EmissionsOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateCo2EmissionsOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateTimeSeriesMassOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<Co2EmissionsOverride, TimeSeriesMassOverrideDto, CreateTimeSeriesMassOverrideDto>(
+        return await CreateDrainageStrategyProfile<Co2EmissionsOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class Co2EmissionsOverrideService(
             d => d.Co2EmissionsOverride != null);
     }
 
-    public async Task<TimeSeriesMassOverrideDto> UpdateCo2EmissionsOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateCo2EmissionsOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateTimeSeriesMassOverrideDto updateDto)
+        UpdateTimeSeriesCostOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<Co2EmissionsOverride, TimeSeriesMassOverrideDto, UpdateTimeSeriesMassOverrideDto>(
+        return await UpdateDrainageStrategyProfile<Co2EmissionsOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

@@ -16,13 +16,13 @@ public class FuelFlaringAndLossesOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<TimeSeriesVolumeOverrideDto> CreateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateFuelFlaringAndLossesOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateTimeSeriesVolumeOverrideDto createProfileDto)
+        CreateTimeSeriesCostOverrideDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<FuelFlaringAndLossesOverride, TimeSeriesVolumeOverrideDto, CreateTimeSeriesVolumeOverrideDto>(
+        return await CreateDrainageStrategyProfile<FuelFlaringAndLossesOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class FuelFlaringAndLossesOverrideService(
             d => d.FuelFlaringAndLossesOverride != null);
     }
 
-    public async Task<TimeSeriesVolumeOverrideDto> UpdateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateFuelFlaringAndLossesOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateTimeSeriesVolumeOverrideDto updateDto)
+        UpdateTimeSeriesCostOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<FuelFlaringAndLossesOverride, TimeSeriesVolumeOverrideDto, UpdateTimeSeriesVolumeOverrideDto>(
+        return await UpdateDrainageStrategyProfile<FuelFlaringAndLossesOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

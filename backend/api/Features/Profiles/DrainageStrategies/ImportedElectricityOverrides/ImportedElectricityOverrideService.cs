@@ -16,13 +16,13 @@ public class ImportedElectricityOverrideService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<TimeSeriesEnergyOverrideDto> CreateImportedElectricityOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateImportedElectricityOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateTimeSeriesEnergyDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<ImportedElectricityOverride, TimeSeriesEnergyOverrideDto, CreateTimeSeriesEnergyDto>(
+        return await CreateDrainageStrategyProfile<ImportedElectricityOverride, TimeSeriesCostOverrideDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class ImportedElectricityOverrideService(
             d => d.ImportedElectricityOverride != null);
     }
 
-    public async Task<TimeSeriesEnergyOverrideDto> UpdateImportedElectricityOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateImportedElectricityOverride(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid profileId,
-        UpdateTimeSeriesEnergyOverrideDto updateDto)
+        UpdateTimeSeriesCostOverrideDto updateDto)
     {
-        return await UpdateDrainageStrategyProfile<ImportedElectricityOverride, TimeSeriesEnergyOverrideDto, UpdateTimeSeriesEnergyOverrideDto>(
+        return await UpdateDrainageStrategyProfile<ImportedElectricityOverride, TimeSeriesCostOverrideDto, UpdateTimeSeriesCostOverrideDto>(
             projectId,
             caseId,
             drainageStrategyId,

@@ -11,7 +11,7 @@ public class DrainageStrategyProfile : Profile
     public DrainageStrategyProfile()
     {
         CreateMap<DrainageStrategy, DrainageStrategyDto>();
-        CreateMap<ProductionProfileOil, TimeSeriesVolumeDto>()
+        CreateMap<ProductionProfileOil, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -20,7 +20,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileOil)
                     )
                     ));
-        CreateMap<AdditionalProductionProfileOil, TimeSeriesVolumeDto>()
+        CreateMap<AdditionalProductionProfileOil, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -29,7 +29,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(AdditionalProductionProfileOil)
                     )
                     ));
-        CreateMap<ProductionProfileGas, TimeSeriesVolumeDto>()
+        CreateMap<ProductionProfileGas, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -38,7 +38,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileGas)
                     )
                     ));
-        CreateMap<AdditionalProductionProfileGas, TimeSeriesVolumeDto>()
+        CreateMap<AdditionalProductionProfileGas, TimeSeriesCostDto>()
                     .ForMember(
                         dest => dest.Values,
                         opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -47,7 +47,7 @@ public class DrainageStrategyProfile : Profile
                             nameof(AdditionalProductionProfileGas)
                             )
                             ));
-        CreateMap<ProductionProfileWater, TimeSeriesVolumeDto>()
+        CreateMap<ProductionProfileWater, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -56,7 +56,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileWater)
                     )
                     ));
-        CreateMap<ProductionProfileWaterInjection, TimeSeriesVolumeDto>()
+        CreateMap<ProductionProfileWaterInjection, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -65,7 +65,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileWaterInjection)
                     )
                     ));
-        CreateMap<FuelFlaringAndLosses, TimeSeriesVolumeDto>()
+        CreateMap<FuelFlaringAndLosses, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -74,7 +74,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(FuelFlaringAndLosses)
                     )
                     ));
-        CreateMap<FuelFlaringAndLossesOverride, TimeSeriesVolumeOverrideDto>()
+        CreateMap<FuelFlaringAndLossesOverride, TimeSeriesCostOverrideDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -83,7 +83,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(FuelFlaringAndLossesOverride)
                     )
                     ));
-        CreateMap<NetSalesGas, TimeSeriesVolumeDto>()
+        CreateMap<NetSalesGas, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -92,7 +92,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(NetSalesGas)
                     )
                     ));
-        CreateMap<NetSalesGasOverride, TimeSeriesVolumeOverrideDto>()
+        CreateMap<NetSalesGasOverride, TimeSeriesCostOverrideDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -101,7 +101,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(NetSalesGasOverride)
                     )
                     ));
-        CreateMap<Co2Emissions, TimeSeriesMassDto>()
+        CreateMap<Co2Emissions, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -110,7 +110,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2Emissions)
                     )
                     ));
-        CreateMap<Co2EmissionsOverride, TimeSeriesMassOverrideDto>()
+        CreateMap<Co2EmissionsOverride, TimeSeriesCostOverrideDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -119,7 +119,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2EmissionsOverride)
                     )
                     ));
-        CreateMap<Co2Intensity, TimeSeriesMassDto>()
+        CreateMap<Co2Intensity, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -128,7 +128,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2Intensity)
                     )
                     ));
-        CreateMap<DeferredOilProduction, TimeSeriesVolumeDto>()
+        CreateMap<DeferredOilProduction, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -137,7 +137,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredOilProduction)
                     )
                     ));
-        CreateMap<DeferredGasProduction, TimeSeriesVolumeDto>()
+        CreateMap<DeferredGasProduction, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -146,12 +146,12 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredGasProduction)
                     )
                     ));
-        CreateMap<ProductionProfileNgl, TimeSeriesVolumeDto>();
-        CreateMap<ImportedElectricity, TimeSeriesEnergyDto>();
-        CreateMap<ImportedElectricityOverride, TimeSeriesEnergyOverrideDto>();
-        CreateMap<Co2Intensity, TimeSeriesMassDto>();
+        CreateMap<ProductionProfileNgl, TimeSeriesCostDto>();
+        CreateMap<ImportedElectricity, TimeSeriesCostDto>();
+        CreateMap<ImportedElectricityOverride, TimeSeriesCostOverrideDto>();
+        CreateMap<Co2Intensity, TimeSeriesCostDto>();
 
-        CreateMap<CreateTimeSeriesEnergyDto, ImportedElectricityOverride>()
+        CreateMap<CreateTimeSeriesCostDto, ImportedElectricityOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -160,7 +160,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ImportedElectricityOverride)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeOverrideDto, FuelFlaringAndLossesOverride>()
+        CreateMap<CreateTimeSeriesCostOverrideDto, FuelFlaringAndLossesOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -169,7 +169,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(FuelFlaringAndLossesOverride)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeOverrideDto, NetSalesGasOverride>()
+        CreateMap<CreateTimeSeriesCostOverrideDto, NetSalesGasOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -178,7 +178,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(NetSalesGasOverride)
                     )
                     ));
-        CreateMap<CreateTimeSeriesMassOverrideDto, Co2EmissionsOverride>()
+        CreateMap<CreateTimeSeriesCostOverrideDto, Co2EmissionsOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -187,7 +187,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2EmissionsOverride)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, ProductionProfileOil>()
+        CreateMap<CreateTimeSeriesCostDto, ProductionProfileOil>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -196,7 +196,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileOil)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, AdditionalProductionProfileOil>()
+        CreateMap<CreateTimeSeriesCostDto, AdditionalProductionProfileOil>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -205,7 +205,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(AdditionalProductionProfileOil)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, ProductionProfileGas>()
+        CreateMap<CreateTimeSeriesCostDto, ProductionProfileGas>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -214,7 +214,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileGas)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, AdditionalProductionProfileGas>()
+        CreateMap<CreateTimeSeriesCostDto, AdditionalProductionProfileGas>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -223,7 +223,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(AdditionalProductionProfileGas)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, DeferredOilProduction>()
+        CreateMap<CreateTimeSeriesCostDto, DeferredOilProduction>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -232,7 +232,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredOilProduction)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, DeferredGasProduction>()
+        CreateMap<CreateTimeSeriesCostDto, DeferredGasProduction>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -241,7 +241,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredGasProduction)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, ProductionProfileWater>()
+        CreateMap<CreateTimeSeriesCostDto, ProductionProfileWater>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -250,7 +250,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileWater)
                     )
                     ));
-        CreateMap<CreateTimeSeriesVolumeDto, ProductionProfileWaterInjection>()
+        CreateMap<CreateTimeSeriesCostDto, ProductionProfileWaterInjection>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -260,7 +260,7 @@ public class DrainageStrategyProfile : Profile
                     )
                     ));
 
-        CreateMap<UpdateTimeSeriesEnergyOverrideDto, ImportedElectricityOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, ImportedElectricityOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -269,7 +269,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ImportedElectricityOverride)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeOverrideDto, FuelFlaringAndLossesOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, FuelFlaringAndLossesOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -278,7 +278,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(FuelFlaringAndLossesOverride)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeOverrideDto, NetSalesGasOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, NetSalesGasOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -287,7 +287,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(NetSalesGasOverride)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesEnergyOverrideDto, ImportedElectricityOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, ImportedElectricityOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -296,7 +296,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ImportedElectricityOverride)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesMassOverrideDto, Co2EmissionsOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, Co2EmissionsOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -305,7 +305,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2EmissionsOverride)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, ProductionProfileOil>()
+        CreateMap<UpdateTimeSeriesCostDto, ProductionProfileOil>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -314,7 +314,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileOil)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, AdditionalProductionProfileOil>()
+        CreateMap<UpdateTimeSeriesCostDto, AdditionalProductionProfileOil>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -323,7 +323,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(AdditionalProductionProfileOil)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, AdditionalProductionProfileGas>()
+        CreateMap<UpdateTimeSeriesCostDto, AdditionalProductionProfileGas>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -332,7 +332,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(AdditionalProductionProfileGas)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, ProductionProfileGas>()
+        CreateMap<UpdateTimeSeriesCostDto, ProductionProfileGas>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -341,7 +341,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileGas)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, DeferredOilProduction>()
+        CreateMap<UpdateTimeSeriesCostDto, DeferredOilProduction>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -350,7 +350,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredOilProduction)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, DeferredGasProduction>()
+        CreateMap<UpdateTimeSeriesCostDto, DeferredGasProduction>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -359,7 +359,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredGasProduction)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, ProductionProfileWater>()
+        CreateMap<UpdateTimeSeriesCostDto, ProductionProfileWater>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
@@ -368,7 +368,7 @@ public class DrainageStrategyProfile : Profile
                     nameof(ProductionProfileWater)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesVolumeDto, ProductionProfileWaterInjection>()
+        CreateMap<UpdateTimeSeriesCostDto, ProductionProfileWaterInjection>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>

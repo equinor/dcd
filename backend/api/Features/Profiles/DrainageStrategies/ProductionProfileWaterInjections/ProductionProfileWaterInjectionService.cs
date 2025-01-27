@@ -16,13 +16,13 @@ public class ProductionProfileWaterInjectionService(
     IRecalculationService recalculationService)
     : DrainageStrategyProfileBaseService(context, recalculationService, projectIntegrityService, conversionMapperService)
 {
-    public async Task<TimeSeriesVolumeDto> CreateProductionProfileWaterInjection(
+    public async Task<TimeSeriesCostDto> CreateProductionProfileWaterInjection(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
-        CreateTimeSeriesVolumeDto createProfileDto)
+        CreateTimeSeriesCostDto createProfileDto)
     {
-        return await CreateDrainageStrategyProfile<ProductionProfileWaterInjection, TimeSeriesVolumeDto, CreateTimeSeriesVolumeDto>(
+        return await CreateDrainageStrategyProfile<ProductionProfileWaterInjection, TimeSeriesCostDto, CreateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -30,14 +30,14 @@ public class ProductionProfileWaterInjectionService(
             d => d.ProductionProfileWaterInjection != null);
     }
 
-    public async Task<TimeSeriesVolumeDto> UpdateProductionProfileWaterInjection(
+    public async Task<TimeSeriesCostDto> UpdateProductionProfileWaterInjection(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
         Guid productionProfileId,
-        UpdateTimeSeriesVolumeDto updatedProductionProfileWaterInjectionDto)
+        UpdateTimeSeriesCostDto updatedProductionProfileWaterInjectionDto)
     {
-        return await UpdateDrainageStrategyProfile<ProductionProfileWaterInjection, TimeSeriesVolumeDto, UpdateTimeSeriesVolumeDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileWaterInjection, TimeSeriesCostDto, UpdateTimeSeriesCostDto>(
             projectId,
             caseId,
             drainageStrategyId,

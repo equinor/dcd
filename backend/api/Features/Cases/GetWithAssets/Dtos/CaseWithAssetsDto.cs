@@ -39,24 +39,24 @@ public class CaseWithAssetsDto
 
     [Required]
     public DrainageStrategyDto DrainageStrategy { get; set; } = null!;
-    public TimeSeriesVolumeDto? ProductionProfileOil { get; set; }
-    public TimeSeriesVolumeDto? AdditionalProductionProfileOil { get; set; }
-    public TimeSeriesVolumeDto? ProductionProfileGas { get; set; }
-    public TimeSeriesVolumeDto? AdditionalProductionProfileGas { get; set; }
-    public TimeSeriesVolumeDto? ProductionProfileWater { get; set; }
-    public TimeSeriesVolumeDto? ProductionProfileWaterInjection { get; set; }
-    public TimeSeriesVolumeDto? FuelFlaringAndLosses { get; set; }
-    public TimeSeriesVolumeOverrideDto? FuelFlaringAndLossesOverride { get; set; }
-    public TimeSeriesVolumeDto? NetSalesGas { get; set; }
-    public TimeSeriesVolumeOverrideDto? NetSalesGasOverride { get; set; }
-    public TimeSeriesMassDto? Co2Emissions { get; set; }
-    public TimeSeriesMassOverrideDto? Co2EmissionsOverride { get; set; }
-    public TimeSeriesVolumeDto? ProductionProfileNgl { get; set; }
-    public TimeSeriesEnergyDto? ImportedElectricity { get; set; }
-    public TimeSeriesEnergyOverrideDto? ImportedElectricityOverride { get; set; }
-    public TimeSeriesMassDto? Co2Intensity { get; set; }
-    public TimeSeriesVolumeDto? DeferredOilProduction { get; set; }
-    public TimeSeriesVolumeDto? DeferredGasProduction { get; set; }
+    public TimeSeriesCostDto? ProductionProfileOil { get; set; }
+    public TimeSeriesCostDto? AdditionalProductionProfileOil { get; set; }
+    public TimeSeriesCostDto? ProductionProfileGas { get; set; }
+    public TimeSeriesCostDto? AdditionalProductionProfileGas { get; set; }
+    public TimeSeriesCostDto? ProductionProfileWater { get; set; }
+    public TimeSeriesCostDto? ProductionProfileWaterInjection { get; set; }
+    public TimeSeriesCostDto? FuelFlaringAndLosses { get; set; }
+    public TimeSeriesCostOverrideDto? FuelFlaringAndLossesOverride { get; set; }
+    public TimeSeriesCostDto? NetSalesGas { get; set; }
+    public TimeSeriesCostOverrideDto? NetSalesGasOverride { get; set; }
+    public TimeSeriesCostDto? Co2Emissions { get; set; }
+    public TimeSeriesCostOverrideDto? Co2EmissionsOverride { get; set; }
+    public TimeSeriesCostDto? ProductionProfileNgl { get; set; }
+    public TimeSeriesCostDto? ImportedElectricity { get; set; }
+    public TimeSeriesCostOverrideDto? ImportedElectricityOverride { get; set; }
+    public TimeSeriesCostDto? Co2Intensity { get; set; }
+    public TimeSeriesCostDto? DeferredOilProduction { get; set; }
+    public TimeSeriesCostDto? DeferredGasProduction { get; set; }
 
 
     [Required]

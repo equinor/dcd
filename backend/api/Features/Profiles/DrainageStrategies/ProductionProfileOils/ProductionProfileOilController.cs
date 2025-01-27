@@ -9,23 +9,23 @@ public class ProductionProfileOilController(ProductionProfileOilService service)
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-oil")]
-    public async Task<TimeSeriesVolumeDto> CreateProductionProfileOil(
+    public async Task<TimeSeriesCostDto> CreateProductionProfileOil(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesVolumeDto dto)
+        [FromBody] CreateTimeSeriesCostDto dto)
     {
         return await service.CreateProductionProfileOil(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-oil/{profileId:guid}")]
-    public async Task<TimeSeriesVolumeDto> UpdateProductionProfileOil(
+    public async Task<TimeSeriesCostDto> UpdateProductionProfileOil(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesVolumeDto dto)
+        [FromBody] UpdateTimeSeriesCostDto dto)
     {
         return await service.UpdateProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
     }

@@ -9,23 +9,23 @@ public class FuelFlaringAndLossesOverrideController(FuelFlaringAndLossesOverride
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/fuel-flaring-and-losses-override")]
-    public async Task<TimeSeriesVolumeOverrideDto> CreateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateFuelFlaringAndLossesOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesVolumeOverrideDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
         return await service.CreateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/fuel-flaring-and-losses-override/{profileId:guid}")]
-    public async Task<TimeSeriesVolumeOverrideDto> UpdateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateFuelFlaringAndLossesOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesVolumeOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
         return await service.UpdateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, profileId, dto);
     }
