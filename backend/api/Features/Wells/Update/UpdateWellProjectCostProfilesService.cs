@@ -32,7 +32,6 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
     public async Task UpdateWellProjectCostProfiles(Guid wellProjectId)
     {
         var wellProject = await context.WellProjects
-            .Include(x => x.GasInjectorCostProfile)
             .SingleAsync(x => x.Id == wellProjectId);
 
         var wellIds = await context.WellProjectWell
@@ -96,19 +95,14 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
         var (gasInjectorWells, wellProjectWellGasInjector) = await GetWellData(wellIds, wellProject.Id, WellCategory.Gas_Injector);
         var gasInjectorTimeSeries = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(gasInjectorWells, wellProjectWellGasInjector);
 
-        if (wellProject.GasInjectorCostProfile == null)
-        {
-            wellProject.GasInjectorCostProfile = new GasInjectorCostProfile
-            {
-                StartYear = gasInjectorTimeSeries.StartYear,
-                Values = gasInjectorTimeSeries.Values
-            };
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.GasInjectorCostProfile))
+            .SingleAsync(x => x.WellProjectLink == wellProject.Id);
 
-            return;
-        }
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.GasInjectorCostProfile);
 
-        wellProject.GasInjectorCostProfile.StartYear = gasInjectorTimeSeries.StartYear;
-        wellProject.GasInjectorCostProfile.Values = gasInjectorTimeSeries.Values;
+        profile.StartYear = gasInjectorTimeSeries.StartYear;
+        profile.Values = gasInjectorTimeSeries.Values;
     }
 
     private async Task<(List<Well>, List<WellProjectWell>)> GetWellData(List<Guid> wellIds, Guid wellProjectId, WellCategory wellCategory)

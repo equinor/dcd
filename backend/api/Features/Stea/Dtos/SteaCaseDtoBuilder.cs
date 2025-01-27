@@ -15,7 +15,7 @@ public static class SteaCaseDtoBuilder
 
         AddStudyCost(steaCaseDto, caseItem);
         AddOpexCost(steaCaseDto, caseItem);
-        AddCapex(steaDbData, steaCaseDto, caseItem);
+        AddCapex(steaCaseDto, caseItem);
         AddCessationCost(steaCaseDto, caseItem);
         AddExploration(steaCaseDto, caseItem);
         AddProductionSalesAndVolumes(steaDbData, steaCaseDto, caseItem);
@@ -151,7 +151,7 @@ public static class SteaCaseDtoBuilder
         };
     }
 
-    private static void AddCapex(SteaDbData steaDbData, SteaCaseDto steaCaseDto, Case caseItem)
+    private static void AddCapex(SteaCaseDto steaCaseDto, Case caseItem)
     {
         steaCaseDto.Capex = new CapexDto
         {
@@ -159,8 +159,6 @@ public static class SteaCaseDtoBuilder
         };
 
         var dg4Year = caseItem.DG4Date.Year;
-
-        var wellProject = steaDbData.WellProjects.First(l => l.Id == caseItem.WellProjectLink);
 
         var costProfileDtos = new List<TimeSeriesCostDto>();
 
@@ -191,13 +189,13 @@ public static class SteaCaseDtoBuilder
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.WaterInjectorCostProfile)));
         }
 
-        if (wellProject.GasInjectorCostProfileOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride)?.Override == true)
         {
-            costProfileDtos.Add(ToTimeSeries(wellProject.GasInjectorCostProfileOverride));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GasInjectorCostProfileOverride)));
         }
-        else if (wellProject.GasInjectorCostProfile != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile) != null)
         {
-            costProfileDtos.Add(ToTimeSeries(wellProject.GasInjectorCostProfile));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GasInjectorCostProfile)));
         }
 
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);

@@ -146,21 +146,18 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [100.0, 100.0, 130.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.GasInjectorCostProfileOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                },
             }
         };
 
-        var wellProject = new WellProject
-        {
-            GasInjectorCostProfileOverride = new GasInjectorCostProfileOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [50.0, 80.0, 120.0]
-            },
-        };
-
         // Act
-        CalculateTotalCostService.CalculateTotalCost(caseItem, wellProject);
+        CalculateTotalCostService.CalculateTotalCost(caseItem);
 
         // Assert
         var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);

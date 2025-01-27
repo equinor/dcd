@@ -51,7 +51,7 @@ public class WellCostProfileService(DcdDbContext context)
         var wellProjectWells = await context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject).ThenInclude(e => e.GasInjectorCostProfile)
+            .Include(ew => ew.WellProject)
             .Where(x => wellIds.Contains(x.WellId))
             .ToListAsync();
 
@@ -83,7 +83,8 @@ public class WellCostProfileService(DcdDbContext context)
             {
                 ProfileTypes.OilProducerCostProfile,
                 ProfileTypes.GasProducerCostProfile,
-                ProfileTypes.WaterInjectorCostProfile
+                ProfileTypes.WaterInjectorCostProfile,
+                ProfileTypes.GasInjectorCostProfile
             };
 
             var caseItem = await context.Cases
@@ -123,13 +124,10 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Gas_Injector);
             var gasInjectorCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedGasInjectorWells);
 
-            wellProject.GasInjectorCostProfile ??= new GasInjectorCostProfile
-            {
-                WellProject = wellProject
-            };
+            var gasInjectorCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.GasInjectorCostProfile);
 
-            wellProject.GasInjectorCostProfile.Values = gasInjectorCostProfileValues.Values;
-            wellProject.GasInjectorCostProfile.StartYear = gasInjectorCostProfileValues.StartYear;
+            gasInjectorCostProfile.Values = gasInjectorCostProfileValues.Values;
+            gasInjectorCostProfile.StartYear = gasInjectorCostProfileValues.StartYear;
         }
     }
 
@@ -256,7 +254,6 @@ public class WellCostProfileService(DcdDbContext context)
         return context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject)
-                .ThenInclude(e => e.GasInjectorCostProfile);
+            .Include(ew => ew.WellProject);
     }
 }

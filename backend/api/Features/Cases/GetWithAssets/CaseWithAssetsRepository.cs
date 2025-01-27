@@ -104,8 +104,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     {
         return await context.WellProjects
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
             .AsNoTracking()
             .SingleAsync(o => o.Id == wellProjectLink);
     }

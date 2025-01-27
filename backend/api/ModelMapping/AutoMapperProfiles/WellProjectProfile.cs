@@ -11,12 +11,6 @@ public class WellProjectProfile : Profile
     public WellProjectProfile()
     {
         CreateMap<WellProject, WellProjectDto>();
-        CreateMap<GasInjectorCostProfile, TimeSeriesCostDto>();
-        CreateMap<GasInjectorCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<WellProjectWell, WellProjectWellDto>().ReverseMap();
-
-        CreateMap<UpdateTimeSeriesCostOverrideDto, GasInjectorCostProfileOverride>();
-
-        CreateMap<CreateTimeSeriesCostOverrideDto, GasInjectorCostProfileOverride>();
     }
 }

@@ -15,15 +15,10 @@ public class CalculateTotalCostService(DcdDbContext context)
             .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var wellProject = await context.WellProjects
-            .Include(x => x.GasInjectorCostProfileOverride)
-            .Include(x => x.GasInjectorCostProfile)
-            .SingleAsync(x => x.Id == caseItem.WellProjectLink);
-
-        CalculateTotalCost(caseItem, wellProject);
+        CalculateTotalCost(caseItem);
     }
 
-    public static void CalculateTotalCost(Case caseItem, WellProject wellProject)
+    public static void CalculateTotalCost(Case caseItem)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
 
@@ -54,7 +49,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalOffshoreFacilityCost.Values
         };
 
-        var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem, wellProject);
+        var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);
         var developmentProfile = new TimeSeries<double>
         {
             StartYear = totalDevelopmentCost.StartYear,
@@ -207,7 +202,7 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalOffshoreFacilityCost;
     }
 
-    private static TimeSeries<double> CalculateTotalDevelopmentCost(Case caseItem, WellProject wellProject)
+    private static TimeSeries<double> CalculateTotalDevelopmentCost(Case caseItem)
     {
         TimeSeries<double> oilProducerProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile),
@@ -222,8 +217,8 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)
         );
         TimeSeries<double> gasInjectorProfile = UseOverrideOrProfile(
-            wellProject.GasInjectorCostProfile,
-            wellProject.GasInjectorCostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride)
         );
 
         var totalDevelopmentCost = CostProfileMerger.MergeCostProfiles(

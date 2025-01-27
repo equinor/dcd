@@ -169,5 +169,7 @@ public static class DcdDatabaseConfiguration
         ("GasProducerCostProfileOverride", ProfileTypes.GasProducerCostProfileOverride, true, "WellProject", "WellProjects"),
         ("WaterInjectorCostProfile", ProfileTypes.WaterInjectorCostProfile, false, "WellProject", "WellProjects"),
         ("WaterInjectorCostProfileOverride", ProfileTypes.WaterInjectorCostProfileOverride, true, "WellProject", "WellProjects"),
+        ("GasInjectorCostProfile", ProfileTypes.GasInjectorCostProfile, false, "WellProject", "WellProjects"),
+        ("GasInjectorCostProfileOverride", ProfileTypes.GasInjectorCostProfileOverride, true, "WellProject", "WellProjects"),
     ];
 }

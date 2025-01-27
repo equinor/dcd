@@ -85,8 +85,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<WellProject>> GetWellProjects(Guid projectPk)
     {
         return await context.WellProjects
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
             .Where(d => d.ProjectId == projectPk)
             .ToListAsync();

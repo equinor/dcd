@@ -17,13 +17,8 @@ public class StudyCostProfileService(DcdDbContext context)
             .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var wellProject = await context.WellProjects
-            .Include(w => w.GasInjectorCostProfileOverride)
-            .Include(w => w.GasInjectorCostProfile)
-            .SingleAsync(x => x.Id == caseItem.WellProjectLink);
-
         var sumFacilityCost = SumAllCostFacility(caseItem);
-        var sumWellCost = SumWellCost(caseItem, wellProject);
+        var sumWellCost = SumWellCost(caseItem);
 
         CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
@@ -143,14 +138,14 @@ public class StudyCostProfileService(DcdDbContext context)
         return sumFacilityCost;
     }
 
-    public static double SumWellCost(Case caseItem, WellProject wellProject)
+    public static double SumWellCost(Case caseItem)
     {
         var sumWellCost = 0.0;
 
         sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
         sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
         sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride));
 
         return sumWellCost;
     }
