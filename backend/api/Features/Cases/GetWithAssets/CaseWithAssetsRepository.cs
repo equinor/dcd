@@ -66,7 +66,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<Substructure> GetSubstructureNoTracking(Guid substructureLink)
     {
         return await context.Substructures
-            .Include(c => c.CessationCostProfile)
             .AsNoTracking()
             .SingleAsync(o => o.Id == substructureLink);
     }

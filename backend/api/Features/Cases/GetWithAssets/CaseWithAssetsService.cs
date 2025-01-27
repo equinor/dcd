@@ -74,7 +74,7 @@ public class CaseWithAssetsService(
             Substructure = mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
             SubstructureCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile)),
             SubstructureCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride)),
-            SubstructureCessationCostProfile = MapToDto<SubstructureCessationCostProfile, TimeSeriesCostDto>(substructure.CessationCostProfile, substructure.CessationCostProfile?.Id),
+            SubstructureCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCessationCostProfile)),
             Surf = mapperService.MapToDto<Surf, SurfDto>(surf, surf.Id),
             SurfCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile)),
             SurfCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride)),

@@ -117,7 +117,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadSubstructures(Guid substructureLink)
     {
         await context.Substructures
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == substructureLink)
             .LoadAsync();
     }

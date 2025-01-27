@@ -78,7 +78,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var substructureLinks = project.Cases.Select(x => x.SubstructureLink).ToList();
         await context.Substructures
-            .Include(x => x.CessationCostProfile)
             .Where(x => substructureLinks.Contains(x.Id))
             .LoadAsync();
 

@@ -57,5 +57,5 @@ public static class ProfileTypes
     public const string SubstructureCostProfile = "SubstructureCostProfile";
     public const string SubstructureCostProfileOverride = "SubstructureCostProfileOverride";
 
-    //public const string SubstructureCessationCostProfile = "SubstructureCessationCostProfile";
+    public const string SubstructureCessationCostProfile = "SubstructureCessationCostProfile";
 }
