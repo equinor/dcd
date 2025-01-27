@@ -32,7 +32,6 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
     public async Task UpdateExplorationCostProfiles(Guid explorationId)
     {
         var exploration = await context.Explorations
-            .Include(x => x.SidetrackCostProfile)
             .SingleAsync(x => x.Id == explorationId);
 
         var wellIds = await context.ExplorationWell
@@ -81,19 +80,16 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
     {
         var (sidetrackWells, explorationWellSidetrack) = await GetWellData(wellIds, exploration.Id, WellCategory.Sidetrack);
         var sidetrackTimeSeries = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(sidetrackWells, explorationWellSidetrack);
-        if (exploration.SidetrackCostProfile == null)
-        {
-            exploration.SidetrackCostProfile = new SidetrackCostProfile
-            {
-                StartYear = sidetrackTimeSeries.StartYear,
-                Values = sidetrackTimeSeries.Values
-            };
 
-            return;
-        }
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.SidetrackCostProfile))
+            .Where(x => x.ExplorationLink == exploration.Id)
+            .SingleAsync();
 
-        exploration.SidetrackCostProfile.StartYear = sidetrackTimeSeries.StartYear;
-        exploration.SidetrackCostProfile.Values = sidetrackTimeSeries.Values;
+        var sidetrackCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SidetrackCostProfile);
+
+        sidetrackCostProfile.StartYear = sidetrackTimeSeries.StartYear;
+        sidetrackCostProfile.Values = sidetrackTimeSeries.Values;
     }
 
     private async Task<(List<Well> wells, List<ExplorationWell> explorationWells)> GetWellData(List<Guid> wellIds, Guid explorationId, WellCategory wellCategory)

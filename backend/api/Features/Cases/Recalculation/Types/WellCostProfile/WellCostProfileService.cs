@@ -44,7 +44,7 @@ public class WellCostProfileService(DcdDbContext context)
         var explorationWells = await context.ExplorationWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.Exploration).ThenInclude(e => e.SidetrackCostProfile)
+            .Include(ew => ew.Exploration)
             .Where(x => wellIds.Contains(x.WellId))
             .ToListAsync();
 
@@ -146,8 +146,15 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well);
             var explorationWellCostProfileValues = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(connectedExplorationCategoryWells);
 
+            var profileTypes = new List<string>
+            {
+                ProfileTypes.ExplorationWellCostProfile,
+                ProfileTypes.AppraisalWellCostProfile,
+                ProfileTypes.SidetrackCostProfile
+            };
+
             var caseItem = await context.Cases
-                .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.ExplorationWellCostProfile || y.ProfileType == ProfileTypes.AppraisalWellCostProfile))
+                .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
                 .Where(x => x.ExplorationLink == exploration.Id)
                 .SingleAsync();
 
@@ -170,13 +177,10 @@ public class WellCostProfileService(DcdDbContext context)
                 .Where(ew => ew.Well.WellCategory == WellCategory.Sidetrack);
             var sidetrackCostProfileValues = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(connectedSidetrackWells);
 
-            exploration.SidetrackCostProfile ??= new SidetrackCostProfile
-            {
-                Exploration = exploration
-            };
+            var sidetrackCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SidetrackCostProfile);
 
-            exploration.SidetrackCostProfile.Values = sidetrackCostProfileValues.Values;
-            exploration.SidetrackCostProfile.StartYear = sidetrackCostProfileValues.StartYear;
+            sidetrackCostProfile.Values = sidetrackCostProfileValues.Values;
+            sidetrackCostProfile.StartYear = sidetrackCostProfileValues.StartYear;
         }
     }
 
@@ -237,8 +241,7 @@ public class WellCostProfileService(DcdDbContext context)
         return context.ExplorationWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
-            .Include(ew => ew.Exploration)
-                .ThenInclude(e => e.SidetrackCostProfile);
+            .Include(ew => ew.Exploration);
     }
 
     private async Task<List<WellProjectWell>> GetAllWellProjectWellsForWellProject(Guid wellProjectId)

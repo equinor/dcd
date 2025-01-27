@@ -90,7 +90,7 @@ public class CaseWithAssetsService(
             ExplorationWells = exploration.ExplorationWells.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList(),
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
-            SidetrackCostProfile = MapToDto<SidetrackCostProfile, TimeSeriesCostDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
+            SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
             GAndGAdminCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost)),
             GAndGAdminCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)),
             SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, TimeSeriesCostDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),

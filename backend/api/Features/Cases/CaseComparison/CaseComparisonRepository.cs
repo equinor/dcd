@@ -55,7 +55,6 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Explorations
             .Include(e => e.CountryOfficeCost)
             .Include(e => e.SeismicAcquisitionAndProcessing)
-            .Include(e => e.SidetrackCostProfile)
             .Where(x => explorationLinks.Contains(x.Id))
             .LoadAsync();
 

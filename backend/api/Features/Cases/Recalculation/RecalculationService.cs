@@ -1218,7 +1218,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.AppraisalWellCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var sidetrackChanges = context.ChangeTracker.Entries<SidetrackCostProfile>()
+        var sidetrackChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.SidetrackCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         return

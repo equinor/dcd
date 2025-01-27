@@ -422,9 +422,9 @@ public static class SteaCaseDtoBuilder
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.AppraisalWellCostProfile)));
         }
-        if (exploration.SidetrackCostProfile?.Values.Length > 0)
+        if (caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)?.Values.Length > 0)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.SidetrackCostProfile));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.SidetrackCostProfile)));
         }
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {

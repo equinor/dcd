@@ -107,6 +107,12 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [100.0, 100.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.SidetrackCostProfile,
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                }
             }
         };
 
@@ -150,11 +156,6 @@ public class CalculateTotalCostServiceTests
             {
                 StartYear = 2020,
                 Values = [50.0, 100.0]
-            },
-            SidetrackCostProfile = new SidetrackCostProfile
-            {
-                StartYear = 2020,
-                Values = [100.0, 100.0]
             }
         };
 
@@ -201,6 +202,12 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [40.0, 60.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.SidetrackCostProfile,
+                    StartYear = 2021,
+                    Values = [20.0, 30.0]
+                }
             }
         };
 
@@ -215,11 +222,6 @@ public class CalculateTotalCostServiceTests
             {
                 StartYear = 2020,
                 Values = [5.0, 10.0]
-            },
-            SidetrackCostProfile = new SidetrackCostProfile
-            {
-                StartYear = 2021,
-                Values = [20.0, 30.0]
             }
         };
 
