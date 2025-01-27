@@ -434,9 +434,9 @@ public static class SteaCaseDtoBuilder
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GAndGAdminCost)));
         }
-        if (exploration.SeismicAcquisitionAndProcessing?.Values.Length > 0)
+        if (caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)?.Values.Length > 0)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.SeismicAcquisitionAndProcessing));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.SeismicAcquisitionAndProcessing)));
         }
         if (exploration.CountryOfficeCost?.Values.Length > 0)
         {

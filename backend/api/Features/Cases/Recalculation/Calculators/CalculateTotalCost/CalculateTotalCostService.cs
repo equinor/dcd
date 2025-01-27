@@ -28,7 +28,6 @@ public class CalculateTotalCostService(DcdDbContext context)
 
         var exploration = await context.Explorations
             .Include(e => e.CountryOfficeCost)
-            .Include(e => e.SeismicAcquisitionAndProcessing)
             .SingleAsync(x => x.Id == caseItem.ExplorationLink);
 
         CalculateTotalCost(caseItem, wellProject, exploration);
@@ -254,8 +253,12 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost),
             caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)
         );
-        TimeSeries<double> seismicAcquisitionAndProcessingProfile = exploration?.SeismicAcquisitionAndProcessing
-             ?? new TimeSeries<double> { StartYear = 0, Values = [] };
+
+        var seismicAcquisitionAndProcessingTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing);
+
+        TimeSeries<double> seismicAcquisitionAndProcessingProfile = seismicAcquisitionAndProcessingTimeSeries != null
+            ? new TimeSeriesCost(seismicAcquisitionAndProcessingTimeSeries)
+            : new TimeSeries<double> { StartYear = 0, Values = [] };
 
         TimeSeries<double> countryOfficeCostProfile = exploration?.CountryOfficeCost
             ?? new TimeSeries<double> { StartYear = 0, Values = [] };

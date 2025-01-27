@@ -160,5 +160,6 @@ public static class DcdDatabaseConfiguration
         ("ExplorationWellCostProfile", ProfileTypes.ExplorationWellCostProfile, false, "Exploration", "Explorations"),
         ("AppraisalWellCostProfile", ProfileTypes.AppraisalWellCostProfile, false, "Exploration", "Explorations"),
         ("SidetrackCostProfile", ProfileTypes.SidetrackCostProfile, false, "Exploration", "Explorations"),
+        ("SeismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing, false, "Exploration", "Explorations"),
     ];
 }

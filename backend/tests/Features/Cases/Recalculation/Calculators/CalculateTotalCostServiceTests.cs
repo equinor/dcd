@@ -112,7 +112,13 @@ public class CalculateTotalCostServiceTests
                     ProfileType = ProfileTypes.SidetrackCostProfile,
                     StartYear = 2020,
                     Values = [100.0, 100.0]
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.SeismicAcquisitionAndProcessing,
+                    StartYear = 2020,
+                    Values = [150.0, 250.0, 350.0]
+                },
             }
         };
 
@@ -147,11 +153,6 @@ public class CalculateTotalCostServiceTests
         var exploration = new Exploration
         {
 
-            SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
-            {
-                StartYear = 2020,
-                Values = [150.0, 250.0, 350.0]
-            },
             CountryOfficeCost = new CountryOfficeCost
             {
                 StartYear = 2020,
@@ -207,17 +208,18 @@ public class CalculateTotalCostServiceTests
                     ProfileType = ProfileTypes.SidetrackCostProfile,
                     StartYear = 2021,
                     Values = [20.0, 30.0]
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.SeismicAcquisitionAndProcessing,
+                    StartYear = 2021,
+                    Values = [15.0, 25.0, 35.0]
+                },
             }
         };
 
         var exploration = new Exploration
         {
-            SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
-            {
-                StartYear = 2021,
-                Values = [15.0, 25.0, 35.0]
-            },
             CountryOfficeCost = new CountryOfficeCost
             {
                 StartYear = 2020,

@@ -72,4 +72,6 @@ public static class ProfileTypes
     public const string AppraisalWellCostProfile = "AppraisalWellCostProfile";
 
     public const string SidetrackCostProfile = "SidetrackCostProfile";
+
+    public const string SeismicAcquisitionAndProcessing = "SeismicAcquisitionAndProcessing";
 }

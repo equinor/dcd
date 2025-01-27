@@ -1204,7 +1204,8 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.GAndGAdminCostOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var seismicChanges = context.ChangeTracker.Entries<SeismicAcquisitionAndProcessing>()
+        var seismicChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.SeismicAcquisitionAndProcessing)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var countryOfficeChanges = context.ChangeTracker.Entries<CountryOfficeCost>()
