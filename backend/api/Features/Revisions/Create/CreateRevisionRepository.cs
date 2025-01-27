@@ -110,7 +110,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadTopsides(Guid projectPk)
     {
         await context.Topsides
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }

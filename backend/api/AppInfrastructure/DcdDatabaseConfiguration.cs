@@ -135,6 +135,7 @@ public static class DcdDatabaseConfiguration
     private static readonly List<(string tableName, string profileName, bool isOverride)> MigrationQueries =
     [
         ("TopsideCostProfiles", "TopsideCostProfile", false),
-        ("TopsideCostProfileOverride", "TopsideCostProfileOverride", true)
+        ("TopsideCostProfileOverride", "TopsideCostProfileOverride", true),
+        ("TopsideCessationCostProfiles", "TopsideCessationCostProfile", false),
     ];
 }

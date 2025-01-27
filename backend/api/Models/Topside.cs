@@ -49,9 +49,8 @@ public class Topside : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     #region Migrated profiles, do not access.
     public virtual TopsideCostProfile? CostProfile { get; set; }
     public virtual TopsideCostProfileOverride? CostProfileOverride { get; set; }
-    #endregion Migrated profiles, do not access.
-
     public virtual TopsideCessationCostProfile? CessationCostProfile { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
 #region Migrated profiles, do not access.
@@ -67,13 +66,13 @@ public class TopsideCostProfileOverride : TimeSeriesCost, ITimeSeriesOverride, I
     public virtual Topside Topside { get; set; } = null!;
     public bool Override { get; set; }
 }
-#endregion Migrated profiles, do not access.
 
 public class TopsideCessationCostProfile : TimeSeriesCost, ITopsideTimeSeries
 {
     [ForeignKey("Topside.Id")]
     public virtual Topside Topside { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
 
 public interface ITopsideTimeSeries
 {

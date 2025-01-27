@@ -2,7 +2,7 @@ namespace api.Features.Profiles;
 
 public static class ProfileTypes
 {
-    // Case
+    /* Case profiles */
     public const string CessationWellsCost = "CessationWellsCost";
     public const string CessationWellsCostOverride = "CessationWellsCostOverride";
 
@@ -35,7 +35,9 @@ public static class ProfileTypes
 
     public const string CalculatedTotalCostCostProfile = "CalculatedTotalCostCostProfile";
 
-    // Topside
+    /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";
     public const string TopsideCostProfileOverride = "TopsideCostProfileOverride";
+
+    public const string TopsideCessationCostProfile = "TopsideCessationCostProfile";
 }

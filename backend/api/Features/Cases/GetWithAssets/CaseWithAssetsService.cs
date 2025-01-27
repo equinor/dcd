@@ -70,7 +70,7 @@ public class CaseWithAssetsService(
             Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
             TopsideCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile)),
             TopsideCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)),
-            TopsideCessationCostProfile = MapToDto<TopsideCessationCostProfile, TimeSeriesCostDto>(topside.CessationCostProfile, topside.CessationCostProfile?.Id),
+            TopsideCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCessationCostProfile)),
             Substructure = mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
             SubstructureCostProfile = MapToDto<SubstructureCostProfile, TimeSeriesCostDto>(substructure.CostProfile, substructure.CostProfile?.Id),
             SubstructureCostProfileOverride = MapToDto<SubstructureCostProfileOverride, TimeSeriesCostOverrideDto>(substructure.CostProfileOverride, substructure.CostProfileOverride?.Id),

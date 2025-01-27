@@ -107,7 +107,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<Topside> GetTopsideNoTracking(Guid topsideLink)
     {
         return await context.Topsides
-            .Include(c => c.CessationCostProfile)
             .AsNoTracking()
             .SingleAsync(o => o.Id == topsideLink);
     }
