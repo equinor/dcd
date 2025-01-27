@@ -81,11 +81,11 @@ public static class DcdDatabaseConfiguration
 
         foreach (var (tableName, profileName, isOverride, entityName, entityNamePlural) in MigrationQueries)
         {
-            var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{profileName}'";
+            var countQuery = $"select count(*) as Value from sys.objects where object_id = object_id('z_backup_{tableName}')";
 
             var itemsFound = context.Database.SqlQueryRaw<int>(countQuery).First();
 
-            if (itemsFound != 0)
+            if (itemsFound > 0)
             {
                 continue;
             }
