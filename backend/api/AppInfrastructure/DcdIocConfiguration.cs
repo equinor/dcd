@@ -63,7 +63,6 @@ using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfileOverrides;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
 using api.Features.Profiles.Topsides.TopsideCostProfiles;
-using api.Features.Profiles.Transports.TransportCostProfileOverrides;
 using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Profiles.Update;
 using api.Features.Profiles.WellProjects.GasInjectorCostProfileOverrides;
@@ -242,7 +241,6 @@ public static class DcdIocConfiguration
 
         /* Transport profiles */
         services.AddScoped<TransportCostProfileService>();
-        services.AddScoped<TransportCostProfileOverrideService>();
 
         /* Well project profiles */
         services.AddScoped<GasInjectorCostProfileOverrideService>();

@@ -99,8 +99,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var transportLinks = project.Cases.Select(x => x.TransportLink).ToList();
         await context.Transports
-            .Include(x => x.CostProfileOverride)
-            .Include(x => x.CostProfile)
             .Include(x => x.CessationCostProfile)
             .Where(x => transportLinks.Contains(x.Id))
             .LoadAsync();

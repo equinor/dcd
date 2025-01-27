@@ -29,8 +29,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseItem.TopsideLink);
 
         var transport = await context.Transports
-            .Include(x => x.CostProfile)
-            .Include(x => x.CostProfileOverride)
             .SingleAsync(x => x.Id == caseItem.TransportLink);
 
         var onshorePowerSupply = await context.OnshorePowerSupplies
@@ -239,8 +237,8 @@ public class CalculateTotalCostService(DcdDbContext context)
             caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)
         );
         TimeSeries<double> transportProfile = UseOverrideOrProfile(
-            transport?.CostProfile,
-            transport?.CostProfileOverride
+            caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride)
         );
         TimeSeries<double> onshorePowerSupplyProfile = UseOverrideOrProfile(
             onshorePowerSupply?.CostProfile,

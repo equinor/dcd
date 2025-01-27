@@ -59,6 +59,13 @@ public class CalculateTotalCostServiceTests
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 80.0, 120.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.TransportCostProfileOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 70.0, 100.0]
                 }
             }
         };
@@ -85,15 +92,7 @@ public class CalculateTotalCostServiceTests
 
         var topside = new Topside();
 
-        var transport = new Transport
-        {
-            CostProfileOverride = new TransportCostProfileOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [50.0, 70.0, 100.0]
-            }
-        };
+        var transport = new Transport();
 
         var onshorePowerSupply = new OnshorePowerSupply
         {

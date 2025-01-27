@@ -11,12 +11,6 @@ public class TransportProfile : Profile
     public TransportProfile()
     {
         CreateMap<Transport, TransportDto>();
-        CreateMap<TransportCostProfile, TimeSeriesCostDto>();
-        CreateMap<TransportCostProfileOverride, TimeSeriesCostOverrideDto>();
         CreateMap<TransportCessationCostProfile, TimeSeriesCostDto>();
-
-        CreateMap<UpdateTimeSeriesCostDto, TransportCostProfile>();
-        CreateMap<UpdateTimeSeriesCostOverrideDto, TransportCostProfileOverride>();
-        CreateMap<CreateTimeSeriesCostOverrideDto, TransportCostProfileOverride>();
     }
 }

@@ -249,15 +249,18 @@ public static class SteaCaseDtoBuilder
 
         var transport = steaDbData.Transports.First(l => l.Id == caseItem.TransportLink);
 
-        if (transport.CostProfileOverride?.Override == true)
+        var transportCostProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride);
+        var transportCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile);
+
+        if (transportCostProfileOverride?.Override == true)
         {
-            transport.CostProfileOverride.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transport.CostProfileOverride));
+            transportCostProfileOverride.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transportCostProfileOverride));
         }
-        else if (transport.CostProfile != null)
+        else if (transportCostProfile != null)
         {
-            transport.CostProfile.StartYear += dg4Year;
-            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transport.CostProfile));
+            transportCostProfile.StartYear += dg4Year;
+            TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.OffshoreFacilities, ToTimeSeries(transportCostProfile));
         }
 
         var onshorePowerSupply = steaDbData.OnshorePowerSupplies.First(l => l.Id == caseItem.OnshorePowerSupplyLink);

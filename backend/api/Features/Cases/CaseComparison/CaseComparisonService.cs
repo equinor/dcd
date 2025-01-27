@@ -265,13 +265,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         var substructure = caseItem.Substructure!;
         var surf = caseItem.Surf!;
-        var transport = caseItem.Transport!;
         var onshorePowerSupply = caseItem.OnshorePowerSupply!;
 
         sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
         sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
 
         return sumFacilityCost;

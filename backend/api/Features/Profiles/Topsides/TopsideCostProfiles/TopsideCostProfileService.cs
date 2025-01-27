@@ -46,7 +46,7 @@ public class TopsideCostProfileService(DcdDbContext context, IRecalculationServi
         await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
     }
 
-    private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto updatedProfileDto)
+    private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
         if (caseItem.Topside!.ProspVersion == null)
         {
@@ -58,8 +58,8 @@ public class TopsideCostProfileService(DcdDbContext context, IRecalculationServi
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.TopsideCostProfile);
 
-        existingProfile.StartYear = updatedProfileDto.StartYear;
-        existingProfile.Values = updatedProfileDto.Values;
+        existingProfile.StartYear = dto.StartYear;
+        existingProfile.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseItem.Id);
         await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);

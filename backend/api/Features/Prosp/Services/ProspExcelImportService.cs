@@ -315,7 +315,7 @@ public class ProspExcelImportService(
         };
 
         await updateTransportService.UpdateTransport(projectId, caseItem.Id, caseItem.TransportLink, updateTransportDto);
-        await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, caseItem.TransportLink, costProfile);
+        await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, costProfile);
     }
 
     private async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid projectId, Case caseItem)
@@ -527,7 +527,6 @@ public class ProspExcelImportService(
 
         await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.TransportLink,
             new UpdateTimeSeriesCostDto());
     }
 

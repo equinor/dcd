@@ -37,6 +37,11 @@ public class CreateCaseService(DcdDbContext context)
                 {
                     ProfileType = ProfileTypes.TopsideCostProfileOverride,
                     Override = true
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.TransportCostProfileOverride,
+                    Override = true
                 }
             }
         };
@@ -96,11 +101,7 @@ public class CreateCaseService(DcdDbContext context)
         return new Transport
         {
             Name = "Transport",
-            ProjectId = projectPk,
-            CostProfileOverride = new TransportCostProfileOverride
-            {
-                Override = true
-            }
+            ProjectId = projectPk
         };
     }
 

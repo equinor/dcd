@@ -39,8 +39,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<Transport>> GetTransports(Guid projectPk)
     {
         return await context.Transports
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(c => c.ProjectId == projectPk)
             .ToListAsync();

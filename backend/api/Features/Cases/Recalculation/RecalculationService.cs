@@ -874,14 +874,16 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.TopsideCostProfileOverride)
             .Any(e => e.State == EntityState.Added);
 
-        var transportChanges = context.ChangeTracker.Entries<TransportCostProfileOverride>()
+        var transportChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfileOverride)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(TransportCostProfileOverride.Override)).IsModified
-                          || e.Property(nameof(TransportCostProfileOverride.InternalData)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
+                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
                       ));
 
-        var transportCostProfileAdded = context.ChangeTracker.Entries<TransportCostProfileOverride>()
+        var transportCostProfileAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfileOverride)
             .Any(e => e.State == EntityState.Added);
 
         var onshorePowerSupplyChanges = context.ChangeTracker.Entries<OnshorePowerSupplyCostProfileOverride>()
@@ -1144,10 +1146,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.TopsideCostProfileOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var transportChanges = context.ChangeTracker.Entries<TransportCostProfile>()
+        var transportChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var transportOverrideChanges = context.ChangeTracker.Entries<TransportCostProfileOverride>()
+        var transportOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfile)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var onshorePowerSupplyChanges = context.ChangeTracker.Entries<OnshorePowerSupplyCostProfile>()

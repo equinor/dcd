@@ -78,7 +78,7 @@ public static class DcdDatabaseConfiguration
     {
         using var context = new DcdDbContext(dbBuilderOptions, null, null);
 
-        foreach (var (tableName, profileName, isOverride) in MigrationQueries)
+        foreach (var (tableName, profileName, isOverride, entityName) in MigrationQueries)
         {
             var countQuery = $"select count(*) as Value from TimeSeriesProfiles where ProfileType = '{tableName}'";
 
@@ -101,8 +101,8 @@ public static class DcdDatabaseConfiguration
                         p.Override, '{profileName}'
                        from
                            {tableName} p
-                           inner join Topsides t on t.Id = p.[Topside.Id]
-                           inner join Cases c on c.TopsideLink = t.Id;
+                           inner join {entityName}s t on t.Id = p.[{entityName}.Id]
+                           inner join Cases c on c.{entityName}Link = t.Id;
                        """
                     : $"""
                        insert into TimeSeriesProfiles
@@ -115,8 +115,8 @@ public static class DcdDatabaseConfiguration
                         0, '{profileName}'
                        from
                            {tableName} p
-                           inner join Topsides t on t.Id = p.[Topside.Id]
-                           inner join Cases c on c.TopsideLink = t.Id;
+                           inner join {entityName}s t on t.Id = p.[{entityName}.Id]
+                           inner join Cases c on c.{entityName}Link = t.Id;
                        """;
 
             context.Database.ExecuteSqlRaw(insertQuery);
@@ -132,10 +132,13 @@ public static class DcdDatabaseConfiguration
         }
     }
 
-    private static readonly List<(string tableName, string profileName, bool isOverride)> MigrationQueries =
+    private static readonly List<(string tableName, string profileName, bool isOverride, string entityName)> MigrationQueries =
     [
-        ("TopsideCostProfiles", "TopsideCostProfile", false),
-        ("TopsideCostProfileOverride", "TopsideCostProfileOverride", true),
-        ("TopsideCessationCostProfiles", "TopsideCessationCostProfile", false),
+        ("TopsideCostProfiles", "TopsideCostProfile", false, "Topside"),
+        ("TopsideCostProfileOverride", "TopsideCostProfileOverride", true, "Topside"),
+        ("TopsideCessationCostProfiles", "TopsideCessationCostProfile", false, "Topside"),
+
+        ("TransportCostProfile", "TransportCostProfile", false, "Transport"),
+        ("TransportCostProfileOverride", "TransportCostProfileOverride", true, "Transport"),
     ];
 }

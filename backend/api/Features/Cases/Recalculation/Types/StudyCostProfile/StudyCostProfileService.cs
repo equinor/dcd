@@ -31,8 +31,6 @@ public class StudyCostProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseItem.TopsideLink);
 
         var transport = await context.Transports
-            .Include(s => s.CostProfileOverride)
-            .Include(s => s.CostProfile)
             .SingleAsync(x => x.Id == caseItem.TransportLink);
 
         var onshorePowerSupply = await context.OnshorePowerSupplies
@@ -171,7 +169,7 @@ public class StudyCostProfileService(DcdDbContext context)
         sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
         sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
 
         return sumFacilityCost;
