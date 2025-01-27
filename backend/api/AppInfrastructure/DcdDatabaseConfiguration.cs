@@ -153,5 +153,8 @@ public static class DcdDatabaseConfiguration
 
         ("OnshorePowerSupplyCostProfile", ProfileTypes.OnshorePowerSupplyCostProfile, false, "OnshorePowerSupply", "OnshorePowerSupplies"),
         ("OnshorePowerSupplyCostProfileOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride, true, "OnshorePowerSupply", "OnshorePowerSupplies"),
+
+        ("GAndGAdminCost", ProfileTypes.GAndGAdminCost, false, "Exploration", "Explorations"),
+        ("GAndGAdminCostOverride", ProfileTypes.GAndGAdminCostOverride, true, "Exploration", "Explorations"),
     ];
 }

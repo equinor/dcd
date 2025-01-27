@@ -27,8 +27,6 @@ public class CalculateTotalCostService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseItem.WellProjectLink);
 
         var exploration = await context.Explorations
-            .Include(e => e.GAndGAdminCost)
-            .Include(e => e.GAndGAdminCostOverride)
             .Include(e => e.CountryOfficeCost)
             .Include(e => e.SeismicAcquisitionAndProcessing)
             .Include(e => e.ExplorationWellCostProfile)
@@ -77,7 +75,7 @@ public class CalculateTotalCostService(DcdDbContext context)
             Values = totalDevelopmentCost.Values
         };
 
-        var explorationCost = CalculateTotalExplorationCost(exploration);
+        var explorationCost = CalculateTotalExplorationCost(caseItem, exploration);
         var explorationProfile = new TimeSeries<double>
         {
             StartYear = explorationCost.StartYear,
@@ -253,11 +251,11 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalDevelopmentCost;
     }
 
-    public static TimeSeries<double> CalculateTotalExplorationCost(Exploration exploration)
+    public static TimeSeries<double> CalculateTotalExplorationCost(Case caseItem, Exploration exploration)
     {
         TimeSeries<double> gAndGAdminCostProfile = UseOverrideOrProfile(
-            exploration.GAndGAdminCost,
-            exploration.GAndGAdminCostOverride
+            caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost),
+            caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)
         );
         TimeSeries<double> seismicAcquisitionAndProcessingProfile = exploration?.SeismicAcquisitionAndProcessing
              ?? new TimeSeries<double> { StartYear = 0, Values = [] };

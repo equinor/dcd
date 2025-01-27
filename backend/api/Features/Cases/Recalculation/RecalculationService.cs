@@ -1196,10 +1196,12 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var gasInjectorOverrideChanges = context.ChangeTracker.Entries<GasInjectorCostProfileOverride>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var gAndGAdminChanges = context.ChangeTracker.Entries<GAndGAdminCost>()
+        var gAndGAdminChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.GAndGAdminCostOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
-        var gAndGAdminOverrideChanges = context.ChangeTracker.Entries<GAndGAdminCostOverride>()
+        var gAndGAdminOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.GAndGAdminCostOverride)
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
         var seismicChanges = context.ChangeTracker.Entries<SeismicAcquisitionAndProcessing>()

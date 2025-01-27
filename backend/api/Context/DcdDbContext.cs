@@ -54,10 +54,8 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<GasInjectorCostProfileOverride> GasInjectorCostProfileOverride => Set<GasInjectorCostProfileOverride>();
     public DbSet<DrillingSchedule> DrillingSchedule => Set<DrillingSchedule>();
     public DbSet<Exploration> Explorations => Set<Exploration>();
-    public DbSet<GAndGAdminCost> GAndGAdminCost => Set<GAndGAdminCost>();
     public DbSet<SeismicAcquisitionAndProcessing> SeismicAcquisitionAndProcessing => Set<SeismicAcquisitionAndProcessing>();
     public DbSet<CountryOfficeCost> CountryOfficeCost => Set<CountryOfficeCost>();
-    public DbSet<GAndGAdminCostOverride> GAndGAdminCostOverride => Set<GAndGAdminCostOverride>();
     public DbSet<ExplorationWellCostProfile> ExplorationWellCostProfile => Set<ExplorationWellCostProfile>();
     public DbSet<AppraisalWellCostProfile> AppraisalWellCostProfile => Set<AppraisalWellCostProfile>();
     public DbSet<SidetrackCostProfile> SidetrackCostProfile => Set<SidetrackCostProfile>();

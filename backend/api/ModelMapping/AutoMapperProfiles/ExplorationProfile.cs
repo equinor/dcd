@@ -14,17 +14,13 @@ public class ExplorationProfile : Profile
         CreateMap<ExplorationWellCostProfile, TimeSeriesCostDto>();
         CreateMap<AppraisalWellCostProfile, TimeSeriesCostDto>();
         CreateMap<SidetrackCostProfile, TimeSeriesCostDto>();
-        CreateMap<GAndGAdminCost, TimeSeriesCostDto>();
-        CreateMap<GAndGAdminCostOverride, TimeSeriesCostOverrideDto>();
         CreateMap<SeismicAcquisitionAndProcessing, TimeSeriesCostDto>();
         CreateMap<CountryOfficeCost, TimeSeriesCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
-        CreateMap<UpdateTimeSeriesCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<UpdateTimeSeriesCostDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateTimeSeriesCostDto, CountryOfficeCost>();
 
-        CreateMap<CreateTimeSeriesCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<CreateTimeSeriesCostDto, SeismicAcquisitionAndProcessing>();
         CreateMap<CreateTimeSeriesCostDto, CountryOfficeCost>();
     }

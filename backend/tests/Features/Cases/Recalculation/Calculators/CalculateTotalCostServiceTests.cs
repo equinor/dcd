@@ -87,7 +87,14 @@ public class CalculateTotalCostServiceTests
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 70.0, 100.0]
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.GAndGAdminCostOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 200.0, 300.0]
+                },
             }
         };
 
@@ -121,12 +128,7 @@ public class CalculateTotalCostServiceTests
 
         var exploration = new Exploration
         {
-            GAndGAdminCostOverride = new GAndGAdminCostOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [100.0, 200.0, 300.0]
-            },
+
             SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
             {
                 StartYear = 2020,
@@ -174,14 +176,22 @@ public class CalculateTotalCostServiceTests
     public void CalculateTotalExplorationCostAsync_ValidInput_ReturnsCorrectTotalExplorationCost()
     {
         // Arrange
+        var caseItem = new Case
+        {
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
+            {
+                new()
+                {
+                    ProfileType = ProfileTypes.GAndGAdminCostOverride,
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [10.0, 20.0, 30.0]
+                },
+            }
+        };
+
         var exploration = new Exploration
         {
-            GAndGAdminCostOverride = new GAndGAdminCostOverride
-            {
-                Override = true,
-                StartYear = 2020,
-                Values = [10.0, 20.0, 30.0]
-            },
             SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
             {
                 StartYear = 2021,
@@ -210,7 +220,7 @@ public class CalculateTotalCostServiceTests
         };
 
         // Act
-        var result = CalculateTotalCostService.CalculateTotalExplorationCost(exploration);
+        var result = CalculateTotalCostService.CalculateTotalExplorationCost(caseItem, exploration);
 
         // Assert
         var expectedStartYear = 2020;

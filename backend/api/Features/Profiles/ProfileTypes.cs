@@ -62,4 +62,8 @@ public static class ProfileTypes
     /* Onshore power supply profiles */
     public const string OnshorePowerSupplyCostProfile = "OnshorePowerSupplyCostProfile";
     public const string OnshorePowerSupplyCostProfileOverride = "OnshorePowerSupplyCostProfileOverride";
+
+    /* Exploration profiles */
+    public const string GAndGAdminCost = "GAndGAdminCost";
+    public const string GAndGAdminCostOverride = "GAndGAdminCostOverride";
 }

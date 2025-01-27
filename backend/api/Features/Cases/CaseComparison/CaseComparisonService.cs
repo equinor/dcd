@@ -35,7 +35,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, false);
 
-            var explorationCosts = CalculateExplorationWellCosts(exploration);
+            var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
             TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
@@ -208,13 +208,13 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return cessationTimeSeries.Values.Sum();
     }
 
-    private static double CalculateExplorationWellCosts(Exploration exploration)
+    private static double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
         var sumExplorationWellCost = 0.0;
 
-        if (exploration.GAndGAdminCost != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost) != null)
         {
-            sumExplorationWellCost += exploration.GAndGAdminCost.Values.Sum();
+            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.GAndGAdminCost).Values.Sum();
         }
 
         if (exploration.CountryOfficeCost != null)

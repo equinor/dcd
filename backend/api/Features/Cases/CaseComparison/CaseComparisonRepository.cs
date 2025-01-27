@@ -53,8 +53,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var explorationLinks = project.Cases.Select(x => x.ExplorationLink).ToList();
         await context.Explorations
-            .Include(e => e.GAndGAdminCost)
-            .Include(e => e.GAndGAdminCostOverride)
             .Include(e => e.CountryOfficeCost)
             .Include(e => e.SeismicAcquisitionAndProcessing)
             .Include(e => e.ExplorationWellCostProfile)

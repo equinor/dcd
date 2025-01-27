@@ -426,13 +426,13 @@ public static class SteaCaseDtoBuilder
         {
             costProfileDtos.Add(ToTimeSeries(exploration.SidetrackCostProfile));
         }
-        if (exploration.GAndGAdminCostOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.GAndGAdminCostOverride));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GAndGAdminCostOverride)));
         }
-        else if (exploration.GAndGAdminCost != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost) != null)
         {
-            costProfileDtos.Add(ToTimeSeries(exploration.GAndGAdminCost));
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GAndGAdminCost)));
         }
         if (exploration.SeismicAcquisitionAndProcessing?.Values.Length > 0)
         {
