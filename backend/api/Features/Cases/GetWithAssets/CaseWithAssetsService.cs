@@ -62,7 +62,7 @@ public class CaseWithAssetsService(
             Co2Emissions = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), project.PhysicalUnit),
             Co2EmissionsOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), project.PhysicalUnit),
             Co2Intensity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), project.PhysicalUnit),
-            ProductionProfileNgl = ConversionMapToDto<ProductionProfileNgl, TimeSeriesCostDto>(drainageStrategy.ProductionProfileNgl, drainageStrategy.ProductionProfileNgl?.Id, project.PhysicalUnit),
+            ProductionProfileNgl = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), project.PhysicalUnit),
             ImportedElectricity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), project.PhysicalUnit),
             DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, TimeSeriesCostDto>(drainageStrategy.DeferredOilProduction, drainageStrategy.DeferredOilProduction?.Id, project.PhysicalUnit),

@@ -314,7 +314,7 @@ public class DrainageStrategyProfile : Profile
     {
         { ProfileTypes.Co2Emissions, 1_000_000 },
         { ProfileTypes.Co2EmissionsOverride, 1_000_000 },
-        { nameof(ProductionProfileNgl), 1_000_000 },
+        { ProfileTypes.ProductionProfileNgl, 1_000_000 },
         { ProfileTypes.ProductionProfileOil, 1_000_000 },
         { ProfileTypes.AdditionalProductionProfileOil, 1_000_000 },
         { ProfileTypes.ProductionProfileWater, 1_000_000 },

@@ -41,8 +41,8 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEnt
     public virtual ProductionProfileWater? ProductionProfileWater { get; set; }
     public virtual ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
     public virtual Co2Intensity? Co2Intensity { get; set; }
-    #endregion Migrated profiles, do not access.
     public virtual ProductionProfileNgl? ProductionProfileNgl { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual DeferredOilProduction? DeferredOilProduction { get; set; }
     public virtual DeferredGasProduction? DeferredGasProduction { get; set; }
 }
@@ -145,14 +145,14 @@ public class Co2Intensity : TimeSeriesMass, IDrainageStrategyTimeSeries
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
-
-#endregion Migrated profiles, do not access.
-
 public class ProductionProfileNgl : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
+#endregion Migrated profiles, do not access.
+
 
 public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {

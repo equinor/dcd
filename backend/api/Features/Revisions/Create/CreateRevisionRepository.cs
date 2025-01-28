@@ -42,7 +42,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     private async Task LoadDrainageStrategies(Guid projectPk)
     {
         await context.DrainageStrategies
-            .Include(c => c.ProductionProfileNgl)
             .Include(c => c.DeferredOilProduction)
             .Include(c => c.DeferredGasProduction)
             .Where(x => x.ProjectId == projectPk)
