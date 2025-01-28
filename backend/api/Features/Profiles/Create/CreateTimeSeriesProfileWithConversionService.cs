@@ -24,20 +24,20 @@ public class CreateTimeSeriesProfileWithConversionService(DcdDbContext context, 
             .Select(x => x.PhysicalUnit)
             .SingleAsync();
 
-        var entity = new TimeSeriesProfile
-        {
-            CaseId = caseId,
-            ProfileType = profileType,
-            StartYear = dto.StartYear,
-            Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType)
-        };
-
         var caseItem = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 
-        caseItem.TimeSeriesProfiles.Add(entity);
+        var entity = new TimeSeriesProfile
+        {
+            CaseId = caseItem.Id,
+            ProfileType = profileType,
+            StartYear = dto.StartYear,
+            Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType)
+        };
+
+        context.TimeSeriesProfiles.Add(entity);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
@@ -63,21 +63,21 @@ public class CreateTimeSeriesProfileWithConversionService(DcdDbContext context, 
             .Select(x => x.PhysicalUnit)
             .SingleAsync();
 
+        var caseItem = await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == caseId)
+            .SingleAsync();
+
         var entity = new TimeSeriesProfile
         {
-            CaseId = caseId,
+            CaseId = caseItem.Id,
             ProfileType = profileType,
             StartYear = dto.StartYear,
             Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType),
             Override = dto.Override
         };
 
-        var caseItem = await context.Cases
-            .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.Id == caseId)
-            .SingleAsync();
-
-        caseItem.TimeSeriesProfiles.Add(entity);
+        context.TimeSeriesProfiles.Add(entity);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);

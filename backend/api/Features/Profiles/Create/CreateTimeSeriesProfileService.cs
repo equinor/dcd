@@ -18,20 +18,20 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var entity = new TimeSeriesProfile
-        {
-            CaseId = caseId,
-            ProfileType = profileType,
-            StartYear = dto.StartYear,
-            Values = dto.Values
-        };
-
         var caseItem = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 
-        caseItem.TimeSeriesProfiles.Add(entity);
+        var entity = new TimeSeriesProfile
+        {
+            CaseId = caseItem.Id,
+            ProfileType = profileType,
+            StartYear = dto.StartYear,
+            Values = dto.Values
+        };
+
+        context.TimeSeriesProfiles.Add(entity);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
@@ -52,19 +52,19 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var caseItem = await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == caseId)
+            .SingleAsync();
+
         var entity = new TimeSeriesProfile
         {
-            CaseId = caseId,
+            CaseId = caseItem.Id,
             ProfileType = profileType,
             StartYear = dto.StartYear,
             Values = dto.Values,
             Override = dto.Override
         };
-
-        var caseItem = await context.Cases
-            .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.Id == caseId)
-            .SingleAsync();
 
         caseItem.TimeSeriesProfiles.Add(entity);
 
