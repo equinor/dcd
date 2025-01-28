@@ -19,6 +19,7 @@ const Wrapper = styled(Grid)`
     padding-top: 20px;
     margin-bottom: 20px;
     background-color: white;
+    position: relative;
 `
 const Project = styled.div`
     display: grid;
@@ -63,7 +64,7 @@ const Controls = () => {
     }
 
     return (
-        <Wrapper>
+        <Wrapper className="app-controls">
             <WhatsNewModal />
             <Project>
                 <ProjectHeader>

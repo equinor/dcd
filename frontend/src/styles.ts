@@ -22,6 +22,25 @@ export default createGlobalStyle`
         font-family: Equinor;
     }
 
+    /* Fusion header and dropdown styles */
+    #cli-top-bar,
+    #cli-top-bar *,
+    .mdc-menu-surface--open,
+    fwc-searchable-dropdown,
+    fwc-list-item,
+    .jss1,
+    .jss8,
+    .jss9 {
+        z-index: 1000000 !important;
+    }
+
+    /* App controls and content */
+    .app-controls {
+        z-index: 999 !important;
+        position: relative;
+        background: white;
+    }
+
     div[class*="TabList"][role="tablist"] {
         position: relative;
         z-index: 1;
@@ -68,9 +87,9 @@ export default createGlobalStyle`
 
     .ag-aria-description-container {
         display: none !important;
-      }
+    }
     
-      .red-cell {
+    .red-cell {
         background-color: #FFC0C1 !important;
     }
 

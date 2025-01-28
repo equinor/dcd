@@ -13,15 +13,13 @@ const SubHeader = styled(Typography)`
     margin: 10px 0 5px 0;
 `
 
-type Version = `${number}.${number}.${number}`;
-
-type Category = "New Functionalities" | "UI Improvements" | "Bugfixes" | "Other";
-
-type UpdateEntry = {
+export type Version = `${number}.${number}.${number}`;
+export type Category = "New Functionalities" | "UI Improvements" | "Bugfixes" | "Other";
+export type UpdateEntry = {
     description: string;
 };
 
-const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } } = {
+export const whatsNewUpdates: { [key in Version]: { [key in Category]?: UpdateEntry[] } } = {
     "2.0.0": {
         "New Functionalities": [
             { description: "All input fields Auto-save on change" },

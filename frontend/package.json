@@ -67,6 +67,7 @@
         "@equinor/fusion-react-ag-grid-styles": "31.2.5",
         "@equinor/fusion-react-markdown": "^0.3.2",
         "@equinor/fusion-react-person": "^0.10.0",
+        "@mui/icons-material": "^6.4.1",
         "@mui/material": "^6.1.10",
         "@originjs/vite-plugin-commonjs": "^1.0.3",
         "@remix-run/router": "^1.8.0",
