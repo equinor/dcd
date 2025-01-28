@@ -9,65 +9,45 @@ public static class TimeSeriesDtoValidator
 {
     public static void Validate(CreateTimeSeriesDto dto)
     {
-        if (dto.Values == null)
-        {
-            throw new InvalidInputException($"Values cannot be null on CreateTimeSeriesDto");
-        }
-
-        var allProfileTypes = GetAllProfileTypes();
-
-        if (!allProfileTypes.Contains(dto.ProfileType))
-        {
-            throw new InvalidInputException($"Unknown profile type {dto.ProfileType}");
-        }
+        ValidateValues(dto.Values);
+        ValidateProfileType(dto.ProfileType);
     }
 
     public static void Validate(CreateTimeSeriesOverrideDto dto)
     {
-        if (dto.Values == null)
-        {
-            throw new InvalidInputException($"Values cannot be null on CreateTimeSeriesOverrideDto");
-        }
-
-        var allProfileTypes = GetAllProfileTypes();
-
-        if (!allProfileTypes.Contains(dto.ProfileType))
-        {
-            throw new InvalidInputException($"Unknown profile type {dto.ProfileType}");
-        }
+        ValidateValues(dto.Values);
+        ValidateProfileType(dto.ProfileType);
     }
 
     public static void Validate(UpdateTimeSeriesDto dto)
     {
-        if (dto.Values == null)
-        {
-            throw new InvalidInputException($"Values cannot be null on UpdateTimeSeriesDto");
-        }
-
-        var allProfileTypes = GetAllProfileTypes();
-
-        if (!allProfileTypes.Contains(dto.ProfileType))
-        {
-            throw new InvalidInputException($"Unknown profile type {dto.ProfileType}");
-        }
+        ValidateValues(dto.Values);
+        ValidateProfileType(dto.ProfileType);
     }
 
     public static void Validate(UpdateTimeSeriesOverrideDto dto)
     {
-        if (dto.Values == null)
-        {
-            throw new InvalidInputException($"Values cannot be null on UpdateTimeSeriesOverrideDto");
-        }
+        ValidateValues(dto.Values);
+        ValidateProfileType(dto.ProfileType);
+    }
 
-        var allProfileTypes = GetAllProfileTypes();
-
-        if (!allProfileTypes.Contains(dto.ProfileType))
+    private static void ValidateValues(double[] values)
+    {
+        if (values == null)
         {
-            throw new InvalidInputException($"Unknown profile type {dto.ProfileType}");
+            throw new InvalidInputException("Values cannot be null");
         }
     }
 
-    private static List<string> GetAllProfileTypes() => typeof(ProfileTypes)
+    private static void ValidateProfileType(string profileType)
+    {
+        if (!AllProfileTypes.Contains(profileType))
+        {
+            throw new InvalidInputException($"Unknown profile type {profileType}");
+        }
+    }
+
+    private static readonly List<string> AllProfileTypes = typeof(ProfileTypes)
         .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
         .Where(fi => fi is { IsLiteral: true, IsInitOnly: false } && fi.FieldType == typeof(string))
         .Select(x => (string)x.GetRawConstantValue()!)
