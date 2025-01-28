@@ -51,16 +51,11 @@ public class Co2IntensityProfileServiceTests
             }
         };
 
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink,
-        };
-
         // Act
-        Co2IntensityProfileService.CalculateCo2Intensity(caseItem, drainageStrategy);
+        Co2IntensityProfileService.CalculateCo2Intensity(caseItem);
 
         // Assert
         var expectedCo2Intensity = 3.2899;
-        Assert.Equal(expectedCo2Intensity, drainageStrategy.Co2Intensity.Values[0], precision: 1);
+        Assert.Equal(expectedCo2Intensity, caseItem.GetProfile(ProfileTypes.Co2Intensity).Values[0], precision: 1);
     }
 }

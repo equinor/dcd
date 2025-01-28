@@ -186,5 +186,6 @@ public static class DcdDatabaseConfiguration
         ("AdditionalProductionProfileGas", ProfileTypes.AdditionalProductionProfileGas, false, "DrainageStrategy", "DrainageStrategies"),
         ("ProductionProfileWater", ProfileTypes.ProductionProfileWater, false, "DrainageStrategy", "DrainageStrategies"),
         ("ProductionProfileWaterInjection", ProfileTypes.ProductionProfileWaterInjection, false, "DrainageStrategy", "DrainageStrategies"),
+        ("Co2Intensity", ProfileTypes.Co2Intensity, false, "DrainageStrategy", "DrainageStrategies"),
     ];
 }

@@ -61,7 +61,7 @@ public class CaseWithAssetsService(
             NetSalesGasOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride), project.PhysicalUnit),
             Co2Emissions = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), project.PhysicalUnit),
             Co2EmissionsOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), project.PhysicalUnit),
-            Co2Intensity = ConversionMapToDto<Co2Intensity, TimeSeriesCostDto>(drainageStrategy.Co2Intensity, drainageStrategy.Co2Intensity?.Id, project.PhysicalUnit),
+            Co2Intensity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), project.PhysicalUnit),
             ProductionProfileNgl = ConversionMapToDto<ProductionProfileNgl, TimeSeriesCostDto>(drainageStrategy.ProductionProfileNgl, drainageStrategy.ProductionProfileNgl?.Id, project.PhysicalUnit),
             ImportedElectricity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), project.PhysicalUnit),

@@ -14,14 +14,10 @@ public class Co2IntensityProfileService(DcdDbContext context)
             .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(c => c.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.Co2Intensity)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
-        CalculateCo2Intensity(caseItem, drainageStrategy);
+        CalculateCo2Intensity(caseItem);
     }
 
-    public static void CalculateCo2Intensity(Case caseItem, DrainageStrategy drainageStrategy)
+    public static void CalculateCo2Intensity(Case caseItem)
     {
         var totalExportedVolumes = GetTotalExportedVolumes(caseItem);
         TimeSeries<double> generateCo2EmissionsProfile = new();
@@ -64,18 +60,17 @@ public class Co2IntensityProfileService(DcdDbContext context)
 
         var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
 
-        drainageStrategy.Co2Intensity = new()
-        {
-            StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset,
-            Values = co2IntensityValues.ToArray(),
-        };
+        var co2IntensityProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.Co2Intensity);
+
+        co2IntensityProfile.StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset;
+        co2IntensityProfile.Values = co2IntensityValues.ToArray();
     }
 
     private static TimeSeries<double> GetTotalExportedVolumes(Case caseItem)
     {
         var oilProfile = GetOilProfile(caseItem);
 
-        return new Co2Intensity
+        return new TimeSeries<double>
         {
             StartYear = oilProfile.StartYear,
             Values = oilProfile.Values

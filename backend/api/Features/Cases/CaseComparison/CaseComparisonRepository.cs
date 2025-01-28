@@ -30,7 +30,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var drainageStrategyLinks = project.Cases.Select(x => x.DrainageStrategyLink).ToList();
         await context.DrainageStrategies
-            .Include(c => c.Co2Intensity)
             .Include(d => d.ProductionProfileNgl)
             .Include(d => d.DeferredOilProduction)
             .Include(d => d.DeferredGasProduction)

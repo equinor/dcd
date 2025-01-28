@@ -71,7 +71,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid drainageStrategyLink)
     {
         return await context.DrainageStrategies
-            .Include(c => c.Co2Intensity)
             .Include(c => c.ProductionProfileNgl)
             .Include(c => c.DeferredOilProduction)
             .Include(c => c.DeferredGasProduction)

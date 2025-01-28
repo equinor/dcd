@@ -26,8 +26,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
                 continue;
             }
 
-            var drainageStrategy = caseItem.DrainageStrategy!;
-
             var totalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
@@ -42,7 +40,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             TimeSeriesCost? generateCo2EmissionsProfile = profile == null ? null : new TimeSeriesCost(profile);
 
             var totalCo2Emissions = generateCo2EmissionsProfile?.Values.Sum() ?? 0;
-            var co2Intensity = drainageStrategy.Co2Intensity?.Values.Sum() ?? 0;
+            var co2Intensity = caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity)?.Values.Sum() ?? 0;
 
             var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
 
