@@ -104,4 +104,6 @@ public static class ProfileTypes
     public const string ImportedElectricityOverride = "ImportedElectricityOverride";
 
     public const string ProductionProfileOil = "ProductionProfileOil";
+
+    public const string AdditionalProductionProfileOil = "AdditionalProductionProfileOil";
 }

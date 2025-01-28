@@ -297,8 +297,9 @@ public static class SteaCaseDtoBuilder
         var startYearsProductionSalesAndVolumes = new List<int>();
 
         var productionProfileOilProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOilProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil);
 
-        if (productionProfileOilProfile != null || drainageStrategy.AdditionalProductionProfileOil != null)
+        if (productionProfileOilProfile != null || additionalProductionProfileOilProfile != null)
         {
             var oilProfile = productionProfileOilProfile != null
                 ? new TimeSeriesCostDto
@@ -308,11 +309,11 @@ public static class SteaCaseDtoBuilder
                 }
                 : new TimeSeriesCostDto { Values = [], StartYear = 0 };
 
-            var additionalOilProfile = drainageStrategy.AdditionalProductionProfileOil != null
+            var additionalOilProfile = additionalProductionProfileOilProfile != null
                 ? new TimeSeriesCostDto
                 {
-                    StartYear = drainageStrategy.AdditionalProductionProfileOil.StartYear,
-                    Values = drainageStrategy.AdditionalProductionProfileOil.Values
+                    StartYear = additionalProductionProfileOilProfile.StartYear,
+                    Values = additionalProductionProfileOilProfile.Values
                 }
                 : new TimeSeriesCostDto { Values = [], StartYear = 0 };
 
@@ -397,12 +398,12 @@ public static class SteaCaseDtoBuilder
             steaCaseDto.ProductionAndSalesVolumes.StartYear = startYearsProductionSalesAndVolumes.Min();
         }
 
-        if (drainageStrategy.AdditionalProductionProfileOil != null)
+        if (additionalProductionProfileOilProfile != null)
         {
             steaCaseDto.ProductionAndSalesVolumes.AdditionalOil = new TimeSeriesCostDto
             {
-                StartYear = drainageStrategy.AdditionalProductionProfileOil.StartYear + dg4Year,
-                Values = drainageStrategy.AdditionalProductionProfileOil.Values
+                StartYear = additionalProductionProfileOilProfile.StartYear + dg4Year,
+                Values = additionalProductionProfileOilProfile.Values
             };
         }
 

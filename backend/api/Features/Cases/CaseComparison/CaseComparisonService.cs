@@ -29,7 +29,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var drainageStrategy = caseItem.DrainageStrategy!;
 
             var totalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
-            var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
+            var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var totalGasProduction = drainageStrategy.ProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, caseItem, drainageStrategy, false);
@@ -70,7 +70,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return caseList;
     }
 
-    private static double CalculateTotalOilProduction(Project project, Case caseItem, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
+    private static double CalculateTotalOilProduction(Project project, Case caseItem, bool excludeOilFieldConversion)
     {
         const double million = 1E6;
         const double bblConversionFactor = 6.29;
@@ -82,9 +82,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumOilProduction += caseItem.GetProfile(ProfileTypes.ProductionProfileOil).Values.Sum();
         }
 
-        if (drainageStrategy.AdditionalProductionProfileOil != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil) != null)
         {
-            sumOilProduction += drainageStrategy.AdditionalProductionProfileOil.Values.Sum();
+            sumOilProduction += caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileOil).Values.Sum();
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
@@ -126,10 +126,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(project, caseItem, drainageStrategy, false) + CalculateTotalGasProduction(project, drainageStrategy, false) / oilEquivalentFactor;
+            return CalculateTotalOilProduction(project, caseItem, false) + CalculateTotalGasProduction(project, drainageStrategy, false) / oilEquivalentFactor;
         }
 
-        return CalculateTotalOilProduction(project, caseItem, drainageStrategy, true) + CalculateTotalGasProduction(project, drainageStrategy, true);
+        return CalculateTotalOilProduction(project, caseItem, true) + CalculateTotalGasProduction(project, drainageStrategy, true);
     }
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)

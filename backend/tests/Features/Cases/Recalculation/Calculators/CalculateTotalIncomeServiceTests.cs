@@ -34,7 +34,13 @@ public class CalculateTotalIncomeServiceTests
                     ProfileType = ProfileTypes.ProductionProfileOil,
                     StartYear = 2020,
                     Values = [1000000.0, 2000000.0, 3000000.0] // SM³
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.AdditionalProductionProfileOil,
+                    StartYear = 2020,
+                    Values = [1000000.0, 2000000.0] // SM³
+                },
             }
         };
 
@@ -42,11 +48,7 @@ public class CalculateTotalIncomeServiceTests
         {
             Id = caseItem.DrainageStrategyLink,
 
-            AdditionalProductionProfileOil = new AdditionalProductionProfileOil
-            {
-                StartYear = 2020,
-                Values = [1000000.0, 2000000.0] // SM³
-            },
+
             ProductionProfileGas = new ProductionProfileGas
             {
                 StartYear = 2020,

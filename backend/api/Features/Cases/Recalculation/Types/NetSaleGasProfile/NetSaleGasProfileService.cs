@@ -17,7 +17,8 @@ public class NetSaleGasProfileService(DcdDbContext context)
             ProfileTypes.FuelFlaringAndLossesOverride,
             ProfileTypes.NetSalesGas,
             ProfileTypes.NetSalesGasOverride,
-            ProfileTypes.ProductionProfileOil
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil
         };
 
         var caseItem = await context.Cases
@@ -27,7 +28,6 @@ public class NetSaleGasProfileService(DcdDbContext context)
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 

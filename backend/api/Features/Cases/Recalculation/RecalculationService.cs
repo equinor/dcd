@@ -289,12 +289,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Any(e => e.State == EntityState.Added);
 
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()
@@ -405,12 +407,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Any(e => e.State == EntityState.Added);
 
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()
@@ -499,12 +503,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Any(e => e.State == EntityState.Added);
 
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()
@@ -579,12 +585,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()
@@ -688,12 +696,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Any(e => e.State == EntityState.Added);
 
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()
@@ -778,12 +788,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Any(e => e.State == EntityState.Added);
 
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()
@@ -1050,12 +1062,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Any(e => e.State == EntityState.Added);
 
 
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(AdditionalProductionProfileOil.InternalData)).IsModified ||
-                       e.Property(nameof(AdditionalProductionProfileOil.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<AdditionalProductionProfileOil>()
+        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileGasChanges = context.ChangeTracker.Entries<ProductionProfileGas>()

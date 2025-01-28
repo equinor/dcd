@@ -15,7 +15,8 @@ public class ImportedElectricityProfileService(DcdDbContext context)
         {
             ProfileTypes.ImportedElectricity,
             ProfileTypes.ImportedElectricityOverride,
-            ProfileTypes.ProductionProfileOil
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil
         };
 
         var caseItem = await context.Cases
@@ -23,7 +24,6 @@ public class ImportedElectricityProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileWaterInjection)

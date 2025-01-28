@@ -17,7 +17,6 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
@@ -34,7 +33,7 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
-            drainageStrategy.AdditionalProductionProfileOil
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)
         );
 
         if (oilVolume.Values.Length == 0)

@@ -24,7 +24,6 @@ public class OpexCostProfileService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);

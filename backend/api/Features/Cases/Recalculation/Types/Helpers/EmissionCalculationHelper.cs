@@ -141,7 +141,7 @@ public static class EmissionCalculationHelper
     {
         var oc = topside.OilCapacity;
         var or = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values ?? [];
-        var additionalOr = drainageStrategy.AdditionalProductionProfileOil?.Values ?? [];
+        var additionalOr = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values ?? [];
 
         // Create TimeSeries<double> instances for both profiles
         var productionProfileOil = new TimeSeries<double>
@@ -152,7 +152,7 @@ public static class EmissionCalculationHelper
 
         var additionalProductionProfileOil = new TimeSeries<double>
         {
-            StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0,
+            StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.StartYear ?? 0,
             Values = additionalOr
         };
 
@@ -181,7 +181,7 @@ public static class EmissionCalculationHelper
     public static TimeSeries<double> CalculateFlaring(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
         var oilRate = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v).ToArray() ?? [];
-        var additionalOilRate = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v).ToArray() ?? [];
+        var additionalOilRate = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Select(v => v).ToArray() ?? [];
 
         var gasRate = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
         var additionalGasRate = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
@@ -196,7 +196,7 @@ public static class EmissionCalculationHelper
         var additionalOilRateTs = new TimeSeries<double>
         {
             Values = additionalOilRate,
-            StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0,
+            StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.StartYear ?? 0,
         };
 
         var gasRateTs = new TimeSeries<double>

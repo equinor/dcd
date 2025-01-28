@@ -15,7 +15,8 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
         {
             ProfileTypes.FuelFlaringAndLosses,
             ProfileTypes.FuelFlaringAndLossesOverride,
-            ProfileTypes.ProductionProfileOil
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil
         };
 
         var caseItem = await context.Cases
@@ -25,7 +26,6 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 

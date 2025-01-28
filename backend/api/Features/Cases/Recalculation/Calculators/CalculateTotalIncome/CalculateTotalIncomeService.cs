@@ -20,7 +20,6 @@ public class CalculateTotalIncomeService(DcdDbContext context)
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileOil)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         CalculateTotalIncome(caseItem, drainageStrategy);
@@ -35,7 +34,7 @@ public class CalculateTotalIncomeService(DcdDbContext context)
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
-            drainageStrategy.AdditionalProductionProfileOil
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)
         );
 
         // Convert oil production from million sm³ to barrels in millions
