@@ -1065,13 +1065,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1083,15 +1083,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1103,13 +1103,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1121,15 +1121,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1141,13 +1141,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1159,15 +1159,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1179,13 +1179,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1197,15 +1197,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1217,13 +1217,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1235,15 +1235,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1255,13 +1255,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1273,15 +1273,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1293,15 +1293,15 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
@@ -1311,15 +1311,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1331,13 +1331,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1349,15 +1349,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1369,13 +1369,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1387,15 +1387,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1407,13 +1407,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1425,15 +1425,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1445,13 +1445,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1463,15 +1463,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1483,13 +1483,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1501,15 +1501,15 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
+                export type DrainageStrategyId = string;
                 export type ProfileId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {

@@ -45,10 +45,6 @@ export type ResourceObject =
     ProfileObject
 
 export type ProfileObject =
-    Components.Schemas.TimeSeriesVolumeOverrideDto |
-    Components.Schemas.TimeSeriesMassOverrideDto |
-    Components.Schemas.TimeSeriesEnergyOverrideDto |
-    Components.Schemas.TimeSeriesVolumeDto |
     Components.Schemas.TimeSeriesCostOverrideDto |
     Components.Schemas.TimeSeriesCostDto;
 
@@ -68,10 +64,6 @@ export type ResourcePropertyKey =
     ProfilePropertyKey
 
 export type ProfilePropertyKey =
-    keyof Components.Schemas.TimeSeriesVolumeOverrideDto |
-    keyof Components.Schemas.TimeSeriesMassOverrideDto |
-    keyof Components.Schemas.TimeSeriesEnergyOverrideDto |
-    keyof Components.Schemas.TimeSeriesVolumeDto |
     keyof Components.Schemas.TimeSeriesCostOverrideDto |
     keyof Components.Schemas.TimeSeriesCostDto;
 

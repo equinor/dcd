@@ -236,14 +236,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileOil(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -258,14 +258,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateAdditionalProductionProfileOil(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -280,14 +280,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileGas(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -302,14 +302,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateAdditionalProductionProfileGas(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -324,14 +324,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileWater(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -346,14 +346,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileWaterInjection(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -368,14 +368,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileFuelFlaringAndLossesOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
@@ -390,14 +390,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileNetSalesGasOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
@@ -412,14 +412,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesEnergyDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileImportedElectricityOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesEnergyOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break
@@ -434,14 +434,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateDeferredOilProduction(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -456,14 +456,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
                     )
                     : await (await GetDrainageStrategyService()).updateDeferredGasProduction(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesVolumeDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
                     ),
             })
             break
@@ -962,14 +962,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                             resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesMassOverrideDto,
+                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
                     )
                     : await (await GetDrainageStrategyService()).updateProductionProfileCo2EmissionsOverride(
                         projectId,
                         caseId,
                             resourceId!,
                             resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesMassOverrideDto,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
                     ),
             })
             break

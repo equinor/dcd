@@ -20,9 +20,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-oil/`,
             { body: dto },
         )
@@ -34,9 +34,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-oil/${productionProfileId}`,
             { body: dto },
         )
@@ -47,9 +47,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-oil/`,
             { body: dto },
         )
@@ -61,9 +61,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-oil/${productionProfileId}`,
             { body: dto },
         )
@@ -74,9 +74,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-gas/`,
             { body: dto },
         )
@@ -88,9 +88,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-gas/${productionProfileId}`,
             { body: dto },
         )
@@ -101,9 +101,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-gas/`,
             { body: dto },
         )
@@ -115,9 +115,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-gas/${productionProfileId}`,
             { body: dto },
         )
@@ -128,9 +128,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-water/`,
             { body: dto },
         )
@@ -142,9 +142,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-water/${productionProfileId}`,
             { body: dto },
         )
@@ -155,9 +155,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-water-injection/`,
             { body: dto },
         )
@@ -169,9 +169,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-water-injection/${productionProfileId}`,
             { body: dto },
         )
@@ -182,9 +182,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeOverrideDto> {
-        const res: Components.Schemas.TimeSeriesVolumeOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/fuel-flaring-and-losses-override/`,
             { body: dto },
         )
@@ -196,9 +196,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeOverrideDto> {
-        const res: Components.Schemas.TimeSeriesVolumeOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/fuel-flaring-and-losses-override/${productionProfileId}`,
             { body: dto },
         )
@@ -209,9 +209,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeOverrideDto> {
-        const res: Components.Schemas.TimeSeriesVolumeOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/net-sales-gas-override/`,
             { body: dto },
         )
@@ -223,9 +223,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeOverrideDto> {
-        const res: Components.Schemas.TimeSeriesVolumeOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/net-sales-gas-override/${productionProfileId}`,
             { body: dto },
         )
@@ -236,9 +236,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesMassOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesMassOverrideDto> {
-        const res: Components.Schemas.TimeSeriesMassOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/co2-emissions-override/`,
             { body: dto },
         )
@@ -250,9 +250,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesMassOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesMassOverrideDto> {
-        const res: Components.Schemas.TimeSeriesMassOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/co2-emissions-override/${productionProfileId}`,
             { body: dto },
         )
@@ -263,9 +263,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesEnergyDto,
-    ): Promise<Components.Schemas.TimeSeriesEnergyOverrideDto> {
-        const res: Components.Schemas.TimeSeriesEnergyOverrideDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/imported-electricity-override/`,
             { body: dto },
         )
@@ -277,9 +277,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesEnergyOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesEnergyOverrideDto> {
-        const res: Components.Schemas.TimeSeriesEnergyOverrideDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/imported-electricity-override/${productionProfileId}`,
             { body: dto },
         )
@@ -290,9 +290,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/deferred-oil-production/`,
             { body: dto },
         )
@@ -304,9 +304,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/deferred-oil-production/${productionProfileId}`,
             { body: dto },
         )
@@ -317,9 +317,9 @@ class DrainageStrategyService extends __BaseService {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.post(
+        dto: Components.Schemas.CreateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/deferred-gas-production/`,
             { body: dto },
         )
@@ -331,9 +331,9 @@ class DrainageStrategyService extends __BaseService {
         caseId: string,
         drainageStrategyId: string,
         productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesVolumeDto,
-    ): Promise<Components.Schemas.TimeSeriesVolumeDto> {
-        const res: Components.Schemas.TimeSeriesVolumeDto = await this.put(
+        dto: Components.Schemas.UpdateTimeSeriesCostDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/deferred-gas-production/${productionProfileId}`,
             { body: dto },
         )
