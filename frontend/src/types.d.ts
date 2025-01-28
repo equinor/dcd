@@ -208,6 +208,17 @@ declare namespace Components {
             values: number /* double */[];
             override: boolean;
         }
+        export interface CreateTimeSeriesDto {
+            profileType: string;
+            startYear: number; // int32
+            values: number /* double */[];
+        }
+        export interface CreateTimeSeriesOverrideDto {
+            profileType: string;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
+        }
         export interface CreateTimeSeriesScheduleDto {
             startYear: number; // int32
             values: number /* int32 */[];
@@ -656,6 +667,17 @@ declare namespace Components {
             values: number /* double */[];
         }
         export interface UpdateTimeSeriesCostOverrideDto {
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
+        }
+        export interface UpdateTimeSeriesDto {
+            profileType: string;
+            startYear: number; // int32
+            values: number /* double */[];
+        }
+        export interface UpdateTimeSeriesOverrideDto {
+            profileType: string;
             startYear: number; // int32
             values: number /* double */[];
             override: boolean;
@@ -1895,6 +1917,74 @@ declare namespace Paths {
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOverrideProfiles {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateTimeSeriesOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOverrideProfiles$ProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                profileId: Parameters.ProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdProfiles {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateTimeSeriesDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdProfiles$ProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                profileId: Parameters.ProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
