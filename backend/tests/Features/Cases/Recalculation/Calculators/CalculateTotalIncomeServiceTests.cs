@@ -26,36 +26,38 @@ public class CalculateTotalIncomeServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid()
-        };
-
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink,
-            ProductionProfileOil = new ProductionProfileOil
+            DrainageStrategyLink = Guid.NewGuid(),
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 2020,
-                Values = [1000000.0, 2000000.0, 3000000.0] // SM³
-            },
-            AdditionalProductionProfileOil = new AdditionalProductionProfileOil
-            {
-                StartYear = 2020,
-                Values = [1000000.0, 2000000.0] // SM³
-            },
-            ProductionProfileGas = new ProductionProfileGas
-            {
-                StartYear = 2020,
-                Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
-            },
-            AdditionalProductionProfileGas = new AdditionalProductionProfileGas
-            {
-                StartYear = 2020,
-                Values = [1000000000.0, 2000000000.0] // SM³
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2020,
+                    Values = [1000000.0, 2000000.0, 3000000.0] // SM³
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.AdditionalProductionProfileOil,
+                    StartYear = 2020,
+                    Values = [1000000.0, 2000000.0] // SM³
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileGas,
+                    StartYear = 2020,
+                    Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.AdditionalProductionProfileGas,
+                    StartYear = 2020,
+                    Values = [1000000000.0, 2000000000.0] // SM³
+                }
             }
         };
 
         // Act
-        CalculateTotalIncomeService.CalculateTotalIncome(caseItem, drainageStrategy);
+        CalculateTotalIncomeService.CalculateTotalIncome(caseItem);
 
         // Assert
         var expectedFirstYearIncome = (2 * 1000000.0 * 75 * 6.29 * 10 + 2 * 1000000000.0 * 3) / 1000000;
@@ -89,26 +91,26 @@ public class CalculateTotalIncomeServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid()
-        };
-
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink,
-            ProductionProfileOil = new ProductionProfileOil
+            DrainageStrategyLink = Guid.NewGuid(),
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
-                StartYear = 2020,
-                Values = [0.0, 0.0, 0.0]
-            },
-            ProductionProfileGas = new ProductionProfileGas
-            {
-                StartYear = 2020,
-                Values = [0.0, 0.0, 0.0]
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2020,
+                    Values = [0.0, 0.0, 0.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileGas,
+                    StartYear = 2020,
+                    Values = [0.0, 0.0, 0.0]
+                }
             }
         };
 
         // Act
-        CalculateTotalIncomeService.CalculateTotalIncome(caseItem, drainageStrategy);
+        CalculateTotalIncomeService.CalculateTotalIncome(caseItem);
 
         // Assert
         var calculatedTotalIncomeCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);

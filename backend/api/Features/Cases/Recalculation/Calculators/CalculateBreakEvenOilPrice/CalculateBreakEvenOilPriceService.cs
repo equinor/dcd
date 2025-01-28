@@ -16,17 +16,10 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
             .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
-        CalculateBreakEvenOilPrice(caseItem, drainageStrategy);
+        CalculateBreakEvenOilPrice(caseItem);
     }
 
-    public static void CalculateBreakEvenOilPrice(Case caseItem, DrainageStrategy drainageStrategy)
+    public static void CalculateBreakEvenOilPrice(Case caseItem)
     {
         var discountRate = caseItem.Project.DiscountRate;
         var defaultOilPrice = caseItem.Project.OilPriceUSD;
@@ -34,8 +27,8 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            drainageStrategy.ProductionProfileOil,
-            drainageStrategy.AdditionalProductionProfileOil
+            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)
         );
 
         if (oilVolume.Values.Length == 0)
@@ -46,8 +39,8 @@ public class CalculateBreakEvenOilPriceService(DcdDbContext context)
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
         var gasVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            drainageStrategy.ProductionProfileGas,
-            drainageStrategy.AdditionalProductionProfileGas
+            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas),
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
         );
 
         gasVolume.Values = gasVolume.Values.Length != 0 ? gasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : [];

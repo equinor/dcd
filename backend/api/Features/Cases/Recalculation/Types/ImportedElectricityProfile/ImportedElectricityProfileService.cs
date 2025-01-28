@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +11,22 @@ public class ImportedElectricityProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var profileTypes = new List<string>
+        {
+            ProfileTypes.ImportedElectricity,
+            ProfileTypes.ImportedElectricityOverride,
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
+        };
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ImportedElectricity)
-            .Include(d => d.ImportedElectricityOverride)
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.ProductionProfileWaterInjection)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .SingleAsync(x => x.Id == caseId);
 
-        if (drainageStrategy.ImportedElectricityOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride)?.Override == true)
         {
             return;
         }
@@ -31,25 +35,14 @@ public class ImportedElectricityProfileService(DcdDbContext context)
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 
-        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(topside, drainageStrategy, facilitiesAvailability);
+        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(caseItem, topside, facilitiesAvailability);
 
         var calculateImportedElectricity = CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 
-        var importedElectricity = new ImportedElectricity
-        {
-            StartYear = calculateImportedElectricity.StartYear,
-            Values = calculateImportedElectricity.Values
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.ImportedElectricity);
 
-        if (drainageStrategy.ImportedElectricity != null)
-        {
-            drainageStrategy.ImportedElectricity.StartYear = importedElectricity.StartYear;
-            drainageStrategy.ImportedElectricity.Values = importedElectricity.Values;
-        }
-        else
-        {
-            drainageStrategy.ImportedElectricity = importedElectricity;
-        }
+        profile.StartYear = calculateImportedElectricity.StartYear;
+        profile.Values = calculateImportedElectricity.Values;
     }
 
     private static TimeSeries<double> CalculateImportedElectricity(

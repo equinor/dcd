@@ -23,15 +23,8 @@ public class OpexCostProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
-        var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
-        var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(drainageStrategy);
+        var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
+        var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 
         var linkedWells = await context.WellProjectWell
             .Include(wpw => wpw.DrillingSchedule)

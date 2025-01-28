@@ -2,12 +2,13 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
+using api.ModelMapping;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Update;
 
-public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateTimeSeriesProfileWithConversionService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task<TimeSeriesCostDto> UpdateTimeSeriesProfile(
         Guid projectId,
@@ -18,6 +19,11 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
         var entity = await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
             .Where(x => x.Case.ProjectId == projectPk)
@@ -26,7 +32,7 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
             .SingleAsync();
 
         entity.StartYear = dto.StartYear;
-        entity.Values = dto.Values;
+        entity.Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
@@ -48,6 +54,11 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
         var entity = await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
             .Where(x => x.Case.ProjectId == projectPk)
@@ -56,8 +67,8 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
             .SingleAsync();
 
         entity.StartYear = dto.StartYear;
-        entity.Values = dto.Values;
         entity.Override = dto.Override;
+        entity.Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);

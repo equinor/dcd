@@ -1,7 +1,7 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -11,18 +11,25 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var profileTypes = new List<string>
+        {
+            ProfileTypes.FuelFlaringAndLosses,
+            ProfileTypes.FuelFlaringAndLossesOverride,
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
+        };
+
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .SingleAsync(x => x.Id == caseId);
+
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.FuelFlaringAndLosses)
-            .Include(d => d.FuelFlaringAndLossesOverride)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
-        if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {
             return;
         }
@@ -35,24 +42,15 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
 
         var total = CostProfileMerger.MergeCostProfiles([fuelConsumptions, flaring, losses]);
 
-        if (drainageStrategy.FuelFlaringAndLosses != null)
-        {
-            drainageStrategy.FuelFlaringAndLosses.StartYear = total.StartYear;
-            drainageStrategy.FuelFlaringAndLosses.Values = total.Values;
-        }
-        else
-        {
-            drainageStrategy.FuelFlaringAndLosses = new FuelFlaringAndLosses
-            {
-                StartYear = total.StartYear,
-                Values = total.Values
-            };
-        }
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.FuelFlaringAndLosses);
+
+        profile.StartYear = total.StartYear;
+        profile.Values = total.Values;
     }
 }

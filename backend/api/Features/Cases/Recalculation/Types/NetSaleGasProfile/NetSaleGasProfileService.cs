@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -11,20 +12,26 @@ public class NetSaleGasProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var profileTypes = new List<string>
+        {
+            ProfileTypes.FuelFlaringAndLossesOverride,
+            ProfileTypes.NetSalesGas,
+            ProfileTypes.NetSalesGasOverride,
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
+        };
+
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.NetSalesGas)
-            .Include(d => d.NetSalesGasOverride)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileWaterInjection)
-            .Include(x => x.FuelFlaringAndLossesOverride)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
-        if (drainageStrategy.NetSalesGasOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)?.Override == true)
         {
             return;
         }
@@ -32,39 +39,25 @@ public class NetSaleGasProfileService(DcdDbContext context)
         var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
         var project = await context.Projects.SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
 
-        var calculateNetSaleGas = CalculateNetSaleGas(drainageStrategy, fuelConsumptions, flarings, losses);
+        var calculateNetSaleGas = CalculateNetSaleGas(caseItem, drainageStrategy, fuelConsumptions, flarings, losses);
 
-        var netSaleGas = new NetSalesGas
-        {
-            StartYear = calculateNetSaleGas.StartYear,
-            Values = calculateNetSaleGas.Values
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.NetSalesGas);
 
-        if (drainageStrategy.NetSalesGas != null)
-        {
-            drainageStrategy.NetSalesGas.StartYear = netSaleGas.StartYear;
-            drainageStrategy.NetSalesGas.Values = netSaleGas.Values;
-        }
-        else
-        {
-            drainageStrategy.NetSalesGas = new NetSalesGas
-            {
-                StartYear = netSaleGas.StartYear,
-                Values = netSaleGas.Values
-            };
-        }
+        profile.StartYear = calculateNetSaleGas.StartYear;
+        profile.Values = calculateNetSaleGas.Values;
     }
 
-    private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
+    private static TimeSeries<double> CalculateNetSaleGas(Case caseItem,
+        DrainageStrategy drainageStrategy,
         TimeSeries<double> fuelConsumption,
         TimeSeries<double> flarings,
         TimeSeries<double> losses)
     {
-        if (drainageStrategy.ProductionProfileGas == null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) == null)
         {
             return new TimeSeries<double>();
         }
@@ -76,10 +69,10 @@ public class NetSaleGasProfileService(DcdDbContext context)
 
         var fuelFlaringLosses = CostProfileMerger.MergeCostProfiles(fuelConsumption, flarings, losses);
 
-        if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {
-            fuelFlaringLosses.StartYear = drainageStrategy.FuelFlaringAndLossesOverride.StartYear;
-            fuelFlaringLosses.Values = drainageStrategy.FuelFlaringAndLossesOverride.Values;
+            fuelFlaringLosses.StartYear = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).StartYear;
+            fuelFlaringLosses.Values = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).Values;
         }
 
         var negativeFuelFlaringLosses = new TimeSeriesVolume
@@ -88,9 +81,16 @@ public class NetSaleGasProfileService(DcdDbContext context)
             Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()
         };
 
-        var additionalProductionProfileGas = drainageStrategy.AdditionalProductionProfileGas ?? new TimeSeries<double>();
+        var additionalProductionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas);
 
-        var gasProduction = CostProfileMerger.MergeCostProfiles(drainageStrategy.ProductionProfileGas, additionalProductionProfileGas);
+        var additionalProductionProfileGas = additionalProductionProfileGasProfile == null
+            ? new TimeSeriesCost()
+            : new TimeSeriesCost(additionalProductionProfileGasProfile);
+
+        var productionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas);
+        var productionProfileGasTimeSeries = productionProfileGasProfile == null ? new TimeSeries<double>() : new TimeSeriesCost(productionProfileGasProfile);
+
+        var gasProduction = CostProfileMerger.MergeCostProfiles(productionProfileGasTimeSeries, additionalProductionProfileGas);
         return CostProfileMerger.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
     }
 }

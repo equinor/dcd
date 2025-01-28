@@ -1,32 +1,34 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides;
 
-public class ImportedElectricityOverrideController(ImportedElectricityOverrideService service) : ControllerBase
+public class ImportedElectricityOverrideController(
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override")]
-    public async Task<TimeSeriesEnergyOverrideDto> CreateImportedElectricityOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateImportedElectricityOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesEnergyDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await service.CreateImportedElectricityOverride(projectId, caseId, drainageStrategyId, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.ImportedElectricityOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override/{profileId:guid}")]
-    public async Task<TimeSeriesEnergyOverrideDto> UpdateImportedElectricityOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateImportedElectricityOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesEnergyOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await service.UpdateImportedElectricityOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.ImportedElectricityOverride, dto);
     }
 }

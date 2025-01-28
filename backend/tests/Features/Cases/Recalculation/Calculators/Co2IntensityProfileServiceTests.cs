@@ -35,31 +35,27 @@ public class Co2IntensityProfileServiceTests
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = 2027,
                     Values = [2000.0, 4000.0, 1000.0, 1000.0]
-                }
-            }
-        };
-
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink,
-
-            ProductionProfileOil = new ProductionProfileOil
-            {
-                StartYear = 2023,
-                Values = [1421000]
-            },
-            Co2Emissions = new Co2Emissions
-            {
-                StartYear = 2023,
-                Values = [29400000 / 1000]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.Co2Emissions,
+                    StartYear = 2023,
+                    Values = [29400000 / 1000]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2023,
+                    Values = [1421000]
+                },
             }
         };
 
         // Act
-        Co2IntensityProfileService.CalculateCo2Intensity(drainageStrategy);
+        Co2IntensityProfileService.CalculateCo2Intensity(caseItem);
 
         // Assert
         var expectedCo2Intensity = 3.2899;
-        Assert.Equal(expectedCo2Intensity, drainageStrategy.Co2Intensity.Values[0], precision: 1);
+        Assert.Equal(expectedCo2Intensity, caseItem.GetProfile(ProfileTypes.Co2Intensity).Values[0], precision: 1);
     }
 }

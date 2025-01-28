@@ -1,32 +1,34 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
 
-public class Co2EmissionsOverrideController(Co2EmissionsOverrideService service) : ControllerBase
+public class Co2EmissionsOverrideController(
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/co2-emissions-override")]
-    public async Task<TimeSeriesMassOverrideDto> CreateCo2EmissionsOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateCo2EmissionsOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesMassOverrideDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await service.CreateCo2EmissionsOverride(projectId, caseId, drainageStrategyId, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.Co2EmissionsOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/co2-emissions-override/{profileId:guid}")]
-    public async Task<TimeSeriesMassOverrideDto> UpdateCo2EmissionsOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateCo2EmissionsOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesMassOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await service.UpdateCo2EmissionsOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.Co2EmissionsOverride, dto);
     }
 }

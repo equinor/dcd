@@ -89,4 +89,37 @@ public static class ProfileTypes
 
     public const string GasInjectorCostProfile = "GasInjectorCostProfile";
     public const string GasInjectorCostProfileOverride = "GasInjectorCostProfileOverride";
+
+    /* Drainage strategy profiles */
+    public const string FuelFlaringAndLosses = "FuelFlaringAndLosses";
+    public const string FuelFlaringAndLossesOverride = "FuelFlaringAndLossesOverride";
+
+    public const string NetSalesGas = "NetSalesGas";
+    public const string NetSalesGasOverride = "NetSalesGasOverride";
+
+    public const string Co2Emissions = "Co2Emissions";
+    public const string Co2EmissionsOverride = "Co2EmissionsOverride";
+
+    public const string ImportedElectricity = "ImportedElectricity";
+    public const string ImportedElectricityOverride = "ImportedElectricityOverride";
+
+    public const string ProductionProfileOil = "ProductionProfileOil";
+
+    public const string AdditionalProductionProfileOil = "AdditionalProductionProfileOil";
+
+    public const string ProductionProfileGas = "ProductionProfileGas";
+
+    public const string AdditionalProductionProfileGas = "AdditionalProductionProfileGas";
+
+    public const string ProductionProfileWater = "ProductionProfileWater";
+
+    public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
+
+    public const string Co2Intensity = "Co2Intensity";
+
+    public const string ProductionProfileNgl = "ProductionProfileNgl";
+
+    public const string DeferredOilProduction = "DeferredOilProduction";
+
+    public const string DeferredGasProduction = "DeferredGasProduction";
 }

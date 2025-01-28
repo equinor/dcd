@@ -30,24 +30,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var drainageStrategyLinks = project.Cases.Select(x => x.DrainageStrategyLink).ToList();
         await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.Co2Emissions)
-            .Include(d => d.Co2EmissionsOverride)
-            .Include(c => c.Co2Intensity)
-            .Include(d => d.ProductionProfileWater)
-            .Include(d => d.ProductionProfileWaterInjection)
-            .Include(d => d.FuelFlaringAndLosses)
-            .Include(d => d.FuelFlaringAndLossesOverride)
-            .Include(d => d.NetSalesGas)
-            .Include(d => d.NetSalesGasOverride)
-            .Include(d => d.ProductionProfileNgl)
-            .Include(d => d.ImportedElectricity)
-            .Include(d => d.ImportedElectricityOverride)
-            .Include(d => d.DeferredOilProduction)
-            .Include(d => d.DeferredGasProduction)
             .Where(x => drainageStrategyLinks.Contains(x.Id))
             .LoadAsync();
 

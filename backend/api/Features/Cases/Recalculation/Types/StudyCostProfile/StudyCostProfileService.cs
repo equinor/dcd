@@ -155,22 +155,6 @@ public class StudyCostProfileService(DcdDbContext context)
         return date1.Year == date2.Year && date1.DayOfYear == date2.DayOfYear;
     }
 
-    private static double SumOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
-        where T : TimeSeries<double>, ITimeSeriesOverride
-    {
-        if (profileOverride?.Override == true)
-        {
-            return profileOverride.Values.Sum();
-        }
-
-        if (profile != null)
-        {
-            return profile.Values.Sum();
-        }
-
-        return 0;
-    }
-
     private static double SumOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
     {
         if (profileOverride?.Override == true)

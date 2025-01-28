@@ -282,30 +282,6 @@ public class CalculateTotalCostService(DcdDbContext context)
         return totalExploration;
     }
 
-    private static TimeSeries<double> UseOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
-        where T : TimeSeries<double>, ITimeSeriesOverride
-    {
-        if (profileOverride?.Override == true)
-        {
-            return new TimeSeries<double>
-            {
-                StartYear = profileOverride.StartYear,
-                Values = profileOverride.Values ?? []
-            };
-        }
-
-        if (profile != null)
-        {
-            return new TimeSeries<double>
-            {
-                StartYear = profile.StartYear,
-                Values = profile.Values ?? []
-            };
-        }
-
-        return new TimeSeries<double> { StartYear = 0, Values = [] };
-    }
-
     private static TimeSeries<double> UseOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
     {
         if (profileOverride?.Override == true)

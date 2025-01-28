@@ -25,24 +25,26 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEnt
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
-    public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
-    public virtual ProductionProfileGas? ProductionProfileGas { get; set; }
-    public virtual AdditionalProductionProfileGas? AdditionalProductionProfileGas { get; set; }
-    public virtual ProductionProfileWater? ProductionProfileWater { get; set; }
-    public virtual ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
+    #region Migrated profiles, do not access.
     public virtual FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
     public virtual FuelFlaringAndLossesOverride? FuelFlaringAndLossesOverride { get; set; }
     public virtual NetSalesGas? NetSalesGas { get; set; }
     public virtual NetSalesGasOverride? NetSalesGasOverride { get; set; }
     public virtual Co2Emissions? Co2Emissions { get; set; }
     public virtual Co2EmissionsOverride? Co2EmissionsOverride { get; set; }
-    public virtual Co2Intensity? Co2Intensity { get; set; }
-    public virtual ProductionProfileNgl? ProductionProfileNgl { get; set; }
     public virtual ImportedElectricity? ImportedElectricity { get; set; }
     public virtual ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
+    public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
+    public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
+    public virtual ProductionProfileGas? ProductionProfileGas { get; set; }
+    public virtual AdditionalProductionProfileGas? AdditionalProductionProfileGas { get; set; }
+    public virtual ProductionProfileWater? ProductionProfileWater { get; set; }
+    public virtual ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
+    public virtual Co2Intensity? Co2Intensity { get; set; }
+    public virtual ProductionProfileNgl? ProductionProfileNgl { get; set; }
     public virtual DeferredOilProduction? DeferredOilProduction { get; set; }
     public virtual DeferredGasProduction? DeferredGasProduction { get; set; }
+    #endregion Migrated profiles, do not access.
 }
 
 public enum GasSolution
@@ -51,6 +53,57 @@ public enum GasSolution
     Injection,
 }
 
+#region Migrated profiles, do not access.
+public class FuelFlaringAndLosses : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class FuelFlaringAndLossesOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
+}
+public class NetSalesGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class NetSalesGasOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class Co2Emissions : TimeSeriesMass, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class Co2EmissionsOverride : TimeSeriesMass, ITimeSeriesOverride, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class ImportedElectricity : TimeSeriesEnergy, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
+}
 public class ProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
@@ -87,68 +140,15 @@ public class ProductionProfileWaterInjection : TimeSeriesVolume, IDrainageStrate
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class FuelFlaringAndLosses : TimeSeriesVolume, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-}
-
-public class FuelFlaringAndLossesOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-    public bool Override { get; set; }
-}
-
-public class NetSalesGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-}
-
-public class NetSalesGasOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-    public bool Override { get; set; }
-}
-
-public class Co2Emissions : TimeSeriesMass, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-}
-
-public class Co2EmissionsOverride : TimeSeriesMass, ITimeSeriesOverride, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-    public bool Override { get; set; }
-}
-
 public class Co2Intensity : TimeSeriesMass, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
-
 public class ProductionProfileNgl : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-}
-
-public class ImportedElectricity : TimeSeriesEnergy, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-}
-
-public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-    public bool Override { get; set; }
 }
 
 public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
@@ -156,12 +156,14 @@ public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeri
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
-
 public class DeferredGasProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
+#endregion Migrated profiles, do not access.
+
 
 public interface IDrainageStrategyTimeSeries
 {

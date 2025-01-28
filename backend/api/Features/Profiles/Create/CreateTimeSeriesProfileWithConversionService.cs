@@ -2,13 +2,14 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
+using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Create;
 
-public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculationService recalculationService)
+public class CreateTimeSeriesProfileWithConversionService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task<TimeSeriesCostDto> CreateTimeSeriesProfile(
         Guid projectId,
@@ -17,6 +18,11 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         CreateTimeSeriesCostDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
 
         var caseItem = await context.Cases
             .Where(x => x.ProjectId == projectPk)
@@ -28,7 +34,7 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
             CaseId = caseItem.Id,
             ProfileType = profileType,
             StartYear = dto.StartYear,
-            Values = dto.Values
+            Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType)
         };
 
         context.TimeSeriesProfiles.Add(entity);
@@ -52,6 +58,11 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
         var caseItem = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
@@ -62,11 +73,11 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
             CaseId = caseItem.Id,
             ProfileType = profileType,
             StartYear = dto.StartYear,
-            Values = dto.Values,
+            Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType),
             Override = dto.Override
         };
 
-        caseItem.TimeSeriesProfiles.Add(entity);
+        context.TimeSeriesProfiles.Add(entity);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);

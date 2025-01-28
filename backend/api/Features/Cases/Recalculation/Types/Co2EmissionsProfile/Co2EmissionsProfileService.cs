@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -11,19 +12,25 @@ public class Co2EmissionsProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var profileTypes = new List<string>
+        {
+            ProfileTypes.Co2Emissions,
+            ProfileTypes.Co2EmissionsOverride,
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
+        };
+
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.ProductionProfileWaterInjection)
-            .Include(d => d.Co2Emissions)
-            .Include(d => d.Co2EmissionsOverride)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
-        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)
         {
             return;
         }
@@ -37,9 +44,9 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
-        var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
-        var lossesProfile = GetLossesProfile(project, drainageStrategy);
+        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside);
+        var flaringsProfile = GetFlaringsProfile(project, caseItem, drainageStrategy);
+        var lossesProfile = GetLossesProfile(project, caseItem, drainageStrategy);
 
         var tempProfile = CostProfileMerger.MergeCostProfiles([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
 
@@ -55,25 +62,15 @@ public class Co2EmissionsProfileService(DcdDbContext context)
 
         var totalProfile = CostProfileMerger.MergeCostProfiles(newProfile, drillingEmissionsProfile);
 
-        if (drainageStrategy.Co2Emissions != null)
-        {
-            drainageStrategy.Co2Emissions.Values = totalProfile.Values;
-            drainageStrategy.Co2Emissions.StartYear = totalProfile.StartYear;
-        }
-        else
-        {
-            drainageStrategy.Co2Emissions = new()
-            {
-                StartYear = totalProfile.StartYear,
-                Values = totalProfile.Values
-            };
-        }
+        var co2Emissions = caseItem.CreateProfileIfNotExists(ProfileTypes.Co2Emissions);
+
+        co2Emissions.Values = totalProfile.Values;
+        co2Emissions.StartYear = totalProfile.StartYear;
     }
 
-
-    private static TimeSeriesVolume GetLossesProfile(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeriesVolume GetLossesProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
-        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
 
         var lossesProfile = new TimeSeriesVolume
         {
@@ -83,9 +80,9 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return lossesProfile;
     }
 
-    private static TimeSeriesVolume GetFlaringsProfile(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeriesVolume GetFlaringsProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
 
         var flaringsProfile = new TimeSeriesVolume
         {
@@ -95,15 +92,10 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return flaringsProfile;
     }
 
-    private static TimeSeriesVolume GetFuelConsumptionsProfile(
-        Project project,
-        Case caseItem,
-        Topside topside,
-        DrainageStrategy drainageStrategy
-    )
+    private static TimeSeriesVolume GetFuelConsumptionsProfile(Project project, Case caseItem, Topside topside)
     {
         var fuelConsumptions =
-            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
         var fuelConsumptionsProfile = new TimeSeriesVolume
         {
@@ -113,7 +105,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return fuelConsumptionsProfile;
     }
 
-    private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, Guid wellProjectId)
+    private async Task<TimeSeriesCost> CalculateDrillingEmissions(Project project, Guid wellProjectId)
     {
         var linkedWells = await context.WellProjectWell
             .Include(wpw => wpw.DrillingSchedule)
@@ -135,7 +127,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
-        var drillingEmission = new ProductionProfileGas
+        var drillingEmission = new TimeSeriesCost
         {
             StartYear = wellDrillingSchedules.StartYear,
             Values = wellDrillingSchedules.Values

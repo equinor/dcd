@@ -14,32 +14,26 @@ public class Co2IntensityProfileService(DcdDbContext context)
             .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(c => c.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.Co2Emissions)
-            .Include(d => d.Co2EmissionsOverride)
-            .Include(d => d.Co2Intensity)
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-        CalculateCo2Intensity(drainageStrategy);
+        CalculateCo2Intensity(caseItem);
     }
 
-    public static void CalculateCo2Intensity(DrainageStrategy drainageStrategy)
+    public static void CalculateCo2Intensity(Case caseItem)
     {
-        var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
+        var totalExportedVolumes = GetTotalExportedVolumes(caseItem);
         TimeSeries<double> generateCo2EmissionsProfile = new();
-        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+
+        var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
+        var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+
+        if (co2EmissionsOverrideProfile?.Override == true)
         {
-            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
-            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values.Select(v => v).ToArray();
+            generateCo2EmissionsProfile.StartYear = co2EmissionsOverrideProfile.StartYear;
+            generateCo2EmissionsProfile.Values = co2EmissionsOverrideProfile.Values.Select(v => v).ToArray();
         }
         else
         {
-            var co2Emissions = drainageStrategy.Co2Emissions;
-            generateCo2EmissionsProfile.StartYear = co2Emissions?.StartYear ?? 0;
-            generateCo2EmissionsProfile.Values = co2Emissions?.Values ?? [];
+            generateCo2EmissionsProfile.StartYear = co2EmissionsProfile?.StartYear ?? 0;
+            generateCo2EmissionsProfile.Values = co2EmissionsProfile?.Values ?? [];
         }
 
         var co2IntensityValues = new List<double>();
@@ -66,47 +60,46 @@ public class Co2IntensityProfileService(DcdDbContext context)
 
         var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
 
-        drainageStrategy.Co2Intensity = new()
-        {
-            StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset,
-            Values = co2IntensityValues.ToArray(),
-        };
+        var co2IntensityProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.Co2Intensity);
+
+        co2IntensityProfile.StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset;
+        co2IntensityProfile.Values = co2IntensityValues.ToArray();
     }
 
-    private static TimeSeries<double> GetTotalExportedVolumes(DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> GetTotalExportedVolumes(Case caseItem)
     {
-        var oilProfile = GetOilProfile(drainageStrategy);
+        var oilProfile = GetOilProfile(caseItem);
 
-        return new Co2Intensity
+        return new TimeSeries<double>
         {
             StartYear = oilProfile.StartYear,
             Values = oilProfile.Values
         };
     }
 
-    private static TimeSeries<double> GetOilProfile(DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> GetOilProfile(Case caseItem)
     {
         var million = 1E6;
-        var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? [];
-        var additionalOilValues = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? [];
+        var oilValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
+        var additionalOilValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
 
         TimeSeriesCost? oilProfile = null;
         TimeSeriesCost? additionalOilProfile = null;
 
-        if (drainageStrategy.ProductionProfileOil != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil) != null)
         {
             oilProfile = new TimeSeriesCost
             {
-                StartYear = drainageStrategy.ProductionProfileOil.StartYear,
+                StartYear = caseItem.GetProfile(ProfileTypes.ProductionProfileOil).StartYear,
                 Values = oilValues,
             };
         }
 
-        if (drainageStrategy.AdditionalProductionProfileOil != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil) != null)
         {
             additionalOilProfile = new TimeSeriesCost
             {
-                StartYear = drainageStrategy.AdditionalProductionProfileOil.StartYear,
+                StartYear = caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileOil).StartYear,
                 Values = additionalOilValues,
             };
         }

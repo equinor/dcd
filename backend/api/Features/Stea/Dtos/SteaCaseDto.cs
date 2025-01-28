@@ -25,10 +25,10 @@ public class CapexDto
 public class ProductionAndSalesVolumesDto
 {
     public int StartYear { get; set; }
-    public TimeSeriesVolumeDto TotalAndAnnualOil { get; set; } = new();
-    public TimeSeriesVolumeDto TotalAndAnnualSalesGas { get; set; } = new();
-    public TimeSeriesMassDto Co2Emissions { get; set; } = new();
-    public TimeSeriesEnergyDto ImportedElectricity { get; set; } = new();
-    public TimeSeriesVolumeDto AdditionalOil { get; set; } = new();
-    public TimeSeriesVolumeDto AdditionalGas { get; set; } = new();
+    public TimeSeriesCostDto TotalAndAnnualOil { get; set; } = new();
+    public TimeSeriesCostDto TotalAndAnnualSalesGas { get; set; } = new();
+    public TimeSeriesCostDto Co2Emissions { get; set; } = new();
+    public TimeSeriesCostDto ImportedElectricity { get; set; } = new();
+    public TimeSeriesCostDto AdditionalOil { get; set; } = new();
+    public TimeSeriesCostDto AdditionalGas { get; set; } = new();
 }

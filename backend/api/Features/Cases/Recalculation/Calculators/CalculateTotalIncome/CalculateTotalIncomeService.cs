@@ -17,17 +17,10 @@ public class CalculateTotalIncomeService(DcdDbContext context)
             .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
-        CalculateTotalIncome(caseItem, drainageStrategy);
+        CalculateTotalIncome(caseItem);
     }
 
-    public static void CalculateTotalIncome(Case caseItem, DrainageStrategy drainageStrategy)
+    public static void CalculateTotalIncome(Case caseItem)
     {
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
@@ -35,8 +28,8 @@ public class CalculateTotalIncomeService(DcdDbContext context)
         var cubicMetersToBarrelsFactor = 6.29;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            drainageStrategy.ProductionProfileOil,
-            drainageStrategy.AdditionalProductionProfileOil
+            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)
         );
 
         // Convert oil production from million sm³ to barrels in millions
@@ -49,8 +42,8 @@ public class CalculateTotalIncomeService(DcdDbContext context)
         };
 
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            drainageStrategy.ProductionProfileGas,
-            drainageStrategy.AdditionalProductionProfileGas
+            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas),
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
         );
 
         var gasIncome = new TimeSeries<double>

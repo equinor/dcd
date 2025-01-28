@@ -11,7 +11,18 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var profileTypes = new List<string>
+        {
+            ProfileTypes.ProductionProfileOil,
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
+        };
+
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .SingleAsync(x => x.Id == caseId);
 
         var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
 
@@ -23,15 +34,10 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
-        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
-        var flaringsTotal = GetFlaringsProfileTotal(project, drainageStrategy);
+        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside);
+        var flaringsTotal = GetFlaringsProfileTotal(project, caseItem, drainageStrategy);
         var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, caseItem.WellProjectLink);
 
         return new Co2DrillingFlaringFuelTotalsDto
@@ -42,9 +48,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         };
     }
 
-    private static double GetFlaringsProfileTotal(Project project, DrainageStrategy drainageStrategy)
+    private static double GetFlaringsProfileTotal(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
 
         var flaringsProfile = new TimeSeriesVolume
         {
@@ -55,14 +61,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return flaringsProfile.Values.Sum() / 1000;
     }
 
-    private static double GetFuelConsumptionsProfileTotal(
-        Project project,
-        Case caseItem,
-        Topside topside,
-        DrainageStrategy drainageStrategy
-    )
+    private static double GetFuelConsumptionsProfileTotal(Project project, Case caseItem, Topside topside)
     {
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
         var fuelConsumptionsProfile = new TimeSeriesVolume
         {
@@ -95,14 +96,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
-        var drillingEmission = new ProductionProfileGas
-        {
-            StartYear = wellDrillingSchedules.StartYear,
-            Values = wellDrillingSchedules.Values
-                .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
-                .ToArray(),
-        };
-
-        return drillingEmission.Values.Sum();
+        return wellDrillingSchedules.Values
+            .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
+            .Sum();
     }
 }

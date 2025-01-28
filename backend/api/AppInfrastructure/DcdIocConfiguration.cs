@@ -41,18 +41,6 @@ using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Create;
-using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases;
-using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
-using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
-using api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
-using api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
-using api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides;
-using api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides;
-using api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileOils;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
@@ -76,7 +64,6 @@ using api.Features.Revisions.Update;
 using api.Features.Stea;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
-using api.ModelMapping;
 
 using Microsoft.AspNetCore.Authorization;
 
@@ -131,10 +118,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UploadImageService>();
         services.AddScoped<CopyImageService>();
         services.AddScoped<UpdateImageService>();
-
-        /* Mapping */
-        services.AddScoped<IMapperService, MapperService>();
-        services.AddScoped<IConversionMapperService, ConversionMapperService>();
 
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();
@@ -193,21 +176,9 @@ public static class DcdIocConfiguration
 
         /* Time series profiles */
         services.AddScoped<CreateTimeSeriesProfileService>();
+        services.AddScoped<CreateTimeSeriesProfileWithConversionService>();
         services.AddScoped<UpdateTimeSeriesProfileService>();
-
-        /* Drainage strategy profiles */
-        services.AddScoped<AdditionalProductionProfileGasService>();
-        services.AddScoped<AdditionalProductionProfileOilService>();
-        services.AddScoped<Co2EmissionsOverrideService>();
-        services.AddScoped<DeferredGasProductionService>();
-        services.AddScoped<DeferredOilProductionService>();
-        services.AddScoped<FuelFlaringAndLossesOverrideService>();
-        services.AddScoped<ImportedElectricityOverrideService>();
-        services.AddScoped<NetSalesGasOverrideService>();
-        services.AddScoped<ProductionProfileGasService>();
-        services.AddScoped<ProductionProfileOilService>();
-        services.AddScoped<ProductionProfileWaterInjectionService>();
-        services.AddScoped<ProductionProfileWaterService>();
+        services.AddScoped<UpdateTimeSeriesProfileWithConversionService>();
 
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();

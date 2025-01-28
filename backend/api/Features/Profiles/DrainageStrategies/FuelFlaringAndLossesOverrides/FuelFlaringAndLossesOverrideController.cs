@@ -1,32 +1,34 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides;
 
-public class FuelFlaringAndLossesOverrideController(FuelFlaringAndLossesOverrideService service) : ControllerBase
+public class FuelFlaringAndLossesOverrideController(
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/fuel-flaring-and-losses-override")]
-    public async Task<TimeSeriesVolumeOverrideDto> CreateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesCostOverrideDto> CreateFuelFlaringAndLossesOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
-        [FromBody] CreateTimeSeriesVolumeOverrideDto dto)
+        [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await service.CreateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.FuelFlaringAndLossesOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/fuel-flaring-and-losses-override/{profileId:guid}")]
-    public async Task<TimeSeriesVolumeOverrideDto> UpdateFuelFlaringAndLossesOverride(
+    public async Task<TimeSeriesCostOverrideDto> UpdateFuelFlaringAndLossesOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
-        [FromBody] UpdateTimeSeriesVolumeOverrideDto dto)
+        [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await service.UpdateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.FuelFlaringAndLossesOverride, dto);
     }
 }

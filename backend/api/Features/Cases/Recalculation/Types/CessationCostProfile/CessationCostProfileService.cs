@@ -15,13 +15,6 @@ public class CessationCostProfileService(DcdDbContext context)
             .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
-            .Include(d => d.AdditionalProductionProfileOil)
-            .Include(d => d.ProductionProfileGas)
-            .Include(d => d.AdditionalProductionProfileGas)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
         var surf = await context.Surfs.SingleAsync(x => x.Id == caseItem.SurfLink);
 
         var linkedWells = await context.WellProjectWell
@@ -36,7 +29,7 @@ public class CessationCostProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
+        var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
 
 
         CalculateCessationWellsCost(caseItem, project, linkedWells, lastYearOfProduction);

@@ -69,24 +69,24 @@ declare namespace Components {
             topsideCostProfileOverride?: TimeSeriesCostOverrideDto;
             topsideCessationCostProfile?: TimeSeriesCostDto;
             drainageStrategy: DrainageStrategyDto;
-            productionProfileOil?: TimeSeriesVolumeDto;
-            additionalProductionProfileOil?: TimeSeriesVolumeDto;
-            productionProfileGas?: TimeSeriesVolumeDto;
-            additionalProductionProfileGas?: TimeSeriesVolumeDto;
-            productionProfileWater?: TimeSeriesVolumeDto;
-            productionProfileWaterInjection?: TimeSeriesVolumeDto;
-            fuelFlaringAndLosses?: TimeSeriesVolumeDto;
-            fuelFlaringAndLossesOverride?: TimeSeriesVolumeOverrideDto;
-            netSalesGas?: TimeSeriesVolumeDto;
-            netSalesGasOverride?: TimeSeriesVolumeOverrideDto;
-            co2Emissions?: TimeSeriesMassDto;
-            co2EmissionsOverride?: TimeSeriesMassOverrideDto;
-            productionProfileNgl?: TimeSeriesVolumeDto;
-            importedElectricity?: TimeSeriesEnergyDto;
-            importedElectricityOverride?: TimeSeriesEnergyOverrideDto;
-            co2Intensity?: TimeSeriesMassDto;
-            deferredOilProduction?: TimeSeriesVolumeDto;
-            deferredGasProduction?: TimeSeriesVolumeDto;
+            productionProfileOil?: TimeSeriesCostDto;
+            additionalProductionProfileOil?: TimeSeriesCostDto;
+            productionProfileGas?: TimeSeriesCostDto;
+            additionalProductionProfileGas?: TimeSeriesCostDto;
+            productionProfileWater?: TimeSeriesCostDto;
+            productionProfileWaterInjection?: TimeSeriesCostDto;
+            fuelFlaringAndLosses?: TimeSeriesCostDto;
+            fuelFlaringAndLossesOverride?: TimeSeriesCostOverrideDto;
+            netSalesGas?: TimeSeriesCostDto;
+            netSalesGasOverride?: TimeSeriesCostOverrideDto;
+            co2Emissions?: TimeSeriesCostDto;
+            co2EmissionsOverride?: TimeSeriesCostOverrideDto;
+            productionProfileNgl?: TimeSeriesCostDto;
+            importedElectricity?: TimeSeriesCostDto;
+            importedElectricityOverride?: TimeSeriesCostOverrideDto;
+            co2Intensity?: TimeSeriesCostDto;
+            deferredOilProduction?: TimeSeriesCostDto;
+            deferredGasProduction?: TimeSeriesCostDto;
             substructure: SubstructureDto;
             substructureCostProfile?: TimeSeriesCostDto;
             substructureCostProfileOverride?: TimeSeriesCostOverrideDto;
@@ -208,27 +208,9 @@ declare namespace Components {
             values: number /* double */[];
             override: boolean;
         }
-        export interface CreateTimeSeriesEnergyDto {
-            startYear: number; // int32
-            values: number /* double */[];
-        }
-        export interface CreateTimeSeriesMassOverrideDto {
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
-        }
         export interface CreateTimeSeriesScheduleDto {
             startYear: number; // int32
             values: number /* int32 */[];
-        }
-        export interface CreateTimeSeriesVolumeDto {
-            startYear: number; // int32
-            values: number /* double */[];
-        }
-        export interface CreateTimeSeriesVolumeOverrideDto {
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
         }
         export interface CreateWellDto {
             name: string;
@@ -471,52 +453,12 @@ declare namespace Components {
             id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
-            sum: number; // double
-            override: boolean;
-        }
-        export interface TimeSeriesEnergyDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* double */[];
-            sum: number; // double
-        }
-        export interface TimeSeriesEnergyOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* double */[];
-            sum: number; // double
-            override: boolean;
-        }
-        export interface TimeSeriesMassDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* double */[];
-            sum: number; // double
-        }
-        export interface TimeSeriesMassOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* double */[];
-            sum: number; // double
             override: boolean;
         }
         export interface TimeSeriesScheduleDto {
             id: string; // uuid
             startYear: number; // int32
             values: number /* int32 */[];
-        }
-        export interface TimeSeriesVolumeDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* double */[];
-            sum: number; // double
-        }
-        export interface TimeSeriesVolumeOverrideDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* double */[];
-            sum: number; // double
-            override: boolean;
         }
         export interface TopsideDto {
             id: string; // uuid
@@ -719,28 +661,9 @@ declare namespace Components {
             values: number /* double */[];
             override: boolean;
         }
-        export interface UpdateTimeSeriesEnergyOverrideDto {
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
-        }
-        export interface UpdateTimeSeriesMassOverrideDto {
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
-        }
         export interface UpdateTimeSeriesScheduleDto {
             startYear: number; // int32
             values: number /* int32 */[];
-        }
-        export interface UpdateTimeSeriesVolumeDto {
-            startYear: number; // int32
-            values: number /* double */[];
-        }
-        export interface UpdateTimeSeriesVolumeOverrideDto {
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
         }
         export interface UpdateTopsideDto {
             dryWeight?: number; // double
@@ -1150,9 +1073,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1170,9 +1093,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1188,9 +1111,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1208,9 +1131,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1226,9 +1149,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesMassOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesMassOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1246,9 +1169,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesMassOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesMassOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1264,9 +1187,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1284,9 +1207,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1302,9 +1225,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1322,9 +1245,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1340,9 +1263,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1360,9 +1283,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1378,9 +1301,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesEnergyDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesEnergyOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1398,9 +1321,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesEnergyOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesEnergyOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1416,9 +1339,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeOverrideDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1436,9 +1359,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeOverrideDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeOverrideDto;
+                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
@@ -1454,9 +1377,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1474,9 +1397,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1492,9 +1415,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1512,9 +1435,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1530,9 +1453,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1550,9 +1473,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1568,9 +1491,9 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1588,9 +1511,9 @@ declare namespace Paths {
                 drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
                 profileId: Parameters.ProfileId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesVolumeDto;
+            export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesVolumeDto;
+                export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
         }
     }
@@ -1617,13 +1540,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ExplorationId = string; // uuid
+                export type ExplorationId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                explorationId: Parameters.ExplorationId /* uuid */;
+                explorationId: Parameters.ExplorationId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1636,14 +1559,14 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
-                export type ExplorationId = string; // uuid
+                export type ExplorationId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                explorationId: Parameters.ExplorationId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1655,13 +1578,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ExplorationId = string; // uuid
+                export type ExplorationId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                explorationId: Parameters.ExplorationId /* uuid */;
+                explorationId: Parameters.ExplorationId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1674,14 +1597,14 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
-                export type ExplorationId = string; // uuid
+                export type ExplorationId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                explorationId: Parameters.ExplorationId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1693,13 +1616,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ExplorationId = string; // uuid
+                export type ExplorationId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                explorationId: Parameters.ExplorationId /* uuid */;
+                explorationId: Parameters.ExplorationId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostDto;
             namespace Responses {
@@ -1712,14 +1635,14 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
-                export type ExplorationId = string; // uuid
+                export type ExplorationId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                explorationId: Parameters.ExplorationId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostDto;
             namespace Responses {
@@ -1910,13 +1833,13 @@ declare namespace Paths {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type OnshorePowerSupplyId = string; // uuid
+                export type OnshorePowerSupplyId = string;
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -1928,7 +1851,7 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
+                export type CostProfileId = string;
                 export type OnshorePowerSupplyId = string; // uuid
                 export type ProjectId = string; // uuid
             }
@@ -1936,7 +1859,7 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
                 onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
+                costProfileId: Parameters.CostProfileId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2002,12 +1925,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type SubstructureId = string; // uuid
+                export type SubstructureId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                substructureId: Parameters.SubstructureId /* uuid */;
+                substructureId: Parameters.SubstructureId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2021,13 +1944,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type SubstructureId = string; // uuid
+                export type SubstructureId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                substructureId: Parameters.SubstructureId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                substructureId: Parameters.SubstructureId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2059,12 +1982,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type SurfId = string; // uuid
+                export type SurfId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                surfId: Parameters.SurfId /* uuid */;
+                surfId: Parameters.SurfId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2078,13 +2001,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type SurfId = string; // uuid
+                export type SurfId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                surfId: Parameters.SurfId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                surfId: Parameters.SurfId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2116,12 +2039,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type TopsideId = string; // uuid
+                export type TopsideId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                topsideId: Parameters.TopsideId /* uuid */;
+                topsideId: Parameters.TopsideId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2135,13 +2058,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type TopsideId = string; // uuid
+                export type TopsideId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                topsideId: Parameters.TopsideId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                topsideId: Parameters.TopsideId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2275,12 +2198,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type TransportId = string; // uuid
+                export type TransportId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                transportId: Parameters.TransportId /* uuid */;
+                transportId: Parameters.TransportId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2294,13 +2217,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type TransportId = string; // uuid
+                export type TransportId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                transportId: Parameters.TransportId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                transportId: Parameters.TransportId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2404,12 +2327,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
+                export type WellProjectId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
+                wellProjectId: Parameters.WellProjectId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2423,13 +2346,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
+                export type WellProjectId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                wellProjectId: Parameters.WellProjectId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2442,12 +2365,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
+                export type WellProjectId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
+                wellProjectId: Parameters.WellProjectId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2461,13 +2384,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
+                export type WellProjectId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                wellProjectId: Parameters.WellProjectId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2480,12 +2403,12 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
+                export type WellProjectId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
+                wellProjectId: Parameters.WellProjectId;
             }
             export type RequestBody = Components.Schemas.CreateTimeSeriesCostOverrideDto;
             namespace Responses {
@@ -2499,13 +2422,13 @@ declare namespace Paths {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
+                export type WellProjectId = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
+                wellProjectId: Parameters.WellProjectId;
             }
             export type RequestBody = Components.Schemas.UpdateTimeSeriesCostOverrideDto;
             namespace Responses {
