@@ -1,21 +1,24 @@
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.Profiles.Create;
 using api.Features.Profiles.Dtos;
+using api.Features.Profiles.Update;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
 
-public class DeferredOilProductionController(DeferredOilProductionService service) : ControllerBase
+public class DeferredOilProductionController(
+    CreateTimeSeriesProfileService createTimeSeriesProfileService,
+    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/deferred-oil-production/")]
     public async Task<TimeSeriesCostDto> CreateDeferredOilProduction(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromBody] CreateTimeSeriesCostDto dto)
     {
-        return await service.CreateDeferredOilProduction(projectId, caseId, drainageStrategyId, dto);
+        return await createTimeSeriesProfileService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.DeferredOilProduction, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -23,10 +26,9 @@ public class DeferredOilProductionController(DeferredOilProductionService servic
     public async Task<TimeSeriesCostDto> UpdateDeferredOilProduction(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromRoute] Guid profileId,
         [FromBody] UpdateTimeSeriesCostDto dto)
     {
-        return await service.UpdateDeferredOilProduction(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await updateTimeSeriesProfileService.UpdateTimeSeriesProfile(projectId, caseId, profileId, ProfileTypes.DeferredOilProduction, dto);
     }
 }

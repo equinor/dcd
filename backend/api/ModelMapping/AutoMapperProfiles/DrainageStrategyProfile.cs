@@ -105,15 +105,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesToDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.Co2Intensity)));
-        CreateMap<DeferredOilProduction, TimeSeriesCostDto>()
+        CreateMap<TimeSeriesProfile, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(DeferredOilProduction)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.DeferredOilProduction)));
         CreateMap<DeferredGasProduction, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
@@ -180,15 +178,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.AdditionalProductionProfileGas)));
-        CreateMap<CreateTimeSeriesCostDto, DeferredOilProduction>()
+        CreateMap<CreateTimeSeriesCostDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(DeferredOilProduction)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.DeferredOilProduction)));
         CreateMap<CreateTimeSeriesCostDto, DeferredGasProduction>()
             .ForMember(
                 dest => dest.Values,
@@ -276,15 +272,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.ProductionProfileGas)));
-        CreateMap<UpdateTimeSeriesCostDto, DeferredOilProduction>()
+        CreateMap<UpdateTimeSeriesCostDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(DeferredOilProduction)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.DeferredOilProduction)));
         CreateMap<UpdateTimeSeriesCostDto, DeferredGasProduction>()
             .ForMember(
                 dest => dest.Values,
@@ -360,7 +354,7 @@ public class DrainageStrategyProfile : Profile
                 case ProfileTypes.AdditionalProductionProfileGas:
                 case ProfileTypes.FuelFlaringAndLosses:
                 case ProfileTypes.FuelFlaringAndLossesOverride:
-                case nameof(DeferredOilProduction):
+                case ProfileTypes.DeferredOilProduction:
                 case nameof(DeferredGasProduction):
                 case ProfileTypes.NetSalesGas:
                 case ProfileTypes.NetSalesGasOverride:

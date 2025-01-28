@@ -65,7 +65,7 @@ public class CaseWithAssetsService(
             ProductionProfileNgl = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), project.PhysicalUnit),
             ImportedElectricity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), project.PhysicalUnit),
-            DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, TimeSeriesCostDto>(drainageStrategy.DeferredOilProduction, drainageStrategy.DeferredOilProduction?.Id, project.PhysicalUnit),
+            DeferredOilProduction = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), project.PhysicalUnit),
             DeferredGasProduction = ConversionMapToDto<DeferredGasProduction, TimeSeriesCostDto>(drainageStrategy.DeferredGasProduction, drainageStrategy.DeferredGasProduction?.Id, project.PhysicalUnit),
             Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
             TopsideCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile)),
