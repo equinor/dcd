@@ -14,7 +14,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var profileTypes = new List<string>
         {
             ProfileTypes.ProductionProfileOil,
-            ProfileTypes.AdditionalProductionProfileOil
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas
         };
 
         var caseItem = await context.Cases
@@ -31,7 +32,6 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
@@ -101,14 +101,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
-        var drillingEmission = new ProductionProfileGas
-        {
-            StartYear = wellDrillingSchedules.StartYear,
-            Values = wellDrillingSchedules.Values
-                .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
-                .ToArray(),
-        };
-
-        return drillingEmission.Values.Sum();
+        return wellDrillingSchedules.Values
+            .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
+            .Sum();
     }
 }

@@ -41,6 +41,12 @@ public class CalculateTotalIncomeServiceTests
                     StartYear = 2020,
                     Values = [1000000.0, 2000000.0] // SM³
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileGas,
+                    StartYear = 2020,
+                    Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
+                },
             }
         };
 
@@ -48,12 +54,6 @@ public class CalculateTotalIncomeServiceTests
         {
             Id = caseItem.DrainageStrategyLink,
 
-
-            ProductionProfileGas = new ProductionProfileGas
-            {
-                StartYear = 2020,
-                Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
-            },
             AdditionalProductionProfileGas = new AdditionalProductionProfileGas
             {
                 StartYear = 2020,
@@ -105,17 +105,18 @@ public class CalculateTotalIncomeServiceTests
                     StartYear = 2020,
                     Values = [0.0, 0.0, 0.0]
                 },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileGas,
+                    StartYear = 2020,
+                    Values = [0.0, 0.0, 0.0]
+                }
             }
         };
 
         var drainageStrategy = new DrainageStrategy
         {
-            Id = caseItem.DrainageStrategyLink,
-            ProductionProfileGas = new ProductionProfileGas
-            {
-                StartYear = 2020,
-                Values = [0.0, 0.0, 0.0]
-            }
+            Id = caseItem.DrainageStrategyLink
         };
 
         // Act

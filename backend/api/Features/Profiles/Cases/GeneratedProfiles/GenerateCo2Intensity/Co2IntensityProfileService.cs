@@ -16,7 +16,6 @@ public class Co2IntensityProfileService(DcdDbContext context)
 
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.Co2Intensity)
-            .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 

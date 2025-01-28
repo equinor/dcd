@@ -17,7 +17,8 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             ProfileTypes.Co2Emissions,
             ProfileTypes.Co2EmissionsOverride,
             ProfileTypes.ProductionProfileOil,
-            ProfileTypes.AdditionalProductionProfileOil
+            ProfileTypes.AdditionalProductionProfileOil,
+            ProfileTypes.ProductionProfileGas
         };
 
         var caseItem = await context.Cases
@@ -25,7 +26,6 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
@@ -46,7 +46,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
 
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, caseItem, drainageStrategy);
-        var lossesProfile = GetLossesProfile(project, drainageStrategy);
+        var lossesProfile = GetLossesProfile(project, caseItem, drainageStrategy);
 
         var tempProfile = CostProfileMerger.MergeCostProfiles([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
 
@@ -68,9 +68,9 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         co2Emissions.StartYear = totalProfile.StartYear;
     }
 
-    private static TimeSeriesVolume GetLossesProfile(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeriesVolume GetLossesProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
-        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
 
         var lossesProfile = new TimeSeriesVolume
         {
@@ -110,7 +110,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return fuelConsumptionsProfile;
     }
 
-    private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, Guid wellProjectId)
+    private async Task<TimeSeriesCost> CalculateDrillingEmissions(Project project, Guid wellProjectId)
     {
         var linkedWells = await context.WellProjectWell
             .Include(wpw => wpw.DrillingSchedule)
@@ -132,7 +132,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
-        var drillingEmission = new ProductionProfileGas
+        var drillingEmission = new TimeSeriesCost
         {
             StartYear = wellDrillingSchedules.StartYear,
             Values = wellDrillingSchedules.Values

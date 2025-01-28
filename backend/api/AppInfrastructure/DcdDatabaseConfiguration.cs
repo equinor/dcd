@@ -182,5 +182,6 @@ public static class DcdDatabaseConfiguration
         ("ImportedElectricityOverride", ProfileTypes.ImportedElectricityOverride, true, "DrainageStrategy", "DrainageStrategies"),
         ("ProductionProfileOil", ProfileTypes.ProductionProfileOil, false, "DrainageStrategy", "DrainageStrategies"),
         ("AdditionalProductionProfileOil", ProfileTypes.AdditionalProductionProfileOil, false, "DrainageStrategy", "DrainageStrategies"),
+        ("ProductionProfileGas", ProfileTypes.ProductionProfileGas, false, "DrainageStrategy", "DrainageStrategies"),
     ];
 }

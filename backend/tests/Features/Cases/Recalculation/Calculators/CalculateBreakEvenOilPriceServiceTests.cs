@@ -40,19 +40,19 @@ public class CalculateBreakEvenOilPriceServiceTests
                     ProfileType = ProfileTypes.ProductionProfileOil,
                     StartYear = 2030,
                     Values = [1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0]
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileGas,
+                    StartYear = 2030,
+                    Values = [500000000.0, 500000000.0, 500000000.0, 500000000.0, 200000000.0, 200000000.0]
+                },
             }
         };
 
         var drainageStrategy = new DrainageStrategy
         {
             Id = caseItem.DrainageStrategyLink,
-
-            ProductionProfileGas = new ProductionProfileGas
-            {
-                StartYear = 2030,
-                Values = [500000000.0, 500000000.0, 500000000.0, 500000000.0, 200000000.0, 200000000.0]
-            },
         };
 
         // Act

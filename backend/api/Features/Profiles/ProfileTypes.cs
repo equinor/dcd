@@ -106,4 +106,6 @@ public static class ProfileTypes
     public const string ProductionProfileOil = "ProductionProfileOil";
 
     public const string AdditionalProductionProfileOil = "AdditionalProductionProfileOil";
+
+    public const string ProductionProfileGas = "ProductionProfileGas";
 }

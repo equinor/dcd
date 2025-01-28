@@ -30,7 +30,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
             var totalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
-            var totalGasProduction = drainageStrategy.ProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
+            var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
             var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, caseItem, drainageStrategy, false);
 
@@ -95,16 +95,16 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return sumOilProduction / million;
     }
 
-    private static double CalculateTotalGasProduction(Project project, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
+    private static double CalculateTotalGasProduction(Project project, Case caseItem, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
     {
         const double billion = 1E9;
         const double scfConversionFactor = 35.315;
 
         var sumGasProduction = 0.0;
 
-        if (drainageStrategy.ProductionProfileGas != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) != null)
         {
-            sumGasProduction += drainageStrategy.ProductionProfileGas.Values.Sum();
+            sumGasProduction += caseItem.GetProfile(ProfileTypes.ProductionProfileGas).Values.Sum();
         }
 
         if (drainageStrategy.AdditionalProductionProfileGas != null)
@@ -126,10 +126,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(project, caseItem, false) + CalculateTotalGasProduction(project, drainageStrategy, false) / oilEquivalentFactor;
+            return CalculateTotalOilProduction(project, caseItem, false) + CalculateTotalGasProduction(project, caseItem, drainageStrategy, false) / oilEquivalentFactor;
         }
 
-        return CalculateTotalOilProduction(project, caseItem, true) + CalculateTotalGasProduction(project, drainageStrategy, true);
+        return CalculateTotalOilProduction(project, caseItem, true) + CalculateTotalGasProduction(project, caseItem, drainageStrategy, true);
     }
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)
