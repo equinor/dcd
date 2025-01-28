@@ -362,21 +362,24 @@ public static class SteaCaseDtoBuilder
             startYearsProductionSalesAndVolumes.Add(steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity.StartYear);
         }
 
-        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
+        var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+
+        if (co2EmissionsOverrideProfile?.Override == true)
         {
             steaCaseDto.ProductionAndSalesVolumes.Co2Emissions = new TimeSeriesCostDto
             {
-                StartYear = drainageStrategy.Co2EmissionsOverride.StartYear + dg4Year,
-                Values = drainageStrategy.Co2EmissionsOverride.Values
+                StartYear = co2EmissionsOverrideProfile.StartYear + dg4Year,
+                Values = co2EmissionsOverrideProfile.Values
             };
             startYearsProductionSalesAndVolumes.Add(steaCaseDto.ProductionAndSalesVolumes.Co2Emissions.StartYear);
         }
-        else if (drainageStrategy.Co2Emissions != null)
+        else if (co2EmissionsProfile != null)
         {
             steaCaseDto.ProductionAndSalesVolumes.Co2Emissions = new TimeSeriesCostDto
             {
-                StartYear = drainageStrategy.Co2Emissions.StartYear + dg4Year,
-                Values = drainageStrategy.Co2Emissions.Values
+                StartYear = co2EmissionsProfile.StartYear + dg4Year,
+                Values = co2EmissionsProfile.Values
             };
             startYearsProductionSalesAndVolumes.Add(steaCaseDto.ProductionAndSalesVolumes.Co2Emissions.StartYear);
         }

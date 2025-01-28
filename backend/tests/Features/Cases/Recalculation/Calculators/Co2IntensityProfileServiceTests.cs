@@ -35,6 +35,12 @@ public class Co2IntensityProfileServiceTests
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = 2027,
                     Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.Co2Emissions,
+                    StartYear = 2023,
+                    Values = [29400000 / 1000]
                 }
             }
         };
@@ -48,15 +54,10 @@ public class Co2IntensityProfileServiceTests
                 StartYear = 2023,
                 Values = [1421000]
             },
-            Co2Emissions = new Co2Emissions
-            {
-                StartYear = 2023,
-                Values = [29400000 / 1000]
-            }
         };
 
         // Act
-        Co2IntensityProfileService.CalculateCo2Intensity(drainageStrategy);
+        Co2IntensityProfileService.CalculateCo2Intensity(caseItem, drainageStrategy);
 
         // Assert
         var expectedCo2Intensity = 3.2899;

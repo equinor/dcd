@@ -15,31 +15,33 @@ public class Co2IntensityProfileService(DcdDbContext context)
             .SingleAsync(c => c.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.Co2Emissions)
-            .Include(d => d.Co2EmissionsOverride)
             .Include(d => d.Co2Intensity)
             .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-        CalculateCo2Intensity(drainageStrategy);
+
+        CalculateCo2Intensity(caseItem, drainageStrategy);
     }
 
-    public static void CalculateCo2Intensity(DrainageStrategy drainageStrategy)
+    public static void CalculateCo2Intensity(Case caseItem, DrainageStrategy drainageStrategy)
     {
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
         TimeSeries<double> generateCo2EmissionsProfile = new();
-        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+
+        var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
+        var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+
+        if (co2EmissionsOverrideProfile?.Override == true)
         {
-            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
-            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values.Select(v => v).ToArray();
+            generateCo2EmissionsProfile.StartYear = co2EmissionsOverrideProfile.StartYear;
+            generateCo2EmissionsProfile.Values = co2EmissionsOverrideProfile.Values.Select(v => v).ToArray();
         }
         else
         {
-            var co2Emissions = drainageStrategy.Co2Emissions;
-            generateCo2EmissionsProfile.StartYear = co2Emissions?.StartYear ?? 0;
-            generateCo2EmissionsProfile.Values = co2Emissions?.Values ?? [];
+            generateCo2EmissionsProfile.StartYear = co2EmissionsProfile?.StartYear ?? 0;
+            generateCo2EmissionsProfile.Values = co2EmissionsProfile?.Values ?? [];
         }
 
         var co2IntensityValues = new List<double>();

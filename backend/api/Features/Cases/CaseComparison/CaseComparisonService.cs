@@ -37,7 +37,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
-            TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
+            var profile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride) ?? caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+
+            TimeSeriesCost? generateCo2EmissionsProfile = profile == null ? null : new TimeSeriesCost(profile);
 
             var totalCo2Emissions = generateCo2EmissionsProfile?.Values.Sum() ?? 0;
             var co2Intensity = drainageStrategy.Co2Intensity?.Values.Sum() ?? 0;

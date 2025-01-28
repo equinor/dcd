@@ -176,5 +176,7 @@ public static class DcdDatabaseConfiguration
         ("FuelFlaringAndLossesOverride", ProfileTypes.FuelFlaringAndLossesOverride, true, "DrainageStrategy", "DrainageStrategies"),
         ("NetSalesGas", ProfileTypes.FuelFlaringAndLosses, false, "DrainageStrategy", "DrainageStrategies"),
         ("NetSalesGasOverride", ProfileTypes.FuelFlaringAndLossesOverride, true, "DrainageStrategy", "DrainageStrategies"),
+        ("Co2Emissions", ProfileTypes.Co2Emissions, false, "DrainageStrategy", "DrainageStrategies"),
+        ("Co2EmissionsOverride", ProfileTypes.Co2EmissionsOverride, true, "DrainageStrategy", "DrainageStrategies"),
     ];
 }
