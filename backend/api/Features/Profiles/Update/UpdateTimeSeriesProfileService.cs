@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
+using api.ModelMapping;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -12,34 +13,20 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     public async Task<TimeSeriesCostDto> UpdateTimeSeriesProfile(
         Guid projectId,
         Guid caseId,
-        Guid costProfileId,
+        Guid profileId,
         UpdateTimeSeriesDto dto)
-    {
-        return await UpdateTimeSeriesProfile(projectId, caseId, costProfileId, dto.ProfileType, new UpdateTimeSeriesCostDto
-        {
-            StartYear = dto.StartYear,
-            Values = dto.Values
-        });
-    }
-
-    public async Task<TimeSeriesCostDto> UpdateTimeSeriesProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid costProfileId,
-        string profileType,
-        UpdateTimeSeriesCostDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var entity = await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
             .Where(x => x.Case.ProjectId == projectPk)
-            .Where(x => x.Id == costProfileId)
-            .Where(x => x.ProfileType == profileType)
+            .Where(x => x.Id == profileId)
+            .Where(x => x.ProfileType == dto.ProfileType)
             .SingleAsync();
 
         entity.StartYear = dto.StartYear;
-        entity.Values = dto.Values;
+        entity.Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateAsync(caseId);
@@ -55,39 +42,20 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     public async Task<TimeSeriesCostOverrideDto> UpdateTimeSeriesOverrideProfile(
         Guid projectId,
         Guid caseId,
-        Guid costProfileId,
+        Guid profileId,
         UpdateTimeSeriesOverrideDto dto)
-    {
-        return await UpdateTimeSeriesOverrideProfile(projectId,
-            caseId,
-            costProfileId,
-            dto.ProfileType,
-            new UpdateTimeSeriesCostOverrideDto
-            {
-                StartYear = dto.StartYear,
-                Values = dto.Values,
-                Override = dto.Override
-            });
-    }
-
-    public async Task<TimeSeriesCostOverrideDto> UpdateTimeSeriesOverrideProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid costProfileId,
-        string profileType,
-        UpdateTimeSeriesCostOverrideDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var entity = await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
             .Where(x => x.Case.ProjectId == projectPk)
-            .Where(x => x.Id == costProfileId)
-            .Where(x => x.ProfileType == profileType)
+            .Where(x => x.Id == profileId)
+            .Where(x => x.ProfileType == dto.ProfileType)
             .SingleAsync();
 
         entity.StartYear = dto.StartYear;
-        entity.Values = dto.Values;
+        entity.Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk);
         entity.Override = dto.Override;
 
         await context.UpdateCaseUpdatedUtc(caseId);
@@ -100,5 +68,20 @@ public class UpdateTimeSeriesProfileService(DcdDbContext context, IRecalculation
             Values = entity.Values,
             Override = entity.Override
         };
+    }
+
+    private async Task<double[]> ConvertFromDto(double[] input, string profileType, Guid projectPk)
+    {
+        if (!UnitConversionHelpers.ProfileTypesWithConversion.Contains(profileType))
+        {
+            return input;
+        }
+
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
+        return UnitConversionHelpers.ConvertValuesFromDto(input, projectPhysicalUnit, profileType);
     }
 }

@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
+using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,19 +16,6 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         Guid caseId,
         CreateTimeSeriesDto dto)
     {
-        return await CreateTimeSeriesProfile(projectId, caseId, dto.ProfileType, new CreateTimeSeriesCostDto
-        {
-            StartYear = dto.StartYear,
-            Values = dto.Values
-        });
-    }
-
-    public async Task<TimeSeriesCostDto> CreateTimeSeriesProfile(
-        Guid projectId,
-        Guid caseId,
-        string profileType,
-        CreateTimeSeriesCostDto dto)
-    {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var caseItem = await context.Cases
@@ -38,9 +26,9 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         var entity = new TimeSeriesProfile
         {
             CaseId = caseItem.Id,
-            ProfileType = profileType,
+            ProfileType = dto.ProfileType,
             StartYear = dto.StartYear,
-            Values = dto.Values
+            Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk)
         };
 
         context.TimeSeriesProfiles.Add(entity);
@@ -52,7 +40,7 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         {
             Id = entity.Id,
             StartYear = entity.StartYear,
-            Values = entity.Values
+            Values = dto.Values
         };
     }
 
@@ -60,20 +48,6 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         Guid projectId,
         Guid caseId,
         CreateTimeSeriesOverrideDto dto)
-    {
-        return await CreateTimeSeriesOverrideProfile(projectId, caseId, dto.ProfileType, new CreateTimeSeriesCostOverrideDto
-        {
-            StartYear = dto.StartYear,
-            Values = dto.Values,
-            Override = dto.Override
-        });
-    }
-
-    public async Task<TimeSeriesCostOverrideDto> CreateTimeSeriesOverrideProfile(
-        Guid projectId,
-        Guid caseId,
-        string profileType,
-        CreateTimeSeriesCostOverrideDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
@@ -85,9 +59,9 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         var entity = new TimeSeriesProfile
         {
             CaseId = caseItem.Id,
-            ProfileType = profileType,
+            ProfileType = dto.ProfileType,
             StartYear = dto.StartYear,
-            Values = dto.Values,
+            Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk),
             Override = dto.Override
         };
 
@@ -100,8 +74,23 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
         {
             Id = entity.Id,
             StartYear = entity.StartYear,
-            Values = entity.Values,
+            Values = dto.Values,
             Override = entity.Override
         };
+    }
+
+    private async Task<double[]> ConvertFromDto(double[] dtoValues, string profileType, Guid projectPk)
+    {
+        if (!UnitConversionHelpers.ProfileTypesWithConversion.Contains(profileType))
+        {
+            return dtoValues;
+        }
+
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
+        return UnitConversionHelpers.ConvertValuesFromDto(dtoValues, projectPhysicalUnit, profileType);
     }
 }

@@ -176,9 +176,7 @@ public static class DcdIocConfiguration
 
         /* Time series profiles */
         services.AddScoped<CreateTimeSeriesProfileService>();
-        services.AddScoped<CreateTimeSeriesProfileWithConversionService>();
         services.AddScoped<UpdateTimeSeriesProfileService>();
-        services.AddScoped<UpdateTimeSeriesProfileWithConversionService>();
 
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();

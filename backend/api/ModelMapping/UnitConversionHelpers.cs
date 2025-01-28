@@ -72,4 +72,23 @@ public static class UnitConversionHelpers
 
         return returnValue;
     }
+
+    public static readonly IReadOnlySet<string> ProfileTypesWithConversion = new HashSet<string>
+    {
+        ProfileTypes.AdditionalProductionProfileGas,
+        ProfileTypes.AdditionalProductionProfileOil,
+        ProfileTypes.Co2Emissions,
+        ProfileTypes.Co2EmissionsOverride,
+        ProfileTypes.DeferredGasProduction,
+        ProfileTypes.DeferredOilProduction,
+        ProfileTypes.FuelFlaringAndLosses,
+        ProfileTypes.FuelFlaringAndLossesOverride,
+        ProfileTypes.NetSalesGas,
+        ProfileTypes.NetSalesGasOverride,
+        ProfileTypes.ProductionProfileGas,
+        ProfileTypes.ProductionProfileNgl,
+        ProfileTypes.ProductionProfileOil,
+        ProfileTypes.ProductionProfileWater,
+        ProfileTypes.ProductionProfileWaterInjection
+    };
 }
