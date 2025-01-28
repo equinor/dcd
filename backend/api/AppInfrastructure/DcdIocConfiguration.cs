@@ -45,6 +45,7 @@ using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
+using api.Features.Videos.Get;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
 
@@ -158,5 +159,8 @@ public static class DcdIocConfiguration
         services.AddScoped<SaveProfileService>();
 
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
+
+        /* Videos */
+        services.AddScoped<GetVideoService>();
     }
 }

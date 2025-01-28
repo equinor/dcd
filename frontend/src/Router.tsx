@@ -6,8 +6,13 @@ import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
 import ProjectSelector from "./Components/ProjectSelector"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
+import UserGuideView from "./Components/Guide/UserGuide"
 
 const routes: RouteObject[] = [
+    {
+        path: "/guide",
+        element: <UserGuideView />,
+    },
     {
         path: "/",
         element: <ProjectSelector />,

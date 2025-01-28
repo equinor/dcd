@@ -39,17 +39,17 @@ const MainHeader = styled.div`
   font-size: 32px;
   margin-bottom: 30px;
 `
-const Button = styled.button < { isActive: boolean, isHeader: boolean } >`
+const Button = styled.button`
     font-family: Equinor;
     transition: all 0.3s ease-in-out;
     border: none;
-    border-left: 4px solid ${({ isActive }) => (isActive ? tokens.colors.interactive.primary__resting.rgba : "#e6e6e6")};
+    border-left: 4px solid #e6e6e6;
     background-color: transparent;
     display: flex;
     padding: 10px 20px;
-    padding-left: ${({ isActive }) => (isActive ? "26px" : "20px")}; 
+    padding-left: 20px;
     width: 100%;
-    font-size: ${({ isHeader }) => (isHeader ? "25px" : "16px")}; 
+    font-size: 16px;
     text-align: left;
 
     &:hover {
@@ -58,6 +58,15 @@ const Button = styled.button < { isActive: boolean, isHeader: boolean } >`
 
     &:focus {
         outline: none;
+    }
+
+    &.active {
+        border-left-color: ${tokens.colors.interactive.primary__resting.rgba};
+        padding-left: 26px;
+    }
+
+    &.header {
+        font-size: 25px;
     }
 `
 
@@ -147,8 +156,7 @@ const UserGuideView: React.FC = () => {
                 {articles.map((article, index) => (
                     <Link to={`/guide#${article.title}`} key={article.title}>
                         <Button
-                            isActive={index === activeArticleIndex}
-                            isHeader={article.type === "header"}
+                            className={`${index === activeArticleIndex ? 'active' : ''} ${article.type === "header" ? 'header' : ''}`}
                             onClick={() => scrollToArticle(articleRefs.current[index], index)}
                         >
                             {article.title}

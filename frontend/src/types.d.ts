@@ -665,6 +665,10 @@ declare namespace Components {
             canEditProjectData: boolean;
             canEditProjectMembers: boolean;
         }
+        export interface VideoDto {
+            videoName: string;
+            base64EncodedData: string;
+        }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellOverviewDto {
             id: string; // uuid
@@ -1462,6 +1466,19 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Videos$VideoName {
+        namespace Get {
+            namespace Parameters {
+                export type VideoName = string;
+            }
+            export interface PathParameters {
+                videoName: Parameters.VideoName;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.VideoDto;
             }
         }
     }
