@@ -13,6 +13,18 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     public async Task<TimeSeriesCostDto> CreateTimeSeriesProfile(
         Guid projectId,
         Guid caseId,
+        CreateTimeSeriesDto dto)
+    {
+        return await CreateTimeSeriesProfile(projectId, caseId, dto.ProfileType, new CreateTimeSeriesCostDto
+        {
+            StartYear = dto.StartYear,
+            Values = dto.Values
+        });
+    }
+
+    public async Task<TimeSeriesCostDto> CreateTimeSeriesProfile(
+        Guid projectId,
+        Guid caseId,
         string profileType,
         CreateTimeSeriesCostDto dto)
     {
@@ -42,6 +54,19 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
             StartYear = entity.StartYear,
             Values = entity.Values
         };
+    }
+
+    public async Task<TimeSeriesCostOverrideDto> CreateTimeSeriesOverrideProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateTimeSeriesOverrideDto dto)
+    {
+        return await CreateTimeSeriesOverrideProfile(projectId, caseId, dto.ProfileType, new CreateTimeSeriesCostOverrideDto
+        {
+            StartYear = dto.StartYear,
+            Values = dto.Values,
+            Override = dto.Override
+        });
     }
 
     public async Task<TimeSeriesCostOverrideDto> CreateTimeSeriesOverrideProfile(

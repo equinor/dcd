@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Features.Profiles.Dtos.BaseClasses;
-
 namespace api.Features.Profiles.Dtos;
 
-public class TimeSeriesCostDto : TimeSeriesDoubleDto;
+public class TimeSeriesCostDto
+{
+    [Required] public Guid Id { get; set; }
+    [Required] public int StartYear { get; set; }
+    [Required] public double[] Values { get; set; } = [];
+}
 
 public class TimeSeriesCostOverrideDto
 {

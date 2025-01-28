@@ -302,6 +302,56 @@ class CaseService extends __BaseService {
         return res
     }
 
+    public async createProfile(
+        projectId: string,
+        caseId: string,
+        dto: Components.Schemas.CreateTimeSeriesDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/profiles`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async createOverrideProfile(
+        projectId: string,
+        caseId: string,
+        dto: Components.Schemas.CreateTimeSeriesOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/override-profiles`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateProfile(
+        projectId: string,
+        caseId: string,
+        profileId: string,
+        dto: Components.Schemas.UpdateTimeSeriesDto,
+    ): Promise<Components.Schemas.TimeSeriesCostDto> {
+        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/profiles/${profileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateOverrideProfile(
+        projectId: string,
+        caseId: string,
+        profileId: string,
+        dto: Components.Schemas.UpdateTimeSeriesOverrideDto,
+    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
+        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/override-profiles/${profileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async createAdditionalOPEXCostProfile(
         projectId: string,
         caseId: string,

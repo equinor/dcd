@@ -232,33 +232,6 @@ class DrainageStrategyService extends __BaseService {
         return res
     }
 
-    public async createProductionProfileCo2EmissionsOverride(
-        projectId: string,
-        caseId: string,
-        drainageStrategyId: string,
-        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/co2-emissions-override/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateProductionProfileCo2EmissionsOverride(
-        projectId: string,
-        caseId: string,
-        drainageStrategyId: string,
-        productionProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/co2-emissions-override/${productionProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
-
     public async createProductionProfileImportedElectricityOverride(
         projectId: string,
         caseId: string,

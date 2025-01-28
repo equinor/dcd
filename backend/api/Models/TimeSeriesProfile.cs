@@ -22,7 +22,7 @@ public class TimeSeriesProfile : IChangeTrackable, IDateTrackedEntity
     public virtual Case Case { get; set; } = null!;
 
     [NotMapped]
-    public double[] Values
+    public required double[] Values
     {
         get => string.IsNullOrEmpty(InternalData)
             ? []

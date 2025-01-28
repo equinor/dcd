@@ -42,6 +42,14 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
+    const sumValues = (input: Components.Schemas.TimeSeriesCostDto | undefined) => {
+        if (!input || input?.values) {
+            return 0
+        }
+
+        return input.values.reduce((sum, current) => sum + current, 0)
+    }
+
     const caseData = apiData?.case
     const topsideData = apiData?.topside
     const drainageStrategyData = apiData?.drainageStrategy
@@ -62,8 +70,8 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const totalOilProduction = (apiData?.productionProfileOil?.sum ?? 0)
-        + (apiData?.additionalProductionProfileOil?.sum ?? 0)
+    const totalOilProduction = (sumValues(apiData?.productionProfileOil) ?? 0)
+        + (sumValues(apiData?.additionalProductionProfileOil) ?? 0)
     const co2GridRef = useRef<any>(null)
 
     const co2IntensityLine = {
@@ -208,7 +216,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
 
     const co2EmissionsTotalString = () => {
         if (co2EmissionsData) {
-            return (Math.round(co2EmissionsData.sum! * 10) / 10).toString()
+            return (Math.round(sumValues(co2EmissionsData) * 10) / 10).toString()
         }
         return "0"
     }
@@ -265,8 +273,8 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 </Grid>
                 <Grid item>
                     <Typography variant="h1_bold">
-                        {co2IntensityData?.sum && co2IntensityData?.values && co2IntensityData.values.length > 0
-                            ? ((Number(co2EmissionsData?.sum) * 1000) / (totalOilProduction * 6.29)).toFixed(4)
+                        {sumValues(co2IntensityData) && co2IntensityData?.values && co2IntensityData.values.length > 0
+                            ? ((sumValues(co2EmissionsData) * 1000) / (totalOilProduction * 6.29)).toFixed(4)
                             : "0.0000"}
                     </Typography>
 
