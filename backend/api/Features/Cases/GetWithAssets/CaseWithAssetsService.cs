@@ -1,22 +1,18 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Cases.GetWithAssets.AssetMappers;
 using api.Features.Cases.GetWithAssets.Dtos;
-using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
-using api.ModelMapping.AutoMapperProfiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.GetWithAssets;
 
-public class CaseWithAssetsService(
-    DcdDbContext context,
-    CaseWithAssetsRepository caseWithAssetsRepository,
-    MapperService mapperService)
+public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepository caseWithAssetsRepository)
 {
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
@@ -48,7 +44,7 @@ public class CaseWithAssetsService(
             AdditionalOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
             CalculatedTotalIncomeCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile)),
             CalculatedTotalCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile)),
-            DrainageStrategy = mapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id),
+            DrainageStrategy = DrainageStrategyMapper.MapToDto(drainageStrategy),
             ProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), ProfileTypes.ProductionProfileOil, project.PhysicalUnit),
             AdditionalProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil), ProfileTypes.AdditionalProductionProfileOil, project.PhysicalUnit),
             ProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas), ProfileTypes.ProductionProfileGas, project.PhysicalUnit),
@@ -67,27 +63,27 @@ public class CaseWithAssetsService(
             ImportedElectricityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), ProfileTypes.ImportedElectricityOverride, project.PhysicalUnit),
             DeferredOilProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), ProfileTypes.DeferredOilProduction, project.PhysicalUnit),
             DeferredGasProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredGasProduction), ProfileTypes.DeferredGasProduction, project.PhysicalUnit),
-            Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
+            Topside = TopsideMapper.MapToDto(topside),
             TopsideCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile)),
             TopsideCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)),
             TopsideCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCessationCostProfile)),
-            Substructure = mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
+            Substructure = SubstructureMapper.MapToDto(substructure),
             SubstructureCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile)),
             SubstructureCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride)),
             SubstructureCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCessationCostProfile)),
-            Surf = mapperService.MapToDto<Surf, SurfDto>(surf, surf.Id),
+            Surf = SurfMapper.MapToDto(surf),
             SurfCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile)),
             SurfCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride)),
             SurfCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SurfCessationCostProfile)),
-            Transport = mapperService.MapToDto<Transport, TransportDto>(transport, transport.Id),
+            Transport = TransportMapper.MapToDto(transport),
             TransportCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile)),
             TransportCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride)),
             TransportCessationCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TransportCessationCostProfile)),
-            OnshorePowerSupply = mapperService.MapToDto<OnshorePowerSupply, OnshorePowerSupplyDto>(onshorePowerSupply, onshorePowerSupply.Id),
+            OnshorePowerSupply = OnshorePowerSupplyMapper.MapToDto(onshorePowerSupply),
             OnshorePowerSupplyCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile)),
             OnshorePowerSupplyCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)),
-            Exploration = mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
-            ExplorationWells = exploration.ExplorationWells.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList(),
+            Exploration = ExplorationMapper.MapToDto(exploration),
+            ExplorationWells = ExplorationWellsMapper.MapToDtos(exploration.ExplorationWells),
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
             SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
@@ -95,8 +91,8 @@ public class CaseWithAssetsService(
             GAndGAdminCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)),
             SeismicAcquisitionAndProcessing = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)),
             CountryOfficeCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost)),
-            WellProject = mapperService.MapToDto<WellProject, WellProjectDto>(wellProject, wellProject.Id),
-            WellProjectWells = wellProject.WellProjectWells.Select(w => mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList(),
+            WellProject = WellProjectMapper.MapToDto(wellProject),
+            WellProjectWells = WellProjectWellsMapper.MapToDtos(wellProject.WellProjectWells),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),

@@ -6,14 +6,9 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 public class ExplorationDto
 {
-    [Required]
-    public Guid Id { get; set; }
-    [Required]
-    public Guid ProjectId { get; set; }
-    [Required]
-    public string Name { get; set; } = string.Empty;
-    [Required]
-    public double RigMobDemob { get; set; }
-    [Required]
-    public Currency Currency { get; set; }
+    [Required] public Guid Id { get; set; }
+    [Required] public Guid ProjectId { get; set; }
+    [Required] public string Name { get; set; } = string.Empty;
+    [Required] public double RigMobDemob { get; set; }
+    [Required] public Currency Currency { get; set; }
 }

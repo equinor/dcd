@@ -6,7 +6,6 @@ using api.Features.BackgroundServices.DisableConcurrentJobExecution;
 using api.Features.BackgroundServices.LogCleanup;
 using api.Features.BackgroundServices.ProjectMaster;
 using api.Features.BackgroundServices.ProjectRecalculation;
-using api.ModelMapping.AutoMapperProfiles;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -43,7 +42,6 @@ builder.Services.AddResponseCompression(options =>
 
 builder.AddDcdAuthentication();
 
-builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddDcdIocConfiguration();
 
 builder.Services.AddHostedService<DisableConcurrentJobExecutionService>();

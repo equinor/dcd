@@ -2,7 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.ModelMapping.AutoMapperProfiles;
+using api.ModelMapping;
 
 using Microsoft.EntityFrameworkCore;
 

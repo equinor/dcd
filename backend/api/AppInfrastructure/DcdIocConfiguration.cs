@@ -64,7 +64,6 @@ using api.Features.Revisions.Update;
 using api.Features.Stea;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
-using api.ModelMapping;
 
 using Microsoft.AspNetCore.Authorization;
 
@@ -119,9 +118,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UploadImageService>();
         services.AddScoped<CopyImageService>();
         services.AddScoped<UpdateImageService>();
-
-        /* Mapping */
-        services.AddScoped<MapperService>();
 
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();

@@ -1,7 +1,7 @@
 using api.Features.Profiles;
 using api.Models;
 
-namespace api.ModelMapping.AutoMapperProfiles;
+namespace api.ModelMapping;
 
 public static class UnitConversionHelpers
 {
