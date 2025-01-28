@@ -34,6 +34,12 @@ public class CalculateBreakEvenOilPriceServiceTests
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = 2027,
                     Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2030,
+                    Values = [1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0]
                 }
             }
         };
@@ -42,11 +48,6 @@ public class CalculateBreakEvenOilPriceServiceTests
         {
             Id = caseItem.DrainageStrategyLink,
 
-            ProductionProfileOil = new ProductionProfileOil
-            {
-                StartYear = 2030,
-                Values = [1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0]
-            },
             ProductionProfileGas = new ProductionProfileGas
             {
                 StartYear = 2030,

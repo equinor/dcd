@@ -14,7 +14,8 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
         var profileTypes = new List<string>
         {
             ProfileTypes.FuelFlaringAndLosses,
-            ProfileTypes.FuelFlaringAndLossesOverride
+            ProfileTypes.FuelFlaringAndLossesOverride,
+            ProfileTypes.ProductionProfileOil
         };
 
         var caseItem = await context.Cases
@@ -23,7 +24,6 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
 
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.ProductionProfileGas)
-            .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileWaterInjection)
@@ -43,7 +43,7 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
 
         var total = CostProfileMerger.MergeCostProfiles([fuelConsumptions, flaring, losses]);

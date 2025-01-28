@@ -60,7 +60,6 @@ public class SteaRepository(DcdDbContext context)
     public async Task<List<DrainageStrategy>> GetDrainageStrategies(Guid projectPk)
     {
         return await context.DrainageStrategies
-            .Include(c => c.ProductionProfileOil)
             .Include(c => c.AdditionalProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
             .Include(c => c.AdditionalProductionProfileGas)

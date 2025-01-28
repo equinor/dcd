@@ -26,17 +26,22 @@ public class CalculateTotalIncomeServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid()
+            DrainageStrategyLink = Guid.NewGuid(),
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
+            {
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2020,
+                    Values = [1000000.0, 2000000.0, 3000000.0] // SM³
+                }
+            }
         };
 
         var drainageStrategy = new DrainageStrategy
         {
             Id = caseItem.DrainageStrategyLink,
-            ProductionProfileOil = new ProductionProfileOil
-            {
-                StartYear = 2020,
-                Values = [1000000.0, 2000000.0, 3000000.0] // SM³
-            },
+
             AdditionalProductionProfileOil = new AdditionalProductionProfileOil
             {
                 StartYear = 2020,
@@ -89,17 +94,21 @@ public class CalculateTotalIncomeServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid()
+            DrainageStrategyLink = Guid.NewGuid(),
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
+            {
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2020,
+                    Values = [0.0, 0.0, 0.0]
+                },
+            }
         };
 
         var drainageStrategy = new DrainageStrategy
         {
             Id = caseItem.DrainageStrategyLink,
-            ProductionProfileOil = new ProductionProfileOil
-            {
-                StartYear = 2020,
-                Values = [0.0, 0.0, 0.0]
-            },
             ProductionProfileGas = new ProductionProfileGas
             {
                 StartYear = 2020,

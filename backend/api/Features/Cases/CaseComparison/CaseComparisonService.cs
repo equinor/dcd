@@ -28,11 +28,11 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
             var drainageStrategy = caseItem.DrainageStrategy!;
 
-            var totalOilProduction = drainageStrategy.ProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
+            var totalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
             var totalGasProduction = drainageStrategy.ProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
-            var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, false);
+            var totalExportedVolumes = CalculateTotalExportedVolumes(project, caseItem, drainageStrategy, false);
 
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
@@ -70,16 +70,16 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return caseList;
     }
 
-    private static double CalculateTotalOilProduction(Project project, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
+    private static double CalculateTotalOilProduction(Project project, Case caseItem, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
     {
         const double million = 1E6;
         const double bblConversionFactor = 6.29;
 
         var sumOilProduction = 0.0;
 
-        if (drainageStrategy.ProductionProfileOil != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil) != null)
         {
-            sumOilProduction += drainageStrategy.ProductionProfileOil.Values.Sum();
+            sumOilProduction += caseItem.GetProfile(ProfileTypes.ProductionProfileOil).Values.Sum();
         }
 
         if (drainageStrategy.AdditionalProductionProfileOil != null)
@@ -120,16 +120,16 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         return sumGasProduction / billion;
     }
 
-    private static double CalculateTotalExportedVolumes(Project project, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
+    private static double CalculateTotalExportedVolumes(Project project, Case caseItem, DrainageStrategy drainageStrategy, bool excludeOilFieldConversion)
     {
         const double oilEquivalentFactor = 5.61;
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(project, drainageStrategy, false) + CalculateTotalGasProduction(project, drainageStrategy, false) / oilEquivalentFactor;
+            return CalculateTotalOilProduction(project, caseItem, drainageStrategy, false) + CalculateTotalGasProduction(project, drainageStrategy, false) / oilEquivalentFactor;
         }
 
-        return CalculateTotalOilProduction(project, drainageStrategy, true) + CalculateTotalGasProduction(project, drainageStrategy, true);
+        return CalculateTotalOilProduction(project, caseItem, drainageStrategy, true) + CalculateTotalGasProduction(project, drainageStrategy, true);
     }
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)

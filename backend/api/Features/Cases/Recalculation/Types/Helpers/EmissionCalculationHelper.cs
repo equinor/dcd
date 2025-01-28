@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -16,7 +17,7 @@ public static class EmissionCalculationHelper
     {
         var factor = caseItem.FacilitiesAvailability * topside.FuelConsumption * Cd * 1e6;
 
-        var totalUseOfPower = CalculateTotalUseOfPower(topside, drainageStrategy, caseItem.FacilitiesAvailability);
+        var totalUseOfPower = CalculateTotalUseOfPower(caseItem, topside, drainageStrategy, caseItem.FacilitiesAvailability);
 
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
         var fuelConsumptions = new TimeSeries<double>
@@ -29,6 +30,7 @@ public static class EmissionCalculationHelper
     }
 
     public static TimeSeries<double> CalculateTotalUseOfPower(
+        Case caseItem,
         Topside topside,
         DrainageStrategy drainageStrategy,
         double pe
@@ -40,7 +42,7 @@ public static class EmissionCalculationHelper
 
         var co2ShareCo2Max = co2ShareCo2MaxOil + co2ShareCo2MaxGas + co2ShareCo2MaxWi;
 
-        var totalPowerOil = CalculateTotalUseOfPowerOil(topside, drainageStrategy, pe);
+        var totalPowerOil = CalculateTotalUseOfPowerOil(caseItem, topside, drainageStrategy, pe);
         var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy, pe);
         var totalPowerWi = CalculateTotalUseOfPowerWi(topside, drainageStrategy, pe);
 
@@ -135,16 +137,16 @@ public static class EmissionCalculationHelper
 
     // Formula: 1. WRP = WR/WIC/cd
     //          2. ORP*OSP*(1-OOM)
-    private static TimeSeries<double> CalculateTotalUseOfPowerOil(Topside topside, DrainageStrategy drainageStrategy, double pe)
+    private static TimeSeries<double> CalculateTotalUseOfPowerOil(Case caseItem, Topside topside, DrainageStrategy drainageStrategy, double pe)
     {
         var oc = topside.OilCapacity;
-        var or = drainageStrategy.ProductionProfileOil?.Values ?? [];
+        var or = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values ?? [];
         var additionalOr = drainageStrategy.AdditionalProductionProfileOil?.Values ?? [];
 
         // Create TimeSeries<double> instances for both profiles
         var productionProfileOil = new TimeSeries<double>
         {
-            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+            StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0,
             Values = or
         };
 
@@ -170,15 +172,15 @@ public static class EmissionCalculationHelper
         var totalUseOfPower = new TimeSeries<double>
         {
             Values = orpOspOom.ToArray(),
-            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+            StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0,
         };
 
         return totalUseOfPower;
     }
 
-    public static TimeSeries<double> CalculateFlaring(Project project, DrainageStrategy drainageStrategy)
+    public static TimeSeries<double> CalculateFlaring(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
-        var oilRate = drainageStrategy.ProductionProfileOil?.Values.Select(v => v).ToArray() ?? [];
+        var oilRate = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v).ToArray() ?? [];
         var additionalOilRate = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v).ToArray() ?? [];
 
         var gasRate = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
@@ -188,7 +190,7 @@ public static class EmissionCalculationHelper
         var oilRateTs = new TimeSeries<double>
         {
             Values = oilRate,
-            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+            StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0,
         };
 
         var additionalOilRateTs = new TimeSeries<double>

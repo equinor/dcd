@@ -49,7 +49,7 @@ public class CaseWithAssetsService(
             CalculatedTotalIncomeCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile)),
             CalculatedTotalCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile)),
             DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
-            ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, TimeSeriesCostDto>(drainageStrategy.ProductionProfileOil, drainageStrategy.ProductionProfileOil?.Id, project.PhysicalUnit),
+            ProductionProfileOil = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), project.PhysicalUnit),
             AdditionalProductionProfileOil = ConversionMapToDto<AdditionalProductionProfileOil, TimeSeriesCostDto>(drainageStrategy.AdditionalProductionProfileOil, drainageStrategy.AdditionalProductionProfileOil?.Id, project.PhysicalUnit),
             ProductionProfileGas = ConversionMapToDto<ProductionProfileGas, TimeSeriesCostDto>(drainageStrategy.ProductionProfileGas, drainageStrategy.ProductionProfileGas?.Id, project.PhysicalUnit),
             AdditionalProductionProfileGas = ConversionMapToDto<AdditionalProductionProfileGas, TimeSeriesCostDto>(drainageStrategy.AdditionalProductionProfileGas, drainageStrategy.AdditionalProductionProfileGas?.Id, project.PhysicalUnit),

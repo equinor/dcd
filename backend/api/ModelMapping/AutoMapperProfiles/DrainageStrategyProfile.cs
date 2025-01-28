@@ -14,15 +14,13 @@ public class DrainageStrategyProfile : Profile
     public DrainageStrategyProfile()
     {
         CreateMap<DrainageStrategy, DrainageStrategyDto>();
-        CreateMap<ProductionProfileOil, TimeSeriesCostDto>()
+        CreateMap<TimeSeriesProfile, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(ProductionProfileOil)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.ProductionProfileOil)));
         CreateMap<AdditionalProductionProfileOil, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
@@ -166,15 +164,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.Co2EmissionsOverride)));
-        CreateMap<CreateTimeSeriesCostDto, ProductionProfileOil>()
+        CreateMap<CreateTimeSeriesCostDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(ProductionProfileOil)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.ProductionProfileOil)));
         CreateMap<CreateTimeSeriesCostDto, AdditionalProductionProfileOil>()
             .ForMember(
                 dest => dest.Values,
@@ -274,15 +270,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.Co2EmissionsOverride)));
-        CreateMap<UpdateTimeSeriesCostDto, ProductionProfileOil>()
+        CreateMap<UpdateTimeSeriesCostDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(ProductionProfileOil)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.ProductionProfileOil)));
         CreateMap<UpdateTimeSeriesCostDto, AdditionalProductionProfileOil>()
             .ForMember(
                 dest => dest.Values,
@@ -353,7 +347,7 @@ public class DrainageStrategyProfile : Profile
         { ProfileTypes.Co2Emissions, 1_000_000 },
         { ProfileTypes.Co2EmissionsOverride, 1_000_000 },
         { nameof(ProductionProfileNgl), 1_000_000 },
-        { nameof(ProductionProfileOil), 1_000_000 },
+        { ProfileTypes.ProductionProfileOil, 1_000_000 },
         { nameof(AdditionalProductionProfileOil), 1_000_000 },
         { nameof(ProductionProfileWater), 1_000_000 },
         { nameof(ProductionProfileWaterInjection), 1_000_000 },
@@ -389,7 +383,7 @@ public class DrainageStrategyProfile : Profile
         {
             switch (type)
             {
-                case nameof(ProductionProfileOil):
+                case ProfileTypes.ProductionProfileOil:
                 case nameof(AdditionalProductionProfileOil):
                 case nameof(ProductionProfileWater):
                 case nameof(ProductionProfileWaterInjection):

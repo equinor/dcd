@@ -41,19 +41,19 @@ public class Co2IntensityProfileServiceTests
                     ProfileType = ProfileTypes.Co2Emissions,
                     StartYear = 2023,
                     Values = [29400000 / 1000]
-                }
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2023,
+                    Values = [1421000]
+                },
             }
         };
 
         var drainageStrategy = new DrainageStrategy
         {
             Id = caseItem.DrainageStrategyLink,
-
-            ProductionProfileOil = new ProductionProfileOil
-            {
-                StartYear = 2023,
-                Values = [1421000]
-            },
         };
 
         // Act

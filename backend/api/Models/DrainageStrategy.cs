@@ -34,8 +34,8 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEnt
     public virtual Co2EmissionsOverride? Co2EmissionsOverride { get; set; }
     public virtual ImportedElectricity? ImportedElectricity { get; set; }
     public virtual ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
-    #endregion Migrated profiles, do not access.
     public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
     public virtual ProductionProfileGas? ProductionProfileGas { get; set; }
     public virtual AdditionalProductionProfileGas? AdditionalProductionProfileGas { get; set; }
@@ -104,13 +104,13 @@ public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     public bool Override { get; set; }
 }
-#endregion Migrated profiles, do not access.
-
 public class ProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+#endregion Migrated profiles, do not access.
+
 
 public class AdditionalProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {

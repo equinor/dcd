@@ -16,6 +16,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         {
             ProfileTypes.Co2Emissions,
             ProfileTypes.Co2EmissionsOverride,
+            ProfileTypes.ProductionProfileOil
         };
 
         var caseItem = await context.Cases
@@ -23,7 +24,6 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
@@ -45,7 +45,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
-        var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
+        var flaringsProfile = GetFlaringsProfile(project, caseItem, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
 
         var tempProfile = CostProfileMerger.MergeCostProfiles([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
@@ -80,9 +80,9 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return lossesProfile;
     }
 
-    private static TimeSeriesVolume GetFlaringsProfile(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeriesVolume GetFlaringsProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
 
         var flaringsProfile = new TimeSeriesVolume
         {

@@ -296,13 +296,15 @@ public static class SteaCaseDtoBuilder
         var drainageStrategy = steaDbData.DrainageStrategies.First(d => d.Id == caseItem.DrainageStrategyLink);
         var startYearsProductionSalesAndVolumes = new List<int>();
 
-        if (drainageStrategy.ProductionProfileOil != null || drainageStrategy.AdditionalProductionProfileOil != null)
+        var productionProfileOilProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil);
+
+        if (productionProfileOilProfile != null || drainageStrategy.AdditionalProductionProfileOil != null)
         {
-            var oilProfile = drainageStrategy.ProductionProfileOil != null
+            var oilProfile = productionProfileOilProfile != null
                 ? new TimeSeriesCostDto
                 {
-                    StartYear = drainageStrategy.ProductionProfileOil.StartYear,
-                    Values = drainageStrategy.ProductionProfileOil.Values
+                    StartYear = productionProfileOilProfile.StartYear,
+                    Values = productionProfileOilProfile.Values
                 }
                 : new TimeSeriesCostDto { Values = [], StartYear = 0 };
 

@@ -38,7 +38,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
     private async Task LoadDrainageStrategies(Guid drainageStrategyLink)
     {
         await context.DrainageStrategies
-            .Include(c => c.ProductionProfileOil)
             .Include(c => c.AdditionalProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
             .Include(c => c.AdditionalProductionProfileGas)

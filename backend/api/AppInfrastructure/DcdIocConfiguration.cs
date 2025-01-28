@@ -46,7 +46,6 @@ using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
 using api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
@@ -197,7 +196,6 @@ public static class DcdIocConfiguration
         services.AddScoped<DeferredGasProductionService>();
         services.AddScoped<DeferredOilProductionService>();
         services.AddScoped<ProductionProfileGasService>();
-        services.AddScoped<ProductionProfileOilService>();
         services.AddScoped<ProductionProfileWaterInjectionService>();
         services.AddScoped<ProductionProfileWaterService>();
 

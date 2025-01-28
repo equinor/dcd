@@ -20,7 +20,6 @@ public class CalculateTotalIncomeService(DcdDbContext context)
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
-            .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
@@ -35,7 +34,7 @@ public class CalculateTotalIncomeService(DcdDbContext context)
         var cubicMetersToBarrelsFactor = 6.29;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            drainageStrategy.ProductionProfileOil,
+            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
             drainageStrategy.AdditionalProductionProfileOil
         );
 

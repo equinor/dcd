@@ -180,5 +180,6 @@ public static class DcdDatabaseConfiguration
         ("Co2EmissionsOverride", ProfileTypes.Co2EmissionsOverride, true, "DrainageStrategy", "DrainageStrategies"),
         ("ImportedElectricity", ProfileTypes.ImportedElectricity, false, "DrainageStrategy", "DrainageStrategies"),
         ("ImportedElectricityOverride", ProfileTypes.ImportedElectricityOverride, true, "DrainageStrategy", "DrainageStrategies"),
+        ("ProductionProfileOil", ProfileTypes.ProductionProfileOil, false, "DrainageStrategy", "DrainageStrategies"),
     ];
 }

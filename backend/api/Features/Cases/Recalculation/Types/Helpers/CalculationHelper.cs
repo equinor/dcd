@@ -1,14 +1,17 @@
+using api.Features.Profiles;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.Helpers;
 
 public static class CalculationHelper
 {
-    public static int? GetRelativeLastYearOfProduction(DrainageStrategy drainageStrategy)
+    public static int? GetRelativeLastYearOfProduction(Case caseItem, DrainageStrategy drainageStrategy)
     {
+        var productionProfileOilProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil);
+
         var lastYear = new List<int?>
         {
-            drainageStrategy.ProductionProfileOil?.Values.Length > 0 ? drainageStrategy.ProductionProfileOil?.StartYear + drainageStrategy.ProductionProfileOil?.Values.Length - 1 : null,
+            productionProfileOilProfile?.Values.Length > 0 ? productionProfileOilProfile.StartYear + productionProfileOilProfile?.Values.Length - 1 : null,
             drainageStrategy.AdditionalProductionProfileOil?.Values.Length > 0 ? drainageStrategy.AdditionalProductionProfileOil?.StartYear + drainageStrategy.AdditionalProductionProfileOil?.Values.Length - 1 : null,
             drainageStrategy.ProductionProfileGas?.Values.Length > 0 ? drainageStrategy.ProductionProfileGas?.StartYear + drainageStrategy.ProductionProfileGas?.Values.Length - 1 : null,
             drainageStrategy.AdditionalProductionProfileGas?.Values.Length > 0 ? drainageStrategy.AdditionalProductionProfileGas?.StartYear + drainageStrategy.AdditionalProductionProfileGas?.Values.Length - 1 : null
@@ -17,11 +20,13 @@ public static class CalculationHelper
         return lastYear;
     }
 
-    public static int? GetRelativeFirstYearOfProduction(DrainageStrategy drainageStrategy)
+    public static int? GetRelativeFirstYearOfProduction(Case caseItem, DrainageStrategy drainageStrategy)
     {
+        var productionProfileOilProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil);
+
         var firstYear = new List<int?>
         {
-            drainageStrategy.ProductionProfileOil?.Values.Length > 0 ? drainageStrategy.ProductionProfileOil?.StartYear : null,
+            productionProfileOilProfile?.Values.Length > 0 ? productionProfileOilProfile.StartYear : null,
             drainageStrategy.AdditionalProductionProfileOil?.Values.Length > 0 ? drainageStrategy.AdditionalProductionProfileOil?.StartYear : null,
             drainageStrategy.ProductionProfileGas?.Values.Length > 0 ? drainageStrategy.ProductionProfileGas?.StartYear : null,
             drainageStrategy.AdditionalProductionProfileGas?.Values.Length > 0 ? drainageStrategy.AdditionalProductionProfileGas?.StartYear : null

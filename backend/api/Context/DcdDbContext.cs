@@ -29,7 +29,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<Transport> Transports => Set<Transport>();
     public DbSet<OnshorePowerSupply> OnshorePowerSupplies => Set<OnshorePowerSupply>();
     public DbSet<DrainageStrategy> DrainageStrategies => Set<DrainageStrategy>();
-    public DbSet<ProductionProfileOil> ProductionProfileOil => Set<ProductionProfileOil>();
     public DbSet<AdditionalProductionProfileOil> AdditionalProductionProfileOil => Set<AdditionalProductionProfileOil>();
     public DbSet<ProductionProfileGas> ProductionProfileGas => Set<ProductionProfileGas>();
     public DbSet<AdditionalProductionProfileGas> AdditionalProductionProfileGas => Set<AdditionalProductionProfileGas>();
