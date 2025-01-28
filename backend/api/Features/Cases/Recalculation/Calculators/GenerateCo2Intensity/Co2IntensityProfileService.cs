@@ -1,10 +1,11 @@
 using api.Context;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
+namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
 public class Co2IntensityProfileService(DcdDbContext context)
 {

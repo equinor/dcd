@@ -22,6 +22,7 @@ using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Types.CessationCostProfile;
 using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 using api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
@@ -39,13 +40,7 @@ using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
-using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Create;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
-using api.Features.Profiles.Substructures.SubstructureCostProfiles;
-using api.Features.Profiles.Surfs.SurfCostProfiles;
-using api.Features.Profiles.Topsides.TopsideCostProfiles;
-using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Profiles.Update;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
@@ -59,6 +54,7 @@ using api.Features.Projects.Create;
 using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
+using api.Features.Prosp.Services.Assets;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
@@ -152,6 +148,11 @@ public static class DcdIocConfiguration
         /* Prosp / Excel import */
         services.AddScoped<ProspExcelImportService>();
         services.AddScoped<ProspSharepointImportService>();
+        services.AddScoped<OnshorePowerSupplyCostProfileService>();
+        services.AddScoped<SubstructureCostProfileService>();
+        services.AddScoped<SurfCostProfileService>();
+        services.AddScoped<TopsideCostProfileService>();
+        services.AddScoped<TransportCostProfileService>();
 
         /* Stea / Excel export */
         services.AddScoped<SteaService>();
@@ -177,21 +178,6 @@ public static class DcdIocConfiguration
         /* Time series profiles */
         services.AddScoped<CreateTimeSeriesProfileService>();
         services.AddScoped<UpdateTimeSeriesProfileService>();
-
-        /* Onshore power supply profiles */
-        services.AddScoped<OnshorePowerSupplyCostProfileService>();
-
-        /* Substructure profiles */
-        services.AddScoped<SubstructureCostProfileService>();
-
-        /* Surf profiles */
-        services.AddScoped<SurfCostProfileService>();
-
-        /* Topside profiles */
-        services.AddScoped<TopsideCostProfileService>();
-
-        /* Transport profiles */
-        services.AddScoped<TransportCostProfileService>();
 
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
     }

@@ -1,5 +1,5 @@
+using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Profiles;
-using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Models;
 
 using Xunit;

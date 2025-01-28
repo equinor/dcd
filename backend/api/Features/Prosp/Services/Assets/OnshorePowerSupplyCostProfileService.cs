@@ -1,12 +1,13 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
+namespace api.Features.Prosp.Services.Assets;
 
 public class OnshorePowerSupplyCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
 {
