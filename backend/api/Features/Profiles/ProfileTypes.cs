@@ -120,4 +120,6 @@ public static class ProfileTypes
     public const string ProductionProfileNgl = "ProductionProfileNgl";
 
     public const string DeferredOilProduction = "DeferredOilProduction";
+
+    public const string DeferredGasProduction = "DeferredGasProduction";
 }

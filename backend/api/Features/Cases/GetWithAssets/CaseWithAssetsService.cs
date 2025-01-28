@@ -66,7 +66,7 @@ public class CaseWithAssetsService(
             ImportedElectricity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), project.PhysicalUnit),
             ImportedElectricityOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), project.PhysicalUnit),
             DeferredOilProduction = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), project.PhysicalUnit),
-            DeferredGasProduction = ConversionMapToDto<DeferredGasProduction, TimeSeriesCostDto>(drainageStrategy.DeferredGasProduction, drainageStrategy.DeferredGasProduction?.Id, project.PhysicalUnit),
+            DeferredGasProduction = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.DeferredGasProduction), project.PhysicalUnit),
             Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
             TopsideCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile)),
             TopsideCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)),
@@ -184,16 +184,6 @@ public class CaseWithAssetsService(
             SharepointFileName = caseItem.SharepointFileName,
             SharepointFileUrl = caseItem.SharepointFileUrl
         };
-    }
-
-    private TDto? ConversionMapToDto<T, TDto>(T? source, Guid? id, PhysUnit physUnit) where T : class where TDto : class
-    {
-        if (source == null || id == null)
-        {
-            return null;
-        }
-
-        return conversionMapperService.MapToDto<T, TDto>(source, (Guid)id, physUnit);
     }
 
     private TDto? ConversionMapToDto<T, TDto>(T? source, PhysUnit physUnit) where T : class where TDto : class
