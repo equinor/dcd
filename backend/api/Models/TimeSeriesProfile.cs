@@ -10,7 +10,7 @@ public class TimeSeriesProfile : IChangeTrackable, IDateTrackedEntity
     public required string ProfileType { get; set; }
 
     public int StartYear { get; set; }
-    public string InternalData { get; set; } = null!;
+    public string InternalData { get; set; } = string.Empty;
     public bool Override { get; set; }
 
     public DateTime CreatedUtc { get; set; }

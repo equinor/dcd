@@ -36,27 +36,32 @@ public class CreateCaseService(DcdDbContext context)
                 new()
                 {
                     ProfileType = ProfileTypes.TopsideCostProfileOverride,
-                    Override = true
+                    Override = true,
+                    Values = []
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.TransportCostProfileOverride,
-                    Override = true
+                    Override = true,
+                    Values = []
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.SurfCostProfileOverride,
-                    Override = true
+                    Override = true,
+                    Values = []
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.SubstructureCostProfileOverride,
-                    Override = true
+                    Override = true,
+                    Values = []
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.OnshorePowerSupplyCostProfileOverride,
-                    Override = true
+                    Override = true,
+                    Values = []
                 }
             }
         };
