@@ -15,6 +15,7 @@ import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
+import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -892,18 +893,16 @@ export const useSubmitToApi = () => {
                 resourceId,
                 resourceProfileId,
                 createOrUpdateFunction: !resourceProfileId
-                    ? await (await GetExplorationService()).createGAndGAdminCostOverride(
+                    ? await (await GetCaseService()).createOverrideProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
+                        {...resourceObject, profileType: "GAndGAdminCostOverride" } as Components.Schemas.CreateTimeSeriesOverrideDto,
                     )
-                    : await (await GetExplorationService()).updateGAndGAdminCostOverride(
+                    : await (await GetCaseService()).updateOverrideProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+                        resourceProfileId!,
+                        {...resourceObject, profileType: "GAndGAdminCostOverride" } as Components.Schemas.UpdateTimeSeriesOverrideDto,
                     ),
             })
             break
@@ -914,18 +913,16 @@ export const useSubmitToApi = () => {
                 resourceId,
                 resourceProfileId,
                 createOrUpdateFunction: !resourceProfileId
-                    ? await (await GetExplorationService()).createSeismicAcquisitionAndProcessing(
+                    ? await (await GetCaseService()).createProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
+                        {...resourceObject, profileType: "SeismicAcquisitionAndProcessing" } as Components.Schemas.CreateTimeSeriesDto
                     )
-                    : await (await GetExplorationService()).updateSeismicAcquisitionAndProcessing(
+                    : await (await GetCaseService()).updateProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
+                        resourceProfileId!,
+                        {...resourceObject, profileType: "SeismicAcquisitionAndProcessing" } as Components.Schemas.UpdateTimeSeriesDto
                     ),
             })
             break
@@ -936,18 +933,16 @@ export const useSubmitToApi = () => {
                 resourceId,
                 resourceProfileId,
                 createOrUpdateFunction: !resourceProfileId
-                    ? await (await GetExplorationService()).createCountryOfficeCost(
+                    ? await (await GetCaseService()).createProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesCostDto,
+                        {...resourceObject, profileType: "CountryOfficeCost" } as Components.Schemas.CreateTimeSeriesDto
                     )
-                    : await (await GetExplorationService()).updateCountryOfficeCost(
+                    : await (await GetCaseService()).updateProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesCostDto,
+                        resourceProfileId!,
+                        {...resourceObject, profileType: "CountryOfficeCost" } as Components.Schemas.UpdateTimeSeriesDto
                     ),
             })
             break
@@ -958,18 +953,16 @@ export const useSubmitToApi = () => {
                 resourceId,
                 resourceProfileId,
                 createOrUpdateFunction: !resourceProfileId
-                    ? await (await GetDrainageStrategyService()).createProductionProfileCo2EmissionsOverride(
+                    ? await (await GetCaseService()).createOverrideProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesCostOverrideDto,
+                        {...resourceObject, profileType: "Co2EmissionsOverride" } as Components.Schemas.CreateTimeSeriesOverrideDto,
                     )
-                    : await (await GetDrainageStrategyService()).updateProductionProfileCo2EmissionsOverride(
+                    : await (await GetCaseService()).updateOverrideProfile(
                         projectId,
                         caseId,
-                            resourceId!,
-                            resourceProfileId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesCostOverrideDto,
+                        resourceProfileId!,
+                        {...resourceObject, profileType: "Co2EmissionsOverride" } as Components.Schemas.UpdateTimeSeriesOverrideDto,
                     ),
             })
             break
