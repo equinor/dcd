@@ -137,20 +137,14 @@ public class DrainageStrategyProfile : Profile
                     nameof(DeferredGasProduction)
                     )
                     ));
-        CreateMap<ProductionProfileNgl, TimeSeriesCostDto>();
-        CreateMap<ImportedElectricity, TimeSeriesCostDto>();
-        CreateMap<ImportedElectricityOverride, TimeSeriesCostOverrideDto>();
-        CreateMap<Co2Intensity, TimeSeriesCostDto>();
 
-        CreateMap<CreateTimeSeriesCostDto, ImportedElectricityOverride>()
+        CreateMap<CreateTimeSeriesCostDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(ImportedElectricityOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.ImportedElectricityOverride)));
         CreateMap<CreateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
@@ -245,15 +239,13 @@ public class DrainageStrategyProfile : Profile
                     )
                     ));
 
-        CreateMap<UpdateTimeSeriesCostOverrideDto, ImportedElectricityOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(ImportedElectricityOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.ImportedElectricityOverride)));
         CreateMap<UpdateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
@@ -268,15 +260,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.NetSalesGasOverride)));
-        CreateMap<UpdateTimeSeriesCostOverrideDto, ImportedElectricityOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(ImportedElectricityOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.ImportedElectricityOverride)));
         CreateMap<UpdateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,

@@ -99,4 +99,7 @@ public static class ProfileTypes
 
     public const string Co2Emissions = "Co2Emissions";
     public const string Co2EmissionsOverride = "Co2EmissionsOverride";
+
+    public const string ImportedElectricity = "ImportedElectricity";
+    public const string ImportedElectricityOverride = "ImportedElectricityOverride";
 }
