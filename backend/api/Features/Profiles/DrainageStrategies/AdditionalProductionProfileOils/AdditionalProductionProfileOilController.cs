@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
 
 public class AdditionalProductionProfileOilController(
-    CreateTimeSeriesProfileService createTimeSeriesProfileService,
-    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/additional-production-profile-oil")]
@@ -18,7 +18,7 @@ public class AdditionalProductionProfileOilController(
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostDto dto)
     {
-        return await createTimeSeriesProfileService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.AdditionalProductionProfileOil, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.AdditionalProductionProfileOil, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -29,6 +29,6 @@ public class AdditionalProductionProfileOilController(
         [FromRoute] Guid profileId,
         [FromBody] UpdateTimeSeriesCostDto dto)
     {
-        return await updateTimeSeriesProfileService.UpdateTimeSeriesProfile(projectId, caseId, profileId, ProfileTypes.AdditionalProductionProfileOil, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesProfile(projectId, caseId, profileId, ProfileTypes.AdditionalProductionProfileOil, dto);
     }
 }

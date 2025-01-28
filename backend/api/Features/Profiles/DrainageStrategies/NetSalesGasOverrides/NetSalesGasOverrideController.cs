@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides;
 
 public class NetSalesGasOverrideController(
-    CreateTimeSeriesProfileService createTimeSeriesProfileService,
-    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/net-sales-gas-override")]
@@ -18,7 +18,7 @@ public class NetSalesGasOverrideController(
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await createTimeSeriesProfileService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.NetSalesGasOverride, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.NetSalesGasOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -29,6 +29,6 @@ public class NetSalesGasOverrideController(
         [FromRoute] Guid profileId,
         [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await updateTimeSeriesProfileService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.NetSalesGasOverride, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.NetSalesGasOverride, dto);
     }
 }

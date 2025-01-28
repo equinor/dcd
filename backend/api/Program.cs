@@ -43,7 +43,7 @@ builder.Services.AddResponseCompression(options =>
 
 builder.AddDcdAuthentication();
 
-builder.Services.AddAutoMapper(typeof(ExplorationProfile));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddDcdIocConfiguration();
 
 builder.Services.AddHostedService<DisableConcurrentJobExecutionService>();

@@ -121,8 +121,7 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateImageService>();
 
         /* Mapping */
-        services.AddScoped<IMapperService, MapperService>();
-        services.AddScoped<IConversionMapperService, ConversionMapperService>();
+        services.AddScoped<MapperService>();
 
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();
@@ -181,7 +180,9 @@ public static class DcdIocConfiguration
 
         /* Time series profiles */
         services.AddScoped<CreateTimeSeriesProfileService>();
+        services.AddScoped<CreateTimeSeriesProfileWithConversionService>();
         services.AddScoped<UpdateTimeSeriesProfileService>();
+        services.AddScoped<UpdateTimeSeriesProfileWithConversionService>();
 
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();

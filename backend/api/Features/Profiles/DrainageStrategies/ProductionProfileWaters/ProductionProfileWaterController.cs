@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Features.Profiles.DrainageStrategies.ProductionProfileWaters;
 
 public class ProductionProfileWaterController(
-    CreateTimeSeriesProfileService createTimeSeriesProfileService,
-    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/production-profile-water")]
@@ -18,7 +18,7 @@ public class ProductionProfileWaterController(
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostDto dto)
     {
-        return await createTimeSeriesProfileService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.ProductionProfileWater, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesProfile(projectId, caseId, ProfileTypes.ProductionProfileWater, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -29,6 +29,6 @@ public class ProductionProfileWaterController(
         [FromRoute] Guid profileId,
         [FromBody] UpdateTimeSeriesCostDto dto)
     {
-        return await updateTimeSeriesProfileService.UpdateTimeSeriesProfile(projectId, caseId, profileId, ProfileTypes.ProductionProfileWater, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesProfile(projectId, caseId, profileId, ProfileTypes.ProductionProfileWater, dto);
     }
 }

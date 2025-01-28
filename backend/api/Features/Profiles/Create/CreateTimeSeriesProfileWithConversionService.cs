@@ -2,13 +2,14 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
+using api.ModelMapping.AutoMapperProfiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Create;
 
-public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculationService recalculationService)
+public class CreateTimeSeriesProfileWithConversionService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task<TimeSeriesCostDto> CreateTimeSeriesProfile(
         Guid projectId,
@@ -18,12 +19,17 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
         var entity = new TimeSeriesProfile
         {
             CaseId = caseId,
             ProfileType = profileType,
             StartYear = dto.StartYear,
-            Values = dto.Values
+            Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType)
         };
 
         var caseItem = await context.Cases
@@ -52,12 +58,17 @@ public class CreateTimeSeriesProfileService(DcdDbContext context, IRecalculation
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var projectPhysicalUnit = await context.Projects
+            .Where(x => x.Id == projectPk)
+            .Select(x => x.PhysicalUnit)
+            .SingleAsync();
+
         var entity = new TimeSeriesProfile
         {
             CaseId = caseId,
             ProfileType = profileType,
             StartYear = dto.StartYear,
-            Values = dto.Values,
+            Values = UnitConversionHelpers.ConvertValuesFromDto(dto.Values, projectPhysicalUnit, profileType),
             Override = dto.Override
         };
 

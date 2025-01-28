@@ -6,6 +6,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
+using api.ModelMapping.AutoMapperProfiles;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,7 @@ namespace api.Features.Cases.GetWithAssets;
 public class CaseWithAssetsService(
     DcdDbContext context,
     CaseWithAssetsRepository caseWithAssetsRepository,
-    IMapperService mapperService,
-    IConversionMapperService conversionMapperService)
+    MapperService mapperService)
 {
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
@@ -48,25 +48,25 @@ public class CaseWithAssetsService(
             AdditionalOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
             CalculatedTotalIncomeCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile)),
             CalculatedTotalCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile)),
-            DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
-            ProductionProfileOil = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), project.PhysicalUnit),
-            AdditionalProductionProfileOil = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil), project.PhysicalUnit),
-            ProductionProfileGas = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas), project.PhysicalUnit),
-            AdditionalProductionProfileGas = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas), project.PhysicalUnit),
-            ProductionProfileWater = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWater), project.PhysicalUnit),
-            ProductionProfileWaterInjection = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection), project.PhysicalUnit),
-            FuelFlaringAndLosses = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLosses), project.PhysicalUnit),
-            FuelFlaringAndLossesOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), project.PhysicalUnit),
-            NetSalesGas = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas), project.PhysicalUnit),
-            NetSalesGasOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride), project.PhysicalUnit),
-            Co2Emissions = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), project.PhysicalUnit),
-            Co2EmissionsOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), project.PhysicalUnit),
-            Co2Intensity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), project.PhysicalUnit),
-            ProductionProfileNgl = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), project.PhysicalUnit),
-            ImportedElectricity = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), project.PhysicalUnit),
-            ImportedElectricityOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), project.PhysicalUnit),
-            DeferredOilProduction = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), project.PhysicalUnit),
-            DeferredGasProduction = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.DeferredGasProduction), project.PhysicalUnit),
+            DrainageStrategy = mapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id),
+            ProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), ProfileTypes.ProductionProfileOil, project.PhysicalUnit),
+            AdditionalProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil), ProfileTypes.AdditionalProductionProfileOil, project.PhysicalUnit),
+            ProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas), ProfileTypes.ProductionProfileGas, project.PhysicalUnit),
+            AdditionalProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas), ProfileTypes.AdditionalProductionProfileGas, project.PhysicalUnit),
+            ProductionProfileWater = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWater), ProfileTypes.ProductionProfileWater, project.PhysicalUnit),
+            ProductionProfileWaterInjection = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection), ProfileTypes.ProductionProfileWaterInjection, project.PhysicalUnit),
+            FuelFlaringAndLosses = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLosses), ProfileTypes.FuelFlaringAndLosses, project.PhysicalUnit),
+            FuelFlaringAndLossesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), ProfileTypes.FuelFlaringAndLossesOverride, project.PhysicalUnit),
+            NetSalesGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas), ProfileTypes.NetSalesGas, project.PhysicalUnit),
+            NetSalesGasOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride), ProfileTypes.NetSalesGasOverride, project.PhysicalUnit),
+            Co2Emissions = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), ProfileTypes.Co2Emissions, project.PhysicalUnit),
+            Co2EmissionsOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), ProfileTypes.Co2EmissionsOverride, project.PhysicalUnit),
+            Co2Intensity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), ProfileTypes.Co2Intensity, project.PhysicalUnit),
+            ProductionProfileNgl = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), ProfileTypes.ProductionProfileNgl, project.PhysicalUnit),
+            ImportedElectricity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), ProfileTypes.ImportedElectricity, project.PhysicalUnit),
+            ImportedElectricityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), ProfileTypes.ImportedElectricityOverride, project.PhysicalUnit),
+            DeferredOilProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), ProfileTypes.DeferredOilProduction, project.PhysicalUnit),
+            DeferredGasProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredGasProduction), ProfileTypes.DeferredGasProduction, project.PhysicalUnit),
             Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
             TopsideCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile)),
             TopsideCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)),
@@ -186,13 +186,34 @@ public class CaseWithAssetsService(
         };
     }
 
-    private TDto? ConversionMapToDto<T, TDto>(T? source, PhysUnit physUnit) where T : class where TDto : class
+    private TimeSeriesCostDto? ConversionMapToDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
     {
-        if (source == null)
+        if (entity == null)
         {
             return null;
         }
 
-        return conversionMapperService.MapToDto<T, TDto>(source, physUnit);
+        return new TimeSeriesCostDto
+        {
+            Id = entity.Id,
+            StartYear = entity.StartYear,
+            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType)
+        };
+    }
+
+    private TimeSeriesCostOverrideDto? ConversionMapToOverrideDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
+    {
+        if (entity == null)
+        {
+            return null;
+        }
+
+        return new TimeSeriesCostOverrideDto
+        {
+            Id = entity.Id,
+            StartYear = entity.StartYear,
+            Override = entity.Override,
+            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType)
+        };
     }
 }

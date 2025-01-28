@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides;
 
 public class ImportedElectricityOverrideController(
-    CreateTimeSeriesProfileService createTimeSeriesProfileService,
-    UpdateTimeSeriesProfileService updateTimeSeriesProfileService) : ControllerBase
+    CreateTimeSeriesProfileWithConversionService createTimeSeriesProfileWithConversionService,
+    UpdateTimeSeriesProfileWithConversionService updateTimeSeriesProfileWithConversionService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}/imported-electricity-override")]
@@ -18,7 +18,7 @@ public class ImportedElectricityOverrideController(
         [FromRoute] Guid caseId,
         [FromBody] CreateTimeSeriesCostOverrideDto dto)
     {
-        return await createTimeSeriesProfileService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.ImportedElectricityOverride, dto);
+        return await createTimeSeriesProfileWithConversionService.CreateTimeSeriesOverrideProfile(projectId, caseId, ProfileTypes.ImportedElectricityOverride, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
@@ -29,6 +29,6 @@ public class ImportedElectricityOverrideController(
         [FromRoute] Guid profileId,
         [FromBody] UpdateTimeSeriesCostOverrideDto dto)
     {
-        return await updateTimeSeriesProfileService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.ImportedElectricityOverride, dto);
+        return await updateTimeSeriesProfileWithConversionService.UpdateTimeSeriesOverrideProfile(projectId, caseId, profileId, ProfileTypes.ImportedElectricityOverride, dto);
     }
 }
