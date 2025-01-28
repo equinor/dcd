@@ -9,15 +9,11 @@ public static class EmissionCalculationHelper
     private const double Cd = 365.25;
     private const int ConversionFactorFromMtoG = 1000;
 
-    public static TimeSeries<double> CalculateTotalFuelConsumptions(
-        Case caseItem,
-        Topside topside,
-        DrainageStrategy drainageStrategy
-    )
+    public static TimeSeries<double> CalculateTotalFuelConsumptions(Case caseItem, Topside topside)
     {
         var factor = caseItem.FacilitiesAvailability * topside.FuelConsumption * Cd * 1e6;
 
-        var totalUseOfPower = CalculateTotalUseOfPower(caseItem, topside, drainageStrategy, caseItem.FacilitiesAvailability);
+        var totalUseOfPower = CalculateTotalUseOfPower(caseItem, topside, caseItem.FacilitiesAvailability);
 
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
         var fuelConsumptions = new TimeSeries<double>
@@ -32,7 +28,6 @@ public static class EmissionCalculationHelper
     public static TimeSeries<double> CalculateTotalUseOfPower(
         Case caseItem,
         Topside topside,
-        DrainageStrategy drainageStrategy,
         double pe
     )
     {
@@ -44,7 +39,7 @@ public static class EmissionCalculationHelper
 
         var totalPowerOil = CalculateTotalUseOfPowerOil(caseItem, topside, pe);
         var totalPowerGas = CalculateTotalUseOfPowerGas(caseItem, topside, pe);
-        var totalPowerWi = CalculateTotalUseOfPowerWi(caseItem, topside, drainageStrategy, pe);
+        var totalPowerWi = CalculateTotalUseOfPowerWi(caseItem, topside, pe);
 
         var mergedPowerProfile = CostProfileMerger.MergeCostProfiles(totalPowerOil, totalPowerGas, totalPowerWi);
 
@@ -63,12 +58,11 @@ public static class EmissionCalculationHelper
     private static TimeSeries<double> CalculateTotalUseOfPowerWi(
         Case caseItem,
         Topside topside,
-        DrainageStrategy drainageStrategy,
         double pe
     )
     {
         var wic = topside.WaterInjectionCapacity;
-        var wr = drainageStrategy.ProductionProfileWaterInjection?.Values;
+        var wr = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection)?.Values;
 
         var wsp = topside.CO2ShareWaterInjectionProfile;
         var wom = topside.CO2OnMaxWaterInjectionProfile;

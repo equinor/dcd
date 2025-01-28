@@ -18,16 +18,13 @@ public class ImportedElectricityProfileService(DcdDbContext context)
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
             ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
         };
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
             .SingleAsync(x => x.Id == caseId);
-
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileWaterInjection)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         if (caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride)?.Override == true)
         {
@@ -38,7 +35,7 @@ public class ImportedElectricityProfileService(DcdDbContext context)
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 
-        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(caseItem, topside, drainageStrategy, facilitiesAvailability);
+        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(caseItem, topside, facilitiesAvailability);
 
         var calculateImportedElectricity = CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 

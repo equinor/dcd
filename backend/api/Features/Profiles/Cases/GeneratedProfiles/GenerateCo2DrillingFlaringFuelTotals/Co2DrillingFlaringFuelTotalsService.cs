@@ -16,7 +16,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
             ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
         };
 
         var caseItem = await context.Cases
@@ -33,10 +34,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
-        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
+        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside);
         var flaringsTotal = GetFlaringsProfileTotal(project, caseItem, drainageStrategy);
         var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, caseItem.WellProjectLink);
 
@@ -61,14 +61,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return flaringsProfile.Values.Sum() / 1000;
     }
 
-    private static double GetFuelConsumptionsProfileTotal(
-        Project project,
-        Case caseItem,
-        Topside topside,
-        DrainageStrategy drainageStrategy
-    )
+    private static double GetFuelConsumptionsProfileTotal(Project project, Case caseItem, Topside topside)
     {
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
         var fuelConsumptionsProfile = new TimeSeriesVolume
         {

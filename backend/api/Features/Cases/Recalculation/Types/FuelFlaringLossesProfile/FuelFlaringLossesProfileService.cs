@@ -18,7 +18,8 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
             ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
         };
 
         var caseItem = await context.Cases
@@ -26,7 +27,6 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
@@ -42,7 +42,7 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
 

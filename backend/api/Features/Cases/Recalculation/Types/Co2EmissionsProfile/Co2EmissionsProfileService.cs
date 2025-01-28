@@ -19,7 +19,8 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
             ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas
+            ProfileTypes.AdditionalProductionProfileGas,
+            ProfileTypes.ProductionProfileWaterInjection
         };
 
         var caseItem = await context.Cases
@@ -27,7 +28,6 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)
@@ -44,7 +44,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
-        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
+        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside);
         var flaringsProfile = GetFlaringsProfile(project, caseItem, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, caseItem, drainageStrategy);
 
@@ -92,15 +92,10 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return flaringsProfile;
     }
 
-    private static TimeSeriesVolume GetFuelConsumptionsProfile(
-        Project project,
-        Case caseItem,
-        Topside topside,
-        DrainageStrategy drainageStrategy
-    )
+    private static TimeSeriesVolume GetFuelConsumptionsProfile(Project project, Case caseItem, Topside topside)
     {
         var fuelConsumptions =
-            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
         var fuelConsumptionsProfile = new TimeSeriesVolume
         {

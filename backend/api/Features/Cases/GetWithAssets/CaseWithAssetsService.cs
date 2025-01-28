@@ -54,7 +54,7 @@ public class CaseWithAssetsService(
             ProductionProfileGas = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas), project.PhysicalUnit),
             AdditionalProductionProfileGas = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas), project.PhysicalUnit),
             ProductionProfileWater = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWater), project.PhysicalUnit),
-            ProductionProfileWaterInjection = ConversionMapToDto<ProductionProfileWaterInjection, TimeSeriesCostDto>(drainageStrategy.ProductionProfileWaterInjection, drainageStrategy.ProductionProfileWaterInjection?.Id, project.PhysicalUnit),
+            ProductionProfileWaterInjection = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection), project.PhysicalUnit),
             FuelFlaringAndLosses = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLosses), project.PhysicalUnit),
             FuelFlaringAndLossesOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), project.PhysicalUnit),
             NetSalesGas = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas), project.PhysicalUnit),

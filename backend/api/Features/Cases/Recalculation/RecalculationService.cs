@@ -319,12 +319,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
             .Any(e => e.State == EntityState.Added);
 
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(ProductionProfileWaterInjection.InternalData)).IsModified ||
-                       e.Property(nameof(ProductionProfileWaterInjection.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Added);
 
         var wellChanges = context.ChangeTracker.Entries<Well>()
@@ -541,12 +543,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
             .Any(e => e.State == EntityState.Added);
 
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(ProductionProfileWaterInjection.InternalData)).IsModified ||
-                       e.Property(nameof(ProductionProfileWaterInjection.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Added);
 
         var drainageStrategyChanges = context.ChangeTracker.Entries<DrainageStrategy>()
@@ -627,12 +631,14 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
             .Any(e => e.State == EntityState.Added);
 
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(ProductionProfileWaterInjection.InternalData)).IsModified ||
-                       e.Property(nameof(ProductionProfileWaterInjection.StartYear)).IsModified));
+                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
 
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Added);
 
         return facilitiesAvailabilityChanges
@@ -744,14 +750,16 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
             .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
             .Any(e => e.State == EntityState.Added);
 
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Modified &&
                       (
-                          e.Property(nameof(ProductionProfileWaterInjection.InternalData)).IsModified ||
-                          e.Property(nameof(ProductionProfileWaterInjection.StartYear)).IsModified
+                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
+                          e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
                       ));
 
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<ProductionProfileWaterInjection>()
+        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
             .Any(e => e.State == EntityState.Added);
 
         return caseChanges

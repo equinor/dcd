@@ -112,4 +112,6 @@ public static class ProfileTypes
     public const string AdditionalProductionProfileGas = "AdditionalProductionProfileGas";
 
     public const string ProductionProfileWater = "ProductionProfileWater";
+
+    public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
 }

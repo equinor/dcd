@@ -43,7 +43,6 @@ using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Create;
 using api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
 using api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
-using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
 using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
 using api.Features.Profiles.Substructures.SubstructureCostProfiles;
 using api.Features.Profiles.Surfs.SurfCostProfiles;
@@ -189,7 +188,6 @@ public static class DcdIocConfiguration
         /* Drainage strategy profiles */
         services.AddScoped<DeferredGasProductionService>();
         services.AddScoped<DeferredOilProductionService>();
-        services.AddScoped<ProductionProfileWaterInjectionService>();
 
         /* Onshore power supply profiles */
         services.AddScoped<OnshorePowerSupplyCostProfileService>();
