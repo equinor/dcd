@@ -93,4 +93,7 @@ public static class ProfileTypes
     /* Drainage strategy profiles */
     public const string FuelFlaringAndLosses = "FuelFlaringAndLosses";
     public const string FuelFlaringAndLossesOverride = "FuelFlaringAndLossesOverride";
+
+    public const string NetSalesGas = "NetSalesGas";
+    public const string NetSalesGasOverride = "NetSalesGasOverride";
 }

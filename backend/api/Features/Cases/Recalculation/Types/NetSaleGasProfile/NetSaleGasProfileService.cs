@@ -14,7 +14,9 @@ public class NetSaleGasProfileService(DcdDbContext context)
     {
         var profileTypes = new List<string>
         {
-            ProfileTypes.FuelFlaringAndLossesOverride
+            ProfileTypes.FuelFlaringAndLossesOverride,
+            ProfileTypes.NetSalesGas,
+            ProfileTypes.NetSalesGasOverride
         };
 
         var caseItem = await context.Cases
@@ -22,8 +24,6 @@ public class NetSaleGasProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.NetSalesGas)
-            .Include(d => d.NetSalesGasOverride)
             .Include(d => d.ProductionProfileGas)
             .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileOil)
@@ -31,7 +31,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
-        if (drainageStrategy.NetSalesGasOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)?.Override == true)
         {
             return;
         }
@@ -45,25 +45,10 @@ public class NetSaleGasProfileService(DcdDbContext context)
 
         var calculateNetSaleGas = CalculateNetSaleGas(caseItem, drainageStrategy, fuelConsumptions, flarings, losses);
 
-        var netSaleGas = new NetSalesGas
-        {
-            StartYear = calculateNetSaleGas.StartYear,
-            Values = calculateNetSaleGas.Values
-        };
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.NetSalesGas);
 
-        if (drainageStrategy.NetSalesGas != null)
-        {
-            drainageStrategy.NetSalesGas.StartYear = netSaleGas.StartYear;
-            drainageStrategy.NetSalesGas.Values = netSaleGas.Values;
-        }
-        else
-        {
-            drainageStrategy.NetSalesGas = new NetSalesGas
-            {
-                StartYear = netSaleGas.StartYear,
-                Values = netSaleGas.Values
-            };
-        }
+        profile.StartYear = calculateNetSaleGas.StartYear;
+        profile.Values = calculateNetSaleGas.Values;
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(Case caseItem,

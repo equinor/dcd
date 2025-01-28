@@ -82,24 +82,20 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesToDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.FuelFlaringAndLossesOverride)));
-        CreateMap<NetSalesGas, TimeSeriesCostDto>()
+        CreateMap<TimeSeriesProfile, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(NetSalesGas)
-                    )
-                    ));
-        CreateMap<NetSalesGasOverride, TimeSeriesCostOverrideDto>()
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.NetSalesGas)));
+        CreateMap<TimeSeriesProfile, TimeSeriesCostOverrideDto>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(NetSalesGasOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.NetSalesGasOverride)));
         CreateMap<Co2Emissions, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
@@ -166,15 +162,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.FuelFlaringAndLossesOverride)));
-        CreateMap<CreateTimeSeriesCostOverrideDto, NetSalesGasOverride>()
+        CreateMap<CreateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(NetSalesGasOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.NetSalesGasOverride)));
         CreateMap<CreateTimeSeriesCostOverrideDto, Co2EmissionsOverride>()
             .ForMember(
                 dest => dest.Values,
@@ -273,15 +267,13 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                         Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                         ProfileTypes.FuelFlaringAndLossesOverride)));
-        CreateMap<UpdateTimeSeriesCostOverrideDto, NetSalesGasOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(NetSalesGasOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.NetSalesGasOverride)));
         CreateMap<UpdateTimeSeriesCostOverrideDto, ImportedElectricityOverride>()
             .ForMember(
                 dest => dest.Values,
@@ -387,8 +379,8 @@ public class DrainageStrategyProfile : Profile
         { nameof(AdditionalProductionProfileGas), 1_000_000_000 },
         { ProfileTypes.FuelFlaringAndLosses, 1_000_000_000 },
         { ProfileTypes.FuelFlaringAndLossesOverride, 1_000_000_000 },
-        { nameof(NetSalesGas), 1_000_000_000 },
-        { nameof(NetSalesGasOverride), 1_000_000_000 }
+        { ProfileTypes.NetSalesGas, 1_000_000_000 },
+        { ProfileTypes.NetSalesGasOverride, 1_000_000_000 }
     };
 
     private static double[] ConvertValuesToDTO(double[] values, PhysUnit unit, string type)
@@ -426,8 +418,8 @@ public class DrainageStrategyProfile : Profile
                 case ProfileTypes.FuelFlaringAndLossesOverride:
                 case nameof(DeferredOilProduction):
                 case nameof(DeferredGasProduction):
-                case nameof(NetSalesGas):
-                case nameof(NetSalesGasOverride):
+                case ProfileTypes.NetSalesGas:
+                case ProfileTypes.NetSalesGasOverride:
                     return toDto ? 35.315 * returnValue : 1.0 / 35.315 * returnValue;
             }
         }

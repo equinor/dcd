@@ -324,21 +324,21 @@ public static class SteaCaseDtoBuilder
             startYearsProductionSalesAndVolumes.Add(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear);
         }
 
-        if (drainageStrategy.NetSalesGasOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)?.Override == true)
         {
             steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new TimeSeriesCostDto
             {
-                StartYear = drainageStrategy.NetSalesGasOverride.StartYear + dg4Year,
-                Values = drainageStrategy.NetSalesGasOverride.Values
+                StartYear = caseItem.GetProfile(ProfileTypes.NetSalesGasOverride).StartYear + dg4Year,
+                Values = caseItem.GetProfile(ProfileTypes.NetSalesGasOverride).Values
             };
             startYearsProductionSalesAndVolumes.Add(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear);
         }
-        else if (drainageStrategy.NetSalesGas != null)
+        else if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas) != null)
         {
             steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new TimeSeriesCostDto
             {
-                StartYear = drainageStrategy.NetSalesGas.StartYear + dg4Year,
-                Values = drainageStrategy.NetSalesGas.Values
+                StartYear = caseItem.GetProfile(ProfileTypes.NetSalesGas).StartYear + dg4Year,
+                Values = caseItem.GetProfile(ProfileTypes.NetSalesGas).Values
             };
             startYearsProductionSalesAndVolumes.Add(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear);
         }
@@ -448,11 +448,5 @@ public static class SteaCaseDtoBuilder
         Id = timeSeriesProfile.Id,
         StartYear = timeSeriesProfile.StartYear,
         Values = timeSeriesProfile.Values
-    };
-
-    private static TimeSeriesCostDto ToTimeSeries(TimeSeriesCost timeSeriesCost) => new()
-    {
-        StartYear = timeSeriesCost.StartYear,
-        Values = timeSeriesCost.Values ?? []
     };
 }
