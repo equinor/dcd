@@ -447,7 +447,6 @@ declare namespace Components {
             id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
-            sum: number; // double
         }
         export interface TimeSeriesCostOverrideDto {
             id: string; // uuid

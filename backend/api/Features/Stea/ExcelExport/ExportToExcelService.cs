@@ -1,4 +1,4 @@
-using api.Features.Profiles.Dtos.BaseClasses;
+using api.Features.Profiles.Dtos;
 using api.Features.Stea.Dtos;
 
 using ClosedXML.Excel;
@@ -106,7 +106,7 @@ public static class ExportToExcelService
         return businessCases;
     }
 
-    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeriesDto<double> e, int projectStartYear, double factor)
+    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeriesCostDto e, int projectStartYear, double factor)
     {
         if (e.Values == null)
         {
@@ -123,7 +123,7 @@ public static class ExportToExcelService
         }
     }
 
-    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeriesDoubleDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeriesCostDto e, int rowCount, double factor)
     {
         var tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
@@ -131,7 +131,7 @@ public static class ExportToExcelService
         tableCells.Add(new ExcelTableCell(cellNo, title));
 
         cellNo = ColumnNumber(columnCount) + rowCount;
-        tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
+        tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Values.Sum()).ToString()));
         ValueToCells(tableCells, columnCount, rowCount, e, projectStartYear, factor);
 
         return tableCells;
@@ -169,9 +169,9 @@ public static class ExportToExcelService
         return rv;
     }
 
-    private static TimeSeriesDoubleDto DivideTimeSeriesValuesByFactor(TimeSeriesDoubleDto timeSeries, double factor)
+    private static TimeSeriesCostDto DivideTimeSeriesValuesByFactor(TimeSeriesCostDto timeSeries, double factor)
     {
-        return new TimeSeriesDoubleDto
+        return new TimeSeriesCostDto
         {
             StartYear = timeSeries.StartYear,
             Values = timeSeries.Values.Select(v => v / factor).ToArray()
