@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -11,7 +12,14 @@ public class NetSaleGasProfileService(DcdDbContext context)
 {
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
+        var profileTypes = new List<string>
+        {
+            ProfileTypes.FuelFlaringAndLossesOverride
+        };
+
+        var caseItem = await context.Cases
+            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
             .Include(d => d.NetSalesGas)
@@ -21,7 +29,6 @@ public class NetSaleGasProfileService(DcdDbContext context)
             .Include(d => d.ProductionProfileOil)
             .Include(d => d.AdditionalProductionProfileOil)
             .Include(d => d.ProductionProfileWaterInjection)
-            .Include(x => x.FuelFlaringAndLossesOverride)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         if (drainageStrategy.NetSalesGasOverride?.Override == true)
@@ -36,7 +43,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
 
-        var calculateNetSaleGas = CalculateNetSaleGas(drainageStrategy, fuelConsumptions, flarings, losses);
+        var calculateNetSaleGas = CalculateNetSaleGas(caseItem, drainageStrategy, fuelConsumptions, flarings, losses);
 
         var netSaleGas = new NetSalesGas
         {
@@ -59,7 +66,8 @@ public class NetSaleGasProfileService(DcdDbContext context)
         }
     }
 
-    private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
+    private static TimeSeries<double> CalculateNetSaleGas(Case caseItem,
+        DrainageStrategy drainageStrategy,
         TimeSeries<double> fuelConsumption,
         TimeSeries<double> flarings,
         TimeSeries<double> losses)
@@ -76,10 +84,10 @@ public class NetSaleGasProfileService(DcdDbContext context)
 
         var fuelFlaringLosses = CostProfileMerger.MergeCostProfiles(fuelConsumption, flarings, losses);
 
-        if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {
-            fuelFlaringLosses.StartYear = drainageStrategy.FuelFlaringAndLossesOverride.StartYear;
-            fuelFlaringLosses.Values = drainageStrategy.FuelFlaringAndLossesOverride.Values;
+            fuelFlaringLosses.StartYear = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).StartYear;
+            fuelFlaringLosses.Values = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).Values;
         }
 
         var negativeFuelFlaringLosses = new TimeSeriesVolume

@@ -25,14 +25,16 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEnt
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
+    #region Migrated profiles, do not access.
+    public virtual FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
+    public virtual FuelFlaringAndLossesOverride? FuelFlaringAndLossesOverride { get; set; }
+    #endregion Migrated profiles, do not access.
     public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
     public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
     public virtual ProductionProfileGas? ProductionProfileGas { get; set; }
     public virtual AdditionalProductionProfileGas? AdditionalProductionProfileGas { get; set; }
     public virtual ProductionProfileWater? ProductionProfileWater { get; set; }
     public virtual ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
-    public virtual FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
-    public virtual FuelFlaringAndLossesOverride? FuelFlaringAndLossesOverride { get; set; }
     public virtual NetSalesGas? NetSalesGas { get; set; }
     public virtual NetSalesGasOverride? NetSalesGasOverride { get; set; }
     public virtual Co2Emissions? Co2Emissions { get; set; }
@@ -50,6 +52,21 @@ public enum GasSolution
     Export,
     Injection,
 }
+
+#region Migrated profiles, do not access.
+public class FuelFlaringAndLosses : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class FuelFlaringAndLossesOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
+}
+#endregion Migrated profiles, do not access.
 
 public class ProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
@@ -87,18 +104,6 @@ public class ProductionProfileWaterInjection : TimeSeriesVolume, IDrainageStrate
     public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class FuelFlaringAndLosses : TimeSeriesVolume, IDrainageStrategyTimeSeries
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-}
-
-public class FuelFlaringAndLossesOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("DrainageStrategy.Id")]
-    public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
-    public bool Override { get; set; }
-}
 
 public class NetSalesGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {

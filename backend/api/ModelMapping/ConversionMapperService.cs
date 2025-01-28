@@ -7,6 +7,19 @@ namespace api.ModelMapping;
 
 public class ConversionMapperService(IMapper mapper, ILogger<MapperService> logger) : IConversionMapperService
 {
+    public TDto MapToDto<T, TDto>(T entity, PhysUnit physUnit)
+        where T : class
+        where TDto : class
+    {
+        var dto = mapper.Map<TDto>(entity, opts => opts.Items["ConversionUnit"] = physUnit.ToString());
+        if (dto == null)
+        {
+            var entityType = typeof(T).Name;
+            throw new MappingException($"Mapping of {entityType} resulted in a null dto.");
+        }
+        return dto;
+    }
+
     public TDto MapToDto<T, TDto>(T entity, Guid id, PhysUnit physUnit)
         where T : class
         where TDto : class

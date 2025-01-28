@@ -1,8 +1,11 @@
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
 using AutoMapper;
+
+using static System.Enum;
 
 namespace api.ModelMapping.AutoMapperProfiles;
 
@@ -16,7 +19,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileOil)
                     )
                     ));
@@ -25,7 +28,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(AdditionalProductionProfileOil)
                     )
                     ));
@@ -34,7 +37,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileGas)
                     )
                     ));
@@ -43,7 +46,7 @@ public class DrainageStrategyProfile : Profile
                         dest => dest.Values,
                         opt => opt.MapFrom((src, dest, destMember, context) =>
                             ConvertValuesToDTO(src.Values,
-                            (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                            (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                             nameof(AdditionalProductionProfileGas)
                             )
                             ));
@@ -52,7 +55,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileWater)
                     )
                     ));
@@ -61,34 +64,30 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileWaterInjection)
                     )
                     ));
-        CreateMap<FuelFlaringAndLosses, TimeSeriesCostDto>()
+        CreateMap<TimeSeriesProfile, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(FuelFlaringAndLosses)
-                    )
-                    ));
-        CreateMap<FuelFlaringAndLossesOverride, TimeSeriesCostOverrideDto>()
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.FuelFlaringAndLosses)));
+        CreateMap<TimeSeriesProfile, TimeSeriesCostOverrideDto>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(FuelFlaringAndLossesOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.FuelFlaringAndLossesOverride)));
         CreateMap<NetSalesGas, TimeSeriesCostDto>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(NetSalesGas)
                     )
                     ));
@@ -97,7 +96,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(NetSalesGasOverride)
                     )
                     ));
@@ -106,7 +105,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(Co2Emissions)
                     )
                     ));
@@ -115,7 +114,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(Co2EmissionsOverride)
                     )
                     ));
@@ -124,7 +123,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(Co2Intensity)
                     )
                     ));
@@ -133,7 +132,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(DeferredOilProduction)
                     )
                     ));
@@ -142,7 +141,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesToDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(DeferredGasProduction)
                     )
                     ));
@@ -156,25 +155,23 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ImportedElectricityOverride)
                     )
                     ));
-        CreateMap<CreateTimeSeriesCostOverrideDto, FuelFlaringAndLossesOverride>()
+        CreateMap<CreateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(FuelFlaringAndLossesOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.FuelFlaringAndLossesOverride)));
         CreateMap<CreateTimeSeriesCostOverrideDto, NetSalesGasOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(NetSalesGasOverride)
                     )
                     ));
@@ -183,7 +180,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(Co2EmissionsOverride)
                     )
                     ));
@@ -192,7 +189,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileOil)
                     )
                     ));
@@ -201,7 +198,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(AdditionalProductionProfileOil)
                     )
                     ));
@@ -210,7 +207,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileGas)
                     )
                     ));
@@ -219,7 +216,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(AdditionalProductionProfileGas)
                     )
                     ));
@@ -228,7 +225,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(DeferredOilProduction)
                     )
                     ));
@@ -237,7 +234,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(DeferredGasProduction)
                     )
                     ));
@@ -246,7 +243,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileWater)
                     )
                     ));
@@ -255,7 +252,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileWaterInjection)
                     )
                     ));
@@ -265,25 +262,23 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ImportedElectricityOverride)
                     )
                     ));
-        CreateMap<UpdateTimeSeriesCostOverrideDto, FuelFlaringAndLossesOverride>()
+        CreateMap<UpdateTimeSeriesCostOverrideDto, TimeSeriesProfile>()
             .ForMember(
                 dest => dest.Values,
-                opt => opt.MapFrom((src, dest, destMember, context) =>
+                opt => opt.MapFrom((src, _, _, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
-                    nameof(FuelFlaringAndLossesOverride)
-                    )
-                    ));
+                        Parse<PhysUnit>(context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                        ProfileTypes.FuelFlaringAndLossesOverride)));
         CreateMap<UpdateTimeSeriesCostOverrideDto, NetSalesGasOverride>()
             .ForMember(
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(NetSalesGasOverride)
                     )
                     ));
@@ -292,7 +287,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ImportedElectricityOverride)
                     )
                     ));
@@ -301,7 +296,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(Co2EmissionsOverride)
                     )
                     ));
@@ -310,7 +305,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileOil)
                     )
                     ));
@@ -319,7 +314,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(AdditionalProductionProfileOil)
                     )
                     ));
@@ -328,7 +323,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(AdditionalProductionProfileGas)
                     )
                     ));
@@ -337,7 +332,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileGas)
                     )
                     ));
@@ -346,7 +341,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(DeferredOilProduction)
                     )
                     ));
@@ -355,7 +350,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(DeferredGasProduction)
                     )
                     ));
@@ -364,7 +359,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileWater)
                     )
                     ));
@@ -373,7 +368,7 @@ public class DrainageStrategyProfile : Profile
                 dest => dest.Values,
                 opt => opt.MapFrom((src, dest, destMember, context) =>
                     ConvertValuesFromDTO(src.Values,
-                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    (PhysUnit)Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileWaterInjection)
                     )
                     ));
@@ -390,8 +385,8 @@ public class DrainageStrategyProfile : Profile
         { nameof(ProductionProfileWaterInjection), 1_000_000 },
         { nameof(ProductionProfileGas), 1_000_000_000 },
         { nameof(AdditionalProductionProfileGas), 1_000_000_000 },
-        { nameof(FuelFlaringAndLosses), 1_000_000_000 },
-        { nameof(FuelFlaringAndLossesOverride), 1_000_000_000 },
+        { ProfileTypes.FuelFlaringAndLosses, 1_000_000_000 },
+        { ProfileTypes.FuelFlaringAndLossesOverride, 1_000_000_000 },
         { nameof(NetSalesGas), 1_000_000_000 },
         { nameof(NetSalesGasOverride), 1_000_000_000 }
     };
@@ -427,8 +422,8 @@ public class DrainageStrategyProfile : Profile
                     return toDto ? 6.290 * returnValue : 1.0 / 6.290 * returnValue;
                 case nameof(ProductionProfileGas):
                 case nameof(AdditionalProductionProfileGas):
-                case nameof(FuelFlaringAndLosses):
-                case nameof(FuelFlaringAndLossesOverride):
+                case ProfileTypes.FuelFlaringAndLosses:
+                case ProfileTypes.FuelFlaringAndLossesOverride:
                 case nameof(DeferredOilProduction):
                 case nameof(DeferredGasProduction):
                 case nameof(NetSalesGas):

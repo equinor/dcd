@@ -55,8 +55,8 @@ public class CaseWithAssetsService(
             AdditionalProductionProfileGas = ConversionMapToDto<AdditionalProductionProfileGas, TimeSeriesCostDto>(drainageStrategy.AdditionalProductionProfileGas, drainageStrategy.AdditionalProductionProfileGas?.Id, project.PhysicalUnit),
             ProductionProfileWater = ConversionMapToDto<ProductionProfileWater, TimeSeriesCostDto>(drainageStrategy.ProductionProfileWater, drainageStrategy.ProductionProfileWater?.Id, project.PhysicalUnit),
             ProductionProfileWaterInjection = ConversionMapToDto<ProductionProfileWaterInjection, TimeSeriesCostDto>(drainageStrategy.ProductionProfileWaterInjection, drainageStrategy.ProductionProfileWaterInjection?.Id, project.PhysicalUnit),
-            FuelFlaringAndLosses = ConversionMapToDto<FuelFlaringAndLosses, TimeSeriesCostDto>(drainageStrategy.FuelFlaringAndLosses, drainageStrategy.FuelFlaringAndLosses?.Id, project.PhysicalUnit),
-            FuelFlaringAndLossesOverride = ConversionMapToDto<FuelFlaringAndLossesOverride, TimeSeriesCostOverrideDto>(drainageStrategy.FuelFlaringAndLossesOverride, drainageStrategy.FuelFlaringAndLossesOverride?.Id, project.PhysicalUnit),
+            FuelFlaringAndLosses = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostDto>(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLosses), project.PhysicalUnit),
+            FuelFlaringAndLossesOverride = ConversionMapToDto<TimeSeriesProfile, TimeSeriesCostOverrideDto>(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), project.PhysicalUnit),
             NetSalesGas = ConversionMapToDto<NetSalesGas, TimeSeriesCostDto>(drainageStrategy.NetSalesGas, drainageStrategy.NetSalesGas?.Id, project.PhysicalUnit),
             NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, TimeSeriesCostOverrideDto>(drainageStrategy.NetSalesGasOverride, drainageStrategy.NetSalesGasOverride?.Id, project.PhysicalUnit),
             Co2Emissions = ConversionMapToDto<Co2Emissions, TimeSeriesCostDto>(drainageStrategy.Co2Emissions, drainageStrategy.Co2Emissions?.Id, project.PhysicalUnit),
@@ -194,5 +194,15 @@ public class CaseWithAssetsService(
         }
 
         return conversionMapperService.MapToDto<T, TDto>(source, (Guid)id, physUnit);
+    }
+
+    private TDto? ConversionMapToDto<T, TDto>(T? source, PhysUnit physUnit) where T : class where TDto : class
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        return conversionMapperService.MapToDto<T, TDto>(source, physUnit);
     }
 }

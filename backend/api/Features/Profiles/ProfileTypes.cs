@@ -89,4 +89,8 @@ public static class ProfileTypes
 
     public const string GasInjectorCostProfile = "GasInjectorCostProfile";
     public const string GasInjectorCostProfileOverride = "GasInjectorCostProfileOverride";
+
+    /* Drainage strategy profiles */
+    public const string FuelFlaringAndLosses = "FuelFlaringAndLosses";
+    public const string FuelFlaringAndLossesOverride = "FuelFlaringAndLossesOverride";
 }

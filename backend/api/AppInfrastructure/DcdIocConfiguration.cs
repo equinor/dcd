@@ -46,7 +46,6 @@ using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileOils;
 using api.Features.Profiles.DrainageStrategies.Co2EmissionsOverrides;
 using api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
 using api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
-using api.Features.Profiles.DrainageStrategies.FuelFlaringAndLossesOverrides;
 using api.Features.Profiles.DrainageStrategies.ImportedElectricityOverrides;
 using api.Features.Profiles.DrainageStrategies.NetSalesGasOverrides;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileGases;
@@ -201,7 +200,6 @@ public static class DcdIocConfiguration
         services.AddScoped<Co2EmissionsOverrideService>();
         services.AddScoped<DeferredGasProductionService>();
         services.AddScoped<DeferredOilProductionService>();
-        services.AddScoped<FuelFlaringAndLossesOverrideService>();
         services.AddScoped<ImportedElectricityOverrideService>();
         services.AddScoped<NetSalesGasOverrideService>();
         services.AddScoped<ProductionProfileGasService>();
