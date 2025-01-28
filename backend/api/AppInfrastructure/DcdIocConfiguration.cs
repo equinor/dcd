@@ -41,7 +41,6 @@ using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Features.Profiles.Create;
-using api.Features.Profiles.DrainageStrategies.AdditionalProductionProfileGases;
 using api.Features.Profiles.DrainageStrategies.DeferredGasProductions;
 using api.Features.Profiles.DrainageStrategies.DeferredOilProductions;
 using api.Features.Profiles.DrainageStrategies.ProductionProfileWaterInjections;
@@ -189,7 +188,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateTimeSeriesProfileService>();
 
         /* Drainage strategy profiles */
-        services.AddScoped<AdditionalProductionProfileGasService>();
         services.AddScoped<DeferredGasProductionService>();
         services.AddScoped<DeferredOilProductionService>();
         services.AddScoped<ProductionProfileWaterInjectionService>();

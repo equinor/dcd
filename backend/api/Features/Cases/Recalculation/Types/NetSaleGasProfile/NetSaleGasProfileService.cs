@@ -19,7 +19,8 @@ public class NetSaleGasProfileService(DcdDbContext context)
             ProfileTypes.NetSalesGasOverride,
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
-            ProfileTypes.ProductionProfileGas
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas
         };
 
         var caseItem = await context.Cases
@@ -27,7 +28,6 @@ public class NetSaleGasProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
@@ -81,7 +81,11 @@ public class NetSaleGasProfileService(DcdDbContext context)
             Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()
         };
 
-        var additionalProductionProfileGas = drainageStrategy.AdditionalProductionProfileGas ?? new TimeSeries<double>();
+        var additionalProductionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas);
+
+        var additionalProductionProfileGas = additionalProductionProfileGasProfile == null
+            ? new TimeSeriesCost()
+            : new TimeSeriesCost(additionalProductionProfileGasProfile);
 
         var productionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas);
         var productionProfileGasTimeSeries = productionProfileGasProfile == null ? new TimeSeries<double>() : new TimeSeriesCost(productionProfileGasProfile);

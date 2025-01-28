@@ -47,22 +47,17 @@ public class CalculateTotalIncomeServiceTests
                     StartYear = 2020,
                     Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
                 },
-            }
-        };
-
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink,
-
-            AdditionalProductionProfileGas = new AdditionalProductionProfileGas
-            {
-                StartYear = 2020,
-                Values = [1000000000.0, 2000000000.0] // SM³
+                new()
+                {
+                    ProfileType = ProfileTypes.AdditionalProductionProfileGas,
+                    StartYear = 2020,
+                    Values = [1000000000.0, 2000000000.0] // SM³
+                }
             }
         };
 
         // Act
-        CalculateTotalIncomeService.CalculateTotalIncome(caseItem, drainageStrategy);
+        CalculateTotalIncomeService.CalculateTotalIncome(caseItem);
 
         // Assert
         var expectedFirstYearIncome = (2 * 1000000.0 * 75 * 6.29 * 10 + 2 * 1000000000.0 * 3) / 1000000;
@@ -114,13 +109,8 @@ public class CalculateTotalIncomeServiceTests
             }
         };
 
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink
-        };
-
         // Act
-        CalculateTotalIncomeService.CalculateTotalIncome(caseItem, drainageStrategy);
+        CalculateTotalIncomeService.CalculateTotalIncome(caseItem);
 
         // Assert
         var calculatedTotalIncomeCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);

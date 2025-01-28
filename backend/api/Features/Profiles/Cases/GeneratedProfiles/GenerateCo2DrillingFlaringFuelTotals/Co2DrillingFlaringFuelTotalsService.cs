@@ -15,7 +15,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         {
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
-            ProfileTypes.ProductionProfileGas
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas
         };
 
         var caseItem = await context.Cases
@@ -32,7 +33,6 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 

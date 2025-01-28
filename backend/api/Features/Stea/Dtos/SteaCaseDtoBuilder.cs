@@ -18,7 +18,7 @@ public static class SteaCaseDtoBuilder
         AddCapex(steaCaseDto, caseItem);
         AddCessationCost(steaCaseDto, caseItem);
         AddExploration(steaCaseDto, caseItem);
-        AddProductionSalesAndVolumes(steaDbData, steaCaseDto, caseItem);
+        AddProductionSalesAndVolumes(steaCaseDto, caseItem);
 
         steaCaseDto.StartYear = new[]
         {
@@ -280,7 +280,7 @@ public static class SteaCaseDtoBuilder
         TimeSeriesCostMerger.AddValues(steaCaseDto.Capex.Summary, steaCaseDto.Capex.OnshorePowerSupplyCost);
     }
 
-    private static void AddProductionSalesAndVolumes(SteaDbData steaDbData, SteaCaseDto steaCaseDto, Case caseItem)
+    private static void AddProductionSalesAndVolumes(SteaCaseDto steaCaseDto, Case caseItem)
     {
         steaCaseDto.ProductionAndSalesVolumes = new ProductionAndSalesVolumesDto
         {
@@ -293,7 +293,6 @@ public static class SteaCaseDtoBuilder
 
         var dg4Year = caseItem.DG4Date.Year;
 
-        var drainageStrategy = steaDbData.DrainageStrategies.First(d => d.Id == caseItem.DrainageStrategyLink);
         var startYearsProductionSalesAndVolumes = new List<int>();
 
         var productionProfileOilProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil);
@@ -407,12 +406,14 @@ public static class SteaCaseDtoBuilder
             };
         }
 
-        if (drainageStrategy.AdditionalProductionProfileGas != null)
+        var additionalProductionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas);
+
+        if (additionalProductionProfileGasProfile != null)
         {
             steaCaseDto.ProductionAndSalesVolumes.AdditionalGas = new TimeSeriesCostDto
             {
-                StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear + dg4Year,
-                Values = drainageStrategy.AdditionalProductionProfileGas.Values
+                StartYear = additionalProductionProfileGasProfile.StartYear + dg4Year,
+                Values = additionalProductionProfileGasProfile.Values
             };
         }
     }

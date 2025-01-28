@@ -18,7 +18,8 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             ProfileTypes.Co2EmissionsOverride,
             ProfileTypes.ProductionProfileOil,
             ProfileTypes.AdditionalProductionProfileOil,
-            ProfileTypes.ProductionProfileGas
+            ProfileTypes.ProductionProfileGas,
+            ProfileTypes.AdditionalProductionProfileGas
         };
 
         var caseItem = await context.Cases
@@ -26,7 +27,6 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseId);
 
         var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.ProductionProfileWaterInjection)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 

@@ -17,14 +17,10 @@ public class CalculateTotalIncomeService(DcdDbContext context)
             .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .Include(d => d.AdditionalProductionProfileGas)
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
-        CalculateTotalIncome(caseItem, drainageStrategy);
+        CalculateTotalIncome(caseItem);
     }
 
-    public static void CalculateTotalIncome(Case caseItem, DrainageStrategy drainageStrategy)
+    public static void CalculateTotalIncome(Case caseItem)
     {
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
@@ -47,7 +43,7 @@ public class CalculateTotalIncomeService(DcdDbContext context)
 
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas),
-            drainageStrategy.AdditionalProductionProfileGas
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
         );
 
         var gasIncome = new TimeSeries<double>

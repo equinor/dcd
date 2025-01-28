@@ -50,13 +50,8 @@ public class CalculateBreakEvenOilPriceServiceTests
             }
         };
 
-        var drainageStrategy = new DrainageStrategy
-        {
-            Id = caseItem.DrainageStrategyLink,
-        };
-
         // Act
-        CalculateBreakEvenOilPriceService.CalculateBreakEvenOilPrice(caseItem, drainageStrategy);
+        CalculateBreakEvenOilPriceService.CalculateBreakEvenOilPrice(caseItem);
 
         // Assert
         var expectedBreakEvenPrice = 26.29;
