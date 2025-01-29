@@ -5,6 +5,7 @@ using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Types.CessationCostProfile;
 using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 using api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
@@ -15,7 +16,6 @@ using api.Features.Cases.Recalculation.Types.OpexCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
 using api.Features.Profiles;
-using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2Intensity;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;

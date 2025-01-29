@@ -15,33 +15,6 @@ class OnshorePowerSupplyService extends __BaseService {
         )
         return res
     }
-
-    public async createOnshorePowerSupplyCostProfileOverride(
-        projectId: string,
-        caseId: string,
-        onshorePowerSupplyId: string,
-        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}/cost-profile-override/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateOnshorePowerSupplyCostProfileOverride(
-        projectId: string,
-        caseId: string,
-        onshorePowerSupplyId: string,
-        costProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/onshore-power-supplies/${onshorePowerSupplyId}/cost-profile-override/${costProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
 }
 
 export const GetOnshorePowerSupplyService = async () => new OnshorePowerSupplyService({

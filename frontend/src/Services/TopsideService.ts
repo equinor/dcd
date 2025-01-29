@@ -15,33 +15,6 @@ class TopsideService extends __BaseService {
         )
         return res
     }
-
-    public async createTopsideCostProfileOverride(
-        projectId: string,
-        caseId: string,
-        topsideId: string,
-        dto: Components.Schemas.CreateTimeSeriesCostOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/topsides/${topsideId}/cost-profile-override/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateTopsideCostProfileOverride(
-        projectId: string,
-        caseId: string,
-        topsideId: string,
-        costProfileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesCostOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/topsides/${topsideId}/cost-profile-override/${costProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
 }
 
 export const GetTopsideService = async () => new TopsideService({

@@ -1,3 +1,4 @@
+using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -18,7 +19,7 @@ public static class EconomicsHelper
         return accumulatedVolume;
     }
 
-    public static TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
+    public static TimeSeriesCost CalculateCashFlow(TimeSeriesCost income, TimeSeriesCost totalCost)
     {
         int startYear = Math.Min(income.StartYear, totalCost.StartYear);
         int endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
@@ -38,58 +39,18 @@ public static class EconomicsHelper
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }
 
-        return new TimeSeries<double>
+        return new TimeSeriesCost
         {
             StartYear = startYear,
             Values = cashFlowValues
         };
     }
 
-    public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeries<double>? t1, TimeSeries<double>? t2)
+    public static TimeSeriesCost MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
     {
-        return CostProfileMerger.MergeCostProfiles(
-            new TimeSeries<double>
-            {
-                StartYear = t1?.StartYear ?? 0,
-                Values = t1?.Values ?? []
-            },
-            new TimeSeries<double>
-            {
-                StartYear = t2?.StartYear ?? 0,
-                Values = t2?.Values ?? []
-            }
-        );
-    }
-
-    public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeries<double>? t2)
-    {
-        return CostProfileMerger.MergeCostProfiles(
-            new TimeSeries<double>
-            {
-                StartYear = t1?.StartYear ?? 0,
-                Values = t1?.Values ?? []
-            },
-            new TimeSeries<double>
-            {
-                StartYear = t2?.StartYear ?? 0,
-                Values = t2?.Values ?? []
-            }
-        );
-    }
-
-    public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
-    {
-        return CostProfileMerger.MergeCostProfiles(
-            new TimeSeries<double>
-            {
-                StartYear = t1?.StartYear ?? 0,
-                Values = t1?.Values ?? []
-            },
-            new TimeSeries<double>
-            {
-                StartYear = t2?.StartYear ?? 0,
-                Values = t2?.Values ?? []
-            }
+        return TimeSeriesMerger.MergeTimeSeries(
+            new TimeSeriesCost(t1),
+            new TimeSeriesCost(t2)
         );
     }
 }

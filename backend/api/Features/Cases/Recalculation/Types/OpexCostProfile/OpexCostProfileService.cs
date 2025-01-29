@@ -1,6 +1,7 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -52,20 +53,20 @@ public class OpexCostProfileService(DcdDbContext context)
             return;
         }
 
-        var wellInterventionCostsFromDrillingSchedule = new TimeSeries<double>();
+        var wellInterventionCostsFromDrillingSchedule = new TimeSeriesCost();
         foreach (var linkedWell in linkedWells)
         {
             if (linkedWell.DrillingSchedule == null) { continue; }
 
-            var timeSeries = new TimeSeries<double>
+            var timeSeries = new TimeSeriesCost
             {
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
             };
-            wellInterventionCostsFromDrillingSchedule = CostProfileMerger.MergeCostProfiles(wellInterventionCostsFromDrillingSchedule, timeSeries);
+            wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
-        var tempSeries = new TimeSeries<int>
+        var tempSeries = new DrillingSchedule
         {
             StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
             Values = wellInterventionCostsFromDrillingSchedule.Values.Select(v => (int)v).ToArray()
@@ -155,9 +156,9 @@ public class OpexCostProfileService(DcdDbContext context)
     Input: [1, 2, 3, 4]
     Output: [1, 3, 6, 10]
     */
-    private static TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
+    private static TimeSeriesCost GetCumulativeDrillingSchedule(DrillingSchedule drillingSchedule)
     {
-        var cumulativeSchedule = new TimeSeries<double>
+        var cumulativeSchedule = new TimeSeriesCost
         {
             StartYear = drillingSchedule.StartYear
         };

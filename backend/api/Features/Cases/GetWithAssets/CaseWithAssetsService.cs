@@ -4,7 +4,6 @@ using api.Features.Cases.GetWithAssets.AssetMappers;
 using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
-using api.ModelMapping;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;

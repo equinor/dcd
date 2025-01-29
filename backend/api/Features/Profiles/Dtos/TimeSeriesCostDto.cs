@@ -17,28 +17,8 @@ public class TimeSeriesCostOverrideDto
     [Required] public bool Override { get; set; }
 }
 
-public class CreateTimeSeriesCostDto
-{
-    [Required] public int StartYear { get; set; }
-    [Required] public double[] Values { get; set; } = [];
-}
-
-public class CreateTimeSeriesCostOverrideDto
-{
-    [Required] public int StartYear { get; set; }
-    [Required] public double[] Values { get; set; } = [];
-    [Required] public bool Override { get; set; }
-}
-
 public class UpdateTimeSeriesCostDto
 {
     [Required] public int StartYear { get; set; }
     [Required] public double[] Values { get; set; } = [];
-}
-
-public class UpdateTimeSeriesCostOverrideDto
-{
-    [Required] public int StartYear { get; set; }
-    [Required] public double[] Values { get; set; } = [];
-    [Required] public bool Override { get; set; }
 }
