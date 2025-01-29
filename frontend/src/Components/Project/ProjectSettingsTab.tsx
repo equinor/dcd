@@ -44,7 +44,7 @@ const ProjectSettingsTab = () => {
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
+        if ([1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.classification = newClassification
@@ -127,9 +127,9 @@ const ProjectSettingsTab = () => {
                             id="classification"
                             label=""
                             onChange={(e) => handleClassificationChange(e)}
-                            value={revisionAndProjectData ? revisionAndProjectData.commonProjectAndRevisionData.classification : undefined}
+                            value={revisionAndProjectData ? revisionAndProjectData.commonProjectAndRevisionData.classification : 1}
                         >
-                            {Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
+                            {Object.entries(PROJECT_CLASSIFICATION).filter(([key]) => key !== "0").map(([key, value]) => (
                                 <option key={key} value={key}>{value.label}</option>
                             ))}
                         </NativeSelect>
