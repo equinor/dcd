@@ -53,7 +53,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside);
         var flaringsProfile = GetFlaringsProfile(project, caseItem);
         var lossesProfile = GetLossesProfile(project, caseItem);
-        
+
         var tempProfile = TimeSeriesMerger.MergeTimeSeries(fuelConsumptionsProfile, flaringsProfile, lossesProfile);
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
@@ -64,7 +64,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             Values = convertedValues.ToArray()
         };
 
-        var drillingEmissionsProfile = CalculateDrillingEmissions(project, linkedWells);
+        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, caseItem.WellProjectLink);
 
         var totalProfile = TimeSeriesMerger.MergeTimeSeries(newProfile, drillingEmissionsProfile);
 

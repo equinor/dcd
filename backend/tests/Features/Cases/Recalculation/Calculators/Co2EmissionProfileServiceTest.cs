@@ -73,7 +73,7 @@ public class Co2EmissionProfileServiceTests
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
         var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
 
-        var total = CostProfileMerger.MergeCostProfiles([fuelConsumptions, flaring, losses]);
+        var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 
         // Assert
         var expectedTotalFuelConsumptions = new List<double> { 0.00595393613229385 * 1000000000, 0.005467970774412518 * 1000000000, 0.004930208439871723 * 1000000000, 0.004537168899071554 * 1000000000 };
@@ -96,35 +96,40 @@ public class Co2EmissionProfileServiceTests
         var caseItem = new Case
         {
             FacilitiesAvailability = 93, // 93%
-        };
+            TimeSeriesProfiles = new List<TimeSeriesProfile>
+            {
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileOil,
+                    StartYear = 2023,
+                    Values = [100000, 150000, 130000, 110000]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.AdditionalProductionProfileOil,
+                    StartYear = 2023,
+                    Values = [60000]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileGas,
+                    StartYear = 2023,
+                    Values = [200000000, 250000000, 220000000, 200000000]
+                },
+                new()
+                {
+                    ProfileType = ProfileTypes.AdditionalProductionProfileGas,
+                    StartYear = 2023,
+                    Values = [80000000]
+                },
 
-        var drainageStrategy = new DrainageStrategy
-        {
-            ProductionProfileOil = new ProductionProfileOil
-            {
-                StartYear = 2023,
-                Values = [100000, 150000, 130000, 110000]
-            },
-            AdditionalProductionProfileOil = new AdditionalProductionProfileOil
-            {
-                StartYear = 2023,
-                Values = [60000]
-            },
-            ProductionProfileGas = new ProductionProfileGas
-            {
-                StartYear = 2023,
-                Values = [200000000, 250000000, 220000000, 200000000]
-            },
-            AdditionalProductionProfileGas = new AdditionalProductionProfileGas
-            {
-                StartYear = 2023,
-                Values = [80000000]
-            },
-            ProductionProfileWaterInjection = new ProductionProfileWaterInjection
-            {
-                StartYear = 2023,
-                Values = [1180000]
-            },
+                new()
+                {
+                    ProfileType = ProfileTypes.ProductionProfileWaterInjection,
+                    StartYear = 2023,
+                    Values = [1180000]
+                },
+            }
         };
 
         var topside = new Topside
@@ -146,7 +151,7 @@ public class Co2EmissionProfileServiceTests
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
         var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
 
-        var total = CostProfileMerger.MergeCostProfiles([fuelConsumptions, flaring, losses]);
+        var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 
         // Assert
         var expectedTotalFuelConsumptions = new List<double> { 0.00595393613229385 * 1000000000, 0.005467970774412518 * 1000000000, 0.004930208439871723 * 1000000000, 0.004537168899071554 * 1000000000 };
