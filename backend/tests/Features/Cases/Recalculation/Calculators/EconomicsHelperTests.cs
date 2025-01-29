@@ -1,5 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.Helpers;
-using api.Models;
+using api.Features.Profiles.Dtos;
 
 using Xunit;
 

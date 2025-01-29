@@ -1,4 +1,4 @@
-using api.Models;
+using api.Features.Profiles.Dtos;
 
 namespace api.Features.TimeSeriesCalculators;
 

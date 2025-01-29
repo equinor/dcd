@@ -1,6 +1,7 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
