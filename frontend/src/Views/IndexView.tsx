@@ -18,7 +18,7 @@ import {
     history,
     bar_chart
 } from "@equinor/eds-icons"
-import { Version, UpdateEntry, whatsNewUpdates } from "@/Components/Modal/WhatsNewModal"
+import { versions, UpdateEntry, whatsNewUpdates } from "@/Components/Modal/WhatsNewModal"
 
 
 const StyledContainer = styled(Container)`
@@ -132,13 +132,7 @@ const Feature = ({ icon, title, description }: { icon: React.ReactNode, title: s
 );
 
 const IndexView: React.FC = () => {
-    const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
-        const [aMajor, aMinor, aPatch] = a.split(".").map(Number)
-        const [bMajor, bMinor, bPatch] = b.split(".").map(Number)
-        if (aMajor !== bMajor) return bMajor - aMajor
-        if (aMinor !== bMinor) return bMinor - aMinor
-        return bPatch - aPatch
-    }) as Version[];
+
 
     return (
         <StyledContainer maxWidth="lg">

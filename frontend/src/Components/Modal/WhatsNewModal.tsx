@@ -133,7 +133,7 @@ export const whatsNewUpdates: { [key in Version]: { [key in Category]?: UpdateEn
     },
 }
 
-const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
+export const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
     const [aMajor, aMinor, aPatch] = a.split(".").map(Number)
     const [bMajor, bMinor, bPatch] = b.split(".").map(Number)
 

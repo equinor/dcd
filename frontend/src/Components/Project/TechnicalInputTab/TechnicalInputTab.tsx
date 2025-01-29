@@ -104,11 +104,11 @@ const TechnicalInputTab = () => {
         <TabWrapper>
             <Grid container>
                 <Grid item xs={12}>
-                    <Box sx={{ width: '100%' }}>
+                    <Box>
                         <StyledTabs value={activeTab} onChange={handleChange}>
-                            <StyledTab label="Well Costs" id="technical-tab-0" aria-controls="technical-tabpanel-0" />
-                            <StyledTab label="PROSP" id="technical-tab-1" aria-controls="technical-tabpanel-1" />
-                            <StyledTab label="CO2" id="technical-tab-2" aria-controls="technical-tabpanel-2" />
+                            <StyledTab label="Well Costs"  />
+                            <StyledTab label="PROSP" />
+                            <StyledTab label="CO2" />
                         </StyledTabs>
                         <CustomTabPanel value={activeTab} index={0}>
                             <WellCostsTab />
