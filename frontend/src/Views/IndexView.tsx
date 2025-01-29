@@ -18,7 +18,8 @@ import {
     history,
     bar_chart
 } from "@equinor/eds-icons"
-import { versions, UpdateEntry, whatsNewUpdates } from "@/Components/Modal/WhatsNewModal"
+import { versions, whatsNewUpdates } from "@/Utils/whatsNewData"
+import { UpdateEntry } from "@/Models/Interfaces"
 
 
 const StyledContainer = styled(Container)`
