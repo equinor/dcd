@@ -130,6 +130,6 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
             }
         }
 
-        return CostProfileMerger.MergeCostProfiles(costProfilesList);
+        return TimeSeriesMerger.MergeTimeSeries(costProfilesList);
     }
 }

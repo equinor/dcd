@@ -5,10 +5,10 @@ using Xunit;
 
 namespace tests.Features.TimeSeriesCalculators;
 
-public class TimeSeriesCalculatorTests
+public class TimeSeriesMergerTests
 {
     [Fact]
-    public void Creating_timeseries_from_null__should_generate_default_time_series()
+    public void Creating_time_series_from_null__should_generate_default_time_series()
     {
         var timeSeries = new TimeSeriesCost(null);
 
@@ -32,7 +32,7 @@ public class TimeSeriesCalculatorTests
             Values = [1, 2, 3]
         };
 
-        var merged = CostProfileMerger.MergeCostProfiles(series1, series2);
+        var merged = TimeSeriesMerger.MergeTimeSeries(series1, series2);
 
         Assert.Equal(2020, merged.StartYear);
 
@@ -58,7 +58,7 @@ public class TimeSeriesCalculatorTests
             Values = [1, 2, 3]
         };
 
-        var merged = CostProfileMerger.MergeCostProfiles(series1, series2);
+        var merged = TimeSeriesMerger.MergeTimeSeries(series1, series2);
 
         Assert.Equal(2020, merged.StartYear);
 
@@ -85,7 +85,7 @@ public class TimeSeriesCalculatorTests
             Values = [1, 2, 3, 4]
         };
 
-        var merged = CostProfileMerger.MergeCostProfiles(series1, series2);
+        var merged = TimeSeriesMerger.MergeTimeSeries(series1, series2);
 
         Assert.Equal(2020, merged.StartYear);
 
@@ -118,7 +118,7 @@ public class TimeSeriesCalculatorTests
             Values = [1, 2, 3, 4]
         };
 
-        var merged = CostProfileMerger.MergeCostProfiles(series1, series2, series3);
+        var merged = TimeSeriesMerger.MergeTimeSeries(series1, series2, series3);
 
         Assert.Equal(2019, merged.StartYear);
 

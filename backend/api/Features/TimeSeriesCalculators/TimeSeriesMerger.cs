@@ -2,9 +2,9 @@ using api.Features.Profiles.Dtos;
 
 namespace api.Features.TimeSeriesCalculators;
 
-public static class CostProfileMerger
+public static class TimeSeriesMerger
 {
-    public static TimeSeriesCost MergeCostProfiles(params List<TimeSeriesCost> timeSeriesItems)
+    public static TimeSeriesCost MergeTimeSeries(params List<TimeSeriesCost> timeSeriesItems)
     {
         if (timeSeriesItems.Count == 0)
         {
@@ -15,13 +15,13 @@ public static class CostProfileMerger
 
         foreach (var ts in timeSeriesItems)
         {
-            mergedTimeSeries = MergeTwoCostProfiles(mergedTimeSeries, ts);
+            mergedTimeSeries = MergeTwoTimeSeries(mergedTimeSeries, ts);
         }
 
         return mergedTimeSeries;
     }
 
-    private static TimeSeriesCost MergeTwoCostProfiles(TimeSeriesCost t1, TimeSeriesCost t2)
+    private static TimeSeriesCost MergeTwoTimeSeries(TimeSeriesCost t1, TimeSeriesCost t2)
     {
         var t1Year = t1.StartYear;
         var t2Year = t2.StartYear;
@@ -48,8 +48,8 @@ public static class CostProfileMerger
             : t1Year - t2Year;
 
         var values = t1Year < t2Year
-            ? MergeCostProfileData(t1Values.ToList(), t2Values.ToList(), offset)
-            : MergeCostProfileData(t2Values.ToList(), t1Values.ToList(), offset);
+            ? MergeTimeSeriesData(t1Values.ToList(), t2Values.ToList(), offset)
+            : MergeTimeSeriesData(t2Values.ToList(), t1Values.ToList(), offset);
 
         return new TimeSeriesCost
         {
@@ -58,7 +58,7 @@ public static class CostProfileMerger
         };
     }
 
-    private static List<double> MergeCostProfileData(List<double> t1, List<double> t2, int offset)
+    private static List<double> MergeTimeSeriesData(List<double> t1, List<double> t2, int offset)
     {
         var doubleList = new List<double>();
 

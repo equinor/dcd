@@ -68,7 +68,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             return new TimeSeriesCost();
         }
 
-        var fuelFlaringLosses = CostProfileMerger.MergeCostProfiles(fuelConsumption, flarings, losses);
+        var fuelFlaringLosses = TimeSeriesMerger.MergeTimeSeries(fuelConsumption, flarings, losses);
 
         if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {
@@ -89,7 +89,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
         var productionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas);
         var productionProfileGasTimeSeries = new TimeSeriesCost(productionProfileGasProfile);
 
-        var gasProduction = CostProfileMerger.MergeCostProfiles(productionProfileGasTimeSeries, additionalProductionProfileGas);
-        return CostProfileMerger.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
+        var gasProduction = TimeSeriesMerger.MergeTimeSeries(productionProfileGasTimeSeries, additionalProductionProfileGas);
+        return TimeSeriesMerger.MergeTimeSeries(gasProduction, negativeFuelFlaringLosses);
     }
 }

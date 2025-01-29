@@ -106,6 +106,6 @@ public class Co2IntensityProfileService(DcdDbContext context)
             };
         }
 
-        return CostProfileMerger.MergeCostProfiles(oilProfile, additionalOilProfile);
+        return TimeSeriesMerger.MergeTimeSeries(oilProfile, additionalOilProfile);
     }
 }

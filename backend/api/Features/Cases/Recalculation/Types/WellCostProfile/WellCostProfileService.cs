@@ -200,7 +200,7 @@ public class WellCostProfileService(DcdDbContext context)
             }
         }
 
-        var mergedCostProfile = CostProfileMerger.MergeCostProfiles(costProfilesList);
+        var mergedCostProfile = TimeSeriesMerger.MergeTimeSeries(costProfilesList);
         return mergedCostProfile;
     }
 
@@ -222,7 +222,7 @@ public class WellCostProfileService(DcdDbContext context)
             }
         }
 
-        var mergedCostProfile = CostProfileMerger.MergeCostProfiles(costProfilesList);
+        var mergedCostProfile = TimeSeriesMerger.MergeTimeSeries(costProfilesList);
         return mergedCostProfile;
     }
 

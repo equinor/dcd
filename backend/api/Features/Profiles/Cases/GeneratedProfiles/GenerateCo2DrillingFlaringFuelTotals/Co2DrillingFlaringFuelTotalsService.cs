@@ -94,7 +94,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
             };
-            wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
+            wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
         }
 
         return wellDrillingSchedules.Values

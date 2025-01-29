@@ -53,7 +53,7 @@ public class CalculateTotalIncomeService(DcdDbContext context)
             Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray()
         };
 
-        var totalIncome = CostProfileMerger.MergeCostProfiles(oilIncome, gasIncome);
+        var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, gasIncome);
 
         // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfile to get correct unit
         var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();

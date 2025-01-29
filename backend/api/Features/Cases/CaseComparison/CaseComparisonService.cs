@@ -148,7 +148,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
         var otherStudies = new TimeSeriesCost(totalOtherStudiesCostProfile);
 
-        var studyTimeSeries = CostProfileMerger.MergeCostProfiles(feasibility, feed, otherStudies);
+        var studyTimeSeries = TimeSeriesMerger.MergeTimeSeries(feasibility, feed, otherStudies);
 
         var wellInterventionProfile = caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true
             ? caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)
@@ -171,7 +171,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         var additionalOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile);
         var additionalOpex = new TimeSeriesCost(additionalOpexCostProfile);
 
-        var opexTimeSeries = CostProfileMerger.MergeCostProfiles(
+        var opexTimeSeries = TimeSeriesMerger.MergeTimeSeries(
             wellIntervention,
             offshoreFacilities,
             historicCost,
@@ -202,7 +202,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         var cessationOnshoreFacilitiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
         var cessationOnshoreFacilitiesCost = new TimeSeriesCost(cessationOnshoreFacilitiesCostProfile);
 
-        var cessationTimeSeries = CostProfileMerger.MergeCostProfiles(cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
+        var cessationTimeSeries = TimeSeriesMerger.MergeTimeSeries(cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
 
         return cessationTimeSeries.Values.Sum();
     }

@@ -48,7 +48,7 @@ public static class EconomicsHelper
 
     public static TimeSeriesCost MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
     {
-        return CostProfileMerger.MergeCostProfiles(
+        return TimeSeriesMerger.MergeTimeSeries(
             new TimeSeriesCost(t1),
             new TimeSeriesCost(t2)
         );

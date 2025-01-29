@@ -63,7 +63,7 @@ public class OpexCostProfileService(DcdDbContext context)
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
             };
-            wellInterventionCostsFromDrillingSchedule = CostProfileMerger.MergeCostProfiles(wellInterventionCostsFromDrillingSchedule, timeSeries);
+            wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
         var tempSeries = new DrillingSchedule
