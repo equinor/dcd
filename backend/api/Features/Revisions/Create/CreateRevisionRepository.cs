@@ -10,93 +10,43 @@ public class CreateRevisionRepository(DcdDbContext context)
     public async Task<Project> GetDetachedProjectGraph(Guid projectPk)
     {
         var project = await context.Projects
-                          .Include(p => p.ExplorationOperationalWellCosts)
-                          .Include(p => p.DevelopmentOperationalWellCosts)
-                          .SingleAsync(p => p.Id == projectPk);
+            .Include(p => p.ExplorationOperationalWellCosts)
+            .Include(p => p.DevelopmentOperationalWellCosts)
+            .SingleAsync(p => p.Id == projectPk);
 
-        await LoadCases(projectPk);
-        await LoadDrainageStrategies(projectPk);
-        await LoadExplorations(projectPk);
-        await LoadWellProjects(projectPk);
-        await LoadTransports(projectPk);
-        await LoadTopsides(projectPk);
-        await LoadSurfs(projectPk);
-        await LoadSubstructures(projectPk);
-        await LoadOnshorePowerSupplies(projectPk);
-
-        DetachEntriesToEnablePrimaryKeyEdits();
-
-        return project;
-    }
-
-    private async Task LoadCases(Guid projectPk)
-    {
-        await context.Cases
-            .Include(c => c.TimeSeriesProfiles)
-            .Include(c => c.WellProject).ThenInclude(wp => wp!.WellProjectWells).ThenInclude(c => c.Well)
-            .Include(c => c.Exploration).ThenInclude(wp => wp!.ExplorationWells).ThenInclude(c => c.Well)
+        var caseItems = await context.Cases
+            .Include(x => x.DrainageStrategy)
+            .Include(x => x.Transport)
+            .Include(x => x.Topside)
+            .Include(x => x.Surf)
+            .Include(x => x.Substructure)
+            .Include(x => x.OnshorePowerSupply)
+            .Include(x => x.DrainageStrategy)
+            .Include(x => x.DrainageStrategy)
             .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-    }
+            .ToListAsync();
 
-    private async Task LoadDrainageStrategies(Guid projectPk)
-    {
-        await context.DrainageStrategies
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-    }
+        var caseIds = caseItems.Select(x => x.Id).ToList();
 
-    private async Task LoadExplorations(Guid projectPk)
-    {
+        await context.TimeSeriesProfiles
+            .Where(x => caseIds.Contains(x.Id))
+            .LoadAsync();
+
         await context.Explorations
-            .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
+            .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
-    }
 
-    private async Task LoadWellProjects(Guid projectPk)
-    {
         await context.WellProjects
             .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
-    }
 
-    private async Task LoadTransports(Guid projectPk)
-    {
-        await context.Transports
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-    }
+        DetachEntriesToEnablePrimaryKeyEdits();
 
-    private async Task LoadTopsides(Guid projectPk)
-    {
-        await context.Topsides
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-    }
-
-    private async Task LoadSurfs(Guid projectPk)
-    {
-        await context.Surfs
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-    }
-
-    private async Task LoadSubstructures(Guid projectPk)
-    {
-        await context.Substructures
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-    }
-
-    private async Task LoadOnshorePowerSupplies(Guid projectPk)
-    {
-        await context.OnshorePowerSupplies
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
+        return project;
     }
 
     private void DetachEntriesToEnablePrimaryKeyEdits()
