@@ -62,33 +62,33 @@ public static class TimeSeriesMerger
     {
         var doubleList = new List<double>();
 
-        if (offset > t1.Length)
+        if (offset > t1.Count)
         {
             doubleList.AddRange(t1);
-            var zeros = offset - t1.Length;
+            var zeros = offset - t1.Count;
             var zeroList = Enumerable.Repeat(0.0, zeros);
             doubleList.AddRange(zeroList);
             doubleList.AddRange(t2);
-            return doubleList.ToArray();
+            return doubleList;
         }
 
         doubleList.AddRange(t1.Take(offset));
 
-        if (t1.Length - offset == t2.Length)
+        if (t1.Count - offset == t2.Count)
         {
-            doubleList.AddRange(t1.TakeLast(t1.Length - offset).Zip(t2, (x, y) => x + y));
-            return doubleList.ToArray();
+            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+            return doubleList;
         }
 
-        if (t1.Length - offset > t2.Length)
+        if (t1.Count - offset > t2.Count)
         {
-            doubleList.AddRange(t1.TakeLast(t1.Length - offset).Zip(t2, (x, y) => x + y));
-            doubleList.AddRange(t1.TakeLast(t1.Length - offset - t2.Length));
-            return doubleList.ToArray();
+            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+            doubleList.AddRange(t1.TakeLast(t1.Count - offset - t2.Count));
+            return doubleList;
         }
 
-        doubleList.AddRange(t1.TakeLast(t1.Length - offset).Zip(t2, (x, y) => x + y));
-        doubleList.AddRange(t2.TakeLast(t2.Length - (t1.Length - offset)));
-        return doubleList.ToArray();
+        doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+        doubleList.AddRange(t2.TakeLast(t2.Count - (t1.Count - offset)));
+        return doubleList;
     }
 }
