@@ -41,7 +41,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside);
-        var flaringsTotal = GetFlaringsProfileTotal(project, caseItem, drainageStrategy);
+        var flaringsTotal = GetFlaringsProfileTotal(project, caseItem);
         var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, caseItem.WellProjectLink);
 
         return new Co2DrillingFlaringFuelTotalsDto
@@ -52,9 +52,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         };
     }
 
-    private static double GetFlaringsProfileTotal(Project project, Case caseItem, DrainageStrategy drainageStrategy)
+    private static double GetFlaringsProfileTotal(Project project, Case caseItem)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
 
         var flaringsProfile = new TimeSeriesCost
         {
