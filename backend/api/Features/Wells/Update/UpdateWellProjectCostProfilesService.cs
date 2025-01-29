@@ -125,7 +125,7 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 
     private static TimeSeriesCost GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeriesCost?>();
+        var costProfilesList = new List<TimeSeriesCost>();
 
         foreach (var wellProjectWell in wellProjectWells)
         {

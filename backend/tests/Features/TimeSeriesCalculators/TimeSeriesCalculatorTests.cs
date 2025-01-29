@@ -8,6 +8,16 @@ namespace tests.Features.TimeSeriesCalculators;
 public class TimeSeriesCalculatorTests
 {
     [Fact]
+    public void Creating_timeseries_from_null__should_generate_default_time_series()
+    {
+        var timeSeries = new TimeSeriesCost(null);
+
+        Assert.Equal(0, timeSeries.StartYear);
+        Assert.NotNull(timeSeries.Values);
+        Assert.Empty(timeSeries.Values);
+    }
+
+    [Fact]
     public void Merging_time_series__should_add_values_when_start_year_and_length_is_the_same()
     {
         var series1 = new TimeSeriesCost

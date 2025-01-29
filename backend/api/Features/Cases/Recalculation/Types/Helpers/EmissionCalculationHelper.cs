@@ -25,11 +25,7 @@ public static class EmissionCalculationHelper
         return fuelConsumptions;
     }
 
-    public static TimeSeriesCost CalculateTotalUseOfPower(
-        Case caseItem,
-        Topside topside,
-        double pe
-    )
+    public static TimeSeriesCost CalculateTotalUseOfPower(Case caseItem, Topside topside, double pe)
     {
         var co2ShareCo2MaxOil = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
         var co2ShareCo2MaxGas = topside.CO2ShareGasProfile * topside.CO2OnMaxGasProfile;
@@ -55,11 +51,7 @@ public static class EmissionCalculationHelper
 
     // Formula: 1. WRP = WR/WIC/cd
     //          2. WRP*WSP*(1-WOM)
-    private static TimeSeriesCost CalculateTotalUseOfPowerWi(
-        Case caseItem,
-        Topside topside,
-        double pe
-    )
+    private static TimeSeriesCost CalculateTotalUseOfPowerWi(Case caseItem, Topside topside, double pe)
     {
         var wic = topside.WaterInjectionCapacity;
         var wr = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection)?.Values;
@@ -109,7 +101,7 @@ public static class EmissionCalculationHelper
         var gsp = topside.CO2ShareGasProfile;
         var gom = topside.CO2OnMaxGasProfile;
 
-        if (mergedProfile.Values == null || mergedProfile.Values.Length == 0 || gc == 0 || pe == 0)
+        if (mergedProfile.Values.Length == 0 || gc == 0 || pe == 0)
         {
             return new TimeSeriesCost();
         }

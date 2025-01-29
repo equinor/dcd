@@ -21,7 +21,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
     public static void CalculateCo2Intensity(Case caseItem)
     {
         var totalExportedVolumes = GetTotalExportedVolumes(caseItem);
-        TimeSeriesCost generateCo2EmissionsProfile = new();
+        var generateCo2EmissionsProfile = new TimeSeriesCost();
 
         var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
         var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
@@ -84,15 +84,15 @@ public class Co2IntensityProfileService(DcdDbContext context)
         var oilValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
         var additionalOilValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
 
-        TimeSeriesCost? oilProfile = null;
-        TimeSeriesCost? additionalOilProfile = null;
+        var oilProfile = new TimeSeriesCost();
+        var additionalOilProfile = new TimeSeriesCost();
 
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil) != null)
         {
             oilProfile = new TimeSeriesCost
             {
                 StartYear = caseItem.GetProfile(ProfileTypes.ProductionProfileOil).StartYear,
-                Values = oilValues,
+                Values = oilValues
             };
         }
 
@@ -101,19 +101,10 @@ public class Co2IntensityProfileService(DcdDbContext context)
             additionalOilProfile = new TimeSeriesCost
             {
                 StartYear = caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileOil).StartYear,
-                Values = additionalOilValues,
+                Values = additionalOilValues
             };
         }
 
-        var mergedProfiles = CostProfileMerger.MergeCostProfiles(
-            oilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 },
-            additionalOilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
-        );
-
-        return new TimeSeriesCost
-        {
-            Values = mergedProfiles.Values,
-            StartYear = mergedProfiles.StartYear,
-        };
+        return CostProfileMerger.MergeCostProfiles(oilProfile, additionalOilProfile);
     }
 }

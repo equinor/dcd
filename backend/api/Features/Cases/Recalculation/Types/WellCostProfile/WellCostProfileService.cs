@@ -183,7 +183,7 @@ public class WellCostProfileService(DcdDbContext context)
 
     private static TimeSeriesCost GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeriesCost?>();
+        var costProfilesList = new List<TimeSeriesCost>();
         foreach (var explorationWell in explorationWells)
         {
             if (explorationWell?.DrillingSchedule?.Values?.Length > 0)
@@ -205,7 +205,7 @@ public class WellCostProfileService(DcdDbContext context)
 
     private static TimeSeriesCost GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeriesCost?>();
+        var costProfilesList = new List<TimeSeriesCost>();
         foreach (var wellProjectWell in wellProjectWells)
         {
             if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)

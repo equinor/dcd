@@ -4,21 +4,16 @@ namespace api.Features.TimeSeriesCalculators;
 
 public static class CostProfileMerger
 {
-    public static TimeSeriesCost MergeCostProfiles(params List<TimeSeriesCost?> timeSeriesItems)
+    public static TimeSeriesCost MergeCostProfiles(params List<TimeSeriesCost> timeSeriesItems)
     {
-        var timeSeriesListNonNull = timeSeriesItems
-            .Where(ts => ts != null)
-            .Select(ts => ts!)
-            .ToList();
-
-        if (timeSeriesListNonNull.Count == 0)
+        if (timeSeriesItems.Count == 0)
         {
             return new TimeSeriesCost();
         }
 
         var mergedTimeSeries = new TimeSeriesCost();
 
-        foreach (var ts in timeSeriesListNonNull)
+        foreach (var ts in timeSeriesItems)
         {
             mergedTimeSeries = MergeTwoCostProfiles(mergedTimeSeries, ts);
         }

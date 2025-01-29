@@ -8,8 +8,16 @@ public class TimeSeriesCost : IChangeTrackable
 {
     public TimeSeriesCost() { }
 
-    public TimeSeriesCost(TimeSeriesProfile timeSeriesProfile)
+    public TimeSeriesCost(TimeSeriesProfile? timeSeriesProfile)
     {
+        if (timeSeriesProfile == null)
+        {
+            Id = Guid.Empty;
+            StartYear = 0;
+            InternalData = string.Empty;
+            return;
+        }
+
         Id = timeSeriesProfile.Id;
         StartYear = timeSeriesProfile.StartYear;
         InternalData = timeSeriesProfile.InternalData;

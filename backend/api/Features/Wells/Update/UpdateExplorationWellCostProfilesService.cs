@@ -112,7 +112,7 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
 
     private static TimeSeriesCost GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeriesCost?>();
+        var costProfilesList = new List<TimeSeriesCost>();
 
         foreach (var explorationWell in explorationWells)
         {

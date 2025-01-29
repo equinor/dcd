@@ -83,12 +83,10 @@ public class NetSaleGasProfileService(DcdDbContext context)
 
         var additionalProductionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas);
 
-        var additionalProductionProfileGas = additionalProductionProfileGasProfile == null
-            ? new TimeSeriesCost()
-            : new TimeSeriesCost(additionalProductionProfileGasProfile);
+        var additionalProductionProfileGas = new TimeSeriesCost(additionalProductionProfileGasProfile);
 
         var productionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas);
-        var productionProfileGasTimeSeries = productionProfileGasProfile == null ? new TimeSeriesCost() : new TimeSeriesCost(productionProfileGasProfile);
+        var productionProfileGasTimeSeries = new TimeSeriesCost(productionProfileGasProfile);
 
         var gasProduction = CostProfileMerger.MergeCostProfiles(productionProfileGasTimeSeries, additionalProductionProfileGas);
         return CostProfileMerger.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);

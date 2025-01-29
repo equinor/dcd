@@ -48,14 +48,14 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         var flaringsProfile = GetFlaringsProfile(project, caseItem, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, caseItem, drainageStrategy);
 
-        var tempProfile = CostProfileMerger.MergeCostProfiles([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
+        var tempProfile = CostProfileMerger.MergeCostProfiles(fuelConsumptionsProfile, flaringsProfile, lossesProfile);
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 
         var newProfile = new TimeSeriesCost
         {
             StartYear = tempProfile.StartYear,
-            Values = convertedValues.ToArray(),
+            Values = convertedValues.ToArray()
         };
 
         var drillingEmissionsProfile = await CalculateDrillingEmissions(project, caseItem.WellProjectLink);
@@ -75,7 +75,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         var lossesProfile = new TimeSeriesCost
         {
             StartYear = losses.StartYear,
-            Values = losses.Values.Select(loss => loss * project.CO2Vented).ToArray(),
+            Values = losses.Values.Select(loss => loss * project.CO2Vented).ToArray()
         };
         return lossesProfile;
     }
@@ -87,7 +87,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         var flaringsProfile = new TimeSeriesCost
         {
             StartYear = flarings.StartYear,
-            Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
+            Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray()
         };
         return flaringsProfile;
     }

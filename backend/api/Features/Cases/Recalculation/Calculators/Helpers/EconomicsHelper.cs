@@ -48,16 +48,8 @@ public static class EconomicsHelper
     public static TimeSeriesCost MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
     {
         return CostProfileMerger.MergeCostProfiles(
-            new TimeSeriesCost
-            {
-                StartYear = t1?.StartYear ?? 0,
-                Values = t1?.Values ?? []
-            },
-            new TimeSeriesCost
-            {
-                StartYear = t2?.StartYear ?? 0,
-                Values = t2?.Values ?? []
-            }
+            new TimeSeriesCost(t1),
+            new TimeSeriesCost(t2)
         );
     }
 }
