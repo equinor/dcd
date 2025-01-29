@@ -6,7 +6,7 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 public class ExplorationWellDto
 {
-    [Required] public TimeSeriesScheduleDto DrillingSchedule { get; set; } = new();
-    [Required] public Guid ExplorationId { get; set; }
-    [Required] public Guid WellId { get; set; }
+    [Required] public required TimeSeriesScheduleDto DrillingSchedule { get; set; }
+    [Required] public required Guid ExplorationId { get; set; }
+    [Required] public required Guid WellId { get; set; }
 }
