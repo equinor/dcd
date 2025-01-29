@@ -16,56 +16,37 @@ public class CaseComparisonRepository(DcdDbContext context)
     public async Task<Project> LoadProject(Guid projectPk)
     {
         var project = await context.Projects
-            .Include(p => p.Cases)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
-        var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
-        await context.Cases
-            .Include(c => c.TimeSeriesProfiles)
-            .Where(x => caseIds.Contains(x.Id))
+        var cases = await context.Cases
+            .Include(x => x.DrainageStrategy)
+            .Include(x => x.Exploration)
+            .Include(x => x.WellProject)
+            .Include(x => x.Substructure)
+            .Include(x => x.Surf)
+            .Include(x => x.Topside)
+            .Include(x => x.Transport)
+            .Include(x => x.OnshorePowerSupply)
+            .Where(x => x.ProjectId == project.Id)
+            .Where(x => !x.Archived)
+            .ToListAsync();
+
+        var caseIds = cases.Select(x => x.Id).ToList();
+
+        await context.TimeSeriesProfiles
+            .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
-        var drainageStrategyLinks = project.Cases.Select(x => x.DrainageStrategyLink).ToList();
-        await context.DrainageStrategies
-            .Where(x => drainageStrategyLinks.Contains(x.Id))
+        await context.Wells
+            .Where(x => x.ProjectId == project.Id)
             .LoadAsync();
 
-        var explorationLinks = project.Cases.Select(x => x.ExplorationLink).ToList();
-        await context.Explorations
-            .Where(x => explorationLinks.Contains(x.Id))
+        await context.ExplorationOperationalWellCosts
+            .Where(x => x.ProjectId == project.Id)
             .LoadAsync();
 
-        var wellProjectLinks = project.Cases.Select(x => x.WellProjectLink).ToList();
-        await context.WellProjects
-            .Where(x => wellProjectLinks.Contains(x.Id))
-            .LoadAsync();
-
-        var substructureLinks = project.Cases.Select(x => x.SubstructureLink).ToList();
-        await context.Substructures
-            .Where(x => substructureLinks.Contains(x.Id))
-            .LoadAsync();
-
-        var surfLinkIds = project.Cases.Select(x => x.SurfLink).ToList();
-        await context.Surfs
-            .Where(x => surfLinkIds.Contains(x.Id))
-            .LoadAsync();
-
-        var topsideLinks = project.Cases.Select(x => x.TopsideLink).ToList();
-        await context.Topsides
-            .Where(x => topsideLinks.Contains(x.Id))
-            .LoadAsync();
-
-        var transportLinks = project.Cases.Select(x => x.TransportLink).ToList();
-        await context.Transports
-            .Where(x => transportLinks.Contains(x.Id))
-            .LoadAsync();
-
-        var onshorePowerSupplyLinks = project.Cases.Select(x => x.OnshorePowerSupplyLink).ToList();
-        await context.OnshorePowerSupplies
-            .Where(x => onshorePowerSupplyLinks.Contains(x.Id))
+        await context.DevelopmentOperationalWellCosts
+            .Where(x => x.ProjectId == project.Id)
             .LoadAsync();
 
         return project;

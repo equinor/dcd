@@ -8,6 +8,7 @@ public class CaseComparisonController(CaseComparisonService caseComparisonServic
 {
     [HttpGet("projects/{projectId:guid}/case-comparison")]
     [AuthorizeActionType(ActionType.Read)]
+    [DisableLazyLoading]
     public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
         return await caseComparisonService.Calculate(projectId);
