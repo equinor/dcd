@@ -1,0 +1,258 @@
+import React, {
+    ChangeEvent,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+    Dispatch,
+    SetStateAction,
+  } from "react"
+  import { AgGridReact } from "@ag-grid-community/react"
+  import { ColDef } from "@ag-grid-community/core"
+  
+  import { Button, Icon, NativeSelect } from "@equinor/eds-core-react"
+  import { delete_to_trash } from "@equinor/eds-icons"
+  
+  import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
+  import { cellStyleRightAlign } from "@/Utils/common"
+  import { GetWellService } from "@/Services/WellService"
+  import { TableWell } from "@/Models/Wells"
+  import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
+  
+  interface WellsTableProps {
+    rowData: TableWell[]
+    editMode: boolean
+    isEditDisabled: boolean
+    wellOptions: Array<{ key: string; value: number; label: string }>
+    revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
+    addWellsEdit: (
+      projectId: string,
+      updatePayload: Components.Schemas.UpdateWellsDto,
+    ) => void
+    defaultWellCategory: number
+    wellStagedForDeletion: any
+    setWellStagedForDeletion: Dispatch<SetStateAction<any>>
+  }
+  
+  const WellsTable: React.FC<WellsTableProps> = ({
+    rowData,
+    editMode,
+    isEditDisabled,
+    wellOptions,
+    revisionAndProjectData,
+    addWellsEdit,
+    defaultWellCategory,
+    wellStagedForDeletion,
+    setWellStagedForDeletion,
+  }) => {
+    const gridRef = useRef<AgGridReact<TableWell>>(null)
+  
+    const [localRowData, setLocalRowData] = useState<TableWell[]>(rowData)
+  
+    useEffect(() => {
+      setLocalRowData(rowData)
+    }, [rowData])
+  
+    const onGridReady = (params: any) => {
+        if (gridRef.current) {
+          gridRef.current.api = params.api
+        }
+      }
+  
+    const onRowValueChanged = (event: any) => {
+      const updatedData = event.data
+      const previousData = updatedData?.well
+  
+      if (!previousData || !updatedData || !revisionAndProjectData) return
+  
+      const updatedWell: Components.Schemas.UpdateWellDto = {
+        id: previousData.id,
+        name: updatedData.name || previousData.name || "",
+        wellCategory:
+          updatedData.wellCategory ||
+          previousData.wellCategory ||
+          defaultWellCategory,
+        drillingDays:
+          updatedData.drillingDays !== undefined
+            ? updatedData.drillingDays
+            : previousData.drillingDays ?? 0,
+        wellCost:
+          updatedData.wellCost !== undefined
+            ? updatedData.wellCost
+            : previousData.wellCost ?? 0,
+      }
+  
+      const updatePayload: Components.Schemas.UpdateWellsDto = {
+        createWellDtos: [],
+        updateWellDtos: [updatedWell],
+        deleteWellDtos: [],
+      }
+  
+      addWellsEdit(revisionAndProjectData.projectId, updatePayload)
+    }
+  
+    const handleDeleteWell = async (params: any) => {
+      if (!revisionAndProjectData) return
+  
+      const { well: wellToDelete } = params.data
+      const deleteWells: Components.Schemas.UpdateWellsDto = {
+        createWellDtos: [],
+        updateWellDtos: [],
+        deleteWellDtos: [{ id: wellToDelete.id }],
+      }
+  
+      addWellsEdit(revisionAndProjectData.projectId, deleteWells)
+  
+      setWellStagedForDeletion(undefined)
+    }
+  
+    const deleteWellRenderer = (p: any) => (
+      <Button
+        variant="ghost_icon"
+        disabled={!editMode || isEditDisabled}
+        onClick={async () => {
+          if (!revisionAndProjectData) return
+          const isWellInUse = await (
+            await GetWellService()
+          ).isWellInUse(revisionAndProjectData.projectId, p.data.id)
+  
+          if (isWellInUse) {
+            setWellStagedForDeletion(p)
+          } else {
+            handleDeleteWell(p)
+          }
+        }}
+      >
+        <Icon data={delete_to_trash} />
+      </Button>
+    )
+  
+    const handleWellCategoryChange = (
+      e: ChangeEvent<HTMLSelectElement>,
+      p: any,
+    ) => {
+      const numericValue = Number(e.currentTarget.value)
+      if ([0, 1, 2, 3, 4, 5, 6, 7].includes(numericValue)) {
+        p.setValue(numericValue)
+      }
+    }
+  
+    const wellCategoryRenderer = (p: any) => {
+      const value = Number(p.value)
+      return (
+        <NativeSelect
+          id="wellCategory"
+          label=""
+          value={value}
+          disabled={!editMode || isEditDisabled}
+          onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+            handleWellCategoryChange(e, p)
+          }
+        >
+          {wellOptions.map((option) => (
+            <option key={option.key} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </NativeSelect>
+      )
+    }
+  
+    const columnDefs = useMemo<ColDef[]>(
+      () => [
+        {
+          field: "name",
+          flex: 2,
+          editable: editMode,
+          singleClickEdit: true,
+        },
+        {
+          field: "wellCategory",
+          headerName: "Well type",
+          cellRenderer: wellCategoryRenderer,
+          editable: false,
+          flex: 2,
+          singleClickEdit: true,
+        },
+        {
+          field: "drillingDays",
+          headerName: "Drilling days",
+          flex: 1,
+          cellStyle: cellStyleRightAlign,
+          editable: editMode,
+          singleClickEdit: true,
+        },
+        {
+          field: "wellCost",
+          headerName: `Cost (${
+            revisionAndProjectData?.commonProjectAndRevisionData.currency === 1
+              ? "mill NOK"
+              : "mill USD"
+          })`,
+          flex: 1,
+          headerComponent: SecondaryTableHeader,
+          headerComponentParams: {
+            columnHeader: "Cost",
+            unit:
+              revisionAndProjectData?.commonProjectAndRevisionData.currency === 1
+                ? "mill NOK"
+                : "mill USD",
+          },
+          cellStyle: cellStyleRightAlign,
+          editable: editMode,
+          singleClickEdit: true,
+        },
+        {
+          field: "delete",
+          headerName: "",
+          cellRenderer: deleteWellRenderer,
+          editable: false,
+          width: 80,
+          singleClickEdit: false,
+        },
+      ],
+      [editMode, isEditDisabled, revisionAndProjectData],
+    )
+  
+    const defaultColDef = useMemo<ColDef>(
+      () => ({
+        sortable: true,
+        filter: true,
+        resizable: true,
+        editable: true,
+        suppressHeaderMenuButton: true,
+        cellClass: editMode ? "editableCell" : undefined,
+      }),
+      [editMode],
+    )
+  
+    return (
+      <>
+        <AgGridReact
+            ref={gridRef}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            animateRows
+            editType="fullRow"
+            domLayout="autoHeight"
+            onGridReady={onGridReady}
+            stopEditingWhenCellsLoseFocus
+            onRowValueChanged={onRowValueChanged}
+            rowSelection={{
+                mode: "multiRow",
+                enableClickSelection: false,
+                checkboxes: false,
+                headerCheckbox: false,
+                }}
+            />
+        <DeleteWellInUseModal
+          isOpen={!!wellStagedForDeletion}
+          onClose={() => setWellStagedForDeletion(undefined)}
+          onConfirm={() => handleDeleteWell(wellStagedForDeletion)}
+        />
+      </>
+    )
+  }
+  
+  export default WellsTable 
