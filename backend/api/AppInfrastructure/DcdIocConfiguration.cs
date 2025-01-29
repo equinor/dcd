@@ -40,8 +40,7 @@ using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
 using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
-using api.Features.Profiles.Create;
-using api.Features.Profiles.Update;
+using api.Features.Profiles.Save;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectMembers.Create;
@@ -174,8 +173,7 @@ public static class DcdIocConfiguration
         services.AddScoped<DrillingScheduleService>();
 
         /* Time series profiles */
-        services.AddScoped<CreateTimeSeriesProfileService>();
-        services.AddScoped<UpdateTimeSeriesProfileService>();
+        services.AddScoped<SaveProfileService>();
 
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
     }

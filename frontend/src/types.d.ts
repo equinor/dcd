@@ -199,17 +199,6 @@ declare namespace Components {
             arena: boolean;
             mdqc: boolean;
         }
-        export interface CreateTimeSeriesDto {
-            profileType: string;
-            startYear: number; // int32
-            values: number /* double */[];
-        }
-        export interface CreateTimeSeriesOverrideDto {
-            profileType: string;
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
-        }
         export interface CreateTimeSeriesScheduleDto {
             startYear: number; // int32
             values: number /* int32 */[];
@@ -372,6 +361,17 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
+        }
+        export interface SaveTimeSeriesDto {
+            profileType: string;
+            startYear: number; // int32
+            values: number /* double */[];
+        }
+        export interface SaveTimeSeriesOverrideDto {
+            profileType: string;
+            startYear: number; // int32
+            values: number /* double */[];
+            override: boolean;
         }
         export interface SharePointImportDto {
             id?: string | null;
@@ -652,17 +652,6 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
             maturity?: Maturity /* int32 */;
-        }
-        export interface UpdateTimeSeriesDto {
-            profileType: string;
-            startYear: number; // int32
-            values: number /* double */[];
-        }
-        export interface UpdateTimeSeriesOverrideDto {
-            profileType: string;
-            startYear: number; // int32
-            values: number /* double */[];
-            override: boolean;
         }
         export interface UpdateTimeSeriesScheduleDto {
             startYear: number; // int32
@@ -1058,7 +1047,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdOverrideProfiles {
+    namespace Projects$ProjectIdCases$CaseIdOverrideProfilesSave {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
@@ -1068,31 +1057,13 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesOverrideDto;
+            export type RequestBody = Components.Schemas.SaveTimeSeriesOverrideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdOverrideProfiles$ProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                profileId: Parameters.ProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdProfiles {
+    namespace Projects$ProjectIdCases$CaseIdProfilesSave {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
@@ -1102,25 +1073,7 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CreateTimeSeriesDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesCostDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdProfiles$ProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                profileId: Parameters.ProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateTimeSeriesDto;
+            export type RequestBody = Components.Schemas.SaveTimeSeriesDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesCostDto;
             }
