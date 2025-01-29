@@ -11,6 +11,7 @@ import IndexView from "@/Views/IndexView"
 import { NoAccessReason } from "@/Models/Interfaces"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
 
 // Banner components
@@ -18,11 +19,7 @@ const SelectProjectBanner = () => (
     <IndexView />
 )
 
-const LoadingBanner = () => (
-    <Banner>
-        <Banner.Message>Loading project...</Banner.Message>
-    </Banner>
-)
+
 
 const NoAccessBanner = () => (
     <Banner>
@@ -110,12 +107,13 @@ const ProjectSelector = (): JSX.Element => {
         initializeProject()
     }, [currentContext?.externalId])
 
+
     if (!currentContext) {
         return <SelectProjectBanner />
     }
 
     if (isLoading) {
-        return <LoadingBanner />
+        return <ProjectSkeleton />   
     }
 
     if (noAccessReason && noAccessReason !== NoAccessReason.ProjectDoesNotExist) {

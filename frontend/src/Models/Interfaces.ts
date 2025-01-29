@@ -111,3 +111,15 @@ export enum NoAccessReason {
     ClassificationRestricted = 3,
     ClassificationConfidential = 4
 }
+
+export type Version = `${number}.${number}.${number}`;
+export type Category = "New Functionalities" | "UI Improvements" | "Bugfixes" | "Other";
+export type UpdateEntry = {
+    description: string;
+};
+
+export type WhatsNewUpdates = { 
+    [key in Version]: { 
+        [key in Category]?: UpdateEntry[] 
+    } 
+};
