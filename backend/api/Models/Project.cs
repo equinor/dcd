@@ -27,8 +27,8 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
-    public double FlaredGasPerProducedVolume { get; set; } = 1.13;
-    public double CO2EmissionsFromFlaredGas { get; set; } = 3.74;
+    public double FlaredGasPerProducedVolume { get; set; } = 1.122765;
+    public double CO2EmissionsFromFlaredGas { get; set; } = 3.73;
     public double CO2Vented { get; set; } = 1.96;
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
