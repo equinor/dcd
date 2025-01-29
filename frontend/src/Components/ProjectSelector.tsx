@@ -13,7 +13,6 @@ import CreateCaseModal from "./Modal/CreateCaseModal"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
-
 // Banner components
 const SelectProjectBanner = () => (
     <IndexView />
