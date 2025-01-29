@@ -56,7 +56,6 @@ const StyledAccordion = styled(Accordion)`
 const StyledAccordionSummary = styled(AccordionSummary)`
     &.Mui-expanded {
         min-height: 48px;
-        background-color: rgba(224, 247, 250, 0.8);
     }
 `;
 
