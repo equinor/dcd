@@ -22,7 +22,6 @@ export default createGlobalStyle`
         font-family: Equinor;
     }
 
-    /* Fusion header and dropdown styles */
     #cli-top-bar,
     #cli-top-bar *,
     .mdc-menu-surface--open,
@@ -34,7 +33,6 @@ export default createGlobalStyle`
         z-index: 1000000 !important;
     }
 
-    /* App controls and content */
     .app-controls {
         z-index: 999 !important;
         position: relative;
