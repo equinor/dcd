@@ -235,7 +235,7 @@ public class CalculateTotalCostService(DcdDbContext context)
 
         var appraisalWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile);
 
-        var appraisalWellCostProfile =new TimeSeriesCost(appraisalWellTimeSeries);
+        var appraisalWellCostProfile = new TimeSeriesCost(appraisalWellTimeSeries);
 
         var sidetrackTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile);
 

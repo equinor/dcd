@@ -52,51 +52,25 @@ class CaseService extends __BaseService {
         return res
     }
 
-    public async createProfile(
+    public async saveProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateTimeSeriesDto,
+        dto: Components.Schemas.SaveTimeSeriesDto,
     ): Promise<Components.Schemas.TimeSeriesCostDto> {
         const res: Components.Schemas.TimeSeriesCostDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/profiles`,
+            `projects/${projectId}/cases/${caseId}/profiles/save`,
             { body: dto },
         )
         return res
     }
 
-    public async createOverrideProfile(
+    public async saveOverrideProfile(
         projectId: string,
         caseId: string,
-        dto: Components.Schemas.CreateTimeSeriesOverrideDto,
+        dto: Components.Schemas.SaveTimeSeriesOverrideDto,
     ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
         const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/override-profiles`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateProfile(
-        projectId: string,
-        caseId: string,
-        profileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesDto,
-    ): Promise<Components.Schemas.TimeSeriesCostDto> {
-        const res: Components.Schemas.TimeSeriesCostDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/profiles/${profileId}`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateOverrideProfile(
-        projectId: string,
-        caseId: string,
-        profileId: string,
-        dto: Components.Schemas.UpdateTimeSeriesOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/override-profiles/${profileId}`,
+            `projects/${projectId}/cases/${caseId}/override-profiles/save`,
             { body: dto },
         )
         return res
