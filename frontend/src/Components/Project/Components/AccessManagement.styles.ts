@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 
 export const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     display: flex;

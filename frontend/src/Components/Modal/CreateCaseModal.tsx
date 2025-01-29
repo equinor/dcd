@@ -13,7 +13,7 @@ import {
     useEffect,
 } from "react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
-import Grid from "@mui/material/Grid"
+import { default as Grid } from "@mui/material/Grid2"
 import Modal from "./Modal"
 
 import {
@@ -164,7 +164,7 @@ const CreateCaseModal = () => {
             title={caseModalEditMode ? "Edit case" : "Add new case"}
             content={(
                 <Grid container spacing={2}>
-                    <Grid item xs={12} md={8}>
+                    <Grid size={{ xs: 12, md: 8 }}>
                         <InputWrapper labelProps={{ label: "Name" }}>
                             <TextField
                                 id="name"
@@ -175,7 +175,7 @@ const CreateCaseModal = () => {
                             />
                         </InputWrapper>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "DG4" }}>
                             <Input
                                 type="month"
@@ -186,7 +186,7 @@ const CreateCaseModal = () => {
                             />
                         </InputWrapper>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <InputWrapper labelProps={{ label: "Description" }}>
                             <MarkdownEditor
                                 minHeight="100px"
@@ -199,7 +199,7 @@ const CreateCaseModal = () => {
                             />
                         </InputWrapper>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <NativeSelect
                             id="productionStrategy"
                             label="Production strategy overview"
@@ -214,7 +214,7 @@ const CreateCaseModal = () => {
                             <option key={4} value={4}>Mixed</option>
                         </NativeSelect>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "Producer wells" }}>
                             <Input
                                 id="producerWells"
@@ -230,7 +230,7 @@ const CreateCaseModal = () => {
                             />
                         </InputWrapper>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "Gas injector wells" }}>
                             <Input
                                 id="gasInjector"
@@ -246,7 +246,7 @@ const CreateCaseModal = () => {
                             />
                         </InputWrapper>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "Water injector wells" }}>
                             <Input
                                 id="waterInjector"
@@ -265,30 +265,22 @@ const CreateCaseModal = () => {
                 </Grid>
             )}
             actions={(
-                <Grid container spacing={1} justifyContent="flex-end">
-                    <Grid item>
+                <Grid container spacing={2} justifyContent="flex-end" sx={{ padding: "20px" }}>
+                    <Grid>
                         <Button
-                            type="button"
                             variant="outlined"
                             onClick={() => setCaseModalIsOpen(false)}
                         >
                             Cancel
                         </Button>
                     </Grid>
-                    <Grid item>
-                        {isLoading ? (
-                            <Button>
-                                <Progress.Dots />
-                            </Button>
-                        ) : (
-                            <Button
-                                type="submit"
-                                onClick={submitCaseForm}
-                                disabled={!disableCreateButton()}
-                            >
-                                {caseModalEditMode ? "Save changes" : "Create case"}
-                            </Button>
-                        )}
+                    <Grid>
+                        <Button
+                            disabled={!disableCreateButton()}
+                            onClick={submitCaseForm}
+                        >
+                            {isLoading ? <Progress.Dots /> : caseModalEditMode ? "Save" : "Create case"}
+                        </Button>
                     </Grid>
                 </Grid>
             )}

@@ -4,12 +4,12 @@ import {
     useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import { default as Grid } from "@mui/material/Grid2"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { SetTableYearsFromProfiles } from "@/Components/Case/Components/CaseTabTableHelper"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -136,10 +136,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography>Create wells in technical input in order to see them in the list below.</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -151,7 +151,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -163,7 +163,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -175,7 +175,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -187,7 +187,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -199,7 +199,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -218,7 +218,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 endYear={endYear}
                 handleTableYearsClick={handleTableYearsClick}
             />
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <CaseDrillingScheduleTable
                     addEdit={addEdit}
                     assetWells={explorationWellsData}
@@ -232,7 +232,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     alignedGridsRef={[wellProjectWellsGridRef]}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <CaseDrillingScheduleTable
                     addEdit={addEdit}
                     assetWells={wellProjectWellsData}

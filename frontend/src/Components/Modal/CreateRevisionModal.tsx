@@ -15,7 +15,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
 import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { Grid } from "@mui/material"
+import { default as Grid } from "@mui/material/Grid2"
 
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { useRevisions } from "@/Hooks/useRevision"
@@ -133,7 +133,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         Revisions are copies of a project at a given point in time. Revisions are locked for editing.
                     </Typography>
                 </Wrapper>
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     <ColumnWrapper>
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Revision name" }}>
@@ -179,7 +179,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         </ColumnWrapper>
                     </ColumnWrapper>
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     <ColumnWrapper>
                         <Typography group="ui" variant="chart">
                             Quality checks performed
@@ -187,7 +187,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                     </ColumnWrapper>
                     <Wrapper>
                         <Grid container spacing={1} justifyContent="flex-start">
-                            <Grid item>
+                            <Grid>
                                 <Chip
                                     onClick={() => setMdqc(!mdqc)}
                                     variant={mdqc ? "active" : "default"}
@@ -198,7 +198,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                     MDQC
                                 </Chip>
                             </Grid>
-                            <Grid item>
+                            <Grid>
                                 <Chip
                                     onClick={() => setArena(!arena)}
                                     variant={arena ? "active" : "default"}
@@ -215,10 +215,10 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             </DialogContent>
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
-                    <Grid item>
+                    <Grid>
                         {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => closeModal()}>Cancel</Button>) : null}
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         <Button disabled={isRevisionsLoading || revisionName === ""} onClick={() => submitRevision()}>
                             {isRevisionsLoading ? <Progress.Dots /> : "Create revision"}
                         </Button>

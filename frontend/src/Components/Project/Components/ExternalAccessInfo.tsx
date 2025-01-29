@@ -3,7 +3,7 @@ import {
     chevron_down, chevron_up, edit, external_link, visibility,
 } from "@equinor/eds-icons"
 import { Icon, Typography } from "@equinor/eds-core-react"
-import { Grid } from "@mui/material"
+import { default as Grid } from "@mui/material/Grid2"
 
 import { ClickableHeading, EditorViewerHeading } from "./AccessManagement.styles"
 
@@ -11,19 +11,19 @@ const ExternalAccessInfo = () => {
     const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
     return (
         <>
-            <ClickableHeading item onClick={() => setExpandAllAccess(!expandAllAccess)}>
+            <Grid onClick={() => setExpandAllAccess(!expandAllAccess)}>
                 <Typography variant="h4">Would you like to access all internal Concept App projects?</Typography>
                 <Icon data={expandAllAccess ? chevron_up : chevron_down} />
-            </ClickableHeading>
+            </Grid>
             {expandAllAccess
                 && (
-                    <Grid container item>
+                    <Grid container>
                         <Typography variant="body_short">
                             In order to access all internal projects in Concept App, you need to apply for access in one of the AccessIT groups listed below.
-                            Keep in mind that “Restricted” or “Confidential” projects are only accesible to project members.
+                            Keep in mind that "Restricted" or "Confidential" projects are only accesible to project members.
                         </Typography>
-                        <Grid container item gap="100px" marginTop="25px">
-                            <Grid item>
+                        <Grid container gap="100px" marginTop="25px">
+                            <Grid>
                                 <EditorViewerHeading $smallGap>
                                     <Icon data={edit} />
                                     <Typography variant="h6">Application editor</Typography>
@@ -39,7 +39,7 @@ const ExternalAccessInfo = () => {
                                     <Icon color="#007079" size={16} data={external_link} />
                                 </EditorViewerHeading>
                             </Grid>
-                            <Grid item>
+                            <Grid>
                                 <EditorViewerHeading>
                                     <Typography variant="h6">Application admin</Typography>
                                 </EditorViewerHeading>
@@ -55,7 +55,7 @@ const ExternalAccessInfo = () => {
                                 </EditorViewerHeading>
                             </Grid>
                         </Grid>
-                        <Grid item marginTop="20px">
+                        <Grid marginTop="20px">
                             <EditorViewerHeading>
                                 <Icon data={visibility} />
                                 <Typography variant="h6">Application viewers</Typography>

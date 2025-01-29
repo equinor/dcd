@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { Grid } from "@mui/material"
+import { default as Grid } from "@mui/material/Grid2"
 import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
@@ -7,12 +7,12 @@ import styled from "styled-components"
 import {
     productionStrategyOverviewToString, truncateText,
 } from "@/Utils/common"
-import { ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
+import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { EMPTY_GUID } from "@/Utils/constants"
-import { TimelineElement } from "../Sidebar"
+import { TimelineElement } from "../../SidebarWrapper"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
@@ -58,7 +58,6 @@ const CasesList: React.FC = () => {
         <>
             {cases.sort((a, b) => sortUtcDateStrings(a.createTime, b.createTime)).map((projectCase, index) => (
                 <Grid
-                    item
                     container
                     justifyContent="space-between"
                     key={`menu - item - ${index + 1} `}

@@ -3,7 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
-import Grid from "@mui/material/Grid"
+import { default as Grid } from "@mui/material/Grid2"
 import { ChangeEventHandler, useState } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
@@ -14,7 +14,7 @@ import { INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import InputSwitcher from "../Input/Components/InputSwitcher"
-import CasesTable from "../Case/OverviewCasesTable/CasesTable"
+import CasesTable from "../Tables/ProjectTables/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 
@@ -92,25 +92,25 @@ const ProjectOverviewTab = () => {
     return (
         <Grid container columnSpacing={2} rowSpacing={3}>
             <Gallery />
-            <Grid item xs={12} container spacing={1} justifyContent="space-between">
-                <Grid item>
+            <Grid size={12} container spacing={1} justifyContent="space-between">
+                <Grid size={4}>
                     <Typography group="input" variant="label">Project Phase</Typography>
                     {renderProjectPhase()}
                 </Grid>
-                <Grid item>
+                <Grid size={4}>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
                         {getProjectCategoryName(revisionAndProjectData.commonProjectAndRevisionData.projectCategory)}
                     </Typography>
                 </Grid>
-                <Grid item>
+                <Grid size={4}>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
                         {revisionAndProjectData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+            <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
                 <Typography group="input" variant="label">Description</Typography>
                 {editMode
                     ? (
@@ -127,11 +127,11 @@ const ProjectOverviewTab = () => {
                         />
                     )}
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="space-between">
-                <Grid item>
+            <Grid size={12} container spacing={1} justifyContent="space-between">
+                <Grid size={12}>
                     <Typography variant="h3">Cases</Typography>
                 </Grid>
-                <Grid item>
+                <Grid size={12}>
                     <Tooltip title={getEditDisabledText()}>
                         <Button
                             disabled={isEditDisabled}
@@ -142,7 +142,7 @@ const ProjectOverviewTab = () => {
                         </Button>
                     </Tooltip>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <CasesTable />
                 </Grid>
             </Grid>

@@ -8,7 +8,7 @@ import {
     Card,
 } from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 
 import { GetProspService } from "@/Services/ProspService"
 import { GetProjectService } from "@/Services/ProjectService"
@@ -17,7 +17,7 @@ import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditProject from "@/Hooks/useEditProject"
 import { useAppContext } from "@/Context/AppContext"
-import PROSPCaseList from "./Components/PROSPCaseList"
+import PROSPCaseTable from "../../../Tables/ProjectTables/PROSPCaseTable"
 
 const PROSPTab = () => {
     const revisionAndProjectData = useDataFetch()
@@ -81,8 +81,8 @@ const PROSPTab = () => {
 
     return (
         <Grid container rowSpacing={3} columnSpacing={2}>
-            <Grid item xs={12} container spacing={2} alignItems="flex-end">
-                <Grid item flex={1}>
+            <Grid size={12} container spacing={2} alignItems="flex-end">
+                <Grid flex={1}>
                     <InputWrapper labelProps={{ label: "Sharepoint Site address" }}>
                         <Input
                             id="textfield-normal"
@@ -93,7 +93,7 @@ const PROSPTab = () => {
                         />
                     </InputWrapper>
                 </Grid>
-                <Grid item>
+                <Grid>
                     {!isRefreshing
                         ? (
                             <Button
@@ -111,7 +111,7 @@ const PROSPTab = () => {
                 </Grid>
                 {errorMessage
                     && (
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <Card variant="danger">
                                 <Card.Header>
                                     <Typography>{errorMessage}</Typography>
@@ -120,8 +120,8 @@ const PROSPTab = () => {
                         </Grid>
                     )}
             </Grid>
-            <Grid item xs={12} container justifyContent="flex-end">
-                <Grid item>
+            <Grid size={12} container justifyContent="flex-end">
+                <Grid>
                     <Switch
                         onChange={(e: ChangeEvent<HTMLInputElement>) => {
                             setCheck(e.target.checked)
@@ -131,8 +131,8 @@ const PROSPTab = () => {
                         disabled={isEditDisabled || !editMode}
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <PROSPCaseList
+                <Grid size={12}>
+                    <PROSPCaseTable
                         driveItems={driveItems}
                         check={check}
                     />

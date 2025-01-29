@@ -12,7 +12,7 @@ import {
     RowNode,
 } from "@ag-grid-community/core"
 import { external_link } from "@equinor/eds-icons"
-import Grid from "@mui/material/Grid"
+import { default as Grid } from "@mui/material/Grid2"
 
 import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import { GetProspService } from "@/Services/ProspService"
@@ -381,7 +381,7 @@ const PROSPCaseList = ({
 
     return (
         <Grid container spacing={1}>
-            <Grid item xs={12} className={styles.root}>
+            <Grid size={12} className={styles.root}>
                 <div
                     style={{
                         display: "flex", flexDirection: "column", width: "100%",
@@ -406,7 +406,7 @@ const PROSPCaseList = ({
                     />
                 </div>
             </Grid>
-            <Grid item>
+            <Grid>
                 {!isApplying && revisionAndProjectData ? (
                     <Button
                         onClick={() => save(revisionAndProjectData)}

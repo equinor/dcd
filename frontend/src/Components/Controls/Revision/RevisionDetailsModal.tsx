@@ -21,7 +21,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import DialogActions from "@mui/material/DialogActions"
 import Dialog from "@mui/material/Dialog"
-import { Grid } from "@mui/material"
+import { default as Grid } from "@mui/material/Grid2"
 
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import { getProjectPhaseName } from "@/Utils/common"
@@ -192,7 +192,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                 <CloseRevision onClick={closeMenu}>
                     <Icon data={closeIcon} size={32} />
                 </CloseRevision>
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     <ColumnWrapper>
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Revision name" }}>
@@ -227,16 +227,15 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>
-
                     </ColumnWrapper>
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     <ColumnWrapper>
                         <Typography>Quality checks performed</Typography>
                     </ColumnWrapper>
                     <Wrapper>
                         <Grid container spacing={1} justifyContent="flex-start">
-                            <Grid item>
+                            <Grid>
                                 <Chip
                                     onClick={() => handleQualityCheckToggle("mdqc")}
                                     variant={revisionDetails.mdqc ? "active" : "default"}
@@ -245,7 +244,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                                     MDQC
                                 </Chip>
                             </Grid>
-                            <Grid item>
+                            <Grid>
                                 <Chip
                                     onClick={() => handleQualityCheckToggle("arena")}
                                     variant={revisionDetails.arena ? "active" : "default"}
@@ -261,10 +260,10 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
 
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
-                    <Grid item>
+                    <Grid>
                         <Button variant="outlined" onClick={closeMenu}>Cancel</Button>
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         <Button
                             disabled={!isRevisionModified}
                             onClick={updateRevisionName}

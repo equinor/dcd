@@ -1,6 +1,6 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
@@ -77,7 +77,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     return (
         <Grid container spacing={2}>
             <Gallery />
-            <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+            <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
                 <Typography group="input" variant="label">Description</Typography>
                 {editMode ? (
                     <div
@@ -102,7 +102,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     </div>
                 )}
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -116,7 +116,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -131,7 +131,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -145,7 +145,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
                     addEdit={addEdit}
                     value={caseData.productionStrategyOverview ?? 0}
@@ -157,7 +157,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
                     addEdit={addEdit}
                     value={caseData.artificialLift ?? 0}
@@ -169,7 +169,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"

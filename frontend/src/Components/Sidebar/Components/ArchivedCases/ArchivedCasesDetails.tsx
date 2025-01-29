@@ -6,11 +6,11 @@ import {
     Tooltip,
 } from "@equinor/eds-core-react"
 import { arrow_drop_up, arrow_drop_down } from "@equinor/eds-icons"
-import Grid from "@mui/material/Grid"
+import { default as Grid } from "@mui/material/Grid2"
 import styled from "styled-components"
 
 import { useAppContext } from "@/Context/AppContext"
-import { Timeline, Header } from "../Sidebar"
+import { Timeline, Header } from "../../SidebarWrapper"
 import ArchivedCasesList from "./ArchivedCasesList"
 
 const ClickableTitle = styled.div`
@@ -23,7 +23,7 @@ const ArchivedCasesDetails: React.FC = () => {
 
     return (
         <>
-            <Grid item container alignItems="start" justifyContent={sidebarOpen ? "space-between" : "start"}>
+            <Grid container alignItems="start" justifyContent={sidebarOpen ? "space-between" : "start"}>
                 <Header>
                     {sidebarOpen ? (
                         <ClickableTitle onClick={() => setExpandList(!expandList)}>
@@ -38,7 +38,7 @@ const ArchivedCasesDetails: React.FC = () => {
                     )}
                 </Header>
                 {sidebarOpen && (
-                    <Grid item>
+                    <Grid>
                         {!expandList ? (
                             <Tooltip title="Expand Archived Cases">
                                 <Button variant="ghost_icon" className="GhostButton"><Icon data={arrow_drop_down} onClick={() => setExpandList(true)} /></Button>

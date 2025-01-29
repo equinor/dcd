@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react"
 import { Typography, Icon } from "@equinor/eds-core-react"
 import { arrow_forward } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useCaseContext } from "../../../Context/CaseContext"
-import { formatTime, getCurrentEditId } from "../../../Utils/common"
-import { useAppContext } from "../../../Context/AppContext"
-import useEditCase from "../../../Hooks/useEditCase"
+import { useCaseContext } from "../../../../Context/CaseContext"
+import { formatTime, getCurrentEditId } from "../../../../Utils/common"
+import { useAppContext } from "../../../../Context/AppContext"
+import useEditCase from "../../../../Hooks/useEditCase"
 
 const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
     padding: 10px 5px 10px 10px;

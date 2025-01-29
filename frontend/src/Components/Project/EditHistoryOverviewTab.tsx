@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 
-import CaseEditHistory from "@/Components/Case/Components/CaseEditHistory"
+import CaseEditHistory from "@/Components/Sidebar/Components/EditHistory/CaseEditHistory"
 import { useCaseContext } from "@/Context/CaseContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"

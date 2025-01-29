@@ -3,7 +3,7 @@ import {
 } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { Grid } from "@mui/material"
+import { default as Grid } from "@mui/material/Grid2"
 
 import {
     ITimeSeries,
@@ -17,8 +17,8 @@ import { useProjectContext } from "@/Context/ProjectContext"
 import { useCaseContext } from "@/Context/CaseContext"
 import { mergeTimeseriesList } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import CaseTabTableWithGrouping from "../../Tables/CaseTables/CaseTabTableWithGrouping"
+import { SetTableYearsFromProfiles } from "../../Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
@@ -295,7 +295,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -309,7 +309,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -324,7 +324,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -338,7 +338,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -353,7 +353,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}

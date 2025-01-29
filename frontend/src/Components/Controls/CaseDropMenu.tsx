@@ -22,7 +22,7 @@ import { ResourceObject } from "@/Models/Interfaces"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
-import Modal from "../../Modal/Modal"
+import Modal from "@/Components/Modal/Modal"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 

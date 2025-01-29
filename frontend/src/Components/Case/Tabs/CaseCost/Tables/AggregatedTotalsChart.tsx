@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { AgCharts } from "ag-charts-react"
-import { Grid } from "@mui/material"
+import { default as Grid } from "@mui/material/Grid2"
 
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileNames } from "@/Models/Interfaces"
@@ -321,10 +321,10 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
-            <Grid item lg={12} xl={7}>
+            <Grid size={{ xs: 12, lg: 12, xl: 7 }}>
                 <AgCharts options={barChartOptions} style={{ height: "100%" }} />
             </Grid>
-            <Grid item lg={8} xl={5}>
+            <Grid size={{ xs: 12, lg: 8, xl: 5 }}>
                 <AgCharts options={pieChartOptions} style={{ height: "100%" }} />
             </Grid>
         </Grid>
