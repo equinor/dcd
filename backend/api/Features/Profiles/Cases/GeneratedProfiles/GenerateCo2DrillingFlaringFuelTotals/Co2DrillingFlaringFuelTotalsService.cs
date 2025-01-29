@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
@@ -10,8 +11,10 @@ namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlari
 
 public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
-    public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
+    public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid projectId, Guid caseId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var profileTypes = new List<string>
         {
             ProfileTypes.ProductionProfileOil,
@@ -23,7 +26,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
-            .SingleAsync(x => x.Id == caseId);
+            .SingleAsync(x => x.Project.Id == projectPk && x.Id == caseId);
 
         var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
 
