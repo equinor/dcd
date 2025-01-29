@@ -54,7 +54,7 @@ public class ImportedElectricityProfileService(DcdDbContext context)
         const int hoursInOneYear = 8766;
         var peakElectricityImportedFromGrid = peakElectricityImported * 1.1;
 
-        var importedElectricityProfile = new TimeSeriesVolume
+        var importedElectricityProfile = new TimeSeriesCost
         {
             StartYear = totalUseOfPower.StartYear,
             Values =

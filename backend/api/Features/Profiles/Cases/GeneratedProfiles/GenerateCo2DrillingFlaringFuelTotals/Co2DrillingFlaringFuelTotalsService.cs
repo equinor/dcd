@@ -52,7 +52,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
 
-        var flaringsProfile = new TimeSeriesVolume
+        var flaringsProfile = new TimeSeriesCost
         {
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
@@ -65,7 +65,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
     {
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
-        var fuelConsumptionsProfile = new TimeSeriesVolume
+        var fuelConsumptionsProfile = new TimeSeriesCost
         {
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * project.CO2EmissionFromFuelGas).ToArray(),

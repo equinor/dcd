@@ -68,11 +68,11 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         co2Emissions.StartYear = totalProfile.StartYear;
     }
 
-    private static TimeSeriesVolume GetLossesProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
+    private static TimeSeriesCost GetLossesProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
         var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
 
-        var lossesProfile = new TimeSeriesVolume
+        var lossesProfile = new TimeSeriesCost
         {
             StartYear = losses.StartYear,
             Values = losses.Values.Select(loss => loss * project.CO2Vented).ToArray(),
@@ -80,11 +80,11 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return lossesProfile;
     }
 
-    private static TimeSeriesVolume GetFlaringsProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
+    private static TimeSeriesCost GetFlaringsProfile(Project project, Case caseItem, DrainageStrategy drainageStrategy)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
 
-        var flaringsProfile = new TimeSeriesVolume
+        var flaringsProfile = new TimeSeriesCost
         {
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
@@ -92,12 +92,12 @@ public class Co2EmissionsProfileService(DcdDbContext context)
         return flaringsProfile;
     }
 
-    private static TimeSeriesVolume GetFuelConsumptionsProfile(Project project, Case caseItem, Topside topside)
+    private static TimeSeriesCost GetFuelConsumptionsProfile(Project project, Case caseItem, Topside topside)
     {
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
-        var fuelConsumptionsProfile = new TimeSeriesVolume
+        var fuelConsumptionsProfile = new TimeSeriesCost
         {
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * project.CO2EmissionFromFuelGas).ToArray(),

@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 using api.Models.Enums;
 using api.Models.Interfaces;
 namespace api.Models;
@@ -27,36 +25,4 @@ public class Transport : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
-
-    #region Migrated profiles, do not access.
-    public virtual TransportCostProfile? CostProfile { get; set; }
-    public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }
-    public virtual TransportCessationCostProfile? CessationCostProfile { get; set; }
-    #endregion Migrated profiles, do not access.
-}
-
-#region Migrated profiles, do not access.
-public class TransportCostProfile : TimeSeriesCost, ITransportTimeSeries
-{
-    [ForeignKey("Transport.Id")]
-    public virtual Transport Transport { get; set; } = null!;
-}
-
-public class TransportCostProfileOverride : TimeSeriesCost, ITransportTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("Transport.Id")]
-    public virtual Transport Transport { get; set; } = null!;
-    public bool Override { get; set; }
-}
-
-public class TransportCessationCostProfile : TimeSeriesCost, ITransportTimeSeries
-{
-    [ForeignKey("Transport.Id")]
-    public virtual Transport Transport { get; set; } = null!;
-}
-#endregion Migrated profiles, do not access.
-
-public interface ITransportTimeSeries
-{
-    Transport Transport { get; set; }
 }

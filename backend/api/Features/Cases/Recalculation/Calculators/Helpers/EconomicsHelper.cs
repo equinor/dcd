@@ -45,38 +45,6 @@ public static class EconomicsHelper
         };
     }
 
-    public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeries<double>? t1, TimeSeries<double>? t2)
-    {
-        return CostProfileMerger.MergeCostProfiles(
-            new TimeSeries<double>
-            {
-                StartYear = t1?.StartYear ?? 0,
-                Values = t1?.Values ?? []
-            },
-            new TimeSeries<double>
-            {
-                StartYear = t2?.StartYear ?? 0,
-                Values = t2?.Values ?? []
-            }
-        );
-    }
-
-    public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeries<double>? t2)
-    {
-        return CostProfileMerger.MergeCostProfiles(
-            new TimeSeries<double>
-            {
-                StartYear = t1?.StartYear ?? 0,
-                Values = t1?.Values ?? []
-            },
-            new TimeSeries<double>
-            {
-                StartYear = t2?.StartYear ?? 0,
-                Values = t2?.Values ?? []
-            }
-        );
-    }
-
     public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
     {
         return CostProfileMerger.MergeCostProfiles(

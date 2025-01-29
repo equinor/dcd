@@ -75,7 +75,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             fuelFlaringLosses.Values = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).Values;
         }
 
-        var negativeFuelFlaringLosses = new TimeSeriesVolume
+        var negativeFuelFlaringLosses = new TimeSeriesCost
         {
             StartYear = fuelFlaringLosses.StartYear,
             Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()

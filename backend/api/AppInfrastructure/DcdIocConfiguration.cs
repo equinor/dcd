@@ -44,7 +44,6 @@ using api.Features.Profiles.Create;
 using api.Features.Profiles.Update;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
-using api.Features.ProjectIntegrity;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
@@ -143,7 +142,6 @@ public static class DcdIocConfiguration
         /* Auth */
         services.AddScoped<CurrentUser>();
         services.AddScoped<IAuthorizationHandler, DcdAuthorizationHandler>();
-        services.AddScoped<IProjectIntegrityService, ProjectIntegrityService>();
 
         /* Prosp / Excel import */
         services.AddScoped<ProspExcelImportService>();
