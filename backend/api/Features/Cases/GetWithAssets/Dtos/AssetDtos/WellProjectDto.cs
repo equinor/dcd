@@ -6,9 +6,9 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 public class WellProjectDto
 {
-    [Required] public Guid Id { get; set; }
-    [Required] public Guid ProjectId { get; set; }
-    [Required] public string Name { get; set; } = string.Empty;
-    [Required] public ArtificialLift ArtificialLift { get; set; }
-    [Required] public Currency Currency { get; set; }
+    [Required] public required Guid Id { get; set; }
+    [Required] public required Guid ProjectId { get; set; }
+    [Required] public required string Name { get; set; }
+    [Required] public required ArtificialLift ArtificialLift { get; set; }
+    [Required] public required Currency Currency { get; set; }
 }

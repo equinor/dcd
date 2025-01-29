@@ -7,26 +7,26 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 public class SurfDto
 {
-    [Required] public Guid Id { get; set; }
-    [Required] public string Name { get; set; } = string.Empty;
-    [Required] public Guid ProjectId { get; set; }
-    [Required] public double CessationCost { get; set; }
-    [Required] public Maturity Maturity { get; set; }
-    [Required] public double InfieldPipelineSystemLength { get; set; }
-    [Required] public double UmbilicalSystemLength { get; set; }
-    [Required] public ArtificialLift ArtificialLift { get; set; }
-    [Required] public int RiserCount { get; set; }
-    [Required] public int TemplateCount { get; set; }
-    [Required] public int ProducerCount { get; set; }
-    [Required] public int GasInjectorCount { get; set; }
-    [Required] public int WaterInjectorCount { get; set; }
-    [Required] public ProductionFlowline ProductionFlowline { get; set; }
-    [Required] public Currency Currency { get; set; }
-    [Required] public DateTime LastChangedDate { get; set; }
-    [Required] public int CostYear { get; set; }
-    [Required] public Source Source { get; set; }
-    public DateTime? ProspVersion { get; set; }
-    [Required] public string ApprovedBy { get; set; } = string.Empty;
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
+    [Required] public required Guid Id { get; set; }
+    [Required] public required string Name { get; set; }
+    [Required] public required Guid ProjectId { get; set; }
+    [Required] public required double CessationCost { get; set; }
+    [Required] public required Maturity Maturity { get; set; }
+    [Required] public required double InfieldPipelineSystemLength { get; set; }
+    [Required] public required double UmbilicalSystemLength { get; set; }
+    [Required] public required ArtificialLift ArtificialLift { get; set; }
+    [Required] public required int RiserCount { get; set; }
+    [Required] public required int TemplateCount { get; set; }
+    [Required] public required int ProducerCount { get; set; }
+    [Required] public required int GasInjectorCount { get; set; }
+    [Required] public required int WaterInjectorCount { get; set; }
+    [Required] public required ProductionFlowline ProductionFlowline { get; set; }
+    [Required] public required Currency Currency { get; set; }
+    [Required] public required DateTime LastChangedDate { get; set; }
+    [Required] public required int CostYear { get; set; }
+    [Required] public required Source Source { get; set; }
+    public required DateTime? ProspVersion { get; set; }
+    [Required] public required string ApprovedBy { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
 }

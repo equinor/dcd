@@ -7,94 +7,31 @@ namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsRepository(DcdDbContext context)
 {
-    public async Task<(
-        Case CaseItem,
-        DrainageStrategy DrainageStrategy,
-        Topside Topside,
-        Exploration Exploration,
-        Substructure Substructure,
-        Surf Surf,
-        Transport Transport,
-        OnshorePowerSupply OnshorePowerSupply,
-        WellProject WellProject
-        )> GetCaseWithAssetsNoTracking(Guid caseId)
+    public async Task<Case> GetCaseWithAssets(Guid caseId)
     {
-        var caseItem = await GetCaseNoTracking(caseId);
-        var drainageStrategy = await GetDrainageStrategyNoTracking(caseItem.DrainageStrategyLink);
-        var topside = await GetTopsideNoTracking(caseItem.TopsideLink);
-        var exploration = await GetExplorationNoTracking(caseItem.ExplorationLink);
-        var substructure = await GetSubstructureNoTracking(caseItem.SubstructureLink);
-        var surf = await GetSurfNoTracking(caseItem.SurfLink);
-        var transport = await GetTransportNoTracking(caseItem.TransportLink);
-        var onshorePowerSupply = await GetOnshorePowerSupplyNoTracking(caseItem.OnshorePowerSupplyLink);
-        var wellProject = await GetWellProjectNoTracking(caseItem.WellProjectLink);
-
-        return (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, onshorePowerSupply, wellProject);
-    }
-
-    private async Task<Case> GetCaseNoTracking(Guid caseId)
-    {
-        return await context.Cases
-            .Include(c => c.TimeSeriesProfiles)
-            .AsNoTracking()
+        var caseItem = await context.Cases
+            .Include(x => x.DrainageStrategy)
+            .Include(x => x.Topside)
+            .Include(x => x.Substructure)
+            .Include(x => x.Surf)
+            .Include(x => x.Transport)
+            .Include(x => x.OnshorePowerSupply)
             .SingleAsync(c => c.Id == caseId);
-    }
 
-    private async Task<Transport> GetTransportNoTracking(Guid transportLink)
-    {
-        return await context.Transports
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == transportLink);
-    }
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
 
-    private async Task<OnshorePowerSupply> GetOnshorePowerSupplyNoTracking(Guid onshorePowerSupplyLink)
-    {
-        return await context.OnshorePowerSupplies
-            .AsNoTracking()
-            .FirstAsync(o => o.Id == onshorePowerSupplyLink);
-    }
-
-    private async Task<Surf> GetSurfNoTracking(Guid surfLink)
-    {
-        return await context.Surfs
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == surfLink);
-    }
-
-    private async Task<Substructure> GetSubstructureNoTracking(Guid substructureLink)
-    {
-        return await context.Substructures
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == substructureLink);
-    }
-
-    private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid drainageStrategyLink)
-    {
-        return await context.DrainageStrategies
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == drainageStrategyLink);
-    }
-
-    private async Task<Topside> GetTopsideNoTracking(Guid topsideLink)
-    {
-        return await context.Topsides
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == topsideLink);
-    }
-
-    private async Task<WellProject> GetWellProjectNoTracking(Guid wellProjectLink)
-    {
-        return await context.WellProjects
-            .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == wellProjectLink);
-    }
-
-    private async Task<Exploration> GetExplorationNoTracking(Guid explorationLink)
-    {
-        return await context.Explorations
+        await context.Explorations
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
-            .AsNoTracking()
-            .SingleAsync(o => o.Id == explorationLink);
+            .Where(x => x.Id == caseItem.ExplorationLink)
+            .LoadAsync();
+
+        await context.WellProjects
+            .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
+            .Where(x => x.Id == caseItem.WellProjectLink)
+            .LoadAsync();
+
+        return caseItem;
     }
 }

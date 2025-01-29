@@ -6,13 +6,13 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 public class OnshorePowerSupplyDto
 {
-    [Required] public Guid Id { get; set; }
+    [Required] public required Guid Id { get; set; }
     [Required] public required string Name { get; set; }
-    [Required] public Guid ProjectId { get; set; }
-    public DateTime? LastChangedDate { get; set; }
-    [Required] public int CostYear { get; set; }
-    [Required] public Source Source { get; set; }
-    public DateTime? ProspVersion { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
+    [Required] public required Guid ProjectId { get; set; }
+    public required DateTime? LastChangedDate { get; set; }
+    [Required] public required int CostYear { get; set; }
+    [Required] public required Source Source { get; set; }
+    public required DateTime? ProspVersion { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
 }
