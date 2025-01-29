@@ -41,8 +41,8 @@ public class NetSaleGasProfileService(DcdDbContext context)
         var project = await context.Projects.SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
 
         var calculateNetSaleGas = CalculateNetSaleGas(caseItem, drainageStrategy, fuelConsumptions, flarings, losses);
 

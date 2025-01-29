@@ -59,7 +59,7 @@ public class ImportedElectricityProfileService(DcdDbContext context)
             StartYear = totalUseOfPower.StartYear,
             Values =
                 totalUseOfPower.Values
-                    .Select(value => peakElectricityImportedFromGrid * facilityAvailability * hoursInOneYear * value / 1000)
+                    .Select(value => peakElectricityImportedFromGrid * facilityAvailability / 100 * hoursInOneYear * value / 1000)
                     .ToArray(),
         };
 
