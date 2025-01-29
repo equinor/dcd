@@ -106,16 +106,15 @@ const ProjectSelector = (): JSX.Element => {
 
         initializeProject()
     }, [currentContext?.externalId])
-    
-    if (isLoading) {
-            return <ProjectSkeleton />
-        
-    }
+
+
     if (!currentContext) {
         return <SelectProjectBanner />
     }
 
-   
+    if (isLoading) {
+        return <ProjectSkeleton />   
+    }
 
     if (noAccessReason && noAccessReason !== NoAccessReason.ProjectDoesNotExist) {
         return <NoAccessErrorView projectClassification={noAccessReason} />
