@@ -110,9 +110,9 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
         return (wells, explorationWells);
     }
 
-    private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<ExplorationWell> explorationWells)
+    private static TimeSeriesCost GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeries<double>?>();
+        var costProfilesList = new List<TimeSeriesCost?>();
 
         foreach (var explorationWell in explorationWells)
         {
@@ -121,7 +121,7 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
                 var well = wells.Single(w => w.Id == explorationWell.WellId);
                 var values = explorationWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
 
-                costProfilesList.Add(new TimeSeries<double>
+                costProfilesList.Add(new TimeSeriesCost
                 {
                     Values = values,
                     StartYear = explorationWell.DrillingSchedule.StartYear

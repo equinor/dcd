@@ -10,13 +10,13 @@ public class TimeSeriesCalculatorTests
     [Fact]
     public void Merging_time_series__should_add_values_when_start_year_and_length_is_the_same()
     {
-        var series1 = new TimeSeries<double>
+        var series1 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3]
         };
 
-        var series2 = new TimeSeries<double>
+        var series2 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3]
@@ -36,13 +36,13 @@ public class TimeSeriesCalculatorTests
     [Fact]
     public void Merging_time_series__should_add_values_when_start_year_is_same_but_series1_length_is_longer()
     {
-        var series1 = new TimeSeries<double>
+        var series1 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3, 4]
         };
 
-        var series2 = new TimeSeries<double>
+        var series2 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3]
@@ -63,13 +63,13 @@ public class TimeSeriesCalculatorTests
     [Fact]
     public void Merging_time_series__should_add_values_when_start_year_is_same_but_series2_length_is_longer()
     {
-        var series1 = new TimeSeries<double>
+        var series1 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3]
         };
 
-        var series2 = new TimeSeries<double>
+        var series2 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3, 4]
@@ -90,19 +90,19 @@ public class TimeSeriesCalculatorTests
     [Fact]
     public void Merging_time_series__should_add_all_values_from_multiple_series()
     {
-        var series1 = new TimeSeries<double>
+        var series1 = new TimeSeriesCost
         {
             StartYear = 2019,
             Values = [1, 2, 3]
         };
 
-        var series2 = new TimeSeries<double>
+        var series2 = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [1, 2, 3, 4]
         };
 
-        var series3 = new TimeSeries<double>
+        var series3 = new TimeSeriesCost
         {
             StartYear = 2021,
             Values = [1, 2, 3, 4]

@@ -51,20 +51,20 @@ public class NetSaleGasProfileService(DcdDbContext context)
         profile.Values = calculateNetSaleGas.Values;
     }
 
-    private static TimeSeries<double> CalculateNetSaleGas(Case caseItem,
+    private static TimeSeriesCost CalculateNetSaleGas(Case caseItem,
         DrainageStrategy drainageStrategy,
-        TimeSeries<double> fuelConsumption,
-        TimeSeries<double> flarings,
-        TimeSeries<double> losses)
+        TimeSeriesCost fuelConsumption,
+        TimeSeriesCost flarings,
+        TimeSeriesCost losses)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) == null)
         {
-            return new TimeSeries<double>();
+            return new TimeSeriesCost();
         }
 
         if (drainageStrategy.GasSolution == GasSolution.Injection)
         {
-            return new TimeSeries<double>();
+            return new TimeSeriesCost();
         }
 
         var fuelFlaringLosses = CostProfileMerger.MergeCostProfiles(fuelConsumption, flarings, losses);
@@ -88,7 +88,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             : new TimeSeriesCost(additionalProductionProfileGasProfile);
 
         var productionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas);
-        var productionProfileGasTimeSeries = productionProfileGasProfile == null ? new TimeSeries<double>() : new TimeSeriesCost(productionProfileGasProfile);
+        var productionProfileGasTimeSeries = productionProfileGasProfile == null ? new TimeSeriesCost() : new TimeSeriesCost(productionProfileGasProfile);
 
         var gasProduction = CostProfileMerger.MergeCostProfiles(productionProfileGasTimeSeries, additionalProductionProfileGas);
         return CostProfileMerger.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
