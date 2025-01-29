@@ -45,10 +45,10 @@ public class ImportedElectricityProfileService(DcdDbContext context)
         profile.Values = calculateImportedElectricity.Values;
     }
 
-    private static TimeSeries<double> CalculateImportedElectricity(
+    private static TimeSeriesCost CalculateImportedElectricity(
         double peakElectricityImported,
         double facilityAvailability,
-        TimeSeries<double> totalUseOfPower
+        TimeSeriesCost totalUseOfPower
     )
     {
         const int hoursInOneYear = 8766;

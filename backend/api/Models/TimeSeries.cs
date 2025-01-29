@@ -4,26 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class TimeSeries<T> : IChangeTrackable
-{
-    public TimeSeries()
-    {
-        Values = [];
-    }
-
-    public Guid Id { get; set; }
-    public int StartYear { get; set; }
-    public string InternalData { get; set; } = null!;
-
-    [NotMapped]
-    public T[] Values
-    {
-        get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), pf => (T)Convert.ChangeType(pf, typeof(T)));
-        set => InternalData = string.Join(";", value.Select(p => p!.ToString()).ToArray());
-    }
-}
-
-public class TimeSeriesCost : TimeSeries<double>
+public class TimeSeriesCost : IChangeTrackable
 {
     public TimeSeriesCost() { }
 
@@ -34,7 +15,16 @@ public class TimeSeriesCost : TimeSeries<double>
         InternalData = timeSeriesProfile.InternalData;
     }
 
+    public Guid Id { get; set; }
+    public int StartYear { get; set; }
+    public string InternalData { get; set; } = string.Empty;
+
+    [NotMapped]
+    public double[] Values
+    {
+        get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
+        set => InternalData = string.Join(";", value.Select(p => p.ToString()).ToArray());
+    }
+
     public Currency Currency { get; set; }
 }
-
-public class TimeSeriesSchedule : TimeSeries<int>;

@@ -4,7 +4,7 @@ namespace api.Features.TimeSeriesCalculators;
 
 public static class CostProfileMerger
 {
-    public static TimeSeries<double> MergeCostProfiles(params List<TimeSeries<double>?> timeSeriesItems)
+    public static TimeSeriesCost MergeCostProfiles(params List<TimeSeriesCost?> timeSeriesItems)
     {
         var timeSeriesListNonNull = timeSeriesItems
             .Where(ts => ts != null)
@@ -13,10 +13,10 @@ public static class CostProfileMerger
 
         if (timeSeriesListNonNull.Count == 0)
         {
-            return new TimeSeries<double>();
+            return new TimeSeriesCost();
         }
 
-        var mergedTimeSeries = new TimeSeries<double>();
+        var mergedTimeSeries = new TimeSeriesCost();
 
         foreach (var ts in timeSeriesListNonNull)
         {
@@ -26,7 +26,7 @@ public static class CostProfileMerger
         return mergedTimeSeries;
     }
 
-    private static TimeSeries<double> MergeTwoCostProfiles(TimeSeries<double> t1, TimeSeries<double> t2)
+    private static TimeSeriesCost MergeTwoCostProfiles(TimeSeriesCost t1, TimeSeriesCost t2)
     {
         var t1Year = t1.StartYear;
         var t2Year = t2.StartYear;
@@ -37,7 +37,7 @@ public static class CostProfileMerger
         {
             if (t2.Values.Length == 0)
             {
-                return new TimeSeries<double>();
+                return new TimeSeriesCost();
             }
 
             return t2;
@@ -56,7 +56,7 @@ public static class CostProfileMerger
             ? MergeCostProfileData(t1Values.ToList(), t2Values.ToList(), offset)
             : MergeCostProfileData(t2Values.ToList(), t1Values.ToList(), offset);
 
-        return new TimeSeries<double>
+        return new TimeSeriesCost
         {
             StartYear = Math.Min(t1Year, t2Year),
             Values = values.ToArray()

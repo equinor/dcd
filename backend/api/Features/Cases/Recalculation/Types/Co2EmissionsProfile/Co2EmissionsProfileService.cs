@@ -52,7 +52,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 
-        var newProfile = new TimeSeries<double>
+        var newProfile = new TimeSeriesCost
         {
             StartYear = tempProfile.StartYear,
             Values = convertedValues.ToArray(),
@@ -111,7 +111,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
 
-        var wellDrillingSchedules = new TimeSeries<double>();
+        var wellDrillingSchedules = new TimeSeriesCost();
         foreach (var linkedWell in linkedWells)
         {
             if (linkedWell.DrillingSchedule == null)
@@ -119,7 +119,7 @@ public class Co2EmissionsProfileService(DcdDbContext context)
                 continue;
             }
 
-            var timeSeries = new TimeSeries<double>
+            var timeSeries = new TimeSeriesCost
             {
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),

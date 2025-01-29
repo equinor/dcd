@@ -11,13 +11,13 @@ public class EconomicsHelperTests
     public void CalculateCashFlow_ValidInput_ReturnsCorrectCashFlow()
     {
         // Arrange
-        var income = new TimeSeries<double>
+        var income = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [500.0, 700.0, 900.0]
         };
 
-        var totalCost = new TimeSeries<double>
+        var totalCost = new TimeSeriesCost
         {
             StartYear = 2020,
             Values = [200.0, 300.0, 400.0, 500.0]

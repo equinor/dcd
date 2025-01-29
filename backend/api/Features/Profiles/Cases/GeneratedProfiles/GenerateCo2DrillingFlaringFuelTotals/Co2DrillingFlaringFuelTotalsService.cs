@@ -80,7 +80,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
 
-        var wellDrillingSchedules = new TimeSeries<double>();
+        var wellDrillingSchedules = new TimeSeriesCost();
         foreach (var linkedWell in linkedWells)
         {
             if (linkedWell.DrillingSchedule == null)
@@ -88,7 +88,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
                 continue;
             }
 
-            var timeSeries = new TimeSeries<double>
+            var timeSeries = new TimeSeriesCost
             {
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),

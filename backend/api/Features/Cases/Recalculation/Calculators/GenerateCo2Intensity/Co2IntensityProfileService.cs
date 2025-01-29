@@ -21,7 +21,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
     public static void CalculateCo2Intensity(Case caseItem)
     {
         var totalExportedVolumes = GetTotalExportedVolumes(caseItem);
-        TimeSeries<double> generateCo2EmissionsProfile = new();
+        TimeSeriesCost generateCo2EmissionsProfile = new();
 
         var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
         var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
@@ -67,18 +67,18 @@ public class Co2IntensityProfileService(DcdDbContext context)
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
     }
 
-    private static TimeSeries<double> GetTotalExportedVolumes(Case caseItem)
+    private static TimeSeriesCost GetTotalExportedVolumes(Case caseItem)
     {
         var oilProfile = GetOilProfile(caseItem);
 
-        return new TimeSeries<double>
+        return new TimeSeriesCost
         {
             StartYear = oilProfile.StartYear,
             Values = oilProfile.Values
         };
     }
 
-    private static TimeSeries<double> GetOilProfile(Case caseItem)
+    private static TimeSeriesCost GetOilProfile(Case caseItem)
     {
         var million = 1E6;
         var oilValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
@@ -110,7 +110,7 @@ public class Co2IntensityProfileService(DcdDbContext context)
             additionalOilProfile ?? new TimeSeriesCost { Values = [], StartYear = 0 }
         );
 
-        return new TimeSeries<double>
+        return new TimeSeriesCost
         {
             Values = mergedProfiles.Values,
             StartYear = mergedProfiles.StartYear,
