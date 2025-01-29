@@ -12,7 +12,6 @@ import { NoAccessReason } from "@/Models/Interfaces"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
 
-
 // Banner components
 const SelectProjectBanner = () => (
     <IndexView />
