@@ -42,7 +42,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [showEditHistory, setShowEditHistory] = useState<boolean>(false)
     const [isCreating, setIsCreating] = useState<boolean>(false)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [editMode, setEditMode] = useLocalStorage<boolean>("dcdEditMode", false)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)

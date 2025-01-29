@@ -1,22 +1,25 @@
 import React from "react"
 import styled from "styled-components"
-import { Typography } from "@equinor/eds-core-react"
+import { Typography, Icon } from "@equinor/eds-core-react"
 import { 
     Container, 
     Accordion, 
     AccordionSummary, 
     AccordionDetails,
-    Grid,
     Box,
     Divider
 } from "@mui/material"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import AccountTreeIcon from "@mui/icons-material/AccountTree"
-import TimelineIcon from "@mui/icons-material/Timeline"
-import BarChartIcon from "@mui/icons-material/BarChart"
-import CompareIcon from "@mui/icons-material/Compare"
-import HistoryIcon from "@mui/icons-material/History"
-import { Version, Category, UpdateEntry, whatsNewUpdates } from "../Components/Modal/WhatsNewModal"
+import Grid2 from "@mui/material/Grid2"
+import { 
+    chevron_down, 
+    grid_on,
+    trending_up,
+    compare,
+    history,
+    bar_chart
+} from "@equinor/eds-icons"
+import { Version, UpdateEntry, whatsNewUpdates } from "../Components/Modal/WhatsNewModal"
+
 
 const StyledContainer = styled(Container)`
     padding-top: 40px;
@@ -98,6 +101,23 @@ const SectionHeader = styled(Box)`
     }
 `;
 
+const StyledVersionHeading = styled(Typography)`
+    color: #007079;
+    margin-bottom: 8px;
+    font-weight: 500;
+`;
+
+const ContentWrapper = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 64px;
+`;
+
+const GridWrapper = styled.div`
+    margin-bottom: 96px;
+`;
+
 const Feature = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
     <Box mb={4}>
         <FeatureIcon>
@@ -123,63 +143,63 @@ const IndexView: React.FC = () => {
 
     return (
         <StyledContainer maxWidth="lg">
-            <Box display="flex" flexDirection="column" alignItems="center" mb={8}>
+            <ContentWrapper>
                 <StyledTitle variant="h1">
                     Digital Concept Development
                 </StyledTitle>
                 <StyledSubtitle variant="h5">
-                    A comprehensive platform for evaluating and comparing offshore field development concepts
+                    A specialized platform for evaluating and maturing offshore field development concepts through detailed cost analysis and production planning
                 </StyledSubtitle>
-            </Box>
+            </ContentWrapper>
 
-            <Grid container spacing={6}>
-                    <Grid item xs={12} md={6}>
+            <GridWrapper>
+                <Grid2 container spacing={6}>
+                    <Grid2 size={{xs: 12, md: 6}}>
                         <Feature 
-                            icon={<TimelineIcon />}
+                            icon={<Icon data={trending_up} />}
                             title="Cost Analysis"
-                            description="Manage and analyze offshore facility costs, exploration expenses, and drilling operations with detailed time-series profiling."
+                            description="Track and analyze facility costs with time-series profiling for CAPEX and OPEX, including detailed breakdowns for exploration, drilling, offshore facilities, and onshore power supply. Supports both manual input and PROSP integration."
                         />
                         <Feature 
-                            icon={<BarChartIcon />}
+                            icon={<Icon data={bar_chart} />}
                             title="Production Profiles"
-                            description="Create and monitor drainage strategies with comprehensive production profiles and environmental impact assessments."
+                            description="Model drainage strategies with detailed production profiles for oil, gas, and water. Monitor environmental impact with CO2 emissions tracking and imported electricity consumption analysis."
                         />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
+                    </Grid2>
+                    <Grid2 size={{xs: 12, md: 6}}>
                         <Feature 
-                            icon={<CompareIcon />}
+                            icon={<Icon data={compare} />}
                             title="Business Case Comparison"
-                            description="Compare different concepts with automated NPV calculations and break-even analysis to make informed decisions."
+                            description="Evaluate multiple development concepts with NPV calculations, break-even analysis, and cash flow visualization. Create project revisions to track changes and compare different scenarios over time."
                         />
                         <Feature 
-                            icon={<AccountTreeIcon />}
+                            icon={<Icon data={grid_on} />}
                             title="Project Integration"
-                            description="Seamlessly export your data to STEA and integrate with other Equinor systems for comprehensive project management."
+                            description="Export data directly to STEA, integrate with SharePoint for PROSP imports, and connect with Equinor's project portfolio through CommonLib. Includes role-based access control and project classification support."
                         />
-                    </Grid>
-                </Grid>
-
-            <Divider sx={{ my: 8 }} />
+                    </Grid2>
+                </Grid2>
+            </GridWrapper>
 
             <Box>
                 <SectionHeader>
-                    <HistoryIcon />
-                    <Typography variant="h4" style={{ color: '#007079' }}>
+                    <Icon data={history} />
+                    <Typography variant="h4">
                         Version History
                     </Typography>
                 </SectionHeader>
                 {versions.map((version) => (
                     <StyledAccordion key={version}>
-                        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <StyledAccordionSummary expandIcon={<Icon data={chevron_down} />}>
                             <Typography variant="h4">Version {version}</Typography>
                         </StyledAccordionSummary>
                         <StyledAccordionDetails>
-                            <Grid container spacing={2}>
+                            <Grid2 container spacing={2}>
                                 {Object.entries(whatsNewUpdates[version]).map(([category, updates]) => (
-                                    <Grid item xs={12} key={category}>
-                                        <Typography variant="h5" style={{ color: '#007079', marginBottom: '8px', fontWeight: 500 }}>
+                                    <Grid2 size={{xs: 12}} key={category}>
+                                        <StyledVersionHeading variant="h5">
                                             {category}
-                                        </Typography>
+                                        </StyledVersionHeading>
                                         <VersionList>
                                             {updates?.map((entry: UpdateEntry, index: number) => (
                                                 <li key={index}>
@@ -189,9 +209,9 @@ const IndexView: React.FC = () => {
                                                 </li>
                                             ))}
                                         </VersionList>
-                                    </Grid>
+                                    </Grid2>
                                 ))}
-                            </Grid>
+                            </Grid2>
                         </StyledAccordionDetails>
                     </StyledAccordion>
                 ))}
