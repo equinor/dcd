@@ -313,7 +313,7 @@ export const useSubmitToApi = () => {
                 createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
                     projectId,
                     caseId,
-                    {...resourceObject, profileType: "NetSalesGasOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
+                    {...resourceObject, profileType: "FuelFlaringAndLossesOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
                 ),
             })
             break
