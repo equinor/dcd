@@ -1,7 +1,7 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
-using api.Models;
+using api.Features.Profiles.Dtos;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -45,21 +45,21 @@ public class ImportedElectricityProfileService(DcdDbContext context)
         profile.Values = calculateImportedElectricity.Values;
     }
 
-    private static TimeSeries<double> CalculateImportedElectricity(
+    private static TimeSeriesCost CalculateImportedElectricity(
         double peakElectricityImported,
         double facilityAvailability,
-        TimeSeries<double> totalUseOfPower
+        TimeSeriesCost totalUseOfPower
     )
     {
         const int hoursInOneYear = 8766;
         var peakElectricityImportedFromGrid = peakElectricityImported * 1.1;
 
-        var importedElectricityProfile = new TimeSeriesVolume
+        var importedElectricityProfile = new TimeSeriesCost
         {
             StartYear = totalUseOfPower.StartYear,
             Values =
                 totalUseOfPower.Values
-                    .Select(value => peakElectricityImportedFromGrid * facilityAvailability * hoursInOneYear * value / 1000)
+                    .Select(value => peakElectricityImportedFromGrid * facilityAvailability / 100 * hoursInOneYear * value / 1000)
                     .ToArray(),
         };
 

@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -123,9 +124,9 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
         return (wells, wellProjectWells);
     }
 
-    private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<WellProjectWell> wellProjectWells)
+    private static TimeSeriesCost GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeries<double>?>();
+        var costProfilesList = new List<TimeSeriesCost>();
 
         foreach (var wellProjectWell in wellProjectWells)
         {
@@ -134,7 +135,7 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
                 var well = wells.Single(w => w.Id == wellProjectWell.WellId);
                 var values = wellProjectWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
 
-                costProfilesList.Add(new TimeSeries<double>
+                costProfilesList.Add(new TimeSeriesCost
                 {
                     Values = values,
                     StartYear = wellProjectWell.DrillingSchedule.StartYear,
@@ -142,6 +143,6 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
             }
         }
 
-        return CostProfileMerger.MergeCostProfiles(costProfilesList);
+        return TimeSeriesMerger.MergeTimeSeries(costProfilesList);
     }
 }

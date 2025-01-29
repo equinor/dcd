@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 using api.Models.Enums;
 using api.Models.Interfaces;
 
@@ -29,12 +27,6 @@ public class Substructure : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
-
-    #region Migrated profiles, do not access.
-    public virtual SubstructureCostProfile? CostProfile { get; set; }
-    public virtual SubstructureCostProfileOverride? CostProfileOverride { get; set; }
-    public virtual SubstructureCessationCostProfile? CessationCostProfile { get; set; }
-    #endregion Migrated profiles, do not access.
 }
 
 public enum Concept
@@ -52,30 +44,4 @@ public enum Concept
     TANKER,
     JACK_UP,
     SUBSEA_TO_SHORE
-}
-
-#region Migrated profiles, do not access.
-public class SubstructureCostProfile : TimeSeriesCost, ISubstructureTimeSeries
-{
-    [ForeignKey("Substructure.Id")]
-    public virtual Substructure Substructure { get; set; } = null!;
-}
-
-public class SubstructureCostProfileOverride : TimeSeriesCost, ISubstructureTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("Substructure.Id")]
-    public virtual Substructure Substructure { get; set; } = null!;
-    public bool Override { get; set; }
-}
-
-public class SubstructureCessationCostProfile : TimeSeriesCost, ISubstructureTimeSeries
-{
-    [ForeignKey("Substructure.Id")]
-    public virtual Substructure Substructure { get; set; } = null!;
-}
-#endregion Migrated profiles, do not access.
-
-public interface ISubstructureTimeSeries
-{
-    Substructure Substructure { get; set; }
 }

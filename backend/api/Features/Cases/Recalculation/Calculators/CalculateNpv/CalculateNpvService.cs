@@ -1,6 +1,7 @@
 using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +52,7 @@ public class CalculateNpvService(DcdDbContext context)
         caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;
     }
 
-    private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
+    private static TimeSeriesCost? GetCashflowProfile(Case caseItem)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile) == null ||
             caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile) == null)

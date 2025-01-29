@@ -1,5 +1,6 @@
 using api.Context;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -181,16 +182,16 @@ public class WellCostProfileService(DcdDbContext context)
         }
     }
 
-    private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<ExplorationWell> explorationWells)
+    private static TimeSeriesCost GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeries<double>?>();
+        var costProfilesList = new List<TimeSeriesCost>();
         foreach (var explorationWell in explorationWells)
         {
             if (explorationWell?.DrillingSchedule?.Values?.Length > 0)
             {
                 var well = explorationWell.Well;
                 var values = explorationWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
-                var costProfile = new TimeSeries<double>
+                var costProfile = new TimeSeriesCost
                 {
                     Values = values,
                     StartYear = explorationWell.DrillingSchedule.StartYear,
@@ -199,20 +200,20 @@ public class WellCostProfileService(DcdDbContext context)
             }
         }
 
-        var mergedCostProfile = CostProfileMerger.MergeCostProfiles(costProfilesList);
+        var mergedCostProfile = TimeSeriesMerger.MergeTimeSeries(costProfilesList);
         return mergedCostProfile;
     }
 
-    private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<WellProjectWell> wellProjectWells)
+    private static TimeSeriesCost GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeries<double>?>();
+        var costProfilesList = new List<TimeSeriesCost>();
         foreach (var wellProjectWell in wellProjectWells)
         {
             if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)
             {
                 var well = wellProjectWell.Well;
                 var values = wellProjectWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
-                var costProfile = new TimeSeries<double>
+                var costProfile = new TimeSeriesCost
                 {
                     Values = values,
                     StartYear = wellProjectWell.DrillingSchedule.StartYear,
@@ -221,7 +222,7 @@ public class WellCostProfileService(DcdDbContext context)
             }
         }
 
-        var mergedCostProfile = CostProfileMerger.MergeCostProfiles(costProfilesList);
+        var mergedCostProfile = TimeSeriesMerger.MergeTimeSeries(costProfilesList);
         return mergedCostProfile;
     }
 

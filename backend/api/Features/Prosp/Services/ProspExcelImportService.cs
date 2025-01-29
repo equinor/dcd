@@ -7,13 +7,9 @@ using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
-using api.Features.Profiles.OnshorePowerSupplies.OnshorePowerSupplyCostProfiles;
-using api.Features.Profiles.Substructures.SubstructureCostProfiles;
-using api.Features.Profiles.Surfs.SurfCostProfiles;
-using api.Features.Profiles.Topsides.TopsideCostProfiles;
-using api.Features.Profiles.Transports.TransportCostProfiles;
 using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
+using api.Features.Prosp.Services.Assets;
 using api.Models;
 using api.Models.Enums;
 

@@ -43,10 +43,10 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
             .SingleAsync(p => p.Id == caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem, drainageStrategy);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
 
-        var total = CostProfileMerger.MergeCostProfiles([fuelConsumptions, flaring, losses]);
+        var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.FuelFlaringAndLosses);
 

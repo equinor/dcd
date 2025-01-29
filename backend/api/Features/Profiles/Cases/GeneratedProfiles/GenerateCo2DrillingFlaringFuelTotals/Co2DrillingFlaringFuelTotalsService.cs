@@ -1,5 +1,7 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
@@ -9,8 +11,10 @@ namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlari
 
 public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
-    public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
+    public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid projectId, Guid caseId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var profileTypes = new List<string>
         {
             ProfileTypes.ProductionProfileOil,
@@ -22,7 +26,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
-            .SingleAsync(x => x.Id == caseId);
+            .SingleAsync(x => x.Project.Id == projectPk && x.Id == caseId);
 
         var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
 
@@ -37,7 +41,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside);
-        var flaringsTotal = GetFlaringsProfileTotal(project, caseItem, drainageStrategy);
+        var flaringsTotal = GetFlaringsProfileTotal(project, caseItem);
         var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, caseItem.WellProjectLink);
 
         return new Co2DrillingFlaringFuelTotalsDto
@@ -48,11 +52,11 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         };
     }
 
-    private static double GetFlaringsProfileTotal(Project project, Case caseItem, DrainageStrategy drainageStrategy)
+    private static double GetFlaringsProfileTotal(Project project, Case caseItem)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem, drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
 
-        var flaringsProfile = new TimeSeriesVolume
+        var flaringsProfile = new TimeSeriesCost
         {
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
@@ -65,7 +69,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
     {
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
 
-        var fuelConsumptionsProfile = new TimeSeriesVolume
+        var fuelConsumptionsProfile = new TimeSeriesCost
         {
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * project.CO2EmissionFromFuelGas).ToArray(),
@@ -80,7 +84,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
 
-        var wellDrillingSchedules = new TimeSeries<double>();
+        var wellDrillingSchedules = new TimeSeriesCost();
         foreach (var linkedWell in linkedWells)
         {
             if (linkedWell.DrillingSchedule == null)
@@ -88,12 +92,12 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
                 continue;
             }
 
-            var timeSeries = new TimeSeries<double>
+            var timeSeries = new TimeSeriesCost
             {
                 StartYear = linkedWell.DrillingSchedule.StartYear,
                 Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
             };
-            wellDrillingSchedules = CostProfileMerger.MergeCostProfiles(wellDrillingSchedules, timeSeries);
+            wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
         }
 
         return wellDrillingSchedules.Values
