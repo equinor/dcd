@@ -22,6 +22,7 @@ const Wrapper = styled.div`
     justify-content: start;
     gap: 10px;
     margin-bottom: 30px; 
+    padding: 10px;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
