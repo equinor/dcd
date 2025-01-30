@@ -29,12 +29,6 @@ public class JobCleanupBackgroundService(IServiceScopeFactory serviceScopeFactor
             .Take(500)
             .ExecuteDeleteAsync();
 
-        await dbContext.FrontendExceptions
-            .Where(x => x.CreatedUtc < oneHundredDaysAgo)
-            .OrderBy(x => x.Id)
-            .Take(500)
-            .ExecuteDeleteAsync();
-
         var threeDaysAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7));
 
         await dbContext.BackgroundJobLogs
