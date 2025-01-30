@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 
