@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
 import Modal from "./Modal"
 import useEditCase from "../../Hooks/useEditCase"
@@ -55,7 +55,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
             size="sm"
             content={(
                 <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Typography>
                             Are you sure you want to
                             {profile.override ? " lock " : " unlock "}
@@ -72,7 +72,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
             )}
             actions={(
                 <Grid container spacing={1} justifyContent="flex-end">
-                    <Grid item>
+                    <Grid size={12}>
                         <Button
                             type="button"
                             variant="outlined"
@@ -81,7 +81,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                             No, cancel
                         </Button>
                     </Grid>
-                    <Grid item>
+                    <Grid size={12}>
                         <Button onClick={toggleLock}>
                             {`Yes, ${profile.override ? "lock" : "unlock"}`}
                         </Button>

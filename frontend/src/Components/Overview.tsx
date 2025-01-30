@@ -21,7 +21,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { useLocalStorage } from "@/Hooks/useLocalStorage"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
-import Sidebar from "./Sidebar/Sidebar"
+import SidebarWrapper from "./Sidebar/SidebarWrapper"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
@@ -192,7 +192,7 @@ const Overview = () => {
                     </>
                 )}
             <ContentWrapper>
-                <Sidebar />
+                <SidebarWrapper />
                 <MainView className="ag-theme-alpine-fusion container-padding">
                     {revisionAndProjectData && (
                         <Modal

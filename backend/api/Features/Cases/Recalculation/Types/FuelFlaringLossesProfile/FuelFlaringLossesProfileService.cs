@@ -2,6 +2,7 @@ using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
+using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -23,28 +24,28 @@ public class FuelFlaringLossesProfileService(DcdDbContext context)
         };
 
         var caseItem = await context.Cases
-            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .Include(x => x.Topside)
+            .Include(x => x.Project)
             .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .Where(x => profileTypes.Contains(x.ProfileType))
+            .LoadAsync();
 
+        RunCalculation(caseItem);
+    }
+
+    public static void RunCalculation(Case caseItem)
+    {
         if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {
             return;
         }
 
-        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
-        var project = await context.Projects
-            .Include(p => p.Cases)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .SingleAsync(p => p.Id == caseItem.ProjectId);
-
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(caseItem);
+        var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
 
         var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 

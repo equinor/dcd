@@ -157,7 +157,7 @@ public class CalculateTotalCostServiceTests
         };
 
         // Act
-        CalculateTotalCostService.CalculateTotalCost(caseItem);
+        CalculateTotalCostService.RunCalculation(caseItem);
 
         // Assert
         var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);

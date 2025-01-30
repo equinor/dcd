@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
@@ -212,7 +212,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         || toScheduleValue(caseData[caseDate.key as keyof typeof caseData])
                     )
                         ? (
-                            <Grid item xs={12} md={6} lg={6} key={uuidv4()}>
+                            <Grid size={{ xs: 12, md: 6, lg: 6 }} key={uuidv4()}>
                                 <SwitchableDateInput
                                     value={getDateValue(caseDate.key)}
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}

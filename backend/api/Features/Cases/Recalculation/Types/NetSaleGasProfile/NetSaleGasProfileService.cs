@@ -26,25 +26,31 @@ public class NetSaleGasProfileService(DcdDbContext context)
         };
 
         var caseItem = await context.Cases
-            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .Include(x => x.Project)
+            .Include(x => x.Topside)
+            .Include(x => x.DrainageStrategy)
             .SingleAsync(x => x.Id == caseId);
 
-        var drainageStrategy = await context.DrainageStrategies
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .Where(x => profileTypes.Contains(x.ProfileType))
+            .LoadAsync();
 
+        RunCalculation(caseItem);
+    }
+
+    public static void RunCalculation(Case caseItem)
+    {
         if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)?.Override == true)
         {
             return;
         }
 
-        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
-        var project = await context.Projects.SingleAsync(p => p.Id == caseItem.ProjectId);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
+        var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
 
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
-
-        var calculateNetSaleGas = CalculateNetSaleGas(caseItem, drainageStrategy, fuelConsumptions, flarings, losses);
+        var calculateNetSaleGas = CalculateNetSaleGas(caseItem, fuelConsumptions, flarings, losses);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.NetSalesGas);
 
@@ -53,7 +59,6 @@ public class NetSaleGasProfileService(DcdDbContext context)
     }
 
     private static TimeSeriesCost CalculateNetSaleGas(Case caseItem,
-        DrainageStrategy drainageStrategy,
         TimeSeriesCost fuelConsumption,
         TimeSeriesCost flarings,
         TimeSeriesCost losses)
@@ -63,7 +68,7 @@ public class NetSaleGasProfileService(DcdDbContext context)
             return new TimeSeriesCost();
         }
 
-        if (drainageStrategy.GasSolution == GasSolution.Injection)
+        if (caseItem.DrainageStrategy!.GasSolution == GasSolution.Injection)
         {
             return new TimeSeriesCost();
         }

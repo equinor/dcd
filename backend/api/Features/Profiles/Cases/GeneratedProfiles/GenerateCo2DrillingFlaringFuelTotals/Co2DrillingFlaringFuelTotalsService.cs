@@ -25,24 +25,23 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         };
 
         var caseItem = await context.Cases
-            .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
+            .Include(x => x.Project)
+            .Include(x => x.Topside)
             .SingleAsync(x => x.Project.Id == projectPk && x.Id == caseId);
 
-        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .Where(y => profileTypes.Contains(y.ProfileType))
+            .LoadAsync();
 
-        var project = await context.Projects
-            .Include(p => p.Cases)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .SingleAsync(p => p.Id == caseItem.ProjectId);
+        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
+            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .Select(x => x.DrillingSchedule)
+            .ToListAsync();
 
-        var drainageStrategy = await context.DrainageStrategies
-            .SingleAsync(x => x.Id == caseItem.DrainageStrategyLink);
-
-        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside);
-        var flaringsTotal = GetFlaringsProfileTotal(project, caseItem);
-        var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, caseItem.WellProjectLink);
+        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
+        var flaringsTotal = GetFlaringsProfileTotal(caseItem);
+        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, drillingSchedulesForWellProjectWell);
 
         return new Co2DrillingFlaringFuelTotalsDto
         {
@@ -52,51 +51,49 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         };
     }
 
-    private static double GetFlaringsProfileTotal(Project project, Case caseItem)
+    private static double GetFlaringsProfileTotal(Case caseItem)
     {
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
 
         var flaringsProfile = new TimeSeriesCost
         {
             StartYear = flarings.StartYear,
-            Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
+            Values = flarings.Values.Select(flare => flare * caseItem.Project.CO2EmissionsFromFlaredGas).ToArray()
         };
 
         return flaringsProfile.Values.Sum() / 1000;
     }
 
-    private static double GetFuelConsumptionsProfileTotal(Project project, Case caseItem, Topside topside)
+    private static double GetFuelConsumptionsProfileTotal(Case caseItem)
     {
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
 
         var fuelConsumptionsProfile = new TimeSeriesCost
         {
             StartYear = fuelConsumptions.StartYear,
-            Values = fuelConsumptions.Values.Select(fuel => fuel * project.CO2EmissionFromFuelGas).ToArray(),
+            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray()
         };
 
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private async Task<double> CalculateDrillingEmissionsTotal(Project project, Guid wellProjectId)
+    private static double CalculateDrillingEmissionsTotal(Project project, List<DrillingSchedule?> drillingSchedulesForWellProjectWell)
     {
-        var linkedWells = await context.WellProjectWell
-            .Include(wpw => wpw.DrillingSchedule)
-            .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
-
         var wellDrillingSchedules = new TimeSeriesCost();
-        foreach (var linkedWell in linkedWells)
+
+        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
         {
-            if (linkedWell.DrillingSchedule == null)
+            if (drillingSchedule == null)
             {
                 continue;
             }
 
             var timeSeries = new TimeSeriesCost
             {
-                StartYear = linkedWell.DrillingSchedule.StartYear,
-                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray(),
+                StartYear = drillingSchedule.StartYear,
+                Values = drillingSchedule.Values.Select(v => (double)v).ToArray()
             };
+
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
         }
 

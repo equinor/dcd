@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"

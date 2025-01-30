@@ -20,6 +20,7 @@ import {
 } from "@equinor/eds-icons"
 import { versions, whatsNewUpdates } from "@/Utils/whatsNewData"
 import { UpdateEntry } from "@/Models/Interfaces"
+import Logo from "@/Components/Logo"
 
 
 const StyledContainer = styled(Container)`
@@ -66,7 +67,7 @@ const StyledAccordionDetails = styled(AccordionDetails)`
 
 const StyledTitle = styled(Typography)`
     text-align: center;
-    margin-top: 90px;
+    margin-top: 40px;
     font-weight: bold;
     color: #007079;
 `;
@@ -138,6 +139,7 @@ const IndexView: React.FC = () => {
     return (
         <StyledContainer maxWidth="lg">
             <ContentWrapper>
+                <Logo />
                 <StyledTitle variant="h1">
                     Digital Concept Development
                 </StyledTitle>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.BackgroundServices.ProjectRecalculation.Services;
 
-public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFactory, IRecalculationService recalculationService)
+public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFactory, FullRecalculationService fullRecalculationService)
 {
     public async Task RecalculateProjects()
     {
@@ -31,14 +31,7 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
                 .Select(x => x.Id)
                 .ToListAsync();
 
-            Dictionary<Guid, Dictionary<string, long>> debugLog = [];
-
-            foreach (var caseId in caseIds)
-            {
-                var timingForCase = await recalculationService.RunAllRecalculations(caseId);
-
-                debugLog.Add(caseId, timingForCase);
-            }
+            var debugLog = await fullRecalculationService.RunAllRecalculations(caseIds);
 
             context.PendingRecalculations.Remove(pendingProject);
 

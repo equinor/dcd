@@ -4,16 +4,16 @@ import {
     useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
-import { SetTableYearsFromProfiles } from "@/Components/Case/Components/CaseTabTableHelper"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import CaseTabTable from "@/Components/Case/Components/CaseTabTable"
+import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { AgChartsPie } from "@/Components/AgGrid/AgChartsPie"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
 import { caseQueryFn } from "@/Services/QueryFunctions"
@@ -237,10 +237,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
 
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -253,10 +253,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     unit="million Sm³ gas/sd"
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
-            <Grid item lg={12} xl={6}>
+            <Grid size={{ xs: 12, xl: 6 }}>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
@@ -267,22 +267,21 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     axesData={chartAxes}
                 />
             </Grid>
-            <Grid item lg={12} xl={6} container direction="column" spacing={1} justifyContent="center" alignItems="center">
-                <Grid item>
+            <Grid size={{ xs: 12, xl: 6 }} container direction="column" spacing={1} justifyContent="center" alignItems="center">
+                <Grid size={12}>
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>
-                <Grid item>
+                <Grid size={12}>
                     <Typography variant="h1_bold">
                         {sumValues(co2IntensityData) && co2IntensityData?.values && co2IntensityData.values.length > 0
                             ? ((sumValues(co2EmissionsData) * 1000) / (totalOilProduction * 6.29)).toFixed(4)
                             : "0.0000"}
                     </Typography>
-
                 </Grid>
-                <Grid item>
+                <Grid size={12}>
                     <Typography color="disabled">kg CO2/boe</Typography>
                 </Grid>
-                <Grid item>
+                <Grid size={12}>
                     <AgChartsPie
                         data={co2DistributionChartData}
                         chartTitle="CO2 distribution"
@@ -299,7 +298,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 setEndYear={setEndYear}
                 handleTableYearsClick={handleTableYearsClick}
             />
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <CaseTabTable
                     addEdit={addEdit}
                     timeSeriesData={timeSeriesData}
