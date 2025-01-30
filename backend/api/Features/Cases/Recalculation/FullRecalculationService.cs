@@ -24,13 +24,11 @@ namespace api.Features.Cases.Recalculation;
 public class FullRecalculationService
 {
     private readonly DcdDbContext _context;
-    private readonly IServiceProvider _serviceProvider;
 
-    public FullRecalculationService(DcdDbContext context, IServiceProvider serviceProvider)
+    public FullRecalculationService(DcdDbContext context)
     {
         context.ChangeTracker.LazyLoadingEnabled = false;
         _context = context;
-        _serviceProvider = serviceProvider;
     }
 
     public async Task<Dictionary<string, object>> RunAllRecalculations(List<Guid> caseIds)
@@ -40,19 +38,17 @@ public class FullRecalculationService
 
         var caseData = await LoadCaseData(caseIds, debugLogForProject);
 
-        foreach (var foo in caseData)
+        foreach (var caseWithDrillingSchedules in caseData)
         {
             stopwatch.Restart();
-            var caseItem = foo.CaseItem;
-            var drillingSchedulesForExplorationWell = foo.DrillingSchedulesForExplorationWell;
-            var drillingSchedulesForWellProjectWell = foo.DrillingSchedulesForWellProjectWell;
+            var caseItem = caseWithDrillingSchedules.CaseItem;
+            var drillingSchedulesForExplorationWell = caseWithDrillingSchedules.DrillingSchedulesForExplorationWell;
+            var drillingSchedulesForWellProjectWell = caseWithDrillingSchedules.DrillingSchedulesForWellProjectWell;
 
             var debugLogForCase = new Dictionary<string, long>();
 
-            await _serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(caseItem.Id);
-            debugLogForCase.Add("UpdateCostProfilesForWells", stopwatch.ElapsedMilliseconds);
-            stopwatch.Restart();
-
+            WellProjectWellCostProfileService.RunCalculation(caseItem);
+            ExplorationWellCostProfileService.RunCalculation(caseItem);
             StudyCostProfileService.RunCalculation(caseItem);
             CessationCostProfileService.RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
             FuelFlaringLossesProfileService.RunCalculation(caseItem);
@@ -90,6 +86,8 @@ public class FullRecalculationService
             .Include(x => x.Surf)
             .Include(x => x.Topside)
             .Include(x => x.DrainageStrategy)
+            .Include(x => x.WellProject)
+            .Include(x => x.Exploration)
             .Where(x => caseIds.Contains(x.Id))
             .ToListAsync();
 
@@ -103,6 +101,30 @@ public class FullRecalculationService
 
         debugLogForProject.Add("Time series profiles count", caseItems.SelectMany(x => x.TimeSeriesProfiles).Count());
         debugLogForProject.Add("Load time series profiles", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
+        var wellProjectIds = caseItems.Select(x => x.WellProjectLink).ToList();
+
+        await _context.WellProjectWell
+            .Include(x => x.DrillingSchedule)
+            .Include(x => x.Well)
+            .Where(x => wellProjectIds.Contains(x.WellProjectId))
+            .LoadAsync();
+
+        debugLogForProject.Add("WellProjectWell count", caseItems.SelectMany(x => x.WellProject!.WellProjectWells).Count());
+        debugLogForProject.Add("Load WellProjectWell", stopwatch.ElapsedMilliseconds);
+        stopwatch.Restart();
+
+        var explorationIds = caseItems.Select(x => x.ExplorationLink).ToList();
+
+        await _context.ExplorationWell
+            .Include(x => x.DrillingSchedule)
+            .Include(x => x.Well)
+            .Where(x => explorationIds.Contains(x.ExplorationId))
+            .LoadAsync();
+
+        debugLogForProject.Add("ExplorationWell count", caseItems.SelectMany(x => x.Exploration!.ExplorationWells).Count());
+        debugLogForProject.Add("Load ExplorationWell", stopwatch.ElapsedMilliseconds);
         stopwatch.Restart();
 
         var drillingSchedulesForWellProjectWell = await (

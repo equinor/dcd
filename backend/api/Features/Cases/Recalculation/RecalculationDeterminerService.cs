@@ -8,7 +8,7 @@ namespace api.Features.Cases.Recalculation;
 
 public class RecalculationDeterminerService(DcdDbContext context)
 {
-    public (List<Well> wells, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
+    public bool CalculateExplorationAndWellProjectCost()
     {
         var modifiedWellsWithCostChange = context.ChangeTracker.Entries<Well>()
             .Where(e => (e.State == EntityState.Modified)
@@ -27,7 +27,7 @@ public class RecalculationDeterminerService(DcdDbContext context)
         var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id)
             .Union(addedDrillingSchedules.Select(e => e.Entity.Id)).ToList();
 
-        return (modifiedWellIds, modifiedDrillingScheduleIds);
+        return modifiedWellIds.Any() || modifiedDrillingScheduleIds.Any();
     }
 
     public bool CalculateCo2Emissions()

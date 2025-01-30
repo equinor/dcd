@@ -75,7 +75,7 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
     {
         var recalculationDeterminerService = serviceProvider.GetRequiredService<RecalculationDeterminerService>();
 
-        var (wells, drillingScheduleIds) = recalculationDeterminerService.CalculateExplorationAndWellProjectCost();
+        var rerunWellCalculation = recalculationDeterminerService.CalculateExplorationAndWellProjectCost();
         var rerunStudyCost = recalculationDeterminerService.CalculateStudyCost();
         var rerunCessationCostProfile = recalculationDeterminerService.CalculateCessationCostProfile();
         var rerunFuelFlaringAndLosses = recalculationDeterminerService.CalculateFuelFlaringAndLosses();
@@ -91,10 +91,10 @@ public class RecalculationService(DcdDbContext context, IServiceProvider service
         var rerunCalculateBreakEven = recalculationDeterminerService.CalculateBreakEvenOilPrice();
 
         await context.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
-        if (wells.Count != 0 || drillingScheduleIds.Count != 0)
+        if (rerunWellCalculation)
         {
-            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
-            await serviceProvider.GetRequiredService<WellCostProfileService>().UpdateCostProfilesForWells(wells);
+            await serviceProvider.GetRequiredService<ExplorationWellCostProfileService>().UpdateCostProfilesForWells(caseId);
+            await serviceProvider.GetRequiredService<WellProjectWellCostProfileService>().UpdateCostProfilesForWells(caseId);
         }
         if (rerunStudyCost)
         {
