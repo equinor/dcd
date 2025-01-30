@@ -57,7 +57,7 @@ public class CalculateTotalIncomeServiceTests
         };
 
         // Act
-        CalculateTotalIncomeService.CalculateTotalIncome(caseItem);
+        CalculateTotalIncomeService.RunCalculation(caseItem);
 
         // Assert
         var expectedFirstYearIncome = (2 * 1000000.0 * 75 * 6.29 * 10 + 2 * 1000000000.0 * 3) / 1000000;
@@ -110,7 +110,7 @@ public class CalculateTotalIncomeServiceTests
         };
 
         // Act
-        CalculateTotalIncomeService.CalculateTotalIncome(caseItem);
+        CalculateTotalIncomeService.RunCalculation(caseItem);
 
         // Assert
         var calculatedTotalIncomeCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);

@@ -14,17 +14,25 @@ public class StudyCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
+
+        RunCalculation(caseItem);
+    }
+
+    public static void RunCalculation(Case caseItem)
+    {
         var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(caseItem);
 
         CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
-        CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+        CalculateTotalFeedStudies(caseItem, sumFacilityCost, sumWellCost);
     }
 
-    public static void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    private static void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true)
         {
@@ -72,7 +80,7 @@ public class StudyCostProfileService(DcdDbContext context)
         profile.Values = valuesList.ToArray();
     }
 
-    public static void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    private static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true)
         {
@@ -138,7 +146,7 @@ public class StudyCostProfileService(DcdDbContext context)
         return sumFacilityCost;
     }
 
-    public static double SumWellCost(Case caseItem)
+    private static double SumWellCost(Case caseItem)
     {
         var sumWellCost = 0.0;
 

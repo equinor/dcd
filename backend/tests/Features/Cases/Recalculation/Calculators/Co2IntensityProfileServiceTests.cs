@@ -52,7 +52,7 @@ public class Co2IntensityProfileServiceTests
         };
 
         // Act
-        Co2IntensityProfileService.CalculateCo2Intensity(caseItem);
+        Co2IntensityProfileService.RunCalculation(caseItem);
 
         // Assert
         var expectedCo2Intensity = 3.2899;
