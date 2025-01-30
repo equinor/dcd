@@ -6,7 +6,7 @@ import {
 } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
-import Grid from "@mui/material/Grid"
+import { Stack } from "@mui/material"
 
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
@@ -15,7 +15,7 @@ import { sharedTimelineStyles } from "../sharedStyles"
 import { Header } from "../Sidebar"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 
-export const CasesTimeline = styled(Grid)`
+export const CasesTimeline = styled(Stack)`
     height: 100%;
     ${sharedTimelineStyles}
 `
@@ -34,20 +34,26 @@ const CasesDetails: React.FC = () => {
 
     return (
         <>
-            <Grid item container alignItems="flex-start" justifyContent={sidebarOpen ? "space-between" : "start"}>
+            <Stack
+                direction="row"
+                justifyContent={sidebarOpen ? "space-between" : "center"}
+            >
                 <Header>
                     <Typography variant="overline">Cases</Typography>
                 </Header>
                 {sidebarOpen && !isEditDisabled && (
-                    <Grid item>
-                        <Tooltip title="Add new case">
-                            <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
-                        </Tooltip>
-                    </Grid>
+                    <Tooltip title="Add new case">
+                        <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
+                    </Tooltip>
                 )}
-            </Grid>
+            </Stack>
             <GrowBox>
-                <CasesTimeline id="casesList" data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
+                <CasesTimeline
+                    id="casesList"
+                    data-timeline
+                    direction="column"
+                    alignItems="flex-start"
+                >
                     <CasesList />
                 </CasesTimeline>
             </GrowBox>
