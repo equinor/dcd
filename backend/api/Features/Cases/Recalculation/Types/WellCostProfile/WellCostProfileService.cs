@@ -16,14 +16,23 @@ public class WellCostProfileService(DcdDbContext context)
         {
             return;
         }
-        var explorationWells = GetAllExplorationWells()
-            .Where(ew => ew.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(ew.DrillingScheduleId.Value));
 
-        var wellProjectWells = GetAllWellProjectWells()
-            .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value));
+        var explorationWells = await context.ExplorationWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.Exploration)
+            .Where(ew => ew.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(ew.DrillingScheduleId.Value))
+            .ToListAsync();
 
-        await UpdateWellProjectCostProfiles(wellProjectWells.ToList());
-        await UpdateExplorationCostProfiles(explorationWells.ToList());
+        var wellProjectWells = await context.WellProjectWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.WellProject)
+            .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value))
+            .ToListAsync();
+
+        await UpdateWellProjectCostProfiles(wellProjectWells);
+        await UpdateExplorationCostProfiles(explorationWells);
     }
 
     public async Task UpdateCostProfilesForWells(Guid caseId)
@@ -67,8 +76,14 @@ public class WellCostProfileService(DcdDbContext context)
             return;
         }
 
-        var explorationWells = await GetAllExplorationWells().Where(ew => wells.Contains(ew.Well)).ToListAsync();
-        var wellProjectWells = await GetAllWellProjectWells().Where(wpw => wells.Contains(wpw.Well)).ToListAsync();
+        var explorationWells = await context.ExplorationWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.Exploration).Where(ew => wells.Contains(ew.Well)).ToListAsync();
+        var wellProjectWells = await context.WellProjectWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.WellProject).Where(wpw => wells.Contains(wpw.Well)).ToListAsync();
 
         await UpdateExplorationCostProfiles(explorationWells);
         await UpdateWellProjectCostProfiles(wellProjectWells);
@@ -92,7 +107,10 @@ public class WellCostProfileService(DcdDbContext context)
                 .Include(x => x.TimeSeriesProfiles.Where(y => profileTypes.Contains(y.ProfileType)))
                 .SingleAsync(x => x.WellProjectLink == wellProject.Id);
 
-            var connectedWellProjectWells = await GetAllWellProjectWellsForWellProject(wellProject.Id);
+            var connectedWellProjectWells = await context.WellProjectWell
+                .Include(ew => ew.DrillingSchedule)
+                .Include(ew => ew.Well)
+                .Where(ew => ew.WellProjectId == wellProject.Id).ToListAsync();
 
             var connectedWellProjectCategoryWells = connectedWellProjectWells
                 .Where(wpw => wpw.Well.WellCategory == WellCategory.Oil_Producer);
@@ -138,7 +156,10 @@ public class WellCostProfileService(DcdDbContext context)
 
         foreach (var exploration in explorations)
         {
-            var connectedExplorationWells = await GetAllExplorationWellsForExploration(exploration.Id);
+            var connectedExplorationWells = await context.ExplorationWell
+                .Include(ew => ew.DrillingSchedule)
+                .Include(ew => ew.Well)
+                .Where(ew => ew.ExplorationId == exploration.Id).ToListAsync();
 
             var connectedExplorationCategoryWells = connectedExplorationWells
                 .Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well);
@@ -185,76 +206,42 @@ public class WellCostProfileService(DcdDbContext context)
     private static TimeSeriesCost GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<ExplorationWell> explorationWells)
     {
         var costProfilesList = new List<TimeSeriesCost>();
+
         foreach (var explorationWell in explorationWells)
         {
-            if (explorationWell?.DrillingSchedule?.Values?.Length > 0)
+            if (explorationWell.DrillingSchedule?.Values.Length > 0)
             {
-                var well = explorationWell.Well;
-                var values = explorationWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
-                var costProfile = new TimeSeriesCost
+                var values = explorationWell.DrillingSchedule.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray();
+
+                costProfilesList.Add(new TimeSeriesCost
                 {
                     Values = values,
                     StartYear = explorationWell.DrillingSchedule.StartYear,
-                };
-                costProfilesList.Add(costProfile);
+                });
             }
         }
 
-        var mergedCostProfile = TimeSeriesMerger.MergeTimeSeries(costProfilesList);
-        return mergedCostProfile;
+        return TimeSeriesMerger.MergeTimeSeries(costProfilesList);
     }
 
     private static TimeSeriesCost GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<WellProjectWell> wellProjectWells)
     {
         var costProfilesList = new List<TimeSeriesCost>();
+
         foreach (var wellProjectWell in wellProjectWells)
         {
-            if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)
+            if (wellProjectWell.DrillingSchedule?.Values.Length > 0)
             {
-                var well = wellProjectWell.Well;
-                var values = wellProjectWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
-                var costProfile = new TimeSeriesCost
+                var values = wellProjectWell.DrillingSchedule.Values.Select(ds => ds * wellProjectWell.Well.WellCost).ToArray();
+
+                costProfilesList.Add(new TimeSeriesCost
                 {
                     Values = values,
                     StartYear = wellProjectWell.DrillingSchedule.StartYear,
-                };
-                costProfilesList.Add(costProfile);
+                });
             }
         }
 
-        var mergedCostProfile = TimeSeriesMerger.MergeTimeSeries(costProfilesList);
-        return mergedCostProfile;
-    }
-
-    private async Task<List<ExplorationWell>> GetAllExplorationWellsForExploration(Guid explorationId)
-    {
-        return await context.ExplorationWell
-            .Include(ew => ew.DrillingSchedule)
-            .Include(ew => ew.Well)
-            .Where(ew => ew.ExplorationId == explorationId).ToListAsync();
-    }
-
-    private IQueryable<ExplorationWell> GetAllExplorationWells()
-    {
-        return context.ExplorationWell
-            .Include(ew => ew.DrillingSchedule)
-            .Include(ew => ew.Well)
-            .Include(ew => ew.Exploration);
-    }
-
-    private async Task<List<WellProjectWell>> GetAllWellProjectWellsForWellProject(Guid wellProjectId)
-    {
-        return await context.WellProjectWell
-            .Include(ew => ew.DrillingSchedule)
-            .Include(ew => ew.Well)
-            .Where(ew => ew.WellProjectId == wellProjectId).ToListAsync();
-    }
-
-    private IQueryable<WellProjectWell> GetAllWellProjectWells()
-    {
-        return context.WellProjectWell
-            .Include(ew => ew.DrillingSchedule)
-            .Include(ew => ew.Well)
-            .Include(ew => ew.WellProject);
+        return TimeSeriesMerger.MergeTimeSeries(costProfilesList);
     }
 }

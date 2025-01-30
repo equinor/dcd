@@ -54,8 +54,10 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     } = useRevisions()
 
     const [revisionName, setRevisionName] = useState<string>("")
-    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>(revisionAndProjectData?.commonProjectAndRevisionData.classification ?? 0)
-    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>(revisionAndProjectData?.commonProjectAndRevisionData.internalProjectPhase ?? 0)
+    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>(revisionAndProjectData?.commonProjectAndRevisionData.classification ?? 1)
+    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>(
+        revisionAndProjectData?.commonProjectAndRevisionData.internalProjectPhase ?? 0,
+    )
     const [mdqc, setMdqc] = useState(false)
     const [arena, setArena] = useState(false)
 
@@ -64,7 +66,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
+        if ([1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             setClassification(newClassification)
         }
@@ -88,9 +90,11 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         return <option key={key} value={key}>{value.label}</option>
     })
 
-    const classificationOptions = Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
-        <option key={key} value={key}>{value.label}</option>
-    ))
+    const classificationOptions = Object.entries(PROJECT_CLASSIFICATION)
+        .filter(([key]) => key !== "0")
+        .map(([key, value]) => (
+            <option key={key} value={key}>{value.label}</option>
+        ))
 
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
@@ -160,7 +164,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                     onChange={handleInternalProjectPhaseChange}
                                     value={internalProjectPhase}
                                     disabled={disableAfterDG0()}
-                                    defaultValue={revisionAndProjectData.commonProjectAndRevisionData.internalProjectPhase}
                                 >
                                     {internalProjectPhaseOptions}
                                 </NativeSelect>
@@ -172,7 +175,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project classification"
                                 onChange={handleClassificationChange}
                                 value={classification}
-                                defaultValue={revisionAndProjectData.commonProjectAndRevisionData.classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>

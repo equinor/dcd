@@ -1,10 +1,7 @@
-using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
-
-using DocumentFormat.OpenXml.Drawing.Charts;
 
 using Xunit;
 
@@ -17,14 +14,13 @@ public class Co2EmissionProfileServiceTests
     public void CalculateFuelFlaringAndLosses_ReturnsCorrectValue()
     {
         // Arrange
-        var project = new Project
-        {
-            FlaredGasPerProducedVolume = 1.122765,
-            CO2RemovedFromGas = 0.0,
-        };
-
         var caseItem = new Case
         {
+            Project = new Project
+            {
+                FlaredGasPerProducedVolume = 1.122765,
+                CO2RemovedFromGas = 0.0,
+            },
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
@@ -52,26 +48,26 @@ public class Co2EmissionProfileServiceTests
                     StartYear = 2023,
                     Values = [80000000]
                 }
-        }
-        };
-        var topside = new Topside
-        {
-            FuelConsumption = 0.019,
-            OilCapacity = 555,
-            CO2ShareOilProfile = 0.173,
-            CO2OnMaxOilProfile = 0.208,
-            GasCapacity = 0.96,
-            CO2ShareGasProfile = 0.827,
-            CO2OnMaxGasProfile = 0.057,
-            WaterInjectionCapacity = 0,
-            CO2ShareWaterInjectionProfile = 0,
-            CO2OnMaxWaterInjectionProfile = 0,
+            },
+            Topside = new Topside
+            {
+                FuelConsumption = 0.019,
+                OilCapacity = 555,
+                CO2ShareOilProfile = 0.173,
+                CO2OnMaxOilProfile = 0.208,
+                GasCapacity = 0.96,
+                CO2ShareGasProfile = 0.827,
+                CO2OnMaxGasProfile = 0.057,
+                WaterInjectionCapacity = 0,
+                CO2ShareWaterInjectionProfile = 0,
+                CO2OnMaxWaterInjectionProfile = 0,
+            }
         };
 
         // Act
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(caseItem);
+        var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
 
         var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 
@@ -87,14 +83,13 @@ public class Co2EmissionProfileServiceTests
     public void CalculateFuelFlaringAndLosses_WithCompleteDataInput_ReturnsCorrectValue()
     {
         // Arrange
-        var project = new Project
-        {
-            FlaredGasPerProducedVolume = 1.122765,
-            CO2RemovedFromGas = 0.0,
-        };
-
         var caseItem = new Case
         {
+            Project = new Project
+            {
+                FlaredGasPerProducedVolume = 1.122765,
+                CO2RemovedFromGas = 0.0,
+            },
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
@@ -129,27 +124,26 @@ public class Co2EmissionProfileServiceTests
                     StartYear = 2023,
                     Values = [1180000]
                 },
+            },
+            Topside = new Topside
+            {
+                FuelConsumption = 0.019,
+                OilCapacity = 555,
+                CO2ShareOilProfile = 0.173,
+                CO2OnMaxOilProfile = 0.208,
+                GasCapacity = 0.96,
+                CO2ShareGasProfile = 0.827,
+                CO2OnMaxGasProfile = 0.057,
+                WaterInjectionCapacity = 0,
+                CO2ShareWaterInjectionProfile = 0,
+                CO2OnMaxWaterInjectionProfile = 0,
             }
         };
 
-        var topside = new Topside
-        {
-            FuelConsumption = 0.019,
-            OilCapacity = 555,
-            CO2ShareOilProfile = 0.173,
-            CO2OnMaxOilProfile = 0.208,
-            GasCapacity = 0.96,
-            CO2ShareGasProfile = 0.827,
-            CO2OnMaxGasProfile = 0.057,
-            WaterInjectionCapacity = 0,
-            CO2ShareWaterInjectionProfile = 0,
-            CO2OnMaxWaterInjectionProfile = 0,
-        };
-
         // Act
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(project, caseItem);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, caseItem);
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(caseItem);
+        var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
 
         var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 

@@ -13,13 +13,16 @@ public class CalculateTotalCostService(DcdDbContext context)
     public async Task CalculateTotalCost(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        CalculateTotalCost(caseItem);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
+
+        RunCalculation(caseItem);
     }
 
-    public static void CalculateTotalCost(Case caseItem)
+    public static void RunCalculation(Case caseItem)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
 

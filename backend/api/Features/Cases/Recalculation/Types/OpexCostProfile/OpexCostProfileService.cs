@@ -14,31 +14,34 @@ public class OpexCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(c => c.TimeSeriesProfiles)
+            .Include(x => x.Project).ThenInclude(x => x.DevelopmentOperationalWellCosts)
+            .Include(c => c.Topside)
             .SingleAsync(c => c.Id == caseId);
 
-        var project = await context.Projects
-            .Include(p => p.Cases)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .SingleAsync(p => p.Id == caseItem.ProjectId);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
 
+        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
+            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .Select(x => x.DrillingSchedule)
+            .Where(x => x != null)
+            .Select(x => x!)
+            .ToListAsync();
+
+        RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
+    }
+
+    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 
-        var linkedWells = await context.WellProjectWell
-            .Include(wpw => wpw.DrillingSchedule)
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
-            .ToListAsync();
-
-        var topside = await context.Topsides.SingleAsync(x => x.Id == caseItem.TopsideLink);
-
-        CalculateWellInterventionCostProfile(caseItem, project, linkedWells, lastYearOfProduction);
-        CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, topside, firstYearOfProduction, lastYearOfProduction);
+        CalculateWellInterventionCostProfile(caseItem, drillingSchedulesForWellProjectWell, lastYearOfProduction);
+        CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
     }
 
-    public static void CalculateWellInterventionCostProfile(Case caseItem, Project project, List<WellProjectWell> linkedWells, int? lastYearOfProduction)
+    private static void CalculateWellInterventionCostProfile(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
@@ -47,22 +50,22 @@ public class OpexCostProfileService(DcdDbContext context)
 
         var lastYear = lastYearOfProduction ?? 0;
 
-        if (linkedWells.Count == 0)
+        if (drillingSchedulesForWellProjectWell.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
             return;
         }
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeriesCost();
-        foreach (var linkedWell in linkedWells)
-        {
-            if (linkedWell.DrillingSchedule == null) { continue; }
 
+        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
+        {
             var timeSeries = new TimeSeriesCost
             {
-                StartYear = linkedWell.DrillingSchedule.StartYear,
-                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
+                StartYear = drillingSchedule.StartYear,
+                Values = drillingSchedule.Values.Select(v => (double)v).ToArray()
             };
+
             wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
@@ -75,7 +78,7 @@ public class OpexCostProfileService(DcdDbContext context)
         var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
         cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
 
-        var interventionCost = project.DevelopmentOperationalWellCosts?.AnnualWellInterventionCostPerWell ?? 0;
+        var interventionCost = caseItem.Project.DevelopmentOperationalWellCosts?.AnnualWellInterventionCostPerWell ?? 0;
 
         var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
@@ -105,7 +108,7 @@ public class OpexCostProfileService(DcdDbContext context)
         profile.StartYear = wellInterventionCostsFromDrillingSchedule.StartYear;
     }
 
-    public static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, Topside topside, int? firstYearOfProduction, int? lastYearOfProduction)
+    private static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, int? firstYearOfProduction, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true)
         {
@@ -121,7 +124,7 @@ public class OpexCostProfileService(DcdDbContext context)
         int firstYear = firstYearOfProduction.Value;
         int lastYear = lastYearOfProduction.Value;
 
-        var facilityOpex = topside.FacilityOpex;
+        var facilityOpex = caseItem.Topside!.FacilityOpex;
 
         var values = new List<double>();
 
@@ -143,7 +146,6 @@ public class OpexCostProfileService(DcdDbContext context)
 
         const int preOpexCostYearOffset = 3;
 
-
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
 
         profile.Values = values.ToArray();
@@ -164,6 +166,7 @@ public class OpexCostProfileService(DcdDbContext context)
         };
         var values = new List<double>();
         var sum = 0.0;
+
         for (int i = 0; i < drillingSchedule.Values.Length; i++)
         {
             sum += drillingSchedule.Values[i];

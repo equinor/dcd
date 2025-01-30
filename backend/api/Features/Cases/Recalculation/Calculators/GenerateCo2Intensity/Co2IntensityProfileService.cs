@@ -13,13 +13,16 @@ public class Co2IntensityProfileService(DcdDbContext context)
     public async Task CalculateCo2IntensityProfile(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(c => c.Id == caseId);
 
-        CalculateCo2Intensity(caseItem);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseItem.Id)
+            .LoadAsync();
+
+        RunCalculation(caseItem);
     }
 
-    public static void CalculateCo2Intensity(Case caseItem)
+    public static void RunCalculation(Case caseItem)
     {
         var totalExportedVolumes = GetTotalExportedVolumes(caseItem);
         var generateCo2EmissionsProfile = new TimeSeriesCost();

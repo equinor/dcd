@@ -15,13 +15,16 @@ public class CalculateTotalIncomeService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(x => x.Project)
-            .Include(x => x.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        CalculateTotalIncome(caseItem);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
+
+        RunCalculation(caseItem);
     }
 
-    public static void CalculateTotalIncome(Case caseItem)
+    public static void RunCalculation(Case caseItem)
     {
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;

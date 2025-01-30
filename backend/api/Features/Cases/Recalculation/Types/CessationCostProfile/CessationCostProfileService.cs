@@ -12,31 +12,33 @@ public class CessationCostProfileService(DcdDbContext context)
     public async Task Generate(Guid caseId)
     {
         var caseItem = await context.Cases
-            .Include(x => x.TimeSeriesProfiles)
+            .Include(x => x.Project).ThenInclude(x => x.DevelopmentOperationalWellCosts)
+            .Include(x => x.Surf)
             .SingleAsync(x => x.Id == caseId);
 
-        var surf = await context.Surfs.SingleAsync(x => x.Id == caseItem.SurfLink);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
 
-        var linkedWells = await context.WellProjectWell
-            .Include(wpw => wpw.DrillingSchedule)
+        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
             .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .Select(x => x.DrillingSchedule)
+            .Where(x => x != null)
+            .Select(x => x!)
             .ToListAsync();
 
-        var project = await context.Projects
-            .Include(p => p.Cases)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .SingleAsync(p => p.Id == caseItem.ProjectId);
-
-        var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
-
-
-        CalculateCessationWellsCost(caseItem, project, linkedWells, lastYearOfProduction);
-        GetCessationOffshoreFacilitiesCost(caseItem, surf, lastYearOfProduction);
+        RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
     }
 
-    private static void CalculateCessationWellsCost(Case caseItem, Project project, List<WellProjectWell> linkedWells, int? lastYear)
+    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    {
+        var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
+
+        CalculateCessationWellsCost(caseItem, drillingSchedulesForWellProjectWell, lastYearOfProduction);
+        GetCessationOffshoreFacilitiesCost(caseItem, lastYearOfProduction);
+    }
+
+    private static void CalculateCessationWellsCost(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell, int? lastYear)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true)
         {
@@ -51,15 +53,10 @@ public class CessationCostProfileService(DcdDbContext context)
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationWellsCost);
 
-        GenerateCessationWellsCost(
-            project,
-            linkedWells,
-            lastYear.Value,
-            profile
-        );
+        GenerateCessationWellsCost(caseItem.Project, drillingSchedulesForWellProjectWell, lastYear.Value, profile);
     }
 
-    private static void GetCessationOffshoreFacilitiesCost(Case caseItem, Surf surf, int? lastYear)
+    private static void GetCessationOffshoreFacilitiesCost(Case caseItem, int? lastYear)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)?.Override == true)
         {
@@ -74,19 +71,15 @@ public class CessationCostProfileService(DcdDbContext context)
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationOffshoreFacilitiesCost);
 
-        GenerateCessationOffshoreFacilitiesCost(
-            surf,
-            lastYear.Value,
-            profile
-        );
+        GenerateCessationOffshoreFacilitiesCost(caseItem.Surf!, lastYear.Value, profile);
     }
 
-    private static void GenerateCessationWellsCost(Project project, List<WellProjectWell> linkedWells, int lastYear, TimeSeriesProfile cessationWells)
+    private static void GenerateCessationWellsCost(Project project, List<DrillingSchedule> drillingSchedulesForWellProjectWell, int lastYear, TimeSeriesProfile cessationWells)
     {
         var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 
-        var sumDrilledWells = linkedWells
-            .Select(well => well.DrillingSchedule?.Values.Sum() ?? 0)
+        var sumDrilledWells = drillingSchedulesForWellProjectWell
+            .Select(x => x.Values.Sum())
             .Sum();
 
         var totalCost = sumDrilledWells * pluggingAndAbandonment;
