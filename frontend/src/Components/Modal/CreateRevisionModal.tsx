@@ -1,5 +1,5 @@
 import React, {
-    ChangeEventHandler, FunctionComponent, useState,
+    ChangeEventHandler, useState,
 } from "react"
 import {
     Divider, Icon, Typography, Button,
@@ -43,7 +43,7 @@ type Props = {
     size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
 }
 
-const CreateRevisionModal: FunctionComponent<Props> = ({
+const CreateRevisionModal: React.FC<Props> = ({
     size,
 }) => {
     const revisionAndProjectData = useDataFetch()

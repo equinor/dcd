@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, FunctionComponent } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
@@ -14,7 +14,7 @@ type Props = {
     profile: any
 }
 
-export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
+export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
     isOpen,
     setIsOpen,
     profileName,
