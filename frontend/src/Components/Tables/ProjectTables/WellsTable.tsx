@@ -1,9 +1,7 @@
 import React, {
     ChangeEvent,
-    useEffect,
     useMemo,
     useRef,
-    useState,
     Dispatch,
     SetStateAction,
   } from "react"
@@ -46,12 +44,6 @@ import React, {
     setWellStagedForDeletion,
   }) => {
     const gridRef = useRef<AgGridReact<TableWell>>(null)
-  
-    const [localRowData, setLocalRowData] = useState<TableWell[]>(rowData)
-  
-    useEffect(() => {
-      setLocalRowData(rowData)
-    }, [rowData])
   
     const onGridReady = (params: any) => {
         if (gridRef.current) {
@@ -126,38 +118,7 @@ import React, {
         <Icon data={delete_to_trash} />
       </Button>
     )
-  
-    const handleWellCategoryChange = (
-      e: ChangeEvent<HTMLSelectElement>,
-      p: any,
-    ) => {
-      const numericValue = Number(e.currentTarget.value)
-      if ([0, 1, 2, 3, 4, 5, 6, 7].includes(numericValue)) {
-        p.setValue(numericValue)
-      }
-    }
-  
-    const wellCategoryRenderer = (p: any) => {
-      const value = Number(p.value)
-      return (
-        <NativeSelect
-          id="wellCategory"
-          label=""
-          value={value}
-          disabled={!editMode || isEditDisabled}
-          onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-            handleWellCategoryChange(e, p)
-          }
-        >
-          {wellOptions.map((option) => (
-            <option key={option.key} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </NativeSelect>
-      )
-    }
-  
+
     const columnDefs = useMemo<ColDef[]>(
       () => [
         {
@@ -169,8 +130,13 @@ import React, {
         {
           field: "wellCategory",
           headerName: "Well type",
-          cellRenderer: wellCategoryRenderer,
-          editable: false,
+          cellEditor: 'agSelectCellEditor',
+          cellEditorParams: {
+            values: wellOptions.map(option => option.value),
+            formatValue: (value: number) => wellOptions.find(opt => opt.value === value)?.label || '',
+          },
+          valueFormatter: (params) => wellOptions.find(opt => opt.value === params.value)?.label || '',
+          editable: editMode && !isEditDisabled,
           flex: 2,
           singleClickEdit: true,
         },

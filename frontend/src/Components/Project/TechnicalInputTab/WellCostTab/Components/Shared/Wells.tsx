@@ -40,6 +40,7 @@ const Wells: React.FC<WellsProps> = ({
   const wellsToRowData = (wells: Components.Schemas.WellOverviewDto[]) => {
     if (!wells) return
 
+
     const tableWells: TableWell[] = wells.map((w) => {
       return {
         id: w.id!,
@@ -53,6 +54,7 @@ const Wells: React.FC<WellsProps> = ({
         wells,
       }
     })
+
 
     setRowData(tableWells)
   }
