@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import Grid from "@mui/material/Grid2"
+import { Stack } from "@mui/material"
 import {
     Tooltip,
     Typography,
@@ -11,6 +11,8 @@ import {
     dashboard,
     settings,
     compare,
+    tune,
+    users_circle,
 } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
@@ -23,19 +25,46 @@ import {
 } from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { projectTabNames } from "@/Utils/constants"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
+`
+
+export const ProjectTimeline = styled(Stack)`
+    overflow: auto;
+    &[data-timeline="true"] {
+        overflow-y: auto;
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        scrollbar-width: none;
+        & > * {
+            border-left: 2px solid #DCDCDC;
+
+            &[data-timeline-active="true"]{
+                border-left: 2px solid #007079;
+            }
+        }
+    }
 `
 
 const CenterIcon = styled.div`
     padding-right: 20px;
 `
 
+const icons = [
+    dashboard,
+    compare,
+    tune,
+    users_circle,
+    settings,
+]
+
 const ProjectDetails: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
     const { sidebarOpen, setShowEditHistory, showEditHistory } = useAppContext()
-    const { setActiveTabProject } = useProjectContext()
+    const { setActiveTabProject, activeTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
     const [titleClicks, setTitleClicks] = useState(0)
@@ -57,8 +86,11 @@ const ProjectDetails: React.FC = () => {
 
     return (
         <>
-            <Grid container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
-                <Grid size={12} container>
+            <Stack
+                direction="row"
+                justifyContent={sidebarOpen ? "flex-start" : "center"}
+            >
+                <Stack>
                     <Header>
                         <ProjectTitle
                             variant="overline"
@@ -67,55 +99,23 @@ const ProjectDetails: React.FC = () => {
                             {sidebarOpen ? currentContext?.title : "Project"}
                         </ProjectTitle>
                     </Header>
-                </Grid>
-
-                <Timeline data-timeline={sidebarOpen}>
-                    <Grid>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => handleNavigateToProjectTab(0)}
-                        >
-                            {sidebarOpen
-                                ? "Overview"
-                                : <CenterIcon><Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip></CenterIcon>}
-                        </TimelineElement>
-                    </Grid>
-                    <Grid>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => handleNavigateToProjectTab(1)}
-                        >
-                            {sidebarOpen
-                                ? "Compare Cases"
-                                : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
-                    <Grid>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => handleNavigateToProjectTab(2)}
-                        >
-                            {sidebarOpen
-                                ? "Technical input"
-                                : <Tooltip title="Technical input" placement="right"><Icon data={settings} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
-                    <Grid>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => handleNavigateToProjectTab(5)}
-                        >
-                            {sidebarOpen
-                                ? "Settings"
-                                : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
-                </Timeline>
-            </Grid>
+                    <Timeline data-timeline={sidebarOpen}>
+                        {projectTabNames.map((tab, index) => (
+                            <ProjectTimeline data-timeline-active={index === activeTabProject}>
+                                <TimelineElement
+                                    variant="ghost"
+                                    className="GhostButton"
+                                    onClick={() => handleNavigateToProjectTab(index)}
+                                >
+                                    {sidebarOpen
+                                        ? tab
+                                        : <CenterIcon><Tooltip title={tab} placement="right"><Icon data={icons[index]} /></Tooltip></CenterIcon>}
+                                </TimelineElement>
+                            </ProjectTimeline>
+                        ))}
+                    </Timeline>
+                </Stack>
+            </Stack>
             <StyledDivider />
         </>
     )

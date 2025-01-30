@@ -47,12 +47,13 @@ export const StyledDivider = styled(Divider)`
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
-    width: 95%;
+    width: 100%;
 `
 
 export const TimelineElement = styled(Button)`
     height: 28px;
-    padding: 10px 0px 10px 5px;
+    padding: 5px;
+    max-width: fit-content;
 `
 
 const Sidebar = () => {
