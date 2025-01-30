@@ -1,28 +1,12 @@
-using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 
-public class CalculateNpvService(DcdDbContext context)
+public static class CalculateNpvService
 {
-    public async Task CalculateNpv(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .Include(c => c.Project)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         var cashflowProfile = GetCashflowProfile(caseItem);

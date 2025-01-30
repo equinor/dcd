@@ -1,28 +1,13 @@
 using System.Globalization;
 
-using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.StudyCostProfile;
 
-public class StudyCostProfileService(DcdDbContext context)
+public static class StudyCostProfileService
 {
-    public async Task Generate(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         var sumFacilityCost = SumAllCostFacility(caseItem);

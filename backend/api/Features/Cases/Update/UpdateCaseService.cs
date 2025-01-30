@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Update;
 
-public class UpdateCaseService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateCaseService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
     {
@@ -49,6 +49,6 @@ public class UpdateCaseService(DcdDbContext context, IRecalculationService recal
         existingCase.SharepointFileName = updateCaseDto.SharepointFileName;
         existingCase.SharepointFileUrl = updateCaseDto.SharepointFileUrl;
 
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

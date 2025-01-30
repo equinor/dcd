@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Surfs;
 
-public class UpdateSurfService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateSurfService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateSurf(
         Guid projectId,
@@ -36,7 +36,7 @@ public class UpdateSurfService(DcdDbContext context, IRecalculationService recal
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
     public async Task UpdateSurf(
@@ -67,6 +67,6 @@ public class UpdateSurfService(DcdDbContext context, IRecalculationService recal
         existingSurf.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

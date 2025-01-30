@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.WellProjects;
 
-public class UpdateWellProjectService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateWellProjectService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateWellProject(
         Guid projectId,
@@ -21,6 +21,6 @@ public class UpdateWellProjectService(DcdDbContext context, IRecalculationServic
         existingWellProject.Currency = updatedWellProjectDto.Currency;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

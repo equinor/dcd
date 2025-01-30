@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Substructures;
 
-public class UpdateSubstructureService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateSubstructureService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateSubstructure(
         Guid projectId,
@@ -29,7 +29,7 @@ public class UpdateSubstructureService(DcdDbContext context, IRecalculationServi
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
     public async Task UpdateSubstructure(
@@ -52,6 +52,6 @@ public class UpdateSubstructureService(DcdDbContext context, IRecalculationServi
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
-public class UpdateDrainageStrategyService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateDrainageStrategyService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateDrainageStrategy(
         Guid projectId,
@@ -24,6 +24,6 @@ public class UpdateDrainageStrategyService(DcdDbContext context, IRecalculationS
         existingDrainageStrategy.GasSolution = updatedDrainageStrategyDto.GasSolution;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

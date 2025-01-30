@@ -1,27 +1,11 @@
-using api.Context;
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 
-public class CalculateBreakEvenOilPriceService(DcdDbContext context)
+public static class CalculateBreakEvenOilPriceService
 {
-    public async Task CalculateBreakEvenOilPrice(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .Include(x => x.Project)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         var discountRate = caseItem.Project.DiscountRate;

@@ -1,49 +1,13 @@
-using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 
-public class Co2EmissionsProfileService(DcdDbContext context)
+public static class Co2EmissionsProfileService
 {
-    public async Task Generate(Guid caseId)
-    {
-        var profileTypes = new List<string>
-        {
-            ProfileTypes.Co2Emissions,
-            ProfileTypes.Co2EmissionsOverride,
-            ProfileTypes.ProductionProfileOil,
-            ProfileTypes.AdditionalProductionProfileOil,
-            ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas,
-            ProfileTypes.ProductionProfileWaterInjection
-        };
-
-        var caseItem = await context.Cases
-            .Include(x => x.Project)
-            .Include(x => x.Topside)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .Where(y => profileTypes.Contains(y.ProfileType))
-            .LoadAsync();
-
-        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
-            .Select(x => x.DrillingSchedule)
-            .Where(x => x != null)
-            .Select(x => x!)
-            .ToListAsync();
-
-        RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
-    }
-
     public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)

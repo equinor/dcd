@@ -7,5 +7,4 @@ public class CompletedRecalculation
     public required DateTime StartUtc { get; set; }
     public required DateTime EndUtc { get; set; }
     public required int CalculationLengthInMilliseconds { get; set; }
-    public required string DebugLog { get; set; }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Transports;
 
-public class UpdateTransportService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateTransportService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, UpdateTransportDto updatedTransportDto)
     {
@@ -23,7 +23,7 @@ public class UpdateTransportService(DcdDbContext context, IRecalculationService 
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, ProspUpdateTransportDto updatedTransportDto)
@@ -41,6 +41,6 @@ public class UpdateTransportService(DcdDbContext context, IRecalculationService 
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

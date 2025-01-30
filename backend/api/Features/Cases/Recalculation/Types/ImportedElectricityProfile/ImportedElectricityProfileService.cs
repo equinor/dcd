@@ -1,40 +1,12 @@
-using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
 
-public class ImportedElectricityProfileService(DcdDbContext context)
+public static class ImportedElectricityProfileService
 {
-    public async Task Generate(Guid caseId)
-    {
-        var profileTypes = new List<string>
-        {
-            ProfileTypes.ImportedElectricity,
-            ProfileTypes.ImportedElectricityOverride,
-            ProfileTypes.ProductionProfileOil,
-            ProfileTypes.AdditionalProductionProfileOil,
-            ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas,
-            ProfileTypes.ProductionProfileWaterInjection
-        };
-
-        var caseItem = await context.Cases
-            .Include(x => x.Topside)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .Where(x => profileTypes.Contains(x.ProfileType))
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride)?.Override == true)
