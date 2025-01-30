@@ -5,13 +5,14 @@ import {
     Typography,
     Icon,
 } from "@equinor/eds-core-react"
-import { useParams, useLocation } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     dashboard,
     settings,
     compare,
     tune,
+    users_circle,
 } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
@@ -24,6 +25,7 @@ import {
 } from "../Sidebar"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { projectTabNames } from "@/Utils/constants"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
@@ -51,13 +53,20 @@ const CenterIcon = styled.div`
     padding-right: 20px;
 `
 
+const icons = [
+    dashboard,
+    compare,
+    tune,
+    users_circle,
+    settings,
+]
+
 const ProjectDetails: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
     const { sidebarOpen, setShowEditHistory, showEditHistory } = useAppContext()
-    const { setActiveTabProject } = useProjectContext()
+    const { setActiveTabProject, activeTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
-    const location = useLocation()
     const [titleClicks, setTitleClicks] = useState(0)
 
     const handleTitleClick = () => {
@@ -91,50 +100,19 @@ const ProjectDetails: React.FC = () => {
                         </ProjectTitle>
                     </Header>
                     <Timeline data-timeline={sidebarOpen}>
-                        <ProjectTimeline data-timeline-active={location.pathname.includes("Overview")}>
-                            <TimelineElement
-                                variant="ghost"
-                                className="GhostButton"
-                                onClick={() => handleNavigateToProjectTab(0)}
-                            >
-                                {sidebarOpen
-                                    ? "Overview"
-                                    : <CenterIcon><Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip></CenterIcon>}
-                            </TimelineElement>
-                        </ProjectTimeline>
-                        <ProjectTimeline data-timeline-active={location.pathname.includes("Compare%20cases")}>
-                            <TimelineElement
-                                variant="ghost"
-                                className="GhostButton"
-                                onClick={() => handleNavigateToProjectTab(1)}
-                            >
-                                {sidebarOpen
-                                    ? "Compare Cases"
-                                    : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
-                            </TimelineElement>
-                        </ProjectTimeline>
-                        <ProjectTimeline data-timeline-active={location.pathname.includes("Technical%20Input")}>
-                            <TimelineElement
-                                variant="ghost"
-                                className="GhostButton"
-                                onClick={() => handleNavigateToProjectTab(2)}
-                            >
-                                {sidebarOpen
-                                    ? "Technical input"
-                                    : <Tooltip title="Technical input" placement="right"><Icon data={tune} /></Tooltip>}
-                            </TimelineElement>
-                        </ProjectTimeline>
-                        <ProjectTimeline data-timeline-active={location.pathname.includes("Settings")}>
-                            <TimelineElement
-                                variant="ghost"
-                                className="GhostButton"
-                                onClick={() => handleNavigateToProjectTab(5)}
-                            >
-                                {sidebarOpen
-                                    ? "Settings"
-                                    : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
-                            </TimelineElement>
-                        </ProjectTimeline>
+                        {projectTabNames.map((tab, index) => (
+                            <ProjectTimeline data-timeline-active={index === activeTabProject}>
+                                <TimelineElement
+                                    variant="ghost"
+                                    className="GhostButton"
+                                    onClick={() => handleNavigateToProjectTab(index)}
+                                >
+                                    {sidebarOpen
+                                        ? tab
+                                        : <CenterIcon><Tooltip title={tab} placement="right"><Icon data={icons[index]} /></Tooltip></CenterIcon>}
+                                </TimelineElement>
+                            </ProjectTimeline>
+                        ))}
                     </Timeline>
                 </Stack>
             </Stack>

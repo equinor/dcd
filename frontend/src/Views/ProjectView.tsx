@@ -46,13 +46,10 @@ const ProjectView = () => {
             <div role="tabpanel" hidden={activeTabProject !== 2}>
                 <TechnicalInputTab />
             </div>
-            {/* <div role="tabpanel" hidden={activeTabProject !== 3}>
-                <EditHistoryOverviewTab />
-            </div> */}
-            <div role="tabpanel" hidden={activeTabProject !== 4}>
+            <div role="tabpanel" hidden={activeTabProject !== 3}>
                 <AccessManagementTab />
             </div>
-            <div role="tabpanel" hidden={activeTabProject !== 5}>
+            <div role="tabpanel" hidden={activeTabProject !== 4}>
                 <ProjectSettingsTab />
             </div>
         </Wrapper>
