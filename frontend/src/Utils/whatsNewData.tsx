@@ -121,6 +121,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
             { description: "Minor UI Improvements" },
         ],
         Bugfixes: [
+            { description: "Paste multiple rows in tables" },
             { description: "Major performance improvements" },
             { description: "Minor bugfixes" },
         ],
