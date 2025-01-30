@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
 import Modal from "./Modal"
 import useEditCase from "../../Hooks/useEditCase"

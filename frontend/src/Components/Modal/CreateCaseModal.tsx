@@ -13,8 +13,14 @@ import {
     useEffect,
 } from "react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import Modal from "./Modal"
+import {
+    ModalContent,
+    ModalActions,
+    FormSection,
+    InputGroup
+} from "./styles"
 
 import {
     dateStringToDateUtc,
@@ -27,12 +33,10 @@ import { GetCaseService } from "@/Services/CaseService"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-// import useEditProject from "@annehfroyen/Hooks/useEditProject"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
     const revisionAndProjectData = useDataFetch()
-    // const { addProjectEdit } = useEditProject()
 
     const {
         caseModalIsOpen,
@@ -163,8 +167,8 @@ const CreateCaseModal = () => {
             isOpen={caseModalIsOpen}
             title={caseModalEditMode ? "Edit case" : "Add new case"}
             content={(
-                <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 8 }}>
+                <ModalContent container spacing={2}>
+                    <FormSection size={{ xs: 12, md: 8 }}>
                         <InputWrapper labelProps={{ label: "Name" }}>
                             <TextField
                                 id="name"
@@ -174,8 +178,8 @@ const CreateCaseModal = () => {
                                 value={caseName}
                             />
                         </InputWrapper>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    </FormSection>
+                    <FormSection size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "DG4" }}>
                             <Input
                                 type="month"
@@ -185,21 +189,20 @@ const CreateCaseModal = () => {
                                 onChange={handleDG4Change}
                             />
                         </InputWrapper>
-                    </Grid>
-                    <Grid size={12}>
+                    </FormSection>
+                    <FormSection size={12}>
                         <InputWrapper labelProps={{ label: "Description" }}>
                             <MarkdownEditor
                                 minHeight="100px"
                                 value={description}
                                 menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                                 onInput={(e: any) => {
-                                    // eslint-disable-next-line no-underscore-dangle
                                     setDescription(e.target._value)
                                 }}
                             />
                         </InputWrapper>
-                    </Grid>
-                    <Grid size={12}>
+                    </FormSection>
+                    <FormSection size={12}>
                         <NativeSelect
                             id="productionStrategy"
                             label="Production strategy overview"
@@ -213,8 +216,8 @@ const CreateCaseModal = () => {
                             <option key={3} value={3}>WAG</option>
                             <option key={4} value={4}>Mixed</option>
                         </NativeSelect>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    </FormSection>
+                    <InputGroup size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "Producer wells" }}>
                             <Input
                                 id="producerWells"
@@ -229,43 +232,47 @@ const CreateCaseModal = () => {
                                 }}
                             />
                         </InputWrapper>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    </InputGroup>
+                    <InputGroup size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "Gas injector wells" }}>
                             <Input
                                 id="gasInjector"
                                 type="number"
                                 value={gasInjectorCount}
                                 disabled={false}
-                                onChange={(e: any) => setGasInjectorWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e: any) => {
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGasInjectorWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (!/\d/.test(e.key)) {
                                         e.preventDefault()
                                     }
                                 }}
                             />
                         </InputWrapper>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    </InputGroup>
+                    <InputGroup size={{ xs: 12, md: 4 }}>
                         <InputWrapper labelProps={{ label: "Water injector wells" }}>
                             <Input
                                 id="waterInjector"
                                 type="number"
                                 value={waterInjectorCount}
                                 disabled={false}
-                                onChange={(e: any) => setWaterInjectorWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e: any) => {
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWaterInjectorWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (!/\d/.test(e.key)) {
                                         e.preventDefault()
                                     }
                                 }}
                             />
                         </InputWrapper>
-                    </Grid>
-                </Grid>
+                    </InputGroup>
+                </ModalContent>
             )}
             actions={(
-                <Grid container spacing={2} justifyContent="flex-end" sx={{ padding: "20px" }}>
+                <ModalActions 
+                    container 
+                    spacing={2} 
+                    justifyContent="flex-end" 
+                >
                     <Grid>
                         <Button
                             variant="outlined"
@@ -282,7 +289,7 @@ const CreateCaseModal = () => {
                             {isLoading ? <Progress.Dots /> : caseModalEditMode ? "Save" : "Create case"}
                         </Button>
                     </Grid>
-                </Grid>
+                </ModalActions>
             )}
         />
     )

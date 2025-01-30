@@ -10,7 +10,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch, Tooltip, Typography } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
 import { useProjectContext } from "@/Context/ProjectContext"

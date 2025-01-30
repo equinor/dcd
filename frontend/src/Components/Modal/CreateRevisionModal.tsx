@@ -15,7 +15,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
 import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { useRevisions } from "@/Hooks/useRevision"

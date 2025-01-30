@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { useMediaQuery } from "@mui/material"
 import styled from "styled-components"
 
@@ -10,7 +10,7 @@ import { useProjectChartData } from "@/Hooks/useProjectChartData"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
 import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
-import CompareCasesTable from "../../Tables/ProjectTables/CompareCaesTable"
+import CompareCasesTable from "@/Components/Tables/ProjectTables/CompareCasesTable"
 
 const TabContainer = styled.div<{ $isSmallScreen?: boolean }>`
     display: flex;

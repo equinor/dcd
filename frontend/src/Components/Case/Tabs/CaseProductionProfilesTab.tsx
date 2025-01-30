@@ -19,7 +19,7 @@ import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useCaseContext } from "@/Context/CaseContext"
 import { defaultAxesData } from "@/Utils/common"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
-import { SetTableYearsFromProfiles } from "../../Tables/CaseTables/CaseTabTableHelper"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {

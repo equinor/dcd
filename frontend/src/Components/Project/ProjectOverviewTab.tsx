@@ -3,7 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { ChangeEventHandler, useState } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
@@ -13,10 +13,10 @@ import useEditProject from "@/Hooks/useEditProject"
 import { INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import InputSwitcher from "../Input/Components/InputSwitcher"
-import CasesTable from "../Tables/ProjectTables/OverviewCasesTable/CasesTable"
-import Gallery from "../Gallery/Gallery"
-import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
+import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
+import CasesTable from "@/Components/Tables/ProjectTables/OverviewCasesTable/CasesTable"
+import Gallery from "@/Components/Gallery/Gallery"
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
 const ProjectOverviewTab = () => {
     const { editMode } = useAppContext()

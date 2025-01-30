@@ -6,13 +6,13 @@ import {
 } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import CasesList from "./CasesList"
-import { sharedTimelineStyles } from "../../sharedStyles"
-import { Header } from "../../SidebarWrapper"
+import { sharedTimelineStyles } from "@/Components/Sidebar/sharedStyles"
+import { Header } from "@/Components/Sidebar/SidebarWrapper"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 
 export const CasesTimeline = styled(Grid)`

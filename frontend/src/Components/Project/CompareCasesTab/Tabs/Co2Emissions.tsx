@@ -1,6 +1,6 @@
 import React from "react"
-import { default as Grid } from "@mui/material/Grid2"
-import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
+import Grid from "@mui/material/Grid2"
+import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
 
 interface ProductionProfilesProps {
     totalCo2EmissionsChartData?: object

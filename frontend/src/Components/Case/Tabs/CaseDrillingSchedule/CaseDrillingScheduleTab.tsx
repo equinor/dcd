@@ -4,7 +4,7 @@ import {
     useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 

@@ -1,4 +1,4 @@
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
@@ -10,7 +10,7 @@ import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCas
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppContext } from "@/Context/AppContext"
-import { TimelineElement } from "../../SidebarWrapper"
+import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const SideBarRefCaseWrapper = styled.div`

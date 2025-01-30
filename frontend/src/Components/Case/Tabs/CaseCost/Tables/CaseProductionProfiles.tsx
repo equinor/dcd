@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppContext } from "@/Context/AppContext"
-import CaseTabTable from "../../../../Tables/CaseTables/CaseTabTable"
+import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 

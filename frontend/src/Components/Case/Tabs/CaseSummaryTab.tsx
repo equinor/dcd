@@ -3,8 +3,7 @@ import {
 } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { default as Grid } from "@mui/material/Grid2"
-
+import Grid from "@mui/material/Grid2"
 import {
     ITimeSeries,
     ITimeSeriesDataWithGroup,
@@ -17,8 +16,8 @@ import { useProjectContext } from "@/Context/ProjectContext"
 import { useCaseContext } from "@/Context/CaseContext"
 import { mergeTimeseriesList } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import CaseTabTableWithGrouping from "../../Tables/CaseTables/CaseTabTableWithGrouping"
-import { SetTableYearsFromProfiles } from "../../Tables/CaseTables/CaseTabTableHelper"
+import CaseTabTableWithGrouping from "@/Components/Tables/CaseTables/CaseTabTableWithGrouping"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {

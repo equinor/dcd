@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Tabs, Tab, Box } from "@mui/material"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
 import { useDataFetch } from "@/Hooks/useDataFetch"

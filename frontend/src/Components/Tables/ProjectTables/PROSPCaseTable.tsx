@@ -12,7 +12,7 @@ import {
     RowNode,
 } from "@ag-grid-community/core"
 import { external_link } from "@equinor/eds-icons"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 
 import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import { GetProspService } from "@/Services/ProspService"

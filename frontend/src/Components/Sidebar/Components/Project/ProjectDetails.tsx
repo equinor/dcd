@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import {
     Tooltip,
     Typography,
@@ -20,7 +20,7 @@ import {
     Timeline,
     Header,
     StyledDivider,
-} from "../../SidebarWrapper"
+} from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 

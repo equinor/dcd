@@ -4,7 +4,7 @@ import {
     useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
@@ -256,7 +256,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             <Grid size={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
-            <Grid size={{ xs: 12, lg: 12, xl: 6 }}>
+            <Grid size={{ xs: 12, xl: 6 }}>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
@@ -267,7 +267,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     axesData={chartAxes}
                 />
             </Grid>
-            <Grid size={{ xs: 12, lg: 12, xl: 6 }} container direction="column" spacing={1} justifyContent="center" alignItems="center">
+            <Grid size={{ xs: 12, xl: 6 }} container direction="column" spacing={1} justifyContent="center" alignItems="center">
                 <Grid size={12}>
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>

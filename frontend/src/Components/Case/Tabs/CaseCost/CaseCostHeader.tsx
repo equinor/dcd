@@ -1,4 +1,4 @@
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useDataFetch } from "@/Hooks/useDataFetch"

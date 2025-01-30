@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { PersonSelectEvent } from "@equinor/fusion-react-person"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 

@@ -4,7 +4,7 @@ import {
     useState,
     useMemo,
 } from "react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
@@ -19,8 +19,8 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotalsChart"
-import { SetTableYearsFromProfiles } from "../../../Tables/CaseTables/CaseTabTableHelper"
-import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
+import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {

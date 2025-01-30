@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import Grid from "@mui/material/Grid2"
+import { Icon, Typography } from "@equinor/eds-core-react"
 
 export const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     display: flex;
@@ -44,4 +45,45 @@ export const ClickableHeading = styled(Grid)`
     && {
         margin-top: 100px;
     }
+`
+
+export const ExternalAccessHeader = styled(Grid)`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 80px;
+`
+
+export const AccessGroupContainer = styled(Grid)`
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    && {
+        min-width: 250px;
+        width: 100%;
+    }
+`
+
+export const ExternalLinkIcon = styled(Icon)`
+    color: #007079;
+    font-size: 16px;
+`
+
+export const AccessDescription = styled(Typography)`
+    margin-bottom: 25px;
+`
+
+export const AccessLinkContainer = styled(Typography)`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+`
+
+export const OptionsContainer = styled(Grid)`
+    width: 100%;
+    margin-bottom: 80px;
 `

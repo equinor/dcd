@@ -1,6 +1,6 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
 import { Input, NativeSelect } from "@equinor/eds-core-react"
-import { default as Grid } from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid2"
 
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
