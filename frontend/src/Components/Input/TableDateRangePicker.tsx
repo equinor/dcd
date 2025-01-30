@@ -1,11 +1,20 @@
-import React from "react"
-import Grid from "@mui/material/Grid"
-import { Typography } from "@equinor/eds-core-react"
+import React, { useState, useEffect } from "react"
+import { default as Grid } from "@mui/material/Grid2"
+import { Typography, TextField, Button, Icon } from "@equinor/eds-core-react"
+import { undo } from "@equinor/eds-icons"
+import Slider from "@mui/material/Slider"
 import styled from "styled-components"
-import RangeButton from "../Buttons/RangeButton"
-import CaseNumberInput from "./Components/NumberInputWithValidation"
 
-const Helper = styled.div`
+const StyledContainer = styled(Grid)`
+    width: 100%;
+    margin-top: 48px;
+    margin-right: 32px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+`
+
+const HelperContainer = styled(Grid)`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,6 +22,34 @@ const Helper = styled.div`
     position: relative;
     top: 11px;
     margin-right: 20px;
+`
+
+const RangeContainer = styled.div`
+    width: 380px;
+`
+
+const InputGroup = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 10px;
+`
+
+const YearInput = styled(TextField)`
+    width: 100px;
+    input {
+        text-align: center;
+    }
+`
+
+const YearSeparator = styled(Typography)`
+    color: #6F6F6F;
+`
+
+const ResetButton = styled(Button)`
+    min-width: 40px !important;
+    width: 40px;
+    padding: 0;
 `
 
 interface DateRangePickerProps {
@@ -25,6 +62,9 @@ interface DateRangePickerProps {
     handleTableYearsClick: () => void
 }
 
+const MIN_YEAR = 2010
+const MAX_YEAR = 2100
+
 const DateRangePicker: React.FC<DateRangePickerProps> = ({
     setStartYear,
     setEndYear,
@@ -34,66 +74,169 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     labelValue,
     handleTableYearsClick,
 }) => {
-    const handleStartYearStateChange = (value: number): void => {
-        const newStartYear = value
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
+    const [initialStart] = useState(startYear)
+    const [initialEnd] = useState(endYear)
+    const [localStartYear, setLocalStartYear] = useState(startYear.toString())
+    const [localEndYear, setLocalEndYear] = useState(endYear.toString())
+    const [isResetting, setIsResetting] = useState(false)
+
+    const hasChanges = startYear !== initialStart || endYear !== initialEnd
+
+    useEffect(() => {
+        if (isResetting && startYear === initialStart && endYear === initialEnd) {
+            handleTableYearsClick()
+            setIsResetting(false)
         }
-        setStartYear(newStartYear)
+    }, [startYear, endYear, initialStart, initialEnd, isResetting, handleTableYearsClick])
+
+    const handleReset = () => {
+        setIsResetting(true)
+        setStartYear(initialStart)
+        setEndYear(initialEnd)
+        setLocalStartYear(initialStart.toString())
+        setLocalEndYear(initialEnd.toString())
     }
 
-    const handleEndYearStateChange = (value: number): void => {
-        const newEndYear = value
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
+    useEffect(() => {
+        setLocalStartYear(startYear.toString())
+        setLocalEndYear(endYear.toString())
+    }, [startYear, endYear])
+
+    const handleYearChange = (_event: Event, newValue: number | number[]) => {
+        if (Array.isArray(newValue)) {
+            const [newStart, newEnd] = newValue
+            if (newStart <= newEnd) {
+                setStartYear(newStart)
+                setEndYear(newEnd)
+            }
         }
-        setEndYear(newEndYear)
+    }
+
+    const handleStartYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value
+        setLocalStartYear(inputValue)
+        
+        const value = parseInt(inputValue, 10)
+        if (!isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
+            if (value <= endYear) {
+                setStartYear(value)
+            }
+        }
+    }
+
+    const handleEndYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value
+        setLocalEndYear(inputValue)
+        
+        const value = parseInt(inputValue, 10)
+        if (!isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
+            if (value >= startYear) {
+                setEndYear(value)
+            }
+        }
+    }
+
+    const handleStartYearBlur = () => {
+        const value = parseInt(localStartYear, 10)
+        if (isNaN(value)) {
+            setStartYear(MIN_YEAR)
+            setLocalStartYear(MIN_YEAR.toString())
+        } else if (value > endYear) {
+            setStartYear(endYear)
+            setLocalStartYear(endYear.toString())
+        } else if (value < MIN_YEAR) {
+            setStartYear(MIN_YEAR)
+            setLocalStartYear(MIN_YEAR.toString())
+        } else if (value > MAX_YEAR) {
+            setStartYear(MAX_YEAR)
+            setLocalStartYear(MAX_YEAR.toString())
+        } else {
+            setStartYear(value)
+            setLocalStartYear(value.toString())
+        }
+    }
+
+    const handleEndYearBlur = () => {
+        const value = parseInt(localEndYear, 10)
+        if (isNaN(value)) {
+            setEndYear(MIN_YEAR)
+            setLocalEndYear(MIN_YEAR.toString())
+        } else if (value < startYear) {
+            setEndYear(startYear)
+            setLocalEndYear(startYear.toString())
+        } else if (value < MIN_YEAR) {
+            setEndYear(MIN_YEAR)
+            setLocalEndYear(MIN_YEAR.toString())
+        } else if (value > MAX_YEAR) {
+            setEndYear(MAX_YEAR)
+            setLocalEndYear(MAX_YEAR.toString())
+        } else {
+            setEndYear(value)
+            setLocalEndYear(value.toString())
+        }
     }
 
     return (
-        <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
+        <StyledContainer container spacing={2}>
             {labelText && labelValue && (
-                <Helper>
-                    <>
-                        <Typography variant="meta">
-                            {labelText}
-                        </Typography>
-                        <Typography variant="caption">
-                            {labelValue}
-                        </Typography>
-                    </>
-                </Helper>
+                <HelperContainer>
+                    <Typography variant="meta">
+                        {labelText}
+                    </Typography>
+                    <Typography variant="caption">
+                        {labelValue}
+                    </Typography>
+                </HelperContainer>
             )}
-            <Grid item>
-                <Typography variant="caption">Start year</Typography>
-                <CaseNumberInput
-                    label="Start year"
-                    id="start-year-input"
-                    onSubmit={(value) => handleStartYearStateChange(value)}
-                    defaultValue={startYear}
-                    integer
-                    min={2010}
-                    max={2110}
+            <RangeContainer>
+                <InputGroup>
+                    <YearInput
+                        id="start-year"
+                        type="number"
+                        value={localStartYear}
+                        onChange={handleStartYearInput}
+                        onBlur={handleStartYearBlur}
+                        min={MIN_YEAR}
+                        max={MAX_YEAR}
+                    />
+                    <YearSeparator variant="h6">-</YearSeparator>
+                    <YearInput
+                        id="end-year"
+                        type="number"
+                        value={localEndYear}
+                        onChange={handleEndYearInput}
+                        onBlur={handleEndYearBlur}
+                        min={MIN_YEAR}
+                        max={MAX_YEAR}
+                    />
+                    <ResetButton
+                        variant="outlined"
+                        onClick={handleReset}
+                        disabled={!hasChanges}
+                    >
+                        <Icon data={undo} size={24} />
+                    </ResetButton>
+                    <Button
+                        variant="contained"
+                        onClick={handleTableYearsClick}
+                    >
+                        Apply
+                    </Button>
+                </InputGroup>
+                <Slider
+                    value={[startYear, endYear]}
+                    onChange={handleYearChange}
+                    min={MIN_YEAR}
+                    max={MAX_YEAR}
+                    step={1}
+                    marks={[
+                        { value: MIN_YEAR, label: MIN_YEAR.toString() },
+                        { value: MAX_YEAR, label: MAX_YEAR.toString() },
+                    ]}
+                    valueLabelDisplay="auto"
                 />
-            </Grid>
-            <Grid item>
-                <Typography variant="caption">End year</Typography>
-                <CaseNumberInput
-                    label="End year"
-                    id="end-year-input"
-                    onSubmit={(value) => handleEndYearStateChange(value)}
-                    defaultValue={endYear}
-                    integer
-                    min={2010}
-                    max={2110}
-                />
-            </Grid>
-            <Grid item>
-                <RangeButton onClick={handleTableYearsClick} />
-            </Grid>
-        </Grid>
+            </RangeContainer>
+        </StyledContainer>
     )
 }
 
