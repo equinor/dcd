@@ -6,8 +6,8 @@ import { useParams } from "react-router-dom"
 import { useCaseContext } from "@/Context/CaseContext"
 import { useAppContext } from "@/Context/AppContext"
 import HistoryButton from "@/Components/Buttons/HistoryButton"
-import CaseEditHistory from "@/Components/Case/Components/CaseEditHistory"
-import { Header, StyledDivider } from "../Sidebar"
+import CaseEditHistory from "@/Components/Sidebar/Components/EditHistory/CaseEditHistory"
+import { Header, StyledDivider } from "@/Components/Sidebar/SidebarWrapper"
 
 const Container = styled.div<{ $sidebarOpen: boolean }>`
     display: flex;

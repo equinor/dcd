@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Grid } from "@mui/material"
+import Grid from "@mui/material/Grid2"
 import {
     Tooltip,
     Typography,
@@ -20,7 +20,7 @@ import {
     Timeline,
     Header,
     StyledDivider,
-} from "../Sidebar"
+} from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
@@ -57,8 +57,8 @@ const ProjectDetails: React.FC = () => {
 
     return (
         <>
-            <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
-                <Grid item xs={12} container>
+            <Grid container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
+                <Grid size={12} container>
                     <Header>
                         <ProjectTitle
                             variant="overline"
@@ -70,7 +70,7 @@ const ProjectDetails: React.FC = () => {
                 </Grid>
 
                 <Timeline data-timeline={sidebarOpen}>
-                    <Grid item>
+                    <Grid>
                         <TimelineElement
                             variant="ghost"
                             className="GhostButton"
@@ -81,7 +81,7 @@ const ProjectDetails: React.FC = () => {
                                 : <CenterIcon><Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip></CenterIcon>}
                         </TimelineElement>
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         <TimelineElement
                             variant="ghost"
                             className="GhostButton"
@@ -92,7 +92,7 @@ const ProjectDetails: React.FC = () => {
                                 : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
                         </TimelineElement>
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         <TimelineElement
                             variant="ghost"
                             className="GhostButton"
@@ -103,7 +103,7 @@ const ProjectDetails: React.FC = () => {
                                 : <Tooltip title="Technical input" placement="right"><Icon data={settings} /></Tooltip>}
                         </TimelineElement>
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         <TimelineElement
                             variant="ghost"
                             className="GhostButton"

@@ -8,7 +8,7 @@ import { NoAccessReason } from "@/Models/Interfaces"
 
 const Container = styled.div`
   max-width: 800px;
-  margin: 0 auto;
+  margin: 90px auto 0 auto;
   padding: 20px;
 `
 
@@ -17,6 +17,10 @@ const Header = styled(Box)`
   align-items: center;
   gap: 18px;
   padding: 24px 0 16px 0;
+`
+
+const InfoContainer = styled(Box)`
+    margin-top: -20px;
 `
 
 interface Props {
@@ -50,7 +54,10 @@ const NoAccessErrorView: React.FC<Props> = ({ projectClassification }) => {
             <Typography>
                 {message}
             </Typography>
-            <ExternalAccessInfo />
+            <InfoContainer>
+                <ExternalAccessInfo />
+            </InfoContainer>
+            
         </Container>
     )
 }
