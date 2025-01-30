@@ -1,6 +1,6 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
 import { Input, NativeSelect } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
@@ -85,7 +85,7 @@ const ProjectSettingsTab = () => {
 
     return (
         <Grid container direction="column" spacing={2}>
-            <Grid item>
+            <Grid size={12}>
                 <InputSwitcher
                     value={getPhysicalUnit()}
                     label="Physical unit"
@@ -101,7 +101,7 @@ const ProjectSettingsTab = () => {
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
-            <Grid item>
+            <Grid size={12}>
                 <InputSwitcher
                     value={getCurrency()}
                     label="Currency"
@@ -117,7 +117,7 @@ const ProjectSettingsTab = () => {
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
-            <Grid item>
+            <Grid size={12}>
                 {dummyRole === 0 && (
                     <InputSwitcher
                         value={PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].label}
@@ -136,7 +136,7 @@ const ProjectSettingsTab = () => {
                     </InputSwitcher>
                 )}
             </Grid>
-            <Grid item>
+            <Grid size={12}>
                 <InputSwitcher
                     value={String(oilPriceUSD)}
                     label="Oil Price (USD)"
@@ -150,7 +150,7 @@ const ProjectSettingsTab = () => {
                     />
                 </InputSwitcher>
             </Grid>
-            <Grid item>
+            <Grid size={12}>
                 <InputSwitcher
                     value={String(gasPriceNOK)}
                     label="Gas Price (NOK)"
@@ -164,7 +164,7 @@ const ProjectSettingsTab = () => {
                     />
                 </InputSwitcher>
             </Grid>
-            <Grid item>
+            <Grid size={12}>
                 <InputSwitcher
                     value={String(discountRate)}
                     label="Discount Rate (%)"

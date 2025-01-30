@@ -14,13 +14,16 @@ public class CalculateNpvService(DcdDbContext context)
     {
         var caseItem = await context.Cases
             .Include(c => c.Project)
-            .Include(c => c.TimeSeriesProfiles)
             .SingleAsync(x => x.Id == caseId);
 
-        CalculateNpv(caseItem);
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
+
+        RunCalculation(caseItem);
     }
 
-    public static void CalculateNpv(Case caseItem)
+    public static void RunCalculation(Case caseItem)
     {
         var cashflowProfile = GetCashflowProfile(caseItem);
 

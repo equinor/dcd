@@ -20,7 +20,7 @@ import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import useEditProject from "@/Hooks/useEditProject"
-import Modal from "../../../Modal/Modal"
+import Modal from "@/Components/Modal/Modal"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
 interface CasesDropMenuProps {

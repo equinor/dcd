@@ -1,5 +1,5 @@
 import { Typography } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
@@ -73,7 +73,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
                     addEdit={addEdit}
                     resourceName="substructure"
@@ -86,7 +86,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                 />
             </Grid>
             {substructureData.concept === 1 && (
-                <Grid item xs={12} md={4}>
+                <Grid size={{ xs: 12, md: 4 }}>
                     <SwitchableStringInput
                         addEdit={addEdit}
                         label="Host"
@@ -97,8 +97,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     />
                 </Grid>
             )}
-            <Grid item xs={12} md={4}>
-
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -110,9 +109,8 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     integer={false}
                     unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
-
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourcePropertyKey="cessationCost"
@@ -125,10 +123,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography variant="h4">Topside</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -143,7 +141,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -158,7 +156,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={100}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -173,8 +171,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
-
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -189,7 +186,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -204,7 +201,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -217,10 +214,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     unit="MSm³/sd"
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography variant="h4">Platform wells</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -234,7 +231,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -248,7 +245,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -262,10 +259,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography variant="h4">SURF</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -279,7 +276,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -293,7 +290,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -308,7 +305,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -323,7 +320,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -335,10 +332,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Production flowline"
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography variant="h4">Subsea wells</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -350,7 +347,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     integer
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -364,7 +361,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="surf"
@@ -378,10 +375,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography variant="h4">Transport</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="transport"
@@ -396,7 +393,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="transport"
@@ -411,10 +408,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography variant="h4">Substructure</Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="substructure"

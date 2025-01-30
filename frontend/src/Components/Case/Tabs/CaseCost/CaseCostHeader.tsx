@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useDataFetch } from "@/Hooks/useDataFetch"
@@ -48,19 +48,19 @@ const Header: React.FC<HeaderProps> = ({
 
     return (
         <>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <CapexFactorFeasibilityStudies
                     caseData={caseData}
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <CapexFactorFeedStudies
                     caseData={caseData}
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <Maturity
                     surfData={surfData}
                     projectId={revisionAndProjectData.projectId}
