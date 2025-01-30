@@ -118,11 +118,12 @@ export const whatsNewUpdates: WhatsNewUpdates = {
             { description: "Calculate net present value" },
         ],
         "UI Improvements": [
+            { description: "Added a new homepage, for when a project is not selected" },
             { description: "Minor UI Improvements" },
         ],
         Bugfixes: [
             { description: "Paste multiple rows in tables" },
-            { description: "Major performance improvements" },
+            { description: "Major performance improvements for table input, autosave and some endpoints" },
             { description: "Minor bugfixes" },
         ],
     },
