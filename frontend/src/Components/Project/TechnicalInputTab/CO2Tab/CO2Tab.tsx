@@ -10,7 +10,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch, Tooltip, Typography } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -259,7 +259,7 @@ const CO2Tab = () => {
                     />
                 </Tooltip>
             </StyledContainer>
-            <Grid item xs={12} className={styles.root}>
+            <Grid size={12} className={styles.root}>
                 <div
                     style={{
                         display: "flex", flexDirection: "column", width: "100%",

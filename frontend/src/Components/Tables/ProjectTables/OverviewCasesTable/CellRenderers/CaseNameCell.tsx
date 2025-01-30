@@ -1,6 +1,6 @@
 import { Button, Tooltip } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { ReferenceCaseIcon } from "../../Components/ReferenceCaseIcon"
+import { ReferenceCaseIcon } from "./ReferenceCaseIcon"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppContext } from "@/Context/AppContext"
 

@@ -8,16 +8,16 @@ namespace api.Features.Cases.Recalculation;
 
 public class RecalculationDeterminerService(DcdDbContext context)
 {
-    public (List<Well> wells, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
+    public bool CalculateExplorationAndWellProjectCost()
     {
         var modifiedWellsWithCostChange = context.ChangeTracker.Entries<Well>()
-            .Where(e => (e.State == EntityState.Modified)
+            .Where(e => e.State == EntityState.Modified
                         && (e.Property(nameof(Well.WellCost)).IsModified || e.Property(nameof(Well.WellCategory)).IsModified));
 
         var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity).ToList();
 
         var modifiedDrillingSchedules = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Where(e => (e.State == EntityState.Modified)
+            .Where(e => e.State == EntityState.Modified
                         && (e.Property(nameof(DrillingSchedule.InternalData)).IsModified
                             || e.Property(nameof(DrillingSchedule.StartYear)).IsModified));
 
@@ -27,7 +27,7 @@ public class RecalculationDeterminerService(DcdDbContext context)
         var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id)
             .Union(addedDrillingSchedules.Select(e => e.Entity.Id)).ToList();
 
-        return (modifiedWellIds, modifiedDrillingScheduleIds);
+        return modifiedWellIds.Any() || modifiedDrillingScheduleIds.Any();
     }
 
     public bool CalculateCo2Emissions()
@@ -36,95 +36,28 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(Case.FacilitiesAvailability)).IsModified);
 
-        var topsideChanges = context.ChangeTracker.Entries<Topside>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(Topside.FuelConsumption)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareOilProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxOilProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareGasProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxGasProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareWaterInjectionProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxWaterInjectionProfile)).IsModified ||
-                       e.Property(nameof(Topside.OilCapacity)).IsModified ||
-                       e.Property(nameof(Topside.GasCapacity)).IsModified ||
-                       e.Property(nameof(Topside.WaterInjectionCapacity)).IsModified));
+        var topsideChanges = TopsideIsChanged();
 
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Added);
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var additionalProductionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileGas);
+        var productionProfileWaterInjection = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileWaterInjection);
 
         var wellChanges = context.ChangeTracker.Entries<Well>()
             .Any(e => e.State == EntityState.Modified);
 
-        var drillingScheduleChanges = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(DrillingSchedule.InternalData)).IsModified ||
-                       e.Property(nameof(DrillingSchedule.StartYear)).IsModified));
-
-        var drillingScheduleAdded = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Added);
+        var drillingSchedule = DrillingScheduleIsChangedOrAdded();
 
         return caseItemChanges
                || topsideChanges
-               || productionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilChanges
-               || additionalProductionProfileOilAdded
-               || productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
-               || productionProfileWaterInjectionChanges
-               || productionProfileWaterInjectionAdded
+               || productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || additionalProductionProfileGas
+               || productionProfileWaterInjection
                || wellChanges
-               || drillingScheduleChanges
-               || drillingScheduleAdded;
+               || drillingSchedule;
     }
 
     public bool CalculateCo2Intensity()
@@ -138,114 +71,38 @@ public class RecalculationDeterminerService(DcdDbContext context)
 
     public bool CalculateOpex()
     {
-        var historicCostChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
-
-        var historicCostAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
-        var onshoreOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
-
-        var onshoreOpexAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalOPEXCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
-
-        var additionalOpexAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalOPEXCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
         var developmentOperationalWellCostsChanges = context.ChangeTracker.Entries<DevelopmentOperationalWellCosts>()
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell)).IsModified);
 
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified));
-
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
         var wellsChanges = context.ChangeTracker.Entries<Well>()
             .Any(e => e.State == EntityState.Modified);
 
-        var drillingScheduleChanges = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(DrillingSchedule.InternalData)).IsModified ||
-                       e.Property(nameof(DrillingSchedule.StartYear)).IsModified));
-
-        var drillingScheduleAdded = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Added);
+        var drillingSchedule = DrillingScheduleIsChangedOrAdded();
 
         var topsideOpexChanges = context.ChangeTracker.Entries<Topside>()
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(Topside.FacilityOpex)).IsModified);
 
-        return historicCostChanges
-               || historicCostAdded
-               || onshoreOpexChanges
-               || onshoreOpexAdded
-               || additionalOpexChanges
-               || additionalOpexAdded
-               || developmentOperationalWellCostsChanges
-               || productionProfileOilChanges
-               || additionalProductionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilAdded
-               || productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
+        var historicCostChanges = ProfileIsChangedOrAdded(ProfileTypes.HistoricCostCostProfile);
+        var onshoreRelatedOpexCostProfile = ProfileIsChangedOrAdded(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        var additionalOpexCostProfile = ProfileIsChangedOrAdded(ProfileTypes.AdditionalOPEXCostProfile);
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var additionalProductionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileGas);
+
+        return developmentOperationalWellCostsChanges
                || wellsChanges
-               || drillingScheduleChanges
-               || drillingScheduleAdded
-               || topsideOpexChanges;
+               || drillingSchedule
+               || topsideOpexChanges
+               || historicCostChanges
+               || onshoreRelatedOpexCostProfile
+               || additionalOpexCostProfile
+               || productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || additionalProductionProfileGas;
     }
 
     public bool CalculateNetSalesGas()
@@ -258,87 +115,25 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(Case.FacilitiesAvailability)).IsModified);
 
-        var topsideChanges = context.ChangeTracker.Entries<Topside>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(Topside.FuelConsumption)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareOilProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxOilProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareGasProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxGasProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareWaterInjectionProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxWaterInjectionProfile)).IsModified ||
-                       e.Property(nameof(Topside.OilCapacity)).IsModified ||
-                       e.Property(nameof(Topside.GasCapacity)).IsModified ||
-                       e.Property(nameof(Topside.WaterInjectionCapacity)).IsModified));
-
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Added);
+        var topsideChanges = TopsideIsChanged();
 
         var drainageStrategyChanges = context.ChangeTracker.Entries<DrainageStrategy>()
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(DrainageStrategy.GasSolution)).IsModified);
 
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var productionProfileWaterInjection = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileWaterInjection);
+
         return projectChanges
                || caseItemChanges
                || topsideChanges
-               || productionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilChanges
-               || additionalProductionProfileOilAdded
-               || productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
-               || productionProfileWaterInjectionChanges
-               || productionProfileWaterInjectionAdded
-               || drainageStrategyChanges;
+               || drainageStrategyChanges
+               || productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || productionProfileWaterInjection;
     }
 
     public bool CalculateImportedElectricity()
@@ -347,80 +142,21 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(Case.FacilitiesAvailability)).IsModified);
 
-        var topsideChanges = context.ChangeTracker.Entries<Topside>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(Topside.CO2ShareOilProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxOilProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareGasProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxGasProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2ShareWaterInjectionProfile)).IsModified ||
-                       e.Property(nameof(Topside.CO2OnMaxWaterInjectionProfile)).IsModified ||
-                       e.Property(nameof(Topside.OilCapacity)).IsModified ||
-                       e.Property(nameof(Topside.GasCapacity)).IsModified ||
-                       e.Property(nameof(Topside.WaterInjectionCapacity)).IsModified));
+        var topsideChanges = TopsideIsChanged();
 
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Added);
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var additionalProductionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileGas);
+        var productionProfileWaterInjection = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileWaterInjection);
 
         return facilitiesAvailabilityChanges
                || topsideChanges
-               || productionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilChanges
-               || additionalProductionProfileOilAdded
-               || productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
-               || productionProfileWaterInjectionChanges
-               || productionProfileWaterInjectionAdded;
+               || productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || additionalProductionProfileGas
+               || productionProfileWaterInjection;
     }
 
     public bool CalculateGAndGAdminCost()
@@ -437,15 +173,9 @@ public class RecalculationDeterminerService(DcdDbContext context)
         var wellsChanges = context.ChangeTracker.Entries<Well>()
             .Any(e => e.State == EntityState.Modified);
 
-        var drillingScheduleChanges = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(DrillingSchedule.InternalData)).IsModified
-                      || e.Property(nameof(DrillingSchedule.StartYear)).IsModified);
+        var drillingSchedule = DrillingScheduleIsChangedOrAdded();
 
-        var drillingScheduleAdded = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Added);
-
-        return projectChanges || caseChanges || wellsChanges || drillingScheduleChanges || drillingScheduleAdded;
+        return projectChanges || caseChanges || wellsChanges || drillingSchedule;
     }
 
     public bool CalculateFuelFlaringAndLosses()
@@ -458,196 +188,52 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(Project.FlaredGasPerProducedVolume)).IsModified);
 
-        var topsideChanges = context.ChangeTracker.Entries<Topside>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(Topside.FuelConsumption)).IsModified ||
-                          e.Property(nameof(Topside.CO2ShareOilProfile)).IsModified ||
-                          e.Property(nameof(Topside.CO2OnMaxOilProfile)).IsModified ||
-                          e.Property(nameof(Topside.CO2ShareGasProfile)).IsModified ||
-                          e.Property(nameof(Topside.CO2OnMaxGasProfile)).IsModified ||
-                          e.Property(nameof(Topside.CO2ShareWaterInjectionProfile)).IsModified ||
-                          e.Property(nameof(Topside.CO2OnMaxWaterInjectionProfile)).IsModified ||
-                          e.Property(nameof(Topside.OilCapacity)).IsModified ||
-                          e.Property(nameof(Topside.GasCapacity)).IsModified ||
-                          e.Property(nameof(Topside.WaterInjectionCapacity)).IsModified
-                      ));
+        var topsideChanges = TopsideIsChanged();
 
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                          e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      ));
-
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                          e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      ));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileWaterInjectionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                          e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      ));
-
-        var productionProfileWaterInjectionAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileWaterInjection)
-            .Any(e => e.State == EntityState.Added);
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var additionalProductionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileGas);
+        var productionProfileWaterInjection = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileWaterInjection);
 
         return caseChanges
                || projectChanges
                || topsideChanges
-               || productionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilChanges
-               || additionalProductionProfileOilAdded
-               || productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
-               || productionProfileWaterInjectionChanges
-               || productionProfileWaterInjectionAdded;
+               || productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || additionalProductionProfileGas
+               || productionProfileWaterInjection;
     }
 
     public bool CalculateCessationCostProfile()
     {
-        var caseCessationWellsCostOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationWellsCostOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                      ));
-
-        var cessationWellsCostAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationWellsCostOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var caseCessationOffshoreFacilitiesCostOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCostOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                      ));
-
-        var cessationOffshoreFacilitiesCostAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCostOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      ));
-
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
         var surfChanges = context.ChangeTracker.Entries<Surf>()
             .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(Surf.CessationCost)).IsModified
-                      ));
+                      e.Property(nameof(Surf.CessationCost)).IsModified);
 
         var developmentOperationalWellCostsChanges = context.ChangeTracker.Entries<DevelopmentOperationalWellCosts>()
             .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(DevelopmentOperationalWellCosts.PluggingAndAbandonment)).IsModified
-                      ));
-        var drillingScheduleChanges = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(DrillingSchedule.InternalData)).IsModified
-                      ));
+                      e.Property(nameof(DevelopmentOperationalWellCosts.PluggingAndAbandonment)).IsModified);
 
-        var drillingScheduleAdded = context.ChangeTracker.Entries<DrillingSchedule>()
-            .Any(e => e.State == EntityState.Added);
+        var drillingSchedule = DrillingScheduleIsChangedOrAdded();
 
-        return caseCessationWellsCostOverrideChanges
-               || cessationWellsCostAdded
-               || caseCessationOffshoreFacilitiesCostOverrideChanges
-               || cessationOffshoreFacilitiesCostAdded
-               || productionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilChanges
-               || additionalProductionProfileOilAdded
-               || productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
-               || surfChanges
+        var cessationWellsCostOverride = ProfileIsChangedOrAdded(ProfileTypes.CessationWellsCostOverride);
+        var cessationOffshoreFacilitiesCostOverride = ProfileIsChangedOrAdded(ProfileTypes.CessationOffshoreFacilitiesCostOverride);
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var additionalProductionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileGas);
+
+        return surfChanges
                || developmentOperationalWellCostsChanges
-               || drillingScheduleChanges
-               || drillingScheduleAdded;
+               || drillingSchedule
+               || cessationWellsCostOverride
+               || cessationOffshoreFacilitiesCostOverride
+               || productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || additionalProductionProfileGas;
     }
 
     public bool CalculateStudyCost()
@@ -664,461 +250,133 @@ public class RecalculationDeterminerService(DcdDbContext context)
                           || e.Property(nameof(Case.DG4Date)).IsModified
                       ));
 
-        var substructureChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SubstructureCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var substructureCostProfileAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SubstructureCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var surfChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var surfCostProfileAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var topsideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TopsideCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var topsideCostProfileAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TopsideCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var transportChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var transportCostProfileAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var onshorePowerSupplyChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshorePowerSupplyCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var onshorePowerSupplyAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshorePowerSupplyCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectOilProducerChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectOilProducerAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectOilProducerOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectOilProducerOverrideAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectGasProducerChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasProducerCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectGasProducerAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasProducerCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectGasProducerOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasProducerCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectGasProducerOverrideAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasProducerCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectWaterInjectorChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WaterInjectorCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectWaterInjectorAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WaterInjectorCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectWaterInjectorOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WaterInjectorCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectWaterInjectorOverrideAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WaterInjectorCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectGasInjectorChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasInjectorCostProfile)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectGasInjectorAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasInjectorCostProfile)
-            .Any(e => e.State == EntityState.Added);
-
-        var wellProjectGasInjectorOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasInjectorCostProfileOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var wellProjectGasInjectorOverrideAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasInjectorCostProfileOverride)
-            .Any(e => e.State == EntityState.Added);
+        var substructureCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.SubstructureCostProfileOverride);
+        var surfCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.SurfCostProfileOverride);
+        var topsideCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.TopsideCostProfileOverride);
+        var transportCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.TransportCostProfileOverride);
+        var onshorePowerSupplyCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
+        var oilProducerCostProfile = ProfileIsChangedOrAdded(ProfileTypes.OilProducerCostProfile);
+        var oilProducerCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.OilProducerCostProfileOverride);
+        var gasProducerCostProfile = ProfileIsChangedOrAdded(ProfileTypes.GasProducerCostProfile);
+        var gasProducerCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.GasProducerCostProfileOverride);
+        var waterInjectorCostProfile = ProfileIsChangedOrAdded(ProfileTypes.WaterInjectorCostProfile);
+        var waterInjectorCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.WaterInjectorCostProfileOverride);
+        var gasInjectorCostProfile = ProfileIsChangedOrAdded(ProfileTypes.GasInjectorCostProfile);
+        var gasInjectorCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.GasInjectorCostProfileOverride);
 
         return caseChanges
-               || substructureChanges
-               || substructureCostProfileAdded
-               || surfChanges
-               || surfCostProfileAdded
-               || topsideChanges
-               || topsideCostProfileAdded
-               || transportChanges
-               || transportCostProfileAdded
-               || onshorePowerSupplyChanges
-               || onshorePowerSupplyAdded
-               || wellProjectOilProducerChanges
-               || wellProjectOilProducerAdded
-               || wellProjectOilProducerOverrideChanges
-               || wellProjectOilProducerOverrideAdded
-               || wellProjectGasProducerChanges
-               || wellProjectGasProducerAdded
-               || wellProjectGasProducerOverrideChanges
-               || wellProjectGasProducerOverrideAdded
-               || wellProjectWaterInjectorChanges
-               || wellProjectWaterInjectorAdded
-               || wellProjectWaterInjectorOverrideChanges
-               || wellProjectWaterInjectorOverrideAdded
-               || wellProjectGasInjectorChanges
-               || wellProjectGasInjectorAdded
-               || wellProjectGasInjectorOverrideChanges
-               || wellProjectGasInjectorOverrideAdded;
+               || substructureCostProfileOverride
+               || surfCostProfileOverride
+               || topsideCostProfileOverride
+               || transportCostProfileOverride
+               || onshorePowerSupplyCostProfileOverride
+               || oilProducerCostProfile
+               || oilProducerCostProfileOverride
+               || gasProducerCostProfile
+               || gasProducerCostProfileOverride
+               || waterInjectorCostProfile
+               || waterInjectorCostProfileOverride
+               || gasInjectorCostProfile
+               || gasInjectorCostProfileOverride;
     }
 
     public bool CalculateTotalIncome()
     {
-        var productionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                          e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      ));
+        var productionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileOil);
+        var additionalProductionProfileOil = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileOil);
+        var productionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.ProductionProfileGas);
+        var additionalProductionProfileGas = ProfileIsChangedOrAdded(ProfileTypes.AdditionalProductionProfileGas);
 
-        var productionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileOilChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileOilAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileOil)
-            .Any(e => e.State == EntityState.Added);
-
-        var productionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                          e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
-                      ));
-
-        var productionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        var additionalProductionProfileGasChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Modified &&
-                      (e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified ||
-                       e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified));
-
-        var additionalProductionProfileGasAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalProductionProfileGas)
-            .Any(e => e.State == EntityState.Added);
-
-        return productionProfileGasChanges
-               || productionProfileGasAdded
-               || additionalProductionProfileGasChanges
-               || additionalProductionProfileGasAdded
-               || productionProfileOilChanges
-               || productionProfileOilAdded
-               || additionalProductionProfileOilChanges
-               || additionalProductionProfileOilAdded;
+        return productionProfileOil
+               || additionalProductionProfileOil
+               || productionProfileGas
+               || additionalProductionProfileGas;
     }
 
     public bool CalculateTotalCost()
     {
-
-        var totalFeasibilityAdded = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFeasibilityAndConceptStudies)
-            .Any(e => e.State == EntityState.Added);
-
-        var totalFeasibilityOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)
-            .Any(e => e.State == EntityState.Modified &&
-                      (
-                          e.Property(nameof(TimeSeriesProfile.Override)).IsModified
-                          || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified
-                      ));
-
-        var totalFeedChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFEEDStudies)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var totalFeedOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalFEEDStudiesOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var totalOtherStudiesChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TotalOtherStudiesCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var historicCostChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.HistoricCostCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var wellInterventionChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WellInterventionCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var wellInterventionOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WellInterventionCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var offshoreFacilitiesOperationsChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OffshoreFacilitiesOperationsCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var offshoreFacilitiesOperationsOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OffshoreFacilitiesOperationsCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var onshoreRelatedOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshoreRelatedOPEXCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var additionalOpexChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AdditionalOPEXCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var cessationWellsChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationWellsCost)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var cessationWellsOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationWellsCostOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var cessationOffshoreFacilitiesChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCost)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var cessationOffshoreFacilitiesOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOffshoreFacilitiesCost)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var cessationOnshoreFacilitiesChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CessationOnshoreFacilitiesCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var surfChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var surfOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SurfCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var substructureChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SubstructureCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var substructureOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SubstructureCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var topsideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TopsideCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var topsideOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TopsideCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var transportChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var transportOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.TransportCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var onshorePowerSupplyChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshorePowerSupplyCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var onshorePowerSupplyOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OnshorePowerSupplyCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var oilProducerChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var oilProducerOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.OilProducerCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var gasProducerChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasProducerCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var gasProducerOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasProducerCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var waterInjectorChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WaterInjectorCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var waterInjectorOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.WaterInjectorCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var gasInjectorChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasInjectorCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var gasInjectorOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GasInjectorCostProfileOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var gAndGAdminChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GAndGAdminCostOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var gAndGAdminOverrideChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.GAndGAdminCostOverride)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var seismicChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SeismicAcquisitionAndProcessing)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var countryOfficeChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.CountryOfficeCost)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var explorationWellChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.ExplorationWellCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var appraisalWellChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.AppraisalWellCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
-
-        var sidetrackChanges = context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == ProfileTypes.SidetrackCostProfile)
-            .Any(e => e.State is EntityState.Modified or EntityState.Added);
+        var totalFeasibilityAndConceptStudies = ProfileIsAdded(ProfileTypes.TotalFeasibilityAndConceptStudies);
+        var totalFeedStudies = ProfileIsAdded(ProfileTypes.TotalFEEDStudies);
+        var totalFeedStudiesOverride = ProfileIsAdded(ProfileTypes.TotalFEEDStudiesOverride);
+        var totalOtherStudiesCostProfile = ProfileIsAdded(ProfileTypes.TotalOtherStudiesCostProfile);
+        var historicCostCostProfile = ProfileIsAdded(ProfileTypes.HistoricCostCostProfile);
+        var wellInterventionCostProfile = ProfileIsAdded(ProfileTypes.WellInterventionCostProfile);
+        var wellInterventionCostProfileOverride = ProfileIsAdded(ProfileTypes.WellInterventionCostProfileOverride);
+        var offshoreFacilitiesOperationsCostProfile = ProfileIsAdded(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
+        var onshoreRelatedOpexCostProfile = ProfileIsAdded(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        var additionalOpexCostProfile = ProfileIsAdded(ProfileTypes.AdditionalOPEXCostProfile);
+        var cessationWellsCost = ProfileIsAdded(ProfileTypes.CessationWellsCost);
+        var cessationWellsCostOverride = ProfileIsAdded(ProfileTypes.CessationWellsCostOverride);
+        var cessationOffshoreFacilitiesCost = ProfileIsAdded(ProfileTypes.CessationOffshoreFacilitiesCost);
+        var cessationOffshoreFacilitiesCostOverride = ProfileIsAdded(ProfileTypes.CessationOffshoreFacilitiesCostOverride);
+        var cessationOnshoreFacilitiesCostProfile = ProfileIsAdded(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
+        var surfCostProfile = ProfileIsAdded(ProfileTypes.SurfCostProfile);
+        var surfCostProfileOverride = ProfileIsAdded(ProfileTypes.SurfCostProfileOverride);
+        var substructureCostProfile = ProfileIsAdded(ProfileTypes.SubstructureCostProfile);
+        var substructureCostProfileOverride = ProfileIsAdded(ProfileTypes.SubstructureCostProfileOverride);
+        var topsideCostProfile = ProfileIsAdded(ProfileTypes.TopsideCostProfile);
+        var topsideCostProfileOverride = ProfileIsAdded(ProfileTypes.TopsideCostProfileOverride);
+        var transportCostProfile = ProfileIsAdded(ProfileTypes.TransportCostProfile);
+        var transportCostProfileOverride = ProfileIsAdded(ProfileTypes.TransportCostProfileOverride);
+        var onshorePowerSupplyCostProfile = ProfileIsAdded(ProfileTypes.OnshorePowerSupplyCostProfile);
+        var onshorePowerSupplyCostProfileOverride = ProfileIsAdded(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
+        var oilProducerCostProfile = ProfileIsAdded(ProfileTypes.OilProducerCostProfile);
+        var oilProducerCostProfileOverride = ProfileIsAdded(ProfileTypes.OilProducerCostProfileOverride);
+        var gasProducerCostProfile = ProfileIsAdded(ProfileTypes.GasProducerCostProfile);
+        var gasProducerCostProfileOverride = ProfileIsAdded(ProfileTypes.GasProducerCostProfileOverride);
+        var waterInjectorCostProfile = ProfileIsAdded(ProfileTypes.WaterInjectorCostProfile);
+        var waterInjectorCostProfileOverride = ProfileIsAdded(ProfileTypes.WaterInjectorCostProfileOverride);
+        var gasInjectorCostProfile = ProfileIsAdded(ProfileTypes.GasInjectorCostProfile);
+        var gasInjectorCostProfileOverride = ProfileIsAdded(ProfileTypes.GasInjectorCostProfileOverride);
+        var gAndGAdminCost = ProfileIsAdded(ProfileTypes.GAndGAdminCost);
+        var gAndGAdminCostOverride = ProfileIsAdded(ProfileTypes.GAndGAdminCostOverride);
+        var seismicAcquisitionAndProcessing = ProfileIsAdded(ProfileTypes.SeismicAcquisitionAndProcessing);
+        var countryOfficeCost = ProfileIsAdded(ProfileTypes.CountryOfficeCost);
+        var explorationWellCostProfile = ProfileIsAdded(ProfileTypes.ExplorationWellCostProfile);
+        var appraisalWellCostProfile = ProfileIsAdded(ProfileTypes.AppraisalWellCostProfile);
+        var sidetrackCostProfile = ProfileIsAdded(ProfileTypes.SidetrackCostProfile);
 
         return
-            totalFeasibilityAdded
-            || totalFeasibilityOverrideChanges
-            || totalFeedChanges
-            || totalFeedOverrideChanges
-            || totalOtherStudiesChanges
-            || historicCostChanges
-            || wellInterventionChanges
-            || wellInterventionOverrideChanges
-            || offshoreFacilitiesOperationsChanges
-            || offshoreFacilitiesOperationsOverrideChanges
-            || onshoreRelatedOpexChanges
-            || additionalOpexChanges
-            || cessationWellsChanges
-            || cessationWellsOverrideChanges
-            || cessationOffshoreFacilitiesChanges
-            || cessationOffshoreFacilitiesOverrideChanges
-            || cessationOnshoreFacilitiesChanges
-            || surfChanges
-            || surfOverrideChanges
-            || substructureChanges
-            || substructureOverrideChanges
-            || topsideChanges
-            || topsideOverrideChanges
-            || transportChanges
-            || transportOverrideChanges
-            || onshorePowerSupplyChanges
-            || onshorePowerSupplyOverrideChanges
-            || oilProducerChanges
-            || oilProducerOverrideChanges
-            || gasProducerChanges
-            || gasProducerOverrideChanges
-            || waterInjectorChanges
-            || waterInjectorOverrideChanges
-            || gasInjectorChanges
-            || gasInjectorOverrideChanges
-            || gAndGAdminChanges
-            || gAndGAdminOverrideChanges
-            || seismicChanges
-            || countryOfficeChanges
-            || explorationWellChanges
-            || appraisalWellChanges
-            || sidetrackChanges;
+            totalFeasibilityAndConceptStudies
+            || totalFeedStudies
+            || totalFeedStudiesOverride
+            || totalOtherStudiesCostProfile
+            || historicCostCostProfile
+            || wellInterventionCostProfile
+            || wellInterventionCostProfileOverride
+            || offshoreFacilitiesOperationsCostProfile
+            || onshoreRelatedOpexCostProfile
+            || additionalOpexCostProfile
+            || cessationWellsCost
+            || cessationWellsCostOverride
+            || cessationOffshoreFacilitiesCost
+            || cessationOffshoreFacilitiesCostOverride
+            || cessationOnshoreFacilitiesCostProfile
+            || surfCostProfile
+            || surfCostProfileOverride
+            || substructureCostProfile
+            || substructureCostProfileOverride
+            || topsideCostProfile
+            || topsideCostProfileOverride
+            || transportCostProfile
+            || transportCostProfileOverride
+            || onshorePowerSupplyCostProfile
+            || onshorePowerSupplyCostProfileOverride
+            || oilProducerCostProfile
+            || oilProducerCostProfileOverride
+            || gasProducerCostProfile
+            || gasProducerCostProfileOverride
+            || waterInjectorCostProfile
+            || waterInjectorCostProfileOverride
+            || gasInjectorCostProfile
+            || gasInjectorCostProfileOverride
+            || gAndGAdminCost
+            || gAndGAdminCostOverride
+            || seismicAcquisitionAndProcessing
+            || countryOfficeCost
+            || explorationWellCostProfile
+            || appraisalWellCostProfile
+            || sidetrackCostProfile;
     }
 
     public bool CalculateNpv()
@@ -1151,7 +409,56 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Any(e => e.State == EntityState.Modified &&
                       e.Property(nameof(Case.DG4Date)).IsModified);
 
-        return projectChanges
-               || caseChanges;
+        return projectChanges || caseChanges;
+    }
+
+    private bool ProfileIsChangedOrAdded(string profileName)
+    {
+        var changes = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == profileName)
+            .Any(e => e.State == EntityState.Modified &&
+                      e.Property(nameof(TimeSeriesProfile.StartYear)).IsModified
+                      || e.Property(nameof(TimeSeriesProfile.InternalData)).IsModified);
+
+        var added = context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == profileName)
+            .Any(e => e.State == EntityState.Added);
+
+        return changes || added;
+    }
+
+    private bool ProfileIsAdded(string profileName)
+    {
+        return context.ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.Entity.ProfileType == profileName)
+            .Any(e => e.State == EntityState.Added);
+    }
+
+    private bool TopsideIsChanged()
+    {
+        return context.ChangeTracker.Entries<Topside>()
+            .Any(e => e.State == EntityState.Modified &&
+                      (e.Property(nameof(Topside.FuelConsumption)).IsModified ||
+                       e.Property(nameof(Topside.CO2ShareOilProfile)).IsModified ||
+                       e.Property(nameof(Topside.CO2OnMaxOilProfile)).IsModified ||
+                       e.Property(nameof(Topside.CO2ShareGasProfile)).IsModified ||
+                       e.Property(nameof(Topside.CO2OnMaxGasProfile)).IsModified ||
+                       e.Property(nameof(Topside.CO2ShareWaterInjectionProfile)).IsModified ||
+                       e.Property(nameof(Topside.CO2OnMaxWaterInjectionProfile)).IsModified ||
+                       e.Property(nameof(Topside.OilCapacity)).IsModified ||
+                       e.Property(nameof(Topside.GasCapacity)).IsModified ||
+                       e.Property(nameof(Topside.WaterInjectionCapacity)).IsModified));
+    }
+
+    private bool DrillingScheduleIsChangedOrAdded()
+    {
+        var drillingScheduleChanges = context.ChangeTracker.Entries<DrillingSchedule>()
+            .Any(e => e.State == EntityState.Modified &&
+                      e.Property(nameof(DrillingSchedule.InternalData)).IsModified);
+
+        var drillingScheduleAdded = context.ChangeTracker.Entries<DrillingSchedule>()
+            .Any(e => e.State == EntityState.Added);
+
+        return drillingScheduleChanges || drillingScheduleAdded;
     }
 }

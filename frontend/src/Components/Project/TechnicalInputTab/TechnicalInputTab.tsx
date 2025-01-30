@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Tabs, Tab, Box } from "@mui/material"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
 import { useDataFetch } from "@/Hooks/useDataFetch"
@@ -103,7 +103,7 @@ const TechnicalInputTab = () => {
     return (
         <TabWrapper>
             <Grid container>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <Box>
                         <StyledTabs value={activeTab} onChange={handleChange}>
                             <StyledTab label="Well Costs"  />

@@ -4,7 +4,7 @@ import {
     useState,
     useMemo,
 } from "react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
@@ -19,8 +19,8 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotalsChart"
-import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
+import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
@@ -140,7 +140,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 surfData={apiData.surf}
                 addEdit={addEdit}
             />
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <AggregatedTotals
                     apiData={apiData}
                     barColors={[
@@ -156,7 +156,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <TotalStudyCosts
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
@@ -165,7 +165,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <OpexCosts
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
@@ -174,7 +174,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <CessationCosts
                     tableYears={tableYears}
                     cessationGridRef={cessationGridRef}
@@ -183,7 +183,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <OffshoreFacillityCosts
                     tableYears={tableYears}
                     capexGridRef={capexGridRef}
@@ -192,7 +192,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <DevelopmentWellCosts
                     tableYears={tableYears}
                     developmentWellsGridRef={developmentWellsGridRef}
@@ -201,7 +201,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <ExplorationWellCosts
                     tableYears={tableYears}
                     explorationWellsGridRef={explorationWellsGridRef}

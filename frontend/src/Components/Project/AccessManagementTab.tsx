@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { PersonSelectEvent } from "@equinor/fusion-react-person"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { UserRole } from "@/Models/AccessManagement"
 import { useProjectContext } from "@/Context/ProjectContext"
-import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
+import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
@@ -82,10 +82,10 @@ const AccessManagementTab = () => {
 
     return (
         <Grid container direction="column" paddingX="10px" maxWidth={1200} spacing={2}>
-            <Grid item>
+            <Grid size={12}>
                 <Typography variant="h3">Access Management</Typography>
             </Grid>
-            <Grid item>
+            <Grid size={12}>
                 <Typography variant="body_short">
                     On this page the project admins can add and remove members to the project.
                     If the project classification is set to &quot;restricted&quot; or &quot;confidential&quot;,

@@ -11,8 +11,8 @@ import { Stack } from "@mui/material"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import CasesList from "./CasesList"
-import { sharedTimelineStyles } from "../sharedStyles"
-import { Header } from "../Sidebar"
+import { sharedTimelineStyles } from "@/Components/Sidebar/sharedStyles"
+import { Header } from "@/Components/Sidebar/SidebarWrapper"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 
 export const CasesTimeline = styled(Stack)`

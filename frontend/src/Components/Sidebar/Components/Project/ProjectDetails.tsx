@@ -22,7 +22,7 @@ import {
     Timeline,
     Header,
     StyledDivider,
-} from "../Sidebar"
+} from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { projectTabNames } from "@/Utils/constants"

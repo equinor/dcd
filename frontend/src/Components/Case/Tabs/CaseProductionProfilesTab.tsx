@@ -4,7 +4,7 @@ import {
     useEffect,
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
@@ -19,7 +19,7 @@ import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useCaseContext } from "@/Context/CaseContext"
 import { defaultAxesData } from "@/Utils/common"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
@@ -140,7 +140,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -155,7 +155,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     resourceId={caseData.caseId}
                 />
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <SwitchableDropdownInput
                     addEdit={addEdit}
                     resourceName="drainageStrategy"
@@ -167,7 +167,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Gas solution"
                 />
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <InputSwitcher
                     value={productionStrategyOptions[caseData.productionStrategyOverview]}
                     label="Production strategy overview"
@@ -184,7 +184,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <InputSwitcher
                     value={artificialLiftOptions[caseData.artificialLift]}
                     label="Artificial lift"
@@ -201,7 +201,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -215,7 +215,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
 
                 />
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -227,7 +227,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="case"
@@ -246,7 +246,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                 endYear={endYear}
                 handleTableYearsClick={handleTableYearsClick}
             />
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <AgChartsTimeseries
                     data={productionProfilesChartData()}
                     chartTitle="Production profiles"
@@ -257,7 +257,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                         "Oil production (MSm3)",
                         "Additional Oil production (MSm3)",
                         "Rich gas production (GSm3)",
-                        "Additional rich gas production (MSm3)",
+                        "Additional rich gas production (GSm3)",
                         "Water production (MSm3)",
                     ]}
                 />
@@ -265,7 +265,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
             {
                 (waterInjectionData?.values && waterInjectionData.values?.length > 0)
                 && (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <AgChartsTimeseries
                             data={injectionProfilesChartData()}
                             chartTitle="Injection profiles"
@@ -277,7 +277,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                 )
             }
-            <Grid item xs={12} style={{ width: "calc(100%+  16px)" }}>
+            <Grid size={12} style={{ width: "calc(100%+  16px)" }}>
                 <CaseProductionProfiles
                     apiData={apiData}
                     tableYears={tableYears}
