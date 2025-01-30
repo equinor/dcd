@@ -123,6 +123,7 @@ public static class DcdIocConfiguration
 
         /* Recalculation services */
         services.AddScoped<IRecalculationService, RecalculationService>();
+        services.AddScoped<FullRecalculationService>();
         services.AddScoped<RecalculationDeterminerService>();
         services.AddScoped<WellCostProfileService>();
         services.AddScoped<StudyCostProfileService>();
