@@ -31,7 +31,7 @@ public class ProspExcelImportService(
     SurfCostProfileService surfCostProfileService,
     TopsideCostProfileService topsideCostProfileService,
     OnshorePowerSupplyCostProfileService onshorePowerSupplyCostProfileService,
-    IRecalculationService recalculationService,
+    RecalculationService recalculationService,
     TransportCostProfileService transportCostProfileService)
 {
     private const string SheetName = "main";
@@ -461,7 +461,7 @@ public class ProspExcelImportService(
         existingCase.SharepointFileName = updatedCaseDto.SharepointFileName;
         existingCase.SharepointFileUrl = updatedCaseDto.SharepointFileUrl;
 
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
     private async Task ClearImportedSurf(Case caseItem)

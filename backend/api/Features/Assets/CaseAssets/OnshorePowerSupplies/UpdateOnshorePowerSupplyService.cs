@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 
-public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateOnshorePowerSupplyService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateOnshorePowerSupply(
         Guid projectId,
@@ -23,7 +23,7 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculatio
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
     public async Task UpdateOnshorePowerSupply(
@@ -42,6 +42,6 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, IRecalculatio
         existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

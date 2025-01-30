@@ -1,44 +1,13 @@
-using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 
-public class NetSaleGasProfileService(DcdDbContext context)
+public static class NetSaleGasProfileService
 {
-    public async Task Generate(Guid caseId)
-    {
-        var profileTypes = new List<string>
-        {
-            ProfileTypes.FuelFlaringAndLossesOverride,
-            ProfileTypes.NetSalesGas,
-            ProfileTypes.NetSalesGasOverride,
-            ProfileTypes.ProductionProfileOil,
-            ProfileTypes.AdditionalProductionProfileOil,
-            ProfileTypes.ProductionProfileGas,
-            ProfileTypes.AdditionalProductionProfileGas,
-            ProfileTypes.ProductionProfileWaterInjection
-        };
-
-        var caseItem = await context.Cases
-            .Include(x => x.Project)
-            .Include(x => x.Topside)
-            .Include(x => x.DrainageStrategy)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .Where(x => profileTypes.Contains(x.ProfileType))
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)?.Override == true)

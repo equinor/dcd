@@ -1,43 +1,12 @@
-using api.Context;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.WellCostProfile;
 
-public class ExplorationWellCostProfileService(DcdDbContext context)
+public static class ExplorationWellCostProfileService
 {
-    private static readonly IReadOnlyList<string> WellProfileTypes = new List<string>
-    {
-        ProfileTypes.ExplorationWellCostProfile,
-        ProfileTypes.AppraisalWellCostProfile,
-        ProfileTypes.SidetrackCostProfile
-    };
-
-    public async Task UpdateCostProfilesForWells(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .Include(x => x.Exploration)
-            .Where(x => x.Id == caseId)
-            .SingleAsync();
-
-        await context.ExplorationWell
-            .Include(x => x.DrillingSchedule)
-            .Include(x => x.Well)
-            .Where(x => caseItem.ExplorationLink == x.ExplorationId)
-            .LoadAsync();
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .Where(x => WellProfileTypes.Contains(x.ProfileType))
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         var profileTypes = new Dictionary<string, WellCategory>

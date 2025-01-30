@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.Explorations;
 
-public class UpdateExplorationService(DcdDbContext context, IRecalculationService recalculationService)
+public class UpdateExplorationService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task UpdateExploration(
         Guid projectId,
@@ -20,6 +20,6 @@ public class UpdateExplorationService(DcdDbContext context, IRecalculationServic
         existingExploration.Currency = updatedExplorationDto.Currency;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }

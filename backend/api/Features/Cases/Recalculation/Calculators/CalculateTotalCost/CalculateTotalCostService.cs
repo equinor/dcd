@@ -1,27 +1,12 @@
-using api.Context;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 
-public class CalculateTotalCostService(DcdDbContext context)
+public static class CalculateTotalCostService
 {
-    public async Task CalculateTotalCost(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);

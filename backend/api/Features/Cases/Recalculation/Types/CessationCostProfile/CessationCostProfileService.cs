@@ -1,35 +1,11 @@
-using api.Context;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.CessationCostProfile;
 
-public class CessationCostProfileService(DcdDbContext context)
+public static class CessationCostProfileService
 {
-    public async Task Generate(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .Include(x => x.Project).ThenInclude(x => x.DevelopmentOperationalWellCosts)
-            .Include(x => x.Surf)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
-            .Select(x => x.DrillingSchedule)
-            .Where(x => x != null)
-            .Select(x => x!)
-            .ToListAsync();
-
-        RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
-    }
-
     public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
     {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
