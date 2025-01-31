@@ -3,7 +3,7 @@ ARG dt_url
 ARG azappconfig
 
 FROM ${dt_url}/e/${dt_tenant}/linux/oneagent-codemodules:all as DYNATRACE_ONEAGENT_IMAGE
-FROM node:20.17.0-alpine3.20 as build
+FROM node:20.18.2-alpine3.20 as build
 
 WORKDIR /app
 COPY . .
