@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react"
 
-import CaseTabTable from "../../../Components/CaseTabTable"
+import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"

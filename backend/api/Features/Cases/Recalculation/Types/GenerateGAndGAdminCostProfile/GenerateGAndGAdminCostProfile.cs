@@ -1,42 +1,12 @@
 using System.Globalization;
 
-using api.Context;
 using api.Features.Profiles;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 
-public class GenerateGAndGAdminCostProfile(DcdDbContext context)
+public static class GenerateGAndGAdminCostProfile
 {
-    public async Task Generate(Guid caseId)
-    {
-        var profileTypes = new List<string>
-        {
-            ProfileTypes.GAndGAdminCost,
-            ProfileTypes.GAndGAdminCostOverride
-        };
-
-        var caseItem = await context.Cases
-            .Include(x => x.Project)
-            .SingleAsync(x => x.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .Where(x => profileTypes.Contains(x.ProfileType))
-            .LoadAsync();
-
-        var drillingSchedulesForExplorationWell = await context.ExplorationWell
-            .Where(w => w.ExplorationId == caseItem.ExplorationLink)
-            .Select(x => x.DrillingSchedule)
-            .Where(x => x != null)
-            .Select(x => x!)
-            .ToListAsync();
-
-        RunCalculation(caseItem, drillingSchedulesForExplorationWell);
-    }
-
     public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForExplorationWell)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)

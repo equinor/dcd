@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.CaseAssets.DrillingSchedules;
 
-public class DrillingScheduleService(DcdDbContext context, IRecalculationService recalculationService)
+public class DrillingScheduleService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task<TimeSeriesScheduleDto> UpdateExplorationWellDrillingSchedule(
         Guid projectId,
@@ -32,7 +32,7 @@ public class DrillingScheduleService(DcdDbContext context, IRecalculationService
         existingDrillingSchedule.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
         return MapToDto(existingDrillingSchedule);
     }
@@ -61,7 +61,7 @@ public class DrillingScheduleService(DcdDbContext context, IRecalculationService
 
         context.ExplorationWell.Add(newExplorationWell);
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
         if (newExplorationWell.DrillingSchedule == null)
         {
@@ -92,7 +92,7 @@ public class DrillingScheduleService(DcdDbContext context, IRecalculationService
         existingDrillingSchedule.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
         return MapToDto(existingDrillingSchedule);
     }
@@ -121,7 +121,7 @@ public class DrillingScheduleService(DcdDbContext context, IRecalculationService
 
         context.WellProjectWell.Add(newWellProjectWell);
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
         if (newWellProjectWell.DrillingSchedule == null)
         {

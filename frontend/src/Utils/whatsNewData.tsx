@@ -110,6 +110,23 @@ export const whatsNewUpdates: WhatsNewUpdates = {
             { description: "Minor bugfixes and performance improvements" },
         ],
     },
+    "2.3.1": {
+        "New Functionalities": [
+            { description: "Access Management: add, limit or remove access to a project in the new Access Management tab" },
+            { description: "Autosave on CO2 and Well Cost in Technical Input" },
+            { description: "Calculate break even" },
+            { description: "Calculate net present value" },
+        ],
+        "UI Improvements": [
+            { description: "Added a new homepage, for when a project is not selected" },
+            { description: "Minor UI Improvements" },
+        ],
+        Bugfixes: [
+            { description: "Paste multiple rows in tables" },
+            { description: "Major performance improvements for table input, autosave and some endpoints" },
+            { description: "Minor bugfixes" },
+        ],
+    },
 }
 
 export const versions = sortVersions(Object.keys(whatsNewUpdates)) as Version[]

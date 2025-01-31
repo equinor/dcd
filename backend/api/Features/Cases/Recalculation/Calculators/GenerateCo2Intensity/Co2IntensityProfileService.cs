@@ -1,27 +1,12 @@
-using api.Context;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.TimeSeriesCalculators;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
-public class Co2IntensityProfileService(DcdDbContext context)
+public static class Co2IntensityProfileService
 {
-    public async Task CalculateCo2IntensityProfile(Guid caseId)
-    {
-        var caseItem = await context.Cases
-            .SingleAsync(c => c.Id == caseId);
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseItem.Id)
-            .LoadAsync();
-
-        RunCalculation(caseItem);
-    }
-
     public static void RunCalculation(Case caseItem)
     {
         var totalExportedVolumes = GetTotalExportedVolumes(caseItem);

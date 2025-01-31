@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Prosp.Services.Assets;
 
-public class TopsideCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
+public class TopsideCostProfileService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task AddOrUpdateTopsideCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
     {
@@ -44,7 +44,7 @@ public class TopsideCostProfileService(DcdDbContext context, IRecalculationServi
         }
 
         await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 
     private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
@@ -63,6 +63,6 @@ public class TopsideCostProfileService(DcdDbContext context, IRecalculationServi
         existingProfile.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 }

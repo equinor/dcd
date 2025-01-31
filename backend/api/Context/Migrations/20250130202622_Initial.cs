@@ -74,8 +74,7 @@ namespace api.Migrations
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CalculationLengthInMilliseconds = table.Column<int>(type: "int", nullable: false),
-                    DebugLog = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CalculationLengthInMilliseconds = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,12 +86,12 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartYear = table.Column<int>(type: "int", nullable: false),
-                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -120,23 +119,6 @@ namespace api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ExceptionLogs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FrontendExceptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DetailsJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FrontendExceptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -965,11 +947,6 @@ namespace api.Migrations
                 column: "WellId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FrontendExceptions_CreatedUtc",
-                table: "FrontendExceptions",
-                column: "CreatedUtc");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Images_CaseId",
                 table: "Images",
                 column: "CaseId");
@@ -1089,9 +1066,6 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExplorationWell");
-
-            migrationBuilder.DropTable(
-                name: "FrontendExceptions");
 
             migrationBuilder.DropTable(
                 name: "Images");

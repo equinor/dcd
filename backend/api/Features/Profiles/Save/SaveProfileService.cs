@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Profiles.Save;
 
-public class SaveProfileService(DcdDbContext context, IRecalculationService recalculationService)
+public class SaveProfileService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task<TimeSeriesCostDto> SaveTimeSeriesProfile(Guid projectId, Guid caseId, SaveTimeSeriesDto dto)
     {
@@ -26,7 +26,7 @@ public class SaveProfileService(DcdDbContext context, IRecalculationService reca
             existingEntity.Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk);
 
             await context.UpdateCaseUpdatedUtc(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
             return new TimeSeriesCostDto
             {
@@ -52,7 +52,7 @@ public class SaveProfileService(DcdDbContext context, IRecalculationService reca
         context.TimeSeriesProfiles.Add(newEntity);
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
         return new TimeSeriesCostDto
         {
@@ -79,7 +79,7 @@ public class SaveProfileService(DcdDbContext context, IRecalculationService reca
             existingEntity.Override = dto.Override;
 
             await context.UpdateCaseUpdatedUtc(caseId);
-            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
             return new TimeSeriesCostOverrideDto
             {
@@ -107,7 +107,7 @@ public class SaveProfileService(DcdDbContext context, IRecalculationService reca
         context.TimeSeriesProfiles.Add(newEntity);
 
         await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
         return new TimeSeriesCostOverrideDto
         {

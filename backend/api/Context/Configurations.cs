@@ -134,14 +134,6 @@ public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
     }
 }
 
-public class FrontendExceptionConfiguration : IEntityTypeConfiguration<FrontendException>
-{
-    public void Configure(EntityTypeBuilder<FrontendException> builder)
-    {
-        builder.HasIndex(x => x.CreatedUtc);
-    }
-}
-
 public class BackgroundJobLogConfiguration : IEntityTypeConfiguration<BackgroundJobLog>
 {
     public void Configure(EntityTypeBuilder<BackgroundJobLog> builder)

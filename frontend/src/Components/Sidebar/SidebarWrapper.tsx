@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid2"
 
 import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import ProjectDetails from "./Components/ProjectDetails"
-import CasesDetails from "./Components/CasesDetails"
-import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
-import ArchivedCasesDetails from "./Components/ArchivedCasesDetails"
+import ProjectDetails from "./Components/Project/ProjectDetails"
+import CasesDetails from "./Components/ActiveCases/CasesDetails"
+import CurrentCaseEditHistory from "./Components/EditHistory/CurrentCaseEditHistory"
+import ArchivedCasesDetails from "./Components/ArchivedCases/ArchivedCasesDetails"
 import { sharedTimelineStyles } from "./sharedStyles"
 
 const { Toggle, Footer } = SideBar
@@ -47,12 +47,13 @@ export const StyledDivider = styled(Divider)`
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
-    width: 95%;
+    width: 100%;
 `
 
 export const TimelineElement = styled(Button)`
     height: 28px;
-    padding: 10px 0px 10px 5px;
+    padding: 5px;
+    max-width: fit-content;
 `
 
 const Sidebar = () => {

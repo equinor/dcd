@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 using api.Context;
 using api.Features.Cases.Recalculation;
 using api.Models.Infrastructure.ProjectRecalculation;
@@ -8,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.BackgroundServices.ProjectRecalculation.Services;
 
-public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFactory, FullRecalculationService fullRecalculationService)
+public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFactory, RecalculationService recalculationService)
 {
     public async Task RecalculateProjects()
     {
@@ -26,12 +24,7 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
 
             var start = DateTime.UtcNow;
 
-            var caseIds = await context.Cases
-                .Where(x => x.ProjectId == pendingProject.ProjectId)
-                .Select(x => x.Id)
-                .ToListAsync();
-
-            var debugLog = await fullRecalculationService.RunAllRecalculations(caseIds);
+            await recalculationService.SaveChangesAndRecalculateProject(pendingProject.ProjectId);
 
             context.PendingRecalculations.Remove(pendingProject);
 
@@ -42,8 +35,7 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
                 ProjectId = pendingProject.ProjectId,
                 StartUtc = start,
                 EndUtc = end,
-                CalculationLengthInMilliseconds = (int)end.Subtract(start).TotalMilliseconds,
-                DebugLog = JsonSerializer.Serialize(debugLog)
+                CalculationLengthInMilliseconds = (int)end.Subtract(start).TotalMilliseconds
             });
 
             await context.SaveChangesAsync();

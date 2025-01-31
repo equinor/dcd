@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Prosp.Services.Assets;
 
-public class OnshorePowerSupplyCostProfileService(DcdDbContext context, IRecalculationService recalculationService)
+public class OnshorePowerSupplyCostProfileService(DcdDbContext context, RecalculationService recalculationService)
 {
     public async Task AddOrUpdateOnshorePowerSupplyCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
     {
@@ -44,7 +44,7 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, IRecalcu
         }
 
         await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 
     private async Task UpdateOnshorePowerSupplyTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
@@ -63,6 +63,6 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, IRecalcu
         existingProfile.Values = dto.Values;
 
         await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateAsync(caseItem.Id);
+        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 }

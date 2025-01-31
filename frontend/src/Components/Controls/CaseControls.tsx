@@ -13,8 +13,8 @@ import {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
-import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Case/Components/ReferenceCaseIcon"
-import CaseDropMenu from "@/Components/Case/Components/CaseDropMenu"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
+import CaseDropMenu from "./CaseDropMenu"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"

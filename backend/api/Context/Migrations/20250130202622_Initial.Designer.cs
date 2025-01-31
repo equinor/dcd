@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250129084352_Initial")]
+    [Migration("20250130202622_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -631,37 +631,6 @@ namespace api.Migrations
                     b.ToTable("ExceptionLogs");
                 });
 
-            modelBuilder.Entity("api.Models.Infrastructure.FrontendException", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DetailsJson")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUtc");
-
-                    b.ToTable("FrontendExceptions");
-                });
-
             modelBuilder.Entity("api.Models.Infrastructure.LazyLoadingOccurrence", b =>
                 {
                     b.Property<int>("Id")
@@ -696,10 +665,6 @@ namespace api.Migrations
 
                     b.Property<int>("CalculationLengthInMilliseconds")
                         .HasColumnType("int");
-
-                    b.Property<string>("DebugLog")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndUtc")
                         .HasColumnType("datetime2");

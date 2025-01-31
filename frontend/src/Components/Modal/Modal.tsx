@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode } from "react"
+import { ReactNode } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
@@ -14,7 +14,7 @@ type Props = {
     actions?: ReactNode;
 }
 
-const Modal: FunctionComponent<Props> = ({
+const Modal: React.FC<Props> = ({
     isOpen,
     title,
     size,
