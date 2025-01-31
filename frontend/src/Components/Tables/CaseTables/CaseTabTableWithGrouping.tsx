@@ -11,6 +11,7 @@ import {
     ColDef,
     GetContextMenuItemsParams,
     MenuItemDef,
+    CellClickedEvent,
 } from "@ag-grid-community/core"
 
 import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
@@ -19,6 +20,8 @@ import { useAppContext } from "@/Context/AppContext"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
 import { gridRefArrayToAlignedGrid } from "@/Components/AgGrid/AgGridHelperFunctions"
+import SidesheetWrapper from "@/Components/Tables/TableSidesheet/SidesheetWrapper"
+import { createLogger } from "@/Utils/logger"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -29,6 +32,8 @@ interface Props {
     includeFooter: boolean
     totalRowName?: string
 }
+
+const logger = createLogger({ name: "CaseTabTableWithGrouping", enabled: false })
 
 const CaseTabTableWithGrouping = ({
     allTimeSeriesData,
@@ -42,6 +47,8 @@ const CaseTabTableWithGrouping = ({
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const { editMode, setShowRevisionReminder } = useAppContext()
+    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
+    const [selectedRow, setSelectedRow] = useState<any>(null)
 
     const profilesToRowData = () => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
@@ -198,44 +205,75 @@ const CaseTabTableWithGrouping = ({
         }
     }, [tableYears])
 
+    const handleCellClicked = (event: CellClickedEvent) => {
+        if (!event.data || editMode) return // Don't open sidesheet in edit mode
+        
+        // Get the clicked column's field (year)
+        const clickedYear = event.column.getColId()
+        
+        logger.info("Cell clicked", {
+            isGroup: event.data.group,
+            rowData: event.data,
+            profileName: event.data.profileName,
+            values: event.data.profile?.values,
+            clickedYear
+        })
+
+        setSelectedRow({
+            ...event.data,
+            clickedYear // Add the clicked year to the row data
+        })
+        setIsSidesheetOpen(true)
+    }
+
     return (
-        <div className={styles.root}>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    rowSelection={{
-                        mode: "multiRow",
-                        copySelectedRows: true,
-                        checkboxes: false,
-                        headerCheckbox: false,
-                        enableClickSelection: true,
+        <>
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
                     }}
-                    cellSelection
-                    suppressMovableColumns
-                    suppressAggFuncInHeader
-                    enableCharts
-                    alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
-                    grandTotalRow={includeFooter ? "bottom" : undefined}
-                    getRowStyle={getRowStyle}
-                    suppressLastEmptyLineOnPaste
-                    groupDefaultExpanded={groupDefaultExpanded}
-                    stopEditingWhenCellsLoseFocus
-                    defaultExcelExportParams={defaultExcelExportParams}
-                    getContextMenuItems={getContextMenuItems}
-                    onCellKeyDown={handleCopy}
-                />
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        rowSelection={{
+                            mode: "multiRow",
+                            copySelectedRows: true,
+                            checkboxes: false,
+                            headerCheckbox: false,
+                            enableClickSelection: true,
+                        }}
+                        cellSelection
+                        suppressMovableColumns
+                        suppressAggFuncInHeader
+                        enableCharts
+                        alignedGrids={alignedGridsRef ? gridRefArrayToAlignedGrid(alignedGridsRef) : undefined}
+                        grandTotalRow={includeFooter ? "bottom" : undefined}
+                        getRowStyle={getRowStyle}
+                        suppressLastEmptyLineOnPaste
+                        groupDefaultExpanded={groupDefaultExpanded}
+                        stopEditingWhenCellsLoseFocus
+                        defaultExcelExportParams={defaultExcelExportParams}
+                        getContextMenuItems={getContextMenuItems}
+                        onCellKeyDown={handleCopy}
+                        onCellClicked={handleCellClicked}
+                    />
+                </div>
             </div>
-        </div>
+            <SidesheetWrapper
+                isOpen={isSidesheetOpen}
+                onClose={() => setIsSidesheetOpen(false)}
+                rowData={selectedRow}
+                dg4Year={dg4Year}
+                allTimeSeriesData={allTimeSeriesData}
+            />
+        </>
     )
 }
 

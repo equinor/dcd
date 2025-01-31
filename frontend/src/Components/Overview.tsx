@@ -29,7 +29,7 @@ import { dateStringToDateUtc } from "@/Utils/DateUtils"
 const ControlsWrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 3;
 `
 
 const ContentWrapper = styled.div`

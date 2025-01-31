@@ -13,8 +13,6 @@ import { EditInstance } from "../Models/Interfaces"
 import { useLocalStorage } from "../Hooks/useLocalStorage"
 
 interface AppContextType {
-    showEditHistory: boolean,
-    setShowEditHistory: Dispatch<SetStateAction<boolean>>,
     isCreating: boolean,
     setIsCreating: Dispatch<SetStateAction<boolean>>,
     isLoading: boolean,
@@ -23,6 +21,8 @@ interface AppContextType {
     setIsSaving: Dispatch<SetStateAction<boolean>>,
     editMode: boolean,
     setEditMode: Dispatch<SetStateAction<boolean>>,
+    developerMode: boolean,
+    setDeveloperMode: Dispatch<SetStateAction<boolean>>,
     sidebarOpen: boolean,
     setSidebarOpen: Dispatch<SetStateAction<boolean>>,
     showRevisionReminder: boolean,
@@ -40,11 +40,11 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [showEditHistory, setShowEditHistory] = useState<boolean>(false)
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [editMode, setEditMode] = useLocalStorage<boolean>("dcdEditMode", false)
+    const [developerMode, setDeveloperMode] = useLocalStorage<boolean>("dcdDeveloperMode", false)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [showRevisionReminder, setShowRevisionReminder] = useState<boolean>(false)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
@@ -53,8 +53,6 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
 
     const value = useMemo(() => ({
-        showEditHistory,
-        setShowEditHistory,
         isCreating,
         setIsCreating,
         isLoading,
@@ -63,6 +61,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsSaving,
         editMode,
         setEditMode,
+        developerMode,
+        setDeveloperMode,
         sidebarOpen,
         setSidebarOpen,
         showRevisionReminder,
@@ -76,8 +76,6 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         apiQueue,
         setApiQueue,
     }), [
-        showEditHistory,
-        setShowEditHistory,
         isCreating,
         setIsCreating,
         isLoading,
@@ -86,6 +84,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsSaving,
         editMode,
         setEditMode,
+        developerMode,
+        setDeveloperMode,
         sidebarOpen,
         setSidebarOpen,
         showRevisionReminder,
