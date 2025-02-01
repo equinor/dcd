@@ -1,8 +1,8 @@
 import { Typography } from "@equinor/eds-core-react"
 
 import { Section } from "./Components/Shared/SharedWellStyles"
-// import ExplorationCosts from "./Components/Exploration/ExplorationCosts"
-// import DevelopmentCosts from "./Components/Development/DevelopmentCosts"
+import ExplorationCosts from "./Components/Exploration/ExplorationCosts"
+import DevelopmentCosts from "./Components/Development/DevelopmentCosts"
 import ExplorationWells from "./Components/Exploration/ExplorationWells"
 import DevelopmentWells from "./Components/Development/DevelopmentWells"
 
@@ -13,11 +13,11 @@ const WellCostsTab = () => (
         </Typography>
         <Section>
             <ExplorationWells />
-            {/* <ExplorationCosts /> */}
+            <ExplorationCosts />
         </Section>
         <Section>
             <DevelopmentWells />
-            {/* <DevelopmentCosts /> */}
+            <DevelopmentCosts />
         </Section>
     </div>
 )
