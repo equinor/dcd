@@ -91,12 +91,57 @@ const CaseTabTable = memo(({
     const [editQueue, setEditQueue] = useState<any[]>([])
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
+    const gridInitializedRef = useRef(false)
+
+    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
+        if (!params.data || !editMode) {
+            return null
+        }
+
+        const isUnlocked = params.data.overrideProfile?.override
+
+        if (
+            !isUnlocked
+            && calculatedFields
+            && calculatedFields.includes(params.data.resourceName)
+            && ongoingCalculation) {
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <CenterGridIcons>
+                <CalculationSourceToggle
+                    isProsp={isProsp}
+                    sharepointFileId={sharepointFileId}
+                    clickedElement={params}
+                    addEdit={addEdit}
+                />
+            </CenterGridIcons>
+        )
+    }
+
+    useEffect(() => {
+        if (timeSeriesData?.length > 0) {
+            setPresentedTableData(timeSeriesData)
+        }
+    }, [timeSeriesData])
+
+    const gridRowData = useMemo(
+        () => {
+            if (!presentedTableData?.length) { return [] }
+            return profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
+        },
+        [presentedTableData, editMode, dg4Year, tableName],
+    )
+
+    useEffect(() => {
+        if (gridRef.current?.api && gridRowData.length > 0) {
+            gridRef.current.api.setGridOption("rowData", gridRowData)
+        }
+    }, [gridRowData])
 
     useEffect(() => {
         if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
-            if (timeSeriesData?.length > 0 && editQueue.length === 0) {
-                setPresentedTableData(timeSeriesData)
-            }
             previousTimeSeriesDataRef.current = timeSeriesData
         }
     }, [timeSeriesData])
@@ -181,52 +226,6 @@ const CaseTabTable = memo(({
         }
     }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
 
-    const gridRowData = useMemo(
-        () => {
-            if (!presentedTableData?.length) { return [] }
-            const data = profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
-            return data
-        },
-        [presentedTableData, editMode, dg4Year, tableName, tableYears],
-    )
-
-    useEffect(() => {
-        if (gridRef.current?.api && presentedTableData?.length > 0 && gridRowData.length > 0) {
-            const currentNodes = gridRef.current.api.getRenderedNodes()
-            const currentRowData = currentNodes.map((node: { data: any }) => node.data)
-            if (!isEqual(currentRowData, gridRowData)) {
-                gridRef.current.api.setGridOption("rowData", gridRowData)
-            }
-        }
-    }, [gridRowData, presentedTableData])
-
-    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!params.data || !editMode) {
-            return null
-        }
-
-        const isUnlocked = params.data.overrideProfile?.override
-
-        if (
-            !isUnlocked
-            && calculatedFields
-            && calculatedFields.includes(params.data.resourceName)
-            && ongoingCalculation) {
-            return <CircularProgress size={24} />
-        }
-
-        return (
-            <CenterGridIcons>
-                <CalculationSourceToggle
-                    isProsp={isProsp}
-                    sharepointFileId={sharepointFileId}
-                    clickedElement={params}
-                    addEdit={addEdit}
-                />
-            </CenterGridIcons>
-        )
-    }
-
     const generateTableYearColDefs = useCallback(() => {
         const columnPinned: any[] = [
             {
@@ -296,10 +295,11 @@ const CaseTabTable = memo(({
     }, [generateTableYearColDefs])
 
     const initializeGridWithData = useCallback((gridReadyEvent: GridReadyEvent) => {
-        if (presentedTableData?.length > 0) {
+        gridInitializedRef.current = true
+        if (gridRowData.length > 0) {
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
-    }, [gridRowData, presentedTableData])
+    }, [gridRowData])
 
     // Handle grid blur event
     useEffect(() => {

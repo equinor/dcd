@@ -64,7 +64,7 @@ const CaseCO2DistributionTable = ({
             width: 60,
             field: "set",
             aggFunc: "",
-            cellStyle: { fontWeight: "normal" },
+            cellStyle: { fontWeight: "normal", display: "flex", alignItems: "center" },
             cellRenderer: lockIcon,
         },
     ])

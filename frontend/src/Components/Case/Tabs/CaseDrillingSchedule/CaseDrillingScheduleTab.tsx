@@ -139,78 +139,83 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             <Grid size={12}>
                 <Typography>Create wells in technical input in order to see them in the list below.</Typography>
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
-                    label="Exploration wells"
-                    previousResourceObject={caseData}
-                    value={explorationWellCount}
-                    integer
-                    disabled
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Exploration wells"
+                            previousResourceObject={caseData}
+                            value={explorationWellCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Oil producer wells"
+                            previousResourceObject={caseData}
+                            value={oilProducerCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Water injector wells"
+                            previousResourceObject={caseData}
+                            value={waterInjectorCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Appraisal wells"
+                            previousResourceObject={caseData}
+                            value={appraisalWellCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Gas producer wells"
+                            previousResourceObject={caseData}
+                            value={gasProducerCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Gas injector wells"
+                            previousResourceObject={caseData}
+                            value={gasInjectorCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
-                    label="Appraisal wells"
-                    previousResourceObject={caseData}
-                    value={appraisalWellCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Oil producer wells"
-                    previousResourceObject={caseData}
-                    value={oilProducerCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Gas producer wells"
-                    previousResourceObject={caseData}
-                    value={gasProducerCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Water injector wells"
-                    previousResourceObject={caseData}
-                    value={waterInjectorCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Gas injector wells"
-                    previousResourceObject={caseData}
-                    value={gasInjectorCount}
-                    integer
-                    disabled
-                />
-            </Grid>
+
             <DateRangePicker
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}

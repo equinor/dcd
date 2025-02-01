@@ -321,10 +321,10 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
-            <Grid size={{ xs: 12,  xl: 6 }}>
+            <Grid size={{ xs: 12, xl: 6 }}>
                 <AgCharts options={barChartOptions} style={{ height: "450px" }} />
             </Grid>
-            <Grid size={{ xs: 12,  xl: 6 }}>
+            <Grid size={{ xs: 12, xl: 6 }}>
                 <AgCharts options={pieChartOptions} style={{ height: "380px" }} />
             </Grid>
         </Grid>

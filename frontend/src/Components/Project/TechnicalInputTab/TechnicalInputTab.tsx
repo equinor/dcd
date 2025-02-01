@@ -7,6 +7,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import WellCostsTab from "./WellCostTab/WellCostsTab"
 import PROSPTab from "./PROSPTab/PROSPTab"
 import CO2Tab from "./CO2Tab/CO2Tab"
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
 const TabWrapper = styled.div`
     margin-top: 24px;
@@ -73,7 +74,12 @@ interface TabPanelProps {
 }
 
 const CustomTabPanel = (props: TabPanelProps) => {
-    const { children, value, index, ...other } = props;
+    const {
+        children,
+        value,
+        index,
+        ...other
+    } = props
 
     return (
         <TabPanel
@@ -85,20 +91,20 @@ const CustomTabPanel = (props: TabPanelProps) => {
         >
             {value === index && children}
         </TabPanel>
-    );
-};
+    )
+}
 
 const TechnicalInputTab = () => {
     const revisionAndProjectData = useDataFetch()
     const [activeTab, setActiveTab] = useState(0)
 
     if (!revisionAndProjectData) {
-        return (<div>Loading...</div>)
+        return (<ProjectSkeleton />)
     }
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-        setActiveTab(newValue);
-    };
+        setActiveTab(newValue)
+    }
 
     return (
         <TabWrapper>
@@ -106,7 +112,7 @@ const TechnicalInputTab = () => {
                 <Grid size={12}>
                     <Box>
                         <StyledTabs value={activeTab} onChange={handleChange}>
-                            <StyledTab label="Well Costs"  />
+                            <StyledTab label="Well Costs" />
                             <StyledTab label="PROSP" />
                             <StyledTab label="CO2" />
                         </StyledTabs>

@@ -104,7 +104,13 @@ interface TabPanelProps {
 }
 
 const CustomTabPanel = (props: TabPanelProps) => {
-    const { children, value, index, isSmallScreen, ...other } = props;
+    const {
+        children,
+        value,
+        index,
+        isSmallScreen,
+        ...other
+    } = props
 
     return (
         <TabPanel
@@ -117,8 +123,8 @@ const CustomTabPanel = (props: TabPanelProps) => {
         >
             {value === index && children}
         </TabPanel>
-    );
-};
+    )
+}
 
 function a11yProps(index: number) {
     return {

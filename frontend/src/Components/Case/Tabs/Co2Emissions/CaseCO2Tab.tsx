@@ -240,7 +240,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             <Grid size={12}>
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
-            <Grid size={12}>
+            <div>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -252,7 +252,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     integer={false}
                     unit="million Sm³ gas/sd"
                 />
-            </Grid>
+            </div>
             <Grid size={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>

@@ -109,7 +109,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const productionProfilesChartData = () => {
         const dataArray: object[] = []
         if (caseData.dG4Date === undefined) { return dataArray }
-        for (let i = startYear; i <= endYear; i += 1) {
+        for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
                 oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
@@ -125,7 +125,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const injectionProfilesChartData = () => {
         const dataArray: object[] = []
         if (caseData.dG4Date === undefined) { return dataArray }
-        for (let i = startYear; i <= endYear; i += 1) {
+        for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
                 waterInjection:
@@ -140,105 +140,109 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="facilitiesAvailability"
-                    label="Facilities availability"
-                    value={caseData.facilitiesAvailability}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    unit="%"
-                    min={0}
-                    max={100}
-                    resourceId={caseData.caseId}
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="facilitiesAvailability"
+                            label="Facilities availability"
+                            value={caseData.facilitiesAvailability}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            unit="%"
+                            min={0}
+                            max={100}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableDropdownInput
+                            addEdit={addEdit}
+                            resourceName="drainageStrategy"
+                            resourcePropertyKey="gasSolution"
+                            resourceId={drainageStrategyData.id}
+                            value={drainageStrategyData.gasSolution}
+                            previousResourceObject={drainageStrategyData}
+                            options={gasSolutionOptions}
+                            label="Gas solution"
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <InputSwitcher
+                            value={productionStrategyOptions[caseData.productionStrategyOverview]}
+                            label="Production strategy overview"
+                        >
+                            <NativeSelect
+                                id="productionStrategy"
+                                label=""
+                                disabled
+                                value={caseData.productionStrategyOverview}
+                            >
+                                {Object.entries(productionStrategyOptions).map(([value, label]) => (
+                                    <option key={value} value={value}>{label}</option>
+                                ))}
+                            </NativeSelect>
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <InputSwitcher
+                            value={artificialLiftOptions[caseData.artificialLift]}
+                            label="Artificial lift"
+                        >
+                            <NativeSelect
+                                id="artificialLift"
+                                label=""
+                                disabled
+                                value={caseData.artificialLift}
+                            >
+                                {Object.entries(artificialLiftOptions).map(([value, label]) => (
+                                    <option key={value} value={value}>{label}</option>
+                                ))}
+                            </NativeSelect>
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Oil producer wells"
+                            value={caseData.producerCount}
+                            previousResourceObject={caseData}
+                            integer
+                            disabled
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="waterInjectorCount"
+                            label="Water injector wells"
+                            value={caseData.waterInjectorCount}
+                            previousResourceObject={caseData}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="gasInjectorCount"
+                            label="Gas injector wells"
+                            value={caseData.gasInjectorCount}
+                            previousResourceObject={caseData}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <SwitchableDropdownInput
-                    addEdit={addEdit}
-                    resourceName="drainageStrategy"
-                    resourcePropertyKey="gasSolution"
-                    resourceId={drainageStrategyData.id}
-                    value={drainageStrategyData.gasSolution}
-                    previousResourceObject={drainageStrategyData}
-                    options={gasSolutionOptions}
-                    label="Gas solution"
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <InputSwitcher
-                    value={productionStrategyOptions[caseData.productionStrategyOverview]}
-                    label="Production strategy overview"
-                >
-                    <NativeSelect
-                        id="productionStrategy"
-                        label=""
-                        disabled
-                        value={caseData.productionStrategyOverview}
-                    >
-                        {Object.entries(productionStrategyOptions).map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <InputSwitcher
-                    value={artificialLiftOptions[caseData.artificialLift]}
-                    label="Artificial lift"
-                >
-                    <NativeSelect
-                        id="artificialLift"
-                        label=""
-                        disabled
-                        value={caseData.artificialLift}
-                    >
-                        {Object.entries(artificialLiftOptions).map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount"
-                    label="Oil producer wells"
-                    value={caseData.producerCount}
-                    previousResourceObject={caseData}
-                    integer
-                    disabled
-                    resourceId={caseData.caseId}
 
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="waterInjectorCount"
-                    label="Water injector wells"
-                    value={caseData.waterInjectorCount}
-                    previousResourceObject={caseData}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="gasInjectorCount"
-                    label="Gas injector wells"
-                    value={caseData.gasInjectorCount}
-                    previousResourceObject={caseData}
-                    integer
-                    disabled
-                />
-            </Grid>
             <DateRangePicker
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}

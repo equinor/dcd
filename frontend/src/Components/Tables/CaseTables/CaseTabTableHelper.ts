@@ -55,7 +55,12 @@ export const SetTableYearsFromProfiles = (
         const profileLastYear = GetTimeSeriesLastYear(profile)
         if (profileLastYear !== undefined) {
             const adjustedProfileLastYear = profileLastYear + dG4Year
-
+            // TODO: This is where the problem with years being way off seems to be
+            // in the data profileLastYear sometimes has a value of ~2000
+            // and sometimes -10 (which seems to be what the values should be like(?))
+            // anyway adding these two values creates way too high year values
+            // console.log("profileLastYear: ", profileLastYear)
+            // console.log("dg4Year: ", dG4Year)
             if (lastYear === undefined) {
                 lastYear = adjustedProfileLastYear
             } else if (adjustedProfileLastYear > lastYear) {

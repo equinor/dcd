@@ -101,7 +101,7 @@ const ProjectDetails: React.FC = () => {
                     </Header>
                     <Timeline data-timeline={sidebarOpen}>
                         {projectTabNames.map((tab, index) => (
-                            <ProjectTimeline data-timeline-active={index === activeTabProject}>
+                            <ProjectTimeline key={tab} data-timeline-active={index === activeTabProject}>
                                 <TimelineElement
                                     variant="ghost"
                                     className="GhostButton"
