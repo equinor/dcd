@@ -6,7 +6,7 @@ namespace api.Features.Stea.Dtos;
 
 public static class SteaCaseDtoBuilder
 {
-    public static SteaCaseDto Build(Case caseItem, SteaDbData steaDbData)
+    public static SteaCaseDto Build(Case caseItem)
     {
         var steaCaseDto = new SteaCaseDto
         {
