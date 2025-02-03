@@ -30,7 +30,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    // WellProjectWell
+    // DevelopmentWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
     const [gasProducerCount, setGasProducerCount] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>(0)
@@ -41,7 +41,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
 
     const [, setSidetrackCount] = useState<number>(0)
-    const wellProjectWellsGridRef = useRef(null)
+    const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
     const { data: apiData } = useQuery({
@@ -55,9 +55,9 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {
             const explorationDrillingSchedule = apiData.explorationWells?.map((ew) => ew.drillingSchedule) ?? []
-            const wellProjectDrillingSchedule = apiData.wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
+            const developmentDrillingSchedule = apiData.developmentWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
-                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                [...explorationDrillingSchedule, ...developmentDrillingSchedule],
                 getYearFromDateString(apiData.case.dG4Date),
                 setStartYear,
                 setEndYear,
@@ -86,11 +86,11 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 })
                 return sum
             }
-            const filteredWellProjectWells = apiData.wellProjectWells?.filter((wpw) => wpw.wellProjectId === apiData.wellProject?.id)
+            const filteredDevelopmentWells = apiData.developmentWells?.filter((wpw) => wpw.wellProjectId === apiData.wellProject?.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
-                filteredWellProjectWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                filteredDevelopmentWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
                     if (ew.drillingSchedule && ew.drillingSchedule.values && ew.drillingSchedule.values.length > 0) {
                         sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
                     }
@@ -118,14 +118,14 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const caseData = apiData.case
     const explorationData = apiData.exploration
     const wellProjectData = apiData.wellProject
-    const wellProjectWellsData = apiData.wellProjectWells
+    const developmentWellsData = apiData.developmentWells
     const explorationWellsData = apiData.explorationWells
 
     if (
         activeTabCase !== 3
         || !explorationWellsData
         || !caseData
-        || !wellProjectWellsData
+        || !developmentWellsData
         || !explorationData
         || !wellProjectData
     ) { return (<CaseProductionProfilesTabSkeleton />) }
@@ -229,20 +229,20 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
-                    alignedGridsRef={[wellProjectWellsGridRef]}
+                    alignedGridsRef={[developmentWellsGridRef]}
                 />
             </Grid>
             <Grid size={12}>
                 <CaseDrillingScheduleTable
                     addEdit={addEdit}
-                    assetWells={wellProjectWellsData}
+                    assetWells={developmentWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"
                     tableYears={tableYears}
                     resourceId={wellProjectData.id}
                     wells={wells}
                     isExplorationTable={false}
-                    gridRef={wellProjectWellsGridRef}
+                    gridRef={developmentWellsGridRef}
                     alignedGridsRef={[explorationWellsGridRef]}
                 />
             </Grid>

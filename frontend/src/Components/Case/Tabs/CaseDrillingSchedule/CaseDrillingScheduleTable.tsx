@@ -27,7 +27,7 @@ interface Props {
     tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
-    assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
+    assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.DevelopmentWellDto[]
     wells: Components.Schemas.WellOverviewDto[] | undefined
     resourceId: string
     isExplorationTable: boolean
@@ -118,7 +118,7 @@ const CaseDrillingScheduleTabTable = ({
                 const updatedWell = { ...well, drillingSchedule: newProfile }
                 const updatedWells = [...rowWells]
                 updatedWells[index] = updatedWell
-                const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
+                const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "developmentWellDrillingSchedule"
 
                 if (!isEqual(newProfile.values, existingProfile.values)) {
                     setStagedEdit({

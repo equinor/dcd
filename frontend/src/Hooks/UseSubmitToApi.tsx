@@ -706,7 +706,7 @@ export const useSubmitToApi = () => {
                         ),
             )
             break
-        case "wellProjectWellDrillingSchedule":
+        case "developmentWellDrillingSchedule":
             result = await createOrUpdateDrillingSchedule(
                 projectId,
                 caseId,
