@@ -46,7 +46,7 @@ public static class ResetIdPropertiesInCaseGraphService
                 continue;
             }
 
-            if (guidProperty.Name.EndsWith("Id") || guidProperty.Name.EndsWith("Link"))
+            if (guidProperty.Name.EndsWith("Id"))
             {
                 guidProperty.SetValue(obj, Guid.Empty);
             }

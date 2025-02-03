@@ -28,6 +28,6 @@ public class GetIsWellInUseService(DcdDbContext context)
             .Select(x => x.ExplorationId)
             .Distinct();
 
-        return await context.Cases.AnyAsync(x => wellProjectIds.Contains(x.WellProjectLink) || explorationIds.Contains(x.ExplorationLink));
+        return await context.Cases.AnyAsync(x => wellProjectIds.Contains(x.WellProjectId) || explorationIds.Contains(x.ExplorationId));
     }
 }

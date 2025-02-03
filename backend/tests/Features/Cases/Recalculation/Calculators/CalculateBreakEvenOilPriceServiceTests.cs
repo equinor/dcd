@@ -26,7 +26,7 @@ public class CalculateBreakEvenOilPriceServiceTests
             Id = caseId,
             Project = project,
             DG4Date = new DateTime(2030, 1, 1),
-            DrainageStrategyLink = Guid.NewGuid(),
+            DrainageStrategyId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()

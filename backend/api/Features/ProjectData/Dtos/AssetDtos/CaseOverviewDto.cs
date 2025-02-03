@@ -40,11 +40,11 @@ public class CaseOverviewDto
     [Required] public required DateTime DG4Date { get; set; }
     [Required] public required DateTime CreateTime { get; set; }
     [Required] public required DateTime ModifyTime { get; set; }
-    [Required] public required Guid SurfLink { get; set; }
-    [Required] public required Guid SubstructureLink { get; set; }
-    [Required] public required Guid TopsideLink { get; set; }
-    [Required] public required Guid TransportLink { get; set; }
-    [Required] public required Guid OnshorePowerSupplyLink { get; set; }
+    [Required] public required Guid SurfId { get; set; }
+    [Required] public required Guid SubstructureId { get; set; }
+    [Required] public required Guid TopsideId { get; set; }
+    [Required] public required Guid TransportId { get; set; }
+    [Required] public required Guid OnshorePowerSupplyId { get; set; }
     public required string? SharepointFileId { get; set; }
     public required string? SharepointFileName { get; set; }
     public required string? SharepointFileUrl { get; set; }

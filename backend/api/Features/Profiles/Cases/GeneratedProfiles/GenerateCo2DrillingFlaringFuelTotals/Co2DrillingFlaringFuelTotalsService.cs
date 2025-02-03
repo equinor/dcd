@@ -35,7 +35,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .LoadAsync();
 
         var drillingSchedulesForWellProjectWell = await context.WellProjectWell
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .Where(w => w.WellProjectId == caseItem.WellProjectId)
             .Select(x => x.DrillingSchedule)
             .ToListAsync();
 

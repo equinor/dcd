@@ -23,13 +23,13 @@ public class DuplicateCaseRepository(DcdDbContext context)
         await context.Explorations
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
-            .Where(x => x.Id == caseItem.ExplorationLink)
+            .Where(x => x.Id == caseItem.ExplorationId)
             .LoadAsync();
 
         await context.WellProjects
             .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
             .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
-            .Where(x => x.Id == caseItem.WellProjectLink)
+            .Where(x => x.Id == caseItem.WellProjectId)
             .LoadAsync();
 
         await context.TimeSeriesProfiles

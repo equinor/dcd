@@ -18,15 +18,15 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
             .Distinct()
             .ToListAsync();
 
-        var wellProjectLinksUsedByCases = await context.Cases
-            .Where(x => uniqueWellProjectIds.Contains(x.WellProjectLink))
-            .Select(x => x.WellProjectLink)
+        var wellProjectIdUsedByCases = await context.Cases
+            .Where(x => uniqueWellProjectIds.Contains(x.WellProjectId))
+            .Select(x => x.WellProjectId)
             .Distinct()
             .ToListAsync();
 
-        foreach (var wellProjectLinks in wellProjectLinksUsedByCases)
+        foreach (var wellProjectId in wellProjectIdUsedByCases)
         {
-            await UpdateWellProjectCostProfiles(wellProjectLinks);
+            await UpdateWellProjectCostProfiles(wellProjectId);
         }
     }
 
@@ -53,7 +53,7 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.OilProducerCostProfile))
-            .SingleAsync(x => x.WellProjectLink == wellProject.Id);
+            .SingleAsync(x => x.WellProjectId == wellProject.Id);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.OilProducerCostProfile);
 
@@ -68,7 +68,7 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.GasProducerCostProfile))
-            .SingleAsync(x => x.WellProjectLink == wellProject.Id);
+            .SingleAsync(x => x.WellProjectId == wellProject.Id);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.GasProducerCostProfile);
 
@@ -83,7 +83,7 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.WaterInjectorCostProfile))
-            .SingleAsync(x => x.WellProjectLink == wellProject.Id);
+            .SingleAsync(x => x.WellProjectId == wellProject.Id);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.WaterInjectorCostProfile);
 
@@ -98,7 +98,7 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.GasInjectorCostProfile))
-            .SingleAsync(x => x.WellProjectLink == wellProject.Id);
+            .SingleAsync(x => x.WellProjectId == wellProject.Id);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.GasInjectorCostProfile);
 
