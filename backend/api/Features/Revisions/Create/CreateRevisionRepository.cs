@@ -34,13 +34,11 @@ public class CreateRevisionRepository(DcdDbContext context)
 
         await context.Explorations
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
-            .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
 
         await context.WellProjects
             .Include(c => c.DevelopmentWells).ThenInclude(c => c.Well)
-            .Include(c => c.DevelopmentWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
 

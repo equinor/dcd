@@ -9,16 +9,15 @@ public static class DevelopmentWellsMapper
     public static List<DevelopmentWellDto> MapToDtos(IEnumerable<DevelopmentWell> entities)
     {
         return entities
-            .Where(x => x.DrillingScheduleId.HasValue)
             .Select(x => new DevelopmentWellDto
             {
                 WellProjectId = x.WellProjectId,
                 WellId = x.WellId,
                 DrillingSchedule = new TimeSeriesScheduleDto
                 {
-                    Id = x.DrillingSchedule!.Id,
-                    StartYear = x.DrillingSchedule.StartYear,
-                    Values = x.DrillingSchedule.Values.ToArray()
+                    Id = x.Id,
+                    StartYear = x.StartYear,
+                    Values = x.Values.ToArray()
                 }
             }).ToList();
     }

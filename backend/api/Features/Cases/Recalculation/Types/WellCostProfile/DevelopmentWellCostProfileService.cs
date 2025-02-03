@@ -25,12 +25,12 @@ public static class DevelopmentWellCostProfileService
 
             foreach (var developmentWell in wells)
             {
-                if (developmentWell.DrillingSchedule?.Values.Length > 0)
+                if (developmentWell.Values.Length > 0)
                 {
                     profilesToMerge.Add(new TimeSeriesCost
                     {
-                        Values = developmentWell.DrillingSchedule.Values.Select(ds => ds * developmentWell.Well.WellCost).ToArray(),
-                        StartYear = developmentWell.DrillingSchedule.StartYear,
+                        Values = developmentWell.Values.Select(ds => ds * developmentWell.Well.WellCost).ToArray(),
+                        StartYear = developmentWell.StartYear,
                     });
                 }
             }

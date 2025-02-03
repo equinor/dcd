@@ -6,15 +6,15 @@ namespace api.Features.Cases.Recalculation.Types.CessationCostProfile;
 
 public static class CessationCostProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell)
+    public static void RunCalculation(Case caseItem, List<DevelopmentWell> developmentWells)
     {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
 
-        CalculateCessationWellsCost(caseItem, drillingSchedulesForDevelopmentWell, lastYearOfProduction);
+        CalculateCessationWellsCost(caseItem, developmentWells, lastYearOfProduction);
         GetCessationOffshoreFacilitiesCost(caseItem, lastYearOfProduction);
     }
 
-    private static void CalculateCessationWellsCost(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell, int? lastYear)
+    private static void CalculateCessationWellsCost(Case caseItem, List<DevelopmentWell> developmentWells, int? lastYear)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true)
         {
@@ -29,7 +29,7 @@ public static class CessationCostProfileService
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationWellsCost);
 
-        GenerateCessationWellsCost(caseItem.Project, drillingSchedulesForDevelopmentWell, lastYear.Value, profile);
+        GenerateCessationWellsCost(caseItem.Project, developmentWells, lastYear.Value, profile);
     }
 
     private static void GetCessationOffshoreFacilitiesCost(Case caseItem, int? lastYear)
@@ -50,11 +50,11 @@ public static class CessationCostProfileService
         GenerateCessationOffshoreFacilitiesCost(caseItem.Surf!, lastYear.Value, profile);
     }
 
-    private static void GenerateCessationWellsCost(Project project, List<DrillingSchedule> drillingSchedulesForDevelopmentWell, int lastYear, TimeSeriesProfile cessationWells)
+    private static void GenerateCessationWellsCost(Project project, List<DevelopmentWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)
     {
         var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 
-        var sumDrilledWells = drillingSchedulesForDevelopmentWell
+        var sumDrilledWells = developmentWells
             .Select(x => x.Values.Sum())
             .Sum();
 

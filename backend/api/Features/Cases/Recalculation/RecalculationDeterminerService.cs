@@ -14,20 +14,27 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Where(e => e.State == EntityState.Modified
                         && (e.Property(nameof(Well.WellCost)).IsModified || e.Property(nameof(Well.WellCategory)).IsModified));
 
-        var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity).ToList();
-
-        var modifiedDrillingSchedules = context.ChangeTracker.Entries<DrillingSchedule>()
+        var modifiedDevelopmentWells = context.ChangeTracker.Entries<DevelopmentWell>()
             .Where(e => e.State == EntityState.Modified
-                        && (e.Property(nameof(DrillingSchedule.InternalData)).IsModified
-                            || e.Property(nameof(DrillingSchedule.StartYear)).IsModified));
+                        && (e.Property(nameof(DevelopmentWell.InternalData)).IsModified
+                            || e.Property(nameof(DevelopmentWell.StartYear)).IsModified));
 
-        var addedDrillingSchedules = context.ChangeTracker.Entries<DrillingSchedule>()
+        var addedDevelopmentWells = context.ChangeTracker.Entries<DevelopmentWell>()
             .Where(e => e.State == EntityState.Added);
 
-        var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id)
-            .Union(addedDrillingSchedules.Select(e => e.Entity.Id)).ToList();
+        var modifiedExplorationWells = context.ChangeTracker.Entries<ExplorationWell>()
+            .Where(e => e.State == EntityState.Modified
+                        && (e.Property(nameof(ExplorationWell.InternalData)).IsModified
+                            || e.Property(nameof(ExplorationWell.StartYear)).IsModified));
 
-        return modifiedWellIds.Any() || modifiedDrillingScheduleIds.Any();
+        var addedExplorationWells = context.ChangeTracker.Entries<ExplorationWell>()
+            .Where(e => e.State == EntityState.Added);
+
+        return modifiedWellsWithCostChange.Any()
+               || modifiedDevelopmentWells.Any()
+               || addedDevelopmentWells.Any()
+               || modifiedExplorationWells.Any()
+               || addedExplorationWells.Any();
     }
 
     public bool CalculateCo2Emissions()
@@ -445,13 +452,23 @@ public class RecalculationDeterminerService(DcdDbContext context)
 
     private bool DrillingScheduleIsChangedOrAdded()
     {
-        var drillingScheduleChanges = context.ChangeTracker.Entries<DrillingSchedule>()
+        var developmentWellChanges = context.ChangeTracker.Entries<DevelopmentWell>()
             .Any(e => e.State == EntityState.Modified &&
-                      e.Property(nameof(DrillingSchedule.InternalData)).IsModified);
+                      e.Property(nameof(DevelopmentWell.InternalData)).IsModified);
 
-        var drillingScheduleAdded = context.ChangeTracker.Entries<DrillingSchedule>()
+        var developmentWellAdded = context.ChangeTracker.Entries<DevelopmentWell>()
             .Any(e => e.State == EntityState.Added);
 
-        return drillingScheduleChanges || drillingScheduleAdded;
+        var explorationWellChanges = context.ChangeTracker.Entries<ExplorationWell>()
+            .Any(e => e.State == EntityState.Modified &&
+                      e.Property(nameof(ExplorationWell.InternalData)).IsModified);
+
+        var explorationWellAdded = context.ChangeTracker.Entries<ExplorationWell>()
+            .Any(e => e.State == EntityState.Added);
+
+        return developmentWellChanges
+               || developmentWellAdded
+               || explorationWellChanges
+               || explorationWellAdded;
     }
 }

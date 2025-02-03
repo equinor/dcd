@@ -34,14 +34,13 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Where(y => profileTypes.Contains(y.ProfileType))
             .LoadAsync();
 
-        var drillingSchedulesForDevelopmentWells = await context.DevelopmentWells
+        var developmentWells = await context.DevelopmentWells
             .Where(w => w.WellProjectId == caseItem.WellProjectId)
-            .Select(x => x.DrillingSchedule)
             .ToListAsync();
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
         var flaringsTotal = GetFlaringsProfileTotal(caseItem);
-        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, drillingSchedulesForDevelopmentWells);
+        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, developmentWells);
 
         return new Co2DrillingFlaringFuelTotalsDto
         {
@@ -77,21 +76,16 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private static double CalculateDrillingEmissionsTotal(Project project, List<DrillingSchedule?> drillingSchedulesForDevelopmentWell)
+    private static double CalculateDrillingEmissionsTotal(Project project, List<DevelopmentWell> developmentWells)
     {
         var wellDrillingSchedules = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForDevelopmentWell)
+        foreach (var developmentWell in developmentWells)
         {
-            if (drillingSchedule == null)
-            {
-                continue;
-            }
-
             var timeSeries = new TimeSeriesCost
             {
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values.Select(v => (double)v).ToArray()
+                StartYear = developmentWell.StartYear,
+                Values = developmentWell.Values.Select(v => (double)v).ToArray()
             };
 
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);

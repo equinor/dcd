@@ -24,12 +24,12 @@ public static class ExplorationWellCostProfileService
 
             foreach (var explorationWell in wells)
             {
-                if (explorationWell.DrillingSchedule?.Values.Length > 0)
+                if (explorationWell.Values.Length > 0)
                 {
                     profilesToMerge.Add(new TimeSeriesCost
                     {
-                        Values = explorationWell.DrillingSchedule.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
-                        StartYear = explorationWell.DrillingSchedule.StartYear,
+                        Values = explorationWell.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
+                        StartYear = explorationWell.StartYear
                     });
                 }
             }
