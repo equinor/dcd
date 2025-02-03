@@ -5,7 +5,7 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.WellCostProfile;
 
-public static class WellProjectWellCostProfileService
+public static class DevelopmentWellCostProfileService
 {
     public static void RunCalculation(Case caseItem)
     {
@@ -19,18 +19,18 @@ public static class WellProjectWellCostProfileService
 
         foreach (var profileType in profileTypes)
         {
-            var wells = caseItem.WellProject!.WellProjectWells.Where(wpw => wpw.Well.WellCategory == profileType.Value).ToList();
+            var wells = caseItem.WellProject!.DevelopmentWells.Where(wpw => wpw.Well.WellCategory == profileType.Value).ToList();
 
             var profilesToMerge = new List<TimeSeriesCost>();
 
-            foreach (var wellProjectWell in wells)
+            foreach (var developmentWell in wells)
             {
-                if (wellProjectWell.DrillingSchedule?.Values.Length > 0)
+                if (developmentWell.DrillingSchedule?.Values.Length > 0)
                 {
                     profilesToMerge.Add(new TimeSeriesCost
                     {
-                        Values = wellProjectWell.DrillingSchedule.Values.Select(ds => ds * wellProjectWell.Well.WellCost).ToArray(),
-                        StartYear = wellProjectWell.DrillingSchedule.StartYear,
+                        Values = developmentWell.DrillingSchedule.Values.Select(ds => ds * developmentWell.Well.WellCost).ToArray(),
+                        StartYear = developmentWell.DrillingSchedule.StartYear,
                     });
                 }
             }

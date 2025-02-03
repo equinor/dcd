@@ -32,7 +32,7 @@ public class RecalculationRepository(DcdDbContext context)
 
         var wellProjectIds = caseItems.Select(x => x.WellProjectId).ToList();
 
-        await context.WellProjectWell
+        await context.DevelopmentWells
             .Include(x => x.DrillingSchedule)
             .Include(x => x.Well)
             .Where(x => wellProjectIds.Contains(x.WellProjectId))
@@ -46,15 +46,15 @@ public class RecalculationRepository(DcdDbContext context)
             .Where(x => explorationIds.Contains(x.ExplorationId))
             .LoadAsync();
 
-        var drillingSchedulesForWellProjectWell = await (
+        var drillingSchedulesForDevelopmentWell = await (
                 from caseItem in context.Cases
                 join wp in context.WellProjects on caseItem.WellProjectId equals wp.Id
-                join wpw in context.WellProjectWell on wp.Id equals wpw.WellProjectId
-                where wpw.DrillingSchedule != null
+                join dw in context.DevelopmentWells on wp.Id equals dw.WellProjectId
+                where dw.DrillingSchedule != null
                 select new
                 {
                     CaseId = caseItem.Id,
-                    DrillingSchedule = wpw.DrillingSchedule!
+                    DrillingSchedule = dw.DrillingSchedule!
                 })
             .GroupBy(x => x.CaseId, x => x.DrillingSchedule)
             .ToDictionaryAsync(x => x.Key, x => x.ToList());
@@ -75,7 +75,7 @@ public class RecalculationRepository(DcdDbContext context)
         {
             CaseItem = caseItem,
             DrillingSchedulesForExplorationWell = drillingSchedulesForExplorationWell.TryGetValue(caseItem.Id, out var expSchedules) ? expSchedules : [],
-            DrillingSchedulesForWellProjectWell = drillingSchedulesForWellProjectWell.TryGetValue(caseItem.Id, out var wpwSchedules) ? wpwSchedules : []
+            DrillingSchedulesForDevelopmentWell = drillingSchedulesForDevelopmentWell.TryGetValue(caseItem.Id, out var wpwSchedules) ? wpwSchedules : []
         }).ToList();
     }
 }
@@ -83,6 +83,6 @@ public class RecalculationRepository(DcdDbContext context)
 public class CaseWithDrillingSchedules
 {
     public required Case CaseItem { get; set; }
-    public required List<DrillingSchedule> DrillingSchedulesForWellProjectWell { get; set; }
+    public required List<DrillingSchedule> DrillingSchedulesForDevelopmentWell { get; set; }
     public required List<DrillingSchedule> DrillingSchedulesForExplorationWell { get; set; }
 }

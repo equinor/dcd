@@ -3,8 +3,10 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class WellProjectWell : IDateTrackedEntity
+public class DevelopmentWell : IDateTrackedEntity
 {
+    public Guid Id { get; set; }
+
     public Guid? DrillingScheduleId { get; set; }
     public virtual DrillingSchedule? DrillingSchedule { get; set; }
 

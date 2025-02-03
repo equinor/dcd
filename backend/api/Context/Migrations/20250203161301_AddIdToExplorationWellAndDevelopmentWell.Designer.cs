@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250203161301_AddIdToExplorationWellAndDevelopmentWell")]
+    partial class AddIdToExplorationWellAndDevelopmentWell
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,46 +227,6 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("DevelopmentOperationalWellCosts");
-                });
-
-            modelBuilder.Entity("api.Models.DevelopmentWell", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DrillingScheduleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("WellId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("WellProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DrillingScheduleId");
-
-                    b.HasIndex("WellId");
-
-                    b.HasIndex("WellProjectId", "WellId")
-                        .IsUnique();
-
-                    b.ToTable("DevelopmentWells");
                 });
 
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>
@@ -1479,6 +1442,46 @@ namespace api.Migrations
                     b.ToTable("WellProjects");
                 });
 
+            modelBuilder.Entity("api.Models.WellProjectWell", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DrillingScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WellId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WellProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DrillingScheduleId");
+
+                    b.HasIndex("WellId");
+
+                    b.HasIndex("WellProjectId", "WellId")
+                        .IsUnique();
+
+                    b.ToTable("WellProjectWell");
+                });
+
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
@@ -1563,31 +1566,6 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("api.Models.DevelopmentWell", b =>
-                {
-                    b.HasOne("api.Models.DrillingSchedule", "DrillingSchedule")
-                        .WithMany()
-                        .HasForeignKey("DrillingScheduleId");
-
-                    b.HasOne("api.Models.Well", "Well")
-                        .WithMany("DevelopmentWells")
-                        .HasForeignKey("WellId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.WellProject", "WellProject")
-                        .WithMany("DevelopmentWells")
-                        .HasForeignKey("WellProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DrillingSchedule");
-
-                    b.Navigation("Well");
-
-                    b.Navigation("WellProject");
                 });
 
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>
@@ -1785,6 +1763,31 @@ namespace api.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("api.Models.WellProjectWell", b =>
+                {
+                    b.HasOne("api.Models.DrillingSchedule", "DrillingSchedule")
+                        .WithMany()
+                        .HasForeignKey("DrillingScheduleId");
+
+                    b.HasOne("api.Models.Well", "Well")
+                        .WithMany("WellProjectWells")
+                        .HasForeignKey("WellId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.WellProject", "WellProject")
+                        .WithMany("WellProjectWells")
+                        .HasForeignKey("WellProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DrillingSchedule");
+
+                    b.Navigation("Well");
+
+                    b.Navigation("WellProject");
+                });
+
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.Navigation("Images");
@@ -1834,14 +1837,14 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Well", b =>
                 {
-                    b.Navigation("DevelopmentWells");
-
                     b.Navigation("ExplorationWells");
+
+                    b.Navigation("WellProjectWells");
                 });
 
             modelBuilder.Entity("api.Models.WellProject", b =>
                 {
-                    b.Navigation("DevelopmentWells");
+                    b.Navigation("WellProjectWells");
                 });
 #pragma warning restore 612, 618
         }

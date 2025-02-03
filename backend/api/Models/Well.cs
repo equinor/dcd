@@ -21,7 +21,7 @@ public class Well : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    public virtual ICollection<WellProjectWell> WellProjectWells { get; set; } = [];
+    public virtual ICollection<DevelopmentWell> DevelopmentWells { get; set; } = [];
     public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
 }
 

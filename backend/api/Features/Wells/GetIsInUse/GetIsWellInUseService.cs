@@ -9,7 +9,7 @@ public class GetIsWellInUseService(DcdDbContext context)
     public async Task<bool> IsWellInUse(Guid wellId)
     {
         var well = await context.Wells
-            .Include(w => w.WellProjectWells).ThenInclude(wp => wp.DrillingSchedule)
+            .Include(w => w.DevelopmentWells).ThenInclude(wp => wp.DrillingSchedule)
             .Include(w => w.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
             .SingleOrDefaultAsync(w => w.Id == wellId);
 
@@ -18,7 +18,7 @@ public class GetIsWellInUseService(DcdDbContext context)
             return false;
         }
 
-        var wellProjectIds = well.WellProjectWells
+        var wellProjectIds = well.DevelopmentWells
             .Where(x => x.DrillingSchedule?.Values.Length != 0)
             .Select(x => x.WellProjectId)
             .Distinct();

@@ -27,8 +27,8 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .LoadAsync();
 
         await context.WellProjects
-            .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
-            .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
+            .Include(c => c.DevelopmentWells).ThenInclude(c => c.Well)
+            .Include(c => c.DevelopmentWells).ThenInclude(c => c.DrillingSchedule)
             .Where(x => x.Id == caseItem.WellProjectId)
             .LoadAsync();
 

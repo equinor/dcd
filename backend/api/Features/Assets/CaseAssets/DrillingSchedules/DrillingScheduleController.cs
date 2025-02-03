@@ -34,7 +34,7 @@ public class DrillingScheduleController(DrillingScheduleService drillingSchedule
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/wells/{wellId:guid}/drilling-schedule/{drillingScheduleId:guid}")]
-    public async Task<TimeSeriesScheduleDto> UpdateWellProjectWellDrillingSchedule(
+    public async Task<TimeSeriesScheduleDto> UpdateDevelopmentWellDrillingSchedule(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
@@ -42,18 +42,18 @@ public class DrillingScheduleController(DrillingScheduleService drillingSchedule
         [FromRoute] Guid drillingScheduleId,
         [FromBody] UpdateTimeSeriesScheduleDto dto)
     {
-        return await drillingScheduleService.UpdateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
+        return await drillingScheduleService.UpdateDevelopmentWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
     }
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/well-projects/{wellProjectId:guid}/wells/{wellId:guid}/drilling-schedule")]
-    public async Task<TimeSeriesScheduleDto> CreateWellProjectWellDrillingSchedule(
+    public async Task<TimeSeriesScheduleDto> CreateDevelopmentWellDrillingSchedule(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
         [FromRoute] Guid wellId,
         [FromBody] CreateTimeSeriesScheduleDto dto)
     {
-        return await drillingScheduleService.CreateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, dto);
+        return await drillingScheduleService.CreateDevelopmentWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, dto);
     }
 }

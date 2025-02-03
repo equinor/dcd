@@ -61,10 +61,10 @@ public static class DcdDatabaseConfiguration
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
 
-        if (!DcdEnvironments.AllowMigrationsToBeApplied)
-        {
-            return;
-        }
+        // if (!DcdEnvironments.AllowMigrationsToBeApplied)
+        // {
+        //     return;
+        // }
 
         var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
         dbBuilder.UseSqlServer(sqlServerConnectionString);
