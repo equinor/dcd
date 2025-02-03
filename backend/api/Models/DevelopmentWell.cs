@@ -9,9 +9,6 @@ public class DevelopmentWell : IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
-    public Guid? DrillingScheduleId { get; set; }
-    public virtual DrillingSchedule? DrillingSchedule { get; set; }
-
     public Guid WellProjectId { get; set; }
     public virtual WellProject WellProject { get; set; } = null!;
 
