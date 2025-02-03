@@ -18,15 +18,15 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
             .Distinct()
             .ToListAsync();
 
-        var explorationLinksUsedByCases = await context.Cases
-            .Where(c => uniqueExplorationIds.Contains(c.ExplorationLink))
-            .Select(c => c.ExplorationLink)
+        var explorationIdsUsedByCases = await context.Cases
+            .Where(c => uniqueExplorationIds.Contains(c.ExplorationId))
+            .Select(c => c.ExplorationId)
             .Distinct()
             .ToListAsync();
 
-        foreach (var explorationLinks in explorationLinksUsedByCases)
+        foreach (var explorationId in explorationIdsUsedByCases)
         {
-            await UpdateExplorationCostProfiles(explorationLinks);
+            await UpdateExplorationCostProfiles(explorationId);
         }
     }
 
@@ -52,7 +52,7 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.ExplorationWellCostProfile))
-            .Where(x => x.ExplorationLink == exploration.Id)
+            .Where(x => x.ExplorationId == exploration.Id)
             .SingleAsync();
 
         var explorationWellCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.ExplorationWellCostProfile);
@@ -68,7 +68,7 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.AppraisalWellCostProfile))
-            .Where(x => x.ExplorationLink == exploration.Id)
+            .Where(x => x.ExplorationId == exploration.Id)
             .SingleAsync();
 
         var appraisalWellCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.AppraisalWellCostProfile);
@@ -84,7 +84,7 @@ public class UpdateExplorationWellCostProfilesService(DcdDbContext context)
 
         var caseItem = await context.Cases
             .Include(x => x.TimeSeriesProfiles.Where(y => y.ProfileType == ProfileTypes.SidetrackCostProfile))
-            .Where(x => x.ExplorationLink == exploration.Id)
+            .Where(x => x.ExplorationId == exploration.Id)
             .SingleAsync();
 
         var sidetrackCostProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SidetrackCostProfile);

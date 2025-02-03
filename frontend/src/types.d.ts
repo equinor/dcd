@@ -34,93 +34,93 @@ declare namespace Components {
             dG4Date: string; // date-time
             createTime: string; // date-time
             modifyTime: string; // date-time
-            surfLink: string; // uuid
-            substructureLink: string; // uuid
-            topsideLink: string; // uuid
-            transportLink: string; // uuid
-            onshorePowerSupplyLink: string; // uuid
+            surfId: string; // uuid
+            substructureId: string; // uuid
+            topsideId: string; // uuid
+            transportId: string; // uuid
+            onshorePowerSupplyId: string; // uuid
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
-            cessationWellsCost?: TimeSeriesCostDto;
-            cessationWellsCostOverride?: TimeSeriesCostOverrideDto;
-            cessationOffshoreFacilitiesCost?: TimeSeriesCostDto;
-            cessationOffshoreFacilitiesCostOverride?: TimeSeriesCostOverrideDto;
-            cessationOnshoreFacilitiesCostProfile?: TimeSeriesCostDto;
-            totalFeasibilityAndConceptStudies?: TimeSeriesCostDto;
-            totalFeasibilityAndConceptStudiesOverride?: TimeSeriesCostOverrideDto;
-            totalFEEDStudies?: TimeSeriesCostDto;
-            totalFEEDStudiesOverride?: TimeSeriesCostOverrideDto;
-            totalOtherStudiesCostProfile?: TimeSeriesCostDto;
-            historicCostCostProfile?: TimeSeriesCostDto;
-            wellInterventionCostProfile?: TimeSeriesCostDto;
-            wellInterventionCostProfileOverride?: TimeSeriesCostOverrideDto;
-            offshoreFacilitiesOperationsCostProfile?: TimeSeriesCostDto;
-            offshoreFacilitiesOperationsCostProfileOverride?: TimeSeriesCostOverrideDto;
-            onshoreRelatedOPEXCostProfile?: TimeSeriesCostDto;
-            additionalOPEXCostProfile?: TimeSeriesCostDto;
-            calculatedTotalIncomeCostProfile?: TimeSeriesCostDto;
-            calculatedTotalCostCostProfile?: TimeSeriesCostDto;
+            cessationWellsCost: TimeSeriesCostDto;
+            cessationWellsCostOverride: TimeSeriesCostOverrideDto;
+            cessationOffshoreFacilitiesCost: TimeSeriesCostDto;
+            cessationOffshoreFacilitiesCostOverride: TimeSeriesCostOverrideDto;
+            cessationOnshoreFacilitiesCostProfile: TimeSeriesCostDto;
+            totalFeasibilityAndConceptStudies: TimeSeriesCostDto;
+            totalFeasibilityAndConceptStudiesOverride: TimeSeriesCostOverrideDto;
+            totalFEEDStudies: TimeSeriesCostDto;
+            totalFEEDStudiesOverride: TimeSeriesCostOverrideDto;
+            totalOtherStudiesCostProfile: TimeSeriesCostDto;
+            historicCostCostProfile: TimeSeriesCostDto;
+            wellInterventionCostProfile: TimeSeriesCostDto;
+            wellInterventionCostProfileOverride: TimeSeriesCostOverrideDto;
+            offshoreFacilitiesOperationsCostProfile: TimeSeriesCostDto;
+            offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesCostOverrideDto;
+            onshoreRelatedOPEXCostProfile: TimeSeriesCostDto;
+            additionalOPEXCostProfile: TimeSeriesCostDto;
+            calculatedTotalIncomeCostProfile: TimeSeriesCostDto;
+            calculatedTotalCostCostProfile: TimeSeriesCostDto;
             topside: TopsideDto;
-            topsideCostProfile?: TimeSeriesCostDto;
-            topsideCostProfileOverride?: TimeSeriesCostOverrideDto;
-            topsideCessationCostProfile?: TimeSeriesCostDto;
+            topsideCostProfile: TimeSeriesCostDto;
+            topsideCostProfileOverride: TimeSeriesCostOverrideDto;
+            topsideCessationCostProfile: TimeSeriesCostDto;
             drainageStrategy: DrainageStrategyDto;
-            productionProfileOil?: TimeSeriesCostDto;
-            additionalProductionProfileOil?: TimeSeriesCostDto;
-            productionProfileGas?: TimeSeriesCostDto;
-            additionalProductionProfileGas?: TimeSeriesCostDto;
-            productionProfileWater?: TimeSeriesCostDto;
-            productionProfileWaterInjection?: TimeSeriesCostDto;
-            fuelFlaringAndLosses?: TimeSeriesCostDto;
-            fuelFlaringAndLossesOverride?: TimeSeriesCostOverrideDto;
-            netSalesGas?: TimeSeriesCostDto;
-            netSalesGasOverride?: TimeSeriesCostOverrideDto;
-            co2Emissions?: TimeSeriesCostDto;
-            co2EmissionsOverride?: TimeSeriesCostOverrideDto;
-            productionProfileNgl?: TimeSeriesCostDto;
-            importedElectricity?: TimeSeriesCostDto;
-            importedElectricityOverride?: TimeSeriesCostOverrideDto;
-            co2Intensity?: TimeSeriesCostDto;
-            deferredOilProduction?: TimeSeriesCostDto;
-            deferredGasProduction?: TimeSeriesCostDto;
+            productionProfileOil: TimeSeriesCostDto;
+            additionalProductionProfileOil: TimeSeriesCostDto;
+            productionProfileGas: TimeSeriesCostDto;
+            additionalProductionProfileGas: TimeSeriesCostDto;
+            productionProfileWater: TimeSeriesCostDto;
+            productionProfileWaterInjection: TimeSeriesCostDto;
+            fuelFlaringAndLosses: TimeSeriesCostDto;
+            fuelFlaringAndLossesOverride: TimeSeriesCostOverrideDto;
+            netSalesGas: TimeSeriesCostDto;
+            netSalesGasOverride: TimeSeriesCostOverrideDto;
+            co2Emissions: TimeSeriesCostDto;
+            co2EmissionsOverride: TimeSeriesCostOverrideDto;
+            productionProfileNgl: TimeSeriesCostDto;
+            importedElectricity: TimeSeriesCostDto;
+            importedElectricityOverride: TimeSeriesCostOverrideDto;
+            co2Intensity: TimeSeriesCostDto;
+            deferredOilProduction: TimeSeriesCostDto;
+            deferredGasProduction: TimeSeriesCostDto;
             substructure: SubstructureDto;
-            substructureCostProfile?: TimeSeriesCostDto;
-            substructureCostProfileOverride?: TimeSeriesCostOverrideDto;
-            substructureCessationCostProfile?: TimeSeriesCostDto;
+            substructureCostProfile: TimeSeriesCostDto;
+            substructureCostProfileOverride: TimeSeriesCostOverrideDto;
+            substructureCessationCostProfile: TimeSeriesCostDto;
             surf: SurfDto;
-            surfCostProfile?: TimeSeriesCostDto;
-            surfCostProfileOverride?: TimeSeriesCostOverrideDto;
-            surfCessationCostProfile?: TimeSeriesCostDto;
+            surfCostProfile: TimeSeriesCostDto;
+            surfCostProfileOverride: TimeSeriesCostOverrideDto;
+            surfCessationCostProfile: TimeSeriesCostDto;
             transport: TransportDto;
-            transportCostProfile?: TimeSeriesCostDto;
-            transportCostProfileOverride?: TimeSeriesCostOverrideDto;
-            transportCessationCostProfile?: TimeSeriesCostDto;
+            transportCostProfile: TimeSeriesCostDto;
+            transportCostProfileOverride: TimeSeriesCostOverrideDto;
+            transportCessationCostProfile: TimeSeriesCostDto;
             onshorePowerSupply: OnshorePowerSupplyDto;
-            onshorePowerSupplyCostProfile?: TimeSeriesCostDto;
-            onshorePowerSupplyCostProfileOverride?: TimeSeriesCostOverrideDto;
+            onshorePowerSupplyCostProfile: TimeSeriesCostDto;
+            onshorePowerSupplyCostProfileOverride: TimeSeriesCostOverrideDto;
             exploration: ExplorationDto;
-            explorationWells?: ExplorationWellDto[] | null;
-            explorationWellCostProfile?: TimeSeriesCostDto;
-            appraisalWellCostProfile?: TimeSeriesCostDto;
-            sidetrackCostProfile?: TimeSeriesCostDto;
-            gAndGAdminCost?: TimeSeriesCostDto;
-            gAndGAdminCostOverride?: TimeSeriesCostOverrideDto;
-            seismicAcquisitionAndProcessing?: TimeSeriesCostDto;
-            countryOfficeCost?: TimeSeriesCostDto;
+            explorationWells: ExplorationWellDto[] | null;
+            explorationWellCostProfile: TimeSeriesCostDto;
+            appraisalWellCostProfile: TimeSeriesCostDto;
+            sidetrackCostProfile: TimeSeriesCostDto;
+            gAndGAdminCost: TimeSeriesCostDto;
+            gAndGAdminCostOverride: TimeSeriesCostOverrideDto;
+            seismicAcquisitionAndProcessing: TimeSeriesCostDto;
+            countryOfficeCost: TimeSeriesCostDto;
             wellProject: WellProjectDto;
-            wellProjectWells?: WellProjectWellDto[] | null;
-            oilProducerCostProfile?: TimeSeriesCostDto;
-            oilProducerCostProfileOverride?: TimeSeriesCostOverrideDto;
-            gasProducerCostProfile?: TimeSeriesCostDto;
-            gasProducerCostProfileOverride?: TimeSeriesCostOverrideDto;
-            waterInjectorCostProfile?: TimeSeriesCostDto;
-            waterInjectorCostProfileOverride?: TimeSeriesCostOverrideDto;
-            gasInjectorCostProfile?: TimeSeriesCostDto;
-            gasInjectorCostProfileOverride?: TimeSeriesCostOverrideDto;
+            wellProjectWells: WellProjectWellDto[] | null;
+            oilProducerCostProfile: TimeSeriesCostDto;
+            oilProducerCostProfileOverride: TimeSeriesCostOverrideDto;
+            gasProducerCostProfile: TimeSeriesCostDto;
+            gasProducerCostProfileOverride: TimeSeriesCostOverrideDto;
+            waterInjectorCostProfile: TimeSeriesCostDto;
+            waterInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
+            gasInjectorCostProfile: TimeSeriesCostDto;
+            gasInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
@@ -250,11 +250,6 @@ declare namespace Components {
             lastModifiedBy?: IdentitySet;
             lastModifiedDateTime?: string | null; // date-time
         }
-        export interface ExceptionDto {
-            details: {
-                [name: string]: string;
-            } | null;
-        }
         export interface ExplorationDto {
             id: string; // uuid
             projectId: string; // uuid
@@ -309,12 +304,12 @@ declare namespace Components {
             id: string; // uuid
             name: string;
             projectId: string; // uuid
-            lastChangedDate?: string | null; // date-time
+            lastChangedDate: string | null; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
-            prospVersion?: string | null; // date-time
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
+            prospVersion: string | null; // date-time
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
         }
         export interface OnshorePowerSupplyOverviewDto {
             id: string; // uuid
@@ -405,12 +400,12 @@ declare namespace Components {
             currency: Currency /* int32 */;
             approvedBy: string;
             costYear: number; // int32
-            prospVersion?: string | null; // date-time
+            prospVersion: string | null; // date-time
             source: Source /* int32 */;
-            lastChangedDate?: string | null; // date-time
+            lastChangedDate: string | null; // date-time
             concept: Concept /* int32 */;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
         }
         export interface SubstructureOverviewDto {
             id: string; // uuid
@@ -435,10 +430,10 @@ declare namespace Components {
             lastChangedDate: string; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
-            prospVersion?: string | null; // date-time
+            prospVersion: string | null; // date-time
             approvedBy: string;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
         }
         export interface SurfOverviewDto {
             id: string; // uuid
@@ -484,12 +479,12 @@ declare namespace Components {
             cO2OnMaxGasProfile: number; // double
             cO2OnMaxWaterInjectionProfile: number; // double
             costYear: number; // int32
-            prospVersion?: string | null; // date-time
-            lastChangedDate?: string | null; // date-time
+            prospVersion: string | null; // date-time
+            lastChangedDate: string | null; // date-time
             source: Source /* int32 */;
             approvedBy: string;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
             facilityOpex: number; // double
             peakElectricityImported: number; // double
         }
@@ -512,12 +507,12 @@ declare namespace Components {
             gasExportPipelineLength: number; // double
             oilExportPipelineLength: number; // double
             currency: Currency /* int32 */;
-            lastChangedDate?: string | null; // date-time
+            lastChangedDate: string | null; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
-            prospVersion?: string | null; // date-time
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
+            prospVersion: string | null; // date-time
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
         }
         export interface TransportOverviewDto {
             id: string; // uuid
@@ -762,15 +757,6 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.UrlDto;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
-        }
-    }
-    namespace LogException {
-        namespace Post {
-            export type RequestBody = Components.Schemas.ExceptionDto;
-            namespace Responses {
-                export interface $200 {
-                }
-            }
         }
     }
     namespace Projects {

@@ -35,42 +35,42 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
     {
         builder.HasOne(c => c.DrainageStrategy)
             .WithMany()
-            .HasForeignKey(c => c.DrainageStrategyLink)
+            .HasForeignKey(c => c.DrainageStrategyId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.WellProject)
             .WithMany()
-            .HasForeignKey(c => c.WellProjectLink)
+            .HasForeignKey(c => c.WellProjectId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Exploration)
             .WithMany()
-            .HasForeignKey(c => c.ExplorationLink)
+            .HasForeignKey(c => c.ExplorationId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Transport)
             .WithMany()
-            .HasForeignKey(c => c.TransportLink)
+            .HasForeignKey(c => c.TransportId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.OnshorePowerSupply)
             .WithMany()
-            .HasForeignKey(c => c.OnshorePowerSupplyLink)
+            .HasForeignKey(c => c.OnshorePowerSupplyId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Topside)
             .WithMany()
-            .HasForeignKey(c => c.TopsideLink)
+            .HasForeignKey(c => c.TopsideId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Substructure)
             .WithMany()
-            .HasForeignKey(c => c.SubstructureLink)
+            .HasForeignKey(c => c.SubstructureId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Surf)
             .WithMany()
-            .HasForeignKey(c => c.SurfLink)
+            .HasForeignKey(c => c.SurfId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

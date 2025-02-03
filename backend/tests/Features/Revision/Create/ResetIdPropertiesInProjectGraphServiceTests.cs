@@ -26,12 +26,12 @@ public class ResetIdPropertiesInProjectGraphServiceTests
                 {
                     Id = Guid.NewGuid(),
                     ProjectId = projectId,
-                    ExplorationLink = Guid.NewGuid(),
-                    SubstructureLink = Guid.NewGuid(),
-                    WellProjectLink = Guid.NewGuid(),
-                    SurfLink = Guid.NewGuid(),
-                    TransportLink = Guid.NewGuid(),
-                    TopsideLink = Guid.NewGuid(),
+                    ExplorationId = Guid.NewGuid(),
+                    SubstructureId = Guid.NewGuid(),
+                    WellProjectId = Guid.NewGuid(),
+                    SurfId = Guid.NewGuid(),
+                    TransportId = Guid.NewGuid(),
+                    TopsideId = Guid.NewGuid(),
                     Substructure = new Substructure
                     {
                         Id = Guid.NewGuid(),
@@ -53,12 +53,12 @@ public class ResetIdPropertiesInProjectGraphServiceTests
         Assert.Equal(Guid.Empty, project.ReferenceCaseId);
         Assert.Equal(originalProjectId, project.OriginalProjectId);
 
-        Assert.Equal(Guid.Empty, project.Cases.First().ExplorationLink);
-        Assert.Equal(Guid.Empty, project.Cases.First().SubstructureLink);
-        Assert.Equal(Guid.Empty, project.Cases.First().WellProjectLink);
-        Assert.Equal(Guid.Empty, project.Cases.First().SurfLink);
-        Assert.Equal(Guid.Empty, project.Cases.First().TransportLink);
-        Assert.Equal(Guid.Empty, project.Cases.First().TopsideLink);
+        Assert.Equal(Guid.Empty, project.Cases.First().ExplorationId);
+        Assert.Equal(Guid.Empty, project.Cases.First().SubstructureId);
+        Assert.Equal(Guid.Empty, project.Cases.First().WellProjectId);
+        Assert.Equal(Guid.Empty, project.Cases.First().SurfId);
+        Assert.Equal(Guid.Empty, project.Cases.First().TransportId);
+        Assert.Equal(Guid.Empty, project.Cases.First().TopsideId);
 
         var newProjectId = project.Id;
 

@@ -17,12 +17,12 @@ public class ResetIdPropertiesInCaseGraphServiceTests
         {
             Id = caseId,
             ProjectId = projectId,
-            ExplorationLink = Guid.NewGuid(),
-            SubstructureLink = Guid.NewGuid(),
-            WellProjectLink = Guid.NewGuid(),
-            SurfLink = Guid.NewGuid(),
-            TransportLink = Guid.NewGuid(),
-            TopsideLink = Guid.NewGuid(),
+            ExplorationId = Guid.NewGuid(),
+            SubstructureId = Guid.NewGuid(),
+            WellProjectId = Guid.NewGuid(),
+            SurfId = Guid.NewGuid(),
+            TransportId = Guid.NewGuid(),
+            TopsideId = Guid.NewGuid(),
             Substructure = new Substructure
             {
                 Id = Guid.NewGuid(),
@@ -39,12 +39,12 @@ public class ResetIdPropertiesInCaseGraphServiceTests
 
         ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem, duplicateCaseId);
 
-        Assert.Equal(Guid.Empty, caseItem.ExplorationLink);
-        Assert.Equal(Guid.Empty, caseItem.SubstructureLink);
-        Assert.Equal(Guid.Empty, caseItem.WellProjectLink);
-        Assert.Equal(Guid.Empty, caseItem.SurfLink);
-        Assert.Equal(Guid.Empty, caseItem.TransportLink);
-        Assert.Equal(Guid.Empty, caseItem.TopsideLink);
+        Assert.Equal(Guid.Empty, caseItem.ExplorationId);
+        Assert.Equal(Guid.Empty, caseItem.SubstructureId);
+        Assert.Equal(Guid.Empty, caseItem.WellProjectId);
+        Assert.Equal(Guid.Empty, caseItem.SurfId);
+        Assert.Equal(Guid.Empty, caseItem.TransportId);
+        Assert.Equal(Guid.Empty, caseItem.TopsideId);
 
         Assert.Equal(projectId, caseItem.ProjectId);
         Assert.Equal(projectId, caseItem.Substructure.ProjectId);
