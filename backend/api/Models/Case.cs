@@ -2,7 +2,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Case : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

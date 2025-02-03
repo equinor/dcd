@@ -3,7 +3,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Surf : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Surf : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

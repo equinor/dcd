@@ -1,9 +1,8 @@
-
 using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Well : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Well : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

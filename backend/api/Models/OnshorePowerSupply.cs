@@ -3,7 +3,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class OnshorePowerSupply : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class OnshorePowerSupply : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
