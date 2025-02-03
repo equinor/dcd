@@ -1,7 +1,7 @@
 using api.Context;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
