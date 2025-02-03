@@ -20,12 +20,10 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, Recalcul
             .Include(x => x.OnshorePowerSupply)
             .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
 
-        if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile) != null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile) != null)
         {
-            await UpdateOnshorePowerSupplyTimeSeries(caseItem, dto);
-            return;
+            await UpdateOnshorePowerSupplyTimeSeries(caseItem, dto); return;
         }
-
         await CreateOnshorePowerSupplyCostProfile(caseItem, dto);
     }
 
@@ -49,7 +47,7 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, Recalcul
 
     private async Task UpdateOnshorePowerSupplyTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        if (caseItem.Surf!.ProspVersion == null)
+        if (caseItem.OnshorePowerSupply!.ProspVersion == null)
         {
             if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride) != null)
             {
@@ -58,7 +56,6 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, Recalcul
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfile);
-
         existingProfile.StartYear = dto.StartYear;
         existingProfile.Values = dto.Values;
 
