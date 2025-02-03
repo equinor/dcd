@@ -3,13 +3,14 @@ import Grid from "@mui/material/Grid2"
 import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { useStyles } from "@equinor/fusion-react-ag-grid-styles"
-import { TableWell } from "@/Models/Wells"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useAppContext } from "@/Context/AppContext"
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import { SectionHeader } from "./SharedWellStyles"
+
 import WellsTable from "@/Components/Tables/ProjectTables/WellsTable"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
+import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppContext } from "@/Context/AppContext"
+import { TableWell } from "@/Models/Wells"
+import { SectionHeader } from "./SharedWellStyles"
 
 interface WellsProps {
     title: string
