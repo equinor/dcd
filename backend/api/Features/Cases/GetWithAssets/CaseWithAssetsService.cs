@@ -90,7 +90,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             SeismicAcquisitionAndProcessing = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)),
             CountryOfficeCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost)),
             WellProject = WellProjectMapper.MapToDto(caseItem.WellProject!),
-            WellProjectWells = WellProjectWellsMapper.MapToDtos(caseItem.WellProject!.WellProjectWells),
+            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.WellProject!.DevelopmentWells),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),

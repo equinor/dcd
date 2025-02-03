@@ -34,14 +34,14 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Where(y => profileTypes.Contains(y.ProfileType))
             .LoadAsync();
 
-        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
+        var drillingSchedulesForDevelopmentWells = await context.DevelopmentWells
             .Where(w => w.WellProjectId == caseItem.WellProjectId)
             .Select(x => x.DrillingSchedule)
             .ToListAsync();
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
         var flaringsTotal = GetFlaringsProfileTotal(caseItem);
-        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, drillingSchedulesForWellProjectWell);
+        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, drillingSchedulesForDevelopmentWells);
 
         return new Co2DrillingFlaringFuelTotalsDto
         {
@@ -77,11 +77,11 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private static double CalculateDrillingEmissionsTotal(Project project, List<DrillingSchedule?> drillingSchedulesForWellProjectWell)
+    private static double CalculateDrillingEmissionsTotal(Project project, List<DrillingSchedule?> drillingSchedulesForDevelopmentWell)
     {
         var wellDrillingSchedules = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
+        foreach (var drillingSchedule in drillingSchedulesForDevelopmentWell)
         {
             if (drillingSchedule == null)
             {

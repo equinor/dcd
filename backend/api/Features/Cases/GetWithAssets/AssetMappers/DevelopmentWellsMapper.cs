@@ -4,13 +4,13 @@ using api.Models;
 
 namespace api.Features.Cases.GetWithAssets.AssetMappers;
 
-public static class WellProjectWellsMapper
+public static class DevelopmentWellsMapper
 {
-    public static List<WellProjectWellDto> MapToDtos(IEnumerable<WellProjectWell> entities)
+    public static List<DevelopmentWellDto> MapToDtos(IEnumerable<DevelopmentWell> entities)
     {
         return entities
             .Where(x => x.DrillingScheduleId.HasValue)
-            .Select(x => new WellProjectWellDto
+            .Select(x => new DevelopmentWellDto
             {
                 WellProjectId = x.WellProjectId,
                 WellId = x.WellId,

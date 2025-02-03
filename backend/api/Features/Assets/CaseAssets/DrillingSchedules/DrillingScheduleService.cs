@@ -71,7 +71,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
         return MapToDto(newExplorationWell.DrillingSchedule);
     }
 
-    public async Task<TimeSeriesScheduleDto> UpdateWellProjectWellDrillingSchedule(
+    public async Task<TimeSeriesScheduleDto> UpdateDevelopmentWellDrillingSchedule(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
@@ -80,12 +80,12 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
         UpdateTimeSeriesScheduleDto dto)
     {
         var existingWellProject = await context.WellProjects
-            .Include(e => e.WellProjectWells).ThenInclude(w => w.DrillingSchedule)
+            .Include(e => e.DevelopmentWells).ThenInclude(w => w.DrillingSchedule)
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == wellProjectId)
-            .SingleAsync(e => e.WellProjectWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
+            .SingleAsync(e => e.DevelopmentWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
 
-        var existingDrillingSchedule = existingWellProject.WellProjectWells.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
+        var existingDrillingSchedule = existingWellProject.DevelopmentWells.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
             ?? throw new NotFoundInDbException($"Drilling schedule with {drillingScheduleId} not found.");
 
         existingDrillingSchedule.StartYear = dto.StartYear;
@@ -97,7 +97,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
         return MapToDto(existingDrillingSchedule);
     }
 
-    public async Task<TimeSeriesScheduleDto> CreateWellProjectWellDrillingSchedule(
+    public async Task<TimeSeriesScheduleDto> CreateDevelopmentWellDrillingSchedule(
         Guid projectId,
         Guid caseId,
         Guid wellProjectId,
@@ -108,7 +108,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
 
         var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
-        var newWellProjectWell = new WellProjectWell
+        var newDevelopmentWell = new DevelopmentWell
         {
             Well = existingWell,
             WellProject = existingWellProject,
@@ -119,16 +119,16 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
             }
         };
 
-        context.WellProjectWell.Add(newWellProjectWell);
+        context.DevelopmentWells.Add(newDevelopmentWell);
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
-        if (newWellProjectWell.DrillingSchedule == null)
+        if (newDevelopmentWell.DrillingSchedule == null)
         {
-            throw new Exception(nameof(newWellProjectWell.DrillingSchedule));
+            throw new Exception(nameof(newDevelopmentWell.DrillingSchedule));
         }
 
-        return MapToDto(newWellProjectWell.DrillingSchedule);
+        return MapToDto(newDevelopmentWell.DrillingSchedule);
     }
 
     private static TimeSeriesScheduleDto MapToDto(DrillingSchedule drillingSchedule)

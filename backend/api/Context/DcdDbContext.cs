@@ -21,7 +21,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<Case> Cases => Set<Case>();
     public DbSet<Image> Images => Set<Image>();
     public DbSet<Well> Wells => Set<Well>();
-    public DbSet<WellProjectWell> WellProjectWell => Set<WellProjectWell>();
+    public DbSet<DevelopmentWell> DevelopmentWells => Set<DevelopmentWell>();
     public DbSet<ExplorationWell> ExplorationWell => Set<ExplorationWell>();
     public DbSet<Surf> Surfs => Set<Surf>();
     public DbSet<Substructure> Substructures => Set<Substructure>();
@@ -49,7 +49,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
         modelBuilder.ApplyConfiguration(new ProjectMemberConfiguration());
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
-        modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
+        modelBuilder.ApplyConfiguration(new DevelopmentWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
         modelBuilder.ApplyConfiguration(new TimeSeriesProfileConfiguration());
         modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());

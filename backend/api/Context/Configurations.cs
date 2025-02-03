@@ -75,9 +75,9 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
     }
 }
 
-public class WellProjectWellConfiguration : IEntityTypeConfiguration<WellProjectWell>
+public class DevelopmentWellConfiguration : IEntityTypeConfiguration<DevelopmentWell>
 {
-    public void Configure(EntityTypeBuilder<WellProjectWell> builder)
+    public void Configure(EntityTypeBuilder<DevelopmentWell> builder)
     {
         builder.Property(x => x.Id)
             .HasDefaultValueSql("newid()");
@@ -85,7 +85,7 @@ public class WellProjectWellConfiguration : IEntityTypeConfiguration<WellProject
         builder.HasIndex(wc => new { wc.WellProjectId, wc.WellId }).IsUnique();
 
         builder.HasOne(w => w.Well)
-            .WithMany(w => w.WellProjectWells)
+            .WithMany(w => w.DevelopmentWells)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

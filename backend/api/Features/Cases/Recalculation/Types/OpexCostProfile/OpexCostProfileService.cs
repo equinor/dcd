@@ -8,16 +8,16 @@ namespace api.Features.Cases.Recalculation.Types.OpexCostProfile;
 
 public static class OpexCostProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell)
     {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 
-        CalculateWellInterventionCostProfile(caseItem, drillingSchedulesForWellProjectWell, lastYearOfProduction);
+        CalculateWellInterventionCostProfile(caseItem, drillingSchedulesForDevelopmentWell, lastYearOfProduction);
         CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
     }
 
-    private static void CalculateWellInterventionCostProfile(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell, int? lastYearOfProduction)
+    private static void CalculateWellInterventionCostProfile(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
@@ -26,7 +26,7 @@ public static class OpexCostProfileService
 
         var lastYear = lastYearOfProduction ?? 0;
 
-        if (drillingSchedulesForWellProjectWell.Count == 0)
+        if (drillingSchedulesForDevelopmentWell.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
             return;
@@ -34,7 +34,7 @@ public static class OpexCostProfileService
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
+        foreach (var drillingSchedule in drillingSchedulesForDevelopmentWell)
         {
             var timeSeries = new TimeSeriesCost
             {

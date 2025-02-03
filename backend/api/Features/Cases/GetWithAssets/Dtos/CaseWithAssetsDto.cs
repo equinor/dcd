@@ -89,7 +89,7 @@ public class CaseWithAssetsDto
 
 
     [Required] public required WellProjectDto WellProject { get; set; }
-    public required List<WellProjectWellDto> WellProjectWells { get; set; }
+    public required List<DevelopmentWellDto> DevelopmentWells { get; set; }
     public required TimeSeriesCostDto? OilProducerCostProfile { get; set; }
     public required TimeSeriesCostOverrideDto? OilProducerCostProfileOverride { get; set; }
     public required TimeSeriesCostDto? GasProducerCostProfile { get; set; }

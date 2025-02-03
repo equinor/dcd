@@ -50,12 +50,12 @@ public class UpdateWellsService(
                     affectedAssets[nameof(Exploration)].Add(explorationWell.ExplorationId);
                 }
 
-                var wellProjectWells = context.WellProjectWell.Where(ew => ew.WellId == well.Id);
+                var developmentWells = context.DevelopmentWells.Where(ew => ew.WellId == well.Id);
 
-                foreach (var wellProjectWell in wellProjectWells)
+                foreach (var developmentWell in developmentWells)
                 {
-                    context.WellProjectWell.Remove(wellProjectWell);
-                    affectedAssets[nameof(WellProject)].Add(wellProjectWell.WellProjectId);
+                    context.DevelopmentWells.Remove(developmentWell);
+                    affectedAssets[nameof(WellProject)].Add(developmentWell.WellProjectId);
                 }
 
                 context.Wells.Remove(well);
@@ -111,7 +111,7 @@ public class UpdateWellsService(
         foreach (var wellDto in updateWellDtos)
         {
             var existing = await context.Wells
-                .Include(e => e.WellProjectWells)
+                .Include(e => e.DevelopmentWells)
                 .Include(e => e.ExplorationWells)
                 .SingleAsync(w => w.Id == wellDto.Id);
 

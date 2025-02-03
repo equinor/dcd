@@ -8,7 +8,7 @@ namespace api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 
 public static class Co2EmissionsProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)
         {
@@ -29,7 +29,7 @@ public static class Co2EmissionsProfileService
             Values = convertedValues.ToArray()
         };
 
-        var drillingEmissionsProfile = CalculateDrillingEmissions(caseItem.Project, drillingSchedulesForWellProjectWell);
+        var drillingEmissionsProfile = CalculateDrillingEmissions(caseItem.Project, drillingSchedulesForDevelopmentWell);
 
         var totalProfile = TimeSeriesMerger.MergeTimeSeries(newProfile, drillingEmissionsProfile);
 
@@ -72,11 +72,11 @@ public static class Co2EmissionsProfileService
         };
     }
 
-    private static TimeSeriesCost CalculateDrillingEmissions(Project project, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    private static TimeSeriesCost CalculateDrillingEmissions(Project project, List<DrillingSchedule> drillingSchedulesForDevelopmentWell)
     {
         var wellDrillingSchedules = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
+        foreach (var drillingSchedule in drillingSchedulesForDevelopmentWell)
         {
             var timeSeries = new TimeSeriesCost
             {
