@@ -61,22 +61,6 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public virtual ICollection<Image> Images { get; set; } = [];
 }
 
-public class RevisionDetails : IChangeTrackable, IDateTrackedEntity
-{
-    public Guid Id { get; set; }
-
-    public virtual Project Revision { get; set; } = null!;
-    public Guid RevisionId { get; set; }
-    public string? RevisionName { get; set; }
-    public bool Arena { get; set; }
-    public bool Mdqc { get; set; }
-    public ProjectClassification Classification { get; set; }
-    public DateTime CreatedUtc { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime UpdatedUtc { get; set; }
-    public string? UpdatedBy { get; set; }
-}
-
 public enum PhysUnit
 {
     SI,
