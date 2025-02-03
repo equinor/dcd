@@ -39,11 +39,11 @@ public static class DcdDatabaseConfiguration
         context.Database.EnsureCreated();
 
         builder.Services.AddDbContext<DcdDbContext>(
-            options => options.UseLazyLoadingProxies()
+            options => options//.UseLazyLoadingProxies()
                 .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         builder.Services.AddDbContextFactory<DcdDbContext>(
-            options => options.UseLazyLoadingProxies()
+            options => options//.UseLazyLoadingProxies()
                 .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
     }
@@ -53,10 +53,11 @@ public static class DcdDatabaseConfiguration
         var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
 
         builder.Services.AddDbContext<DcdDbContext>(
-            options => options.UseLazyLoadingProxies()
+            options => options//.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
-        builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseLazyLoadingProxies()
+        builder.Services.AddDbContextFactory<DcdDbContext>(
+            options => options//.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
 

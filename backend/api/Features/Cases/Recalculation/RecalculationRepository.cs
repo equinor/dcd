@@ -30,7 +30,7 @@ public class RecalculationRepository(DcdDbContext context)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
-        var wellProjectIds = caseItems.Select(x => x.WellProjectLink).ToList();
+        var wellProjectIds = caseItems.Select(x => x.WellProjectId).ToList();
 
         await context.WellProjectWell
             .Include(x => x.DrillingSchedule)
@@ -38,7 +38,7 @@ public class RecalculationRepository(DcdDbContext context)
             .Where(x => wellProjectIds.Contains(x.WellProjectId))
             .LoadAsync();
 
-        var explorationIds = caseItems.Select(x => x.ExplorationLink).ToList();
+        var explorationIds = caseItems.Select(x => x.ExplorationId).ToList();
 
         await context.ExplorationWell
             .Include(x => x.DrillingSchedule)
@@ -48,7 +48,7 @@ public class RecalculationRepository(DcdDbContext context)
 
         var drillingSchedulesForWellProjectWell = await (
                 from caseItem in context.Cases
-                join wp in context.WellProjects on caseItem.WellProjectLink equals wp.Id
+                join wp in context.WellProjects on caseItem.WellProjectId equals wp.Id
                 join wpw in context.WellProjectWell on wp.Id equals wpw.WellProjectId
                 where wpw.DrillingSchedule != null
                 select new
@@ -61,7 +61,7 @@ public class RecalculationRepository(DcdDbContext context)
 
         var drillingSchedulesForExplorationWell = await (
                 from caseItem in context.Cases
-                join ew in context.ExplorationWell on caseItem.ExplorationLink equals ew.ExplorationId
+                join ew in context.ExplorationWell on caseItem.ExplorationId equals ew.ExplorationId
                 where ew.DrillingSchedule != null
                 select new
                 {

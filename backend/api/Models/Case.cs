@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Case : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
@@ -49,41 +47,31 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    public Guid DrainageStrategyLink { get; set; }
-
-    [ForeignKey("DrainageStrategyLink")]
+    public Guid DrainageStrategyId { get; set; }
     public virtual DrainageStrategy? DrainageStrategy { get; set; }
 
-    public Guid WellProjectLink { get; set; }
-    [ForeignKey("WellProjectLink")]
+    public Guid WellProjectId { get; set; }
     public virtual WellProject? WellProject { get; set; }
 
-    public Guid SurfLink { get; set; }
-    [ForeignKey("SurfLink")]
+    public Guid SurfId { get; set; }
     public virtual Surf? Surf { get; set; }
 
-    public Guid SubstructureLink { get; set; }
-    [ForeignKey("SubstructureLink")]
+    public Guid SubstructureId { get; set; }
     public virtual Substructure? Substructure { get; set; }
 
-    public Guid TopsideLink { get; set; }
-    [ForeignKey("TopsideLink")]
+    public Guid TopsideId { get; set; }
     public virtual Topside? Topside { get; set; }
 
-    public Guid TransportLink { get; set; }
-    [ForeignKey("TransportLink")]
+    public Guid TransportId { get; set; }
     public virtual Transport? Transport { get; set; }
 
-    public Guid OnshorePowerSupplyLink { get; set; }
-    [ForeignKey("OnshorePowerSupplyLink")]
+    public Guid OnshorePowerSupplyId { get; set; }
     public virtual OnshorePowerSupply? OnshorePowerSupply { get; set; }
 
-    public Guid ExplorationLink { get; set; }
-    [ForeignKey("ExplorationLink")]
+    public Guid ExplorationId { get; set; }
     public virtual Exploration? Exploration { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = [];
-
     public virtual ICollection<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);

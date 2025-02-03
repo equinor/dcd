@@ -43,7 +43,7 @@ implements Components.Schemas.SharePointImportDto {
         projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ProspImportStatusEnum => {
-        const surfId = projectCase.surfLink
+        const surfId = projectCase.surfId
         const surf = project.surfs?.find((s) => s.id === surfId)
         if (!surf) {
             return ProspImportStatusEnum.NotSelected
@@ -62,7 +62,7 @@ implements Components.Schemas.SharePointImportDto {
         projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ProspImportStatusEnum => {
-        const substructureId = projectCase.substructureLink
+        const substructureId = projectCase.substructureId
         const substructure = project.substructures?.find(
             (s) => s.id === substructureId,
         )
@@ -83,7 +83,7 @@ implements Components.Schemas.SharePointImportDto {
         projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ProspImportStatusEnum => {
-        const topsideId = projectCase.topsideLink
+        const topsideId = projectCase.topsideId
         const topside = project.topsides?.find((s) => s.id === topsideId)
         if (!topside) {
             return ProspImportStatusEnum.NotSelected
@@ -102,7 +102,7 @@ implements Components.Schemas.SharePointImportDto {
         projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ProspImportStatusEnum => {
-        const transportId = projectCase.transportLink
+        const transportId = projectCase.transportId
         const transport = project.transports?.find((s) => s.id === transportId)
         if (!transport) {
             return ProspImportStatusEnum.NotSelected

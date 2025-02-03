@@ -2,7 +2,7 @@ using api.Models.Enums;
 using api.Models.Interfaces;
 namespace api.Models;
 
-public class Transport : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Transport : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

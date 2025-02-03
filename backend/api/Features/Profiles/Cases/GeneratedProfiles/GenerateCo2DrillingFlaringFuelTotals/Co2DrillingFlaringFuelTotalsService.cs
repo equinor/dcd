@@ -2,7 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +35,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .LoadAsync();
 
         var drillingSchedulesForWellProjectWell = await context.WellProjectWell
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
+            .Where(w => w.WellProjectId == caseItem.WellProjectId)
             .Select(x => x.DrillingSchedule)
             .ToListAsync();
 

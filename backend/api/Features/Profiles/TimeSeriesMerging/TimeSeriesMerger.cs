@@ -1,6 +1,6 @@
 using api.Features.Profiles.Dtos;
 
-namespace api.Features.TimeSeriesCalculators;
+namespace api.Features.Profiles.TimeSeriesMerging;
 
 public static class TimeSeriesMerger
 {

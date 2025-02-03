@@ -26,7 +26,7 @@ public class CalculateNpvServiceTests
             Id = caseId,
             Project = project,
             DG4Date = new DateTime(DateTime.Now.Year + 6, 1, 1),
-            DrainageStrategyLink = Guid.NewGuid(),
+            DrainageStrategyId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()

@@ -2,7 +2,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DevelopmentOperationalWellCosts : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class DevelopmentOperationalWellCosts : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

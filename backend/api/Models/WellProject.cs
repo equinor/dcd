@@ -2,7 +2,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class WellProject : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class WellProject : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

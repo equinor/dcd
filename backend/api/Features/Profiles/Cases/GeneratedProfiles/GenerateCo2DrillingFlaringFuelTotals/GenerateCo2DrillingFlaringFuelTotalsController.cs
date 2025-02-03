@@ -8,6 +8,7 @@ public class GenerateCo2DrillingFlaringFuelTotalsController(Co2DrillingFlaringFu
 {
     [AuthorizeActionType(ActionType.Read)]
     [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/co2DrillingFlaringFuelTotals")]
+    [DisableLazyLoading]
     public async Task<Co2DrillingFlaringFuelTotalsDto> GenerateCo2DrillingFlaringFuelTotals(Guid projectId, Guid caseId)
     {
         return await generateCo2DrillingFlaringFuelTotals.Generate(projectId, caseId);

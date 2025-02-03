@@ -3,7 +3,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Substructure : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Substructure : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
