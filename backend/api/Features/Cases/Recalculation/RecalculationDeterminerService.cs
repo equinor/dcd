@@ -295,46 +295,46 @@ public class RecalculationDeterminerService(DcdDbContext context)
 
     public bool CalculateTotalCost()
     {
-        var totalFeasibilityAndConceptStudies = ProfileIsAdded(ProfileTypes.TotalFeasibilityAndConceptStudies);
-        var totalFeedStudies = ProfileIsAdded(ProfileTypes.TotalFEEDStudies);
-        var totalFeedStudiesOverride = ProfileIsAdded(ProfileTypes.TotalFEEDStudiesOverride);
-        var totalOtherStudiesCostProfile = ProfileIsAdded(ProfileTypes.TotalOtherStudiesCostProfile);
-        var historicCostCostProfile = ProfileIsAdded(ProfileTypes.HistoricCostCostProfile);
-        var wellInterventionCostProfile = ProfileIsAdded(ProfileTypes.WellInterventionCostProfile);
-        var wellInterventionCostProfileOverride = ProfileIsAdded(ProfileTypes.WellInterventionCostProfileOverride);
-        var offshoreFacilitiesOperationsCostProfile = ProfileIsAdded(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
-        var onshoreRelatedOpexCostProfile = ProfileIsAdded(ProfileTypes.OnshoreRelatedOPEXCostProfile);
-        var additionalOpexCostProfile = ProfileIsAdded(ProfileTypes.AdditionalOPEXCostProfile);
-        var cessationWellsCost = ProfileIsAdded(ProfileTypes.CessationWellsCost);
-        var cessationWellsCostOverride = ProfileIsAdded(ProfileTypes.CessationWellsCostOverride);
-        var cessationOffshoreFacilitiesCost = ProfileIsAdded(ProfileTypes.CessationOffshoreFacilitiesCost);
-        var cessationOffshoreFacilitiesCostOverride = ProfileIsAdded(ProfileTypes.CessationOffshoreFacilitiesCostOverride);
-        var cessationOnshoreFacilitiesCostProfile = ProfileIsAdded(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
-        var surfCostProfile = ProfileIsAdded(ProfileTypes.SurfCostProfile);
-        var surfCostProfileOverride = ProfileIsAdded(ProfileTypes.SurfCostProfileOverride);
-        var substructureCostProfile = ProfileIsAdded(ProfileTypes.SubstructureCostProfile);
-        var substructureCostProfileOverride = ProfileIsAdded(ProfileTypes.SubstructureCostProfileOverride);
-        var topsideCostProfile = ProfileIsAdded(ProfileTypes.TopsideCostProfile);
-        var topsideCostProfileOverride = ProfileIsAdded(ProfileTypes.TopsideCostProfileOverride);
-        var transportCostProfile = ProfileIsAdded(ProfileTypes.TransportCostProfile);
-        var transportCostProfileOverride = ProfileIsAdded(ProfileTypes.TransportCostProfileOverride);
-        var onshorePowerSupplyCostProfile = ProfileIsAdded(ProfileTypes.OnshorePowerSupplyCostProfile);
-        var onshorePowerSupplyCostProfileOverride = ProfileIsAdded(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
-        var oilProducerCostProfile = ProfileIsAdded(ProfileTypes.OilProducerCostProfile);
-        var oilProducerCostProfileOverride = ProfileIsAdded(ProfileTypes.OilProducerCostProfileOverride);
-        var gasProducerCostProfile = ProfileIsAdded(ProfileTypes.GasProducerCostProfile);
-        var gasProducerCostProfileOverride = ProfileIsAdded(ProfileTypes.GasProducerCostProfileOverride);
-        var waterInjectorCostProfile = ProfileIsAdded(ProfileTypes.WaterInjectorCostProfile);
-        var waterInjectorCostProfileOverride = ProfileIsAdded(ProfileTypes.WaterInjectorCostProfileOverride);
-        var gasInjectorCostProfile = ProfileIsAdded(ProfileTypes.GasInjectorCostProfile);
-        var gasInjectorCostProfileOverride = ProfileIsAdded(ProfileTypes.GasInjectorCostProfileOverride);
-        var gAndGAdminCost = ProfileIsAdded(ProfileTypes.GAndGAdminCost);
-        var gAndGAdminCostOverride = ProfileIsAdded(ProfileTypes.GAndGAdminCostOverride);
-        var seismicAcquisitionAndProcessing = ProfileIsAdded(ProfileTypes.SeismicAcquisitionAndProcessing);
-        var countryOfficeCost = ProfileIsAdded(ProfileTypes.CountryOfficeCost);
-        var explorationWellCostProfile = ProfileIsAdded(ProfileTypes.ExplorationWellCostProfile);
-        var appraisalWellCostProfile = ProfileIsAdded(ProfileTypes.AppraisalWellCostProfile);
-        var sidetrackCostProfile = ProfileIsAdded(ProfileTypes.SidetrackCostProfile);
+        var totalFeasibilityAndConceptStudies = ProfileIsChangedOrAdded(ProfileTypes.TotalFeasibilityAndConceptStudies);
+        var totalFeedStudies = ProfileIsChangedOrAdded(ProfileTypes.TotalFEEDStudies);
+        var totalFeedStudiesOverride = ProfileIsChangedOrAdded(ProfileTypes.TotalFEEDStudiesOverride);
+        var totalOtherStudiesCostProfile = ProfileIsChangedOrAdded(ProfileTypes.TotalOtherStudiesCostProfile);
+        var historicCostCostProfile = ProfileIsChangedOrAdded(ProfileTypes.HistoricCostCostProfile);
+        var wellInterventionCostProfile = ProfileIsChangedOrAdded(ProfileTypes.WellInterventionCostProfile);
+        var wellInterventionCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.WellInterventionCostProfileOverride);
+        var offshoreFacilitiesOperationsCostProfile = ProfileIsChangedOrAdded(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
+        var onshoreRelatedOpexCostProfile = ProfileIsChangedOrAdded(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        var additionalOpexCostProfile = ProfileIsChangedOrAdded(ProfileTypes.AdditionalOPEXCostProfile);
+        var cessationWellsCost = ProfileIsChangedOrAdded(ProfileTypes.CessationWellsCost);
+        var cessationWellsCostOverride = ProfileIsChangedOrAdded(ProfileTypes.CessationWellsCostOverride);
+        var cessationOffshoreFacilitiesCost = ProfileIsChangedOrAdded(ProfileTypes.CessationOffshoreFacilitiesCost);
+        var cessationOffshoreFacilitiesCostOverride = ProfileIsChangedOrAdded(ProfileTypes.CessationOffshoreFacilitiesCostOverride);
+        var cessationOnshoreFacilitiesCostProfile = ProfileIsChangedOrAdded(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
+        var surfCostProfile = ProfileIsChangedOrAdded(ProfileTypes.SurfCostProfile);
+        var surfCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.SurfCostProfileOverride);
+        var substructureCostProfile = ProfileIsChangedOrAdded(ProfileTypes.SubstructureCostProfile);
+        var substructureCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.SubstructureCostProfileOverride);
+        var topsideCostProfile = ProfileIsChangedOrAdded(ProfileTypes.TopsideCostProfile);
+        var topsideCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.TopsideCostProfileOverride);
+        var transportCostProfile = ProfileIsChangedOrAdded(ProfileTypes.TransportCostProfile);
+        var transportCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.TransportCostProfileOverride);
+        var onshorePowerSupplyCostProfile = ProfileIsChangedOrAdded(ProfileTypes.OnshorePowerSupplyCostProfile);
+        var onshorePowerSupplyCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
+        var oilProducerCostProfile = ProfileIsChangedOrAdded(ProfileTypes.OilProducerCostProfile);
+        var oilProducerCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.OilProducerCostProfileOverride);
+        var gasProducerCostProfile = ProfileIsChangedOrAdded(ProfileTypes.GasProducerCostProfile);
+        var gasProducerCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.GasProducerCostProfileOverride);
+        var waterInjectorCostProfile = ProfileIsChangedOrAdded(ProfileTypes.WaterInjectorCostProfile);
+        var waterInjectorCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.WaterInjectorCostProfileOverride);
+        var gasInjectorCostProfile = ProfileIsChangedOrAdded(ProfileTypes.GasInjectorCostProfile);
+        var gasInjectorCostProfileOverride = ProfileIsChangedOrAdded(ProfileTypes.GasInjectorCostProfileOverride);
+        var gAndGAdminCost = ProfileIsChangedOrAdded(ProfileTypes.GAndGAdminCost);
+        var gAndGAdminCostOverride = ProfileIsChangedOrAdded(ProfileTypes.GAndGAdminCostOverride);
+        var seismicAcquisitionAndProcessing = ProfileIsChangedOrAdded(ProfileTypes.SeismicAcquisitionAndProcessing);
+        var countryOfficeCost = ProfileIsChangedOrAdded(ProfileTypes.CountryOfficeCost);
+        var explorationWellCostProfile = ProfileIsChangedOrAdded(ProfileTypes.ExplorationWellCostProfile);
+        var appraisalWellCostProfile = ProfileIsChangedOrAdded(ProfileTypes.AppraisalWellCostProfile);
+        var sidetrackCostProfile = ProfileIsChangedOrAdded(ProfileTypes.SidetrackCostProfile);
 
         return
             totalFeasibilityAndConceptStudies
@@ -425,13 +425,6 @@ public class RecalculationDeterminerService(DcdDbContext context)
             .Any(e => e.State == EntityState.Added);
 
         return changes || added;
-    }
-
-    private bool ProfileIsAdded(string profileName)
-    {
-        return context.ChangeTracker.Entries<TimeSeriesProfile>()
-            .Where(x => x.Entity.ProfileType == profileName)
-            .Any(e => e.State == EntityState.Added);
     }
 
     private bool TopsideIsChanged()
