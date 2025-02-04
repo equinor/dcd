@@ -47,6 +47,8 @@ public static class GenerateGAndGAdminCostProfile
 
             gAndGAdminCost.Values = values.ToArray();
             gAndGAdminCost.StartYear = gAndGAdminCost.StartYear;
+
+            TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(gAndGAdminCost, caseItem.Id);
         }
     }
 

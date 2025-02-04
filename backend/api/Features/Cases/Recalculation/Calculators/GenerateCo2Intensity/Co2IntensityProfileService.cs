@@ -53,6 +53,8 @@ public static class Co2IntensityProfileService
 
         co2IntensityProfile.StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset;
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(co2IntensityProfile, caseItem.Id);
     }
 
     private static TimeSeriesCost GetTotalExportedVolumes(Case caseItem)

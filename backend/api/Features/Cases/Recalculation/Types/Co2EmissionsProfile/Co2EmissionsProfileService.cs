@@ -37,6 +37,8 @@ public static class Co2EmissionsProfileService
 
         co2Emissions.Values = totalProfile.Values;
         co2Emissions.StartYear = totalProfile.StartYear;
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(co2Emissions, caseItem.Id);
     }
 
     private static TimeSeriesCost GetLossesProfile(Case caseItem)

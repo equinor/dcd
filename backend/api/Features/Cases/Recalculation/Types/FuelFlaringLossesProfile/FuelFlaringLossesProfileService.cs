@@ -24,5 +24,7 @@ public static class FuelFlaringLossesProfileService
 
         profile.StartYear = total.StartYear;
         profile.Values = total.Values;
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 }

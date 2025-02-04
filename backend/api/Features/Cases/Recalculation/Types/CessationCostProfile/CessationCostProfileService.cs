@@ -30,6 +30,8 @@ public static class CessationCostProfileService
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationWellsCost);
 
         GenerateCessationWellsCost(caseItem.Project, developmentWells, lastYear.Value, profile);
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static void GetCessationOffshoreFacilitiesCost(Case caseItem, int? lastYear)
@@ -48,6 +50,8 @@ public static class CessationCostProfileService
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationOffshoreFacilitiesCost);
 
         GenerateCessationOffshoreFacilitiesCost(caseItem.Surf!, lastYear.Value, profile);
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static void GenerateCessationWellsCost(Project project, List<DevelopmentWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)
