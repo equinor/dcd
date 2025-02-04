@@ -314,7 +314,7 @@ const PROSPCaseList = ({
 
     useEffect(() => {
         setColumnDefs(GetColumnDefs())
-    }, [editMode])
+    }, [editMode, isEditDisabled])
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
