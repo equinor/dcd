@@ -15,7 +15,7 @@ public class DevelopmentWell : IDateTrackedEntity
     public virtual Well Well { get; set; } = null!;
 
     public Guid CampaignId { get; set; }
-    public virtual Campaign Campaign { get; set; } = null!;
+    //public virtual Campaign Campaign { get; set; } = null!;
 
     public int StartYear { get; set; }
     public string InternalData { get; set; } = string.Empty;

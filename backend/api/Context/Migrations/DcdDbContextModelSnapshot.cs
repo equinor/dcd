@@ -315,8 +315,6 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CampaignId");
-
                     b.HasIndex("WellId");
 
                     b.HasIndex("WellProjectId", "WellId")
@@ -497,8 +495,6 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
 
                     b.HasIndex("WellId");
 
@@ -1590,12 +1586,6 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.DevelopmentWell", b =>
                 {
-                    b.HasOne("api.Models.Campaign", "Campaign")
-                        .WithMany("DevelopmentWells")
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("api.Models.Well", "Well")
                         .WithMany("DevelopmentWells")
                         .HasForeignKey("WellId")
@@ -1607,8 +1597,6 @@ namespace api.Migrations
                         .HasForeignKey("WellProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Campaign");
 
                     b.Navigation("Well");
 
@@ -1650,12 +1638,6 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ExplorationWell", b =>
                 {
-                    b.HasOne("api.Models.Campaign", "Campaign")
-                        .WithMany("ExplorationWells")
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("api.Models.Exploration", "Exploration")
                         .WithMany("ExplorationWells")
                         .HasForeignKey("ExplorationId")
@@ -1667,8 +1649,6 @@ namespace api.Migrations
                         .HasForeignKey("WellId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Campaign");
 
                     b.Navigation("Exploration");
 
@@ -1810,13 +1790,6 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("api.Models.Campaign", b =>
-                {
-                    b.Navigation("DevelopmentWells");
-
-                    b.Navigation("ExplorationWells");
                 });
 
             modelBuilder.Entity("api.Models.Case", b =>
