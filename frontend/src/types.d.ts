@@ -1,6 +1,22 @@
 declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export interface CampaignDto {
+            campaignId: string; // uuid
+            campaignType: string;
+            rigUpgradingCost: number; // double
+            rigMobDemobCost: number; // double
+            rigUpgradingProfile: RigProfileDto;
+            rigMobDemobProfile: RigProfileDto;
+            campaignWells: CampaignWellDto[];
+        }
+        export interface CampaignWellDto {
+            wellId: string; // uuid
+            wellName: string;
+            wellCategory: WellCategory /* int32 */;
+            startYear: number; // int32
+            values: number /* int32 */[];
+        }
         export interface CaseOverviewDto {
             caseId: string; // uuid
             projectId: string; // uuid
@@ -104,6 +120,7 @@ declare namespace Components {
             onshorePowerSupplyCostProfileOverride: TimeSeriesCostOverrideDto;
             exploration: ExplorationDto;
             explorationWells: ExplorationWellDto[] | null;
+            explorationCampaigns: CampaignDto[];
             explorationWellCostProfile: TimeSeriesCostDto;
             appraisalWellCostProfile: TimeSeriesCostDto;
             sidetrackCostProfile: TimeSeriesCostDto;
@@ -113,6 +130,7 @@ declare namespace Components {
             countryOfficeCost: TimeSeriesCostDto;
             wellProject: WellProjectDto;
             developmentWells: DevelopmentWellDto[] | null;
+            developmentCampaigns: CampaignDto[];
             oilProducerCostProfile: TimeSeriesCostDto;
             oilProducerCostProfileOverride: TimeSeriesCostOverrideDto;
             gasProducerCostProfile: TimeSeriesCostDto;
@@ -361,6 +379,10 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
+        }
+        export interface RigProfileDto {
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface SaveTimeSeriesDto {
             profileType: string;
