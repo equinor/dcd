@@ -4,21 +4,21 @@ import {
     useEffect,
     useCallback,
 } from "react"
-
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import isEqual from "lodash/isEqual"
+
 import {
     cellStyleRightAlign,
     getValuesFromEntireRow,
     generateProfile,
     roundToFourDecimalsAndJoin,
     numberValueParser,
-} from "../../../../Utils/common"
-import { useAppContext } from "../../../../Context/AppContext"
-import { useProjectContext } from "../../../../Context/ProjectContext"
+} from "@/Utils/common"
+import { useAppContext } from "@/Context/AppContext"
+import { useProjectContext } from "@/Context/ProjectContext"
 import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 
 interface Props {
