@@ -7,7 +7,7 @@ public class DrainageStrategy : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;

@@ -9,13 +9,13 @@ public class ExplorationWell : IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid WellId { get; set; }
-    public virtual Well Well { get; set; } = null!;
+    public Well Well { get; set; } = null!;
 
     public Guid ExplorationId { get; set; }
-    public virtual Exploration Exploration { get; set; } = null!;
+    public Exploration Exploration { get; set; } = null!;
 
     public Guid CampaignId { get; set; }
-    public virtual Campaign Campaign { get; set; } = null!;
+    public Campaign Campaign { get; set; } = null!;
 
     public int StartYear { get; set; }
     public string InternalData { get; set; } = string.Empty;

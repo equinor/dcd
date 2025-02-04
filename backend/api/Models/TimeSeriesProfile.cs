@@ -19,7 +19,7 @@ public class TimeSeriesProfile : IChangeTrackable, IDateTrackedEntity
     public string? UpdatedBy { get; set; }
 
     public Guid CaseId { get; set; }
-    public virtual Case Case { get; set; } = null!;
+    public Case Case { get; set; } = null!;
 
     [NotMapped]
     public required double[] Values

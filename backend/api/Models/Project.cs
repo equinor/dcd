@@ -7,7 +7,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; } // If the project is a revision, this is the revision's id
 
     public Guid? OriginalProjectId { get; set; } // Id of the project the revision is based on
-    public virtual Project? OriginalProject { get; set; }
+    public Project? OriginalProject { get; set; }
 
     public string Name { get; set; } = string.Empty;
     public bool IsRevision { get; set; }
@@ -42,23 +42,23 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    public virtual ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
-    public virtual DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
-    public virtual RevisionDetails? RevisionDetails { get; set; }
+    public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
+    public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
+    public RevisionDetails? RevisionDetails { get; set; }
 
-    public virtual ICollection<Case> Cases { get; set; } = [];
-    public virtual ICollection<Well> Wells { get; set; } = [];
-    public virtual ICollection<Surf> Surfs { get; set; } = [];
-    public virtual ICollection<Substructure> Substructures { get; set; } = [];
-    public virtual ICollection<Topside> Topsides { get; set; } = [];
-    public virtual ICollection<Transport> Transports { get; set; } = [];
-    public virtual ICollection<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = [];
-    public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = [];
-    public virtual ICollection<WellProject> WellProjects { get; set; } = [];
-    public virtual ICollection<Exploration> Explorations { get; set; } = [];
-    public virtual ICollection<Project> Revisions { get; set; } = [];
-    public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = [];
-    public virtual ICollection<Image> Images { get; set; } = [];
+    public List<Case> Cases { get; set; } = [];
+    public List<Well> Wells { get; set; } = [];
+    public List<Surf> Surfs { get; set; } = [];
+    public List<Substructure> Substructures { get; set; } = [];
+    public List<Topside> Topsides { get; set; } = [];
+    public List<Transport> Transports { get; set; } = [];
+    public List<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = [];
+    public List<DrainageStrategy> DrainageStrategies { get; set; } = [];
+    public List<WellProject> WellProjects { get; set; } = [];
+    public List<Exploration> Explorations { get; set; } = [];
+    public List<Project> Revisions { get; set; } = [];
+    public List<ProjectMember> ProjectMembers { get; set; } = [];
+    public List<Image> Images { get; set; } = [];
 }
 
 public enum PhysUnit

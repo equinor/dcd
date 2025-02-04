@@ -7,7 +7,7 @@ public class Exploration : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public string Name { get; set; } = string.Empty;
     public double RigMobDemob { get; set; }
@@ -18,5 +18,5 @@ public class Exploration : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
+    public List<ExplorationWell> ExplorationWells { get; set; } = [];
 }

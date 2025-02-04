@@ -7,7 +7,7 @@ public class RevisionDetails : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid RevisionId { get; set; }
-    public virtual Project Revision { get; set; } = null!;
+    public Project Revision { get; set; } = null!;
 
     public string? RevisionName { get; set; }
     public bool Arena { get; set; }

@@ -31,7 +31,7 @@ public static class CampaignMapper
         };
     }
 
-    private static List<CampaignWellDto> MapExplorationWells(ICollection<ExplorationWell> explorationWells)
+    private static List<CampaignWellDto> MapExplorationWells(List<ExplorationWell> explorationWells)
     {
         return explorationWells
             .Select(x => new CampaignWellDto
@@ -45,7 +45,7 @@ public static class CampaignMapper
             .ToList();
     }
 
-    private static List<CampaignWellDto> MapDevelopmentWells(ICollection<DevelopmentWell> developmentWells)
+    private static List<CampaignWellDto> MapDevelopmentWells(List<DevelopmentWell> developmentWells)
     {
         return developmentWells
             .Select(x => new CampaignWellDto

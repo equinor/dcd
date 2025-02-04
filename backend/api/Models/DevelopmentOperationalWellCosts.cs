@@ -7,7 +7,7 @@ public class DevelopmentOperationalWellCosts : IChangeTrackable, IDateTrackedEnt
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public double RigUpgrading { get; set; }
     public double RigMobDemob { get; set; }

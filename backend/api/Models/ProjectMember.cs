@@ -7,7 +7,7 @@ public class ProjectMember : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public Guid UserId { get; set; } // Azure AD user id
     public ProjectMemberRole Role { get; set; }

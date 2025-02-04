@@ -15,8 +15,8 @@ public class Image : IChangeTrackable, IDateTrackedEntity
     public string? UpdatedBy { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public Guid? CaseId { get; set; }
-    public virtual Case? Case { get; set; }
+    public Case? Case { get; set; }
 }

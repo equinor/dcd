@@ -7,7 +7,7 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -48,32 +48,32 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public string? UpdatedBy { get; set; }
 
     public Guid DrainageStrategyId { get; set; }
-    public virtual DrainageStrategy? DrainageStrategy { get; set; }
+    public DrainageStrategy? DrainageStrategy { get; set; }
 
     public Guid WellProjectId { get; set; }
-    public virtual WellProject? WellProject { get; set; }
+    public WellProject? WellProject { get; set; }
 
     public Guid SurfId { get; set; }
-    public virtual Surf? Surf { get; set; }
+    public Surf? Surf { get; set; }
 
     public Guid SubstructureId { get; set; }
-    public virtual Substructure? Substructure { get; set; }
+    public Substructure? Substructure { get; set; }
 
     public Guid TopsideId { get; set; }
-    public virtual Topside? Topside { get; set; }
+    public Topside? Topside { get; set; }
 
     public Guid TransportId { get; set; }
-    public virtual Transport? Transport { get; set; }
+    public Transport? Transport { get; set; }
 
     public Guid OnshorePowerSupplyId { get; set; }
-    public virtual OnshorePowerSupply? OnshorePowerSupply { get; set; }
+    public OnshorePowerSupply? OnshorePowerSupply { get; set; }
 
     public Guid ExplorationId { get; set; }
-    public virtual Exploration? Exploration { get; set; }
+    public Exploration? Exploration { get; set; }
 
-    public virtual ICollection<Image> Images { get; set; } = [];
-    public virtual ICollection<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
-    public virtual ICollection<Campaign> Campaigns { get; set; } = [];
+    public List<Image> Images { get; set; } = [];
+    public List<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
+    public List<Campaign> Campaigns { get; set; } = [];
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);

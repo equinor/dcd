@@ -8,7 +8,7 @@ public class Substructure : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public string Name { get; set; } = string.Empty;
     public double DryWeight { get; set; }
