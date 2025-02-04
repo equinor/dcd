@@ -25,9 +25,12 @@ interface ToggleIconProps {
 export const CalculatorToggle: React.FC<ToggleIconProps> = ({ clickedElement, onClick, editMode }) => {
     const isOverride = clickedElement.data?.overrideProfile?.override
 
-    const tooltipText = editMode
-        ? isOverride ? "Show calculated numbers" : "Hide calculated numbers"
-        : isOverride ? "Currently using manual input values" : "Currently using calculated values"
+    let tooltipText = ""
+    if (editMode) {
+        tooltipText = isOverride ? "Show calculated numbers" : "Hide calculated numbers"
+    } else {
+        tooltipText = isOverride ? "Currently using manual input values" : "Currently using calculated values"
+    }
 
     return (
         <Tooltip title={tooltipText}>
@@ -41,9 +44,12 @@ export const CalculatorToggle: React.FC<ToggleIconProps> = ({ clickedElement, on
 export const ExcelToggle: React.FC<ToggleIconProps> = ({ clickedElement, onClick, editMode }) => {
     const isOverride = clickedElement.data?.overrideProfile?.override
 
-    const tooltipText = editMode
-        ? isOverride ? "Show numbers from PROSP file" : "Hide numbers from PROSP file"
-        : isOverride ? "Currently using manual input values" : "Currently using PROSP file values"
+    let tooltipText = ""
+    if (editMode) {
+        tooltipText = isOverride ? "Show numbers from PROSP file" : "Hide numbers from PROSP file"
+    } else {
+        tooltipText = isOverride ? "Currently using manual input values" : "Currently using PROSP file values"
+    }
 
     return (
         <Tooltip title={tooltipText}>

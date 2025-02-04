@@ -1,10 +1,13 @@
-import { Table, TableBody, TableCell, TableContainer, TableRow, Typography, Stack, Chip, Accordion, AccordionSummary, AccordionDetails } from "@mui/material"
+import {
+    Table, TableBody, TableCell, TableContainer, TableRow, Typography, Chip, Accordion, AccordionSummary, AccordionDetails,
+} from "@mui/material"
 import styled from "styled-components"
 import { grey } from "@mui/material/colors"
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Icon } from "@equinor/eds-core-react"
+import { chevron_down } from "@equinor/eds-icons"
 
 const Container = styled.div`
-    padding: 24px 32px;
+    padding: 20px;
 `
 
 const Section = styled.div`
@@ -74,8 +77,8 @@ const MetadataTab = ({ rowData }: Props) => {
     ]
 
     const getProfileInfo = () => {
-        if (!profile) return []
-        
+        if (!profile) { return [] }
+
         return [
             { key: "Profile ID", value: profile.id },
             { key: "Start Year", value: profile.startYear },
@@ -88,9 +91,9 @@ const MetadataTab = ({ rowData }: Props) => {
     }
 
     const getTimeSeriesStats = () => {
-        if (!profile?.values?.length) return []
+        if (!profile?.values?.length) { return [] }
 
-        const values = profile.values
+        const { values } = profile
         const sum = values.reduce((a: number, b: number) => a + b, 0)
         const avg = sum / values.length
         const max = Math.max(...values)
@@ -115,12 +118,12 @@ const MetadataTab = ({ rowData }: Props) => {
         ]
     }
 
-    const getYearlyData = () => {
-        if (!profile?.values) return []
-        
+    const getYearlyData = (): Array<{ key: string, value: string }> => {
+        if (!profile?.values) { return [] }
+
         return profile.values.map((value: number, index: number) => ({
             key: `Year ${profile.startYear + index}`,
-            value: value.toFixed(2)
+            value: value.toFixed(2),
         }))
     }
 
@@ -133,19 +136,22 @@ const MetadataTab = ({ rowData }: Props) => {
         { label: "Has Non-zero Values", active: profile?.values?.some((v: number) => v !== 0) },
     ]
 
-    const getDataChanges = () => {
-        if (!profile?.values || profile.values.length < 2) return []
+    const getDataChanges = (): Array<{ key: string, value: string }> => {
+        if (!profile?.values || profile.values.length < 2) { return [] }
 
         return profile.values.slice(1).map((value: number, index: number) => {
             const year = profile.startYear + index + 1
             const prevValue = profile.values[index]
-            const change = prevValue === 0 ? 
-                (value === 0 ? "0%" : "New entry") :
-                `${((value - prevValue) / prevValue * 100).toFixed(1)}%`
+            let change = ""
+            if (prevValue === 0) {
+                change = value === 0 ? "0%" : "New entry"
+            } else {
+                change = `${(((value - prevValue) / prevValue) * 100).toFixed(1)}%`
+            }
 
             return {
                 key: `${year} vs ${year - 1}`,
-                value: `${value.toFixed(2)} vs ${prevValue.toFixed(2)} (${change})`
+                value: `${value.toFixed(2)} vs ${prevValue.toFixed(2)} (${change})`,
             }
         })
     }
@@ -163,7 +169,7 @@ const MetadataTab = ({ rowData }: Props) => {
                                 <KeyCell>{key}</KeyCell>
                                 <ValueCell>
                                     <pre style={{ margin: 0 }}>
-                                        {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                                        {typeof value === "object" ? JSON.stringify(value, null, 2) : String(value)}
                                     </pre>
                                 </ValueCell>
                             </TableRow>
@@ -193,14 +199,17 @@ const MetadataTab = ({ rowData }: Props) => {
             {renderSection("Statistical Analysis", getTimeSeriesStats())}
 
             <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <AccordionSummary expandIcon={
+                    <Icon data={chevron_down} />
+                }
+                >
                     <Typography>Year-over-Year Changes</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <StyledTableContainer>
                         <Table size="small">
                             <TableBody>
-                                {getDataChanges().map(({ key, value }: { key: string, value: string }) => (
+                                {getDataChanges().map(({ key, value }) => (
                                     <TableRow key={key}>
                                         <KeyCell>{key}</KeyCell>
                                         <ValueCell>{value}</ValueCell>
@@ -213,14 +222,17 @@ const MetadataTab = ({ rowData }: Props) => {
             </Accordion>
 
             <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <AccordionSummary expandIcon={
+                    <Icon data={chevron_down} />
+                }
+                >
                     <Typography>Raw Yearly Data</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <StyledTableContainer>
                         <Table size="small">
                             <TableBody>
-                                {getYearlyData().map(({ key, value }: { key: string, value: string }) => (
+                                {getYearlyData().map(({ key, value }) => (
                                     <TableRow key={key}>
                                         <KeyCell>{key}</KeyCell>
                                         <ValueCell>{value}</ValueCell>
@@ -233,7 +245,10 @@ const MetadataTab = ({ rowData }: Props) => {
             </Accordion>
 
             <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <AccordionSummary expandIcon={
+                    <Icon data={chevron_down} />
+                }
+                >
                     <Typography>Raw JSON Data</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -246,4 +261,4 @@ const MetadataTab = ({ rowData }: Props) => {
     )
 }
 
-export default MetadataTab 
+export default MetadataTab

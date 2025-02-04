@@ -5,15 +5,13 @@ interface Props {
     hasOverride: boolean
 }
 
-const OilProducerWell: React.FC<Props> = ({ developerMode, hasOverride }) => {
-    return (
-        <WellBase
-            developerMode={developerMode}
-            hasOverride={hasOverride}
-            wellType="Oil Producer"
-            wellCategory="Oil_Producer"
-        />
-    )
-}
+const OilProducerWell: React.FC<Props> = ({ developerMode, hasOverride }) => (
+    <WellBase
+        developerMode={developerMode}
+        hasOverride={hasOverride}
+        wellType="Oil Producer"
+        wellCategory="Oil_Producer"
+    />
+)
 
-export default OilProducerWell 
+export default OilProducerWell

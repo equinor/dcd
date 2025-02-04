@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material"
 import styled from "styled-components"
+import { tokens } from "@equinor/eds-tokens"
 
 export const Container = styled.div`
     padding: 24px;
@@ -9,15 +10,12 @@ export const Container = styled.div`
 
 export const Section = styled.div`
     margin-bottom: 24px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    padding: 24px;
+    background: ${tokens.colors.ui.background__default.rgba};
 `
 
 export const Formula = styled.div`
     font-family: 'Roboto Mono', monospace;
-    background-color: #f5f6f7;
+    background-color: #c9d5d0;
     padding: 20px;
     border-radius: 4px;
     margin: 16px 0;
@@ -26,20 +24,20 @@ export const Formula = styled.div`
 
 export const MainFormula = styled.div`
     font-weight: 500;
-    color: #0D47A1;
+    color: #577865;
     font-size: 1.1em;
     margin-bottom: 20px;
     padding: 12px 16px;
-    background: #E3F2FD;
+    background: ${tokens.colors.ui.background__light.rgba};
     border-radius: 4px;
-    border-left: 4px solid #1976D2;
+    border-left: 4px solid #90c2ab;
 `
 
 export const FormulaSection = styled.div`
     margin: 16px 0;
     
     h4 {
-        color: #1976D2;
+        color: #90c2ab;
         font-size: 1em;
         margin: 0 0 8px 0;
         font-weight: 500;
@@ -49,9 +47,9 @@ export const FormulaSection = styled.div`
 export const SubFormula = styled.div`
     margin: 8px 0;
     padding: 8px 12px;
-    background: #FAFAFA;
+    background: ${tokens.colors.ui.background__light.rgba};
     border-radius: 4px;
-    color: #424242;
+    color: ${tokens.colors.text.static_icons__default.rgba};
     font-size: 0.95em;
 `
 
@@ -64,11 +62,11 @@ export const FormulaList = styled.ul`
         margin: 6px 0;
         padding-left: 16px;
         position: relative;
-        color: #424242;
+        color: ${tokens.colors.text.static_icons__default.rgba};
 
         &:before {
             content: "•";
-            color: #1976D2;
+            color: #90c2ab;
             position: absolute;
             left: 0;
         }
@@ -81,7 +79,7 @@ export const FormulaList = styled.ul`
             & li {
                 margin: 4px 0;
                 font-size: 0.95em;
-                color: #616161;
+                color: ${tokens.colors.text.static_icons__tertiary.rgba};
 
                 &:before {
                     content: "○";
@@ -92,26 +90,22 @@ export const FormulaList = styled.ul`
 `
 
 export const SectionTitle = styled(Typography)`
-    color: #1976d2;
+    color: #57685c;
     font-weight: 500;
     margin-bottom: 12px !important;
 `
 
 export const Note = styled.div`
     font-size: 13px;
-    color: #757575;
+    color: ${tokens.colors.text.static_icons__tertiary.rgba};
     margin-top: 20px;
     padding: 16px;
-    background: #FAFAFA;
+    background: ${tokens.colors.ui.background__light.rgba};
     border-radius: 4px;
     line-height: 1.5;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
 
     & strong {
-        color: #424242;
+        color: ${tokens.colors.text.static_icons__default.rgba};
     }
 
     & ul {
@@ -127,7 +121,7 @@ export const Note = styled.div`
 export const SpecialNote = styled(Typography)`
     margin-top: 16px !important;
     padding: 12px 16px;
-    background-color: #FFF3E0;
-    border-left: 4px solid #FB8C00;
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
     border-radius: 4px;
-` 
+`

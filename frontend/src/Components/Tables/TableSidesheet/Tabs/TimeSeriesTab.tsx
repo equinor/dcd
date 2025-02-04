@@ -1,10 +1,10 @@
-import { Stack, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import styled from "styled-components"
-import { AgChartsTimeseries } from "@/Components/AgGrid/AgChartsTimeseries"
 import { grey } from "@mui/material/colors"
+import { AgChartsTimeseries } from "@/Components/AgGrid/AgChartsTimeseries"
 
 const Container = styled.div`
-    padding: 24px 32px;
+    padding: 20px;
 `
 
 const Section = styled.div`
@@ -45,10 +45,24 @@ const Value = styled(Typography)`
     font-weight: 500;
 `
 
-type TrendType = 'up' | 'down' | 'neutral'
+type TrendType = "up" | "down" | "neutral"
+
+/* eslint-disable react/no-unused-prop-types */
+interface TimeSeriesDataItem {
+    label: string
+    value: string
+    trend?: TrendType
+}
+/* eslint-enable react/no-unused-prop-types */
 
 const TrendIndicator = styled.span<{ trend: TrendType }>`
-    color: ${props => props.trend === 'up' ? '#4caf50' : props.trend === 'down' ? '#f44336' : grey[600]};
+    color: ${(props) => {
+        switch (props.trend) {
+        case "up": return "#4caf50"
+        case "down": return "#f44336"
+        default: return grey[600]
+        }
+    }};
     margin-left: 8px;
 `
 
@@ -57,39 +71,35 @@ interface Props {
     dg4Year: number
 }
 
-interface StatisticItem {
-    label: string
-    value: string
-    trend?: TrendType
-}
-
 const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
     const profile = rowData.overrideProfile?.override ? rowData.overrideProfile : rowData.profile
-    if (!profile) return null
+    if (!profile) { return null }
 
     const chartData = profile.values.map((value: number, index: number) => ({
         year: dg4Year + profile.startYear + index,
-        [rowData.profileName]: value
+        [rowData.profileName]: value,
     }))
 
     const calculatePercentageChange = (newValue: number, oldValue: number): string => {
         // Handle cases where old value is 0 or missing
         if (oldValue === 0 || !oldValue) {
-            if (newValue === 0) return '0%'
-            return 'New entry'
+            if (newValue === 0) { return "0%" }
+            return "New entry"
         }
-        return `${((newValue - oldValue) / oldValue * 100).toFixed(1)}%`
+        return `${(((newValue - oldValue) / oldValue) * 100).toFixed(1)}%`
     }
 
     const determineTrend = (newValue: number, oldValue: number): TrendType => {
-        if (oldValue === 0 || !oldValue) return 'neutral'
+        if (oldValue === 0 || !oldValue) { return "neutral" }
         const change = ((newValue - oldValue) / oldValue) * 100
-        return change > 1 ? 'up' : change < -1 ? 'down' : 'neutral'
+        if (change > 1) { return "up" }
+        if (change < -1) { return "down" }
+        return "neutral"
     }
 
-    const getStatistics = (): StatisticItem[] | null => {
-        const values = profile.values
-        if (!values?.length) return null
+    const getStatistics = (): TimeSeriesDataItem[] | null => {
+        const { values } = profile
+        if (!values?.length) { return null }
 
         const sum = values.reduce((a: number, b: number) => a + b, 0)
         const avg = sum / values.length
@@ -99,14 +109,18 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
         // Calculate year-over-year changes for non-zero/non-missing values only
         const yoyChanges = values.slice(1).map((value: number, index: number) => {
             const prevValue = values[index]
-            if (prevValue === 0 || !prevValue) return null
+            if (prevValue === 0 || !prevValue) { return null }
             return ((value - prevValue) / prevValue) * 100
         }).filter((change: number | null): change is number => change !== null)
 
-        const avgYoyChange = yoyChanges.length > 0 
-            ? yoyChanges.reduce((a: number, b: number) => a + b, 0) / yoyChanges.length 
+        const avgYoyChange = yoyChanges.length > 0
+            ? yoyChanges.reduce((a: number, b: number) => a + b, 0) / yoyChanges.length
             : 0
-        const trend: TrendType = avgYoyChange > 1 ? 'up' : avgYoyChange < -1 ? 'down' : 'neutral'
+        const trend: TrendType = (() => {
+            if (avgYoyChange > 1) { return "up" }
+            if (avgYoyChange < -1) { return "down" }
+            return "neutral"
+        })()
 
         // Calculate rate of change using first and last non-zero values
         const nonZeroValues = values.filter((v: number) => v !== 0)
@@ -121,21 +135,26 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
             { label: "Maximum", value: max.toFixed(2) },
             { label: "Minimum", value: min.toFixed(2) },
             { label: "Data Points", value: values.length.toString() },
-            { 
-                label: "Avg Annual Change", 
-                value: yoyChanges.length > 0 ? `${annualizedChange.toFixed(1)}%` : 'N/A',
-                trend: yoyChanges.length > 0 ? trend : 'neutral'
+            {
+                label: "Avg Annual Change",
+                value: yoyChanges.length > 0 ? `${annualizedChange.toFixed(1)}%` : "N/A",
+                trend: yoyChanges.length > 0 ? trend : "neutral",
             },
-            { 
+            {
                 label: "Total Change",
-                value: firstValue === 0 ? 'N/A' : `${totalChange.toFixed(1)}%`,
-                trend: firstValue === 0 ? 'neutral' : (totalChange > 0 ? 'up' : totalChange < 0 ? 'down' : 'neutral')
-            }
+                value: firstValue === 0 ? "N/A" : `${totalChange.toFixed(1)}%`,
+                trend: (() => {
+                    if (firstValue === 0) { return "neutral" }
+                    if (totalChange > 0) { return "up" }
+                    if (totalChange < 0) { return "down" }
+                    return "neutral"
+                })(),
+            },
         ]
     }
 
-    const getYearOverYearChanges = (): StatisticItem[] | null => {
-        if (!profile.values || profile.values.length < 2) return null
+    const getYearOverYearChanges = (): TimeSeriesDataItem[] | null => {
+        if (!profile.values || profile.values.length < 2) { return null }
 
         return profile.values.slice(1).map((value: number, index: number) => {
             const year = dg4Year + profile.startYear + index + 1
@@ -146,16 +165,21 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
             return {
                 label: `${year} vs ${year - 1}`,
                 value: changeValue,
-                trend
+                trend,
             }
         })
     }
 
     const renderTrendIndicator = (trend: TrendType | undefined) => {
-        if (!trend) return null
+        if (!trend) { return null }
+        const arrows = {
+            up: "↑",
+            down: "↓",
+            neutral: "→",
+        }
         return (
             <TrendIndicator trend={trend}>
-                {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
+                {arrows[trend]}
             </TrendIndicator>
         )
     }
@@ -182,7 +206,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
                     Statistics
                 </SectionTitle>
                 <ValueGrid>
-                    {getStatistics()?.map(({ label, value, trend }: StatisticItem) => (
+                    {getStatistics()?.map(({ label, value, trend }: TimeSeriesDataItem) => (
                         <ValueCard key={label}>
                             <ValueLabel variant="caption">
                                 {label}
@@ -190,7 +214,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
                             <Value>
                                 {value}
                                 {renderTrendIndicator(trend)}
-                                {label !== "Data Points" && !value.includes('%') && rowData.unit}
+                                {label !== "Data Points" && !value.includes("%") && rowData.unit}
                             </Value>
                         </ValueCard>
                     ))}
@@ -202,7 +226,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
                     Year-over-Year Changes
                 </SectionTitle>
                 <ValueGrid>
-                    {getYearOverYearChanges()?.map(({ label, value, trend }: StatisticItem) => (
+                    {getYearOverYearChanges()?.map(({ label, value, trend }: TimeSeriesDataItem) => (
                         <ValueCard key={label}>
                             <ValueLabel variant="caption">
                                 {label}
@@ -219,4 +243,4 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
     )
 }
 
-export default TimeSeriesTab 
+export default TimeSeriesTab

@@ -5,15 +5,13 @@ interface Props {
     hasOverride: boolean
 }
 
-const GasInjectorWell: React.FC<Props> = ({ developerMode, hasOverride }) => {
-    return (
-        <WellBase
-            developerMode={developerMode}
-            hasOverride={hasOverride}
-            wellType="Gas Injector"
-            wellCategory="Gas_Injector"
-        />
-    )
-}
+const GasInjectorWell: React.FC<Props> = ({ developerMode, hasOverride }) => (
+    <WellBase
+        developerMode={developerMode}
+        hasOverride={hasOverride}
+        wellType="Gas Injector"
+        wellCategory="Gas_Injector"
+    />
+)
 
-export default GasInjectorWell 
+export default GasInjectorWell
