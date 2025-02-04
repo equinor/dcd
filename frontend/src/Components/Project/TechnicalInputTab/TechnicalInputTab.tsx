@@ -73,7 +73,9 @@ interface TabPanelProps {
 }
 
 const CustomTabPanel = (props: TabPanelProps) => {
-    const { children, value, index, ...other } = props;
+    const {
+        children, value, index, ...other
+    } = props
 
     return (
         <TabPanel
@@ -85,8 +87,8 @@ const CustomTabPanel = (props: TabPanelProps) => {
         >
             {value === index && children}
         </TabPanel>
-    );
-};
+    )
+}
 
 const TechnicalInputTab = () => {
     const revisionAndProjectData = useDataFetch()
@@ -97,8 +99,8 @@ const TechnicalInputTab = () => {
     }
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-        setActiveTab(newValue);
-    };
+        setActiveTab(newValue)
+    }
 
     return (
         <TabWrapper>
@@ -106,7 +108,7 @@ const TechnicalInputTab = () => {
                 <Grid size={12}>
                     <Box>
                         <StyledTabs value={activeTab} onChange={handleChange}>
-                            <StyledTab label="Well Costs"  />
+                            <StyledTab label="Well Costs" />
                             <StyledTab label="PROSP" />
                             <StyledTab label="CO2" />
                         </StyledTabs>

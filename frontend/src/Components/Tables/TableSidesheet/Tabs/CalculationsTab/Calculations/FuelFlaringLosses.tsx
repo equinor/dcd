@@ -9,7 +9,7 @@ import {
     FormulaList,
     Note,
     SpecialNote,
-} from "./shared.styles"
+} from "../../../shared.styles"
 
 interface Props {
     developerMode: boolean
@@ -21,19 +21,19 @@ const FuelFlaringLosses: React.FC<Props> = ({ developerMode, hasOverride }) => (
         <Section>
             <Typography variant="h6">Fuel, Flaring and Losses Calculation</Typography>
             <Typography variant="body1" style={{ marginTop: 12, marginBottom: 24 }}>
-                The total value (in GSm³/yr) is the sum of three components:
+                The total estimated volume (in GSm³/yr) comes from three components:
             </Typography>
 
             {/* Fuel Consumption Section */}
             <Formula>
                 <MainFormula>
-                    1. Fuel Consumption = TotalUseOfPower × BaseFactor
+                    1. Fuel Consumption = (Configured FuelConsumption × 365.25 × FacilitiesAvailability/100 × 1,000,000) × TotalUseOfPower
                 </MainFormula>
 
                 <FormulaSection>
                     <h4>Base Factor:</h4>
                     <SubFormula>
-                        BaseFactor = FuelConsumption × 365.25 × FacilitiesAvailability/100 × 1,000,000
+                        BaseFactor = Configured FuelConsumption × 365.25 × (FacilitiesAvailability/100) × 1,000,000
                     </SubFormula>
                 </FormulaSection>
 
@@ -111,7 +111,8 @@ const FuelFlaringLosses: React.FC<Props> = ({ developerMode, hasOverride }) => (
 
             {hasOverride && (
                 <SpecialNote variant="body2" color="textSecondary">
-                    Note: Since this is a manually overridden profile, these calculations are not used and the values are manually set instead.
+                    Note: If this profile is manually overridden (hasOverride = true),
+                    the calculations here are skipped in favor of manual values.
                 </SpecialNote>
             )}
         </Section>
@@ -120,12 +121,9 @@ const FuelFlaringLosses: React.FC<Props> = ({ developerMode, hasOverride }) => (
             <Note>
                 <strong>Developer Note:</strong>
                 {" "}
-                These calculations are implemented in:
-                <ul>
-                    <li>backend/api/Features/Cases/Recalculation/Types/Helpers/EmissionCalculationHelper.cs</li>
-                    <li>Methods: CalculateTotalFuelConsumptions(), CalculateFlaring(), CalculateLosses()</li>
-                    <li>The final values are merged in FuelFlaringLossesProfileService.cs</li>
-                </ul>
+                These calculations map to EmissionCalculationHelper.cs methods:
+                CalculateTotalFuelConsumptions(), CalculateFlaring(), and CalculateLosses().
+                They are merged in FuelFlaringLossesProfileService.cs.
             </Note>
         )}
     </Container>

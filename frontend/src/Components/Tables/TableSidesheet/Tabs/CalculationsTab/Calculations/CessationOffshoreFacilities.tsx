@@ -9,7 +9,7 @@ import {
     Note,
     FormulaList,
     SpecialNote,
-} from "./shared.styles"
+} from "../../../shared.styles"
 
 interface Props {
     developerMode: boolean
