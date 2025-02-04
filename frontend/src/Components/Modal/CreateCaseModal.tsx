@@ -19,7 +19,7 @@ import {
     ModalContent,
     ModalActions,
     FormSection,
-    InputGroup
+    InputGroup,
 } from "./styles"
 
 import {
@@ -267,10 +267,10 @@ const CreateCaseModal = () => {
                 </ModalContent>
             )}
             actions={(
-                <ModalActions 
-                    container 
-                    spacing={2} 
-                    justifyContent="flex-end" 
+                <ModalActions
+                    container
+                    spacing={2}
+                    justifyContent="flex-end"
                 >
                     <Grid>
                         <Button
