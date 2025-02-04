@@ -1,7 +1,6 @@
 import React from "react"
-import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router"
-import InputSwitcher from "../../../../Input/Components/InputSwitcher"
+import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 
 interface props {
     surfData: Components.Schemas.SurfOverviewDto
@@ -20,8 +19,7 @@ const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
     }
 
     const addMaturityEdit = (e: any) => {
-        const newValue = Number(e.currentTarget.value)
-
+        const newValue = Number(e.newResourceObject.maturity)
         const previousResourceObject = structuredClone(surfData)
         const newResourceObject: Components.Schemas.SurfOverviewDto = structuredClone(surfData)
         newResourceObject.maturity = newValue as Components.Schemas.Maturity
@@ -41,18 +39,16 @@ const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
     }
 
     return (
-        <InputSwitcher value={maturityOptions[surfData.maturity]} label="Maturity">
-            <NativeSelect
-                id="maturity"
-                label=""
-                value={surfData.maturity}
-                onChange={(e) => addMaturityEdit(e)}
-            >
-                {Object.keys(maturityOptions).map((key) => (
-                    <option key={key} value={key}>{maturityOptions[key]}</option>
-                ))}
-            </NativeSelect>
-        </InputSwitcher>
+        <SwitchableDropdownInput
+            addEdit={addMaturityEdit}
+            resourceName="surf"
+            resourcePropertyKey="maturity"
+            resourceId={surfData.id}
+            value={surfData.maturity}
+            previousResourceObject={structuredClone(surfData)}
+            options={maturityOptions}
+            label="Gas solution"
+        />
     )
 }
 

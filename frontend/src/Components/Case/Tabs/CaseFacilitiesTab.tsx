@@ -2,6 +2,7 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
+import styled from "styled-components"
 
 import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
@@ -10,6 +11,10 @@ import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+
+const TabContainer = styled(Grid)`
+    max-width: 1000px;
+`
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId, revisionId } = useParams()
@@ -72,7 +77,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     return (
-        <Grid container spacing={2}>
+        <TabContainer container spacing={2}>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
                     addEdit={addEdit}
@@ -426,7 +431,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     max={1000000}
                 />
             </Grid>
-        </Grid>
+        </TabContainer>
     )
 }
 

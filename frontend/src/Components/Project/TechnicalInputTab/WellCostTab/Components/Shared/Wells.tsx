@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react"
 import Grid from "@mui/material/Grid2"
 import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
-
 import { useStyles } from "@equinor/fusion-react-ag-grid-styles"
-import { TableWell } from "@/Models/Wells"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useAppContext } from "@/Context/AppContext"
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import { SectionHeader } from "./SharedWellStyles"
+
 import WellsTable from "@/Components/Tables/ProjectTables/WellsTable"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
+import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppContext } from "@/Context/AppContext"
+import { TableWell } from "@/Models/Wells"
+import { SectionHeader } from "./SharedWellStyles"
 
 interface WellsProps {
-  title: string
-  addButtonText: string
-  defaultWellCategory: number
-  wellOptions: Array<{ key: string; value: number; label: string }>
-  filterWells: (well: Components.Schemas.WellOverviewDto) => boolean
+    title: string
+    addButtonText: string
+    defaultWellCategory: number
+    wellOptions: Array<{ key: string; value: number; label: string }>
+    filterWells: (well: Components.Schemas.WellOverviewDto) => boolean
 }
 
 const Wells: React.FC<WellsProps> = ({
@@ -37,14 +37,15 @@ const Wells: React.FC<WellsProps> = ({
     const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any>()
 
     const wellsToRowData = (wells: Components.Schemas.WellOverviewDto[]) => {
-        if (!wells) { return }
+        if (!wells) {
+            return
+        }
 
         const tableWells: TableWell[] = wells.map((w) => ({
             id: w.id!,
             name: w.name ?? "",
-            wellCategory:
-          w.wellCategory
-          || (defaultWellCategory as Components.Schemas.WellCategory),
+            wellCategory: w.wellCategory
+                || (defaultWellCategory as Components.Schemas.WellCategory),
             drillingDays: w.drillingDays ?? 0,
             wellCost: w.wellCost ?? 0,
             well: w,
@@ -55,7 +56,9 @@ const Wells: React.FC<WellsProps> = ({
     }
 
     const createWell = async (category: number) => {
-        if (!revisionAndProjectData) { return }
+        if (!revisionAndProjectData) {
+            return
+        }
 
         const newWell: Components.Schemas.CreateWellDto = {
             wellCategory: category as Components.Schemas.WellCategory,

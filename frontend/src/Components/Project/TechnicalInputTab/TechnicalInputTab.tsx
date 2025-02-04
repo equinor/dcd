@@ -7,6 +7,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import WellCostsTab from "./WellCostTab/WellCostsTab"
 import PROSPTab from "./PROSPTab/PROSPTab"
 import CO2Tab from "./CO2Tab/CO2Tab"
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
 const TabWrapper = styled.div`
     margin-top: 24px;
@@ -74,7 +75,10 @@ interface TabPanelProps {
 
 const CustomTabPanel = (props: TabPanelProps) => {
     const {
-        children, value, index, ...other
+        children,
+        value,
+        index,
+        ...other
     } = props
 
     return (
@@ -95,7 +99,7 @@ const TechnicalInputTab = () => {
     const [activeTab, setActiveTab] = useState(0)
 
     if (!revisionAndProjectData) {
-        return (<div>Loading...</div>)
+        return (<ProjectSkeleton />)
     }
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {

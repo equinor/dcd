@@ -48,24 +48,28 @@ const Header: React.FC<HeaderProps> = ({
 
     return (
         <>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <CapexFactorFeasibilityStudies
-                    caseData={caseData}
-                    addEdit={addEdit}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <CapexFactorFeedStudies
-                    caseData={caseData}
-                    addEdit={addEdit}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <Maturity
-                    surfData={surfData}
-                    projectId={revisionAndProjectData.projectId}
-                    addEdit={addEdit}
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <CapexFactorFeasibilityStudies
+                            caseData={caseData}
+                            addEdit={addEdit}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <CapexFactorFeedStudies
+                            caseData={caseData}
+                            addEdit={addEdit}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Maturity
+                            surfData={surfData}
+                            projectId={revisionAndProjectData.projectId}
+                            addEdit={addEdit}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
             <DateRangePicker
                 startYear={startYear}

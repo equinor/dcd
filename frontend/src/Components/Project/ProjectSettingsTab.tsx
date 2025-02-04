@@ -85,98 +85,102 @@ const ProjectSettingsTab = () => {
 
     return (
         <Grid container direction="column" spacing={2}>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={getPhysicalUnit()}
-                    label="Physical unit"
-                >
-                    <NativeSelect
-                        id="physicalUnit"
-                        label=""
-                        onChange={handlePhysicalUnitChange}
-                        value={revisionAndProjectData.commonProjectAndRevisionData.physicalUnit}
-                    >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={getCurrency()}
-                    label="Currency"
-                >
-                    <NativeSelect
-                        id="currency"
-                        label=""
-                        onChange={handleCurrencyChange}
-                        value={revisionAndProjectData.commonProjectAndRevisionData.currency}
-                    >
-                        <option key={1} value={1}>NOK</option>
-                        <option key={2} value={2}>USD</option>
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            <Grid size={12}>
-                {dummyRole === 0 && (
-                    <InputSwitcher
-                        value={PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].label}
-                        label="Classification"
-                    >
-                        <NativeSelect
-                            id="classification"
-                            label=""
-                            onChange={(e) => handleClassificationChange(e)}
-                            value={revisionAndProjectData ? revisionAndProjectData.commonProjectAndRevisionData.classification : 1}
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 6, lg: 4 }} spacing={2}>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={getPhysicalUnit()}
+                            label="Physical unit"
                         >
-                            {Object.entries(PROJECT_CLASSIFICATION).filter(([key]) => key !== "0").map(([key, value]) => (
-                                <option key={key} value={key}>{value.label}</option>
-                            ))}
-                        </NativeSelect>
-                    </InputSwitcher>
-                )}
-            </Grid>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={String(oilPriceUSD)}
-                    label="Oil Price (USD)"
-                >
-                    <Input
-                        type="number"
-                        step="0.01"
-                        value={oilPriceUSD}
-                        onChange={(e: any) => setOilPriceUSD(Number(e.target.value))}
-                        onBlur={handleOilPriceChange}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={String(gasPriceNOK)}
-                    label="Gas Price (NOK)"
-                >
-                    <Input
-                        type="number"
-                        step="0.01"
-                        value={gasPriceNOK}
-                        onChange={(e: any) => setGasPriceNOK(Number(e.target.value))}
-                        onBlur={handleGasPriceChange}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={String(discountRate)}
-                    label="Discount Rate (%)"
-                >
-                    <Input
-                        type="number"
-                        step="0.01"
-                        value={discountRate}
-                        onChange={(e: any) => setDiscountRate(Number(e.target.value))}
-                        onBlur={handleDiscountRateChange}
-                    />
-                </InputSwitcher>
+                            <NativeSelect
+                                id="physicalUnit"
+                                label=""
+                                onChange={handlePhysicalUnitChange}
+                                value={revisionAndProjectData.commonProjectAndRevisionData.physicalUnit}
+                            >
+                                <option key={0} value={0}>SI</option>
+                                <option key={1} value={1}>Oil field</option>
+                            </NativeSelect>
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={getCurrency()}
+                            label="Currency"
+                        >
+                            <NativeSelect
+                                id="currency"
+                                label=""
+                                onChange={handleCurrencyChange}
+                                value={revisionAndProjectData.commonProjectAndRevisionData.currency}
+                            >
+                                <option key={1} value={1}>NOK</option>
+                                <option key={2} value={2}>USD</option>
+                            </NativeSelect>
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        {dummyRole === 0 && (
+                            <InputSwitcher
+                                value={PROJECT_CLASSIFICATION[revisionAndProjectData.commonProjectAndRevisionData.classification].label}
+                                label="Classification"
+                            >
+                                <NativeSelect
+                                    id="classification"
+                                    label=""
+                                    onChange={(e) => handleClassificationChange(e)}
+                                    value={revisionAndProjectData ? revisionAndProjectData.commonProjectAndRevisionData.classification : 1}
+                                >
+                                    {Object.entries(PROJECT_CLASSIFICATION).filter(([key]) => key !== "0").map(([key, value]) => (
+                                        <option key={key} value={key}>{value.label}</option>
+                                    ))}
+                                </NativeSelect>
+                            </InputSwitcher>
+                        )}
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(oilPriceUSD)}
+                            label="Oil Price (USD)"
+                        >
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={oilPriceUSD}
+                                onChange={(e: any) => setOilPriceUSD(Number(e.target.value))}
+                                onBlur={handleOilPriceChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(gasPriceNOK)}
+                            label="Gas Price (NOK)"
+                        >
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={gasPriceNOK}
+                                onChange={(e: any) => setGasPriceNOK(Number(e.target.value))}
+                                onBlur={handleGasPriceChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(discountRate)}
+                            label="Discount Rate (%)"
+                        >
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={discountRate}
+                                onChange={(e: any) => setDiscountRate(Number(e.target.value))}
+                                onBlur={handleDiscountRateChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     )

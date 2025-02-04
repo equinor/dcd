@@ -1,5 +1,5 @@
 import React from "react"
-import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 
 interface props {
     caseData: Components.Schemas.CaseOverviewDto

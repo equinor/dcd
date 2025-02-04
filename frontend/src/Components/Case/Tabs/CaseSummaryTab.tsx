@@ -294,64 +294,73 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="npv"
-                    label="NPV before tax (MUSD)"
-                    value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    allowNegative
-                    disabled
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="npv"
+                            label="NPV before tax (MUSD)"
+                            value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            allowNegative
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="npvOverride"
+                            label="STEA NPV after tax(MUSD)"
+                            value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            allowNegative
+                            min={0}
+                            max={1000000}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="npvOverride"
-                    label="STEA NPV after tax(MUSD)"
-                    value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    allowNegative
-                    min={0}
-                    max={1000000}
-                    resourceId={caseData.caseId}
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="breakEven"
+                            previousResourceObject={caseData}
+                            label="B/E before tax (USD/bbl)"
+                            value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
+                            integer={false}
+                            min={0}
+                            max={1000000}
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="breakEvenOverride"
+                            label="STEA B/E after tax(MUSD)"
+                            value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            allowNegative
+                            min={0}
+                            max={1000000}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="breakEven"
-                    previousResourceObject={caseData}
-                    label="B/E before tax (USD/bbl)"
-                    value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
-                    integer={false}
-                    min={0}
-                    max={1000000}
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="breakEvenOverride"
-                    label="STEA B/E after tax(MUSD)"
-                    value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    allowNegative
-                    min={0}
-                    max={1000000}
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
+
             <Grid size={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}

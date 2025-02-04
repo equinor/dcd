@@ -1,10 +1,10 @@
 import { useState } from "react"
 import {
-    chevron_down, chevron_up, edit, external_link, visibility,badge,
+    chevron_down, chevron_up, edit, external_link, visibility, badge,
 } from "@equinor/eds-icons"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { 
+import {
     ExternalAccessHeader,
     AccessGroupContainer,
     ExternalLinkIcon,
@@ -28,76 +28,76 @@ const ExternalAccessInfo = () => {
                             In order to access all internal projects in Concept App, you need to apply for access in one of the AccessIT groups listed below.
                             Keep in mind that "Restricted" or "Confidential" projects are only accesible to project members.
                         </AccessDescription>
-                            <OptionsContainer container justifyContent="space-around">
-                                <Grid size={{ xs: 12, md: 3 }}>
-                                    <AccessGroupContainer>
-                                        <Grid container alignItems="center" spacing={1} wrap="nowrap">
-                                            <Grid size="auto">
-                                                <Icon data={edit} />
-                                            </Grid>
-                                            <Grid size="grow">
-                                                <Typography variant="h6">Application editor</Typography>
-                                            </Grid>
+                        <OptionsContainer container justifyContent="space-around">
+                            <Grid size={{ xs: 12, md: 3 }}>
+                                <AccessGroupContainer>
+                                    <Grid container alignItems="center" spacing={1} wrap="nowrap">
+                                        <Grid size="auto">
+                                            <Icon data={edit} />
                                         </Grid>
-                                        <Grid container alignItems="center" wrap="nowrap">
-                                            <AccessLinkContainer
-                                                link
-                                                href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+app+-+Editor+%28FUSION%29"
-                                                target="_blank"
-                                            >
-                                                Concept App - Editor
-                                                <ExternalLinkIcon data={external_link} />
-                                            </AccessLinkContainer>
+                                        <Grid size="grow">
+                                            <Typography variant="h6">Application editor</Typography>
                                         </Grid>
-                                    </AccessGroupContainer>
-                                </Grid>
+                                    </Grid>
+                                    <Grid container alignItems="center" wrap="nowrap">
+                                        <AccessLinkContainer
+                                            link
+                                            href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+app+-+Editor+%28FUSION%29"
+                                            target="_blank"
+                                        >
+                                            Concept App - Editor
+                                            <ExternalLinkIcon data={external_link} />
+                                        </AccessLinkContainer>
+                                    </Grid>
+                                </AccessGroupContainer>
+                            </Grid>
 
-                                <Grid size={{ xs: 12, md: 3 }}>
-                                    <AccessGroupContainer>
-                                        <Grid container alignItems="center" spacing={1} wrap="nowrap">
-                                            <Grid size="auto">
-                                                <Icon data={badge} />
-                                            </Grid>
-                                            <Grid size="grow">
-                                                <Typography variant="h6">Application admin</Typography>
-                                            </Grid>
+                            {/* <Grid size={{ xs: 12, md: 3 }}>
+                                <AccessGroupContainer>
+                                    <Grid container alignItems="center" spacing={1} wrap="nowrap">
+                                        <Grid size="auto">
+                                            <Icon data={badge} />
                                         </Grid>
-                                        <Grid container alignItems="center" wrap="nowrap">
-                                            <AccessLinkContainer
-                                                link
-                                                href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Admin+%28FUSION%29"
-                                                target="_blank"
-                                            >
-                                                Concept App - Admin
-                                                <ExternalLinkIcon data={external_link} />
-                                            </AccessLinkContainer>
+                                        <Grid size="grow">
+                                            <Typography variant="h6">Application admin</Typography>
                                         </Grid>
-                                    </AccessGroupContainer>
-                                </Grid>
+                                    </Grid>
+                                    <Grid container alignItems="center" wrap="nowrap">
+                                        <AccessLinkContainer
+                                            link
+                                            href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Admin+%28FUSION%29"
+                                            target="_blank"
+                                        >
+                                            Concept App - Admin
+                                            <ExternalLinkIcon data={external_link} />
+                                        </AccessLinkContainer>
+                                    </Grid>
+                                </AccessGroupContainer>
+                            </Grid> */}
 
-                                <Grid size={{ xs: 12, md: 3 }}>
-                                    <AccessGroupContainer>
-                                        <Grid container alignItems="center" spacing={1} wrap="nowrap">
-                                            <Grid size="auto">
-                                                <Icon data={visibility} />
-                                            </Grid>
-                                            <Grid size="grow">
-                                                <Typography variant="h6">Application viewers</Typography>
-                                            </Grid>
+                            <Grid size={{ xs: 12, md: 3 }}>
+                                <AccessGroupContainer>
+                                    <Grid container alignItems="center" spacing={1} wrap="nowrap">
+                                        <Grid size="auto">
+                                            <Icon data={visibility} />
                                         </Grid>
-                                        <Grid container alignItems="center" wrap="nowrap">
-                                            <AccessLinkContainer
-                                                link
-                                                href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Viewer+%28FUSION%29"
-                                                target="_blank"
-                                            >
-                                                Concept App - Viewer
-                                                <ExternalLinkIcon data={external_link} />
-                                            </AccessLinkContainer>
+                                        <Grid size="grow">
+                                            <Typography variant="h6">Application viewers</Typography>
                                         </Grid>
-                                    </AccessGroupContainer>
-                                </Grid>
-                            </OptionsContainer>
+                                    </Grid>
+                                    <Grid container alignItems="center" wrap="nowrap">
+                                        <AccessLinkContainer
+                                            link
+                                            href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Viewer+%28FUSION%29"
+                                            target="_blank"
+                                        >
+                                            Concept App - Viewer
+                                            <ExternalLinkIcon data={external_link} />
+                                        </AccessLinkContainer>
+                                    </Grid>
+                                </AccessGroupContainer>
+                            </Grid>
+                        </OptionsContainer>
                     </Grid>
                 )}
         </>
