@@ -8,7 +8,7 @@ import {
     SubFormula,
     Note,
     SpecialNote,
-} from "../../shared.styles"
+} from "../../../shared.styles"
 
 interface Props {
     developerMode: boolean
