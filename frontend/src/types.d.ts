@@ -112,7 +112,7 @@ declare namespace Components {
             seismicAcquisitionAndProcessing: TimeSeriesCostDto;
             countryOfficeCost: TimeSeriesCostDto;
             wellProject: WellProjectDto;
-            wellProjectWells: WellProjectWellDto[] | null;
+            developmentWells: DevelopmentWellDto[] | null;
             oilProducerCostProfile: TimeSeriesCostDto;
             oilProducerCostProfileOverride: TimeSeriesCostOverrideDto;
             gasProducerCostProfile: TimeSeriesCostDto;
@@ -222,6 +222,11 @@ declare namespace Components {
             rigMobDemob: number; // double
             annualWellInterventionCostPerWell: number; // double
             pluggingAndAbandonment: number; // double
+        }
+        export interface DevelopmentWellDto {
+            drillingSchedule: TimeSeriesScheduleDto;
+            wellProjectId: string; // uuid
+            wellId: string; // uuid
         }
         export interface DrainageStrategyDto {
             id: string; // uuid
@@ -731,11 +736,6 @@ declare namespace Components {
             name: string;
             artificialLift: ArtificialLift /* int32 */;
             currency: Currency /* int32 */;
-        }
-        export interface WellProjectWellDto {
-            drillingSchedule: TimeSeriesScheduleDto;
-            wellProjectId: string; // uuid
-            wellId: string; // uuid
         }
     }
 }

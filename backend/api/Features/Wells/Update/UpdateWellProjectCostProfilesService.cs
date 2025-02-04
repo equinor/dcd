@@ -116,7 +116,6 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
         var wellWellIds = wells.Select(x => x.Id).ToList();
 
         var developmentWells = await context.DevelopmentWells
-            .Include(wpw => wpw.DrillingSchedule)
             .Where(ew => ew.WellProjectId == wellProjectId)
             .Where(ew => wellWellIds.Contains(ew.WellId))
             .ToListAsync();
@@ -130,15 +129,15 @@ public class UpdateWellProjectCostProfilesService(DcdDbContext context)
 
         foreach (var developmentWell in developmentWells)
         {
-            if (developmentWell.DrillingSchedule?.Values.Length > 0)
+            if (developmentWell.Values.Length > 0)
             {
                 var well = wells.Single(w => w.Id == developmentWell.WellId);
-                var values = developmentWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
+                var values = developmentWell.Values.Select(ds => ds * well.WellCost).ToArray();
 
                 costProfilesList.Add(new TimeSeriesCost
                 {
                     Values = values,
-                    StartYear = developmentWell.DrillingSchedule.StartYear,
+                    StartYear = developmentWell.StartYear
                 });
             }
         }

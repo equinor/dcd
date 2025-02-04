@@ -49,6 +49,8 @@ public static class CalculateTotalIncomeService
 
         profile.Values = scaledTotalIncomeValues;
         profile.StartYear = totalIncome.StartYear;
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 }
 

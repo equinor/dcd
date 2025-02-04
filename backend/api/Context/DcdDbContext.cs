@@ -30,7 +30,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<OnshorePowerSupply> OnshorePowerSupplies => Set<OnshorePowerSupply>();
     public DbSet<DrainageStrategy> DrainageStrategies => Set<DrainageStrategy>();
     public DbSet<WellProject> WellProjects => Set<WellProject>();
-    public DbSet<DrillingSchedule> DrillingSchedule => Set<DrillingSchedule>();
     public DbSet<Exploration> Explorations => Set<Exploration>();
     public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();

@@ -8,16 +8,16 @@ namespace api.Features.Cases.Recalculation.Types.OpexCostProfile;
 
 public static class OpexCostProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell)
+    public static void RunCalculation(Case caseItem, List<DevelopmentWell> developmentWells)
     {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 
-        CalculateWellInterventionCostProfile(caseItem, drillingSchedulesForDevelopmentWell, lastYearOfProduction);
+        CalculateWellInterventionCostProfile(caseItem, developmentWells, lastYearOfProduction);
         CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
     }
 
-    private static void CalculateWellInterventionCostProfile(Case caseItem, List<DrillingSchedule> drillingSchedulesForDevelopmentWell, int? lastYearOfProduction)
+    private static void CalculateWellInterventionCostProfile(Case caseItem, List<DevelopmentWell> developmentWells, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
@@ -26,7 +26,7 @@ public static class OpexCostProfileService
 
         var lastYear = lastYearOfProduction ?? 0;
 
-        if (drillingSchedulesForDevelopmentWell.Count == 0)
+        if (developmentWells.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
             return;
@@ -34,21 +34,21 @@ public static class OpexCostProfileService
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForDevelopmentWell)
+        foreach (var developmentWell in developmentWells)
         {
             var timeSeries = new TimeSeriesCost
             {
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values.Select(v => (double)v).ToArray()
+                StartYear = developmentWell.StartYear,
+                Values = developmentWell.Values.Select(v => (double)v).ToArray()
             };
 
             wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
-        var tempSeries = new DrillingSchedule
+        var tempSeries = new TimeSeriesCost
         {
             StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
-            Values = wellInterventionCostsFromDrillingSchedule.Values.Select(v => (int)v).ToArray()
+            Values = wellInterventionCostsFromDrillingSchedule.Values
         };
 
         var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
@@ -82,6 +82,8 @@ public static class OpexCostProfileService
 
         profile.Values = wellInterventionCostsFromDrillingSchedule.Values;
         profile.StartYear = wellInterventionCostsFromDrillingSchedule.StartYear;
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, int? firstYearOfProduction, int? lastYearOfProduction)
@@ -126,6 +128,8 @@ public static class OpexCostProfileService
 
         profile.Values = values.ToArray();
         profile.StartYear = firstYear - preOpexCostYearOffset;
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     /*
@@ -134,7 +138,7 @@ public static class OpexCostProfileService
     Input: [1, 2, 3, 4]
     Output: [1, 3, 6, 10]
     */
-    private static TimeSeriesCost GetCumulativeDrillingSchedule(DrillingSchedule drillingSchedule)
+    private static TimeSeriesCost GetCumulativeDrillingSchedule(TimeSeriesCost drillingSchedule)
     {
         var cumulativeSchedule = new TimeSeriesCost
         {

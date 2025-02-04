@@ -43,7 +43,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     })
 
     const sumValues = (input: Components.Schemas.TimeSeriesCostDto | undefined) => {
-        if (!input || input?.values) {
+        if (!input || !input?.values) {
             return 0
         }
 
@@ -57,7 +57,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const co2EmissionsData = apiData?.co2Emissions
     const co2IntensityData = apiData?.co2Intensity
 
-    // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2DistributionChartData, setCo2DistributionChartData] = useState<ICo2DistributionChartData[]>([
         { profile: "Drilling", value: 0 },
         { profile: "Flaring", value: 0 },
@@ -70,10 +69,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const totalOilProduction = (sumValues(apiData?.productionProfileOil) ?? 0)
-        + (sumValues(apiData?.additionalProductionProfileOil) ?? 0)
     const co2GridRef = useRef<any>(null)
-
+    const co2EmissionsSum = sumValues(co2EmissionsOverrideData ?? co2EmissionsData)
+    const oilProductionSum = sumValues(apiData?.productionProfileOil) + sumValues(apiData?.additionalProductionProfileOil)
+    
     const co2IntensityLine = {
         type: "line",
         xKey: "year",
@@ -274,7 +273,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 <Grid size={12}>
                     <Typography variant="h1_bold">
                         {sumValues(co2IntensityData) && co2IntensityData?.values && co2IntensityData.values.length > 0
-                            ? ((sumValues(co2EmissionsData) * 1000) / (totalOilProduction * 6.29)).toFixed(4)
+                            ? ((co2EmissionsSum * 1000) / ((oilProductionSum ?? 0) * 6.29)).toFixed(4)
                             : "0.0000"}
                     </Typography>
                 </Grid>

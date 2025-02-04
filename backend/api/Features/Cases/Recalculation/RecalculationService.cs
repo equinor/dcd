@@ -81,19 +81,19 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
     private static void RunRecalculations(CaseWithDrillingSchedules caseWithDrillingSchedules)
     {
         var caseItem = caseWithDrillingSchedules.CaseItem;
-        var drillingSchedulesForExplorationWell = caseWithDrillingSchedules.DrillingSchedulesForExplorationWell;
-        var drillingSchedulesForDevelopmentWell = caseWithDrillingSchedules.DrillingSchedulesForDevelopmentWell;
+        var explorationWells = caseWithDrillingSchedules.ExplorationWells;
+        var developmentWell = caseWithDrillingSchedules.DevelopmentWells;
 
         DevelopmentWellCostProfileService.RunCalculation(caseItem);
         ExplorationWellCostProfileService.RunCalculation(caseItem);
         StudyCostProfileService.RunCalculation(caseItem);
-        CessationCostProfileService.RunCalculation(caseItem, drillingSchedulesForDevelopmentWell);
+        CessationCostProfileService.RunCalculation(caseItem, developmentWell);
         FuelFlaringLossesProfileService.RunCalculation(caseItem);
-        GenerateGAndGAdminCostProfile.RunCalculation(caseItem, drillingSchedulesForExplorationWell);
+        GenerateGAndGAdminCostProfile.RunCalculation(caseItem, explorationWells);
         ImportedElectricityProfileService.RunCalculation(caseItem);
         NetSaleGasProfileService.RunCalculation(caseItem);
-        OpexCostProfileService.RunCalculation(caseItem, drillingSchedulesForDevelopmentWell);
-        Co2EmissionsProfileService.RunCalculation(caseItem, drillingSchedulesForDevelopmentWell);
+        OpexCostProfileService.RunCalculation(caseItem, developmentWell);
+        Co2EmissionsProfileService.RunCalculation(caseItem, developmentWell);
         Co2IntensityProfileService.RunCalculation(caseItem);
         CalculateTotalIncomeService.RunCalculation(caseItem);
         CalculateTotalCostService.RunCalculation(caseItem);

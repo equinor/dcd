@@ -10,7 +10,7 @@ export type ResourceName =
     "wellProject" |
     "exploration" |
     "explorationWellDrillingSchedule" |
-    "wellProjectWellDrillingSchedule" | ProfileNames
+    "developmentWellDrillingSchedule" | ProfileNames
 
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
     "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
@@ -58,7 +58,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.WellProjectDto |
     keyof Components.Schemas.ExplorationDto |
-    keyof Components.Schemas.WellProjectWellDto |
+    keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     ProfilePropertyKey

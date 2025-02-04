@@ -7,19 +7,19 @@ namespace api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 
 public static class GenerateGAndGAdminCostProfile
 {
-    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForExplorationWell)
+    public static void RunCalculation(Case caseItem, List<ExplorationWell> explorationWells)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {
             return;
         }
 
-        if (drillingSchedulesForExplorationWell.Count == 0)
+        if (explorationWells.Count == 0)
         {
             return;
         }
 
-        var earliestYear = drillingSchedulesForExplorationWell.Select(ds => ds.StartYear).Min() + caseItem.DG4Date.Year;
+        var earliestYear = explorationWells.Select(ds => ds.StartYear).Min() + caseItem.DG4Date.Year;
         var dG1Date = caseItem.DG1Date;
 
         if (dG1Date.Year >= earliestYear)
@@ -47,6 +47,8 @@ public static class GenerateGAndGAdminCostProfile
 
             gAndGAdminCost.Values = values.ToArray();
             gAndGAdminCost.StartYear = gAndGAdminCost.StartYear;
+
+            TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(gAndGAdminCost, caseItem.Id);
         }
     }
 

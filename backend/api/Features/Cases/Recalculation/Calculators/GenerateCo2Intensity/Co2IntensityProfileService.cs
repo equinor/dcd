@@ -28,7 +28,6 @@ public static class Co2IntensityProfileService
 
         var co2IntensityValues = new List<double>();
 
-        const int tonnesToKgFactor = 1000;
         const double boeConversionFactor = 6.29;
         var yearDifference = 0;
         if (generateCo2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
@@ -41,10 +40,10 @@ public static class Co2IntensityProfileService
 
             if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
             {
-                var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i + yearDifference];
-                var co2Intensity = dividedProfiles / 1E6 / boeConversionFactor * tonnesToKgFactor;
-                co2IntensityValues.Add(co2Intensity);
 
+                var oilProduction = GetOilProfile(caseItem).Values[i + yearDifference];
+                var co2Intensity = generateCo2EmissionsProfile.Values[i] / 1000 / (oilProduction * boeConversionFactor);
+                co2IntensityValues.Add(co2Intensity);
             }
         }
 
@@ -54,6 +53,8 @@ public static class Co2IntensityProfileService
 
         co2IntensityProfile.StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset;
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(co2IntensityProfile, caseItem.Id);
     }
 
     private static TimeSeriesCost GetTotalExportedVolumes(Case caseItem)

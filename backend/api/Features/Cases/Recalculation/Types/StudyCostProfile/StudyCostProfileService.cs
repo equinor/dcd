@@ -63,6 +63,8 @@ public static class StudyCostProfileService
 
         profile.StartYear = dg0.Year - caseItem.DG4Date.Year;
         profile.Values = valuesList.ToArray();
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
@@ -116,6 +118,8 @@ public static class StudyCostProfileService
 
         profile.StartYear = dg2.Year - caseItem.DG4Date.Year;
         profile.Values = valuesList.ToArray();
+
+        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static double SumAllCostFacility(Case caseItem)

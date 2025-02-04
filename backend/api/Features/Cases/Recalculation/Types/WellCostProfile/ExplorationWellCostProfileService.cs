@@ -24,22 +24,24 @@ public static class ExplorationWellCostProfileService
 
             foreach (var explorationWell in wells)
             {
-                if (explorationWell.DrillingSchedule?.Values.Length > 0)
+                if (explorationWell.Values.Length > 0)
                 {
                     profilesToMerge.Add(new TimeSeriesCost
                     {
-                        Values = explorationWell.DrillingSchedule.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
-                        StartYear = explorationWell.DrillingSchedule.StartYear,
+                        Values = explorationWell.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
+                        StartYear = explorationWell.StartYear
                     });
                 }
             }
 
             var profileValues = TimeSeriesMerger.MergeTimeSeries(profilesToMerge);
 
-            var sidetrackCostProfile = caseItem.CreateProfileIfNotExists(profileType.Key);
+            var profile = caseItem.CreateProfileIfNotExists(profileType.Key);
 
-            sidetrackCostProfile.Values = profileValues.Values;
-            sidetrackCostProfile.StartYear = profileValues.StartYear;
+            profile.Values = profileValues.Values;
+            profile.StartYear = profileValues.StartYear;
+
+            TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
         }
     }
 }

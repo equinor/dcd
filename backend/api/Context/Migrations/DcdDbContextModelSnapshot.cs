@@ -239,8 +239,12 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DrillingScheduleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -255,8 +259,6 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DrillingScheduleId");
 
                     b.HasIndex("WellId");
 
@@ -318,36 +320,6 @@ namespace api.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("DrainageStrategies");
-                });
-
-            modelBuilder.Entity("api.Models.DrillingSchedule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DrillingSchedule");
                 });
 
             modelBuilder.Entity("api.Models.Exploration", b =>
@@ -445,11 +417,15 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DrillingScheduleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ExplorationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -461,8 +437,6 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DrillingScheduleId");
 
                     b.HasIndex("WellId");
 
@@ -1567,10 +1541,6 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.DevelopmentWell", b =>
                 {
-                    b.HasOne("api.Models.DrillingSchedule", "DrillingSchedule")
-                        .WithMany()
-                        .HasForeignKey("DrillingScheduleId");
-
                     b.HasOne("api.Models.Well", "Well")
                         .WithMany("DevelopmentWells")
                         .HasForeignKey("WellId")
@@ -1582,8 +1552,6 @@ namespace api.Migrations
                         .HasForeignKey("WellProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("DrillingSchedule");
 
                     b.Navigation("Well");
 
@@ -1625,10 +1593,6 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ExplorationWell", b =>
                 {
-                    b.HasOne("api.Models.DrillingSchedule", "DrillingSchedule")
-                        .WithMany()
-                        .HasForeignKey("DrillingScheduleId");
-
                     b.HasOne("api.Models.Exploration", "Exploration")
                         .WithMany("ExplorationWells")
                         .HasForeignKey("ExplorationId")
@@ -1640,8 +1604,6 @@ namespace api.Migrations
                         .HasForeignKey("WellId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("DrillingSchedule");
 
                     b.Navigation("Exploration");
 
