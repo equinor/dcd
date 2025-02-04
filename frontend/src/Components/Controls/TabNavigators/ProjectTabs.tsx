@@ -39,6 +39,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
                 onChange={(_, index) => handleTabChange(getTabIndex(index, false))}
                 variant="scrollable"
             >
+                {leftTabs.map((tabName) => <Tab key={tabName} label={tabName} />)}
             </Tabs>
             <Box flexGrow={1} />
             <Tabs

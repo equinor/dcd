@@ -73,6 +73,7 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
     public virtual ICollection<Image> Images { get; set; } = [];
     public virtual ICollection<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
+    public virtual ICollection<Campaign> Campaigns { get; set; } = [];
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);

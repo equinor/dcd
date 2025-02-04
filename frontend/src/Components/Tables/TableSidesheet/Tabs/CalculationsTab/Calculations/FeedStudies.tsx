@@ -9,24 +9,24 @@ import {
     FormulaList,
     Note,
     SpecialNote,
-} from "./shared.styles"
+} from "../../../shared.styles"
 
 interface Props {
     developerMode: boolean
     hasOverride: boolean
 }
 
-const FeasibilityStudies: React.FC<Props> = ({ developerMode, hasOverride }) => (
+const FeedStudies: React.FC<Props> = ({ developerMode, hasOverride }) => (
     <Container>
         <Section>
-            <Typography variant="h6">Feasibility & Conceptual Studies Cost Calculation</Typography>
+            <Typography variant="h6">FEED Studies (DG2-DG3) Cost Calculation</Typography>
             <Typography variant="body1" style={{ marginTop: 12, marginBottom: 24 }}>
                 The total cost (in MUSD) is calculated and distributed over time:
             </Typography>
 
             <Formula>
                 <MainFormula>
-                    Total Cost = (Total Facility Cost + Total Well Cost) × CapexFactorFeasibilityStudies
+                    Total FEED Studies Cost = (Total Facility Cost + Total Well Cost) × CapexFactorFEEDStudies
                 </MainFormula>
 
                 <FormulaSection>
@@ -56,7 +56,7 @@ const FeasibilityStudies: React.FC<Props> = ({ developerMode, hasOverride }) => 
                         Year Cost[i] = Total Cost × (Days in Year[i] / Total Days in Study Period)
                     </SubFormula>
                     <FormulaList>
-                        <li>Study period: From DG0 to DG2</li>
+                        <li>Study period: From DG2 to DG3</li>
                         <li>Cost is distributed based on the number of days in each year</li>
                     </FormulaList>
                 </FormulaSection>
@@ -64,9 +64,10 @@ const FeasibilityStudies: React.FC<Props> = ({ developerMode, hasOverride }) => 
                 <FormulaSection>
                     <h4>Special Cases:</h4>
                     <FormulaList>
-                        <li>If DG0 or DG2 year is 1, the profile is reset to zero</li>
-                        <li>If DG2 falls on January 1st, it&apos;s treated as December 31st of previous year</li>
-                        <li>StartYear is calculated as: DG0.Year - DG4.Year</li>
+                        <li>If DG2 or DG3 year is 1, the profile is reset to zero</li>
+                        <li>If DG2 and DG3 are not equal and DG3 falls on January 1st, it&apos;s treated as December 31st of previous year</li>
+                        <li>If total days between DG2 and DG3 is 0, it&apos;s set to 1 to avoid division by zero</li>
+                        <li>StartYear is calculated as: DG2.Year - DG4.Year</li>
                     </FormulaList>
                 </FormulaSection>
             </Formula>
@@ -85,7 +86,7 @@ const FeasibilityStudies: React.FC<Props> = ({ developerMode, hasOverride }) => 
                 This calculation is implemented in:
                 <ul>
                     <li>backend/api/Features/Cases/Recalculation/Types/StudyCostProfile/StudyCostProfileService.cs</li>
-                    <li>Method: CalculateTotalFeasibilityAndConceptStudies()</li>
+                    <li>Method: CalculateTotalFeedStudies()</li>
                     <li>Uses SumAllCostFacility() and SumWellCost() for cost components</li>
                 </ul>
             </Note>
@@ -93,4 +94,4 @@ const FeasibilityStudies: React.FC<Props> = ({ developerMode, hasOverride }) => 
     </Container>
 )
 
-export default FeasibilityStudies
+export default FeedStudies

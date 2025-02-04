@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations.Schema;
 
 using api.Models.Interfaces;
@@ -14,6 +13,9 @@ public class DevelopmentWell : IDateTrackedEntity
 
     public Guid WellId { get; set; }
     public virtual Well Well { get; set; } = null!;
+
+    public Guid CampaignId { get; set; }
+    public virtual Campaign Campaign { get; set; } = null!;
 
     public int StartYear { get; set; }
     public string InternalData { get; set; } = string.Empty;
