@@ -16,7 +16,7 @@ const Header = styled(Box)`
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 24px 0 16px 0;
+  padding: 20px 0 16px 0;
 `
 
 const InfoContainer = styled(Box)`
@@ -57,7 +57,6 @@ const NoAccessErrorView: React.FC<Props> = ({ projectClassification }) => {
             <InfoContainer>
                 <ExternalAccessInfo />
             </InfoContainer>
-            
         </Container>
     )
 }

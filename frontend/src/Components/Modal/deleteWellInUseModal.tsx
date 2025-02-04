@@ -23,37 +23,35 @@ interface DeleteWellInUseModalProps {
 }
 
 const DeleteWellInUseModal: React.FC<DeleteWellInUseModalProps> = ({
-  isOpen,
-  onClose,
-  onConfirm,
-}) => {
-  return (
+    isOpen,
+    onClose,
+    onConfirm,
+}) => (
     <Modal
-      isOpen={isOpen}
-      title="Warning"
-      size="sm"
-      content={
-        <ModalContent>
-          This well is used in one or more cases. Are you sure you want
-          to delete it?
-        </ModalContent>
-      }
-      actions={
-        <ModalActions>
-          <Button
-            type="button"
-            variant="outlined"
-            onClick={onClose}
-          >
-            No, cancel
-          </Button>
-          <DeleteButton onClick={onConfirm}>
-            Yes, delete
-          </DeleteButton>
-        </ModalActions>
-      }
+        isOpen={isOpen}
+        title="Warning"
+        size="sm"
+        content={(
+            <ModalContent>
+                This well is used in one or more cases. Are you sure you want
+                to delete it?
+            </ModalContent>
+        )}
+        actions={(
+            <ModalActions>
+                <Button
+                    type="button"
+                    variant="outlined"
+                    onClick={onClose}
+                >
+                    No, cancel
+                </Button>
+                <DeleteButton onClick={onConfirm}>
+                    Yes, delete
+                </DeleteButton>
+            </ModalActions>
+        )}
     />
-  )
-}
+)
 
 export default DeleteWellInUseModal
