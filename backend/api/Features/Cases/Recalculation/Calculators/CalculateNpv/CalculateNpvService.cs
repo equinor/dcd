@@ -25,7 +25,7 @@ public static class CalculateNpvService
             return;
         }
 
-        var currentYear = DateTime.Now.Year;
+        var currentYear = caseItem.Project.NpvYear;
         var nextYear = currentYear + 1;
         var dg4Year = caseItem.DG4Date.Year;
         var nextYearInRelationToDg4Year = nextYear - dg4Year;

@@ -28,4 +28,5 @@ public class UpdateProjectDto
     [Required] public required double GasPriceNOK { get; set; }
     [Required] public required double DiscountRate { get; set; }
     [Required] public required double ExchangeRateUSDToNOK { get; set; }
+    [Required] public required int NpvYear { get; set; }
 }
