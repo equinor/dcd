@@ -37,7 +37,7 @@ interface AddEditParams {
 
 const editQueueLogger = createLogger({
     name: "EDIT_QUEUE",
-    enabled: true, // Set to true to enable debug logging. dont leave this on for production
+    enabled: false, // Set to true to enable debug logging. dont leave this on for production
 })
 
 const useEditCase = () => {

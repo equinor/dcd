@@ -26,7 +26,7 @@ interface UpdateResourceParams {
 
 const submitApiLogger = createLogger({
     name: "SUBMIT_API",
-    enabled: true, // Set to true to enable debug logging. Don't leave this on for production
+    enabled: false, // Set to true to enable debug logging. Don't leave this on for production
 })
 
 export const useSubmitToApi = () => {
