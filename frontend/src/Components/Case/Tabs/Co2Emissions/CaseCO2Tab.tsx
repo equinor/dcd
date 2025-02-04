@@ -72,7 +72,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const co2GridRef = useRef<any>(null)
     const co2EmissionsSum = sumValues(co2EmissionsOverrideData ?? co2EmissionsData)
     const oilProductionSum = sumValues(apiData?.productionProfileOil) + sumValues(apiData?.additionalProductionProfileOil)
-    
+
     const co2IntensityLine = {
         type: "line",
         xKey: "year",
@@ -191,21 +191,21 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const dataArray = []
         if (!caseData) { return [{}] }
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
-        for (let i = startYear; i <= endYear; i += 1) {
+        for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
                 co2Emissions:
                     setValueToCorrespondingYear(
                         useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
-                        startYear,
+                        tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
                         co2IntensityData,
                         i,
-                        startYear,
+                        tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
                     ),
             })

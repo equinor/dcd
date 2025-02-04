@@ -98,11 +98,9 @@ const CaseTabTable = memo(({
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
     const gridInitializedRef = useRef(false)
 
-    useEffect(() => {
-        if (timeSeriesData?.length > 0) {
-            setPresentedTableData(timeSeriesData)
-        }
-    }, [timeSeriesData])
+    const [selectedRow, setSelectedRow] = useState<any>(null)
+    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
+    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
 
     const gridRowData = useMemo(
         () => {
@@ -113,12 +111,16 @@ const CaseTabTable = memo(({
     )
 
     useEffect(() => {
+        if (timeSeriesData?.length > 0) {
+            setPresentedTableData(timeSeriesData)
+        }
+    }, [timeSeriesData])
+
+    useEffect(() => {
         if (gridRef.current?.api && gridRowData.length > 0) {
             gridRef.current.api.setGridOption("rowData", gridRowData)
         }
     }, [gridRowData])
-    const [selectedRow, setSelectedRow] = useState<any>(null)
-    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
 
     useEffect(() => {
         if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
@@ -152,7 +154,6 @@ const CaseTabTable = memo(({
         }
     }, [editQueue, isSaving])
 
-    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
     useEffect(() => {
         if (editQueue.length > 0) {
             const timer = setTimeout(() => {
