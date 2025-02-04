@@ -24,7 +24,7 @@ import {
     SectionTitle,
     Note,
     SpecialNote,
-} from "./Calculations/shared.styles"
+} from "../shared.styles"
 
 interface Props {
     profileName: ProfileNames
