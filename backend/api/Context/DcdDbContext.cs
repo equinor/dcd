@@ -1,4 +1,3 @@
-using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.Features.Cases.Recalculation;
 using api.Models;
@@ -12,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace api.Context;
 
-public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser, IServiceScopeFactory? serviceScopeFactory) : DbContext(options)
+public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser) : DbContext(options)
 {
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
@@ -36,7 +35,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
-    public DbSet<LazyLoadingOccurrence> LazyLoadingOccurrences => Set<LazyLoadingOccurrence>();
     public DbSet<PendingRecalculation> PendingRecalculations => Set<PendingRecalculation>();
     public DbSet<CompletedRecalculation> CompletedRecalculations => Set<CompletedRecalculation>();
     public DbSet<BackgroundJobMachineInstanceLog> BackgroundJobMachineInstanceLogs => Set<BackgroundJobMachineInstanceLog>();
@@ -60,60 +58,11 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (DcdEnvironments.EnableVerboseEntityFrameworkLogging)
-        {
-            optionsBuilder.LogTo(WriteLazyLoadingToDatabase);
-        }
-
         optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 
         optionsBuilder.EnableSensitiveDataLogging();
 
         base.OnConfiguring(optionsBuilder);
-    }
-
-    private static bool _isLogging;
-    private void WriteLazyLoadingToDatabase(string message)
-    {
-        if (serviceScopeFactory == null)
-        {
-            return;
-        }
-
-        const string patternStart = "The navigation";
-        const string patternEnd = "is being lazy-loaded.";
-
-        if (!message.Contains(patternStart) || !message.Contains(patternEnd))
-        {
-            return;
-        }
-
-        if (_isLogging)
-        {
-            return;
-        }
-
-        _isLogging = true;
-
-        message = message[message.IndexOf(patternStart)..];
-        message = message[..(message.IndexOf(patternEnd) + patternEnd.Length)];
-
-        using var scope = serviceScopeFactory.CreateScope();
-
-        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
-
-        using var dbContext = dbContextFactory.CreateDbContext();
-
-        dbContext.LazyLoadingOccurrences.Add(new LazyLoadingOccurrence
-        {
-            Message = message,
-            FullStackTrace = new System.Diagnostics.StackTrace().ToString(),
-            TimestampUtc = DateTime.UtcNow
-        });
-
-        dbContext.SaveChanges();
-
-        _isLogging = false;
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
