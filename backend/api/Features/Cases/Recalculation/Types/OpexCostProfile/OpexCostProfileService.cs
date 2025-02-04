@@ -82,8 +82,6 @@ public static class OpexCostProfileService
 
         profile.Values = wellInterventionCostsFromDrillingSchedule.Values;
         profile.StartYear = wellInterventionCostsFromDrillingSchedule.StartYear;
-
-        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, int? firstYearOfProduction, int? lastYearOfProduction)
@@ -128,8 +126,6 @@ public static class OpexCostProfileService
 
         profile.Values = values.ToArray();
         profile.StartYear = firstYear - preOpexCostYearOffset;
-
-        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     /*

@@ -30,13 +30,7 @@ export default createGlobalStyle`
     .jss1,
     .jss8,
     .jss9 {
-        z-index: 1000000 !important;
-    }
-
-    .app-controls {
-        z-index: 999 !important;
-        position: relative;
-        background: white;
+        z-index: 10!important;
     }
 
     div[class*="TabList"][role="tablist"] {

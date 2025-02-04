@@ -63,7 +63,7 @@ const icons = [
 
 const ProjectDetails: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
-    const { sidebarOpen, setShowEditHistory, showEditHistory } = useAppContext()
+    const { sidebarOpen, setDeveloperMode, developerMode } = useAppContext()
     const { setActiveTabProject, activeTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
@@ -74,7 +74,7 @@ const ProjectDetails: React.FC = () => {
         setTitleClicks(newClickCount)
 
         if (newClickCount === 5) {
-            setShowEditHistory(!showEditHistory)
+            setDeveloperMode(!developerMode)
             setTitleClicks(0)
         }
     }

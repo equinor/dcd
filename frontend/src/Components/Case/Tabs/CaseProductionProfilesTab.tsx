@@ -271,6 +271,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                 && (
                     <Grid size={12}>
                         <AgChartsTimeseries
+                            axesData={defaultAxesData}
                             data={injectionProfilesChartData()}
                             chartTitle="Injection profiles"
                             barColors={["#A8CED1"]}

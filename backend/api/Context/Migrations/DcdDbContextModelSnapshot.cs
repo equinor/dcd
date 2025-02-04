@@ -647,30 +647,6 @@ namespace api.Migrations
                     b.ToTable("ExceptionLogs");
                 });
 
-            modelBuilder.Entity("api.Models.Infrastructure.LazyLoadingOccurrence", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FullStackTrace")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimestampUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LazyLoadingOccurrences");
-                });
-
             modelBuilder.Entity("api.Models.Infrastructure.ProjectRecalculation.CompletedRecalculation", b =>
                 {
                     b.Property<int>("Id")

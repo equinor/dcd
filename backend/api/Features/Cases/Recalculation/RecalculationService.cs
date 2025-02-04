@@ -22,9 +22,6 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
 {
     public async Task SaveChangesAndRecalculateCase(Guid caseId)
     {
-        var originalLazyLoadingEnabled = context.ChangeTracker.LazyLoadingEnabled;
-        context.ChangeTracker.LazyLoadingEnabled = false;
-
         var caseNeedsRecalculation = CaseNeedsRecalculation();
         await context.SaveChangesAsync();
 
@@ -34,15 +31,10 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
 
             await context.SaveChangesAsync();
         }
-
-        context.ChangeTracker.LazyLoadingEnabled = originalLazyLoadingEnabled;
     }
 
     public async Task SaveChangesAndRecalculateProject(Guid projectId)
     {
-        var originalLazyLoadingEnabled = context.ChangeTracker.LazyLoadingEnabled;
-        context.ChangeTracker.LazyLoadingEnabled = false;
-
         var caseIds = await context.Cases
             .Where(x => x.ProjectId == projectId)
             .Select(x => x.Id)
@@ -56,8 +48,6 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         }
 
         await context.SaveChangesAsync();
-
-        context.ChangeTracker.LazyLoadingEnabled = originalLazyLoadingEnabled;
     }
 
     private bool CaseNeedsRecalculation()

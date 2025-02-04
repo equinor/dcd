@@ -13,6 +13,7 @@ import {
     ColDef,
     GridReadyEvent,
     ICellRendererParams,
+    CellClickedEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
@@ -40,6 +41,7 @@ import {
 } from "@/Models/ITimeSeries"
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import { createLogger } from "@/Utils/logger"
+import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 
 interface Props {
     timeSeriesData: ITimeSeriesTableDataWithSet[]
@@ -61,6 +63,9 @@ const CenterGridIcons = styled.div`
     padding-top: 0px;
     padding-left: 0px;
     height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 `
 
 const logger = createLogger({
@@ -93,33 +98,6 @@ const CaseTabTable = memo(({
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
     const gridInitializedRef = useRef(false)
 
-    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!params.data || !editMode) {
-            return null
-        }
-
-        const isUnlocked = params.data.overrideProfile?.override
-
-        if (
-            !isUnlocked
-            && calculatedFields
-            && calculatedFields.includes(params.data.resourceName)
-            && ongoingCalculation) {
-            return <CircularProgress size={24} />
-        }
-
-        return (
-            <CenterGridIcons>
-                <CalculationSourceToggle
-                    isProsp={isProsp}
-                    sharepointFileId={sharepointFileId}
-                    clickedElement={params}
-                    addEdit={addEdit}
-                />
-            </CenterGridIcons>
-        )
-    }
-
     useEffect(() => {
         if (timeSeriesData?.length > 0) {
             setPresentedTableData(timeSeriesData)
@@ -139,6 +117,8 @@ const CaseTabTable = memo(({
             gridRef.current.api.setGridOption("rowData", gridRowData)
         }
     }, [gridRowData])
+    const [selectedRow, setSelectedRow] = useState<any>(null)
+    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
 
     useEffect(() => {
         if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
@@ -225,6 +205,44 @@ const CaseTabTable = memo(({
             setEditQueue((prev) => [...prev, edit])
         }
     }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
+
+    useEffect(() => {
+        if (gridRef.current?.api && presentedTableData?.length > 0 && gridRowData.length > 0) {
+            const currentNodes = gridRef.current.api.getRenderedNodes()
+            const currentRowData = currentNodes.map((node: { data: any }) => node.data)
+            if (!isEqual(currentRowData, gridRowData)) {
+                gridRef.current.api.setGridOption("rowData", gridRowData)
+            }
+        }
+    }, [gridRowData, presentedTableData])
+
+    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
+        if (!params.data) {
+            return null
+        }
+
+        const isUnlocked = params.data.overrideProfile?.override
+
+        if (
+            !isUnlocked
+            && calculatedFields
+            && calculatedFields.includes(params.data.resourceName)
+            && ongoingCalculation) {
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <CenterGridIcons>
+                <CalculationSourceToggle
+                    editMode={editMode}
+                    isProsp={isProsp}
+                    sharepointFileId={sharepointFileId}
+                    clickedElement={params}
+                    addEdit={addEdit}
+                />
+            </CenterGridIcons>
+        )
+    }
 
     const generateTableYearColDefs = useCallback(() => {
         const columnPinned: any[] = [
@@ -326,6 +344,26 @@ const CaseTabTable = memo(({
         }
     }, [tableYears])
 
+    const handleCellClicked = (event: CellClickedEvent) => {
+        if (!event.data || editMode) { return } // Don't open sidesheet in edit mode
+
+        // Get the clicked column's field (year)
+        const clickedYear = event.column.getColId()
+
+        logger.info("Cell clicked", {
+            rowData: event.data,
+            profileName: event.data.profileName,
+            values: event.data.profile?.values,
+            clickedYear,
+        })
+
+        setSelectedRow({
+            ...event.data,
+            clickedYear, // Add the clicked year to the row data
+        })
+        setIsSidesheetOpen(true)
+    }
+
     const gridConfig = useMemo(() => ({
         // Column configuration
         defaultColDef: {
@@ -352,6 +390,12 @@ const CaseTabTable = memo(({
         cellSelection: true,
         copyHeadersToClipboard: false,
         stopEditingWhenCellsLoseFocus: true,
+        onCellClicked: handleCellClicked,
+        rowSelection: "single" as const,
+        context: {
+            setSelectedRow,
+            setIsSidesheetOpen,
+        },
     }), [
         editMode,
         handleCellValueChange,
@@ -361,22 +405,34 @@ const CaseTabTable = memo(({
         includeFooter,
         initializeGridWithData,
         defaultExcelExportParams,
+        handleCellClicked,
+        setSelectedRow,
+        setIsSidesheetOpen,
     ])
 
     return (
-        <div className={styles.root}>
-            <div
-                id={tableName}
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    {...gridConfig}
-                />
+        <>
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        {...gridConfig}
+                    />
+                </div>
             </div>
-        </div>
+            <SidesheetWrapper
+                isOpen={isSidesheetOpen}
+                onClose={() => setIsSidesheetOpen(false)}
+                rowData={selectedRow}
+                dg4Year={dg4Year}
+                allTimeSeriesData={timeSeriesData}
+            />
+        </>
     )
 })
 

@@ -57,7 +57,7 @@ export const TimelineElement = styled(Button)`
 `
 
 const Sidebar = () => {
-    const { sidebarOpen, setSidebarOpen } = useAppContext()
+    const { sidebarOpen, setSidebarOpen, developerMode } = useAppContext()
     const revisionAndProjectData = useDataFetch()
 
     const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseOverviewDto[]>([])
@@ -82,7 +82,9 @@ const Sidebar = () => {
                             <StyledDivider />
                         </>
                     )}
-                    <CurrentCaseEditHistory />
+                    {developerMode && (
+                        <CurrentCaseEditHistory />
+                    )}
                     <Footer>
                         <Toggle />
                     </Footer>

@@ -63,10 +63,14 @@ export const isDefaultDateString = (dateString?: string | null): boolean => {
 export const defaultDate = () => dateStringToDateUtc("0001-01-01T00:00:00+00:00")
 
 export function formatDate(isoDateString: string): string {
-    if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
+    if (!isoDateString || isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
         return "_"
     }
-    const date = dateStringToDateUtc(isoDateString)
+    const date = new Date(isoDateString)
+    if (Number.isNaN(date.getTime())) {
+        console.error(`Invalid date string: ${isoDateString}`)
+        return "Invalid Date"
+    }
     const options: Intl.DateTimeFormatOptions = {
         month: "long",
         year: "numeric",

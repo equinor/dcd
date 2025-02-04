@@ -9,8 +9,6 @@ public class SteaRepository(DcdDbContext context)
 {
     public async Task<Project> GetProjectWithCasesAndProfiles(Guid projectPk)
     {
-        context.ChangeTracker.LazyLoadingEnabled = false;
-
         var project = await context.Projects
             .SingleAsync(p => p.Id == projectPk);
 
