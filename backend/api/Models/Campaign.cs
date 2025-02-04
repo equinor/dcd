@@ -25,8 +25,8 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
 
-    // public virtual ICollection<DevelopmentWell> DevelopmentWells { get; set; } = [];
-    // public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
+    public virtual ICollection<DevelopmentWell> DevelopmentWells { get; set; } = [];
+    public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
 
     [NotMapped]
     public double[] RigUpgradingCostValues
