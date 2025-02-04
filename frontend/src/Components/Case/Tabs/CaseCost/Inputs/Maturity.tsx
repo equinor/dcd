@@ -19,7 +19,7 @@ const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
     }
 
     const addMaturityEdit = (e: any) => {
-        const newValue = Number(e.currentTarget.value)
+        const newValue = Number(e.newResourceObject.maturity)
         const previousResourceObject = structuredClone(surfData)
         const newResourceObject: Components.Schemas.SurfOverviewDto = structuredClone(surfData)
         newResourceObject.maturity = newValue as Components.Schemas.Maturity
