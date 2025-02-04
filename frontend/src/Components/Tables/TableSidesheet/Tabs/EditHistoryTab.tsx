@@ -6,7 +6,7 @@ const Container = styled.div`
 `
 
 interface Props {
-    // Add props as needed for edit history
+
 }
 
 const EditHistoryTab: React.FC<Props> = () => (

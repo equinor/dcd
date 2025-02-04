@@ -37,7 +37,7 @@ interface Props {
 
 const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) => {
     const { developerMode } = useAppContext()
-    // Helper function to determine which calculation to show
+    // determine which calculation to show
     const getCalculationType = () => {
         // Check resource name first
         if (rowData?.resourceName === "gAndGAdminCost" || rowData?.resourceName === "gAndGAdminCostOverride") {
@@ -123,7 +123,6 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         }
     }
 
-    // Render different calculations based on type
     switch (getCalculationType()) {
     case "gAndGAdmin":
         return <GAndGAdmin developerMode={developerMode} hasOverride={!!rowData?.overrideProfile?.override} />
