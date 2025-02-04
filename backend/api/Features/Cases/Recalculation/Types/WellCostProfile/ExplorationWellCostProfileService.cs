@@ -40,8 +40,6 @@ public static class ExplorationWellCostProfileService
 
             profile.Values = profileValues.Values;
             profile.StartYear = profileValues.StartYear;
-
-            TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
         }
     }
 }

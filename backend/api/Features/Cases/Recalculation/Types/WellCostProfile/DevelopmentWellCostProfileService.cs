@@ -41,8 +41,6 @@ public static class DevelopmentWellCostProfileService
 
             profile.Values = profileValues.Values;
             profile.StartYear = profileValues.StartYear;
-
-            TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
         }
     }
 }

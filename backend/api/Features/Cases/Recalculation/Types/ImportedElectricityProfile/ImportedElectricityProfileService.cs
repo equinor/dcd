@@ -24,8 +24,6 @@ public static class ImportedElectricityProfileService
 
         profile.StartYear = calculateImportedElectricity.StartYear;
         profile.Values = calculateImportedElectricity.Values;
-
-        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static TimeSeriesCost CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability, TimeSeriesCost totalUseOfPower)

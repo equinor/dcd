@@ -1,5 +1,6 @@
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
+using api.Features.Cases.Recalculation;
 using api.Models;
 using api.Models.Infrastructure;
 using api.Models.Infrastructure.BackgroundJobs;
@@ -121,6 +122,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
         SetCreatedAndUpdatedDates(utcNow);
+        EnsureValidStartYearsForProfiles();
 
         return await base.SaveChangesAsync(cancellationToken);
     }
@@ -131,8 +133,32 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
         SetCreatedAndUpdatedDates(utcNow);
+        EnsureValidStartYearsForProfiles();
 
         return base.SaveChanges();
+    }
+
+    private void EnsureValidStartYearsForProfiles()
+    {
+        var profileWithInvalidStartYear = ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.State is EntityState.Added or EntityState.Modified)
+            .FirstOrDefault(x => x.Entity.StartYear is < -50 or > 50)
+            ?.Entity;
+
+        if (profileWithInvalidStartYear != null)
+        {
+            throw new TimeSeriesProfileException($"Cannot save TimeSeriesProfile of type {profileWithInvalidStartYear.ProfileType}. {profileWithInvalidStartYear.StartYear} is not a valid StartYear.");
+        }
+
+        var profileWithInvalidValues = ChangeTracker.Entries<TimeSeriesProfile>()
+            .Where(x => x.State is EntityState.Added or EntityState.Modified)
+            .FirstOrDefault(x => x.Entity.Values.Length > 100)
+            ?.Entity;
+
+        if (profileWithInvalidValues != null)
+        {
+            throw new TimeSeriesProfileException($"Cannot save TimeSeriesProfile of type {profileWithInvalidValues.ProfileType}. There are {profileWithInvalidValues.Values.Length} values in the values list.");
+        }
     }
 
     private void SetCreatedAndUpdatedDates(DateTime utcNow)
