@@ -48,10 +48,13 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
 
         var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.CaseId == caseId && x.CampaignType == CampaignTypes.ExplorationCampaign);
+
         var newExplorationWell = new ExplorationWell
         {
             Well = existingWell,
             Exploration = existingExploration,
+            CampaignId = existingCampaign.Id,
             StartYear = dto.StartYear,
             Values = dto.Values
         };
@@ -100,10 +103,13 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
 
         var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.CaseId == caseId && x.CampaignType == CampaignTypes.DevelopmentCampaign);
+
         var newDevelopmentWell = new DevelopmentWell
         {
             Well = existingWell,
             WellProject = existingWellProject,
+            CampaignId = existingCampaign.Id,
             StartYear = dto.StartYear,
             Values = dto.Values
         };
