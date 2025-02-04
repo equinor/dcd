@@ -22,7 +22,8 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, Recalcul
 
         if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile) != null)
         {
-            await UpdateOnshorePowerSupplyTimeSeries(caseItem, dto); return;
+            await UpdateOnshorePowerSupplyTimeSeries(caseItem, dto);
+            return;
         }
         await CreateOnshorePowerSupplyCostProfile(caseItem, dto);
     }
