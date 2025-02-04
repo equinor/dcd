@@ -12,13 +12,13 @@ public class CampaignDto
     [Required] public required double RigMobDemobCost { get; set; }
     [Required] public required RigProfileDto RigUpgradingProfile { get; set; }
     [Required] public required RigProfileDto RigMobDemobProfile { get; set; }
-    [Required] public required List<CampaignWellDto> CampaignWells { get; set; } = [];
+    [Required] public required List<CampaignWellDto> CampaignWells { get; set; }
 }
 
 public class RigProfileDto
 {
     [Required] public required int StartYear { get; set; }
-    [Required] public required double[] Values { get; set; } = [];
+    [Required] public required double[] Values { get; set; }
 }
 
 public class CampaignWellDto
@@ -27,5 +27,5 @@ public class CampaignWellDto
     [Required] public required string WellName { get; set; }
     [Required] public required WellCategory WellCategory { get; set; }
     [Required] public required int StartYear { get; set; }
-    [Required] public required int[] Values { get; set; } = [];
+    [Required] public required int[] Values { get; set; }
 }
