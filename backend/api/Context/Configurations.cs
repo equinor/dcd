@@ -87,6 +87,10 @@ public class DevelopmentWellConfiguration : IEntityTypeConfiguration<Development
         builder.HasOne(w => w.Well)
             .WithMany(w => w.DevelopmentWells)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(w => w.Campaign)
+            .WithMany(w => w.DevelopmentWells)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 
@@ -100,6 +104,10 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
         builder.HasIndex(ew => new { ew.ExplorationId, ew.WellId }).IsUnique();
 
         builder.HasOne(w => w.Well)
+            .WithMany(w => w.ExplorationWells)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(w => w.Campaign)
             .WithMany(w => w.ExplorationWells)
             .OnDelete(DeleteBehavior.NoAction);
     }
