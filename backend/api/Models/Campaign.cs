@@ -13,17 +13,11 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
 
     public int RigUpgradingCostStartYear { get; set; }
     public string RigUpgradingCostInternalData { get; set; } = string.Empty;
-
     public int RigMobDemobCostStartYear { get; set; }
     public string RigMobDemobCostInternalData { get; set; } = string.Empty;
-
     public required string CampaignType { get; set; }
     public double RigUpgradingCost { get; set; }
     public double RigMobDemobCost { get; set; }
-    public DateTime CreatedUtc { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime UpdatedUtc { get; set; }
-    public string? UpdatedBy { get; set; }
 
     public List<DevelopmentWell> DevelopmentWells { get; set; } = [];
     public List<ExplorationWell> ExplorationWells { get; set; } = [];
@@ -41,6 +35,13 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
         get => string.IsNullOrEmpty(RigMobDemobCostInternalData) ? [] : Array.ConvertAll(RigMobDemobCostInternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
         set => RigMobDemobCostInternalData = string.Join(";", value.Select(p => p.ToString()).ToArray());
     }
+
+    #region Change tracking
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
+    #endregion
 }
 
 public static class CampaignTypes

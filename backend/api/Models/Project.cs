@@ -23,7 +23,6 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
-
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
@@ -36,11 +35,6 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
-
-    public DateTime CreatedUtc { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime UpdatedUtc { get; set; }
-    public string? UpdatedBy { get; set; }
 
     public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
     public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
@@ -59,6 +53,13 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public List<Project> Revisions { get; set; } = [];
     public List<ProjectMember> ProjectMembers { get; set; } = [];
     public List<Image> Images { get; set; } = [];
+
+    #region Change tracking
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
+    #endregion
 }
 
 public enum PhysUnit

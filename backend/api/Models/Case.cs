@@ -42,11 +42,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public double? BreakEvenOverride { get; set; }
     public string? Host { get; set; }
 
-    public DateTime CreatedUtc { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime UpdatedUtc { get; set; }
-    public string? UpdatedBy { get; set; }
-
     public Guid DrainageStrategyId { get; set; }
     public DrainageStrategy? DrainageStrategy { get; set; }
 
@@ -74,6 +69,13 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public List<Image> Images { get; set; } = [];
     public List<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
     public List<Campaign> Campaigns { get; set; } = [];
+
+    #region Change tracking
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
+    #endregion
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);
