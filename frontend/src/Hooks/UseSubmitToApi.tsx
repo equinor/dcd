@@ -181,7 +181,7 @@ export const useSubmitToApi = () => {
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
-        submitApiLogger.log("Submitting to API:", {
+        submitApiLogger.warn("Submitting to API:", {
             resourceName,
             resourceId,
             resourceObject,
@@ -189,12 +189,12 @@ export const useSubmitToApi = () => {
 
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
-            submitApiLogger.log("Setting production overrides calculation flag")
+            submitApiLogger.warn("Setting production overrides calculation flag")
         }
 
         if (totalStudyCostOverrideResources.includes(resourceName)) {
             setIsCalculatingTotalStudyCostOverrides(true)
-            submitApiLogger.log("Setting total study cost overrides calculation flag")
+            submitApiLogger.warn("Setting total study cost overrides calculation flag")
         }
 
         if (resourceName !== "case" && !resourceId) {
@@ -750,7 +750,7 @@ export const useSubmitToApi = () => {
                     console.log("Service not found")
                     return { success: false, error: new Error("Service not found") }
             }
-            submitApiLogger.log("API submission successful:", result)
+            submitApiLogger.warn("API submission successful:", result)
             return result
         } catch (error) {
             submitApiLogger.error("Service not found or error occurred", error)
