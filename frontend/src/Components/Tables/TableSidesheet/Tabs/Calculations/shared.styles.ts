@@ -15,7 +15,6 @@ export const Section = styled.div`
 
 export const Formula = styled.div`
     font-family: 'Roboto Mono', monospace;
-    background-color: #c9d5d0;
     padding: 20px;
     border-radius: 4px;
     margin: 16px 0;
@@ -37,10 +36,11 @@ export const FormulaSection = styled.div`
     margin: 16px 0;
     
     h4 {
-        color: #90c2ab;
+        color:rgb(74, 92, 84);
         font-size: 1em;
         margin: 0 0 8px 0;
         font-weight: 500;
+        padding-top: 22px;
     }
 `
 

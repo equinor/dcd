@@ -117,7 +117,7 @@ const SidesheetWrapper = ({
             label: "Time Series",
             content: <TimeSeriesTab rowData={rowData} dg4Year={dg4Year} />,
         },
-        developerMode && {
+        {
             label: "Calculations",
             content: <CalculationsTab profileName={headerData.title} rowData={rowData} />,
         },
