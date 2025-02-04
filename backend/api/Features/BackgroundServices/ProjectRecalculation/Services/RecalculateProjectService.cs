@@ -13,7 +13,6 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
         while (true)
         {
             await using var context = await contextFactory.CreateDbContextAsync();
-            context.ChangeTracker.LazyLoadingEnabled = false;
 
             var pendingProject = await context.PendingRecalculations.OrderBy(x => x.Id).FirstOrDefaultAsync();
 

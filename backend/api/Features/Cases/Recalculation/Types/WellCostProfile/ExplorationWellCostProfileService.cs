@@ -36,10 +36,10 @@ public static class ExplorationWellCostProfileService
 
             var profileValues = TimeSeriesMerger.MergeTimeSeries(profilesToMerge);
 
-            var sidetrackCostProfile = caseItem.CreateProfileIfNotExists(profileType.Key);
+            var profile = caseItem.CreateProfileIfNotExists(profileType.Key);
 
-            sidetrackCostProfile.Values = profileValues.Values;
-            sidetrackCostProfile.StartYear = profileValues.StartYear;
+            profile.Values = profileValues.Values;
+            profile.StartYear = profileValues.StartYear;
         }
     }
 }

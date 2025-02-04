@@ -22,6 +22,58 @@ namespace api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("api.Models.Campaign", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CampaignType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("RigMobDemobCost")
+                        .HasColumnType("float");
+
+                    b.Property<string>("RigMobDemobCostInternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RigMobDemobCostStartYear")
+                        .HasColumnType("int");
+
+                    b.Property<double>("RigUpgradingCost")
+                        .HasColumnType("float");
+
+                    b.Property<string>("RigUpgradingCostInternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RigUpgradingCostStartYear")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseId");
+
+                    b.ToTable("Campaigns");
+                });
+
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.Property<Guid>("Id")
@@ -233,6 +285,9 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("newid()");
 
+                    b.Property<Guid>("CampaignId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -410,6 +465,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("newid()");
+
+                    b.Property<Guid>("CampaignId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -645,30 +703,6 @@ namespace api.Migrations
                     b.HasIndex("UtcTimestamp");
 
                     b.ToTable("ExceptionLogs");
-                });
-
-            modelBuilder.Entity("api.Models.Infrastructure.LazyLoadingOccurrence", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FullStackTrace")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimestampUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LazyLoadingOccurrences");
                 });
 
             modelBuilder.Entity("api.Models.Infrastructure.ProjectRecalculation.CompletedRecalculation", b =>
@@ -1453,6 +1487,17 @@ namespace api.Migrations
                     b.ToTable("WellProjects");
                 });
 
+            modelBuilder.Entity("api.Models.Campaign", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithMany("Campaigns")
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
@@ -1749,6 +1794,8 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Case", b =>
                 {
+                    b.Navigation("Campaigns");
+
                     b.Navigation("Images");
 
                     b.Navigation("TimeSeriesProfiles");

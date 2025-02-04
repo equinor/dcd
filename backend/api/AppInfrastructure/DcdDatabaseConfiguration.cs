@@ -35,15 +35,15 @@ public static class DcdDatabaseConfiguration
         sqliteConnection.Open();
         dbContextOptionsBuilder.UseSqlite(sqliteConnection);
 
-        using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null, null);
+        using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null);
         context.Database.EnsureCreated();
 
         builder.Services.AddDbContext<DcdDbContext>(
-            options => options//.UseLazyLoadingProxies()
+            options => options
                 .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         builder.Services.AddDbContextFactory<DcdDbContext>(
-            options => options//.UseLazyLoadingProxies()
+            options => options
                 .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
     }
@@ -53,11 +53,11 @@ public static class DcdDatabaseConfiguration
         var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
 
         builder.Services.AddDbContext<DcdDbContext>(
-            options => options//.UseLazyLoadingProxies()
+            options => options
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         builder.Services.AddDbContextFactory<DcdDbContext>(
-            options => options//.UseLazyLoadingProxies()
+            options => options
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
 
@@ -68,7 +68,7 @@ public static class DcdDatabaseConfiguration
 
         var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
         dbBuilder.UseSqlServer(sqlServerConnectionString);
-        using var context = new DcdDbContext(dbBuilder.Options, null, null);
+        using var context = new DcdDbContext(dbBuilder.Options, null);
 
         context.Database.Migrate();
     }

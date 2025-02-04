@@ -13,7 +13,6 @@ public class JobCleanupBackgroundService(IServiceScopeFactory serviceScopeFactor
         var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.ChangeTracker.LazyLoadingEnabled = false;
 
         var oneHundredDaysAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(100));
 
