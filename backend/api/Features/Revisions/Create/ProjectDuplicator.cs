@@ -34,6 +34,7 @@ public static class ProjectDuplicator
             Id = projectId,
             OriginalProjectId = existingProject.Id,
             IsRevision = true,
+            Classification = createRevisionDto.Classification,
             RevisionDetails = new RevisionDetails
             {
                 RevisionName = createRevisionDto.Name,
@@ -53,7 +54,6 @@ public static class ProjectDuplicator
             PhysicalUnit = existingProject.PhysicalUnit,
             ProjectPhase = existingProject.ProjectPhase,
             InternalProjectPhase = existingProject.InternalProjectPhase,
-            Classification = existingProject.Classification,
             ProjectCategory = existingProject.ProjectCategory,
             SharepointSiteUrl = existingProject.SharepointSiteUrl,
             CO2RemovedFromGas = existingProject.CO2RemovedFromGas,
