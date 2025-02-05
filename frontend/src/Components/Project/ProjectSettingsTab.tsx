@@ -200,35 +200,35 @@ const ProjectSettingsTab = () => {
                             />
                         </InputSwitcher>
                     </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(exchangeRateUSDToNOK)}
+                            label="Exchange Rate (USD to NOK)"
+                        >
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={exchangeRateUSDToNOK}
+                                onChange={(e: any) => setExchangeRateUSDToNOK(Number(e.target.value))}
+                                onBlur={handleExchangeRateChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(npvYear)}
+                            label="NPV Year"
+                        >
+                            <Input
+                                type="number"
+                                step="1"
+                                value={npvYear}
+                                onChange={(e: any) => setNpvYear(Number(e.target.value))}
+                                onBlur={handleNpvYearChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={String(exchangeRateUSDToNOK)}
-                    label="Exchange Rate (USD to NOK)"
-                >
-                    <Input
-                        type="number"
-                        step="0.01"
-                        value={exchangeRateUSDToNOK}
-                        onChange={(e: any) => setExchangeRateUSDToNOK(Number(e.target.value))}
-                        onBlur={handleExchangeRateChange}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid size={12}>
-                <InputSwitcher
-                    value={String(npvYear)}
-                    label="NPV Year"
-                >
-                    <Input
-                        type="number"
-                        step="1"
-                        value={npvYear}
-                        onChange={(e: any) => setNpvYear(Number(e.target.value))}
-                        onBlur={handleNpvYearChange}
-                    />
-                </InputSwitcher>
             </Grid>
         </Grid>
     )
