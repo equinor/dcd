@@ -266,7 +266,7 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<DrainageStrategyOverviewDto>> GetDrainageStrategies(Guid projectId)
     {
         return await context.DrainageStrategies
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Select(x => new DrainageStrategyOverviewDto
             {
                 Id = x.Id

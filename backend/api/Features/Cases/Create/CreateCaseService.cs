@@ -24,7 +24,7 @@ public class CreateCaseService(DcdDbContext context)
             DG4Date = createCaseDto.DG4Date == DateTime.MinValue ? new DateTime(2030, 1, 1) : createCaseDto.DG4Date,
             CapexFactorFeasibilityStudies = 0.015,
             CapexFactorFEEDStudies = 0.015,
-            DrainageStrategy = CreateDrainageStrategy(projectPk),
+            DrainageStrategy = CreateDrainageStrategy(),
             Topside = CreateTopside(projectPk),
             Surf = CreateSurf(projectPk),
             Substructure = CreateSubstructure(projectPk),
@@ -87,13 +87,12 @@ public class CreateCaseService(DcdDbContext context)
         await context.SaveChangesAsync();
     }
 
-    private static DrainageStrategy CreateDrainageStrategy(Guid projectPk)
+    private static DrainageStrategy CreateDrainageStrategy()
     {
         return new DrainageStrategy
         {
             Name = "Drainage Strategy",
             Description = "Drainage Strategy",
-            ProjectId = projectPk,
 
             NGLYield = 0,
             ProducerCount = 0,
