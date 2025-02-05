@@ -65,8 +65,6 @@ public static class CalculateTotalCostService
 
         calculatedTotalCostCostProfile.Values = totalCost.Values;
         calculatedTotalCostCostProfile.StartYear = totalCost.StartYear;
-
-        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(calculatedTotalCostCostProfile, caseItem.Id);
     }
 
     private static TimeSeriesCost CalculateStudyCost(Case caseItem)

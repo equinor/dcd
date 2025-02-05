@@ -63,7 +63,18 @@ public class CreateCaseService(DcdDbContext context)
                     Override = true,
                     Values = []
                 }
-            }
+            },
+            Campaigns = new List<Campaign>
+            {
+                new()
+                {
+                    CampaignType = CampaignTypes.DevelopmentCampaign
+                },
+                new()
+                {
+                    CampaignType = CampaignTypes.ExplorationCampaign
+                }
+            },
         };
 
         context.Cases.Add(createdCase);

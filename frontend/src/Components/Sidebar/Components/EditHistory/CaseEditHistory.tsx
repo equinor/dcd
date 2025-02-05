@@ -4,8 +4,6 @@ import { arrow_forward } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useCaseContext } from "@/Context/CaseContext"
 import { formatTime, getCurrentEditId } from "@/Utils/common"
-import { useAppContext } from "@/Context/AppContext"
-import useEditCase from "@/Hooks/useEditCase"
 
 const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
     padding: 10px 5px 10px 10px;
@@ -53,40 +51,10 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     const [activeEdit, setActiveEdit] = useState<string | undefined>(undefined)
     const activeRef = useRef<HTMLDivElement | null>(null)
     const {
-        apiQueue,
-        setIsSaving,
-        showEditHistory,
-    } = useAppContext()
-    const {
         caseEdits,
         editIndexes,
     } = useCaseContext()
-    const {
-        processQueue,
-    } = useEditCase()
 
-    useEffect(() => {
-        let timer: NodeJS.Timeout | undefined
-        if (apiQueue.length > 0) {
-            setIsSaving(true)
-
-            if (timer) {
-                clearTimeout(timer)
-            }
-
-            timer = setTimeout(() => {
-                processQueue()
-            }, 3000)
-        } else {
-            setIsSaving(false)
-        }
-
-        return () => {
-            if (timer) {
-                clearTimeout(timer)
-            }
-        }
-    }, [apiQueue])
 
     useEffect(() => {
         const currentEditId = getCurrentEditId(editIndexes, caseId)
@@ -98,10 +66,6 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
             activeRef.current.scrollIntoView({ behavior: "smooth", block: "center" })
         }
     }, [activeEdit])
-
-    if (!showEditHistory) {
-        return (<div />)
-    }
 
     return (
         <>

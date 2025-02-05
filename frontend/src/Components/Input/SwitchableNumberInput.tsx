@@ -1,10 +1,10 @@
 import React from "react"
 import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import NumberInputWithValidation from "./Components/NumberInputWithValidation"
+
+import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
+import { useProjectContext } from "@/Context/ProjectContext"
 import InputSwitcher from "./Components/InputSwitcher"
-import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
-import { useProjectContext } from "../../Context/ProjectContext"
+import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 
 interface CaseEditInputProps {
     label: string;

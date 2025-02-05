@@ -89,8 +89,6 @@ public class DcdExceptionHandlingMiddleware(
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-        dbContext.ChangeTracker.LazyLoadingEnabled = false;
-
         dbContext.ExceptionLogs.Add(new ExceptionLog
         {
             Environment = DcdEnvironments.CurrentEnvironment,

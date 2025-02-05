@@ -13,13 +13,8 @@ public class TimeSeriesProfile : IChangeTrackable, IDateTrackedEntity
     public string InternalData { get; set; } = string.Empty;
     public bool Override { get; set; }
 
-    public DateTime CreatedUtc { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime UpdatedUtc { get; set; }
-    public string? UpdatedBy { get; set; }
-
     public Guid CaseId { get; set; }
-    public virtual Case Case { get; set; } = null!;
+    public Case Case { get; set; } = null!;
 
     [NotMapped]
     public required double[] Values
@@ -29,4 +24,11 @@ public class TimeSeriesProfile : IChangeTrackable, IDateTrackedEntity
             : Array.ConvertAll(InternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
         set => InternalData = string.Join(";", value);
     }
+
+    #region Change tracking
+    public DateTime CreatedUtc { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime UpdatedUtc { get; set; }
+    public string? UpdatedBy { get; set; }
+    #endregion
 }

@@ -25,8 +25,6 @@ public static class NetSaleGasProfileService
 
         profile.StartYear = calculateNetSaleGas.StartYear;
         profile.Values = calculateNetSaleGas.Values;
-
-        TimeSeriesProfileValidator.ValidateCalculatedTimeSeries(profile, caseItem.Id);
     }
 
     private static TimeSeriesCost CalculateNetSaleGas(Case caseItem,

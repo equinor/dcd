@@ -8,7 +8,7 @@ public class Substructure : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public string Name { get; set; } = string.Empty;
     public double DryWeight { get; set; }
@@ -23,10 +23,12 @@ public class Substructure : IChangeTrackable, IDateTrackedEntity
     public DateTime? DG3Date { get; set; }
     public DateTime? DG4Date { get; set; }
 
+    #region Change tracking
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
+    #endregion
 }
 
 public enum Concept

@@ -8,7 +8,7 @@ namespace api.Features.Cases.Duplicate;
 public static class ResetIdPropertiesInCaseGraphService
 {
     private const string ProjectNamespacePrefix = "api.";
-    private static readonly string[] ProjectEntityNames = ["Case", "CaseProxy"];
+    private const string ProjectEntityName = "Case";
 
     public static void ResetPrimaryKeysAndForeignKeysInGraph(Case caseItem, Guid duplicateCaseId)
     {
@@ -41,7 +41,7 @@ public static class ResetIdPropertiesInCaseGraphService
 
         foreach (var guidProperty in guidProperties)
         {
-            if (guidProperty.Name == "ProjectId")
+            if (guidProperty.Name is "ProjectId" or "WellId")
             {
                 continue;
             }
@@ -51,7 +51,12 @@ public static class ResetIdPropertiesInCaseGraphService
                 guidProperty.SetValue(obj, Guid.Empty);
             }
 
-            if (ProjectEntityNames.Contains(obj.GetType().Name) && guidProperty.Name == "Id")
+            if (guidProperty.Name == "CaseId")
+            {
+                guidProperty.SetValue(obj, caseId);
+            }
+
+            if (ProjectEntityName == obj.GetType().Name && guidProperty.Name == "Id")
             {
                 guidProperty.SetValue(obj, caseId);
             }

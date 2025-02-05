@@ -78,7 +78,6 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
         }
 
         await using var dbContext = await contextFactory.CreateDbContextAsync();
-        dbContext.ChangeTracker.LazyLoadingEnabled = false;
 
         var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 

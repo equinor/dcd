@@ -12,6 +12,7 @@ public class ResetIdPropertiesInCaseGraphServiceTests
     {
         var caseId = Guid.NewGuid();
         var projectId = Guid.NewGuid();
+        var wellId = Guid.NewGuid();
 
         var caseItem = new Case
         {
@@ -32,6 +33,18 @@ public class ResetIdPropertiesInCaseGraphServiceTests
             {
                 Id = Guid.NewGuid(),
                 ProjectId = projectId
+            },
+            WellProject = new WellProject
+            {
+                Id = Guid.NewGuid(),
+                DevelopmentWells =
+                [
+                    new DevelopmentWell
+                    {
+                        Id = Guid.NewGuid(),
+                        WellId = wellId
+                    }
+                ]
             }
         };
 
@@ -45,10 +58,15 @@ public class ResetIdPropertiesInCaseGraphServiceTests
         Assert.Equal(Guid.Empty, caseItem.SurfId);
         Assert.Equal(Guid.Empty, caseItem.TransportId);
         Assert.Equal(Guid.Empty, caseItem.TopsideId);
+        Assert.Equal(Guid.Empty, caseItem.WellProjectId);
+
+        Assert.NotNull(caseItem.WellProject);
+        Assert.Equal(Guid.Empty, caseItem.WellProject.DevelopmentWells![0].Id);
 
         Assert.Equal(projectId, caseItem.ProjectId);
         Assert.Equal(projectId, caseItem.Substructure.ProjectId);
         Assert.Equal(projectId, caseItem.Topside.ProjectId);
+        Assert.Equal(wellId, caseItem.WellProject.DevelopmentWells![0].WellId);
 
         Assert.NotEqual(caseId, caseItem.Id);
     }

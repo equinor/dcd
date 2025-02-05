@@ -7,7 +7,6 @@ import { users_circle, settings } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
 
 import { projectTabNames } from "@/Utils/constants"
-import { useAppContext } from "@/Context/AppContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
 type ProjectTabsProps = {
@@ -18,7 +17,6 @@ type ProjectTabsProps = {
 const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTabProject }) => {
     const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
     const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
-    const { showEditHistory } = useAppContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
 
@@ -41,7 +39,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
                 onChange={(_, index) => handleTabChange(getTabIndex(index, false))}
                 variant="scrollable"
             >
-                {leftTabs.filter((tabName) => showEditHistory || tabName !== "Case edit history").map((tabName) => <Tab key={tabName} label={tabName} />)}
+                {leftTabs.map((tabName) => <Tab key={tabName} label={tabName} />)}
             </Tabs>
             <Box flexGrow={1} />
             <Tabs

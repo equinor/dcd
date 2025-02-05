@@ -98,7 +98,9 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             WaterInjectorCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile)),
             WaterInjectorCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)),
             GasInjectorCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile)),
-            GasInjectorCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride))
+            GasInjectorCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride)),
+            DevelopmentCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignTypes.DevelopmentCampaign).Select(CampaignMapper.MapToDto).ToList(),
+            ExplorationCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignTypes.ExplorationCampaign).Select(CampaignMapper.MapToDto).ToList()
         };
     }
 

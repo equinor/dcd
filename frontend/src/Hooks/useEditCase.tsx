@@ -66,7 +66,7 @@ const useEditCase = () => {
 
     const updateEditIndex = (newEditId: string) => {
         if (!caseIdFromParams) {
-            editQueueLogger.log("Not in a project case")
+            editQueueLogger.warn("Not in a project case")
             return
         }
 
@@ -79,10 +79,10 @@ const useEditCase = () => {
             const index = _.findIndex(storedEditIndexes, { caseId: caseIdFromParams })
             updatedEditIndexes = [...storedEditIndexes]
             updatedEditIndexes[index] = activeEdit
-            editQueueLogger.log("Updated existing edit index:", { newEditId, activeEdit })
+            editQueueLogger.warn("Updated existing edit index:", { newEditId, activeEdit })
         } else {
             updatedEditIndexes = [...storedEditIndexes, editEntry]
-            editQueueLogger.log("Added new edit index:", editEntry)
+            editQueueLogger.warn("Added new edit index:", editEntry)
         }
 
         setStoredEditIndexes(updatedEditIndexes)
@@ -163,7 +163,7 @@ const useEditCase = () => {
      * we only need to submit the the latest edit for each modified resource object to update the data the API
      */
     const processQueue = async () => {
-        editQueueLogger.log("Processing queue:", apiQueue)
+        editQueueLogger.warn("Processing queue:", apiQueue)
 
         try {
             const uniqueEditsQueue = _.uniqBy(
@@ -171,7 +171,7 @@ const useEditCase = () => {
                 (edit) => edit.resourceName + edit.resourceId + edit.resourcePropertyKey + (edit.wellId ? edit.wellId : ""),
             )
 
-            editQueueLogger.log("Unique edits to process:", uniqueEditsQueue)
+            editQueueLogger.warn("Unique edits to process:", uniqueEditsQueue)
 
             const results = await Promise.all(
                 uniqueEditsQueue.map(async (editInstance) => {
@@ -184,7 +184,7 @@ const useEditCase = () => {
                             resourceName: editInstance.resourceName,
                             resourceId: editInstance.resourceId,
                         })
-                        editQueueLogger.log("Issue happens here! Failed to process edit:", {
+                        editQueueLogger.warn("Issue happens here! Failed to process edit:", {
                             error,
                             editInstance,
                         })
@@ -193,7 +193,7 @@ const useEditCase = () => {
                 }),
             )
 
-            editQueueLogger.log("API submission results:", results)
+            editQueueLogger.warn("API submission results:", results)
 
             if (results.some((result) => result !== null)) {
                 updateHistory()
@@ -202,20 +202,20 @@ const useEditCase = () => {
             setApiQueue([])
         } catch (error) {
             console.error("Fatal error in processQueue:", error)
-            editQueueLogger.log("Fatal error in processQueue:", error)
+            editQueueLogger.warn("Fatal error in processQueue:", error)
             setApiQueue([]) // Clear queue even on error to prevent stuck state
         }
     }
     const editIsForSameResourceName = (edit1: EditInstance, edit2: EditInstance) => edit1.resourceName === edit2.resourceName && edit1.caseId === edit2.caseId
 
     const handleTableEdit = (insertedEditInstanceObject: EditInstance) => {
-        editQueueLogger.log("Current queue for this specific resource before adding table edit: ", apiQueue)
-        editQueueLogger.log("Adding table edit:", insertedEditInstanceObject)
+        editQueueLogger.warn("Current queue for this specific resource before adding table edit: ", apiQueue)
+        editQueueLogger.warn("Adding table edit:", insertedEditInstanceObject)
 
         // Use functional update to ensure we're working with the latest state
         setApiQueue((prevQueue) => {
             const updatedQueue = [...prevQueue, insertedEditInstanceObject]
-            editQueueLogger.log("New queue after adding edit:", updatedQueue)
+            editQueueLogger.warn("New queue after adding edit:", updatedQueue)
             return updatedQueue
         })
     }
@@ -229,7 +229,7 @@ const useEditCase = () => {
             .slice()
             .filter((edit) => editIsForSameResourceName(edit, insertedEditInstanceObject))
 
-        editQueueLogger.log("Existing edits for same resource:", existingEditsForSameResourceInQueue)
+        editQueueLogger.warn("Existing edits for same resource:", existingEditsForSameResourceInQueue)
 
         let sameFieldAlreadyInQueue = null
         const editIsForSamePropertyKey = (edit1: EditInstance, edit2: EditInstance) => edit1.resourcePropertyKey === edit2.resourcePropertyKey
@@ -242,7 +242,7 @@ const useEditCase = () => {
             }
         }
 
-        editQueueLogger.log("Same field already in queue:", sameFieldAlreadyInQueue)
+        editQueueLogger.warn("Same field already in queue:", sameFieldAlreadyInQueue)
 
         if (existingEditsForSameResourceInQueue.length > 0) {
             const latestEditInQueue = structuredClone(existingEditsForSameResourceInQueue[existingEditsForSameResourceInQueue.length - 1])
@@ -254,33 +254,33 @@ const useEditCase = () => {
             existingQueueItemsResourceObject[propertyKey] = newResourceObject[propertyKey]
             combinedResourceObject = existingQueueItemsResourceObject
 
-            editQueueLogger.log("Combined resource object:", combinedResourceObject)
+            editQueueLogger.warn("Combined resource object:", combinedResourceObject)
 
             if (sameFieldAlreadyInQueue) {
-                editQueueLogger.log("Updating existing edit in queue")
+                editQueueLogger.warn("Updating existing edit in queue")
                 const insertedEditInstanceWithCombinedResourceObject: EditInstance = {
                     ...insertedEditInstanceObject,
                     newResourceObject: combinedResourceObject,
                     previousResourceObject: latestEditInQueue.newResourceObject,
                     previousDisplayValue: sameFieldAlreadyInQueue.newDisplayValue,
                 }
-                editQueueLogger.log("Updated edit instance:", insertedEditInstanceWithCombinedResourceObject)
+                editQueueLogger.warn("Updated edit instance:", insertedEditInstanceWithCombinedResourceObject)
                 setApiQueue([...apiQueue, insertedEditInstanceWithCombinedResourceObject])
             } else {
-                editQueueLogger.log("Adding new edit with combined resource object")
+                editQueueLogger.warn("Adding new edit with combined resource object")
                 const insertedEditInstanceWithCombinedResourceObject: EditInstance = {
                     ...insertedEditInstanceObject,
                     newResourceObject: combinedResourceObject,
                     previousResourceObject: latestEditInQueue.newResourceObject,
                 }
-                editQueueLogger.log("New edit instance:", insertedEditInstanceWithCombinedResourceObject)
+                editQueueLogger.warn("New edit instance:", insertedEditInstanceWithCombinedResourceObject)
                 setApiQueue([...apiQueue, insertedEditInstanceWithCombinedResourceObject])
             }
         } else {
-            editQueueLogger.log("Adding new unique edit to queue")
+            editQueueLogger.warn("Adding new unique edit to queue")
             const updatedQueue = [...apiQueue, insertedEditInstanceObject]
             setApiQueue(updatedQueue)
-            editQueueLogger.log("Updated queue:", updatedQueue)
+            editQueueLogger.warn("Updated queue:", updatedQueue)
         }
     }
 
@@ -302,7 +302,7 @@ const useEditCase = () => {
         tableName,
         inputFieldId,
     }: AddEditParams) => {
-        editQueueLogger.log("Adding edit:", {
+        editQueueLogger.warn("Adding edit:", {
             inputLabel,
             resourceName,
             resourceId,
@@ -319,7 +319,7 @@ const useEditCase = () => {
         }
 
         if (_.isEqual(newResourceObject, previousResourceObject)) {
-            editQueueLogger.log("No changes detected, skipping edit")
+            editQueueLogger.warn("No changes detected, skipping edit")
             return
         }
 
@@ -344,13 +344,13 @@ const useEditCase = () => {
             inputFieldId,
         }
 
-        editQueueLogger.log("Created edit instance:", insertedEditInstanceObject)
+        editQueueLogger.warn("Created edit instance:", insertedEditInstanceObject)
 
         // TODO: we need a better way to determine if the edit is a table edit
         const isTableEdit = Object.prototype.hasOwnProperty.call(newResourceObject, "startYear")
             && Object.prototype.hasOwnProperty.call(newResourceObject, "values")
 
-        editQueueLogger.log("Edit type:", { isTableEdit })
+        editQueueLogger.warn("Edit type:", { isTableEdit })
 
         if (isTableEdit) {
             handleTableEdit(insertedEditInstanceObject)
