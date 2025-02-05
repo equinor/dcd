@@ -2,15 +2,13 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Wells.Update.Dtos;
 using api.Models;
+using api.Models.Infrastructure.ProjectRecalculation;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Wells.Update;
 
-public class UpdateWellsService(
-    DcdDbContext context,
-    UpdateExplorationWellCostProfilesService updateExplorationWellCostProfilesService,
-    UpdateWellProjectCostProfilesService updateWellProjectCostProfilesService)
+public class UpdateWellsService(DcdDbContext context)
 {
     public async Task UpdateWells(Guid projectId, UpdateWellsDto updateWellsDto)
     {
@@ -20,7 +18,16 @@ public class UpdateWellsService(
         await CreateWells(updateWellsDto.CreateWellDtos, projectPk);
         await UpdateWells(updateWellsDto.UpdateWellDtos);
 
-        await context.SaveChangesAsync();
+        if (updateWellsDto.CreateWellDtos.Any() || updateWellsDto.UpdateWellDtos.Any() || updateWellsDto.DeleteWellDtos.Any())
+        {
+            context.PendingRecalculations.Add(new PendingRecalculation
+            {
+                ProjectId = projectPk,
+                CreatedUtc = DateTime.UtcNow
+            });
+
+            await context.SaveChangesAsync();
+        }
     }
 
     private async Task DeleteWells(List<DeleteWellDto> deleteWellDtos)
@@ -29,12 +36,6 @@ public class UpdateWellsService(
         {
             return;
         }
-
-        var affectedAssets = new Dictionary<string, List<Guid>>
-        {
-            { nameof(Exploration), [] },
-            { nameof(WellProject), [] }
-        };
 
         foreach (var wellDto in deleteWellDtos)
         {
@@ -47,7 +48,6 @@ public class UpdateWellsService(
                 foreach (var explorationWell in explorationWells)
                 {
                     context.ExplorationWell.Remove(explorationWell);
-                    affectedAssets[nameof(Exploration)].Add(explorationWell.ExplorationId);
                 }
 
                 var developmentWells = context.DevelopmentWells.Where(ew => ew.WellId == well.Id);
@@ -55,7 +55,6 @@ public class UpdateWellsService(
                 foreach (var developmentWell in developmentWells)
                 {
                     context.DevelopmentWells.Remove(developmentWell);
-                    affectedAssets[nameof(WellProject)].Add(developmentWell.WellProjectId);
                 }
 
                 context.Wells.Remove(well);
@@ -63,16 +62,6 @@ public class UpdateWellsService(
         }
 
         await context.SaveChangesAsync();
-
-        foreach (var explorationId in affectedAssets[nameof(Exploration)])
-        {
-            await updateExplorationWellCostProfilesService.UpdateExplorationCostProfiles(explorationId);
-        }
-
-        foreach (var wellProjectId in affectedAssets[nameof(WellProject)])
-        {
-            await updateWellProjectCostProfilesService.UpdateWellProjectCostProfiles(wellProjectId);
-        }
     }
 
     private async Task CreateWells(List<CreateWellDto> createWellDtos, Guid projectPk)
@@ -106,19 +95,12 @@ public class UpdateWellsService(
             return;
         }
 
-        var updatedWells = new List<Guid>();
-
         foreach (var wellDto in updateWellDtos)
         {
             var existing = await context.Wells
                 .Include(e => e.DevelopmentWells)
                 .Include(e => e.ExplorationWells)
                 .SingleAsync(w => w.Id == wellDto.Id);
-
-            if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
-            {
-                updatedWells.Add(wellDto.Id);
-            }
 
             existing.Name = wellDto.Name;
             existing.WellInterventionCost = wellDto.WellInterventionCost;
@@ -129,13 +111,5 @@ public class UpdateWellsService(
         }
 
         await context.SaveChangesAsync();
-
-        if (updatedWells.Count != 0)
-        {
-            await updateExplorationWellCostProfilesService.HandleExplorationWell(updatedWells);
-            await updateWellProjectCostProfilesService.HandleWellProjects(updatedWells);
-
-            await context.SaveChangesAsync();
-        }
     }
 }
