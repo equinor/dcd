@@ -1,7 +1,7 @@
 using api.AppInfrastructure.Authorization;
-using api.Features.Assets.CaseAssets.Campaigns.GetCampaignWell;
-using api.Features.Assets.CaseAssets.Campaigns.SaveCampaignWell;
 using api.Features.Assets.CaseAssets.Campaigns.Update;
+using api.Features.Assets.CaseAssets.CampaignWells.Get;
+using api.Features.Assets.CaseAssets.CampaignWells.Save;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.Explorations;

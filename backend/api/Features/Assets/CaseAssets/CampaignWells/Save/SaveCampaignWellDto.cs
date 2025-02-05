@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.SaveCampaignWell;
+namespace api.Features.Assets.CaseAssets.CampaignWells.Save;
 
 public class SaveCampaignWellDto
 {

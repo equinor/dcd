@@ -1,10 +1,10 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.Campaigns.GetCampaignWell;
+using api.Features.Assets.CaseAssets.CampaignWells.Get;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.SaveCampaignWell;
+namespace api.Features.Assets.CaseAssets.CampaignWells.Save;
 
 public class SaveCampaignWellController(SaveCampaignWellService saveCampaignWellService,
     GetCampaignWellService getCampaignWellService) : ControllerBase

@@ -4,7 +4,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.GetCampaignWell;
+namespace api.Features.Assets.CaseAssets.CampaignWells.Get;
 
 public class GetCampaignWellService(DcdDbContext context)
 {

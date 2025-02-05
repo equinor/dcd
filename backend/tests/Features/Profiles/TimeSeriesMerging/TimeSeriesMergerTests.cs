@@ -3,7 +3,7 @@ using api.Features.Profiles.TimeSeriesMerging;
 
 using Xunit;
 
-namespace tests.Features.TimeSeriesCalculators;
+namespace tests.Features.Profiles.TimeSeriesMerging;
 
 public class TimeSeriesMergerTests
 {

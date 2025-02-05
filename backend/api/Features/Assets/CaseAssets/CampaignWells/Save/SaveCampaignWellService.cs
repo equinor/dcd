@@ -3,7 +3,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.SaveCampaignWell;
+namespace api.Features.Assets.CaseAssets.CampaignWells.Save;
 
 public class SaveCampaignWellService(DcdDbContext context)
 {
