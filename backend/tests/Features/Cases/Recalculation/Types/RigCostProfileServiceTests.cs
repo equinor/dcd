@@ -34,9 +34,20 @@ public class RigCostProfileServiceTests
             RigMobDemobCostStartYear = 3
         };
 
+        var developmentCampaign = new Campaign
+        {
+            CampaignType = CampaignTypes.DevelopmentCampaign,
+            RigUpgradingCost = 3,
+            RigMobDemobCost = 4,
+            RigUpgradingCostValues = [0.5, 0.2, 0.3],
+            RigUpgradingCostStartYear = -1,
+            RigMobDemobCostValues = [0.3, 0.1, 0.2, 0, 0, 0.4],
+            RigMobDemobCostStartYear = 0
+        };
+
         var caseItem = new Case
         {
-            Campaigns = [explorationCampaign1, explorationCampaign2],
+            Campaigns = [explorationCampaign1, developmentCampaign, explorationCampaign2],
         };
 
         var expectedExplorationRigUpgradingProfile = new TimeSeriesProfile
@@ -53,14 +64,43 @@ public class RigCostProfileServiceTests
             Values = [0.5, 1, 0, 3, 5.3, 0, 3.2]
         };
 
+        var expectedDevelopmentRigUpgradingProfile = new TimeSeriesProfile
+        {
+            ProfileType = ProfileTypes.DevelopmentRigUpgradingCostProfile,
+            StartYear = -1,
+            Values = [1.5, 0.6, 0.9]
+        };
+
+        var expectedDevelopmentRigMobDemobProfile = new TimeSeriesProfile
+        {
+            ProfileType = ProfileTypes.DevelopmentRigMobDemob,
+            StartYear = 0,
+            Values = [1.2, 0.4, 0.8, 0, 0, 1.6]
+        };
+
         // Act
         RigCostProfileService.RunCalculation(caseItem);
 
         // Assert
-        Assert.Equal(expectedExplorationRigUpgradingProfile.Values, caseItem.GetProfile(ProfileTypes.ExplorationRigUpgradingCostProfile).Values);
+        AssertEqualWithTolerance(expectedExplorationRigUpgradingProfile.Values, caseItem.GetProfile(ProfileTypes.ExplorationRigUpgradingCostProfile).Values);
         Assert.Equal(expectedExplorationRigUpgradingProfile.StartYear, caseItem.GetProfile(ProfileTypes.ExplorationRigUpgradingCostProfile).StartYear);
 
-        Assert.Equal(expectedExplorationRigMobDemobProfile.Values, caseItem.GetProfile(ProfileTypes.ExplorationRigMobDemob).Values);
+        AssertEqualWithTolerance(expectedExplorationRigMobDemobProfile.Values, caseItem.GetProfile(ProfileTypes.ExplorationRigMobDemob).Values);
         Assert.Equal(expectedExplorationRigMobDemobProfile.StartYear, caseItem.GetProfile(ProfileTypes.ExplorationRigMobDemob).StartYear);
+
+        AssertEqualWithTolerance(expectedDevelopmentRigUpgradingProfile.Values, caseItem.GetProfile(ProfileTypes.DevelopmentRigUpgradingCostProfile).Values);
+        Assert.Equal(expectedDevelopmentRigUpgradingProfile.StartYear, caseItem.GetProfile(ProfileTypes.DevelopmentRigUpgradingCostProfile).StartYear);
+
+        AssertEqualWithTolerance(expectedDevelopmentRigMobDemobProfile.Values, caseItem.GetProfile(ProfileTypes.DevelopmentRigMobDemob).Values);
+        Assert.Equal(expectedDevelopmentRigMobDemobProfile.StartYear, caseItem.GetProfile(ProfileTypes.DevelopmentRigMobDemob).StartYear);
+    }
+
+    private static void AssertEqualWithTolerance(double[] expected, double[] actual, double tolerance = 1e-9)
+    {
+        Assert.Equal(expected.Length, actual.Length);
+        for (int i = 0; i < expected.Length; i++)
+        {
+            Assert.True(Math.Abs(expected[i] - actual[i]) < tolerance, $"Expected: {expected[i]}, Actual: {actual[i]}");
+        }
     }
 }
