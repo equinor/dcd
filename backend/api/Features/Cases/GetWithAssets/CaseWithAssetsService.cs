@@ -89,6 +89,11 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             GAndGAdminCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)),
             SeismicAcquisitionAndProcessing = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)),
             CountryOfficeCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost)),
+            ProjectSpecificDrillingCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProjectSpecificDrillingCostProfile)),
+            ExplorationRigUpgradingCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigUpgradingCostProfile)),
+            ExplorationRigUpgradingCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigUpgradingCostProfileOverride)),
+            ExplorationRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemob)),
+            ExplorationRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride)),
             WellProject = WellProjectMapper.MapToDto(caseItem.WellProject),
             DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.WellProject.DevelopmentWells),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
@@ -99,6 +104,10 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             WaterInjectorCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)),
             GasInjectorCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile)),
             GasInjectorCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride)),
+            DevelopmentRigUpgradingCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigUpgradingCostProfile)),
+            DevelopmentRigUpgradingCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigUpgradingCostProfileOverride)),
+            DevelopmentRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemob)),
+            DevelopmentRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemobOverride)),
             DevelopmentCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignTypes.DevelopmentCampaign).Select(CampaignMapper.MapToDto).ToList(),
             ExplorationCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignTypes.ExplorationCampaign).Select(CampaignMapper.MapToDto).ToList()
         };
