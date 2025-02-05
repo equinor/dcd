@@ -93,5 +93,3 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
 }
 
 export default CalculationSourceToggle
-
-// fdv dokument
