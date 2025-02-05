@@ -72,7 +72,7 @@ public static class ProjectDuplicator
             {
                 Id = Guid.NewGuid(),
                 ProjectId = projectId,
-                ExplorationRigUpgrading = existingProject.ExplorationOperationalWellCosts!.ExplorationRigUpgrading,
+                ExplorationRigUpgrading = existingProject.ExplorationOperationalWellCosts.ExplorationRigUpgrading,
                 ExplorationRigMobDemob = existingProject.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
                 ExplorationProjectDrillingCosts = existingProject.ExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,
                 AppraisalRigMobDemob = existingProject.ExplorationOperationalWellCosts.AppraisalRigMobDemob,
@@ -83,7 +83,7 @@ public static class ProjectDuplicator
             {
                 Id = Guid.NewGuid(),
                 ProjectId = projectId,
-                RigUpgrading = existingProject.DevelopmentOperationalWellCosts!.RigUpgrading,
+                RigUpgrading = existingProject.DevelopmentOperationalWellCosts.RigUpgrading,
                 RigMobDemob = existingProject.DevelopmentOperationalWellCosts.RigMobDemob,
                 AnnualWellInterventionCostPerWell = existingProject.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell,
                 PluggingAndAbandonment = existingProject.DevelopmentOperationalWellCosts.PluggingAndAbandonment
