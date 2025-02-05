@@ -1,5 +1,7 @@
 import React, { useState } from "react"
-import { Box, Button, Typography, TextField, Collapse } from "@mui/material"
+import {
+    Box, Button, Typography, TextField, Collapse,
+} from "@mui/material"
 import { Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
@@ -9,29 +11,29 @@ const InfoBar = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px;
+    padding: 8px 20px;
     margin-bottom: "16px";
     border-radius: 4px;
-    background: #FAFAFB;
+    background: #f2f2f2;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
 
     &:hover {
-        background: #F0F0F1;
+        transform: scale(1.01) 
     }
 `
 
 const FeedbackForm = styled.div`
-    padding: 16px;
-    margin-top: 4px;
+    background: #f2f2f2;
+    padding: 20px;
     margin-bottom: 16px;
     border-radius: 0 0 4px 4px;
 `
-
 const ButtonContainer = styled.div`
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 16px;
 `
 
 interface SubmitMistakesProps {
@@ -44,8 +46,13 @@ interface SubmitMistakesProps {
 }
 
 const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileName, rowData }) => {
-    const [explanation, setExplanation] = useState("")
     const [showForm, setShowForm] = useState(false)
+    const [explanation, setExplanation] = useState("")
+
+    const handleClose = () => {
+        setShowForm(false)
+        setExplanation("")
+    }
 
     const handleSendMail = () => {
         if (!explanation.trim()) {
@@ -53,17 +60,18 @@ const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileName, rowData })
         }
         const subject = encodeURIComponent("Possible mistake in code explanation")
         const body = encodeURIComponent(
-            `I believe there might be an issue with the AI-generated explanation.\nProfile: ${profileName || "N/A"}\n` +
-            `Resource Name: ${rowData?.resourceName || "N/A"}\nResource Type: ${rowData?.resourceType || "N/A"}\n\nDetails:\n${explanation}\n`
+            `I believe there might be an issue with the AI-generated explanation.\nProfile: ${profileName || "N/A"}\n`
+            + `Resource Name: ${rowData?.resourceName || "N/A"}\nResource Type: ${rowData?.resourceType || "N/A"}\n\nDetails:\n${explanation}\n`,
         )
         window.location.href = `mailto:agars@equinor.com?subject=${subject}&body=${body}`
+        handleClose()
     }
 
     return (
         <Box>
             <InfoBar onClick={() => setShowForm(!showForm)}>
-                <Icon 
-                    data={info_circle} 
+                <Icon
+                    data={info_circle}
                     size={16}
                     color="#6F6F6F"
                 />
@@ -86,14 +94,14 @@ const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileName, rowData })
                         size="small"
                     />
                     <ButtonContainer>
-                        <Button 
+                        <Button
                             variant="outlined"
                             size="small"
-                            onClick={() => setShowForm(false)}
+                            onClick={handleClose}
                         >
                             Cancel
                         </Button>
-                        <Button 
+                        <Button
                             variant="contained"
                             color="primary"
                             onClick={handleSendMail}
