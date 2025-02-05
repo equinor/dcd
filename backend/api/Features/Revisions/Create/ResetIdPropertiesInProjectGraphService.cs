@@ -8,8 +8,8 @@ namespace api.Features.Revisions.Create;
 public static class ResetIdPropertiesInProjectGraphService
 {
     private const string ProjectNamespacePrefix = "api.";
-    private static readonly string[] ProjectEntityNames = ["Project", "ProjectProxy"];
-    private static readonly string[] CaseEntityNames = ["Case", "CaseProxy"];
+    private const string ProjectEntityName = "Project";
+    private const string CaseEntityName = "Case";
     private static readonly string[] PropertiesToIgnore = ["CommonLibraryId", "FusionProjectId"];
 
     public static void ResetPrimaryKeysAndForeignKeysInGraph(Project project, Dictionary<Guid, Guid> caseIdMapping)
@@ -44,7 +44,7 @@ public static class ResetIdPropertiesInProjectGraphService
 
         foreach (var guidProperty in guidProperties)
         {
-            if (CaseEntityNames.Contains(obj.GetType().Name) && guidProperty.Name == "Id")
+            if (CaseEntityName == obj.GetType().Name && guidProperty.Name == "Id")
             {
                 var caseId = (Guid)guidProperty.GetValue(obj)!;
                 guidProperty.SetValue(obj, caseIdMapping[caseId]);
@@ -64,7 +64,7 @@ public static class ResetIdPropertiesInProjectGraphService
                 continue;
             }
 
-            if (ProjectEntityNames.Contains(obj.GetType().Name) && guidProperty.Name == "Id")
+            if (ProjectEntityName == obj.GetType().Name && guidProperty.Name == "Id")
             {
                 continue;
             }

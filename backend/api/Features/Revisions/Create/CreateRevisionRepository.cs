@@ -42,6 +42,16 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
 
+        await context.Campaigns
+            .Include(c => c.DevelopmentWells).ThenInclude(c => c.Well)
+            .Where(x => x.Case.ProjectId == projectPk)
+            .LoadAsync();
+
+        await context.Campaigns
+            .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
+            .Where(x => x.Case.ProjectId == projectPk)
+            .LoadAsync();
+
         DetachEntriesToEnablePrimaryKeyEdits();
 
         return project;
