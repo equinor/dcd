@@ -7,7 +7,7 @@ namespace api.Features.Cases.Duplicate;
 
 public class DuplicateCaseRepository(DcdDbContext context)
 {
-    public async Task<Case> GetDetachedCaseGraph(Guid projectId, Guid caseId)
+    public async Task<Case> GetFullCaseGraph(Guid projectId, Guid caseId)
     {
         var caseItem = await context.Cases
             .Include(c => c.DrainageStrategy)
@@ -16,19 +16,11 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.Surf)
             .Include(c => c.Substructure)
             .Include(c => c.OnshorePowerSupply)
+            .Include(c => c.Exploration)
+            .Include(c => c.WellProject)
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
             .SingleAsync();
-
-        await context.Explorations
-            .Include(c => c.ExplorationWells)
-            .Where(x => x.Id == caseItem.ExplorationId)
-            .LoadAsync();
-
-        await context.WellProjects
-            .Include(c => c.DevelopmentWells)
-            .Where(x => x.Id == caseItem.WellProjectId)
-            .LoadAsync();
 
         await context.Campaigns
             .Include(c => c.ExplorationWells)
@@ -44,21 +36,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
-        DetachEntriesToEnablePrimaryKeyEdits();
-
         return caseItem;
-    }
-
-    private void DetachEntriesToEnablePrimaryKeyEdits()
-    {
-        var entries = context.ChangeTracker
-            .Entries()
-            .Where(e => e.State != EntityState.Detached)
-            .ToList();
-
-        foreach (var entry in entries)
-        {
-            entry.State = EntityState.Detached;
-        }
     }
 }

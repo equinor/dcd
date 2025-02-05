@@ -110,7 +110,6 @@ public static class DcdIocConfiguration
         /* Recalculation services */
         services.AddScoped<RecalculationService>();
         services.AddScoped<RecalculationRepository>();
-        services.AddScoped<RecalculationDeterminerService>();
 
         /* Auth */
         services.AddScoped<CurrentUser>();
