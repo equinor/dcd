@@ -7,7 +7,7 @@ namespace api.Features.Revisions.Create;
 
 public class CreateRevisionRepository(DcdDbContext context)
 {
-    public async Task<Project> GetDetachedProjectGraph(Guid projectPk)
+    public async Task<Project> GetFullProjectGraph(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.ExplorationOperationalWellCosts)
@@ -21,8 +21,8 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(x => x.Surf)
             .Include(x => x.Substructure)
             .Include(x => x.OnshorePowerSupply)
-            .Include(x => x.DrainageStrategy)
-            .Include(x => x.DrainageStrategy)
+            .Include(x => x.Exploration)
+            .Include(x => x.WellProject)
             .Where(x => x.ProjectId == projectPk)
             .ToListAsync();
 
@@ -32,16 +32,6 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Where(x => caseIds.Contains(x.Id))
             .LoadAsync();
 
-        await context.Explorations
-            .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-
-        await context.WellProjects
-            .Include(c => c.DevelopmentWells).ThenInclude(c => c.Well)
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-
         await context.Campaigns
             .Include(c => c.DevelopmentWells).ThenInclude(c => c.Well)
             .Where(x => x.Case.ProjectId == projectPk)
@@ -51,22 +41,7 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
             .Where(x => x.Case.ProjectId == projectPk)
             .LoadAsync();
-
-        DetachEntriesToEnablePrimaryKeyEdits();
 
         return project;
-    }
-
-    private void DetachEntriesToEnablePrimaryKeyEdits()
-    {
-        var entries = context.ChangeTracker
-            .Entries()
-            .Where(e => e.State != EntityState.Detached)
-            .ToList();
-
-        foreach (var entry in entries)
-        {
-            entry.State = EntityState.Detached;
-        }
     }
 }
