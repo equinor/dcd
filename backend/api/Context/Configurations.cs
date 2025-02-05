@@ -79,9 +79,6 @@ public class DevelopmentWellConfiguration : IEntityTypeConfiguration<Development
 {
     public void Configure(EntityTypeBuilder<DevelopmentWell> builder)
     {
-        builder.Property(x => x.Id)
-            .HasDefaultValueSql("newid()");
-
         builder.HasIndex(wc => new { wc.WellProjectId, wc.WellId }).IsUnique();
 
         builder.HasOne(w => w.Well)
@@ -98,9 +95,6 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
 {
     public void Configure(EntityTypeBuilder<ExplorationWell> builder)
     {
-        builder.Property(x => x.Id)
-            .HasDefaultValueSql("newid()");
-
         builder.HasIndex(ew => new { ew.ExplorationId, ew.WellId }).IsUnique();
 
         builder.HasOne(w => w.Well)
