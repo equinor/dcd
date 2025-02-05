@@ -30,7 +30,6 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     const { apiQueue } = useAppContext()
 
     const handleToggleClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-
         if (!editMode) {
             return
         }
@@ -94,3 +93,5 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
 }
 
 export default CalculationSourceToggle
+
+// fdv dokument

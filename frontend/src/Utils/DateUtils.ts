@@ -69,7 +69,7 @@ export function formatDate(isoDateString: string): string {
     const date = new Date(isoDateString)
     if (Number.isNaN(date.getTime())) {
         console.error(`Invalid date string: ${isoDateString}`)
-        return "Invalid Date"
+        return "Unavailable"
     }
     const options: Intl.DateTimeFormatOptions = {
         month: "long",
