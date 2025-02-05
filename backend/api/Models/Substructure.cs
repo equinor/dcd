@@ -10,18 +10,18 @@ public class Substructure : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
-    public double DryWeight { get; set; }
-    public Maturity Maturity { get; set; }
-    public Currency Currency { get; set; }
-    public string ApprovedBy { get; set; } = string.Empty;
-    public int CostYear { get; set; }
-    public DateTime? ProspVersion { get; set; }
-    public Source Source { get; set; }
-    public DateTime? LastChangedDate { get; set; }
-    public Concept Concept { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
+    public required string Name { get; set; }
+    public required double DryWeight { get; set; }
+    public required Maturity Maturity { get; set; }
+    public required Currency Currency { get; set; }
+    public required string ApprovedBy { get; set; }
+    public required int CostYear { get; set; }
+    public required DateTime? ProspVersion { get; set; }
+    public required Source Source { get; set; }
+    public required DateTime? LastChangedDate { get; set; }
+    public required Concept Concept { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

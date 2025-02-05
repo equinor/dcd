@@ -43,28 +43,28 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public string? Host { get; set; }
 
     public Guid DrainageStrategyId { get; set; }
-    public DrainageStrategy? DrainageStrategy { get; set; }
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 
     public Guid WellProjectId { get; set; }
-    public WellProject? WellProject { get; set; }
+    public WellProject WellProject { get; set; } = null!;
 
     public Guid SurfId { get; set; }
-    public Surf? Surf { get; set; }
+    public Surf Surf { get; set; } = null!;
 
     public Guid SubstructureId { get; set; }
-    public Substructure? Substructure { get; set; }
+    public Substructure Substructure { get; set; } = null!;
 
     public Guid TopsideId { get; set; }
-    public Topside? Topside { get; set; }
+    public Topside Topside { get; set; } = null!;
 
     public Guid TransportId { get; set; }
-    public Transport? Transport { get; set; }
+    public Transport Transport { get; set; } = null!;
 
     public Guid OnshorePowerSupplyId { get; set; }
-    public OnshorePowerSupply? OnshorePowerSupply { get; set; }
+    public OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
 
     public Guid ExplorationId { get; set; }
-    public Exploration? Exploration { get; set; }
+    public Exploration Exploration { get; set; } = null!;
 
     public List<Image> Images { get; set; } = [];
     public List<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];

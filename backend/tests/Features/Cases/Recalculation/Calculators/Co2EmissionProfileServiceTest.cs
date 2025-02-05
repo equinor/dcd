@@ -2,6 +2,7 @@ using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using api.Models.Enums;
 
 using Xunit;
 
@@ -61,6 +62,25 @@ public class Co2EmissionProfileServiceTests
                 WaterInjectionCapacity = 0,
                 CO2ShareWaterInjectionProfile = 0,
                 CO2OnMaxWaterInjectionProfile = 0,
+
+                Name = "",
+                DryWeight = 0,
+                ArtificialLift = ArtificialLift.NoArtificialLift,
+                Maturity = Maturity.A,
+                Currency = 0,
+                FlaredGas = 0,
+                ProducerCount = 0,
+                GasInjectorCount = 0,
+                WaterInjectorCount = 0,
+                CostYear = 0,
+                ProspVersion = null,
+                LastChangedDate = null,
+                Source = Source.ConceptApp,
+                ApprovedBy = "",
+                DG3Date = null,
+                DG4Date = null,
+                FacilityOpex = 0,
+                PeakElectricityImported = 0
             }
         };
 
@@ -137,6 +157,25 @@ public class Co2EmissionProfileServiceTests
                 WaterInjectionCapacity = 0,
                 CO2ShareWaterInjectionProfile = 0,
                 CO2OnMaxWaterInjectionProfile = 0,
+
+                Name = "",
+                DryWeight = 0,
+                ArtificialLift = ArtificialLift.NoArtificialLift,
+                Maturity = Maturity.A,
+                Currency = 0,
+                FlaredGas = 0,
+                ProducerCount = 0,
+                GasInjectorCount = 0,
+                WaterInjectorCount = 0,
+                CostYear = 0,
+                ProspVersion = null,
+                LastChangedDate = null,
+                Source = Source.ConceptApp,
+                ApprovedBy = "",
+                DG3Date = null,
+                DG4Date = null,
+                FacilityOpex = 0,
+                PeakElectricityImported = 0,
             }
         };
 

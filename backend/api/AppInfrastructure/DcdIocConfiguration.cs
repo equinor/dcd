@@ -1,4 +1,5 @@
 using api.AppInfrastructure.Authorization;
+using api.Features.Assets.CaseAssets.Campaigns;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.Explorations;
@@ -66,8 +67,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateRevisionService>();
 
         services.AddScoped<UpdateWellsService>();
-        services.AddScoped<UpdateExplorationWellCostProfilesService>();
-        services.AddScoped<UpdateWellProjectCostProfilesService>();
 
         /* Project members */
         services.AddScoped<GetProjectMemberService>();
@@ -133,6 +132,7 @@ public static class DcdIocConfiguration
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
         /* Case assets */
+        services.AddScoped<UpdateCampaignService>();
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<UpdateExplorationService>();
         services.AddScoped<UpdateOnshorePowerSupplyService>();

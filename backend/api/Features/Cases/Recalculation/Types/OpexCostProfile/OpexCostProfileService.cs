@@ -100,7 +100,7 @@ public static class OpexCostProfileService
         int firstYear = firstYearOfProduction.Value;
         int lastYear = lastYearOfProduction.Value;
 
-        var facilityOpex = caseItem.Topside!.FacilityOpex;
+        var facilityOpex = caseItem.Topside.FacilityOpex;
 
         var values = new List<double>();
 

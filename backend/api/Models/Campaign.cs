@@ -23,14 +23,14 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     public List<ExplorationWell> ExplorationWells { get; set; } = [];
 
     [NotMapped]
-    public double[] RigUpgradingCostValues
+    public required double[] RigUpgradingCostValues
     {
         get => string.IsNullOrEmpty(RigUpgradingCostInternalData) ? [] : Array.ConvertAll(RigUpgradingCostInternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
         set => RigUpgradingCostInternalData = string.Join(";", value.Select(p => p.ToString()).ToArray());
     }
 
     [NotMapped]
-    public double[] RigMobDemobCostValues
+    public required double[] RigMobDemobCostValues
     {
         get => string.IsNullOrEmpty(RigMobDemobCostInternalData) ? [] : Array.ConvertAll(RigMobDemobCostInternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
         set => RigMobDemobCostInternalData = string.Join(";", value.Select(p => p.ToString()).ToArray());

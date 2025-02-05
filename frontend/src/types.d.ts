@@ -128,6 +128,11 @@ declare namespace Components {
             gAndGAdminCostOverride: TimeSeriesCostOverrideDto;
             seismicAcquisitionAndProcessing: TimeSeriesCostDto;
             countryOfficeCost: TimeSeriesCostDto;
+            projectSpecificDrillingCostProfile: TimeSeriesCostDto;
+            explorationRigUpgradingCostProfile: TimeSeriesCostDto;
+            explorationRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
+            explorationRigMobDemob: TimeSeriesCostDto;
+            explorationRigMobDemobOverride: TimeSeriesCostOverrideDto;
             wellProject: WellProjectDto;
             developmentWells: DevelopmentWellDto[] | null;
             developmentCampaigns: CampaignDto[];
@@ -139,6 +144,10 @@ declare namespace Components {
             waterInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
             gasInjectorCostProfile: TimeSeriesCostDto;
             gasInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
+            developmentRigUpgradingCostProfile: TimeSeriesCostDto;
+            developmentRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
+            developmentRigMobDemob: TimeSeriesCostDto;
+            developmentRigMobDemobOverride: TimeSeriesCostOverrideDto;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
@@ -545,6 +554,14 @@ declare namespace Components {
             id: string; // uuid
             source: Source /* int32 */;
         }
+        export interface UpdateCampaignDto {
+            rigUpgradingCost: number; // double
+            rigUpgradingCostStartYear: number; // int32
+            rigUpgradingCostValues: number /* double */[];
+            rigMobDemobCost: number; // double
+            rigMobDemobCostStartYear: number; // int32
+            rigMobDemobCostValues: number /* double */[];
+        }
         export interface UpdateCaseDto {
             name: string;
             description: string;
@@ -870,6 +887,25 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateCaseDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignId {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCampaignDto;
             namespace Responses {
                 export interface $200 {
                 }

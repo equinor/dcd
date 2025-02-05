@@ -37,7 +37,7 @@ public static class NetSaleGasProfileService
             return new TimeSeriesCost();
         }
 
-        if (caseItem.DrainageStrategy!.GasSolution == GasSolution.Injection)
+        if (caseItem.DrainageStrategy.GasSolution == GasSolution.Injection)
         {
             return new TimeSeriesCost();
         }

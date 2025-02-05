@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Profiles;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Cases.Create;
 
@@ -31,50 +32,54 @@ public class CreateCaseService(DcdDbContext context)
             Exploration = CreateExploration(projectPk),
             WellProject = CreateWellProject(projectPk),
             OnshorePowerSupply = CreateOnshorePowerSupply(projectPk),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.TopsideCostProfileOverride,
                     Override = true,
                     Values = []
                 },
-                new()
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.TransportCostProfileOverride,
                     Override = true,
                     Values = []
                 },
-                new()
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SurfCostProfileOverride,
                     Override = true,
                     Values = []
                 },
-                new()
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SubstructureCostProfileOverride,
                     Override = true,
                     Values = []
                 },
-                new()
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.OnshorePowerSupplyCostProfileOverride,
                     Override = true,
                     Values = []
                 }
-            },
-            Campaigns = new List<Campaign>
-            {
-                new()
+            ],
+            Campaigns =
+            [
+                new Campaign
                 {
-                    CampaignType = CampaignTypes.DevelopmentCampaign
+                    CampaignType = CampaignTypes.DevelopmentCampaign,
+                    RigUpgradingCostValues = [],
+                    RigMobDemobCostValues = []
                 },
-                new()
+                new Campaign
                 {
-                    CampaignType = CampaignTypes.ExplorationCampaign
+                    CampaignType = CampaignTypes.ExplorationCampaign,
+                    RigUpgradingCostValues = [],
+                    RigMobDemobCostValues = []
                 }
-            },
+            ],
         };
 
         context.Cases.Add(createdCase);
@@ -88,7 +93,14 @@ public class CreateCaseService(DcdDbContext context)
         {
             Name = "Drainage Strategy",
             Description = "Drainage Strategy",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+
+            NGLYield = 0,
+            ProducerCount = 0,
+            GasInjectorCount = 0,
+            WaterInjectorCount = 0,
+            ArtificialLift = ArtificialLift.NoArtificialLift,
+            GasSolution = GasSolution.Export
         };
     }
 
@@ -97,7 +109,35 @@ public class CreateCaseService(DcdDbContext context)
         return new Topside
         {
             Name = "Topside",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+
+            DryWeight = 0,
+            OilCapacity = 0,
+            GasCapacity = 0,
+            WaterInjectionCapacity = 0,
+            ArtificialLift = ArtificialLift.NoArtificialLift,
+            Maturity = Maturity.A,
+            Currency = 0,
+            FuelConsumption = 0,
+            FlaredGas = 0,
+            ProducerCount = 0,
+            GasInjectorCount = 0,
+            WaterInjectorCount = 0,
+            CO2ShareOilProfile = 0,
+            CO2ShareGasProfile = 0,
+            CO2ShareWaterInjectionProfile = 0,
+            CO2OnMaxOilProfile = 0,
+            CO2OnMaxGasProfile = 0,
+            CO2OnMaxWaterInjectionProfile = 0,
+            CostYear = 0,
+            ProspVersion = null,
+            LastChangedDate = null,
+            Source = Source.ConceptApp,
+            ApprovedBy = "",
+            DG3Date = null,
+            DG4Date = null,
+            FacilityOpex = 0,
+            PeakElectricityImported = 0
         };
     }
 
@@ -106,7 +146,27 @@ public class CreateCaseService(DcdDbContext context)
         return new Surf
         {
             Name = "Surf",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+
+            CessationCost = 0,
+            Maturity = Maturity.A,
+            InfieldPipelineSystemLength = 0,
+            UmbilicalSystemLength = 0,
+            ArtificialLift = ArtificialLift.NoArtificialLift,
+            RiserCount = 0,
+            TemplateCount = 0,
+            ProducerCount = 0,
+            GasInjectorCount = 0,
+            WaterInjectorCount = 0,
+            ProductionFlowline = ProductionFlowline.No_production_flowline,
+            Currency = 0,
+            LastChangedDate = null,
+            CostYear = 0,
+            Source = Source.ConceptApp,
+            ProspVersion = null,
+            ApprovedBy = "",
+            DG3Date = null,
+            DG4Date = null
         };
     }
 
@@ -115,7 +175,18 @@ public class CreateCaseService(DcdDbContext context)
         return new Substructure
         {
             Name = "Substructure",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+            DryWeight = 0,
+            Maturity = Maturity.A,
+            Currency = 0,
+            ApprovedBy = "",
+            CostYear = 0,
+            ProspVersion = null,
+            Source = Source.ConceptApp,
+            LastChangedDate = null,
+            Concept = Concept.NO_CONCEPT,
+            DG3Date = null,
+            DG4Date = null
         };
     }
 
@@ -124,7 +195,17 @@ public class CreateCaseService(DcdDbContext context)
         return new Transport
         {
             Name = "Transport",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+            GasExportPipelineLength = 0,
+            OilExportPipelineLength = 0,
+            Maturity = Maturity.A,
+            Currency = 0,
+            LastChangedDate = null,
+            CostYear = 0,
+            Source = Source.ConceptApp,
+            ProspVersion = null,
+            DG3Date = null,
+            DG4Date = null
         };
     }
 
@@ -133,7 +214,13 @@ public class CreateCaseService(DcdDbContext context)
         return new OnshorePowerSupply
         {
             Name = "OnshorePowerSupply",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+            LastChangedDate = null,
+            CostYear = 0,
+            Source = Source.ConceptApp,
+            ProspVersion = null,
+            DG3Date = null,
+            DG4Date = null
         };
     }
 
@@ -142,7 +229,10 @@ public class CreateCaseService(DcdDbContext context)
         return new Exploration
         {
             Name = "Exploration",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+            RigMobDemob = 0,
+            Currency = 0,
+            ExplorationWells = []
         };
     }
 
@@ -151,7 +241,10 @@ public class CreateCaseService(DcdDbContext context)
         return new WellProject
         {
             Name = "Well Project",
-            ProjectId = projectPk
+            ProjectId = projectPk,
+            ArtificialLift = ArtificialLift.NoArtificialLift,
+            Currency = 0,
+            DevelopmentWells = []
         };
     }
 }

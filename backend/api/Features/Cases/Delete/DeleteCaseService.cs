@@ -28,14 +28,24 @@ public class DeleteCaseService(DcdDbContext context, DeleteImageService deleteIm
             .ToListAsync();
 
         var caseItem = await context.Cases
-            .Include(x => x.WellProject).ThenInclude(x => x!.DevelopmentWells)
-            .Include(x => x.Exploration).ThenInclude(x => x!.ExplorationWells)
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 
-        context.DevelopmentWells.RemoveRange(caseItem.WellProject!.DevelopmentWells);
-        context.ExplorationWell.RemoveRange(caseItem.Exploration!.ExplorationWells);
+        await context.Cases
+            .Include(x => x.WellProject).ThenInclude(x => x.DevelopmentWells)
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == caseId)
+            .LoadAsync();
+
+        await context.Cases
+            .Include(x => x.Exploration).ThenInclude(x => x.ExplorationWells)
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == caseId)
+            .LoadAsync();
+
+        context.DevelopmentWells.RemoveRange(caseItem.WellProject.DevelopmentWells);
+        context.ExplorationWell.RemoveRange(caseItem.Exploration.ExplorationWells);
         context.Campaigns.RemoveRange(campaigns);
         context.Cases.Remove(caseItem);
 

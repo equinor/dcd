@@ -48,7 +48,7 @@ public class OnshorePowerSupplyCostProfileService(DcdDbContext context, Recalcul
 
     private async Task UpdateOnshorePowerSupplyTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        if (caseItem.OnshorePowerSupply!.ProspVersion == null)
+        if (caseItem.OnshorePowerSupply.ProspVersion == null)
         {
             if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride) != null)
             {
