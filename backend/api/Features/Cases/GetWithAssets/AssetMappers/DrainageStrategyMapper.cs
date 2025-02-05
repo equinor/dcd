@@ -10,7 +10,7 @@ public static class DrainageStrategyMapper
         return new DrainageStrategyDto
         {
             Id = entity.Id,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             Name = entity.Name,
             Description = entity.Description,
             NGLYield = entity.NGLYield,

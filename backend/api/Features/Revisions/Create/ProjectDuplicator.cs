@@ -98,7 +98,6 @@ public static class ProjectDuplicator
             Topsides = [],
             Transports = [],
             OnshorePowerSupplies = [],
-            DrainageStrategies = [],
             WellProjects = [],
             Explorations = [],
 
@@ -169,7 +168,7 @@ public static class ProjectDuplicator
             DrainageStrategy = new DrainageStrategy
             {
                 Id = drainageStrategyId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.DrainageStrategy.Name,
                 Description = existingCaseItem.DrainageStrategy.Description,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,

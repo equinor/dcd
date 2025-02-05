@@ -34,9 +34,9 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
     public void Configure(EntityTypeBuilder<Case> builder)
     {
         builder.HasOne(c => c.DrainageStrategy)
-            .WithMany()
-            .HasForeignKey(c => c.DrainageStrategyId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<DrainageStrategy>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.WellProject)
             .WithMany()

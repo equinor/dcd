@@ -48,7 +48,6 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public List<Topside> Topsides { get; set; } = [];
     public List<Transport> Transports { get; set; } = [];
     public List<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = [];
-    public List<DrainageStrategy> DrainageStrategies { get; set; } = [];
     public List<WellProject> WellProjects { get; set; } = [];
     public List<Exploration> Explorations { get; set; } = [];
     public List<Project> Revisions { get; set; } = [];
