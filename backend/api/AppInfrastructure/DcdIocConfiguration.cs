@@ -1,5 +1,7 @@
 using api.AppInfrastructure.Authorization;
-using api.Features.Assets.CaseAssets.Campaigns;
+using api.Features.Assets.CaseAssets.Campaigns.GetCampaignWell;
+using api.Features.Assets.CaseAssets.Campaigns.SaveCampaignWell;
+using api.Features.Assets.CaseAssets.Campaigns.Update;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.Explorations;
@@ -133,6 +135,9 @@ public static class DcdIocConfiguration
 
         /* Case assets */
         services.AddScoped<UpdateCampaignService>();
+        services.AddScoped<SaveCampaignWellService>();
+        services.AddScoped<GetCampaignWellService>();
+
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<UpdateExplorationService>();
         services.AddScoped<UpdateOnshorePowerSupplyService>();

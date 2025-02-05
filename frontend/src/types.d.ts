@@ -393,6 +393,10 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
         }
+        export interface SaveCampaignWellDto {
+            startYear: number; // int32
+            values: number /* int32 */[];
+        }
         export interface SaveTimeSeriesDto {
             profileType: string;
             startYear: number; // int32
@@ -909,6 +913,26 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdWells$WellIdSave {
+        namespace Post {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+                export type WellId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+                wellId: Parameters.WellId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SaveCampaignWellDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CampaignWellDto;
             }
         }
     }

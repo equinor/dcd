@@ -4,7 +4,7 @@ using api.Features.Cases.Recalculation;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns;
+namespace api.Features.Assets.CaseAssets.Campaigns.Update;
 
 public class UpdateCampaignService(DcdDbContext context, RecalculationService recalculationService)
 {

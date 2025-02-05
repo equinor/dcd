@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.Assets.CaseAssets.Campaigns;
+namespace api.Features.Assets.CaseAssets.Campaigns.Update;
 
 public class UpdateCampaignDto
 {
