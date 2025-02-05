@@ -16,6 +16,12 @@ const MenuIcon = styled(Icon)`
     margin-bottom: -4px;
 `
 
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`
+
 interface props {
     rowData: any
 }
@@ -284,11 +290,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
 
     return (
         <div className={styles.root}>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-            >
+            <Wrapper>
                 <AgGridReact
                     ref={gridRef}
                     rowData={rowData}
@@ -306,7 +308,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     cellSelection
                     enableCharts
                 />
-            </div>
+            </Wrapper>
         </div>
     )
 }
