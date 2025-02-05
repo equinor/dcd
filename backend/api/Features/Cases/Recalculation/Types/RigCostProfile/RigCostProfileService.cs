@@ -9,56 +9,35 @@ public class RigCostProfileService
 {
     public static void RunCalculation(Case caseItem)
     {
-        var explorationRigUpgradingList = new List<TimeSeriesCost>();
-        var explorationRigMobDemobList = new List<TimeSeriesCost>();
+        var explorationRigUpgradingList = CreateTimeSeriesList(caseItem, CampaignTypes.ExplorationCampaign, c => c.RigUpgradingCostValues, c => c.RigUpgradingCost, c => c.RigUpgradingCostStartYear);
+        var explorationRigMobDemobList = CreateTimeSeriesList(caseItem, CampaignTypes.ExplorationCampaign, c => c.RigMobDemobCostValues, c => c.RigMobDemobCost, c => c.RigMobDemobCostStartYear);
 
-        var developmentRigUpgradingList = new List<TimeSeriesCost>();
-        var developmentRigMobDemobList = new List<TimeSeriesCost>();
+        var developmentRigUpgradingList = CreateTimeSeriesList(caseItem, CampaignTypes.DevelopmentCampaign, c => c.RigUpgradingCostValues, c => c.RigUpgradingCost, c => c.RigUpgradingCostStartYear);
+        var developmentRigMobDemobList = CreateTimeSeriesList(caseItem, CampaignTypes.DevelopmentCampaign, c => c.RigMobDemobCostValues, c => c.RigMobDemobCost, c => c.RigMobDemobCostStartYear);
 
-        foreach (var campaign in caseItem.Campaigns)
-        {
-            var campaignRigUpgrading = new TimeSeriesCost
+        MergeAndSetProfile(caseItem, explorationRigUpgradingList, ProfileTypes.ExplorationRigUpgradingCostProfile);
+        MergeAndSetProfile(caseItem, explorationRigMobDemobList, ProfileTypes.ExplorationRigMobDemob);
+        MergeAndSetProfile(caseItem, developmentRigUpgradingList, ProfileTypes.DevelopmentRigUpgradingCostProfile);
+        MergeAndSetProfile(caseItem, developmentRigMobDemobList, ProfileTypes.DevelopmentRigMobDemob);
+    }
+
+    private static List<TimeSeriesCost> CreateTimeSeriesList(Case caseItem, string campaignType, Func<Campaign, double[]> valueSelector, Func<Campaign, double> costSelector, Func<Campaign, int> startYearSelector)
+    {
+        return caseItem.Campaigns
+            .Where(c => c.CampaignType == campaignType)
+            .Select(c => new TimeSeriesCost
             {
-                Values = campaign.RigUpgradingCostValues.Select(v => v * campaign.RigUpgradingCost).ToArray(),
-                StartYear = campaign.RigUpgradingCostStartYear,
-            };
+                Values = valueSelector(c).Select(v => v * costSelector(c)).ToArray(),
+                StartYear = startYearSelector(c)
+            })
+            .ToList();
+    }
 
-            var campaignRigMobDemob = new TimeSeriesCost
-            {
-                Values = campaign.RigMobDemobCostValues.Select(v => v * campaign.RigMobDemobCost).ToArray(),
-                StartYear = campaign.RigMobDemobCostStartYear,
-            };
-
-            if (campaign.CampaignType == CampaignTypes.ExplorationCampaign)
-            {
-                explorationRigUpgradingList.Add(campaignRigUpgrading);
-                explorationRigMobDemobList.Add(campaignRigMobDemob);
-            }
-            else
-            {
-                developmentRigUpgradingList.Add(campaignRigUpgrading);
-                developmentRigMobDemobList.Add(campaignRigMobDemob);
-            }
-        }
-
-        var explorationRigUpgrading = TimeSeriesMerger.MergeTimeSeries(explorationRigUpgradingList);
-        var caseExplorationRigUpgrading = caseItem.CreateProfileIfNotExists(ProfileTypes.ExplorationRigUpgradingCostProfile);
-        caseExplorationRigUpgrading.StartYear = explorationRigUpgrading.StartYear;
-        caseExplorationRigUpgrading.Values = explorationRigUpgrading.Values;
-
-        var explorationRigMobDemob  = TimeSeriesMerger.MergeTimeSeries(explorationRigMobDemobList);
-        var caseExplorationRigMobDemob = caseItem.CreateProfileIfNotExists(ProfileTypes.ExplorationRigMobDemob);
-        caseExplorationRigMobDemob.StartYear = explorationRigMobDemob.StartYear;
-        caseExplorationRigMobDemob.Values = explorationRigMobDemob.Values;
-
-        var developmentRigUpgrading = TimeSeriesMerger.MergeTimeSeries(developmentRigUpgradingList);
-        var caseDevelopmentRigUpgrading = caseItem.GetProfile(ProfileTypes.DevelopmentRigUpgradingCostProfile);
-        caseDevelopmentRigUpgrading.StartYear = caseDevelopmentRigUpgrading.StartYear;
-        caseDevelopmentRigUpgrading.Values = developmentRigUpgrading.Values;
-
-        var developmentRigMobDemob = TimeSeriesMerger.MergeTimeSeries(developmentRigMobDemobList);
-        var caseDevelopmentRigMobDemob = caseItem.GetProfile(ProfileTypes.DevelopmentRigMobDemob);
-        caseDevelopmentRigMobDemob.StartYear = caseDevelopmentRigMobDemob.StartYear;
-        caseDevelopmentRigMobDemob.Values = developmentRigMobDemob.Values;
+    private static void MergeAndSetProfile(Case caseItem, List<TimeSeriesCost> timeSeriesList, string profileType)
+    {
+        var mergedTimeSeries = TimeSeriesMerger.MergeTimeSeries(timeSeriesList);
+        var profile = caseItem.CreateProfileIfNotExists(profileType);
+        profile.StartYear = mergedTimeSeries.StartYear;
+        profile.Values = mergedTimeSeries.Values;
     }
 }
