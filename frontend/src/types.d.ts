@@ -128,6 +128,11 @@ declare namespace Components {
             gAndGAdminCostOverride: TimeSeriesCostOverrideDto;
             seismicAcquisitionAndProcessing: TimeSeriesCostDto;
             countryOfficeCost: TimeSeriesCostDto;
+            projectSpecificDrillingCostProfile: TimeSeriesCostDto;
+            explorationRigUpgradingCostProfile: TimeSeriesCostDto;
+            explorationRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
+            explorationRigMobDemob: TimeSeriesCostDto;
+            explorationRigMobDemobOverride: TimeSeriesCostOverrideDto;
             wellProject: WellProjectDto;
             developmentWells: DevelopmentWellDto[] | null;
             developmentCampaigns: CampaignDto[];
@@ -139,6 +144,10 @@ declare namespace Components {
             waterInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
             gasInjectorCostProfile: TimeSeriesCostDto;
             gasInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
+            developmentRigUpgradingCostProfile: TimeSeriesCostDto;
+            developmentRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
+            developmentRigMobDemob: TimeSeriesCostDto;
+            developmentRigMobDemobOverride: TimeSeriesCostOverrideDto;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
