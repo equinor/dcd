@@ -49,7 +49,7 @@ public class SubstructureCostProfileService(DcdDbContext context, RecalculationS
 
     private async Task UpdateSubstructureTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        if (caseItem.Substructure!.ProspVersion == null)
+        if (caseItem.Substructure.ProspVersion == null)
         {
             if (caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride) != null)
             {

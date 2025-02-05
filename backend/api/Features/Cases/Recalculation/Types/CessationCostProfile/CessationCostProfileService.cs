@@ -47,7 +47,7 @@ public static class CessationCostProfileService
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationOffshoreFacilitiesCost);
 
-        GenerateCessationOffshoreFacilitiesCost(caseItem.Surf!, lastYear.Value, profile);
+        GenerateCessationOffshoreFacilitiesCost(caseItem.Surf, lastYear.Value, profile);
     }
 
     private static void GenerateCessationWellsCost(Project project, List<DevelopmentWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)

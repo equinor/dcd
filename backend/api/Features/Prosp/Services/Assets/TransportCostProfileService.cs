@@ -49,7 +49,7 @@ public class TransportCostProfileService(DcdDbContext context, RecalculationServ
 
     private async Task UpdateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        if (caseItem.Transport!.ProspVersion == null)
+        if (caseItem.Transport.ProspVersion == null)
         {
             if (caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride) != null)
             {

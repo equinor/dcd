@@ -31,7 +31,8 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
             Id = imageId,
             Url = blobClient.Uri.ToString().Split('?')[0],
             CaseId = caseId,
-            ProjectId = projectPk
+            ProjectId = projectPk,
+            Description = null
         };
 
         context.Images.Add(imageEntity);

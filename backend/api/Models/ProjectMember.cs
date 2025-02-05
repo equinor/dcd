@@ -9,9 +9,9 @@ public class ProjectMember : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public Guid UserId { get; set; } // Azure AD user id
-    public ProjectMemberRole Role { get; set; }
-    public bool FromOrgChart { get; set; }
+    public required Guid UserId { get; set; } // Azure AD user id
+    public required ProjectMemberRole Role { get; set; }
+    public required bool FromOrgChart { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }
