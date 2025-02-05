@@ -49,7 +49,7 @@ public class SurfCostProfileService(DcdDbContext context, RecalculationService r
 
     private async Task UpdateSurfTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        if (caseItem.Surf!.ProspVersion == null)
+        if (caseItem.Surf.ProspVersion == null)
         {
             if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride) != null)
             {

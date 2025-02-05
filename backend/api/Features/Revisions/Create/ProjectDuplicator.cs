@@ -170,7 +170,7 @@ public static class ProjectDuplicator
             {
                 Id = drainageStrategyId,
                 ProjectId = projectId,
-                Name = existingCaseItem.DrainageStrategy!.Name,
+                Name = existingCaseItem.DrainageStrategy.Name,
                 Description = existingCaseItem.DrainageStrategy.Description,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
@@ -185,7 +185,7 @@ public static class ProjectDuplicator
             {
                 Id = surfId,
                 ProjectId = projectId,
-                Name = existingCaseItem.Surf!.Name,
+                Name = existingCaseItem.Surf.Name,
                 CessationCost = existingCaseItem.Surf.CessationCost,
                 Maturity = existingCaseItem.Surf.Maturity,
                 InfieldPipelineSystemLength = existingCaseItem.Surf.InfieldPipelineSystemLength,
@@ -212,7 +212,7 @@ public static class ProjectDuplicator
             {
                 Id = substructureId,
                 ProjectId = projectId,
-                Name = existingCaseItem.Substructure!.Name,
+                Name = existingCaseItem.Substructure.Name,
                 DryWeight = existingCaseItem.Substructure.DryWeight,
                 Maturity = existingCaseItem.Substructure.Maturity,
                 Currency = existingCaseItem.Substructure.Currency,
@@ -231,7 +231,7 @@ public static class ProjectDuplicator
             {
                 Id = topsideId,
                 ProjectId = projectId,
-                Name = existingCaseItem.Topside!.Name,
+                Name = existingCaseItem.Topside.Name,
                 DryWeight = existingCaseItem.Topside.DryWeight,
                 OilCapacity = existingCaseItem.Topside.OilCapacity,
                 GasCapacity = existingCaseItem.Topside.GasCapacity,
@@ -266,7 +266,7 @@ public static class ProjectDuplicator
             {
                 Id = transportId,
                 ProjectId = projectId,
-                Name = existingCaseItem.Transport!.Name,
+                Name = existingCaseItem.Transport.Name,
                 GasExportPipelineLength = existingCaseItem.Transport.GasExportPipelineLength,
                 OilExportPipelineLength = existingCaseItem.Transport.OilExportPipelineLength,
                 Maturity = existingCaseItem.Transport.Maturity,
@@ -284,7 +284,7 @@ public static class ProjectDuplicator
             {
                 Id = onshorePowerSupplyId,
                 ProjectId = projectId,
-                Name = existingCaseItem.OnshorePowerSupply!.Name,
+                Name = existingCaseItem.OnshorePowerSupply.Name,
                 LastChangedDate = existingCaseItem.OnshorePowerSupply.LastChangedDate,
                 CostYear = existingCaseItem.OnshorePowerSupply.CostYear,
                 Source = existingCaseItem.OnshorePowerSupply.Source,
@@ -310,7 +310,7 @@ public static class ProjectDuplicator
             {
                 Id = wellProjectId,
                 ProjectId = projectId,
-                Name = existingCaseItem.WellProject!.Name,
+                Name = existingCaseItem.WellProject.Name,
                 ArtificialLift = existingCaseItem.WellProject.ArtificialLift,
                 Currency = existingCaseItem.WellProject.Currency,
                 DevelopmentWells = [] // Added via campaigns
@@ -321,7 +321,7 @@ public static class ProjectDuplicator
             {
                 Id = explorationId,
                 ProjectId = projectId,
-                Name = existingCaseItem.Exploration!.Name,
+                Name = existingCaseItem.Exploration.Name,
                 RigMobDemob = existingCaseItem.Exploration.RigMobDemob,
                 Currency = existingCaseItem.Exploration.Currency,
                 ExplorationWells = [] // Added via campaigns

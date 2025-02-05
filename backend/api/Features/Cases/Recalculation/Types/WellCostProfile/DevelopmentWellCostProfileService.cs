@@ -19,7 +19,7 @@ public static class DevelopmentWellCostProfileService
 
         foreach (var profileType in profileTypes)
         {
-            var wells = caseItem.WellProject!.DevelopmentWells.Where(wpw => wpw.Well.WellCategory == profileType.Value).ToList();
+            var wells = caseItem.WellProject.DevelopmentWells.Where(wpw => wpw.Well.WellCategory == profileType.Value).ToList();
 
             var profilesToMerge = new List<TimeSeriesCost>();
 
