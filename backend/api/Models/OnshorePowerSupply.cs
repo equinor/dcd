@@ -11,12 +11,12 @@ public class OnshorePowerSupply : IChangeTrackable, IDateTrackedEntity
     public Project Project { get; set; } = null!;
 
     public required string Name { get; set; }
-    public DateTime? LastChangedDate { get; set; }
-    public int CostYear { get; set; }
-    public Source Source { get; set; }
-    public DateTime? ProspVersion { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
+    public required DateTime? LastChangedDate { get; set; }
+    public required int CostYear { get; set; }
+    public required Source Source { get; set; }
+    public required DateTime? ProspVersion { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

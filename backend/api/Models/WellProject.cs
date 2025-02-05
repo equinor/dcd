@@ -9,11 +9,11 @@ public class WellProject : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
-    public ArtificialLift ArtificialLift { get; set; }
-    public Currency Currency { get; set; }
+    public required string Name { get; set; }
+    public required ArtificialLift ArtificialLift { get; set; }
+    public required Currency Currency { get; set; }
 
-    public List<DevelopmentWell> DevelopmentWells { get; set; } = [];
+    public required List<DevelopmentWell> DevelopmentWells { get; set; } = [];
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

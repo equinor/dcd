@@ -9,11 +9,11 @@ public class ExplorationOperationalWellCosts : IChangeTrackable, IDateTrackedEnt
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public double ExplorationRigUpgrading { get; set; }
-    public double ExplorationRigMobDemob { get; set; }
-    public double ExplorationProjectDrillingCosts { get; set; }
-    public double AppraisalRigMobDemob { get; set; }
-    public double AppraisalProjectDrillingCosts { get; set; }
+    public required double ExplorationRigUpgrading { get; set; }
+    public required double ExplorationRigMobDemob { get; set; }
+    public required double ExplorationProjectDrillingCosts { get; set; }
+    public required double AppraisalRigMobDemob { get; set; }
+    public required double AppraisalProjectDrillingCosts { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

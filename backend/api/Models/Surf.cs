@@ -10,26 +10,26 @@ public class Surf : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
-    public double CessationCost { get; set; }
-    public Maturity Maturity { get; set; }
-    public double InfieldPipelineSystemLength { get; set; }
-    public double UmbilicalSystemLength { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public int RiserCount { get; set; }
-    public int TemplateCount { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public ProductionFlowline ProductionFlowline { get; set; }
-    public Currency Currency { get; set; }
-    public DateTime? LastChangedDate { get; set; }
-    public int CostYear { get; set; }
-    public Source Source { get; set; }
-    public DateTime? ProspVersion { get; set; }
-    public string ApprovedBy { get; set; } = string.Empty;
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
+    public required string Name { get; set; }
+    public required double CessationCost { get; set; }
+    public required Maturity Maturity { get; set; }
+    public required double InfieldPipelineSystemLength { get; set; }
+    public required double UmbilicalSystemLength { get; set; }
+    public required ArtificialLift ArtificialLift { get; set; }
+    public required int RiserCount { get; set; }
+    public required int TemplateCount { get; set; }
+    public required int ProducerCount { get; set; }
+    public required int GasInjectorCount { get; set; }
+    public required int WaterInjectorCount { get; set; }
+    public required ProductionFlowline ProductionFlowline { get; set; }
+    public required Currency Currency { get; set; }
+    public required DateTime? LastChangedDate { get; set; }
+    public required int CostYear { get; set; }
+    public required Source Source { get; set; }
+    public required DateTime? ProspVersion { get; set; }
+    public required string ApprovedBy { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

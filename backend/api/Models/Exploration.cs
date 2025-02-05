@@ -9,11 +9,10 @@ public class Exploration : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
-    public double RigMobDemob { get; set; }
-    public Currency Currency { get; set; }
-
-    public List<ExplorationWell> ExplorationWells { get; set; } = [];
+    public required string Name { get; set; }
+    public required double RigMobDemob { get; set; }
+    public required Currency Currency { get; set; }
+    public required List<ExplorationWell> ExplorationWells { get; set; } = [];
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }
