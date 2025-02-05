@@ -16,6 +16,8 @@ const Title = styled(Typography)`
 
 const InfoLabel = styled(Typography)`
     text-transform: uppercase;
+    color: ${({ theme }) => theme.palette?.text?.secondary ?? "#666666"};
+    font-size: 10px;
     letter-spacing: 0.5px;
 `
 

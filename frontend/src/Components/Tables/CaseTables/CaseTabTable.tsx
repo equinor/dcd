@@ -432,6 +432,7 @@ const CaseTabTable = memo(({
                 rowData={selectedRow}
                 dg4Year={dg4Year}
                 allTimeSeriesData={timeSeriesData}
+                isProsp={isProsp}
             />
         </>
     )
