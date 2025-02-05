@@ -17,11 +17,11 @@ public class ExplorationWell : IDateTrackedEntity
     public Guid CampaignId { get; set; }
     public Campaign Campaign { get; set; } = null!;
 
-    public int StartYear { get; set; }
+    public required int StartYear { get; set; }
     public string InternalData { get; set; } = string.Empty;
 
     [NotMapped]
-    public int[] Values
+    public required int[] Values
     {
         get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), pf => (int)Convert.ChangeType(pf, typeof(int)));
         set => InternalData = string.Join(";", value.Select(p => p.ToString()).ToArray());

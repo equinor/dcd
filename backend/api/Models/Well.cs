@@ -9,12 +9,12 @@ public class Well : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public string? Name { get; set; }
-    public WellCategory WellCategory { get; set; }
-    public double WellCost { get; set; }
-    public double DrillingDays { get; set; }
-    public double PlugingAndAbandonmentCost { get; set; }
-    public double WellInterventionCost { get; set; }
+    public required string? Name { get; set; }
+    public required WellCategory WellCategory { get; set; }
+    public required double WellCost { get; set; }
+    public required double DrillingDays { get; set; }
+    public required double PlugingAndAbandonmentCost { get; set; }
+    public required double WellInterventionCost { get; set; }
 
     public List<DevelopmentWell> DevelopmentWells { get; set; } = [];
     public List<ExplorationWell> ExplorationWells { get; set; } = [];

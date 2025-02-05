@@ -69,11 +69,15 @@ public class CreateCaseService(DcdDbContext context)
             [
                 new Campaign
                 {
-                    CampaignType = CampaignTypes.DevelopmentCampaign
+                    CampaignType = CampaignTypes.DevelopmentCampaign,
+                    RigUpgradingCostValues = [],
+                    RigMobDemobCostValues = []
                 },
                 new Campaign
                 {
-                    CampaignType = CampaignTypes.ExplorationCampaign
+                    CampaignType = CampaignTypes.ExplorationCampaign,
+                    RigUpgradingCostValues = [],
+                    RigMobDemobCostValues = []
                 }
             ],
         };

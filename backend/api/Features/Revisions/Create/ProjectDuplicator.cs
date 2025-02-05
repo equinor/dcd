@@ -333,9 +333,9 @@ public static class ProjectDuplicator
                     Id = Guid.NewGuid(),
                     CaseId = caseId,
                     RigUpgradingCostStartYear = x.RigUpgradingCostStartYear,
-                    RigUpgradingCostInternalData = x.RigUpgradingCostInternalData,
+                    RigUpgradingCostValues = x.RigUpgradingCostValues,
                     RigMobDemobCostStartYear = x.RigMobDemobCostStartYear,
-                    RigMobDemobCostInternalData = x.RigMobDemobCostInternalData,
+                    RigMobDemobCostValues = x.RigMobDemobCostValues,
                     CampaignType = x.CampaignType,
                     RigUpgradingCost = x.RigUpgradingCost,
                     RigMobDemobCost = x.RigMobDemobCost,
@@ -345,7 +345,7 @@ public static class ProjectDuplicator
                         WellProjectId = wellProjectId,
                         WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
                         StartYear = y.StartYear,
-                        InternalData = y.InternalData
+                        Values = y.Values
                     })
                         .ToList(),
                     ExplorationWells = x.ExplorationWells.Select(y => new ExplorationWell
@@ -354,7 +354,7 @@ public static class ProjectDuplicator
                         ExplorationId = explorationId,
                         WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
                         StartYear = y.StartYear,
-                        InternalData = y.InternalData
+                        Values = y.Values
                     })
                         .ToList()
                 })

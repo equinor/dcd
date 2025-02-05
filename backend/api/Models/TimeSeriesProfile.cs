@@ -19,9 +19,7 @@ public class TimeSeriesProfile : IChangeTrackable, IDateTrackedEntity
     [NotMapped]
     public required double[] Values
     {
-        get => string.IsNullOrEmpty(InternalData)
-            ? []
-            : Array.ConvertAll(InternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
+        get => string.IsNullOrEmpty(InternalData) ? [] : Array.ConvertAll(InternalData.Split(';'), pf => (double)Convert.ChangeType(pf, typeof(double)));
         set => InternalData = string.Join(";", value);
     }
 
