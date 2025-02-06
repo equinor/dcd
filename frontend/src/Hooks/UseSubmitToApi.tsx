@@ -682,6 +682,19 @@ export const useSubmitToApi = () => {
                         ),
                     })
                     break
+                    case "projectSpecificDrillingCostProfile":
+                        result = await createOrUpdateTimeSeriesProfile({
+                            projectId,
+                            caseId,
+                            resourceId,
+                            resourceProfileId,
+                            createOrUpdateFunction: await (await GetCaseService()).saveProfile(
+                                projectId,
+                                caseId,
+                                {...resourceObject, profileType: "ProjectSpecificDrillingCostProfile" } as Components.Schemas.SaveTimeSeriesDto
+                            ),
+                        })
+                        break
                 case "co2EmissionsOverride":
                     result = await createOrUpdateTimeSeriesProfile({
                         projectId,
