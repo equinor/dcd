@@ -31,6 +31,8 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
         const seismicAcquisitionAndProcessingData = apiData.seismicAcquisitionAndProcessing
         const countryOfficeCostData = apiData.countryOfficeCost
+        const projectSpecificDrillingCostProfileData = apiData.projectSpecificDrillingCostProfile
+
         const explorationWellCostProfileData = apiData.explorationWellCostProfile
         const appraisalWellCostProfileData = apiData.appraisalWellCostProfile
         const sidetrackCostProfileData = apiData.sidetrackCostProfile
@@ -41,18 +43,6 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         }
 
         const newExplorationTimeSeriesData: ITimeSeriesTableData[] = [
-            {
-                profileName: "G&G and admin",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: gAndGAdminCostData,
-                resourceName: "gAndGAdminCost",
-                resourceId: exploration.id,
-                resourceProfileId: explorationGAndGAdminCostOverrideData?.id,
-                resourcePropertyKey: "gAndGAdminCost",
-                editable: true,
-                overridable: true,
-                overrideProfile: explorationGAndGAdminCostOverrideData,
-            },
             {
                 profileName: "Seismic acquisition and processing",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -72,6 +62,29 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 resourceId: exploration.id,
                 resourceProfileId: countryOfficeCostData?.id,
                 resourcePropertyKey: "countryOfficeCost",
+                editable: true,
+                overridable: false,
+            },
+            {
+                profileName: "G&G and admin",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                profile: gAndGAdminCostData,
+                resourceName: "gAndGAdminCost",
+                resourceId: exploration.id,
+                resourceProfileId: explorationGAndGAdminCostOverrideData?.id,
+                resourcePropertyKey: "gAndGAdminCost",
+                editable: true,
+                overridable: true,
+                overrideProfile: explorationGAndGAdminCostOverrideData,
+            },
+            {
+                profileName: "Project specific drilling cost",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                profile: projectSpecificDrillingCostProfileData,
+                resourceName: "projectSpecificDrillingCostProfile",
+                resourceId: exploration.id,
+                resourceProfileId: projectSpecificDrillingCostProfileData?.id,
+                resourcePropertyKey: "projectSpecificDrillingCostProfile",
                 editable: true,
                 overridable: false,
             },

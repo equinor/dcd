@@ -26,7 +26,7 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
-    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" |
+    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" | "projectSpecificDrillingCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2EmissionsOverride" | "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride"
 
@@ -119,8 +119,8 @@ export type UpdateEntry = {
     description: string;
 };
 
-export type WhatsNewUpdates = { 
-    [key in Version]: { 
-        [key in Category]?: UpdateEntry[] 
-    } 
+export type WhatsNewUpdates = {
+    [key in Version]: {
+        [key in Category]?: UpdateEntry[]
+    }
 };
