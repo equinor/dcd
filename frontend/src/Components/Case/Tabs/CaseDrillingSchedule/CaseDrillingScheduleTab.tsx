@@ -7,6 +7,7 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
+import { useMediaQuery } from "@mui/material"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
@@ -15,20 +16,30 @@ import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useCaseContext } from "@/Context/CaseContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
+import ExplorationCampaign from "./Components/ExplorationCampaign"
+import {
+    CampaignHeader,
+    CampaignHeaderTexts,
+    CampaignLink,
+    LinkText,
+} from "./Components/SharedCampaignStyles"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
+    const { navigateToProjectTab } = useAppNavigation()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const isSmallScreen = useMediaQuery("(max-width: 768px)")
 
     // DevelopmentWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
@@ -215,14 +226,32 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                 </Grid>
             </Grid>
-
-            <DateRangePicker
-                setStartYear={setStartYear}
-                setEndYear={setEndYear}
-                startYear={startYear}
-                endYear={endYear}
-                handleTableYearsClick={handleTableYearsClick}
-            />
+            <CampaignHeader $isSmallScreen={isSmallScreen}>
+                <CampaignHeaderTexts>
+                    <Typography variant="h2">Drilling Schedule</Typography>
+                    <LinkText>
+                        <Typography variant="ingress">
+                            To edit the well costs go to
+                            {" "}
+                        </Typography>
+                        <CampaignLink variant="body_short_link" onClick={() => navigateToProjectTab(2)}>Technical input</CampaignLink>
+                    </LinkText>
+                </CampaignHeaderTexts>
+                <DateRangePicker
+                    setStartYear={setStartYear}
+                    setEndYear={setEndYear}
+                    startYear={startYear}
+                    endYear={endYear}
+                    handleTableYearsClick={handleTableYearsClick}
+                />
+            </CampaignHeader>
+            {apiData?.explorationCampaigns?.map((campaign) => (
+                <ExplorationCampaign
+                    key={campaign.campaignId}
+                    tableYears={tableYears}
+                    campaign={campaign}
+                />
+            ))}
             <Grid size={12}>
                 <CaseDrillingScheduleTable
                     addEdit={addEdit}
