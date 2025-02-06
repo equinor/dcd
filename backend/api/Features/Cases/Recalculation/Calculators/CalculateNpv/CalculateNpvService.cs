@@ -25,15 +25,13 @@ public static class CalculateNpvService
             return;
         }
 
-        var currentYear = caseItem.Project.NpvYear;
-        var nextYear = currentYear + 1;
         var dg4Year = caseItem.DG4Date.Year;
-        var nextYearInRelationToDg4Year = nextYear - dg4Year;
+        var npvYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
         var npvValue = EconomicsHelper.CalculateDiscountedVolume(
                 cashflowProfile.Values,
                 discountRate,
-                cashflowProfile.StartYear + Math.Abs(nextYearInRelationToDg4Year)
+                cashflowProfile.StartYear - npvYearInRelationToDg4Year
             );
 
         caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;

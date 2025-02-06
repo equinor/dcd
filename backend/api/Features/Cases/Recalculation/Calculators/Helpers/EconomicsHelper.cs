@@ -13,7 +13,7 @@ public static class EconomicsHelper
 
         for (int i = 0; i < values.Length; i++)
         {
-            accumulatedVolume += values[i] / Math.Pow(discountFactor, startIndex + i + 1);
+            accumulatedVolume += values[i] / Math.Pow(discountFactor, startIndex + i);
         }
 
         return accumulatedVolume;
@@ -38,6 +38,9 @@ public static class EconomicsHelper
 
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }
+
+        Console.WriteLine($"startYear: {startYear}");
+        Console.WriteLine("cashFlowValues: [" + string.Join(", ", cashFlowValues.Select(v => v.ToString("F2"))) + "]");
 
         return new TimeSeriesCost
         {
