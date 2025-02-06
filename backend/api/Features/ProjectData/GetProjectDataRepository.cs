@@ -97,6 +97,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 GasPriceNOK = x.GasPriceNOK,
                 DiscountRate = x.DiscountRate,
                 ExchangeRateUSDToNOK = x.ExchangeRateUSDToNOK,
+                NpvYear = x.NpvYear,
                 SharepointSiteUrl = x.SharepointSiteUrl,
                 ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsOverviewDto
                 {
