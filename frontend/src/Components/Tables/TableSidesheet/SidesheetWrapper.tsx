@@ -8,7 +8,7 @@ import EditHistoryTab from "./Tabs/EditHistoryTab"
 import MetadataTab from "./Tabs/MetadataTab"
 import TimeSeriesTab from "./Tabs/TimeSeriesTab"
 import { useAppContext } from "@/Context/AppContext"
-import { formatDate } from "@/Utils/DateUtils"
+import { formatFullDate } from "@/Utils/DateUtils"
 
 const DrawerContent = styled.div`
     width: 580px;
@@ -95,8 +95,8 @@ const SidesheetWrapper = ({
         }
 
         const clickedYearValue = rowData?.[rowData?.clickedYear] ?? (rowData?.profile?.values?.[0] ?? rowData?.overrideProfile?.values?.[0] ?? 0)
-        const lastUpdated = rowData?.overrideProfile?.lastUpdated ?? rowData?.profile?.lastUpdated ?? "Not available"
-        const formattedDate = formatDate(lastUpdated)
+        const lastUpdated = rowData?.profile?.updatedUtc ?? "Not available"
+        const formattedDate = lastUpdated !== "Not available" ? formatFullDate(lastUpdated) : "Not available"
 
         return {
             title: rowData?.profileName || "Unknown row name",
