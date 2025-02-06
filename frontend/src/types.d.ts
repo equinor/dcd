@@ -255,6 +255,7 @@ declare namespace Components {
             drillingSchedule: TimeSeriesScheduleDto;
             wellProjectId: string; // uuid
             wellId: string; // uuid
+            updatedUtc: string; // date-time
         }
         export interface DrainageStrategyDto {
             id: string; // uuid
@@ -303,6 +304,7 @@ declare namespace Components {
             drillingSchedule: TimeSeriesScheduleDto;
             explorationId: string; // uuid
             wellId: string; // uuid
+            updatedUtc: string; // date-time
         }
         export interface FeatureToggleDto {
             revisionEnabled?: boolean;
@@ -485,12 +487,14 @@ declare namespace Components {
             id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
+            updatedUtc: string; // date-time
         }
         export interface TimeSeriesCostOverrideDto {
             id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
             override: boolean;
+            updatedUtc: string; // date-time
         }
         export interface TimeSeriesScheduleDto {
             id: string; // uuid

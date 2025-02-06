@@ -124,7 +124,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         {
             Id = timeSeriesProfile.Id,
             StartYear = timeSeriesProfile.StartYear,
-            Values = timeSeriesProfile.Values
+            Values = timeSeriesProfile.Values,
+            UpdatedUtc = timeSeriesProfile.UpdatedUtc,
         };
     }
 
@@ -140,7 +141,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             Id = timeSeriesProfile.Id,
             StartYear = timeSeriesProfile.StartYear,
             Values = timeSeriesProfile.Values,
-            Override = timeSeriesProfile.Override
+            Override = timeSeriesProfile.Override,
+            UpdatedUtc = timeSeriesProfile.UpdatedUtc,
         };
     }
 
@@ -155,7 +157,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         {
             Id = entity.Id,
             StartYear = entity.StartYear,
-            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType)
+            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
+            UpdatedUtc = entity.UpdatedUtc,
         };
     }
 
@@ -171,7 +174,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             Id = entity.Id,
             StartYear = entity.StartYear,
             Override = entity.Override,
-            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType)
+            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
+            UpdatedUtc = entity.UpdatedUtc,
         };
     }
 }

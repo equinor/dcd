@@ -18,7 +18,8 @@ public static class ExplorationWellsMapper
                     Id = x.Id,
                     StartYear = x.StartYear,
                     Values = x.Values.ToArray()
-                }
+                },
+                UpdatedUtc = x.UpdatedUtc,
             }).ToList();
     }
 }

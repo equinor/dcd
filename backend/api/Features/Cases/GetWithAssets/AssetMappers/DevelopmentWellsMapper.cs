@@ -18,7 +18,8 @@ public static class DevelopmentWellsMapper
                     Id = x.Id,
                     StartYear = x.StartYear,
                     Values = x.Values.ToArray()
-                }
+                },
+                UpdatedUtc = x.UpdatedUtc,
             }).ToList();
     }
 }
