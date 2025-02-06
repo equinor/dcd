@@ -179,6 +179,7 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            npvYear: number; // int32
             explorationOperationalWellCosts: ExplorationOperationalWellCostsOverviewDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsOverviewDto;
             cases: CaseOverviewDto[];
@@ -656,6 +657,7 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            npvYear: number; // int32
         }
         export interface UpdateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;

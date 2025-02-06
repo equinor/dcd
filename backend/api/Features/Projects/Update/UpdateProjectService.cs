@@ -36,6 +36,7 @@ public class UpdateProjectService(DcdDbContext context)
         existingProject.GasPriceNOK = projectDto.GasPriceNOK;
         existingProject.DiscountRate = projectDto.DiscountRate;
         existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
+        existingProject.NpvYear = projectDto.NpvYear;
 
         if (shouldTriggerRecalculation)
         {
@@ -52,6 +53,10 @@ public class UpdateProjectService(DcdDbContext context)
     private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
     {
         if (existingProject.ExchangeRateUSDToNOK != projectDto.ExchangeRateUSDToNOK)
+        {
+            return true;
+        }
+        if (existingProject.NpvYear != projectDto.NpvYear)
         {
             return true;
         }
