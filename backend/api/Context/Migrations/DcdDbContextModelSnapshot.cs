@@ -282,8 +282,7 @@ namespace api.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CampaignId")
                         .HasColumnType("uniqueidentifier");
@@ -465,8 +464,7 @@ namespace api.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CampaignId")
                         .HasColumnType("uniqueidentifier");

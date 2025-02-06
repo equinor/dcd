@@ -49,7 +49,7 @@ public class TopsideCostProfileService(DcdDbContext context, RecalculationServic
 
     private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        if (caseItem.Topside!.ProspVersion == null)
+        if (caseItem.Topside.ProspVersion == null)
         {
             if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride) != null)
             {

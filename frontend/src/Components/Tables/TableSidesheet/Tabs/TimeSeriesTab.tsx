@@ -187,9 +187,6 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
     return (
         <Container>
             <Section>
-                <SectionTitle>
-                    Time Series Chart
-                </SectionTitle>
                 <AgChartsTimeseries
                     data={chartData}
                     chartTitle={rowData.profileName}

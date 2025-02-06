@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -6,25 +7,29 @@ namespace api.Features.Wells.GetIsInUse;
 
 public class GetIsWellInUseService(DcdDbContext context)
 {
-    public async Task<bool> IsWellInUse(Guid wellId)
+    public async Task<bool> IsWellInUse(Guid projectId, Guid wellId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
+
         var well = await context.Wells
             .Include(w => w.DevelopmentWells)
             .Include(w => w.ExplorationWells)
-            .SingleOrDefaultAsync(w => w.Id == wellId);
+            .SingleOrDefaultAsync(w => w.ProjectId == projectPk && w.Id == wellId);
 
         if (well == null)
         {
             return false;
         }
 
-        var wellProjectIds = well.DevelopmentWells
-            .Where(x => x.Values.Length != 0)
+        var wellProjectIds = context.DevelopmentWells
+            .Where(x => x.WellProject.ProjectId == projectPk)
+            .Where(x => x.WellId == wellId)
             .Select(x => x.WellProjectId)
             .Distinct();
 
-        var explorationIds = well.ExplorationWells
-            .Where(x => x.Values.Length != 0)
+        var explorationIds = context.ExplorationWell
+            .Where(x => x.Exploration.ProjectId == projectPk)
+            .Where(x => x.WellId == wellId)
             .Select(x => x.ExplorationId)
             .Distinct();
 

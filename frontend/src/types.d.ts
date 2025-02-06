@@ -128,6 +128,11 @@ declare namespace Components {
             gAndGAdminCostOverride: TimeSeriesCostOverrideDto;
             seismicAcquisitionAndProcessing: TimeSeriesCostDto;
             countryOfficeCost: TimeSeriesCostDto;
+            projectSpecificDrillingCostProfile: TimeSeriesCostDto;
+            explorationRigUpgradingCostProfile: TimeSeriesCostDto;
+            explorationRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
+            explorationRigMobDemob: TimeSeriesCostDto;
+            explorationRigMobDemobOverride: TimeSeriesCostOverrideDto;
             wellProject: WellProjectDto;
             developmentWells: DevelopmentWellDto[] | null;
             developmentCampaigns: CampaignDto[];
@@ -139,6 +144,10 @@ declare namespace Components {
             waterInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
             gasInjectorCostProfile: TimeSeriesCostDto;
             gasInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
+            developmentRigUpgradingCostProfile: TimeSeriesCostDto;
+            developmentRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
+            developmentRigMobDemob: TimeSeriesCostDto;
+            developmentRigMobDemobOverride: TimeSeriesCostOverrideDto;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
@@ -170,6 +179,7 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            npvYear: number; // int32
             explorationOperationalWellCosts: ExplorationOperationalWellCostsOverviewDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsOverviewDto;
             cases: CaseOverviewDto[];
@@ -384,6 +394,10 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
         }
+        export interface SaveCampaignWellDto {
+            startYear: number; // int32
+            values: number /* int32 */[];
+        }
         export interface SaveTimeSeriesDto {
             profileType: string;
             startYear: number; // int32
@@ -545,6 +559,14 @@ declare namespace Components {
             id: string; // uuid
             source: Source /* int32 */;
         }
+        export interface UpdateCampaignDto {
+            rigUpgradingCost: number; // double
+            rigUpgradingCostStartYear: number; // int32
+            rigUpgradingCostValues: number /* double */[];
+            rigMobDemobCost: number; // double
+            rigMobDemobCostStartYear: number; // int32
+            rigMobDemobCostValues: number /* double */[];
+        }
         export interface UpdateCaseDto {
             name: string;
             description: string;
@@ -635,6 +657,7 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            npvYear: number; // int32
         }
         export interface UpdateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
@@ -873,6 +896,45 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignId {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCampaignDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdWells$WellIdSave {
+        namespace Post {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+                export type WellId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+                wellId: Parameters.WellId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SaveCampaignWellDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CampaignWellDto;
             }
         }
     }

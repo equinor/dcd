@@ -90,6 +90,14 @@ public class CaseWithAssetsDto
     public required TimeSeriesCostDto? SeismicAcquisitionAndProcessing { get; set; }
     public required TimeSeriesCostDto? CountryOfficeCost { get; set; }
 
+    public required TimeSeriesCostDto? ProjectSpecificDrillingCostProfile { get; set; }
+
+    public required TimeSeriesCostDto? ExplorationRigUpgradingCostProfile { get; set; }
+    public required TimeSeriesCostOverrideDto? ExplorationRigUpgradingCostProfileOverride { get; set; }
+
+    public required TimeSeriesCostDto? ExplorationRigMobDemob { get; set; }
+    public required TimeSeriesCostOverrideDto? ExplorationRigMobDemobOverride { get; set; }
+
 
     [Required] public required WellProjectDto WellProject { get; set; }
     public required List<DevelopmentWellDto> DevelopmentWells { get; set; }
@@ -104,4 +112,10 @@ public class CaseWithAssetsDto
     public required TimeSeriesCostOverrideDto? WaterInjectorCostProfileOverride { get; set; }
     public required TimeSeriesCostDto? GasInjectorCostProfile { get; set; }
     public required TimeSeriesCostOverrideDto? GasInjectorCostProfileOverride { get; set; }
+
+    public required TimeSeriesCostDto? DevelopmentRigUpgradingCostProfile { get; set; }
+    public required TimeSeriesCostOverrideDto? DevelopmentRigUpgradingCostProfileOverride { get; set; }
+
+    public required TimeSeriesCostDto? DevelopmentRigMobDemob { get; set; }
+    public required TimeSeriesCostOverrideDto? DevelopmentRigMobDemobOverride { get; set; }
 }

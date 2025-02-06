@@ -68,7 +68,7 @@ public static class CalculateBreakEvenOilPriceService
 
         var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / 6.29;
 
-        caseItem.BreakEven = breakEvenPrice / caseItem.Project.ExchangeRateUSDToNOK;
+        caseItem.BreakEven = breakEvenPrice;
     }
 }
 

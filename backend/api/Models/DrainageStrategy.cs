@@ -9,14 +9,14 @@ public class DrainageStrategy : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public double NGLYield { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public GasSolution GasSolution { get; set; }
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public required double NGLYield { get; set; }
+    public required int ProducerCount { get; set; }
+    public required int GasInjectorCount { get; set; }
+    public required int WaterInjectorCount { get; set; }
+    public required ArtificialLift ArtificialLift { get; set; }
+    public required GasSolution GasSolution { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

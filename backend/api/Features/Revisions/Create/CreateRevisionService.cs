@@ -14,32 +14,18 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var project = await createRevisionRepository.GetFullProjectGraph(projectPk);
+
         var caseIdMapping = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .ToDictionaryAsync(x => x.Id, _ => Guid.NewGuid());
 
-        var revision = await createRevisionRepository.GetDetachedProjectGraph(projectPk);
-
-        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(revision, caseIdMapping);
-
-        revision.IsRevision = true;
-        revision.OriginalProjectId = projectPk;
-        revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
-        revision.Classification = createRevisionDto.Classification;
-
-        revision.RevisionDetails = new RevisionDetails
-        {
-            RevisionName = createRevisionDto.Name,
-            Mdqc = createRevisionDto.Mdqc,
-            Arena = createRevisionDto.Arena,
-            Classification = createRevisionDto.Classification
-        };
+        var revision = ProjectDuplicator.DuplicateProject(project, createRevisionDto, caseIdMapping);
 
         context.Projects.Add(revision);
 
-        var existingProject = await context.Projects.SingleAsync(p => p.Id == projectPk);
-        existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
-        existingProject.Classification = createRevisionDto.Classification;
+        project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        project.Classification = createRevisionDto.Classification;
 
         await CopyProjectImages(projectPk, revision.Id);
         await CopyCaseImages(projectPk, revision.Id, caseIdMapping);

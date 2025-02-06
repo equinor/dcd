@@ -18,7 +18,7 @@ public static class ImportedElectricityProfileService
 
         var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(caseItem, facilitiesAvailability);
 
-        var calculateImportedElectricity = CalculateImportedElectricity(caseItem.Topside!.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
+        var calculateImportedElectricity = CalculateImportedElectricity(caseItem.Topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.ImportedElectricity);
 

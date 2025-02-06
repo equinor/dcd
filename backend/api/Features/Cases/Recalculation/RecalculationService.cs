@@ -11,6 +11,7 @@ using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
 using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
 
@@ -18,19 +19,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation;
 
-public class RecalculationService(DcdDbContext context, RecalculationRepository recalculationRepository, RecalculationDeterminerService recalculationDeterminerService)
+public class RecalculationService(DcdDbContext context, RecalculationRepository recalculationRepository)
 {
     public async Task SaveChangesAndRecalculateCase(Guid caseId)
     {
-        var caseNeedsRecalculation = CaseNeedsRecalculation();
+        RunRecalculations(await recalculationRepository.LoadCaseData(caseId));
+
         await context.SaveChangesAsync();
-
-        if (caseNeedsRecalculation)
-        {
-            RunRecalculations(await recalculationRepository.LoadCaseData(caseId));
-
-            await context.SaveChangesAsync();
-        }
     }
 
     public async Task SaveChangesAndRecalculateProject(Guid projectId)
@@ -50,24 +45,6 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         await context.SaveChangesAsync();
     }
 
-    private bool CaseNeedsRecalculation()
-    {
-        return recalculationDeterminerService.CalculateExplorationAndWellProjectCost()
-               || recalculationDeterminerService.CalculateStudyCost()
-               || recalculationDeterminerService.CalculateCessationCostProfile()
-               || recalculationDeterminerService.CalculateFuelFlaringAndLosses()
-               || recalculationDeterminerService.CalculateGAndGAdminCost()
-               || recalculationDeterminerService.CalculateImportedElectricity()
-               || recalculationDeterminerService.CalculateNetSalesGas()
-               || recalculationDeterminerService.CalculateOpex()
-               || recalculationDeterminerService.CalculateCo2Intensity()
-               || recalculationDeterminerService.CalculateCo2Emissions()
-               || recalculationDeterminerService.CalculateTotalIncome()
-               || recalculationDeterminerService.CalculateTotalCost()
-               || recalculationDeterminerService.CalculateNpv()
-               || recalculationDeterminerService.CalculateBreakEvenOilPrice();
-    }
-
     private static void RunRecalculations(CaseWithDrillingSchedules caseWithDrillingSchedules)
     {
         var caseItem = caseWithDrillingSchedules.CaseItem;
@@ -76,6 +53,7 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
 
         DevelopmentWellCostProfileService.RunCalculation(caseItem);
         ExplorationWellCostProfileService.RunCalculation(caseItem);
+        RigCostProfileService.RunCalculation(caseItem);
         StudyCostProfileService.RunCalculation(caseItem);
         CessationCostProfileService.RunCalculation(caseItem, developmentWell);
         FuelFlaringLossesProfileService.RunCalculation(caseItem);

@@ -24,7 +24,6 @@ const TabsContainer = styled.div`
     
     .MuiTabs-root {
         min-height: 48px;
-        padding: 0 5px;
     }
 
     .MuiTab-root {
@@ -32,8 +31,7 @@ const TabsContainer = styled.div`
         text-transform: none;
         font-weight: 500;
         font-size: 14px;
-        padding: 0;
-        margin-right: 24px;
+        padding: 12px 16px;
         min-width: unset;
         color: ${tokens.colors.text.static_icons__tertiary.rgba};
 
@@ -54,6 +52,7 @@ interface Props {
     rowData: any
     dg4Year: number
     allTimeSeriesData?: any[]
+    isProsp?: boolean
 }
 
 interface TabItem {
@@ -66,6 +65,7 @@ const SidesheetWrapper = ({
     onClose,
     rowData,
     dg4Year,
+    isProsp,
 }: Props) => {
     const { developerMode } = useAppContext()
     const [activeTab, setActiveTab] = useState(0)
@@ -75,40 +75,41 @@ const SidesheetWrapper = ({
     }
 
     const headerData = useMemo(() => {
-        const clickedYearValue = rowData?.[rowData?.clickedYear]
-            ?? (rowData?.profile?.values?.[0] ?? rowData?.overrideProfile?.values?.[0] ?? 0)
-
-        const formatValue = (value: number, unit?: string) => {
-            if (unit?.toLowerCase().includes("sm3")) {
-                return `${value.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${unit}`
+        if (!rowData) {
+            return {
+                title: "Unknown row name",
+                value: 0,
+                year: "N/A",
+                lastUpdated: "Not available",
+                source: "N/A",
             }
-            if (unit?.toLowerCase().includes("mnok")) {
-                return `${value.toLocaleString("en-US", { maximumFractionDigits: 1 })} ${unit}`
-            }
-            if (unit?.toLowerCase().includes("co2")) {
-                return `${value.toLocaleString("en-US", { maximumFractionDigits: 0 })} ${unit}`
-            }
-            return `${value.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${unit ?? ""}`
         }
 
+        const isOverridable = rowData.overridable
+        const isOverridden = rowData.overrideProfile.override === true
+
+        let source = "Manual input"
+
+        if (isOverridable && !isOverridden) {
+            source = isProsp ? "PROSP file" : "Calculated input"
+        }
+
+        const clickedYearValue = rowData?.[rowData?.clickedYear] ?? (rowData?.profile?.values?.[0] ?? rowData?.overrideProfile?.values?.[0] ?? 0)
         const lastUpdated = rowData?.overrideProfile?.lastUpdated ?? rowData?.profile?.lastUpdated ?? "Not available"
         const formattedDate = formatDate(lastUpdated)
 
         return {
-            title: rowData?.profileName?.replace("Override", "")
-                   || rowData?.resourceName?.replace("Override", "")
-                   || "Unknown Profile",
-
-            value: formatValue(clickedYearValue, rowData?.unit),
-
-            year: rowData?.clickedYear
-                  || (rowData?.profile?.startYear ? dg4Year + rowData.profile.startYear : "N/A"),
-
+            title: rowData?.profileName || "Unknown row name",
+            value: rowData?.unit ? `${clickedYearValue} ${rowData.unit}` : clickedYearValue,
+            year: rowData?.clickedYear || (rowData?.profile?.startYear ? dg4Year + rowData.profile.startYear : "N/A"),
             lastUpdated: formattedDate,
-
-            source: rowData?.overrideProfile?.override ? "Manual input" : "Calculated",
+            source,
         }
-    }, [rowData, dg4Year])
+    }, [rowData, dg4Year, isProsp])
+
+    if (!rowData) {
+        return null
+    }
 
     const hasTimeSeriesData = rowData?.profile?.values?.length > 0 || rowData?.overrideProfile?.values?.length > 0
 
@@ -136,22 +137,15 @@ const SidesheetWrapper = ({
             anchor="right"
             open={isOpen}
             onClose={onClose}
-            PaperProps={{
-                style: { boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.15)" },
-            }}
         >
             <DrawerContent>
                 <SidesheetHeader {...headerData} onClose={onClose} />
-
                 <TabsContainer>
                     <Tabs
                         value={activeTab}
                         onChange={handleTabChange}
                         variant="scrollable"
                         scrollButtons="auto"
-                        TabIndicatorProps={{
-                            style: { transition: "none" },
-                        }}
                     >
                         {tabs.map((tab) => (
                             <Tab key={tab.label} label={tab.label} />

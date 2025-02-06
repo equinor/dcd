@@ -35,9 +35,10 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
+    public int NpvYear { get; set; }
 
-    public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
-    public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
+    public ExplorationOperationalWellCosts ExplorationOperationalWellCosts { get; set; } = null!;
+    public DevelopmentOperationalWellCosts DevelopmentOperationalWellCosts { get; set; } = null!;
     public RevisionDetails? RevisionDetails { get; set; }
 
     public List<Case> Cases { get; set; } = [];

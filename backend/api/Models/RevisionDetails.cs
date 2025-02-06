@@ -9,10 +9,10 @@ public class RevisionDetails : IChangeTrackable, IDateTrackedEntity
     public Guid RevisionId { get; set; }
     public Project Revision { get; set; } = null!;
 
-    public string? RevisionName { get; set; }
-    public bool Arena { get; set; }
-    public bool Mdqc { get; set; }
-    public ProjectClassification Classification { get; set; }
+    public required string? RevisionName { get; set; }
+    public required bool Arena { get; set; }
+    public required bool Mdqc { get; set; }
+    public required ProjectClassification Classification { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

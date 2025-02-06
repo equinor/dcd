@@ -16,12 +16,16 @@ const ProjectSettingsTab = () => {
     const [oilPriceUSD, setOilPriceUSD] = useState(revisionAndProjectData?.commonProjectAndRevisionData.oilPriceUSD || 0)
     const [gasPriceNOK, setGasPriceNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.gasPriceNOK || 0)
     const [discountRate, setDiscountRate] = useState(revisionAndProjectData?.commonProjectAndRevisionData.discountRate || 0)
+    const [exchangeRateUSDToNOK, setExchangeRateUSDToNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.exchangeRateUSDToNOK || 0)
+    const [npvYear, setNpvYear] = useState(revisionAndProjectData?.commonProjectAndRevisionData.npvYear || 0)
 
     useEffect(() => {
         if (revisionAndProjectData) {
             setOilPriceUSD(revisionAndProjectData.commonProjectAndRevisionData.oilPriceUSD)
             setGasPriceNOK(revisionAndProjectData.commonProjectAndRevisionData.gasPriceNOK)
             setDiscountRate(revisionAndProjectData.commonProjectAndRevisionData.discountRate)
+            setExchangeRateUSDToNOK(revisionAndProjectData.commonProjectAndRevisionData.exchangeRateUSDToNOK)
+            setNpvYear(revisionAndProjectData.commonProjectAndRevisionData.npvYear)
         }
     }, [revisionAndProjectData])
 
@@ -72,6 +76,22 @@ const ProjectSettingsTab = () => {
         const newDiscountRate = discountRate
         if (!Number.isNaN(newDiscountRate) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, discountRate: newDiscountRate }
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
+        }
+    }
+
+    const handleExchangeRateChange = () => {
+        const newExchangeRate = exchangeRateUSDToNOK
+        if (!Number.isNaN(newExchangeRate) && revisionAndProjectData) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, exchangeRateUSDToNOK: newExchangeRate }
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
+        }
+    }
+
+    const handleNpvYearChange = () => {
+        const newNpvYear = npvYear
+        if (!Number.isNaN(newNpvYear) && revisionAndProjectData) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, npvYear: newNpvYear }
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
@@ -177,6 +197,34 @@ const ProjectSettingsTab = () => {
                                 value={discountRate}
                                 onChange={(e: any) => setDiscountRate(Number(e.target.value))}
                                 onBlur={handleDiscountRateChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(exchangeRateUSDToNOK)}
+                            label="Exchange Rate (USD to NOK)"
+                        >
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={exchangeRateUSDToNOK}
+                                onChange={(e: any) => setExchangeRateUSDToNOK(Number(e.target.value))}
+                                onBlur={handleExchangeRateChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
+                            value={String(npvYear)}
+                            label="NPV Year"
+                        >
+                            <Input
+                                type="number"
+                                step="1"
+                                value={npvYear}
+                                onChange={(e: any) => setNpvYear(Number(e.target.value))}
+                                onBlur={handleNpvYearChange}
                             />
                         </InputSwitcher>
                     </Grid>
