@@ -52,12 +52,12 @@ public class EconomicsHelperTests
         var discountedVolume = EconomicsHelper.CalculateDiscountedVolume(values, discountRate, startIndex);
 
         // Assert
-        var expectedDiscountedVolume = (1.0 / Math.Pow(1 + 0.08, 1)) +
+        var expectedDiscountedVolume = (1.0 / Math.Pow(1 + 0.08, 0)) +
+                                       (1.0 / Math.Pow(1 + 0.08, 1)) +
                                        (1.0 / Math.Pow(1 + 0.08, 2)) +
                                        (1.0 / Math.Pow(1 + 0.08, 3)) +
-                                       (1.0 / Math.Pow(1 + 0.08, 4)) +
-                                       (0.5 / Math.Pow(1 + 0.08, 5)) +
-                                       (0.5 / Math.Pow(1 + 0.08, 6));
+                                       (0.5 / Math.Pow(1 + 0.08, 4)) +
+                                       (0.5 / Math.Pow(1 + 0.08, 5));
         Assert.Equal(expectedDiscountedVolume, discountedVolume, precision: 5);
     }
 }

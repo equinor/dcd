@@ -39,9 +39,6 @@ public static class EconomicsHelper
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }
 
-        Console.WriteLine($"startYear: {startYear}");
-        Console.WriteLine("cashFlowValues: [" + string.Join(", ", cashFlowValues.Select(v => v.ToString("F2"))) + "]");
-
         return new TimeSeriesCost
         {
             StartYear = startYear,
