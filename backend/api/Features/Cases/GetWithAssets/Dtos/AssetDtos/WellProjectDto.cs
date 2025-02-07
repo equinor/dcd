@@ -10,5 +10,4 @@ public class WellProjectDto
     [Required] public required Guid ProjectId { get; set; }
     [Required] public required string Name { get; set; }
     [Required] public required ArtificialLift ArtificialLift { get; set; }
-    [Required] public required Currency Currency { get; set; }
 }

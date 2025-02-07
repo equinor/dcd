@@ -12,8 +12,7 @@ public static class WellProjectMapper
             Id = entity.Id,
             ProjectId = entity.Case.ProjectId,
             Name = entity.Name,
-            ArtificialLift = entity.ArtificialLift,
-            Currency = entity.Currency
+            ArtificialLift = entity.ArtificialLift
         };
     }
 }
