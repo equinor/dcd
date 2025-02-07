@@ -11,7 +11,7 @@ public static class TopsideMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             DryWeight = entity.DryWeight,
             OilCapacity = entity.OilCapacity,
             GasCapacity = entity.GasCapacity,

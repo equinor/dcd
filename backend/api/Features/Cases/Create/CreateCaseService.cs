@@ -25,7 +25,7 @@ public class CreateCaseService(DcdDbContext context)
             CapexFactorFeasibilityStudies = 0.015,
             CapexFactorFEEDStudies = 0.015,
             DrainageStrategy = CreateDrainageStrategy(),
-            Topside = CreateTopside(projectPk),
+            Topside = CreateTopside(),
             Surf = CreateSurf(),
             Substructure = CreateSubstructure(),
             Transport = CreateTransport(projectPk),
@@ -103,12 +103,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Topside CreateTopside(Guid projectPk)
+    private static Topside CreateTopside()
     {
         return new Topside
         {
             Name = "Topside",
-            ProjectId = projectPk,
 
             DryWeight = 0,
             OilCapacity = 0,

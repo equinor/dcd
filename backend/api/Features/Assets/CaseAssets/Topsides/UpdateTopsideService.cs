@@ -14,7 +14,7 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         Guid topsideId,
         UpdateTopsideDto updatedTopsideDto)
     {
-        var existingTopside = await context.Topsides.SingleAsync(x => x.ProjectId == projectId && x.Id == topsideId);
+        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == topsideId);
 
         existingTopside.DryWeight = updatedTopsideDto.DryWeight;
         existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;
@@ -53,7 +53,7 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         Guid topsideId,
         ProspUpdateTopsideDto updatedTopsideDto)
     {
-        var existingTopside = await context.Topsides.SingleAsync(x => x.ProjectId == projectId && x.Id == topsideId);
+        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == topsideId);
 
         existingTopside.DryWeight = updatedTopsideDto.DryWeight;
         existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;

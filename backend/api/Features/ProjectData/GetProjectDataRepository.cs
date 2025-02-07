@@ -223,7 +223,7 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<TopsideOverviewDto>> GetTopsides(Guid projectId)
     {
         return await context.Topsides
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Select(x => new TopsideOverviewDto
             {
                 Id = x.Id,
