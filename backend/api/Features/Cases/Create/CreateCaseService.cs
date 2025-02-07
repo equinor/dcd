@@ -27,7 +27,7 @@ public class CreateCaseService(DcdDbContext context)
             DrainageStrategy = CreateDrainageStrategy(),
             Topside = CreateTopside(projectPk),
             Surf = CreateSurf(),
-            Substructure = CreateSubstructure(projectPk),
+            Substructure = CreateSubstructure(),
             Transport = CreateTransport(projectPk),
             Exploration = CreateExploration(projectPk),
             WellProject = CreateWellProject(projectPk),
@@ -168,12 +168,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Substructure CreateSubstructure(Guid projectPk)
+    private static Substructure CreateSubstructure()
     {
         return new Substructure
         {
             Name = "Substructure",
-            ProjectId = projectPk,
             DryWeight = 0,
             Maturity = Maturity.A,
             Currency = 0,

@@ -14,7 +14,7 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         Guid substructureId,
         UpdateSubstructureDto updatedSubstructureDto)
     {
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.ProjectId == projectId && x.Id == substructureId);
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == substructureId);
 
         existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
         existingSubstructure.Currency = updatedSubstructureDto.Currency;
@@ -38,7 +38,7 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         Guid substructureId,
         ProspUpdateSubstructureDto updatedSubstructureDto)
     {
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.ProjectId == projectId && x.Id == substructureId);
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == substructureId);
 
         existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
         existingSubstructure.Currency = updatedSubstructureDto.Currency;

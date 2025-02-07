@@ -211,7 +211,7 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<SubstructureOverviewDto>> GetSubstructures(Guid projectId)
     {
         return await context.Substructures
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Select(x => new SubstructureOverviewDto
             {
                 Id = x.Id,
