@@ -14,7 +14,7 @@ public class UpdateWellProjectService(DcdDbContext context, RecalculationService
         Guid wellProjectId,
         UpdateWellProjectDto updatedWellProjectDto)
     {
-        var existingWellProject = await context.WellProjects.SingleAsync(x => x.ProjectId == projectId && x.Id == wellProjectId);
+        var existingWellProject = await context.WellProjects.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == wellProjectId);
 
         existingWellProject.Name = updatedWellProjectDto.Name;
         existingWellProject.ArtificialLift = updatedWellProjectDto.ArtificialLift;

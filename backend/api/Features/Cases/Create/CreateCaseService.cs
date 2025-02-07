@@ -30,7 +30,7 @@ public class CreateCaseService(DcdDbContext context)
             Substructure = CreateSubstructure(),
             Transport = CreateTransport(),
             Exploration = CreateExploration(projectPk),
-            WellProject = CreateWellProject(projectPk),
+            WellProject = CreateWellProject(),
             OnshorePowerSupply = CreateOnshorePowerSupply(),
             TimeSeriesProfiles =
             [
@@ -230,12 +230,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static WellProject CreateWellProject(Guid projectPk)
+    private static WellProject CreateWellProject()
     {
         return new WellProject
         {
             Name = "Well Project",
-            ProjectId = projectPk,
             ArtificialLift = ArtificialLift.NoArtificialLift,
             Currency = 0,
             DevelopmentWells = []
