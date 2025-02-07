@@ -784,7 +784,6 @@ declare namespace Components {
             projectId: string; // uuid
             name: string;
             artificialLift: ArtificialLift /* int32 */;
-            currency: Currency /* int32 */;
         }
     }
 }
