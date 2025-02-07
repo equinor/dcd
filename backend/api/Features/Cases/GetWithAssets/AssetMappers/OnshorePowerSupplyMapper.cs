@@ -11,7 +11,7 @@ public static class OnshorePowerSupplyMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             LastChangedDate = entity.LastChangedDate,
             CostYear = entity.CostYear,
             Source = entity.Source,

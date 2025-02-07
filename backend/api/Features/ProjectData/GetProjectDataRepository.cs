@@ -254,7 +254,7 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<OnshorePowerSupplyOverviewDto>> GetOnshorePowerSupplies(Guid projectId)
     {
         return await context.OnshorePowerSupplies
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Select(x => new OnshorePowerSupplyOverviewDto
             {
                 Id = x.Id,

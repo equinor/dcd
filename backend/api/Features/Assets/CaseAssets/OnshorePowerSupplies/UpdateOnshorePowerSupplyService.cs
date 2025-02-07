@@ -14,7 +14,7 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, Recalculation
         Guid onshorePowerSupplyId,
         UpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.ProjectId == projectId && x.Id == onshorePowerSupplyId);
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == onshorePowerSupplyId);
 
         existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
         existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
@@ -32,7 +32,7 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, Recalculation
         Guid onshorePowerSupplyId,
         ProspUpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.ProjectId == projectId && x.Id == onshorePowerSupplyId);
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == onshorePowerSupplyId);
 
         existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
         existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
