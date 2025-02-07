@@ -47,6 +47,9 @@ const configuration = {
     FeatureToggleService: {
         BASE_URL: "",
     },
+    DrillingCampaignsService: {
+        BASE_URL: "",
+    },
 }
 
 export const buildConfig = (baseUrl: string) => {
@@ -64,6 +67,7 @@ export const buildConfig = (baseUrl: string) => {
     configuration.CompareCasesService.BASE_URL = `${baseUrl}/compare-cases`
     configuration.ImageService.BASE_URL = `${baseUrl}/`
     configuration.FeatureToggleService.BASE_URL = `${baseUrl}/`
+    configuration.DrillingCampaignsService.BASE_URL = `${baseUrl}/`
 }
 
 export const config = Object.freeze(configuration)

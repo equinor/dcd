@@ -252,7 +252,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     campaign={campaign}
                 />
             ))}
-            <Grid size={12}>
+            {/* <Grid size={12}>
                 <CaseDrillingScheduleTable
                     addEdit={addEdit}
                     assetWells={explorationWellsData}
@@ -279,7 +279,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     gridRef={developmentWellsGridRef}
                     alignedGridsRef={[explorationWellsGridRef]}
                 />
-            </Grid>
+            </Grid> */}
         </Grid>
     )
 }

@@ -9,6 +9,7 @@ export type ResourceName =
     "fuelFlaringAndLossesOverride" |
     "wellProject" |
     "exploration" |
+    "campaign" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" | ProfileNames
 
@@ -43,6 +44,8 @@ export type ResourceObject =
     Components.Schemas.WellProjectDto |
     Components.Schemas.ExplorationDto |
     Components.Schemas.OnshorePowerSupplyDto |
+    Components.Schemas.UpdateCampaignDto |
+    Components.Schemas.CampaignDto |
     ProfileObject
 
 export type ProfileObject =
@@ -61,6 +64,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.ExplorationDto |
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
+    keyof Components.Schemas.UpdateCampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     ProfilePropertyKey
 
@@ -119,8 +123,8 @@ export type UpdateEntry = {
     description: string;
 };
 
-export type WhatsNewUpdates = { 
-    [key in Version]: { 
-        [key in Category]?: UpdateEntry[] 
-    } 
+export type WhatsNewUpdates = {
+    [versionKey in Version]: {
+        [categoryKey in Category]?: UpdateEntry[]
+    }
 };

@@ -1,15 +1,11 @@
-import { useState, useMemo } from "react"
+import { useMemo } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router"
-import { useQuery } from "@tanstack/react-query"
 
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import { cellStyleRightAlign } from "@/Utils/common"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
 import {
     NameCell,
     MainText,
@@ -18,7 +14,6 @@ import {
 import {
     DrillingCampaignProps,
     TableRow,
-    Campaign,
     Well,
 } from "@/Models/ICampaigns"
 import useEditCase from "@/Hooks/useEditCase"
@@ -34,15 +29,14 @@ const NameCellRenderer = (params: any) => {
 }
 
 interface ExplorationCampaignProps extends DrillingCampaignProps {
-    campaign: Campaign
+    campaign: Components.Schemas.CampaignDto
 }
 
 const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps) => {
     const styles = useStyles()
-    const [rigUpgradingCost, setRigUpgradingCost] = useState<number>(4)
-    const [rigMobDemobCost, setRigMobDemobCost] = useState<number>(4)
     const { addEdit } = useEditCase()
     console.log("campaign", campaign)
+    console.log(campaign.campaignId)
 
     const generateRowData = (): TableRow[] => {
         const rows: TableRow[] = []
@@ -157,14 +151,15 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
             <Grid container size={12} spacing={2} style={{ maxWidth: "600px" }}>
-                {/* <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
                         addEdit={addEdit}
-                        resourceName="case"
-                        resourcePropertyKey="producerCount"
+                        resourceName="campaign"
+                        resourcePropertyKey="rigUpgradingCost"
                         label="Rig upgrading cost - Exploration"
-                        previousResourceObject={apiData?.case}
-                        value={rigUpgradingCost}
+                        resourceId={campaign.campaignId}
+                        previousResourceObject={campaign}
+                        value={campaign.rigUpgradingCost}
                         unit="MUSD"
                         integer
                     />
@@ -172,15 +167,16 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
                         addEdit={addEdit}
-                        resourceName="case"
-                        resourcePropertyKey="producerCount"
+                        resourceName="campaign"
+                        resourcePropertyKey="rigMobDemobCost"
                         label="Rig mob/demob cost - Exploration"
-                        previousResourceObject={apiData?.case}
-                        value={rigMobDemobCost}
+                        resourceId={campaign.campaignId}
+                        previousResourceObject={campaign}
+                        value={campaign.rigMobDemobCost}
                         unit="MUSD"
                         integer
                     />
-                </Grid> */}
+                </Grid>
             </Grid>
             <Grid size={12} style={{ width: "100%" }}>
                 <div className={styles.root} style={{ width: "100%" }}>
