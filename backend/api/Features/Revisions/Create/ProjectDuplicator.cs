@@ -93,7 +93,6 @@ public static class ProjectDuplicator
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
 
             // Mapped via cases
-            Topsides = [],
             Transports = [],
             OnshorePowerSupplies = [],
             WellProjects = [],
@@ -227,7 +226,7 @@ public static class ProjectDuplicator
             Topside = new Topside
             {
                 Id = topsideId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.Topside.Name,
                 DryWeight = existingCaseItem.Topside.DryWeight,
                 OilCapacity = existingCaseItem.Topside.OilCapacity,
