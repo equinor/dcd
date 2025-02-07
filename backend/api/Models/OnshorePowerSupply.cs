@@ -7,8 +7,8 @@ public class OnshorePowerSupply : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
-    public Guid ProjectId { get; set; }
-    public Project Project { get; set; } = null!;
+    public Guid CaseId { get; set; }
+    public Case Case { get; set; } = null!;
 
     public required string Name { get; set; }
     public required DateTime? LastChangedDate { get; set; }

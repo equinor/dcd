@@ -31,7 +31,7 @@ public class CreateCaseService(DcdDbContext context)
             Transport = CreateTransport(),
             Exploration = CreateExploration(projectPk),
             WellProject = CreateWellProject(projectPk),
-            OnshorePowerSupply = CreateOnshorePowerSupply(projectPk),
+            OnshorePowerSupply = CreateOnshorePowerSupply(),
             TimeSeriesProfiles =
             [
                 new TimeSeriesProfile
@@ -204,12 +204,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static OnshorePowerSupply CreateOnshorePowerSupply(Guid projectPk)
+    private static OnshorePowerSupply CreateOnshorePowerSupply()
     {
         return new OnshorePowerSupply
         {
             Name = "OnshorePowerSupply",
-            ProjectId = projectPk,
             LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
