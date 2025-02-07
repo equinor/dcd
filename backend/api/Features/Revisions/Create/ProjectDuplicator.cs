@@ -93,7 +93,6 @@ public static class ProjectDuplicator
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
 
             // Mapped via cases
-            Substructures = [],
             Topsides = [],
             Transports = [],
             OnshorePowerSupplies = [],
@@ -209,7 +208,7 @@ public static class ProjectDuplicator
             Substructure = new Substructure
             {
                 Id = substructureId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.Substructure.Name,
                 DryWeight = existingCaseItem.Substructure.DryWeight,
                 Maturity = existingCaseItem.Substructure.Maturity,

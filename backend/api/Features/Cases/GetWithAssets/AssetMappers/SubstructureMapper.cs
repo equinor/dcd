@@ -11,7 +11,7 @@ public static class SubstructureMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             DryWeight = entity.DryWeight,
             Maturity = entity.Maturity,
             Currency = entity.Currency,
