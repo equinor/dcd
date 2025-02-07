@@ -76,7 +76,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
     {
         var existingWellProject = await context.WellProjects
             .Include(e => e.DevelopmentWells)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Where(x => x.Id == wellProjectId)
             .SingleAsync(e => e.DevelopmentWells.Any(w => w.WellId == wellId && w.WellProjectId == wellProjectId));
 
@@ -99,7 +99,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
         Guid wellId,
         CreateTimeSeriesScheduleDto dto)
     {
-        var existingWellProject = await context.WellProjects.SingleAsync(x => x.ProjectId == projectId && x.Id == wellProjectId);
+        var existingWellProject = await context.WellProjects.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == wellProjectId);
 
         var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 

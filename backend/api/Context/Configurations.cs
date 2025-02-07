@@ -39,9 +39,9 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.WellProject)
-            .WithMany()
-            .HasForeignKey(c => c.WellProjectId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<WellProject>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Exploration)
             .WithMany()

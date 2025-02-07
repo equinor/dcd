@@ -93,7 +93,6 @@ public static class ProjectDuplicator
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
 
             // Mapped via cases
-            WellProjects = [],
             Explorations = [],
 
             // Mapped as a separate step later
@@ -303,7 +302,7 @@ public static class ProjectDuplicator
             WellProject = new WellProject
             {
                 Id = wellProjectId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.WellProject.Name,
                 ArtificialLift = existingCaseItem.WellProject.ArtificialLift,
                 Currency = existingCaseItem.WellProject.Currency,

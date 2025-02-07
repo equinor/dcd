@@ -10,7 +10,7 @@ public static class WellProjectMapper
         return new WellProjectDto
         {
             Id = entity.Id,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             Name = entity.Name,
             ArtificialLift = entity.ArtificialLift,
             Currency = entity.Currency

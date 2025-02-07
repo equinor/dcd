@@ -43,7 +43,6 @@ public class Project : IChangeTrackable, IDateTrackedEntity
 
     public List<Case> Cases { get; set; } = [];
     public List<Well> Wells { get; set; } = [];
-    public List<WellProject> WellProjects { get; set; } = [];
     public List<Exploration> Explorations { get; set; } = [];
     public List<Project> Revisions { get; set; } = [];
     public List<ProjectMember> ProjectMembers { get; set; } = [];
