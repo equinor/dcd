@@ -198,7 +198,7 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<SurfOverviewDto>> GetSurfs(Guid projectId)
     {
         return await context.Surfs
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Select(x => new SurfOverviewDto
             {
                 Id = x.Id,

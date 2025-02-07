@@ -26,7 +26,7 @@ public class CreateCaseService(DcdDbContext context)
             CapexFactorFEEDStudies = 0.015,
             DrainageStrategy = CreateDrainageStrategy(),
             Topside = CreateTopside(projectPk),
-            Surf = CreateSurf(projectPk),
+            Surf = CreateSurf(),
             Substructure = CreateSubstructure(projectPk),
             Transport = CreateTransport(projectPk),
             Exploration = CreateExploration(projectPk),
@@ -140,12 +140,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Surf CreateSurf(Guid projectPk)
+    private static Surf CreateSurf()
     {
         return new Surf
         {
             Name = "Surf",
-            ProjectId = projectPk,
 
             CessationCost = 0,
             Maturity = Maturity.A,

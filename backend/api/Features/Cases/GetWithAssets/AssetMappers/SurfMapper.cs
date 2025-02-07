@@ -11,7 +11,7 @@ public static class SurfMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             CessationCost = entity.CessationCost,
             Maturity = entity.Maturity,
             InfieldPipelineSystemLength = entity.InfieldPipelineSystemLength,
