@@ -14,7 +14,7 @@ public class UpdateExplorationService(DcdDbContext context, RecalculationService
         Guid explorationId,
         UpdateExplorationDto updatedExplorationDto)
     {
-        var existingExploration = await context.Explorations.SingleAsync(x => x.ProjectId == projectId && x.Id == explorationId);
+        var existingExploration = await context.Explorations.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == explorationId);
 
         existingExploration.RigMobDemob = updatedExplorationDto.RigMobDemob;
         existingExploration.Currency = updatedExplorationDto.Currency;
