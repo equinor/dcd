@@ -93,7 +93,6 @@ public static class ProjectDuplicator
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
 
             // Mapped via cases
-            Transports = [],
             OnshorePowerSupplies = [],
             WellProjects = [],
             Explorations = [],
@@ -261,7 +260,7 @@ public static class ProjectDuplicator
             Transport = new Transport
             {
                 Id = transportId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.Transport.Name,
                 GasExportPipelineLength = existingCaseItem.Transport.GasExportPipelineLength,
                 OilExportPipelineLength = existingCaseItem.Transport.OilExportPipelineLength,

@@ -28,7 +28,7 @@ public class CreateCaseService(DcdDbContext context)
             Topside = CreateTopside(),
             Surf = CreateSurf(),
             Substructure = CreateSubstructure(),
-            Transport = CreateTransport(projectPk),
+            Transport = CreateTransport(),
             Exploration = CreateExploration(projectPk),
             WellProject = CreateWellProject(projectPk),
             OnshorePowerSupply = CreateOnshorePowerSupply(projectPk),
@@ -186,12 +186,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Transport CreateTransport(Guid projectPk)
+    private static Transport CreateTransport()
     {
         return new Transport
         {
             Name = "Transport",
-            ProjectId = projectPk,
             GasExportPipelineLength = 0,
             OilExportPipelineLength = 0,
             Maturity = Maturity.A,

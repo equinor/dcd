@@ -242,7 +242,7 @@ public class GetProjectDataRepository(DcdDbContext context)
     public async Task<List<TransportOverviewDto>> GetTransports(Guid projectId)
     {
         return await context.Transports
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectId)
             .Select(x => new TransportOverviewDto
             {
                 Id = x.Id,
