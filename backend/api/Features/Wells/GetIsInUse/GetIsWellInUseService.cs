@@ -28,7 +28,7 @@ public class GetIsWellInUseService(DcdDbContext context)
             .Distinct();
 
         var explorationIds = context.ExplorationWell
-            .Where(x => x.Exploration.ProjectId == projectPk)
+            .Where(x => x.Exploration.Case.ProjectId == projectPk)
             .Where(x => x.WellId == wellId)
             .Select(x => x.ExplorationId)
             .Distinct();

@@ -10,7 +10,7 @@ public static class ExplorationMapper
         return new ExplorationDto
         {
             Id = entity.Id,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             Name = entity.Name,
             RigMobDemob = entity.RigMobDemob,
             Currency = entity.Currency

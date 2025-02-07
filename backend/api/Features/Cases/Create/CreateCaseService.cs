@@ -29,7 +29,7 @@ public class CreateCaseService(DcdDbContext context)
             Surf = CreateSurf(),
             Substructure = CreateSubstructure(),
             Transport = CreateTransport(),
-            Exploration = CreateExploration(projectPk),
+            Exploration = CreateExploration(),
             WellProject = CreateWellProject(),
             OnshorePowerSupply = CreateOnshorePowerSupply(),
             TimeSeriesProfiles =
@@ -218,12 +218,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Exploration CreateExploration(Guid projectPk)
+    private static Exploration CreateExploration()
     {
         return new Exploration
         {
             Name = "Exploration",
-            ProjectId = projectPk,
             RigMobDemob = 0,
             Currency = 0,
             ExplorationWells = []

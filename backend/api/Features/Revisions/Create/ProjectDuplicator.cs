@@ -92,9 +92,6 @@ public static class ProjectDuplicator
             Wells = wells,
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
 
-            // Mapped via cases
-            Explorations = [],
-
             // Mapped as a separate step later
             Images = [],
 
@@ -313,7 +310,7 @@ public static class ProjectDuplicator
             Exploration = new Exploration
             {
                 Id = explorationId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.Exploration.Name,
                 RigMobDemob = existingCaseItem.Exploration.RigMobDemob,
                 Currency = existingCaseItem.Exploration.Currency,

@@ -44,9 +44,9 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Exploration)
-            .WithMany()
-            .HasForeignKey(c => c.ExplorationId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Exploration>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Transport)
             .WithOne(c => c.Case)

@@ -6,8 +6,8 @@ public class Exploration : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
-    public Guid ProjectId { get; set; }
-    public Project Project { get; set; } = null!;
+    public Guid CaseId { get; set; }
+    public Case Case { get; set; } = null!;
 
     public required string Name { get; set; }
     public required double RigMobDemob { get; set; }
