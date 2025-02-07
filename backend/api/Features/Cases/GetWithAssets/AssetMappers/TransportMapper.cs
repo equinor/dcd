@@ -11,7 +11,7 @@ public static class TransportMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            ProjectId = entity.ProjectId,
+            ProjectId = entity.Case.ProjectId,
             Maturity = entity.Maturity,
             GasExportPipelineLength = entity.GasExportPipelineLength,
             OilExportPipelineLength = entity.OilExportPipelineLength,

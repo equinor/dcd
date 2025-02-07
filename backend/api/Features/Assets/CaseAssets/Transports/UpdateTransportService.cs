@@ -10,7 +10,7 @@ public class UpdateTransportService(DcdDbContext context, RecalculationService r
 {
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, UpdateTransportDto updatedTransportDto)
     {
-        var existing = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
+        var existing = await context.Transports.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == transportId);
 
         existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
         existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
@@ -28,7 +28,7 @@ public class UpdateTransportService(DcdDbContext context, RecalculationService r
 
     public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, ProspUpdateTransportDto updatedTransportDto)
     {
-        var existing = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
+        var existing = await context.Transports.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == transportId);
 
         existing.ProspVersion = updatedTransportDto.ProspVersion;
         existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
