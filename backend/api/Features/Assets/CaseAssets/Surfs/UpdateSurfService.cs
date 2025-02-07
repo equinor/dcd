@@ -14,7 +14,7 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
         Guid surfId,
         UpdateSurfDto updatedSurfDto)
     {
-        var existingSurf = await context.Surfs.SingleAsync(x => x.ProjectId == projectId && x.Id == surfId);
+        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == surfId);
 
         existingSurf.CessationCost = updatedSurfDto.CessationCost;
         existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
@@ -45,7 +45,7 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
         Guid surfId,
         ProspUpdateSurfDto updatedSurfDto)
     {
-        var existingSurf = await context.Surfs.SingleAsync(x => x.ProjectId == projectId && x.Id == surfId);
+        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == surfId);
 
         existingSurf.CessationCost = updatedSurfDto.CessationCost;
         existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;

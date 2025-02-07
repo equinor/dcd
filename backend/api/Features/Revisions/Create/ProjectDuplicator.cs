@@ -93,7 +93,6 @@ public static class ProjectDuplicator
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
 
             // Mapped via cases
-            Surfs = [],
             Substructures = [],
             Topsides = [],
             Transports = [],
@@ -183,7 +182,7 @@ public static class ProjectDuplicator
             Surf = new Surf
             {
                 Id = surfId,
-                ProjectId = projectId,
+                CaseId = caseId,
                 Name = existingCaseItem.Surf.Name,
                 CessationCost = existingCaseItem.Surf.CessationCost,
                 Maturity = existingCaseItem.Surf.Maturity,

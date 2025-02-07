@@ -69,9 +69,9 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Surf)
-            .WithMany()
-            .HasForeignKey(c => c.SurfId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Surf>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
