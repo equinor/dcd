@@ -20,7 +20,7 @@ public class GetCaseImageService(DcdDbContext context, BlobServiceClient blobSer
         return MapToDto(image, imageContent);
     }
 
-    public async Task<List<ImageDto>> GetImages(Guid projectId, Guid? caseId)
+    public async Task<List<ImageDto>> GetImages(Guid projectId, Guid caseId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
