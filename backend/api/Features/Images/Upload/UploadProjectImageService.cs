@@ -11,7 +11,7 @@ namespace api.Features.Images.Upload;
 
 public class UploadProjectImageService(DcdDbContext context, BlobServiceClient blobServiceClient)
 {
-    public async Task<Guid> SaveImage(IFormFile image, Guid projectId, Guid? caseId)
+    public async Task<Guid> SaveImage(IFormFile image, Guid projectId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 

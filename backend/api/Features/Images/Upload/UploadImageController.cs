@@ -27,7 +27,7 @@ public class UploadImageController(
     {
         UploadImageValidator.EnsureIsValid(image);
 
-        var imageId = await uploadProjectImageService.SaveImage(image, projectId, null);
+        var imageId = await uploadProjectImageService.SaveImage(image, projectId);
         return await getProjectImageService.GetImage(imageId);
     }
 }

@@ -7,7 +7,7 @@ namespace api.Features.Images.Update;
 
 public class UpdateCaseImageService(DcdDbContext context)
 {
-    public async Task UpdateImage(Guid projectId, Guid? caseId, Guid imageId, UpdateImageDto dto)
+    public async Task UpdateImage(Guid projectId, Guid caseId, Guid imageId, UpdateImageDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
