@@ -2,10 +2,13 @@ namespace api.Features.Images.Shared;
 
 public static class ImageHelper
 {
-    public static string GetBlobName(Guid? caseId, Guid projectId, Guid imageId)
+    public static string GetProjectBlobName(Guid projectId, Guid imageId)
     {
-        return caseId.HasValue
-            ? $"cases/{caseId}/{imageId}"
-            : $"projects/{projectId}/{imageId}";
+        return $"projects/{projectId}/{imageId}";
+    }
+
+    public static string GetCaseBlobName(Guid caseId, Guid imageId)
+    {
+        return $"cases/{caseId}/{imageId}";
     }
 }

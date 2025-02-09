@@ -28,7 +28,7 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
         project.Classification = createRevisionDto.Classification;
 
         await CopyProjectImages(projectPk, revision.Id);
-        await CopyCaseImages(projectPk, revision.Id, caseIdMapping);
+        await CopyCaseImages(projectPk, caseIdMapping);
 
         await context.SaveChangesAsync();
 
@@ -37,22 +37,21 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 
     private async Task CopyProjectImages(Guid projectPk, Guid revisionId)
     {
-        var images = await context.Images
-            .Where(x => x.ProjectId == projectPk && x.CaseId == null)
+        var images = await context.ProjectImages
+            .Where(x => x.ProjectId == projectPk)
             .ToListAsync();
 
         foreach (var image in images)
         {
             var newImageId = Guid.NewGuid();
 
-            var sourceUrl = ImageHelper.GetBlobName(null, image.ProjectId, image.Id);
-            var destinationUrl = ImageHelper.GetBlobName(null, revisionId, newImageId);
+            var sourceUrl = ImageHelper.GetProjectBlobName(image.ProjectId, image.Id);
+            var destinationUrl = ImageHelper.GetProjectBlobName(revisionId, newImageId);
 
-            context.Images.Add(new Image
+            context.ProjectImages.Add(new ProjectImage
             {
                 Id = newImageId,
                 ProjectId = revisionId,
-                CaseId = null,
                 Description = image.Description,
                 Url = destinationUrl
             });
@@ -61,24 +60,23 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
         }
     }
 
-    private async Task CopyCaseImages(Guid projectPk, Guid revisionId, Dictionary<Guid, Guid> caseIdMapping)
+    private async Task CopyCaseImages(Guid projectPk, Dictionary<Guid, Guid> caseIdMapping)
     {
-        var images = await context.Images
-            .Where(x => x.ProjectId == projectPk && x.CaseId != null)
+        var images = await context.CaseImages
+            .Where(x => x.Case.ProjectId == projectPk)
             .ToListAsync();
 
         foreach (var image in images)
         {
             var newImageId = Guid.NewGuid();
 
-            var sourceUrl = ImageHelper.GetBlobName(image.CaseId, image.ProjectId, image.Id);
-            var destinationUrl = ImageHelper.GetBlobName(caseIdMapping[image.CaseId!.Value], revisionId, newImageId);
+            var sourceUrl = ImageHelper.GetCaseBlobName(image.CaseId, image.Id);
+            var destinationUrl = ImageHelper.GetCaseBlobName(caseIdMapping[image.CaseId], newImageId);
 
-            context.Images.Add(new Image
+            context.CaseImages.Add(new CaseImage
             {
                 Id = newImageId,
-                ProjectId = revisionId,
-                CaseId = caseIdMapping[image.CaseId!.Value],
+                CaseId = caseIdMapping[image.CaseId],
                 Description = image.Description,
                 Url = destinationUrl
             });

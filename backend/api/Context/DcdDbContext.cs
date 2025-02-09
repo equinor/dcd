@@ -19,7 +19,8 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts => Set<ExplorationOperationalWellCosts>();
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts => Set<DevelopmentOperationalWellCosts>();
     public DbSet<Case> Cases => Set<Case>();
-    public DbSet<Image> Images => Set<Image>();
+    public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
+    public DbSet<CaseImage> CaseImages => Set<CaseImage>();
     public DbSet<Well> Wells => Set<Well>();
     public DbSet<DevelopmentWell> DevelopmentWells => Set<DevelopmentWell>();
     public DbSet<ExplorationWell> ExplorationWell => Set<ExplorationWell>();

@@ -93,12 +93,19 @@ public static class DcdIocConfiguration
         services.AddScoped<CaseWithAssetsService>();
         services.AddScoped<CaseWithAssetsRepository>();
 
-        /* Images */
-        services.AddScoped<GetImageService>();
-        services.AddScoped<DeleteImageService>();
-        services.AddScoped<UploadImageService>();
+        /* Case images */
+        services.AddScoped<GetCaseImageService>();
+        services.AddScoped<DeleteCaseImageService>();
+        services.AddScoped<UploadCaseImageService>();
+        services.AddScoped<UpdateCaseImageService>();
+
+        /* Project images */
+        services.AddScoped<GetProjectImageService>();
+        services.AddScoped<DeleteProjectImageService>();
+        services.AddScoped<UploadProjectImageService>();
+        services.AddScoped<UpdateProjectImageService>();
+
         services.AddScoped<CopyImageService>();
-        services.AddScoped<UpdateImageService>();
 
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();

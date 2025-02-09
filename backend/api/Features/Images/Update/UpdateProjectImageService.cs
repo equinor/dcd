@@ -5,15 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Images.Update;
 
-public class UpdateImageService(DcdDbContext context)
+public class UpdateProjectImageService(DcdDbContext context)
 {
-    public async Task UpdateImage(Guid projectId, Guid? caseId, Guid imageId, UpdateImageDto dto)
+    public async Task UpdateImage(Guid projectId, Guid imageId, UpdateImageDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var image = await context.Images
+        var image = await context.ProjectImages
             .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.CaseId == caseId)
             .Where(x => x.Id == imageId)
             .SingleAsync();
 
