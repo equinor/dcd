@@ -58,21 +58,20 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
 
     private async Task CopyCaseImages(Guid projectPk, Guid sourceCaseId, Guid destinationCaseId)
     {
-        var images = await context.Images
-            .Where(x => x.ProjectId == projectPk && x.CaseId == sourceCaseId)
+        var images = await context.CaseImages
+            .Where(x => x.Case.ProjectId == projectPk && x.CaseId == sourceCaseId)
             .ToListAsync();
 
         foreach (var image in images)
         {
             var newImageId = Guid.NewGuid();
 
-            var sourceUrl = ImageHelper.GetBlobName(sourceCaseId, image.ProjectId, image.Id);
-            var destinationUrl = ImageHelper.GetBlobName(destinationCaseId, projectPk, newImageId);
+            var sourceUrl = ImageHelper.GetCaseBlobName(sourceCaseId, image.Id);
+            var destinationUrl = ImageHelper.GetCaseBlobName(destinationCaseId, newImageId);
 
-            context.Images.Add(new Image
+            context.CaseImages.Add(new CaseImage
             {
                 Id = newImageId,
-                ProjectId = projectPk,
                 CaseId = destinationCaseId,
                 Description = image.Description,
                 Url = destinationUrl

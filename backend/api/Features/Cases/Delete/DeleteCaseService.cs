@@ -6,20 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Delete;
 
-public class DeleteCaseService(DcdDbContext context, DeleteImageService deleteImageService)
+public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService deleteCaseImageService)
 {
     public async Task DeleteCase(Guid projectId, Guid caseId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var imageIds = await context.Images
+        var imageIds = await context.CaseImages
             .Where(x => x.CaseId == caseId)
             .Select(x => x.Id)
             .ToListAsync();
 
         foreach (var imageId in imageIds)
         {
-            await deleteImageService.DeleteImage(projectPk, imageId);
+            await deleteCaseImageService.DeleteImage(projectPk, caseId, imageId);
         }
 
         var campaigns = await context.Campaigns

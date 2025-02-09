@@ -45,7 +45,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public List<Well> Wells { get; set; } = [];
     public List<Project> Revisions { get; set; } = [];
     public List<ProjectMember> ProjectMembers { get; set; } = [];
-    public List<Image> Images { get; set; } = [];
+    public List<ProjectImage> Images { get; set; } = [];
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

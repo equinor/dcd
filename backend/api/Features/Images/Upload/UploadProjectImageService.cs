@@ -9,7 +9,7 @@ using Azure.Storage.Blobs.Models;
 
 namespace api.Features.Images.Upload;
 
-public class UploadImageService(DcdDbContext context, BlobServiceClient blobServiceClient)
+public class UploadProjectImageService(DcdDbContext context, BlobServiceClient blobServiceClient)
 {
     public async Task<Guid> SaveImage(IFormFile image, Guid projectId, Guid? caseId)
     {
@@ -19,28 +19,22 @@ public class UploadImageService(DcdDbContext context, BlobServiceClient blobServ
 
         var imageId = Guid.NewGuid();
 
-        var blobName = ImageHelper.GetBlobName(caseId, projectPk, imageId);
+        var blobName = ImageHelper.GetProjectBlobName(projectPk, imageId);
 
         var blobClient = containerClient.GetBlobClient(blobName);
 
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
 
-        var imageEntity = new Image
+        var imageEntity = new ProjectImage
         {
             Id = imageId,
             Url = blobClient.Uri.ToString().Split('?')[0],
-            CaseId = caseId,
             ProjectId = projectPk,
             Description = null
         };
 
-        context.Images.Add(imageEntity);
-
-        if (imageEntity.CaseId.HasValue)
-        {
-            await context.UpdateCaseUpdatedUtc(imageEntity.CaseId!.Value);
-        }
+        context.ProjectImages.Add(imageEntity);
 
         await context.SaveChangesAsync();
 

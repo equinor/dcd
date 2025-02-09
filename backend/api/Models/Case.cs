@@ -66,7 +66,7 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public Guid ExplorationId { get; set; }
     public Exploration Exploration { get; set; } = null!;
 
-    public List<Image> Images { get; set; } = [];
+    public List<CaseImage> Images { get; set; } = [];
     public List<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
     public List<Campaign> Campaigns { get; set; } = [];
 

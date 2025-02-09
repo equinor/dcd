@@ -2,18 +2,15 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Image : IChangeTrackable, IDateTrackedEntity
+public class CaseImage : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
     public required string Url { get; set; }
     public required string? Description { get; set; }
 
-    public Guid ProjectId { get; set; }
-    public Project Project { get; set; } = null!;
-
-    public Guid? CaseId { get; set; }
-    public Case? Case { get; set; }
+    public Guid CaseId { get; set; }
+    public Case Case { get; set; } = null!;
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

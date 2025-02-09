@@ -16,9 +16,18 @@ export class ImageService extends __BaseService {
         return response
     }
 
-    public async deleteImage(projectId: string, imageId: string): Promise<void> {
+    public async deleteProjectImage(projectId: string, imageId: string): Promise<void> {
         try {
             await this.delete(`projects/${projectId}/images/${imageId}`)
+        } catch (error) {
+            throw new Error(`Error deleting image: ${error}`)
+        }
+    }
+
+
+    public async deleteCaseImage(projectId: string, caseId: string, imageId: string): Promise<void> {
+        try {
+            await this.delete(`projects/${projectId}/cases/${caseId}/images/${imageId}`)
         } catch (error) {
             throw new Error(`Error deleting image: ${error}`)
         }
