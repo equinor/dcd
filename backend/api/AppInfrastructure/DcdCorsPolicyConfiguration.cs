@@ -19,8 +19,9 @@ public static class DcdCorsPolicyConfiguration
                                 "https://fusion.equinor.com",
                                 "https://fusion.ci.fusion-dev.net",
                                 "https://fusion.fqa.fusion-dev.net")
+                           .AllowCredentials()
                            .SetIsOriginAllowedToAllowWildcardSubdomains()
-                           .SetPreflightMaxAge(TimeSpan.Zero);
+                           .SetPreflightMaxAge(TimeSpan.FromMinutes(30));
                 });
         });
     }
