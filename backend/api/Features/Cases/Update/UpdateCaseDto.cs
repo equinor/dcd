@@ -23,6 +23,7 @@ public class UpdateCaseDto
     [Required] public required double BreakEven { get; set; }
     public required double? BreakEvenOverride { get; set; }
     public required string? Host { get; set; }
+    [Required] public required double AverageCo2Intensity { get; set; }
     [Required] public required DateTime DGADate { get; set; }
     [Required] public required DateTime DGBDate { get; set; }
     [Required] public required DateTime DGCDate { get; set; }

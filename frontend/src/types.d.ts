@@ -38,6 +38,7 @@ declare namespace Components {
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
             host: string | null;
+            averageCo2Intensity: number; // double
             dgaDate: string; // date-time
             dgbDate: string; // date-time
             dgcDate: string; // date-time
@@ -499,6 +500,7 @@ declare namespace Components {
             breakEven: number; // double
             breakEvenOverride: number | null; // double
             host: string | null;
+            averageCo2Intensity: number; // double
             dgaDate: string; // date-time
             dgbDate: string; // date-time
             dgcDate: string; // date-time

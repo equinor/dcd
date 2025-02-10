@@ -28,6 +28,7 @@ public static class CaseMapper
             CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies,
             CapexFactorFEEDStudies = caseItem.CapexFactorFEEDStudies,
             Host = caseItem.Host,
+            AverageCo2Intensity = caseItem.AverageCo2Intensity,
             DGADate = caseItem.DGADate,
             DGBDate = caseItem.DGBDate,
             DGCDate = caseItem.DGCDate,

@@ -30,14 +30,6 @@ const CaseCO2Tab = () => {
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
 
-    const sumValues = (input: Components.Schemas.TimeSeriesCostDto | undefined) => {
-        if (!input || !input?.values) {
-            return 0
-        }
-
-        return input.values.reduce((sum, current) => sum + current, 0)
-    }
-
     const caseData = apiData?.case
     const topsideData = apiData?.topside
     const drainageStrategyData = apiData?.drainageStrategy
@@ -58,8 +50,7 @@ const CaseCO2Tab = () => {
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
     const co2GridRef = useRef<any>(null)
-    const co2EmissionsSum = sumValues(co2EmissionsOverrideData ?? co2EmissionsData)
-    const oilProductionSum = sumValues(apiData?.productionProfileOil) + sumValues(apiData?.additionalProductionProfileOil)
+    const averageCo2IntensityData = apiData?.case.averageCo2Intensity
 
     const co2IntensityLine = {
         type: "line",
@@ -199,20 +190,43 @@ const CaseCO2Tab = () => {
         return dataArray
     }
 
-    const co2EmissionsTotalString = () => {
-        if (co2EmissionsData) {
-            return (Math.round(sumValues(co2EmissionsData) * 10) / 10).toString()
+    const [drillingPortion, setDrillingPortion] = useState(0)
+    const [flaringPortion, setFlaringPortion] = useState(0)
+    const [fuelPortion, setFuelPortion] = useState(0)
+
+    useEffect(() => {
+        if (averageCo2IntensityData && co2DrillingFlaringFuelTotals) {
+            const { co2Drilling = 0, co2Flaring = 0, co2Fuel = 0 } = co2DrillingFlaringFuelTotals
+
+            const totalEmissions = co2Drilling + co2Flaring + co2Fuel
+
+            if (totalEmissions > 0) {
+                const drillingPercentage = co2Drilling / totalEmissions
+                const flaringPercentage = co2Flaring / totalEmissions
+                const fuelPercentage = co2Fuel / totalEmissions
+
+                setDrillingPortion(drillingPercentage * averageCo2IntensityData)
+                setFlaringPortion(flaringPercentage * averageCo2IntensityData)
+                setFuelPortion(fuelPercentage * averageCo2IntensityData)
+            } else {
+                setDrillingPortion(0)
+                setFlaringPortion(0)
+                setFuelPortion(0)
+            }
+        } else {
+            setDrillingPortion(0)
+            setFlaringPortion(0)
+            setFuelPortion(0)
         }
-        return "0"
-    }
+    }, [averageCo2IntensityData, co2DrillingFlaringFuelTotals])
 
     useEffect(() => {
         setCo2DistributionChartData([
-            { profile: "Drilling", value: co2DrillingFlaringFuelTotals?.co2Drilling ?? 0 },
-            { profile: "Flaring", value: co2DrillingFlaringFuelTotals?.co2Flaring ?? 0 },
-            { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel ?? 0 },
+            { profile: "Drilling", value: drillingPortion ?? 0 },
+            { profile: "Flaring", value: flaringPortion ?? 0 },
+            { profile: "Fuel", value: fuelPortion ?? 0 },
         ])
-    }, [co2DrillingFlaringFuelTotals?.co2Flaring])
+    }, [drillingPortion, flaringPortion, fuelPortion])
 
     if (!topsideData) {
         return <CaseCo2TabSkeleton />
@@ -256,22 +270,19 @@ const CaseCO2Tab = () => {
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>
                 <Grid size={12}>
-                    <Typography variant="h1_bold">
-                        {sumValues(co2IntensityData) && co2IntensityData?.values && co2IntensityData.values.length > 0
-                            ? ((co2EmissionsSum * 1000) / ((oilProductionSum ?? 0) * 6.29)).toFixed(4)
-                            : "0.0000"}
+                    <Typography variant="h4">
+                        {averageCo2IntensityData?.toFixed(4)}
+                        {" "}
+                        kg CO2/boe
                     </Typography>
                 </Grid>
-                <Grid size={12}>
-                    <Typography color="disabled">kg CO2/boe</Typography>
-                </Grid>
+
                 <Grid size={12}>
                     <AgChartsPie
                         data={co2DistributionChartData}
-                        chartTitle="CO2 distribution"
-                        barColors={["#243746", "#EB0037", "#A8CED1"]}
-                        totalCo2Emission={co2EmissionsTotalString()}
-                        unit="million tonnes"
+                        chartTitle="CO2 intensity distribution"
+                        barColors={["#EB0037", "#A8CED1", "#243746"]}
+                        unit="kg CO2/boe"
                     />
                 </Grid>
             </Grid>
