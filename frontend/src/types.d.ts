@@ -949,15 +949,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdDrainageStrategy {
+    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
+                export type DrainageStrategyId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateDrainageStrategyDto;
             namespace Responses {
@@ -1074,15 +1076,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupply {
+    namespace Projects$ProjectIdCases$CaseIdOnshorePowerSupplies$OnshorePowerSupplyId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
+                export type OnshorePowerSupplyId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+                onshorePowerSupplyId: Parameters.OnshorePowerSupplyId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateOnshorePowerSupplyDto;
             namespace Responses {
@@ -1123,15 +1127,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdSubstructure {
+    namespace Projects$ProjectIdCases$CaseIdSubstructures$SubstructureId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
+                export type SubstructureId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+                substructureId: Parameters.SubstructureId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateSubstructureDto;
             namespace Responses {
@@ -1140,15 +1146,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdSurf {
+    namespace Projects$ProjectIdCases$CaseIdSurfs$SurfId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
+                export type SurfId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+                surfId: Parameters.SurfId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateSurfDto;
             namespace Responses {
@@ -1157,15 +1165,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdTopside {
+    namespace Projects$ProjectIdCases$CaseIdTopsides$TopsideId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
+                export type TopsideId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+                topsideId: Parameters.TopsideId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateTopsideDto;
             namespace Responses {
@@ -1174,15 +1184,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdTransport {
+    namespace Projects$ProjectIdCases$CaseIdTransports$TransportId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
+                export type TransportId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+                transportId: Parameters.TransportId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateTransportDto;
             namespace Responses {

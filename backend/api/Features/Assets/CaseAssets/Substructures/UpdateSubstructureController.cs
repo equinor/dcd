@@ -7,7 +7,7 @@ namespace api.Features.Assets.CaseAssets.Substructures;
 public class UpdateSubstructureController(UpdateSubstructureService updateSubstructureService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/substructure")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/substructures/{substructureId:guid}")]
     public async Task<NoContentResult> UpdateSubstructure(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,

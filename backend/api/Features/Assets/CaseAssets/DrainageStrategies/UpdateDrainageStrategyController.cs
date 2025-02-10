@@ -7,7 +7,7 @@ namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 public class UpdateDrainageStrategyController(UpdateDrainageStrategyService updateDrainageStrategyService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategy")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}")]
     public async Task<NoContentResult> UpdateDrainageStrategy(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
