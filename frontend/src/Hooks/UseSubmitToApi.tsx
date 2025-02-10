@@ -201,32 +201,32 @@ export const useSubmitToApi = () => {
 
                 case "topside":
                     return await updateTopside({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
                     
                 case "surf":
                     return await updateSurf({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
                     
                 case "substructure":
                     return await updateSubstructure({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
                     
                 case "transport":
                     return await updateTransport({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
                     
                 case "onshorePowerSupply":
                     return await updateOnshorePowerSupply({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
                     
                 case "drainageStrategy":
                     return await updateDrainageStrategy({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
 
                 case "explorationWellDrillingSchedule":
