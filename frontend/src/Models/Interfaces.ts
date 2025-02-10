@@ -98,13 +98,6 @@ export interface TableCase {
     referenceCaseId?: string
 }
 
-export enum NoAccessReason {
-    ProjectDoesNotExist = 1,
-    ClassificationInternal = 2,
-    ClassificationRestricted = 3,
-    ClassificationConfidential = 4
-}
-
 export type Version = `${number}.${number}.${number}`;
 export type Category = "New Functionalities" | "UI Improvements" | "Bugfixes" | "Other";
 export type UpdateEntry = {

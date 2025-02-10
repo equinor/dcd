@@ -4,7 +4,7 @@ import { Box } from "@mui/material"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import ExternalAccessInfo from "@/Components/Project/Components/ExternalAccessInfo"
-import { NoAccessReason } from "@/Models/Interfaces"
+import { NoAccessReason } from "@/enums"
 
 const Container = styled.div`
   max-width: 800px;
