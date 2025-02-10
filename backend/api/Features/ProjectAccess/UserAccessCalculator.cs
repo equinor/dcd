@@ -40,6 +40,11 @@ public static class AccessCalculator
             return false;
         }
 
+        if (userRoles.Contains(ApplicationRole.Admin))
+        {
+            return true;
+        }
+
         if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
         {
             return true;

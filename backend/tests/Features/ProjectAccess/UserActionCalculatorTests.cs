@@ -28,6 +28,15 @@ public class UserActionCalculatorTests
     }
 
     [Fact]
+    public void Admin_should_have_view_access_to_project__when_project_classification_is_confidential()
+    {
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.Admin], ProjectClassification.Confidential, isRevision: true, ProjectMemberRole.Observer));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.Admin], ProjectClassification.Confidential, isRevision: true, null));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.Admin], ProjectClassification.Confidential, isRevision: false, ProjectMemberRole.Observer));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.Admin], ProjectClassification.Confidential, isRevision: false, null));
+    }
+
+    [Fact]
     public void User_should_have_view_access_to_project__only_when_user_is_connected_to_project__when_project_classification_is_restricted()
     {
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Restricted, isRevision: true, ProjectMemberRole.Observer));
