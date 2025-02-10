@@ -25,7 +25,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     const [explorationTimeSeriesData, setExplorationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
-        const exploration = apiData?.exploration
+        const explorationId = apiData?.explorationId
         const gAndGAdminCostData = apiData.gAndGAdminCost
         const explorationGAndGAdminCostOverrideData = apiData.gAndGAdminCostOverride
 
@@ -37,7 +37,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         const appraisalWellCostProfileData = apiData.appraisalWellCostProfile
         const sidetrackCostProfileData = apiData.sidetrackCostProfile
 
-        if (!exploration) {
+        if (!explorationId) {
             console.error("No exploration data")
             return
         }
@@ -48,7 +48,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: seismicAcquisitionAndProcessingData,
                 resourceName: "seismicAcquisitionAndProcessing",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "seismicAcquisitionAndProcessing",
                 editable: true,
                 overridable: false,
@@ -58,7 +58,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: countryOfficeCostData,
                 resourceName: "countryOfficeCost",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "countryOfficeCost",
                 editable: true,
                 overridable: false,
@@ -68,7 +68,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: gAndGAdminCostData,
                 resourceName: "gAndGAdminCost",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "gAndGAdminCost",
                 editable: true,
                 overridable: true,
@@ -79,7 +79,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: projectSpecificDrillingCostProfileData,
                 resourceName: "projectSpecificDrillingCostProfile",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "projectSpecificDrillingCostProfile",
                 editable: true,
                 overridable: false,
@@ -89,7 +89,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: explorationWellCostProfileData,
                 resourceName: "explorationWellCostProfile",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "explorationWellCostProfile",
                 editable: false,
                 overridable: false,
@@ -99,7 +99,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: appraisalWellCostProfileData,
                 resourceName: "appraisalWellCostProfile",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "appraisalWellCostProfile",
                 editable: false,
                 overridable: false,
@@ -109,7 +109,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: sidetrackCostProfileData,
                 resourceName: "sidetrackCostProfile",
-                resourceId: exploration.id,
+                resourceId: explorationId,
                 resourcePropertyKey: "sidetrackCostProfile",
                 editable: false,
                 overridable: false,

@@ -114,8 +114,8 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const caseData = apiData.case
-    const explorationData = apiData.exploration
-    const wellProjectData = apiData.wellProject
+    const explorationId = apiData.explorationId
+    const wellProjectId = apiData.wellProjectId
     const developmentWellsData = apiData.developmentWells
     const explorationWellsData = apiData.explorationWells
 
@@ -124,8 +124,8 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
         || !explorationWellsData
         || !caseData
         || !developmentWellsData
-        || !explorationData
-        || !wellProjectData
+        || !explorationId
+        || !wellProjectId
     ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
@@ -228,7 +228,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    resourceId={explorationData.id}
+                    resourceId={explorationId}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -242,7 +242,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    resourceId={wellProjectData.id}
+                    resourceId={wellProjectId}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={developmentWellsGridRef}

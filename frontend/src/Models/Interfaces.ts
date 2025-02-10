@@ -40,8 +40,6 @@ export type ResourceObject =
     Components.Schemas.CaseOverviewDto |
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
-    Components.Schemas.WellProjectDto |
-    Components.Schemas.ExplorationDto |
     Components.Schemas.OnshorePowerSupplyDto |
     Components.Schemas.TimeSeriesCostOverrideDto |
     Components.Schemas.TimeSeriesCostDto
@@ -54,8 +52,6 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.OnshorePowerSupplyDto |
     keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
-    keyof Components.Schemas.WellProjectDto |
-    keyof Components.Schemas.ExplorationDto |
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |

@@ -3,19 +3,6 @@ import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class ExplorationService extends __BaseService {
-    public async updateExploration(
-        projectId: string,
-        caseId: string,
-        explorationId: string,
-        dto: Components.Schemas.UpdateExplorationDto,
-    ): Promise<Components.Schemas.ExplorationDto> {
-        const res: Components.Schemas.ExplorationDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/explorations/${explorationId}`,
-            { body: dto },
-        )
-        return res
-    }
-
     public async createExplorationWellDrillingSchedule(
         projectId: string,
         caseId: string,
