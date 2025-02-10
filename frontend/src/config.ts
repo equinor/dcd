@@ -13,10 +13,20 @@ import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
-// import { agGridLicenseKey } from "./agGridLicense"
+import { EnvironmentVariables } from "./environmentVariables"
+
+// Only import license in development
+const isDevelopment = EnvironmentVariables.ENVIRONMENT === "dev"
+let agGridLicenseKey: string | undefined
+if (isDevelopment) {
+    import("./agGridLicense").then((licenseModule) => {
+        agGridLicenseKey = licenseModule.agGridLicenseKey
+    }).catch(() => {
+        console.warn("AG Grid license file not found in development mode")
+    })
+}
 
 export const configure: AppModuleInitiator = (configurator, args) => {
-    // const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
     const { basename } = args.env
 
     ModuleRegistry.registerModules([
@@ -32,15 +42,13 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         ExcelExportModule,
     ])
 
-    // if (agGridLicenseKey && agGridLicenseKey.length > 0) {
-    //     enableAgGrid(configurator, {
-    //         licenseKey: agGridLicenseKey || "",
-    //     })
-    // } else {
-    //     enableAgGrid(configurator)
-    // }
-
-    enableAgGrid(configurator)
+    if (isDevelopment && agGridLicenseKey && agGridLicenseKey.length > 0) {
+        enableAgGrid(configurator, {
+            licenseKey: agGridLicenseKey,
+        })
+    } else {
+        enableAgGrid(configurator)
+    }
 
     configurator.useFrameworkServiceClient("portal")
 
