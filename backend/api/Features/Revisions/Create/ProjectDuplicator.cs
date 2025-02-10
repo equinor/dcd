@@ -300,9 +300,6 @@ public static class ProjectDuplicator
             {
                 Id = wellProjectId,
                 CaseId = caseId,
-                Name = existingCaseItem.WellProject.Name,
-                ArtificialLift = existingCaseItem.WellProject.ArtificialLift,
-                Currency = existingCaseItem.WellProject.Currency,
                 DevelopmentWells = [] // Added via campaigns
             },
 
@@ -311,9 +308,6 @@ public static class ProjectDuplicator
             {
                 Id = explorationId,
                 CaseId = caseId,
-                Name = existingCaseItem.Exploration.Name,
-                RigMobDemob = existingCaseItem.Exploration.RigMobDemob,
-                Currency = existingCaseItem.Exploration.Currency,
                 ExplorationWells = [] // Added via campaigns
             },
 

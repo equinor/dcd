@@ -254,9 +254,6 @@ public class CreateCaseService(DcdDbContext context)
         return new Exploration
         {
             Id = id,
-            Name = "Exploration",
-            RigMobDemob = 0,
-            Currency = 0,
             ExplorationWells = []
         };
     }
@@ -266,9 +263,6 @@ public class CreateCaseService(DcdDbContext context)
         return new WellProject
         {
             Id = id,
-            Name = "Well Project",
-            ArtificialLift = ArtificialLift.NoArtificialLift,
-            Currency = 0,
             DevelopmentWells = []
         };
     }
