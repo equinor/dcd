@@ -72,11 +72,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = apiData.explorationWells?.filter((ew) => ew.explorationId === apiData.exploration?.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
-                    filteredExplorationWells?.filter((few) => few.wellId === fw.id).forEach((ew) => {
+                    apiData.explorationWells?.filter((few) => few.wellId === fw.id).forEach((ew) => {
                         if (ew.drillingSchedule
                             && ew.drillingSchedule.values
                             && ew.drillingSchedule.values.length > 0) {
@@ -86,11 +85,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 })
                 return sum
             }
-            const filteredDevelopmentWells = apiData.developmentWells?.filter((wpw) => wpw.wellProjectId === apiData.wellProject?.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
-                filteredDevelopmentWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                apiData.developmentWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
                     if (ew.drillingSchedule && ew.drillingSchedule.values && ew.drillingSchedule.values.length > 0) {
                         sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
                     }
@@ -116,8 +114,8 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const caseData = apiData.case
-    const explorationData = apiData.exploration
-    const wellProjectData = apiData.wellProject
+    const explorationId = apiData.explorationId
+    const wellProjectId = apiData.wellProjectId
     const developmentWellsData = apiData.developmentWells
     const explorationWellsData = apiData.explorationWells
 
@@ -126,8 +124,8 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
         || !explorationWellsData
         || !caseData
         || !developmentWellsData
-        || !explorationData
-        || !wellProjectData
+        || !explorationId
+        || !wellProjectId
     ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
@@ -230,7 +228,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    resourceId={explorationData.id}
+                    resourceId={explorationId}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -244,7 +242,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    resourceId={wellProjectData.id}
+                    resourceId={wellProjectId}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={developmentWellsGridRef}

@@ -4,13 +4,11 @@ using api.Features.Assets.CaseAssets.CampaignWells.Get;
 using api.Features.Assets.CaseAssets.CampaignWells.Save;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
-using api.Features.Assets.CaseAssets.Explorations;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
-using api.Features.Assets.CaseAssets.WellProjects;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
@@ -146,13 +144,11 @@ public static class DcdIocConfiguration
         services.AddScoped<GetCampaignWellService>();
 
         services.AddScoped<UpdateDrainageStrategyService>();
-        services.AddScoped<UpdateExplorationService>();
         services.AddScoped<UpdateOnshorePowerSupplyService>();
         services.AddScoped<UpdateSubstructureService>();
         services.AddScoped<UpdateSurfService>();
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
-        services.AddScoped<UpdateWellProjectService>();
 
         /* Drilling schedules */
         services.AddScoped<DrillingScheduleService>();

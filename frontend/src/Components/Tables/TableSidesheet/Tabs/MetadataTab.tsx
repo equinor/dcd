@@ -71,7 +71,6 @@ const MetadataTab = ({ rowData }: Props) => {
         { key: "Resource Name", value: rowData.resourceName },
         { key: "Resource ID", value: rowData.resourceId },
         { key: "Resource Property Key", value: rowData.resourcePropertyKey },
-        { key: "Resource Profile ID", value: rowData.resourceProfileId },
         { key: "Unit", value: rowData.unit },
         { key: "Total", value: rowData.total },
     ]

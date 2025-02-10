@@ -22,7 +22,6 @@ interface AddEditParams {
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
-    resourceProfileId?: string;
     wellId?: string;
     drillingScheduleId?: string;
     caseId?: string;
@@ -122,7 +121,6 @@ const useEditCase = () => {
             caseId,
             resourceName,
             resourceId,
-            resourceProfileId,
             wellId,
             drillingScheduleId,
             newResourceObject,
@@ -133,19 +131,14 @@ const useEditCase = () => {
             caseId: caseId!,
             resourceName,
             resourceId,
-            resourceProfileId,
             wellId,
             drillingScheduleId,
             resourceObject: newResourceObject as ResourceObject,
         })
 
         if (result.success && caseId) {
-            if (!resourceProfileId) {
-                return editInstance
-            }
             const editWithProfileId = structuredClone(editInstance)
             if (result.data?.id) {
-                editWithProfileId.resourceProfileId = result.data.id
                 editWithProfileId.drillingScheduleId = result.data.id
             }
             return editWithProfileId
@@ -290,7 +283,6 @@ const useEditCase = () => {
         resourceName,
         resourcePropertyKey,
         resourceId,
-        resourceProfileId,
         wellId,
         drillingScheduleId,
         caseId,
@@ -331,7 +323,6 @@ const useEditCase = () => {
             resourceName,
             resourcePropertyKey,
             resourceId,
-            resourceProfileId,
             wellId,
             drillingScheduleId,
             caseId,
@@ -430,7 +421,6 @@ const useEditCase = () => {
                     await submitToApi({
                         projectId: editThatWillBeUndone.projectId,
                         caseId: editThatWillBeUndone.caseId!,
-                        resourceProfileId: editThatWillBeUndone.resourceProfileId,
                         resourceName: editThatWillBeUndone.resourceName,
                         resourceId: editThatWillBeUndone.resourceId,
                         resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
@@ -491,7 +481,6 @@ const useEditCase = () => {
                         await submitToApi({
                             projectId: lastEdit.projectId,
                             caseId: lastEdit.caseId!,
-                            resourceProfileId: lastEdit.resourceProfileId,
                             resourceName: lastEdit.resourceName,
                             resourceId: lastEdit.resourceId,
                             resourceObject: lastEdit.newResourceObject as ResourceObject,
@@ -544,7 +533,6 @@ const useEditCase = () => {
                         await submitToApi({
                             projectId: updatedEdit.projectId,
                             caseId: updatedEdit.caseId!,
-                            resourceProfileId: updatedEdit.resourceProfileId,
                             resourceName: updatedEdit.resourceName,
                             resourceId: updatedEdit.resourceId,
                             resourceObject: updatedEdit.newResourceObject as ResourceObject,
