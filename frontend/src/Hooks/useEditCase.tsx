@@ -133,7 +133,6 @@ const useEditCase = () => {
             caseId: caseId!,
             resourceName,
             resourceId,
-            resourceProfileId,
             wellId,
             drillingScheduleId,
             resourceObject: newResourceObject as ResourceObject,
@@ -430,7 +429,6 @@ const useEditCase = () => {
                     await submitToApi({
                         projectId: editThatWillBeUndone.projectId,
                         caseId: editThatWillBeUndone.caseId!,
-                        resourceProfileId: editThatWillBeUndone.resourceProfileId,
                         resourceName: editThatWillBeUndone.resourceName,
                         resourceId: editThatWillBeUndone.resourceId,
                         resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
@@ -491,7 +489,6 @@ const useEditCase = () => {
                         await submitToApi({
                             projectId: lastEdit.projectId,
                             caseId: lastEdit.caseId!,
-                            resourceProfileId: lastEdit.resourceProfileId,
                             resourceName: lastEdit.resourceName,
                             resourceId: lastEdit.resourceId,
                             resourceObject: lastEdit.newResourceObject as ResourceObject,
@@ -544,7 +541,6 @@ const useEditCase = () => {
                         await submitToApi({
                             projectId: updatedEdit.projectId,
                             caseId: updatedEdit.caseId!,
-                            resourceProfileId: updatedEdit.resourceProfileId,
                             resourceName: updatedEdit.resourceName,
                             resourceId: updatedEdit.resourceId,
                             resourceObject: updatedEdit.newResourceObject as ResourceObject,

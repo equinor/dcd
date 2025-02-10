@@ -43,11 +43,8 @@ export type ResourceObject =
     Components.Schemas.WellProjectDto |
     Components.Schemas.ExplorationDto |
     Components.Schemas.OnshorePowerSupplyDto |
-    ProfileObject
-
-export type ProfileObject =
     Components.Schemas.TimeSeriesCostOverrideDto |
-    Components.Schemas.TimeSeriesCostDto;
+    Components.Schemas.TimeSeriesCostDto
 
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
