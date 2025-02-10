@@ -115,7 +115,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     profile: aggregatedProfile,
                     resourceName,
                     resourceId: apiData.case.caseId,
-                    resourceProfileId: aggregatedProfile.id,
                     resourcePropertyKey: profileName,
                     overridable: false,
                     editable: false,

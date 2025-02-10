@@ -160,7 +160,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 overrideProfile: co2EmissionsOverrideData,
                 resourceName: "co2EmissionsOverride",
                 resourceId: drainageStrategyData?.id!,
-                resourceProfileId: co2EmissionsOverrideData?.id,
                 resourcePropertyKey: "co2EmissionsOverride",
             },
             {
@@ -171,7 +170,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 editable: false,
                 resourceName: "co2Intensity",
                 resourceId: drainageStrategyData?.id!,
-                resourceProfileId: co2IntensityData?.id,
                 resourcePropertyKey: "co2Intensity",
             },
         ]

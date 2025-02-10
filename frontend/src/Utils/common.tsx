@@ -448,7 +448,6 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
         resourceId: profileInTimeSeriesData?.resourceId,
         newResourceObject: newProfile,
         previousResourceObject: existingProfile,
-        resourceProfileId: profileInTimeSeriesData?.resourceProfileId,
         tabName: tab,
         tableName,
     }

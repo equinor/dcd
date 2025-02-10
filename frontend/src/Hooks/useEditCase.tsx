@@ -22,7 +22,6 @@ interface AddEditParams {
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
-    resourceProfileId?: string;
     wellId?: string;
     drillingScheduleId?: string;
     caseId?: string;
@@ -122,7 +121,6 @@ const useEditCase = () => {
             caseId,
             resourceName,
             resourceId,
-            resourceProfileId,
             wellId,
             drillingScheduleId,
             newResourceObject,
@@ -139,12 +137,8 @@ const useEditCase = () => {
         })
 
         if (result.success && caseId) {
-            if (!resourceProfileId) {
-                return editInstance
-            }
             const editWithProfileId = structuredClone(editInstance)
             if (result.data?.id) {
-                editWithProfileId.resourceProfileId = result.data.id
                 editWithProfileId.drillingScheduleId = result.data.id
             }
             return editWithProfileId
@@ -289,7 +283,6 @@ const useEditCase = () => {
         resourceName,
         resourcePropertyKey,
         resourceId,
-        resourceProfileId,
         wellId,
         drillingScheduleId,
         caseId,
@@ -330,7 +323,6 @@ const useEditCase = () => {
             resourceName,
             resourcePropertyKey,
             resourceId,
-            resourceProfileId,
             wellId,
             drillingScheduleId,
             caseId,
