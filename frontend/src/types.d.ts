@@ -263,6 +263,7 @@ declare namespace Components {
             name: string;
             description: string;
             nglYield: number; // double
+            gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
@@ -612,6 +613,7 @@ declare namespace Components {
         }
         export interface UpdateDrainageStrategyDto {
             nglYield?: number; // double
+            gasShrinkageFactor?: number; // double
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32

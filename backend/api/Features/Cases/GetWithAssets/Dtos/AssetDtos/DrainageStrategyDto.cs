@@ -11,6 +11,7 @@ public class DrainageStrategyDto
     [Required] public required string Name { get; set; }
     [Required] public required string Description { get; set; }
     [Required] public required double NGLYield { get; set; }
+    [Required] public required double GasShrinkageFactor { get; set; }
     [Required] public required int ProducerCount { get; set; }
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }

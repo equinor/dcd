@@ -95,6 +95,7 @@ public class CreateCaseService(DcdDbContext context)
             Description = "Drainage Strategy",
 
             NGLYield = 0,
+            GasShrinkageFactor = 0,
             ProducerCount = 0,
             GasInjectorCount = 0,
             WaterInjectorCount = 0,

@@ -163,6 +163,7 @@ public static class ProjectDuplicator
                 Name = existingCaseItem.DrainageStrategy.Name,
                 Description = existingCaseItem.DrainageStrategy.Description,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
+                GasShrinkageFactor = existingCaseItem.DrainageStrategy.GasShrinkageFactor,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
                 GasInjectorCount = existingCaseItem.DrainageStrategy.GasInjectorCount,
                 WaterInjectorCount = existingCaseItem.DrainageStrategy.WaterInjectorCount,
