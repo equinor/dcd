@@ -260,6 +260,7 @@ declare namespace Components {
             id: string; // uuid
             description: string;
             nglYield: number; // double
+            gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
