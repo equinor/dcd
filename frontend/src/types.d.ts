@@ -532,12 +532,17 @@ declare namespace Components {
             pluggingAndAbandonment: number; // double
         }
         export interface UpdateDrainageStrategyDto {
-            nglYield: number; // double
-            producerCount: number; // int32
-            gasInjectorCount: number; // int32
-            waterInjectorCount: number; // int32
-            artificialLift: ArtificialLift /* int32 */;
-            gasSolution: GasSolution /* int32 */;
+            nglYield?: number; // double
+            gasShrinkageFactor?: number; // double
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            artificialLift?: ArtificialLift /* int32 */;
+            gasSolution?: GasSolution /* int32 */;
+        }
+        export interface UpdateExplorationDto {
+            rigMobDemob?: number; // double
+            currency?: Currency /* int32 */;
         }
         export interface UpdateExplorationOperationalWellCostsDto {
             explorationRigUpgrading: number; // double
