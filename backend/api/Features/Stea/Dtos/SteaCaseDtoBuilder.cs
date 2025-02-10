@@ -198,6 +198,24 @@ public static class SteaCaseDtoBuilder
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GasInjectorCostProfile)));
         }
 
+        if (caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigUpgradingCostProfileOverride)?.Override == true)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.DevelopmentRigUpgradingCostProfileOverride)));
+        }
+        else if (caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigUpgradingCostProfile) != null)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.DevelopmentRigUpgradingCostProfile)));
+        }
+
+        if (caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemobOverride)?.Override == true)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.DevelopmentRigMobDemobOverride)));
+        }
+        else if (caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemob) != null)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.DevelopmentRigMobDemob)));
+        }
+
         var costProfile = TimeSeriesCostMerger.MergeCostProfilesList(costProfileDtos);
         costProfile.StartYear += dg4Year;
 
@@ -435,6 +453,7 @@ public static class SteaCaseDtoBuilder
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.SidetrackCostProfile)));
         }
+
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GAndGAdminCostOverride)));
@@ -442,6 +461,27 @@ public static class SteaCaseDtoBuilder
         else if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost) != null)
         {
             costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.GAndGAdminCost)));
+        }
+        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigUpgradingCostProfileOverride)?.Override == true)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ExplorationRigUpgradingCostProfileOverride)));
+        }
+        else if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigUpgradingCostProfile) != null)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ExplorationRigUpgradingCostProfile)));
+        }
+        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride)?.Override == true)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ExplorationRigMobDemobOverride)));
+        }
+        else if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemob) != null)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ExplorationRigMobDemob)));
+        }
+
+        if (caseItem.GetProfileOrNull(ProfileTypes.ProjectSpecificDrillingCostProfile) != null)
+        {
+            costProfileDtos.Add(ToTimeSeries(caseItem.GetProfile(ProfileTypes.ProjectSpecificDrillingCostProfile)));
         }
         if (caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)?.Values.Length > 0)
         {

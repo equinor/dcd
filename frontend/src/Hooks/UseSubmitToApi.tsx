@@ -729,29 +729,42 @@ export const useSubmitToApi = () => {
                             ),
                 )
                 break
+            case "projectSpecificDrillingCostProfile":
+                result = await createOrUpdateTimeSeriesProfile({
+                    projectId,
+                    caseId,
+                    resourceId,
+                    resourceProfileId,
+                    createOrUpdateFunction: await (await GetCaseService()).saveProfile(
+                        projectId,
+                        caseId,
+                        { ...resourceObject, profileType: "ProjectSpecificDrillingCostProfile" } as Components.Schemas.SaveTimeSeriesDto,
+                    ),
+                })
+                break
             case "developmentWellDrillingSchedule":
                 result = await createOrUpdateDrillingSchedule(
                     projectId,
                     caseId,
-                        resourceId!,
-                        wellId!,
-                        drillingScheduleId!,
-                        !drillingScheduleId
-                            ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
-                                projectId,
-                                caseId,
-                                resourceId!,
-                                wellId!,
-                                resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                            )
-                            : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
-                                projectId,
-                                caseId,
-                                resourceId!,
-                                wellId!,
-                                drillingScheduleId!,
-                                resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
-                            ),
+                    resourceId!,
+                    wellId!,
+                    drillingScheduleId!,
+                    !drillingScheduleId
+                        ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            wellId!,
+                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
+                        )
+                        : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            wellId!,
+                            drillingScheduleId!,
+                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
+                        ),
                 )
                 break
             default:
