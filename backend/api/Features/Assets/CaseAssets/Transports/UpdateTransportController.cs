@@ -11,10 +11,9 @@ public class UpdateTransportController(UpdateTransportService updateTransportSer
     public async Task<NoContentResult> UpdateTransport(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid transportId,
         [FromBody] UpdateTransportDto dto)
     {
-        await updateTransportService.UpdateTransport(projectId, caseId, transportId, dto);
+        await updateTransportService.UpdateTransport(projectId, caseId, dto);
         return NoContent();
     }
 }

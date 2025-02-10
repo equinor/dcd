@@ -11,10 +11,9 @@ public class UpdateDrainageStrategyController(UpdateDrainageStrategyService upda
     public async Task<NoContentResult> UpdateDrainageStrategy(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromBody] UpdateDrainageStrategyDto dto)
     {
-        await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, drainageStrategyId, dto);
+        await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, dto);
         return NoContent();
     }
 }

@@ -11,10 +11,9 @@ public class UpdateSurfController(UpdateSurfService updateSurfService) : Control
     public async Task<NoContentResult> UpdateSurf(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid surfId,
         [FromBody] UpdateSurfDto dto)
     {
-        await updateSurfService.UpdateSurf(projectId, caseId, surfId, dto);
+        await updateSurfService.UpdateSurf(projectId, caseId, dto);
         return NoContent();
     }
 }

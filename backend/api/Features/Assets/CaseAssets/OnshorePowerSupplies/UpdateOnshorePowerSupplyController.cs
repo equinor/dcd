@@ -11,10 +11,9 @@ public class UpdateOnshorePowerSupplyController(UpdateOnshorePowerSupplyService 
     public async Task<NoContentResult> UpdateOnshorePowerSupply(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid onshorePowerSupplyId,
         [FromBody] UpdateOnshorePowerSupplyDto dto)
     {
-        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(projectId, caseId, onshorePowerSupplyId, dto);
+        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(projectId, caseId, dto);
         return NoContent();
     }
 }

@@ -8,13 +8,9 @@ namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
 public class UpdateDrainageStrategyService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task UpdateDrainageStrategy(
-        Guid projectId,
-        Guid caseId,
-        Guid drainageStrategyId,
-        UpdateDrainageStrategyDto updatedDrainageStrategyDto)
+    public async Task UpdateDrainageStrategy(Guid projectId, Guid caseId, UpdateDrainageStrategyDto updatedDrainageStrategyDto)
     {
-        var existingDrainageStrategy = await context.DrainageStrategies.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == drainageStrategyId);
+        var existingDrainageStrategy = await context.DrainageStrategies.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingDrainageStrategy.NGLYield = updatedDrainageStrategyDto.NGLYield;
         existingDrainageStrategy.ProducerCount = updatedDrainageStrategyDto.ProducerCount;

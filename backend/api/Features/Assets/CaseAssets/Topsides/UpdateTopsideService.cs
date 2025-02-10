@@ -8,13 +8,9 @@ namespace api.Features.Assets.CaseAssets.Topsides;
 
 public class UpdateTopsideService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task UpdateTopside(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        UpdateTopsideDto updatedTopsideDto)
+    public async Task UpdateTopside(Guid projectId, Guid caseId, UpdateTopsideDto updatedTopsideDto)
     {
-        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == topsideId);
+        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingTopside.DryWeight = updatedTopsideDto.DryWeight;
         existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;
@@ -47,13 +43,9 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    public async Task UpdateTopside(
-        Guid projectId,
-        Guid caseId,
-        Guid topsideId,
-        ProspUpdateTopsideDto updatedTopsideDto)
+    public async Task UpdateTopside(Guid projectId, Guid caseId, ProspUpdateTopsideDto updatedTopsideDto)
     {
-        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == topsideId);
+        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingTopside.DryWeight = updatedTopsideDto.DryWeight;
         existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;

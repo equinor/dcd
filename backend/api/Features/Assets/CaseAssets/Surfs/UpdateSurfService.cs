@@ -8,13 +8,9 @@ namespace api.Features.Assets.CaseAssets.Surfs;
 
 public class UpdateSurfService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task UpdateSurf(
-        Guid projectId,
-        Guid caseId,
-        Guid surfId,
-        UpdateSurfDto updatedSurfDto)
+    public async Task UpdateSurf(Guid projectId, Guid caseId, UpdateSurfDto updatedSurfDto)
     {
-        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == surfId);
+        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingSurf.CessationCost = updatedSurfDto.CessationCost;
         existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
@@ -39,13 +35,9 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    public async Task UpdateSurf(
-        Guid projectId,
-        Guid caseId,
-        Guid surfId,
-        ProspUpdateSurfDto updatedSurfDto)
+    public async Task UpdateSurf(Guid projectId, Guid caseId, ProspUpdateSurfDto updatedSurfDto)
     {
-        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == surfId);
+        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingSurf.CessationCost = updatedSurfDto.CessationCost;
         existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;

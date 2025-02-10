@@ -12,6 +12,15 @@ public class CreateCaseService(DcdDbContext context)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var topsideId = Guid.NewGuid();
+        var drainageStrategyId = Guid.NewGuid();
+        var surfId = Guid.NewGuid();
+        var substructureId = Guid.NewGuid();
+        var transportId = Guid.NewGuid();
+        var explorationId = Guid.NewGuid();
+        var wellProjectId = Guid.NewGuid();
+        var onshorePowerSupplyId = Guid.NewGuid();
+
         var createdCase = new Case
         {
             ProjectId = projectPk,
@@ -24,14 +33,31 @@ public class CreateCaseService(DcdDbContext context)
             DG4Date = createCaseDto.DG4Date == DateTime.MinValue ? new DateTime(2030, 1, 1) : createCaseDto.DG4Date,
             CapexFactorFeasibilityStudies = 0.015,
             CapexFactorFEEDStudies = 0.015,
-            DrainageStrategy = CreateDrainageStrategy(),
-            Topside = CreateTopside(),
-            Surf = CreateSurf(),
-            Substructure = CreateSubstructure(),
-            Transport = CreateTransport(),
-            Exploration = CreateExploration(),
-            WellProject = CreateWellProject(),
-            OnshorePowerSupply = CreateOnshorePowerSupply(),
+
+            DrainageStrategyId = drainageStrategyId,
+            DrainageStrategy = CreateDrainageStrategy(drainageStrategyId),
+
+            TopsideId = topsideId,
+            Topside = CreateTopside(topsideId),
+
+            SurfId = surfId,
+            Surf = CreateSurf(surfId),
+
+            SubstructureId = substructureId,
+            Substructure = CreateSubstructure(substructureId),
+
+            TransportId = transportId,
+            Transport = CreateTransport(transportId),
+
+            ExplorationId = explorationId,
+            Exploration = CreateExploration(explorationId),
+
+            WellProjectId = wellProjectId,
+            WellProject = CreateWellProject(wellProjectId),
+
+            OnshorePowerSupplyId = onshorePowerSupplyId,
+            OnshorePowerSupply = CreateOnshorePowerSupply(onshorePowerSupplyId),
+
             TimeSeriesProfiles =
             [
                 new TimeSeriesProfile
@@ -87,10 +113,11 @@ public class CreateCaseService(DcdDbContext context)
         await context.SaveChangesAsync();
     }
 
-    private static DrainageStrategy CreateDrainageStrategy()
+    private static DrainageStrategy CreateDrainageStrategy(Guid id)
     {
         return new DrainageStrategy
         {
+            Id = id,
             Name = "Drainage Strategy",
             Description = "Drainage Strategy",
 
@@ -103,12 +130,12 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Topside CreateTopside()
+    private static Topside CreateTopside(Guid id)
     {
         return new Topside
         {
+            Id = id,
             Name = "Topside",
-
             DryWeight = 0,
             OilCapacity = 0,
             GasCapacity = 0,
@@ -139,10 +166,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Surf CreateSurf()
+    private static Surf CreateSurf(Guid id)
     {
         return new Surf
         {
+            Id = id,
             Name = "Surf",
 
             CessationCost = 0,
@@ -167,10 +195,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Substructure CreateSubstructure()
+    private static Substructure CreateSubstructure(Guid id)
     {
         return new Substructure
         {
+            Id = id,
             Name = "Substructure",
             DryWeight = 0,
             Maturity = Maturity.A,
@@ -186,10 +215,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Transport CreateTransport()
+    private static Transport CreateTransport(Guid id)
     {
         return new Transport
         {
+            Id = id,
             Name = "Transport",
             GasExportPipelineLength = 0,
             OilExportPipelineLength = 0,
@@ -204,10 +234,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static OnshorePowerSupply CreateOnshorePowerSupply()
+    private static OnshorePowerSupply CreateOnshorePowerSupply(Guid id)
     {
         return new OnshorePowerSupply
         {
+            Id = id,
             Name = "OnshorePowerSupply",
             LastChangedDate = null,
             CostYear = 0,
@@ -218,10 +249,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static Exploration CreateExploration()
+    private static Exploration CreateExploration(Guid id)
     {
         return new Exploration
         {
+            Id = id,
             Name = "Exploration",
             RigMobDemob = 0,
             Currency = 0,
@@ -229,10 +261,11 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    private static WellProject CreateWellProject()
+    private static WellProject CreateWellProject(Guid id)
     {
         return new WellProject
         {
+            Id = id,
             Name = "Well Project",
             ArtificialLift = ArtificialLift.NoArtificialLift,
             Currency = 0,
