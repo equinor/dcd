@@ -1,5 +1,4 @@
 import { useMemo } from "react"
-import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid2"
@@ -13,10 +12,12 @@ import {
 } from "./SharedCampaignStyles"
 import {
     DrillingCampaignProps,
-    TableRow,
     Well,
 } from "@/Models/ICampaigns"
 import useEditCase from "@/Hooks/useEditCase"
+import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
+import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const NameCellRenderer = (params: any) => {
     const { data } = params
@@ -38,53 +39,65 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     console.log("campaign", campaign)
     console.log(campaign.campaignId)
 
-    const generateRowData = (): TableRow[] => {
-        const rows: TableRow[] = []
+    const generateRowData = (): ITimeSeriesTableDataWithSet[] => {
+        const rows: ITimeSeriesTableDataWithSet[] = []
 
         // Add rig mob/demob profile row
         if (campaign.rigMobDemobProfile) {
-            const mobDemobRow: TableRow = {
-                name: "Rig mob/demob",
-                subheader: "Percentage in decimals",
-            }
-            // Add year columns dynamically
-            for (let year = tableYears[0]; year <= tableYears[1]; year += 1) {
-                const yearIndex = year - campaign.rigMobDemobProfile.startYear
-                mobDemobRow[year] = yearIndex >= 0 && yearIndex < campaign.rigMobDemobProfile.values.length
-                    ? campaign.rigMobDemobProfile.values[yearIndex]
-                    : 0
+            const mobDemobRow: ITimeSeriesTableDataWithSet = {
+                profileName: "Rig mob/demob",
+                unit: "%",
+                profile: {
+                    id: campaign.campaignId,
+                    startYear: campaign.rigMobDemobProfile.startYear,
+                    values: campaign.rigMobDemobProfile.values,
+                },
+                resourceName: "explorationWellCostProfile",
+                resourceId: campaign.campaignId,
+                resourceProfileId: campaign.campaignId,
+                resourcePropertyKey: "rigMobDemobProfile",
+                overridable: true,
+                editable: true,
             }
             rows.push(mobDemobRow)
         }
 
         // Add rig upgrading profile row
         if (campaign.rigUpgradingProfile) {
-            const upgradingRow: TableRow = {
-                name: "Rig upgrading",
-                subheader: "Percentage in decimals",
-            }
-            // Add year columns dynamically
-            for (let year = tableYears[0]; year <= tableYears[1]; year += 1) {
-                const yearIndex = year - campaign.rigUpgradingProfile.startYear
-                upgradingRow[year] = yearIndex >= 0 && yearIndex < campaign.rigUpgradingProfile.values.length
-                    ? campaign.rigUpgradingProfile.values[yearIndex]
-                    : 0
+            const upgradingRow: ITimeSeriesTableDataWithSet = {
+                profileName: "Rig upgrading",
+                unit: "%",
+                profile: {
+                    id: campaign.campaignId,
+                    startYear: campaign.rigUpgradingProfile.startYear,
+                    values: campaign.rigUpgradingProfile.values,
+                },
+                resourceName: "explorationWellCostProfile",
+                resourceId: campaign.campaignId,
+                resourceProfileId: campaign.campaignId,
+                resourcePropertyKey: "rigUpgradingProfile",
+                overridable: true,
+                editable: true,
             }
             rows.push(upgradingRow)
         }
 
         // Add wells from campaignWells
         campaign.campaignWells?.forEach((well: Well) => {
-            const wellRow: TableRow = {
-                name: well.wellName,
-                subheader: "Well",
-            }
-            // Add year columns dynamically
-            for (let year = tableYears[0]; year <= tableYears[1]; year += 1) {
-                const yearIndex = year - well.startYear
-                wellRow[year] = yearIndex >= 0 && yearIndex < well.values.length
-                    ? well.values[yearIndex]
-                    : 0
+            const wellRow: ITimeSeriesTableDataWithSet = {
+                profileName: well.wellName,
+                unit: "%",
+                profile: {
+                    id: campaign.campaignId,
+                    startYear: well.startYear,
+                    values: well.values,
+                },
+                resourceName: "explorationWellCostProfile",
+                resourceId: campaign.campaignId,
+                resourceProfileId: campaign.campaignId,
+                resourcePropertyKey: "campaignWell",
+                overridable: true,
+                editable: true,
             }
             rows.push(wellRow)
         })
@@ -187,17 +200,14 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                         height: "400px",
                     }}
                     >
-                        <AgGridReact
-                            rowData={rowData}
-                            columnDefs={columnDefs}
-                            defaultColDef={defaultColDef}
-                            animateRows
-                            domLayout="autoHeight"
-                            suppressMovableColumns
-                            enableCharts
-                            stopEditingWhenCellsLoseFocus
-                            suppressLastEmptyLineOnPaste
-                            rowHeight={44}
+                        <CaseTabTable
+                            timeSeriesData={rowData}
+                            dg4Year={getYearFromDateString(campaign.rigMobDemobProfile.startYear.toString())}
+                            tableYears={tableYears}
+                            tableName="Exploration campaign"
+                            includeFooter
+                            totalRowName="Total"
+                            addEdit={addEdit}
                         />
                     </div>
                 </div>

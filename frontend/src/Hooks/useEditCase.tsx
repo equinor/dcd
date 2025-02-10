@@ -1,20 +1,21 @@
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
 import _ from "lodash"
-import { useCaseContext } from "../Context/CaseContext"
+
 import {
     EditInstance,
     EditEntry,
     ResourceName,
     ResourcePropertyKey,
     ResourceObject,
-} from "../Models/Interfaces"
-import { getCurrentEditId } from "../Utils/common"
-import { useAppContext } from "../Context/AppContext"
-import { useSubmitToApi } from "./UseSubmitToApi"
-import { useAppNavigation } from "./useNavigate"
-import { createLogger } from "../Utils/logger"
-import { useLocalStorage } from "./useLocalStorage"
+} from "@/Models/Interfaces"
+import { useCaseContext } from "@/Context/CaseContext"
+import { useAppContext } from "@/Context/AppContext"
+import { useLocalStorage } from "@/Hooks/useLocalStorage"
+import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
+import { useAppNavigation } from "@/Hooks/useNavigate"
+import { getCurrentEditId } from "@/Utils/common"
+import { createLogger } from "@/Utils/logger"
 
 interface AddEditParams {
     inputLabel: string;
@@ -37,7 +38,7 @@ interface AddEditParams {
 
 const editQueueLogger = createLogger({
     name: "EDIT_QUEUE",
-    enabled: false, // Set to true to enable debug logging. dont leave this on for production
+    enabled: true, // Set to true to enable debug logging. dont leave this on for production
 })
 
 const useEditCase = () => {
