@@ -16,9 +16,9 @@ import {
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -82,7 +82,7 @@ const DECISION_GATES: DecisionGate[] = [
 ]
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const { caseId, revisionId, tab } = useParams()
     const { projectId, isRevision } = useProjectContext()
 

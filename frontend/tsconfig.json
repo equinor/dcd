@@ -18,13 +18,14 @@
         "paths": {
             "@/Components/*": ["./src/Components/*"],
             "@/Context/*": ["./src/Context/*"],
+            "@/Store/*": ["./src/Store/*"],
             "@/Hooks/*": ["./src/Hooks/*"],
             "@/Models/*": ["./src/Models/*"],
-            "@/Services/*": ["./src/Services/*"],
+             "@/Services/*": ["./src/Services/*"],
             "@/Utils/*": ["./src/Utils/*"],
             "@/Views/*": ["./src/Views/*"],
-            "@/*": ["./src/*"]
-          }
+            "@/*": ["./src/*"],
+        }
     },
     "include": [
         "src",

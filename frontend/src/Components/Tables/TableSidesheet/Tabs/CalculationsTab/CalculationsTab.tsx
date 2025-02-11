@@ -15,7 +15,7 @@ import WaterInjectorWell from "./Calculations/WaterInjectorWell"
 import GasInjectorWell from "./Calculations/GasInjectorWell"
 import ImportedElectricity from "./Calculations/ImportedElectricity"
 import CessationOffshoreFacilities from "./Calculations/CessationOffshoreFacilities"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import SubmitMistakes from "./submitMistakes"
 import {
     Container,
@@ -37,7 +37,7 @@ interface Props {
 }
 
 const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) => {
-    const { developerMode } = useAppContext()
+    const { developerMode } = useAppStore()
     // determine which calculation to show
     const getCalculationType = () => {
         // Check resource name first

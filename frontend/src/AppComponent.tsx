@@ -8,12 +8,10 @@ import { resolveConfiguration } from "./Utils/config"
 import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
-import { ModalContextProvider } from "./Context/ModalContext"
-import { ProjectContextProvider } from "./Context/ProjectContext"
-import { CaseContextProvider } from "./Context/CaseContext"
-import { AppContextProvider } from "./Context/AppContext"
+import { ModalContextProvider } from "./Store/ModalContext"
+import { ProjectContextProvider } from "./Store/ProjectContext"
+import { FeatureContextProvider } from "./Store/FeatureContext"
 import Styles from "./styles"
-import { FeatureContextProvider } from "./Context/FeatureContext"
 
 const AppComponent: FC = () => {
     const queryClient = new QueryClient({
@@ -48,16 +46,12 @@ const AppComponent: FC = () => {
             <FeatureContextProvider>
                 <ThemeProvider theme={theme}>
                     <ReactQueryDevtools />
-                    <AppContextProvider>
-                        <ProjectContextProvider>
-                            <CaseContextProvider>
-                                <ModalContextProvider>
-                                    <Styles />
-                                    <AppRouter />
-                                </ModalContextProvider>
-                            </CaseContextProvider>
-                        </ProjectContextProvider>
-                    </AppContextProvider>
+                    <ProjectContextProvider>
+                        <ModalContextProvider>
+                            <Styles />
+                            <AppRouter />
+                        </ModalContextProvider>
+                    </ProjectContextProvider>
                 </ThemeProvider>
             </FeatureContextProvider>
         </QueryClientProvider>

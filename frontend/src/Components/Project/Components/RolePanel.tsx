@@ -9,7 +9,7 @@ import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion
 
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
 import { UserRole } from "@/Models/AccessManagement"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface RolePanelProps {
@@ -24,7 +24,7 @@ interface RolePanelProps {
 const RolePanel = ({
     isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson,
 }: RolePanelProps) => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const orgChartPeople = useMemo(() => people?.filter((person) => person.isPmt === true), [people])

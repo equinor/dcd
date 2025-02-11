@@ -20,7 +20,7 @@ import Grid from "@mui/material/Grid2"
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { useRevisions } from "@/Hooks/useRevision"
 import { getProjectPhaseName } from "@/Utils/common"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const Wrapper = styled.div`

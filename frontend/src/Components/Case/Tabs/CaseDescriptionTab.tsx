@@ -7,13 +7,13 @@ import { useEffect, useState } from "react"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const { caseId, revisionId, tab } = useParams()
     const { projectId, isRevision } = useProjectContext()
 

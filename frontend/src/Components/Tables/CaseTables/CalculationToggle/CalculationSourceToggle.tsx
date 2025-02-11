@@ -3,8 +3,8 @@ import { Button, CircularProgress, Tooltip } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { ICellRendererParams } from "@ag-grid-community/core"
 import { DisabledExcelHideIcon } from "@/Media/Icons/DisabledExcelHideIcon"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
 import { ProfileNames } from "@/Models/Interfaces"
 import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 import { CalculatorToggle, ExcelToggle } from "./ToggleIcons"
@@ -27,7 +27,7 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const [sharepointId] = useState(sharepointFileId)
-    const { apiQueue } = useAppContext()
+    const { apiQueue } = useAppStore()
 
     const handleToggleClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (!editMode) {

@@ -30,8 +30,8 @@ import {
     ITableCellChangeConfig,
     validateInput,
 } from "@/Utils/common"
-import { useAppContext } from "@/Context/AppContext"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
 import ErrorCellRenderer from "./CellRenderers/ErrorCellRenderer"
 import CalculationSourceToggle from "./CalculationToggle/CalculationSourceToggle"
@@ -88,7 +88,7 @@ const CaseTabTable = memo(({
     isProsp,
     sharepointFileId,
 }: Props) => {
-    const { editMode, setSnackBarMessage, isSaving } = useAppContext()
+    const { editMode, setSnackBarMessage, isSaving } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()

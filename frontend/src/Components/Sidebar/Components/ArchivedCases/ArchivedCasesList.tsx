@@ -9,7 +9,7 @@ import { productionStrategyOverviewToString, truncateText } from "@/Utils/common
 import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
@@ -33,7 +33,7 @@ const getCaseDisplayName = (caseName: string | undefined, index: number, isSideb
 
 const ArchivedCasesList = (): JSX.Element | null => {
     const { revisionId } = useParams()
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen } = useAppStore()
     const location = useLocation()
     const revisionAndProjectData = useDataFetch()
     const { navigateToCase, navigateToRevisionCase } = useAppNavigation()

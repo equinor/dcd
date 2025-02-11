@@ -19,8 +19,8 @@ import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/DateUtils"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditProject from "@/Hooks/useEditProject"
@@ -84,7 +84,7 @@ const CaseControls: React.FC<props> = ({
     const { isRevision } = useProjectContext()
     const nameInputRef = useRef<HTMLInputElement>(null)
     const { addProjectEdit } = useEditProject()
-    const { setSnackBarMessage, editMode } = useAppContext()
+    const { setSnackBarMessage, editMode } = useAppStore()
     const { addEdit } = useEditCase()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()

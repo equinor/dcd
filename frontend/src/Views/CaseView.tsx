@@ -10,7 +10,7 @@ import CaseCO2Tab from "@/Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import CaseCostTab from "@/Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseScheduleTab from "@/Components/Case/Tabs/CaseScheduleTab"
 import CaseSummaryTab from "@/Components/Case/Tabs/CaseSummaryTab"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditCase from "@/Hooks/useEditCase"
 import { caseTabNames } from "@/Utils/constants"
@@ -29,7 +29,7 @@ const CaseView = () => {
         setActiveTabCase,
         caseEdits,
         setCaseEditsBelongingToCurrentCase,
-    } = useCaseContext()
+    } = useCaseStore()
     const { navigateToCase, navigateToProject } = useAppNavigation()
     const [, setCaseEditsStorage] = useLocalStorage("caseEdits", caseEdits)
 

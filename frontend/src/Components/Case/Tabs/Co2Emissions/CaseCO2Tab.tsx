@@ -17,8 +17,8 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { AgChartsPie } from "@/Components/AgGrid/AgChartsPie"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
 import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
@@ -32,7 +32,7 @@ interface ICo2DistributionChartData {
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
-    const { activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseStore()
     const { projectId, isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()

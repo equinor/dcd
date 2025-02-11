@@ -12,8 +12,8 @@ import {
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { mergeTimeseriesList } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseTabTableWithGrouping from "@/Components/Tables/CaseTables/CaseTabTableWithGrouping"
@@ -22,7 +22,7 @@ import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency } from "@/Models/enums"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseStore()
     const { caseId } = useParams()
     const { projectId, isRevision } = useProjectContext()
     const { revisionId } = useParams()

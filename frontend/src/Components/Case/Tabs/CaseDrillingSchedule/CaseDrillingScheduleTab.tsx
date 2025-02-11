@@ -12,15 +12,15 @@ import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/Cas
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseStore()
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
     const revisionAndProjectData = useDataFetch()

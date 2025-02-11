@@ -8,8 +8,8 @@ import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
 import { Stack } from "@mui/material"
 
-import { useModalContext } from "@/Context/ModalContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useModalContext } from "@/Store/ModalContext"
+import { useAppStore } from "@/Store/AppStore"
 import CasesList from "./CasesList"
 import { sharedTimelineStyles } from "@/Components/Sidebar/sharedStyles"
 import { Header } from "@/Components/Sidebar/SidebarWrapper"
@@ -28,7 +28,7 @@ const GrowBox = styled.div`
 `
 
 const CasesDetails: React.FC = () => {
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen } = useAppStore()
     const { addNewCase } = useModalContext()
     const { isEditDisabled } = useEditDisabled()
 

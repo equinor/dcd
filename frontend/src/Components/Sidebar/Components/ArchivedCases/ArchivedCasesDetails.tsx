@@ -9,7 +9,7 @@ import { arrow_drop_up, arrow_drop_down } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { Timeline, Header } from "@/Components/Sidebar/SidebarWrapper"
 import ArchivedCasesList from "./ArchivedCasesList"
 
@@ -19,7 +19,7 @@ const ClickableTitle = styled.div`
 
 const ArchivedCasesDetails: React.FC = () => {
     const [expandList, setExpandList] = useState(false)
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen } = useAppStore()
 
     return (
         <>

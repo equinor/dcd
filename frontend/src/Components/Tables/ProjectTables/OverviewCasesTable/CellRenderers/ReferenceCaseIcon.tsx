@@ -3,7 +3,7 @@ import { bookmark_filled, bookmark_outlined } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 
 const CaseViewIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -52,7 +52,7 @@ interface PropsShowIcon {
 }
 
 export const ReferenceCaseIcon = ({ iconPlacement }: PropsShowIcon) => {
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen } = useAppStore()
     if (iconPlacement === "sideBar") {
         return (
             <Tooltip title="Reference case">

@@ -8,8 +8,8 @@ import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import CaseCostHeader from "./CaseCostHeader"
 import OpexCosts from "./Tables/OpexCosts"
@@ -24,7 +24,7 @@ import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton
 import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseStore()
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
 

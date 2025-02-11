@@ -6,7 +6,7 @@ import React, {
     useMemo,
     useEffect,
 } from "react"
-import { useAppContext } from "./AppContext"
+import { useAppStore } from "./AppStore"
 
 interface ModalContextType {
     caseModalIsOpen: boolean;
@@ -32,7 +32,7 @@ interface ModalContextType {
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
 const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     // Case modal
     const [caseModalIsOpen, setCaseModalIsOpen] = useState<boolean>(false)
     const [caseModalEditMode, setCaseModalEditMode] = useState<boolean>(false)

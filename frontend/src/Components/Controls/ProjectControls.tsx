@@ -15,13 +15,13 @@ import {
 
 } from "@equinor/eds-icons"
 import { useMediaQuery } from "@mui/material"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 import RevisionsControl from "./Revision/RevisionsControl"
 import FullPageLoading from "../fullPageLoading"
-import { useFeatureContext } from "@/Context/FeatureContext"
+import { useFeatureContext } from "@/Store/FeatureContext"
 import ProjectTabs from "./TabNavigators/ProjectTabs"
 
 const Header = styled.div`
@@ -63,13 +63,13 @@ interface props {
 }
 
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
-    const { editMode, setEditMode } = useAppContext()
+    const { editMode, setEditMode } = useAppStore()
     const {
         activeTabProject,
         setActiveTabProject,
         isRevision,
     } = useProjectContext()
-    const { isSaving } = useAppContext()
+    const { isSaving } = useAppStore()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const isSmallScreen = useMediaQuery("(max-width: 968px)")
 

@@ -4,7 +4,7 @@ import {
 } from "react"
 import styled from "styled-components"
 
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 
 interface Props {
     title: string
@@ -19,7 +19,7 @@ const StyledTypography = styled(Typography)`
 const CostCell = ({
     title, setValue, value,
 }: Props) => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }

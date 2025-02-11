@@ -10,7 +10,7 @@ import { GetTransportService } from "@/Services/TransportService"
 import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
 import { GetCaseService } from "@/Services/CaseService"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
@@ -32,7 +32,7 @@ const submitApiLogger = createLogger({
 
 export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppContext()
+    const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppStore()
 
     const mutationFn = async ({ serviceMethod }: {
         projectId: string,

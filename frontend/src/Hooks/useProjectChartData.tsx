@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import { compareCasesQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface TableCompareCase {

@@ -27,7 +27,7 @@ import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constant
 import { getProjectPhaseName } from "@/Utils/common"
 import { formatFullDate } from "@/Utils/DateUtils"
 import { GetProjectService } from "@/Services/ProjectService"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 type RevisionDetailsModalProps = {

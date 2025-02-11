@@ -11,10 +11,10 @@ import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
 
-import { useFeatureContext } from "@/Context/FeatureContext"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useModalContext } from "@/Context/ModalContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useFeatureContext } from "@/Store/FeatureContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useModalContext } from "@/Store/ModalContext"
+import { useAppStore } from "@/Store/AppStore"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { useDataFetch } from "@/Hooks/useDataFetch"
@@ -25,7 +25,6 @@ import SidebarWrapper from "./Sidebar/SidebarWrapper"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
-import { useCaseContext } from "@/Context/CaseContext"
 import useEditCase from "@/Hooks/useEditCase"
 
 const ControlsWrapper = styled.div`
@@ -63,7 +62,7 @@ const Overview = () => {
         showRevisionReminder,
         setShowRevisionReminder,
         editMode,
-    } = useAppContext()
+    } = useAppStore()
     const {
         projectId,
         setProjectId,
@@ -74,7 +73,7 @@ const Overview = () => {
     const {
         apiQueue,
         setIsSaving,
-    } = useAppContext()
+    } = useAppStore()
 
     const {
         processQueue,

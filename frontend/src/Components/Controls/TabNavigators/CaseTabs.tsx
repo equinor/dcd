@@ -2,7 +2,7 @@ import { Tabs, Tab, Box } from "@mui/material"
 import { useParams } from "react-router-dom"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { useWindowSize } from "@/Hooks/useWindowSize"
 
 interface CaseTabsProps {
@@ -12,7 +12,7 @@ interface CaseTabsProps {
 const CaseTabs = ({ caseId }: CaseTabsProps) => {
     const { revisionId } = useParams()
     const { navigateToCaseTab } = useAppNavigation()
-    const { activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseStore()
     const { width } = useWindowSize()
 
     const handleTabChange = (_: any, index: number) => {
