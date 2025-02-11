@@ -207,6 +207,9 @@ declare namespace Components {
             co2Intensity: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
+        export interface CreateCampaignDto {
+            campaignType: string;
+        }
         export interface CreateCaseDto {
             name: string;
             description: string;
@@ -860,7 +863,39 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateCampaignDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CampaignDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignId {
+        namespace Delete {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
         namespace Put {
             namespace Parameters {
                 export type CampaignId = string; // uuid
