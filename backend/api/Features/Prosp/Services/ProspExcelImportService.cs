@@ -332,7 +332,6 @@ public class ProspExcelImportService(
     public async Task ImportProsp(Stream stream,
         Guid sourceCaseId,
         Guid projectId,
-        Dictionary<string, bool> assets,
         string sharepointFileId,
         string? sharepointFileName,
         string? sharepointFileUrl)
@@ -353,56 +352,13 @@ public class ProspExcelImportService(
         if (mainSheet?.Id != null && workbookPart != null)
         {
             var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
-            var cellData = wsPart?.Worksheet.Descendants<Cell>();
+            var cellData = wsPart.Worksheet.Descendants<Cell>().ToList();
 
-            if (cellData != null)
-            {
-                var parsedData = cellData.ToList();
-                if (assets["Surf"])
-                {
-                    await ImportSurf(parsedData, projectId, caseItem);
-                }
-                else
-                {
-                    await ClearImportedSurf(caseItem);
-                }
-
-                if (assets["Topside"])
-                {
-                    await ImportTopside(parsedData, projectId, caseItem);
-                }
-                else
-                {
-                    await ClearImportedTopside(caseItem);
-                }
-
-                if (assets["Substructure"])
-                {
-                    await ImportSubstructure(parsedData, projectId, caseItem);
-                }
-                else
-                {
-                    await ClearImportedSubstructure(caseItem);
-                }
-
-                if (assets["Transport"])
-                {
-                    await ImportTransport(parsedData, projectId, caseItem);
-                }
-                else
-                {
-                    await ClearImportedTransport(caseItem);
-                }
-
-                if (assets["OnshorePowerSupply"])
-                {
-                    await ImportOnshorePowerSupply(parsedData, projectId, caseItem);
-                }
-                else
-                {
-                    await ClearImportedOnshorePowerSupply(caseItem);
-                }
-            }
+            await ImportSurf(cellData, projectId, caseItem);
+            await ImportTopside(cellData, projectId, caseItem);
+            await ImportSubstructure(cellData, projectId, caseItem);
+            await ImportTransport(cellData, projectId, caseItem);
+            await ImportOnshorePowerSupply(cellData, projectId, caseItem);
 
             var caseDto = new ProspUpdateCaseDto
             {

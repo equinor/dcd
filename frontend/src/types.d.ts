@@ -406,10 +406,6 @@ declare namespace Components {
         }
         export interface SharePointImportDto {
             id?: string | null;
-            surf?: boolean;
-            substructure?: boolean;
-            topside?: boolean;
-            transport?: boolean;
             sharePointFileId?: string | null;
             sharePointFileName?: string | null;
             sharePointFileUrl?: string | null;
