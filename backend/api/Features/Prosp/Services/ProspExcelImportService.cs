@@ -28,8 +28,7 @@ public class ProspExcelImportService(
         Guid caseId,
         Guid projectId,
         string sharepointFileId,
-        string? sharepointFileName,
-        string? sharepointFileUrl)
+        string sharepointFileName)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
 
@@ -56,7 +55,7 @@ public class ProspExcelImportService(
 
         caseItem.SharepointFileId = sharepointFileId;
         caseItem.SharepointFileName = sharepointFileName;
-        caseItem.SharepointFileUrl = sharepointFileUrl;
+        caseItem.SharepointFileUrl = null;
 
         await surfProspService.ImportSurf(cellData, projectId, caseItem);
         await topsideProspService.ImportTopside(cellData, projectId, caseItem);

@@ -15,9 +15,9 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     ILogger<ProspController> logger)
     : ControllerBase
 {
-    [HttpPost("prosp/projects/{projectId:guid}/sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
+    [HttpPost("prosp/projects/{projectId:guid}/sharepoint")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId(Guid projectId, [FromBody] UrlDto urlDto)
+    public async Task<ActionResult<List<DriveItemDto>>> GetFilesFromSharepoint(Guid projectId, [FromBody] UrlDto urlDto)
     {
         if (string.IsNullOrWhiteSpace(urlDto.Url))
         {
@@ -26,7 +26,7 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
 
         try
         {
-            var driveItems = await prospSharepointImportImportService.GetDeltaDriveItemCollectionFromSite(urlDto.Url);
+            var driveItems = await prospSharepointImportImportService.GetFilesFromSharepoint(urlDto.Url);
             return Ok(driveItems);
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
@@ -43,12 +43,11 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
 
     [HttpPost("prosp/{projectId:guid}/sharepoint")]
     [AuthorizeActionType(ActionType.Edit)]
-    [DisableRequestSizeLimit]
-    public async Task<ActionResult<ProjectDataDto>> ImportFilesFromSharepointAsync(Guid projectId, [FromBody] SharePointImportDto[] dtos)
+    public async Task<ActionResult<ProjectDataDto>> ImportFilesFromSharepoint(Guid projectId, [FromBody] SharePointImportDto[] dtos)
     {
         try
         {
-            await prospSharepointImportImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
+            await prospSharepointImportImportService.ImportFilesFromSharepoint(projectId, dtos);
 
             return Ok(await getProjectDataService.GetProjectData(projectId));
         }

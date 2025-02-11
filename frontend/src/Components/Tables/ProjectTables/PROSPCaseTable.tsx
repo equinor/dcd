@@ -14,7 +14,6 @@ import {
 import { external_link } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
 
-import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import { GetProspService } from "@/Services/ProspService"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
@@ -22,7 +21,7 @@ import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface Props {
-    driveItems: DriveItem[] | undefined
+    driveItems: Components.Schemas.DriveItemDto[]
 }
 interface RowData {
     id: string,
@@ -30,7 +29,7 @@ interface RowData {
     sharePointFileName?: string | null
     sharePointFileId?: string | null
     sharepointFileUrl?: string | null
-    driveItem: [DriveItem[] | undefined, string | undefined | null]
+    driveItem: [Components.Schemas.DriveItemDto[] | undefined, string | undefined | null]
     fileLink?: string | null
     surfStateChanged: boolean,
     substructureStateChanged: boolean,
@@ -104,7 +103,7 @@ const PROSPCaseList = ({
         gridRef.current.redrawRows()
     }
 
-    const sharePointFileDropdownOptions = (items: DriveItem[]) => {
+    const sharePointFileDropdownOptions = (items: Components.Schemas.DriveItemDto[]) => {
         const options: JSX.Element[] = []
         items?.slice(1).forEach((item) => {
             options.push(<option key={item.id} value={item.id!}>{item.name}</option>)
@@ -158,7 +157,7 @@ const PROSPCaseList = ({
 
     const fileSelectorRenderer = (p: any) => {
         const fileId = p.value[1] || ""
-        const items: DriveItem[] = p.value[0] || []
+        const items: Components.Schemas.DriveItemDto[] = p.value[0] || []
 
         return (
             <NativeSelect
@@ -223,22 +222,31 @@ const PROSPCaseList = ({
     }
 
     const gridDataToDtos = (p: Components.Schemas.CommonProjectAndRevisionDto) => {
-        const dtos: any[] = []
+        const dtos: Components.Schemas.SharePointImportDto[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
-            const dto: any = {}
-            dto.sharePointFileId = node.data?.driveItem[1]
-            dto.sharePointFileName = node.data?.driveItem[0]?.find(
-                (di) => di.id === dto.sharePointFileId,
-            )?.name
-            dto.sharepointFileUrl = node.data?.driveItem[0]?.find(
-                (di) => di.id === dto.sharePointFileId,
-            )?.sharepointFileUrl
-            dto.sharePointSiteUrl = p.sharepointSiteUrl
-            dto.id = node.data?.id
-            if (node.isSelected()) {
-                dtos.push(dto)
+            if (!node.isSelected()) {
+                return
             }
+
+            if (!node.data?.id) {
+                return
+            }
+
+            if (!p.sharepointSiteUrl) {
+                return
+            }
+
+            const sharePointFileId = node.data?.driveItem[1]
+            const sharePointFileName = node.data?.driveItem[0]?.find((di) => di.id === sharePointFileId)?.name
+
+            dtos.push({
+                caseId: node.data?.id,
+                sharePointFileId: sharePointFileId || "",
+                sharePointFileName: sharePointFileName || "",
+                sharePointSiteUrl: p.sharepointSiteUrl,
+            })
         })
+        
         return dtos
     }
 

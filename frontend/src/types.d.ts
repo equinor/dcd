@@ -266,16 +266,8 @@ declare namespace Components {
             gasSolution: GasSolution /* int32 */;
         }
         export interface DriveItemDto {
-            name?: string | null;
-            id?: string | null;
-            sharepointFileUrl?: string | null;
-            createdDateTime?: string | null; // date-time
-            content?: string | null; // binary
-            size?: number | null; // int64
-            sharepointIds?: SharepointIds;
-            createdBy?: IdentitySet;
-            lastModifiedBy?: IdentitySet;
-            lastModifiedDateTime?: string | null; // date-time
+            name: string;
+            id: string;
         }
         export interface ExplorationOperationalWellCostsOverviewDto {
             explorationOperationalWellCostsId: string; // uuid
@@ -297,19 +289,6 @@ declare namespace Components {
             environmentName?: string | null;
         }
         export type GasSolution = 0 | 1; // int32
-        export interface Identity {
-            [name: string]: any;
-            displayName?: string | null;
-            id?: string | null;
-            "@odata.type"?: string | null;
-        }
-        export interface IdentitySet {
-            [name: string]: any;
-            application?: Identity;
-            device?: Identity;
-            user?: Identity;
-            "@odata.type"?: string | null;
-        }
         export interface ImageDto {
             imageId: string; // uuid
             createTime: string; // date-time
@@ -392,22 +371,10 @@ declare namespace Components {
             override: boolean;
         }
         export interface SharePointImportDto {
-            id?: string | null;
-            sharePointFileId?: string | null;
-            sharePointFileName?: string | null;
-            sharePointFileUrl?: string | null;
-            sharePointSiteUrl?: string | null;
-        }
-        export interface SharepointIds {
-            [name: string]: any;
-            listId?: string | null;
-            listItemId?: string | null;
-            listItemUniqueId?: string | null;
-            siteId?: string | null;
-            siteUrl?: string | null;
-            tenantId?: string | null;
-            webId?: string | null;
-            "@odata.type"?: string | null;
+            caseId: string; // uuid
+            sharePointFileId: string;
+            sharePointFileName: string;
+            sharePointSiteUrl: string;
         }
         export type Source = 0 | 1; // int32
         export interface SubstructureDto {
@@ -690,7 +657,7 @@ declare namespace Components {
             deleteWellDtos: DeleteWellDto[];
         }
         export interface UrlDto {
-            url?: string | null;
+            url: string;
         }
         export interface UserActionsDto {
             canView: boolean;
@@ -714,18 +681,6 @@ declare namespace Paths {
             namespace Responses {
                 export type $200 = Components.Schemas.FeatureToggleDto;
             }
-        }
-    }
-    namespace GetSharePointFileNamesAndId {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        export type RequestBody = Components.Schemas.UrlDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
     namespace Projects {
@@ -1479,6 +1434,20 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.SharePointImportDto[];
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDataDto;
+            }
+        }
+    }
+    namespace ProspProjects$ProjectIdSharepoint {
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UrlDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DriveItemDto[];
             }
         }
     }
