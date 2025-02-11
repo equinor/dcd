@@ -51,14 +51,12 @@ stages:
                           inputs:
                             targetType: 'inline'
                             script: |
-                              # Change to the frontend directory
-                              cd $(Pipeline.Workspace)/ConceptApp/frontend
                               # List files in the current directory
                               ls -la
                               # Install fusion-framework-cli
                               npm install -g @equinor/fusion-framework-cli
                               # Run the npx command to upload the app
-                              npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.envshortname }}
+                              npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/conceptapp.zip -e ${{ parameters.envshortname }}
                           env:
                             FUSION_TOKEN: $(FUSION_TOKEN)
 

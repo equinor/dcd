@@ -32,43 +32,43 @@ stages:
                 verbose: true
                 customCommand: "run-script build"
 
-          - task: Bash@3
-            displayName: 'Extract manifest data from package.json'
-            inputs:
-              workingDir: "frontend"
-              targetType: 'inline'
-              script: |
-                cd frontend
-                echo "$(jq '{
-                  key: .name,
-                  name: .manifest.name,
-                  shortName: .manifest.shortName,
-                  description: .description,
-                  type: .manifest.type,
-                  entry: .main,
-                  version: {
-                      major: "1",
-                      minor: "0",
-                      patch: "0"
-                  }
-                  }' package.json)" > ./dist/app-manifest.json
+          # - task: Bash@3
+          #   displayName: 'Extract manifest data from package.json'
+          #   inputs:
+          #     workingDir: "frontend"
+          #     targetType: 'inline'
+          #     script: |
+          #       cd frontend
+          #       echo "$(jq '{
+          #         key: .name,
+          #         name: .manifest.name,
+          #         shortName: .manifest.shortName,
+          #         description: .description,
+          #         type: .manifest.type,
+          #         entry: .main,
+          #         version: {
+          #             major: "1",
+          #             minor: "0",
+          #             patch: "0"
+          #         }
+          #         }' package.json)" > ./dist/app-manifest.json
 
-          - task: Bash@3
-            displayName: 'Print app-manifest.json'
-            inputs:
-              workingDir: "frontend"
-              targetType: 'inline'
-              script: |
-                cat frontend/dist/app-manifest.json
+          # - task: Bash@3
+          #   displayName: 'Print app-manifest.json'
+          #   inputs:
+          #     workingDir: "frontend"
+          #     targetType: 'inline'
+          #     script: |
+          #       cat frontend/dist/app-manifest.json
 
-          - task: ArchiveFiles@2
-            displayName: "Archive files"
-            inputs:
-              rootFolderOrFile: "frontend/dist"
-              includeRootFolder: false
-              archiveType: "zip"
-              archiveFile: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
-              replaceExistingArchive: true
+          # - task: ArchiveFiles@2
+          #   displayName: "Archive files"
+          #   inputs:
+          #     rootFolderOrFile: "frontend/dist"
+          #     includeRootFolder: false
+          #     archiveType: "zip"
+          #     archiveFile: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
+          #     replaceExistingArchive: true
 
           - task: PublishPipelineArtifact@1
             inputs:
