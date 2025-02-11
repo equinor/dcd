@@ -3,7 +3,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 
 export const useDataFetch = () => {

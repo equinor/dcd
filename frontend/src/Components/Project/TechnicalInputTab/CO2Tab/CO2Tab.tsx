@@ -13,8 +13,8 @@ import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
 import { cellStyleRightAlign } from "@/Utils/common"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
@@ -54,7 +54,7 @@ const CO2Tab = () => {
     const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>()
     const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>()
 
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const { addProjectEdit } = useEditProject()
 
     let cO2VentedRow = true

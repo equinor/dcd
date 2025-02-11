@@ -7,9 +7,9 @@ import { useParams } from "react-router-dom"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import GalleryImage from "./GalleryImage"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { getImageService } from "@/Services/ImageService"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,7 +31,7 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
 `
 
 const Gallery = () => {
-    const { editMode, setSnackBarMessage } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppStore()
     const [gallery, setGallery] = useState<Components.Schemas.ImageDto[]>([])
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")

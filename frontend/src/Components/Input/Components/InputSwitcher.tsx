@@ -1,7 +1,7 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
 import styled from "styled-components"
 
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 
 const ViewValue = styled(Typography)`
     margin-top: 10px;
@@ -14,7 +14,7 @@ interface InputSwitcherProps {
 }
 
 const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
 
     return (
         <InputWrapper

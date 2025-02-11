@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { GetProjectMembersService } from "../Services/ProjectMembersService"
 import { GetOrgChartMembersService } from "../Services/OrgChartMembersService"
-import { useAppContext } from "../Context/AppContext"
+import { useAppStore } from "../Store/AppStore"
 import { UserRole } from "../Models/AccessManagement"
 
 type AddPersonVariables = {
@@ -27,7 +27,7 @@ type DeletePersonVariables = {
 
 export const useEditPeople = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage, setIsSaving } = useAppContext()
+    const { setSnackBarMessage, setIsSaving } = useAppStore()
 
     const syncPmtMembers = async (projectId: string, contextId: string) => {
         try {

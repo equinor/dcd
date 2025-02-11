@@ -9,7 +9,7 @@ import ProjectSettingsTab from "@/Components/Project/ProjectSettingsTab"
 import AccessManagementTab from "@/Components/Project/AccessManagementTab"
 // import EditHistoryOverviewTab from "@/Components/Project/EditHistoryOverviewTab"
 import ProjectCompareCasesTab from "@/Components/Project/CompareCasesTab/CompareCasesTabOverview"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { projectTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 

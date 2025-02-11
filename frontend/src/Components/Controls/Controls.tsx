@@ -5,8 +5,8 @@ import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import WhatsNewModal from "../Modal/WhatsNewModal"
@@ -38,7 +38,7 @@ const ProjectHeader = styled.div`
 `
 
 const Controls = () => {
-    const { editMode, setEditMode } = useAppContext()
+    const { editMode, setEditMode } = useAppStore()
     const { currentContext } = useModuleCurrentContext()
     const { caseId, revisionId } = useParams()
     const { isRevision } = useProjectContext()

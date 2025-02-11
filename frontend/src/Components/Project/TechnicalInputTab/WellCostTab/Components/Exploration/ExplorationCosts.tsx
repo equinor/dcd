@@ -12,8 +12,8 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
-import { useAppContext } from "@/Context/AppContext"
 import { Currency } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
 
 type ExplorationCostsState = Omit<
     Components.Schemas.ExplorationOperationalWellCostsOverviewDto,
@@ -26,7 +26,7 @@ const ExplorationCosts = () => {
     const { explorationOperationalWellCosts } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const { addExplorationWellCostEdit } = useTechnicalInputEdits()
 
     const [costs, setCosts] = useState<ExplorationCostsState>({

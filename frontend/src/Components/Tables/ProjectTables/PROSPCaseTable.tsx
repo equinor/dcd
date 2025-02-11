@@ -1,5 +1,5 @@
 import {
-    Button, Checkbox, Icon, NativeSelect, Progress,
+    Button, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent, useCallback, useEffect, useMemo, useRef, useState,
@@ -17,7 +17,7 @@ import Grid from "@mui/material/Grid2"
 import { GetProspService } from "@/Services/ProspService"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface Props {
@@ -45,7 +45,7 @@ const PROSPCaseList = ({
     const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
     const { isEditDisabled } = useEditDisabled()
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
 
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
@@ -246,7 +246,7 @@ const PROSPCaseList = ({
                 sharePointSiteUrl: p.sharepointSiteUrl,
             })
         })
-        
+
         return dtos
     }
 

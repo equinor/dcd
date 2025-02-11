@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../../Utils/common"
-import { useAppContext } from "../../../Context/AppContext"
+import { useAppStore } from "../../../Store/AppStore"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -46,7 +46,7 @@ const NumberInputWithValidation = ({
     min,
     max,
 }: Props) => {
-    const { setSnackBarMessage } = useAppContext()
+    const { setSnackBarMessage } = useAppStore()
     const [hasError, setHasError] = useState(false)
     const [inputValue, setInputValue] = useState<string>(defaultValue?.toString() ?? "0")
     const [helperText, setHelperText] = useState("\u200B")

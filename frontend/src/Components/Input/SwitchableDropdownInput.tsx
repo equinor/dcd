@@ -3,7 +3,7 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 interface SwitchableDropdownInputProps {
     value: string | number;

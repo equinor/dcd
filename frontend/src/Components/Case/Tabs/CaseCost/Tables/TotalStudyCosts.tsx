@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency } from "@/Models/enums"
@@ -22,7 +22,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { isCalculatingTotalStudyCostOverrides } = useAppContext()
+    const { isCalculatingTotalStudyCostOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const calculatedFields = useMemo(() => [

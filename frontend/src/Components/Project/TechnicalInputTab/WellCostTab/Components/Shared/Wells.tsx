@@ -8,7 +8,7 @@ import WellsTable from "@/Components/Tables/ProjectTables/WellsTable"
 import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { TableWell } from "@/Models/Wells"
 import { SectionHeader } from "./SharedWellStyles"
 
@@ -29,7 +29,7 @@ const Wells: React.FC<WellsProps> = ({
 }) => {
     const revisionAndProjectData = useDataFetch()
     const { addWellsEdit } = useTechnicalInputEdits()
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const { isEditDisabled } = useEditDisabled()
     const styles = useStyles()
 

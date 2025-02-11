@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { Input } from "@equinor/eds-core-react"
 import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
 import InputSwitcher from "./Components/InputSwitcher"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useProjectContext } from "../../Store/ProjectContext"
 
 interface CaseEditInputProps {
     label: string;

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
@@ -17,7 +17,7 @@ interface CaseProductionProfilesProps {
 const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     apiData, tableYears, alignedGridsRef, addEdit,
 }) => {
-    const { isCalculatingProductionOverrides } = useAppContext()
+    const { isCalculatingProductionOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
     const calculatedFields = useMemo(() => [

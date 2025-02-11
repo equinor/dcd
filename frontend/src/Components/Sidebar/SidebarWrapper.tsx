@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import ProjectDetails from "./Components/Project/ProjectDetails"
 import CasesDetails from "./Components/ActiveCases/CasesDetails"
@@ -57,7 +57,7 @@ export const TimelineElement = styled(Button)`
 `
 
 const Sidebar = () => {
-    const { sidebarOpen, setSidebarOpen, developerMode } = useAppContext()
+    const { sidebarOpen, setSidebarOpen, developerMode } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseOverviewDto[]>([])

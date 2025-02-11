@@ -2,14 +2,14 @@ import React from "react"
 import { Button, Icon, Tooltip } from "@equinor/eds-core-react"
 import { history } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppStore } from "../../Store/AppStore"
 
 interface props {
     size?: 16 | 24 | 32 | 48 | 18 | 40
 }
 
 const HistoryButton: React.FC<props> = ({ size }) => {
-    const { setSidebarOpen } = useAppContext()
+    const { setSidebarOpen } = useAppStore()
     const { caseId } = useParams()
 
     if (!caseId) { return null }

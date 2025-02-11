@@ -17,8 +17,8 @@ import {
     roundToFourDecimalsAndJoin,
     numberValueParser,
 } from "../../../../Utils/common"
-import { useAppContext } from "../../../../Context/AppContext"
-import { useProjectContext } from "../../../../Context/ProjectContext"
+import { useAppStore } from "../../../../Store/AppStore"
+import { useProjectContext } from "../../../../Store/ProjectContext"
 import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 
 interface Props {
@@ -46,7 +46,7 @@ const CaseDrillingScheduleTabTable = ({
     isExplorationTable,
     addEdit,
 }: Props) => {
-    const { editMode, setSnackBarMessage } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppStore()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const styles = useStyles()

@@ -14,9 +14,9 @@ import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { defaultAxesData } from "@/Utils/common"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
@@ -24,7 +24,7 @@ import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId, revisionId } = useParams()
-    const { activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseStore()
     const { projectId, isRevision } = useProjectContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)

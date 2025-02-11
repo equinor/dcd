@@ -30,12 +30,12 @@ import {
     toMonthDate,
 } from "@/Utils/DateUtils"
 import { GetCaseService } from "@/Services/CaseService"
-import { useModalContext } from "@/Context/ModalContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useModalContext } from "@/Store/ModalContext"
+import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const CreateCaseModal = () => {
-    const { isLoading, setIsLoading } = useAppContext()
+    const { isLoading, setIsLoading } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const {

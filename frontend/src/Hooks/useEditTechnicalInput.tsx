@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { GetTechnicalInputService } from "../Services/TechnicalInputService"
-import { useAppContext } from "../Context/AppContext"
+import { useAppStore } from "../Store/AppStore"
 
 type UpdateTechnicalInputVariables = {
     projectId: string;
@@ -21,7 +21,7 @@ type UpdateDevelopmentWellCostVariables = {
 
 export const useTechnicalInputEdits = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage, setIsSaving } = useAppContext()
+    const { setSnackBarMessage, setIsSaving } = useAppStore()
 
     const technicalInputMutationFn = async ({ projectId, body }: UpdateTechnicalInputVariables) => {
         const technicalInputService = await GetTechnicalInputService()

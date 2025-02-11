@@ -6,7 +6,7 @@ import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { UserRole } from "@/Models/AccessManagement"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"

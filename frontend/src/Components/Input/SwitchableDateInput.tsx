@@ -9,7 +9,7 @@ import {
     isWithinRange,
 } from "../../Utils/common"
 import { ResourcePropertyKey } from "../../Models/Interfaces"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 
 interface SwitchableDateInputProps {
     value: Date | undefined
@@ -38,7 +38,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     const [hasError, setHasError] = useState(false)
     const [helperText, setHelperText] = useState("\u200B")
     const [localValue, setLocalValue] = useState<string | undefined>(toScheduleValue(value))
-    const { setSnackBarMessage } = useAppContext()
+    const { setSnackBarMessage } = useAppStore()
 
     const validateInput = (newValue: number) => {
         if (!isWithinRange(newValue, 2010, 2110)) {

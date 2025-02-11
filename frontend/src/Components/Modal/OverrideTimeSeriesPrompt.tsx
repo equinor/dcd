@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import Modal from "./Modal"
 import useEditCase from "../../Hooks/useEditCase"
 import { ProfileNames } from "../../Models/Interfaces"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useProjectContext } from "../../Store/ProjectContext"
 
 type Props = {
     isOpen: boolean
