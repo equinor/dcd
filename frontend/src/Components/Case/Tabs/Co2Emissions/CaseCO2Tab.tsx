@@ -226,7 +226,8 @@ const CaseCO2Tab = () => {
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
             <div>
-                <SwitchableNumberInput                    resourceName="topside"
+                <SwitchableNumberInput
+                    resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
                     resourceId={topsideData.id}
                     label="Fuel consumption"
