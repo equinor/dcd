@@ -8,8 +8,6 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 public class TopsideDto
 {
     [Required] public required Guid Id { get; set; }
-    [Required] public required string Name { get; set; }
-    [Required] public required Guid ProjectId { get; set; }
     [Required] public required double DryWeight { get; set; }
     [Required] public required double OilCapacity { get; set; }
     [Required] public required double GasCapacity { get; set; }

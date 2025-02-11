@@ -10,7 +10,6 @@ public class Surf : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required string Name { get; set; }
     public required double CessationCost { get; set; }
     public required Maturity Maturity { get; set; }
     public required double InfieldPipelineSystemLength { get; set; }

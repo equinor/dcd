@@ -118,7 +118,6 @@ public class CreateCaseService(DcdDbContext context)
         return new DrainageStrategy
         {
             Id = id,
-            Name = "Drainage Strategy",
             Description = "Drainage Strategy",
 
             NGLYield = 0,
@@ -135,7 +134,6 @@ public class CreateCaseService(DcdDbContext context)
         return new Topside
         {
             Id = id,
-            Name = "Topside",
             DryWeight = 0,
             OilCapacity = 0,
             GasCapacity = 0,
@@ -171,8 +169,6 @@ public class CreateCaseService(DcdDbContext context)
         return new Surf
         {
             Id = id,
-            Name = "Surf",
-
             CessationCost = 0,
             Maturity = Maturity.A,
             InfieldPipelineSystemLength = 0,
@@ -200,7 +196,6 @@ public class CreateCaseService(DcdDbContext context)
         return new Substructure
         {
             Id = id,
-            Name = "Substructure",
             DryWeight = 0,
             Maturity = Maturity.A,
             Currency = 0,
@@ -220,7 +215,6 @@ public class CreateCaseService(DcdDbContext context)
         return new Transport
         {
             Id = id,
-            Name = "Transport",
             GasExportPipelineLength = 0,
             OilExportPipelineLength = 0,
             Maturity = Maturity.A,
@@ -239,7 +233,6 @@ public class CreateCaseService(DcdDbContext context)
         return new OnshorePowerSupply
         {
             Id = id,
-            Name = "OnshorePowerSupply",
             LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,

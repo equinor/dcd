@@ -9,7 +9,6 @@ public class Transport : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required string Name { get; set; }
     public required double GasExportPipelineLength { get; set; }
     public required double OilExportPipelineLength { get; set; }
     public required Maturity Maturity { get; set; }

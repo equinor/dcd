@@ -259,8 +259,6 @@ declare namespace Components {
         }
         export interface DrainageStrategyDto {
             id: string; // uuid
-            projectId: string; // uuid
-            name: string;
             description: string;
             nglYield: number; // double
             producerCount: number; // int32
@@ -330,8 +328,6 @@ declare namespace Components {
         export type NoAccessReason = 1 | 2 | 3 | 4; // int32
         export interface OnshorePowerSupplyDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             lastChangedDate: string | null; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
@@ -429,8 +425,6 @@ declare namespace Components {
         export type Source = 0 | 1; // int32
         export interface SubstructureDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             dryWeight: number; // double
             maturity: Maturity /* int32 */;
             currency: Currency /* int32 */;
@@ -449,8 +443,6 @@ declare namespace Components {
         }
         export interface SurfDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             cessationCost: number; // double
             maturity: Maturity /* int32 */;
             infieldPipelineSystemLength: number; // double
@@ -496,8 +488,6 @@ declare namespace Components {
         }
         export interface TopsideDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             dryWeight: number; // double
             oilCapacity: number; // double
             gasCapacity: number; // double
@@ -539,8 +529,6 @@ declare namespace Components {
         }
         export interface TransportDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             maturity: Maturity /* int32 */;
             gasExportPipelineLength: number; // double
             oilExportPipelineLength: number; // double

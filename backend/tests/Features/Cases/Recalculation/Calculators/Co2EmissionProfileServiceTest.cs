@@ -63,7 +63,6 @@ public class Co2EmissionProfileServiceTests
                 CO2ShareWaterInjectionProfile = 0,
                 CO2OnMaxWaterInjectionProfile = 0,
 
-                Name = "",
                 DryWeight = 0,
                 ArtificialLift = ArtificialLift.NoArtificialLift,
                 Maturity = Maturity.A,
@@ -158,7 +157,6 @@ public class Co2EmissionProfileServiceTests
                 CO2ShareWaterInjectionProfile = 0,
                 CO2OnMaxWaterInjectionProfile = 0,
 
-                Name = "",
                 DryWeight = 0,
                 ArtificialLift = ArtificialLift.NoArtificialLift,
                 Maturity = Maturity.A,

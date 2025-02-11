@@ -10,8 +10,6 @@ public static class TransportMapper
         return new TransportDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            ProjectId = entity.Case.ProjectId,
             Maturity = entity.Maturity,
             GasExportPipelineLength = entity.GasExportPipelineLength,
             OilExportPipelineLength = entity.OilExportPipelineLength,

@@ -10,7 +10,6 @@ public class Substructure : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required string Name { get; set; }
     public required double DryWeight { get; set; }
     public required Maturity Maturity { get; set; }
     public required Currency Currency { get; set; }

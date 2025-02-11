@@ -10,8 +10,6 @@ public static class SurfMapper
         return new SurfDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            ProjectId = entity.Case.ProjectId,
             CessationCost = entity.CessationCost,
             Maturity = entity.Maturity,
             InfieldPipelineSystemLength = entity.InfieldPipelineSystemLength,
