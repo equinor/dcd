@@ -20,7 +20,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         ProjectClassificationHelper.AddCurrentUserAsEditorIfClassificationBecomesMoreStrict(
             existingProject,
             projectDto.Classification,
-            currentUser?.UserId);
+            currentUser);
 
         existingProject.Name = projectDto.Name;
         existingProject.ReferenceCaseId = projectDto.ReferenceCaseId;

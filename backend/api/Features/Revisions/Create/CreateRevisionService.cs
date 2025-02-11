@@ -29,7 +29,7 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
         ProjectClassificationHelper.AddCurrentUserAsEditorIfClassificationBecomesMoreStrict(
             project,
             createRevisionDto.Classification,
-            currentUser?.UserId);
+            currentUser);
 
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         project.Classification = createRevisionDto.Classification;
