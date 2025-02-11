@@ -14,7 +14,7 @@ interface HeaderProps {
     setEndYear: (endYear: number) => void;
     setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseOverviewDto;
-    surfData: Components.Schemas.SurfOverviewDto
+    surfData: Components.Schemas.SurfDto
     addEdit: any
 }
 

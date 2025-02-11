@@ -1,14 +1,16 @@
+using api.AppInfrastructure.Authorization;
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Images.Copy;
 using api.Features.Images.Shared;
+using api.Features.Projects.Update;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Revisions.Create;
 
-public class CreateRevisionService(CreateRevisionRepository createRevisionRepository, DcdDbContext context, CopyImageService copyImageService)
+public class CreateRevisionService(CreateRevisionRepository createRevisionRepository, DcdDbContext context, CopyImageService copyImageService, CurrentUser? currentUser)
 {
     public async Task<Guid> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
@@ -23,6 +25,11 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
         var revision = ProjectDuplicator.DuplicateProject(project, createRevisionDto, caseIdMapping);
 
         context.Projects.Add(revision);
+
+        ProjectClassificationHelper.AddCurrentUserAsEditorIfClassificationBecomesMoreStrict(
+            project,
+            createRevisionDto.Classification,
+            currentUser);
 
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         project.Classification = createRevisionDto.Classification;
