@@ -23,9 +23,19 @@ stages:
                 runOnce:
                     deploy:
                         steps:
+                        - checkout: self
+
                         - task: DownloadPipelineArtifact@2
                           inputs:
                             artifact: ConceptApp
+
+                        - task: Bash@3
+                          displayName: 'List contents of Build.SourcesDirectory'
+                          inputs:
+                            targetType: 'inline'
+                            script: |
+                              # List files in the Build.SourcesDirectory directory
+                              ls -la $(Build.SourcesDirectory)
 
                         - task: Bash@3
                           displayName: 'List contents of Pipeline.Workspace'
@@ -49,15 +59,16 @@ stages:
                         - task: Bash@3
                           displayName: 'Install fusion-framework-cli and Upload to Fusion'
                           inputs:
-                            workingDir: frontend
                             targetType: 'inline'
                             script: |
+                              # Change to the frontend directory
+                              cd $(Build.SourcesDirectory)/frontend
                               # List files in the current directory
                               ls -la
                               # Install fusion-framework-cli
                               npm install -g @equinor/fusion-framework-cli
                               # Run the npx command to upload the app
-                              npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/conceptapp.zip -e ${{ parameters.envshortname }}
+                              npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.envshortname }}
                           env:
                             FUSION_TOKEN: $(FUSION_TOKEN)
 
