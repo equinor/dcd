@@ -16,7 +16,7 @@ import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
-import { ProfileTypes } from "@/Models/profiletypes"
+import { ProfileTypes } from "@/Models/enums"
 
 interface UpdateResourceParams {
     projectId: string;
