@@ -74,15 +74,11 @@ const Overview = () => {
     const {
         apiQueue,
         setIsSaving,
-        developerMode,
     } = useAppContext()
-    const {
-        caseEdits,
-        editIndexes,
-    } = useCaseContext()
+
     const {
         processQueue,
-    } = useEditCase()   
+    } = useEditCase()
 
     const { featuresModalIsOpen } = useModalContext()
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -98,27 +94,27 @@ const Overview = () => {
     })
 
     useEffect(() => {
-            let timer: NodeJS.Timeout | undefined
-            if (apiQueue.length > 0) {
-                setIsSaving(true)
-    
-                if (timer) {
-                    clearTimeout(timer)
-                }
-    
-                timer = setTimeout(() => {
-                    processQueue()
-                }, 3000)
-            } else {
-                setIsSaving(false)
+        let timer: NodeJS.Timeout | undefined
+        if (apiQueue.length > 0) {
+            setIsSaving(true)
+
+            if (timer) {
+                clearTimeout(timer)
             }
-    
-            return () => {
-                if (timer) {
-                    clearTimeout(timer)
-                }
+
+            timer = setTimeout(() => {
+                processQueue()
+            }, 3000)
+        } else {
+            setIsSaving(false)
+        }
+
+        return () => {
+            if (timer) {
+                clearTimeout(timer)
             }
-        }, [apiQueue])
+        }
+    }, [apiQueue])
 
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)

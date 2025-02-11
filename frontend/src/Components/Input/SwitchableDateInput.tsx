@@ -1,9 +1,7 @@
 import React, { ChangeEventHandler, useState } from "react"
-import { Input, InputWrapper } from "@equinor/eds-core-react"
+import { InputWrapper, DatePicker } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import {
-    isDefaultDate,
-    toMonthDate,
     formatDate,
     dateStringToDateUtc,
 } from "@/Utils/DateUtils"
@@ -14,7 +12,7 @@ import { ResourcePropertyKey } from "../../Models/Interfaces"
 import { useAppContext } from "@/Context/AppContext"
 
 interface SwitchableDateInputProps {
-    value: string | undefined
+    value: Date | undefined
     label: string
     resourcePropertyKey: ResourcePropertyKey
     onChange: ChangeEventHandler<HTMLInputElement>
@@ -22,12 +20,11 @@ interface SwitchableDateInputProps {
     max?: string
 }
 
-const toScheduleValue = (date: string) => {
-    const dateString = dateStringToDateUtc(date)
-    if (isDefaultDate(dateString)) {
-        return undefined
-    }
-    return toMonthDate(dateString)
+const toScheduleValue = (value: Date | undefined): string | undefined => {
+    if (!value) { return undefined }
+    const dateString = value.toISOString()
+    if (dateString === "0001-01-01T00:00:00.000Z") { return undefined }
+    return dateString
 }
 
 const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
@@ -40,7 +37,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
 }) => {
     const [hasError, setHasError] = useState(false)
     const [helperText, setHelperText] = useState("\u200B")
-    const [localValue, setLocalValue] = useState(toScheduleValue(value || ""))
+    const [localValue, setLocalValue] = useState<string | undefined>(toScheduleValue(value))
     const { setSnackBarMessage } = useAppContext()
 
     const validateInput = (newValue: number) => {
@@ -55,21 +52,21 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         return true
     }
 
-    const dateValueYear = (e: React.FocusEvent<HTMLInputElement>) => e.target.value.substring(0, 4)
+    const handleDateChange = (date: Date | null) => {
+        if (!date) {
+            setLocalValue(undefined)
+            onChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)
+            return
+        }
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        if ((Number(dateValueYear(e)) <= 2010 && Number(dateValueYear(e)) >= 2110) || dateValueYear(e) !== "") {
+        if (!validateInput(date.getFullYear())) {
             setSnackBarMessage(`The input for ${label} was not saved, because the year has to be between 2010 and 2110.`)
+            return
         }
-    }
 
-    const handleDateChange = (e: React.FocusEvent<HTMLInputElement>) => {
-        const newValue = e.target.value
-        if ((Number(dateValueYear) <= 2010 && Number(dateValueYear) >= 2110) || dateValueYear(e) !== "") {
-            validateInput(Number(dateValueYear))
-        }
-        setLocalValue(newValue)
-        onChange(e)
+        const dateString = date.toISOString()
+        setLocalValue(dateString)
+        onChange({ target: { value: dateString } } as React.ChangeEvent<HTMLInputElement>)
     }
 
     return (
@@ -83,15 +80,13 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
                 value={localValue ? formatDate(localValue) : ""}
                 label={label}
             >
-                <Input
-                    onBlur={handleBlur}
-                    type="month"
+                <DatePicker
                     id={resourcePropertyKey}
-                    name={resourcePropertyKey}
-                    onChange={(e: any) => handleDateChange(e)}
-                    value={localValue || ""}
-                    min={min}
-                    max={max}
+                    value={localValue ? dateStringToDateUtc(localValue) : undefined}
+                    onChange={handleDateChange}
+                    minValue={min ? dateStringToDateUtc(min) : undefined}
+                    maxValue={max ? dateStringToDateUtc(max) : undefined}
+                    formatOptions={{ year: "numeric", month: "2-digit", day: "2-digit" }}
                 />
             </InputSwitcher>
         </InputWrapper>
