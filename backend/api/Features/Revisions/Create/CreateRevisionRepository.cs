@@ -14,6 +14,10 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
+        await context.ProjectMembers
+            .Where(p => p.ProjectId == projectPk)
+            .LoadAsync();
+
         var caseItems = await context.Cases
             .Include(x => x.DrainageStrategy)
             .Include(x => x.Transport)
