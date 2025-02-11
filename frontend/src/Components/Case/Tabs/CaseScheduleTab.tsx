@@ -106,20 +106,32 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
     const updateCascadingDates = (startGate: DecisionGate, newDate: Date, currentData: any): ResourceObject => {
         const updatedData = { ...currentData }
+        updatedData[startGate.key] = newDate.toISOString()
         let currentDate = newDate
 
-        // Find all subsequent gates that need updating
-        const subsequentGates = DECISION_GATES
-            .slice(DECISION_GATES.indexOf(startGate) + 1)
-            .filter((gate) => gate.monthsAfterPrevious)
+        // Find the sequence of DG dates (DG0 through DG4)
+        const dgSequence = DECISION_GATES.filter((gate) => gate.key.startsWith("dG") && gate.key.endsWith("Date"))
+        const startIndex = dgSequence.findIndex((gate) => gate.key === startGate.key)
 
-        // Update each subsequent gate if it's using the default date
-        subsequentGates.forEach((gate) => {
-            if (gate.monthsAfterPrevious && isDefaultDateString(updatedData[gate.key])) {
-                currentDate = calculateNextDate(currentDate, gate.monthsAfterPrevious)
-                updatedData[gate.key] = currentDate.toISOString()
-            }
-        })
+        if (startIndex === -1) {
+            // Not a DG date, just update the single date
+            return updatedData
+        }
+
+        // Update all subsequent DG dates to maintain the required intervals
+        dgSequence
+            .slice(startIndex + 1)
+            .filter((gate) => gate.monthsAfterPrevious)
+            .forEach((gate) => {
+                // Calculate the next date based on the previous date
+                currentDate = calculateNextDate(currentDate, gate.monthsAfterPrevious!)
+
+                // Only update if the new date is later than the existing date
+                const existingDate = dateStringToDateUtc(updatedData[gate.key])
+                if (isDefaultDate(existingDate) || currentDate.getTime() > existingDate.getTime()) {
+                    updatedData[gate.key] = currentDate.toISOString()
+                }
+            })
 
         return updatedData
     }
@@ -130,6 +142,11 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
         if (!gate) { return null }
 
+        // Always update cascading dates for DG dates
+        const newResourceObject = gate.key.startsWith("dG")
+            ? updateCascadingDates(gate, newDate, currentCaseData)
+            : { ...currentCaseData, [dateKey]: newDate.toISOString() }
+
         return {
             inputLabel: dateKey,
             projectId: currentCaseData.projectId,
@@ -138,9 +155,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             caseId: currentCaseData.caseId,
             newDisplayValue: formatDate(newDate.toISOString()),
             previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-            newResourceObject: gate.monthsAfterPrevious
-                ? updateCascadingDates(gate, newDate, currentCaseData)
-                : { ...currentCaseData, [dateKey]: newDate.toISOString() },
+            newResourceObject,
             previousResourceObject: caseDataCopy,
             tabName: tab,
         }
