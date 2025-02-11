@@ -24,6 +24,63 @@ const TabContainer = styled(Grid)`
     max-width: 800px;
 `
 
+// Types for Decision Gate structure
+interface DecisionGate {
+    label: string
+    key: string
+    monthsAfterPrevious?: number
+    dependsOn?: string[]
+    cannotBeAfter?: string[]
+    visible?: boolean
+}
+
+// Define the Decision Gate sequence and their relationships
+const DECISION_GATES: DecisionGate[] = [
+    { label: "DGA", key: "dgaDate" },
+    { label: "DGB", key: "dgbDate" },
+    { label: "DGC", key: "dgcDate" },
+    { label: "APbo", key: "apboDate" },
+    { label: "BOR", key: "borDate" },
+    { label: "VPbo", key: "vpboDate" },
+    {
+        label: "DG0",
+        key: "dG0Date",
+        cannotBeAfter: ["dG1Date", "dG2Date", "dG3Date", "dG4Date"],
+        visible: true,
+    },
+    {
+        label: "DG1",
+        key: "dG1Date",
+        monthsAfterPrevious: 12,
+        dependsOn: ["dG0Date"],
+        cannotBeAfter: ["dG2Date", "dG3Date", "dG4Date"],
+        visible: true,
+    },
+    {
+        label: "DG2",
+        key: "dG2Date",
+        monthsAfterPrevious: 12,
+        dependsOn: ["dG0Date", "dG1Date"],
+        cannotBeAfter: ["dG3Date", "dG4Date"],
+        visible: true,
+    },
+    {
+        label: "DG3",
+        key: "dG3Date",
+        monthsAfterPrevious: 12,
+        dependsOn: ["dG0Date", "dG1Date", "dG2Date"],
+        cannotBeAfter: ["dG4Date"],
+        visible: true,
+    },
+    {
+        label: "DG4",
+        key: "dG4Date",
+        monthsAfterPrevious: 36,
+        dependsOn: ["dG0Date", "dG1Date", "dG2Date", "dG3Date"],
+        visible: true,
+    },
+]
+
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppContext()
     const { caseId, revisionId, tab } = useParams()
@@ -35,131 +92,73 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
-    const caseDateKeys = [
-        {
-            label: "DGA",
-            key: "dgaDate",
-        },
-        {
-            label: "DGB",
-            key: "dgbDate",
-        },
-        {
-            label: "DGC",
-            key: "dgcDate",
-        },
-        {
-            label: "APbo",
-            key: "apboDate",
-        },
-        {
-            label: "BOR",
-            key: "borDate",
-        },
-        {
-            label: "VPbo",
-            key: "vpboDate",
-        },
-        {
-            visible: true,
-            label: "DG0",
-            key: "dG0Date",
-            max: ["dG1Date", "dG2Date", "dG3Date", "dG4Date"],
-        },
-        {
-            visible: true,
-            label: "DG1",
-            key: "dG1Date",
-            min: ["dG0Date"],
-            max: ["dG2Date", "dG3Date", "dG4Date"],
-        },
-        {
-            visible: true,
-            label: "DG2",
-            key: "dG2Date",
-            min: ["dG0Date", "dG1Date"],
-            max: ["dG3Date", "dG4Date"],
-        },
-        {
-            visible: true,
-            label: "DG3",
-            key: "dG3Date",
-            min: ["dG0Date", "dG1Date", "dG2Date"],
-            max: ["dG4Date"],
-        },
-        {
-            visible: true,
-            label: "DG4",
-            key: "dG4Date",
-            min: ["dG0Date", "dG1Date", "dG2Date", "dG3Date"],
-        },
-    ]
-
     if (!apiData || !projectId) {
         return (<CaseScheduleTabSkeleton />)
     }
 
     const caseData = apiData.case
 
-    const getDGOChangesObject = (newDate: Date): ResourceObject | undefined => {
-        const newCaseObject = caseData
-        newCaseObject.dG0Date = newDate.toISOString()
-
-        if (newCaseObject.dG1Date && isDefaultDateString(newCaseObject.dG1Date)) {
-            const dg = dateStringToDateUtc(newCaseObject.dG0Date)
-            dg.setMonth(dg.getMonth() + 12)
-            newCaseObject.dG1Date = dg.toISOString()
-        }
-        if (isDefaultDateString(newCaseObject.dG2Date)) {
-            const dg = dateStringToDateUtc(newCaseObject.dG1Date)
-            dg.setMonth(dg.getMonth() + 12)
-            newCaseObject.dG2Date = dg.toISOString()
-        }
-        if (isDefaultDateString(newCaseObject.dG3Date)) {
-            const dg = dateStringToDateUtc(newCaseObject.dG2Date)
-            dg.setMonth(dg.getMonth() + 12)
-            newCaseObject.dG3Date = dg.toISOString()
-        }
-        if (isDefaultDateString(newCaseObject.dG4Date)) {
-            const dg = dateStringToDateUtc(newCaseObject.dG3Date)
-            dg.setMonth(dg.getMonth() + 36)
-            newCaseObject.dG4Date = dg.toISOString()
-        }
-
-        return newCaseObject
+    const calculateNextDate = (currentDate: Date, monthsToAdd: number): Date => {
+        const nextDate = dateStringToDateUtc(currentDate.toISOString())
+        nextDate.setMonth(nextDate.getMonth() + monthsToAdd)
+        return nextDate
     }
 
-    const getNewCaseObject = (dateKey: string, newDate: Date): ResourceObject => {
-        const newCaseObject = caseData
-        newCaseObject[dateKey as keyof typeof newCaseObject] = newDate.toISOString() as never // workaround for TS error
+    const updateCascadingDates = (startGate: DecisionGate, newDate: Date, currentData: any): ResourceObject => {
+        const updatedData = { ...currentData }
+        let currentDate = newDate
 
-        return newCaseObject
+        // Find all subsequent gates that need updating
+        const subsequentGates = DECISION_GATES
+            .slice(DECISION_GATES.indexOf(startGate) + 1)
+            .filter((gate) => gate.monthsAfterPrevious)
+
+        // Update each subsequent gate if it's using the default date
+        subsequentGates.forEach((gate) => {
+            if (gate.monthsAfterPrevious && isDefaultDateString(updatedData[gate.key])) {
+                currentDate = calculateNextDate(currentDate, gate.monthsAfterPrevious)
+                updatedData[gate.key] = currentDate.toISOString()
+            }
+        })
+
+        return updatedData
+    }
+
+    const createDateChangeEdit = (dateKey: string, newDate: Date, currentCaseData: any) => {
+        const gate = DECISION_GATES.find((g) => g.key === dateKey)
+        const caseDataCopy = { ...currentCaseData }
+
+        if (!gate) { return null }
+
+        return {
+            inputLabel: dateKey,
+            projectId: currentCaseData.projectId,
+            resourceName: "case",
+            resourcePropertyKey: dateKey as ResourcePropertyKey,
+            caseId: currentCaseData.caseId,
+            newDisplayValue: formatDate(newDate.toISOString()),
+            previousDisplayValue: formatDate(caseDataCopy[dateKey]),
+            newResourceObject: gate.monthsAfterPrevious
+                ? updateCascadingDates(gate, newDate, currentCaseData)
+                : { ...currentCaseData, [dateKey]: newDate.toISOString() },
+            previousResourceObject: caseDataCopy,
+            tabName: tab,
+        }
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
         const dateValueYear = Number(dateValue.substring(0, 4))
 
         if ((dateValueYear >= 2010 && dateValueYear <= 2110) || dateValue === "") {
-            const caseDataCopy: any = { ...caseData }
             const newDate = Number.isNaN(dateStringToDateUtc(dateValue).getTime())
                 ? defaultDate()
                 : dateStringToDateUtc(dateValue)
-            const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
 
-            addEdit({
-                inputLabel: dateKey,
-                projectId: caseData.projectId,
-                resourceName: "case",
-                resourcePropertyKey: dateKey as ResourcePropertyKey,
-                caseId: caseData.caseId,
-                newDisplayValue: formatDate(newDate.toISOString()),
-                previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-                newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
-                previousResourceObject: dg0Object && caseDataCopy,
-                tabName: tab,
-            })
+            const editData = createDateChangeEdit(dateKey, newDate, caseData)
+            if (editData) { addEdit(editData) }
         }
     }
+
     const findMinDate = (dates: Date[]) => {
         const filteredDates = dates.filter((d) => !isDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }
@@ -197,18 +196,18 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const getDateValue = (dateKey: string) => {
-        if (!caseData) { return defaultDate().toISOString() }
+        if (!caseData) { return defaultDate() }
         const caseDataObject = caseData as any
 
         if (!isDefaultDateString(String(caseDataObject[dateKey as keyof typeof caseDataObject]))) {
-            return toScheduleValue(caseDataObject[dateKey as keyof typeof caseDataObject])
+            return dateStringToDateUtc(String(caseDataObject[dateKey as keyof typeof caseDataObject]))
         }
-        return defaultDate().toISOString()
+        return defaultDate()
     }
 
     return (
         <TabContainer container spacing={2}>
-            {caseDateKeys
+            {DECISION_GATES
                 .filter((caseDateKey) => Object.keys(caseData)
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
                 .map((caseDate) => (
@@ -219,18 +218,18 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         ? (
                             <Grid size={{ xs: 12, md: 6, lg: 6 }} key={uuidv4()}>
                                 <SwitchableDateInput
+                                    label={caseDate.label}
                                     value={getDateValue(caseDate.key)}
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}
-                                    label={caseDate.label}
                                     onChange={(e) => handleDateChange(caseDate.key as ResourcePropertyKey, e.target.value)}
                                     min={
-                                        (caseDate.min && caseData)
-                                            ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => caseData[minDate as keyof typeof caseData])))
+                                        (caseDate.dependsOn && caseData)
+                                            ? findMinDate(getDatesFromStrings(caseDate.dependsOn.map((minDate) => caseData[minDate as keyof typeof caseData])))
                                             : undefined
                                     }
                                     max={
-                                        (caseDate.max && caseData)
-                                            ? findMaxDate(getDatesFromStrings(caseDate.max.map((maxDate) => caseData[maxDate as keyof typeof caseData])))
+                                        (caseDate.cannotBeAfter && caseData)
+                                            ? findMaxDate(getDatesFromStrings(caseDate.cannotBeAfter.map((maxDate) => caseData[maxDate as keyof typeof caseData])))
                                             : undefined
                                     }
                                 />
