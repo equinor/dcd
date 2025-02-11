@@ -54,12 +54,6 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
         commonProjectAndRevisionData.Cases = await getProjectDataRepository.GetCases(projectId);
         commonProjectAndRevisionData.Wells = await getProjectDataRepository.GetWells(projectId);
-        commonProjectAndRevisionData.Surfs = await getProjectDataRepository.GetSurfs(projectId);
-        commonProjectAndRevisionData.Substructures = await getProjectDataRepository.GetSubstructures(projectId);
-        commonProjectAndRevisionData.Topsides = await getProjectDataRepository.GetTopsides(projectId);
-        commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectId);
-        commonProjectAndRevisionData.OnshorePowerSupplies = await getProjectDataRepository.GetOnshorePowerSupplies(projectId);
-        commonProjectAndRevisionData.DrainageStrategies = await getProjectDataRepository.GetDrainageStrategies(projectId);
         commonProjectAndRevisionData.ModifyTime = commonProjectAndRevisionData.Cases.Select(c => c.ModifyTime).Append(commonProjectAndRevisionData.ModifyTime).Max();
 
         return commonProjectAndRevisionData;

@@ -185,12 +185,6 @@ declare namespace Components {
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsOverviewDto;
             cases: CaseOverviewDto[];
             wells: WellOverviewDto[];
-            surfs: SurfOverviewDto[];
-            substructures: SubstructureOverviewDto[];
-            topsides: TopsideOverviewDto[];
-            transports: TransportOverviewDto[];
-            onshorePowerSupplies: OnshorePowerSupplyOverviewDto[];
-            drainageStrategies: DrainageStrategyOverviewDto[];
         }
         export interface CompareCasesDto {
             caseId: string; // uuid
@@ -271,9 +265,6 @@ declare namespace Components {
             artificialLift: ArtificialLift /* int32 */;
             gasSolution: GasSolution /* int32 */;
         }
-        export interface DrainageStrategyOverviewDto {
-            id: string; // uuid
-        }
         export interface DriveItemDto {
             name?: string | null;
             id?: string | null;
@@ -338,10 +329,6 @@ declare namespace Components {
             prospVersion: string | null; // date-time
             dG3Date: string | null; // date-time
             dG4Date: string | null; // date-time
-        }
-        export interface OnshorePowerSupplyOverviewDto {
-            id: string; // uuid
-            source: Source /* int32 */;
         }
         export type PhysUnit = 0 | 1; // int32
         export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
@@ -436,10 +423,6 @@ declare namespace Components {
             dG3Date: string | null; // date-time
             dG4Date: string | null; // date-time
         }
-        export interface SubstructureOverviewDto {
-            id: string; // uuid
-            source: Source /* int32 */;
-        }
         export interface SurfDto {
             id: string; // uuid
             cessationCost: number; // double
@@ -460,11 +443,6 @@ declare namespace Components {
             approvedBy: string;
             dG3Date: string | null; // date-time
             dG4Date: string | null; // date-time
-        }
-        export interface SurfOverviewDto {
-            id: string; // uuid
-            maturity: Maturity /* int32 */;
-            source: Source /* int32 */;
         }
         export interface TimeSeriesCostDto {
             id: string; // uuid
@@ -513,17 +491,6 @@ declare namespace Components {
             facilityOpex: number; // double
             peakElectricityImported: number; // double
         }
-        export interface TopsideOverviewDto {
-            id: string; // uuid
-            fuelConsumption: number; // double
-            cO2ShareOilProfile: number; // double
-            cO2ShareGasProfile: number; // double
-            cO2ShareWaterInjectionProfile: number; // double
-            cO2OnMaxOilProfile: number; // double
-            cO2OnMaxGasProfile: number; // double
-            cO2OnMaxWaterInjectionProfile: number; // double
-            source: Source /* int32 */;
-        }
         export interface TransportDto {
             id: string; // uuid
             maturity: Maturity /* int32 */;
@@ -535,10 +502,6 @@ declare namespace Components {
             prospVersion: string | null; // date-time
             dG3Date: string | null; // date-time
             dG4Date: string | null; // date-time
-        }
-        export interface TransportOverviewDto {
-            id: string; // uuid
-            source: Source /* int32 */;
         }
         export interface UpdateCampaignDto {
             rigUpgradingCost: number; // double
