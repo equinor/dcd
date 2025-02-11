@@ -11,7 +11,7 @@ import IndexView from "@/Views/IndexView"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
-import { NoAccessReason } from "@/enums"
+import { NoAccessReason } from "@/Models/enums"
 
 // Banner components
 const SelectProjectBanner = () => (

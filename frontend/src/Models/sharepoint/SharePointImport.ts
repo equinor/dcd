@@ -1,4 +1,5 @@
 import { ProspImportStatusEnum } from "@/Models/ProspImportStatusEnum"
+import { Source } from "../enums"
 
 export default class SharePointImport
 implements Components.Schemas.SharePointImportDto {
@@ -37,7 +38,7 @@ implements Components.Schemas.SharePointImportDto {
         this.sharePointSiteUrl = data?.sharePointSiteUrl ?? ""
     }
 
-    static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")
+    static mapSource = (source: Components.Schemas.Source | undefined) => (source === Source.ConceptApp ? "ConceptApp" : "PROSP")
 
     static surfStatus = (
         projectCase: Components.Schemas.CaseOverviewDto,

@@ -23,6 +23,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { PhysUnit } from "@/Models/enums"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -153,7 +154,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Annual CO2 emissions",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MTPA" : "MTPA"}`,
                 profile: co2EmissionsData,
                 overridable: true,
                 editable: true,
@@ -164,7 +165,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             },
             {
                 profileName: "Year-by-year CO2 intensity",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2IntensityData,
                 overridable: false,
                 editable: false,

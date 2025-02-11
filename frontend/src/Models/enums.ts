@@ -20,3 +20,38 @@ export enum ProjectPhase {
     ScreeningBusinessOpportunities = 9,
 }
 
+export enum Currency {
+    NOK = 1,
+    USD = 2,
+}
+
+export enum PhysUnit {
+    SI = 0,
+    OilField = 1,
+}
+
+export enum Concept {
+    NO_CONCEPT = 0,
+    TIE_BACK = 1,
+    JACKET = 2,
+    GBS = 3,
+    TLP = 4,
+    SPAR = 5,
+    SEMI = 6,
+    CIRCULAR_BARGE = 7,
+    BARGE = 8,
+    FPSO = 9,
+    TANKER = 10,
+    JACK_UP = 11,
+    SUBSEA_TO_SHORE = 12,
+}
+
+export enum ProjectMemberRole {
+    Observer = 0,
+    Editor = 1,
+}
+
+export enum Source {
+    ConceptApp = 0,
+    Prosp = 1,
+}

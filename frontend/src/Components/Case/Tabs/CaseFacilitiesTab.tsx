@@ -11,6 +11,7 @@ import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { Concept, Currency } from "@/Models/enums"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
@@ -90,7 +91,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Platform concept"
                 />
             </Grid>
-            {substructureData.concept === 1 && (
+            {substructureData.concept === Concept.TIE_BACK && (
                 <Grid size={{ xs: 12, md: 4 }}>
                     <SwitchableStringInput
                         addEdit={addEdit}
@@ -112,7 +113,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Facility opex"
                     value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
-                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -125,7 +126,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Cessation cost"
                     value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
-                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid size={12}>

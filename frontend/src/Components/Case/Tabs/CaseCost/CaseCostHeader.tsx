@@ -5,6 +5,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
+import { Currency } from "@/Models/enums"
 
 interface HeaderProps {
     startYear: number;
@@ -34,9 +35,9 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     const datePickerValue = (() => {
-        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === 1) {
+        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK) {
             return "MNOK"
-        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === 2) {
+        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.USD) {
             return "MUSD"
         }
         return ""
