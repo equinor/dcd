@@ -369,70 +369,144 @@ const useEditCase = () => {
 
     const undoEdit = async () => {
         setIsSaving(true)
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
-            (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
-        )
-        if (currentEditIndex === -1) {
-            return
-        }
+        try {
+            const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
+                (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
+            )
 
-        const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
-        const updatedEditIndex = currentEditIndex + 1
-        const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
-
-        updateEditIndex(updatedEdit.uuid)
-
-        if (editThatWillBeUndone) {
-            navigateToCaseTab(caseId!, editThatWillBeUndone.tabName ?? "")
-
-            const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
-                const tabElement = document.getElementById(elementId) as HTMLElement | null
-                if (!tabElement) {
-                    reject(new Error(`Element with id ${elementId} not found`))
+            // Handle case where we're at the first edit
+            if (currentEditIndex === 0) {
+                const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+                if (!editThatWillBeUndone) {
+                    setIsSaving(false)
                     return
                 }
-                tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-                resolve()
-            })
 
-            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel
+                // Create a special empty edit to represent the initial state
+                const initialStateEdit: EditInstance = {
+                    uuid: uuidv4(),
+                    timeStamp: new Date().getTime(),
+                    inputLabel: editThatWillBeUndone.inputLabel,
+                    projectId: editThatWillBeUndone.projectId,
+                    resourceName: editThatWillBeUndone.resourceName,
+                    resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
+                    resourceId: editThatWillBeUndone.resourceId,
+                    wellId: editThatWillBeUndone.wellId,
+                    drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
+                    caseId: editThatWillBeUndone.caseId,
+                    newResourceObject: editThatWillBeUndone.previousResourceObject,
+                    previousResourceObject: editThatWillBeUndone.previousResourceObject,
+                    tabName: editThatWillBeUndone.tabName,
+                    tableName: editThatWillBeUndone.tableName,
+                    inputFieldId: editThatWillBeUndone.inputFieldId,
+                }
 
-            if (!rowWhereCellWillBeUndone) {
-                console.error("rowWhereCellWillBeUndone is undefined")
+                updateEditIndex(initialStateEdit.uuid)
+                navigateToCaseTab(caseId!, editThatWillBeUndone.tabName ?? "")
+
+                const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel
+                if (!rowWhereCellWillBeUndone) {
+                    console.error("rowWhereCellWillBeUndone is undefined")
+                    setIsSaving(false)
+                    return
+                }
+
+                const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
+                if (tabElement) {
+                    tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                    if (editThatWillBeUndone.tableName) {
+                        const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`) as HTMLElement | null
+                        highlightElement(tableCell ?? tabElement)
+                    } else {
+                        highlightElement(tabElement)
+                    }
+                }
+
+                await delay(500)
+                const result = await submitToApi({
+                    projectId: editThatWillBeUndone.projectId,
+                    caseId: editThatWillBeUndone.caseId!,
+                    resourceName: editThatWillBeUndone.resourceName,
+                    resourceId: editThatWillBeUndone.resourceId,
+                    resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                    wellId: editThatWillBeUndone.wellId,
+                    drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
+                })
+
+                if (!result.success) {
+                    throw new Error("Failed to undo edit")
+                }
                 return
             }
 
-            setTimeout(async () => {
-                try {
-                    await scrollToElement(rowWhereCellWillBeUndone)
+            // Handle normal case (more than one edit)
+            if (currentEditIndex === -1) {
+                setIsSaving(false)
+                return
+            }
 
-                    const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
-                    if (tabElement) {
-                        // Attempt to highlight cell, doesnt work since querySelector can't find any element with data-key="${editThatWillBeUndone.resourcePropertyKey}
-                        if (editThatWillBeUndone.tableName) {
-                            const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`) as HTMLElement | null
-                            highlightElement(tableCell ?? tabElement)
-                        } else {
-                            highlightElement(tabElement)
-                        }
-                    }
+            const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+            const updatedEditIndex = currentEditIndex + 1
 
-                    await delay(500)
-                    await submitToApi({
-                        projectId: editThatWillBeUndone.projectId,
-                        caseId: editThatWillBeUndone.caseId!,
-                        resourceName: editThatWillBeUndone.resourceName,
-                        resourceId: editThatWillBeUndone.resourceId,
-                        resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
-                        wellId: editThatWillBeUndone.wellId,
-                        drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
-                    }).then(() => {
-                        setIsSaving(false)
-                    })
-                } catch (error) {
-                    console.error(error)
+            // Check if we're trying to undo beyond the last edit
+            if (updatedEditIndex >= caseEditsBelongingToCurrentCase.length) {
+                setIsSaving(false)
+                return
+            }
+
+            const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
+            if (!editThatWillBeUndone || !updatedEdit) {
+                setIsSaving(false)
+                return
+            }
+
+            updateEditIndex(updatedEdit.uuid)
+            navigateToCaseTab(caseId!, editThatWillBeUndone.tabName ?? "")
+
+            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel
+            if (!rowWhereCellWillBeUndone) {
+                console.error("rowWhereCellWillBeUndone is undefined")
+                setIsSaving(false)
+                return
+            }
+
+            const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
+            if (tabElement) {
+                tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                if (editThatWillBeUndone.tableName) {
+                    const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`) as HTMLElement | null
+                    highlightElement(tableCell ?? tabElement)
+                } else {
+                    highlightElement(tabElement)
                 }
-            }, 500)
+            }
+
+            await delay(500)
+            const result = await submitToApi({
+                projectId: editThatWillBeUndone.projectId,
+                caseId: editThatWillBeUndone.caseId!,
+                resourceName: editThatWillBeUndone.resourceName,
+                resourceId: editThatWillBeUndone.resourceId,
+                resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                wellId: editThatWillBeUndone.wellId,
+                drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
+            })
+
+            if (!result.success) {
+                throw new Error("Failed to undo edit")
+            }
+        } catch (error) {
+            console.error("Error during undo:", error)
+            // Revert the edit index if the API call failed
+            const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
+                (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
+            )
+            if (currentEditIndex > 0) {
+                const previousEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
+                updateEditIndex(previousEdit.uuid)
+            }
+        } finally {
+            setIsSaving(false)
         }
     }
 
