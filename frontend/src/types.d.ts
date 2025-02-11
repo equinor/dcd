@@ -3,13 +3,14 @@ declare namespace Components {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
         export interface CampaignDto {
             campaignId: string; // uuid
-            campaignType: string;
+            campaignType: CampaignType /* int32 */;
             rigUpgradingCost: number; // double
             rigMobDemobCost: number; // double
             rigUpgradingProfile: RigProfileDto;
             rigMobDemobProfile: RigProfileDto;
             campaignWells: CampaignWellDto[];
         }
+        export type CampaignType = 1 | 2; // int32
         export interface CampaignWellDto {
             wellId: string; // uuid
             wellName: string;
@@ -208,7 +209,7 @@ declare namespace Components {
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CreateCampaignDto {
-            campaignType: string;
+            campaignType: CampaignType /* int32 */;
         }
         export interface CreateCaseDto {
             name: string;
