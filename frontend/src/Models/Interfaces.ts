@@ -41,8 +41,6 @@ export type ResourceObject =
     Components.Schemas.CaseOverviewDto |
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
-    Components.Schemas.WellProjectDto |
-    Components.Schemas.ExplorationDto |
     Components.Schemas.OnshorePowerSupplyDto |
     Components.Schemas.UpdateCampaignDto |
     Components.Schemas.CampaignDto |
@@ -50,7 +48,7 @@ export type ResourceObject =
 
 export type ProfileObject =
     Components.Schemas.TimeSeriesCostOverrideDto |
-    Components.Schemas.TimeSeriesCostDto;
+    Components.Schemas.TimeSeriesCostDto
 
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
@@ -60,8 +58,6 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.OnshorePowerSupplyDto |
     keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
-    keyof Components.Schemas.WellProjectDto |
-    keyof Components.Schemas.ExplorationDto |
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.UpdateCampaignDto |
@@ -82,7 +78,6 @@ export interface EditInstance {
     resourceName: ResourceName; // the asset being edited
     resourcePropertyKey: ResourcePropertyKey; // the key of the asset being edited
     resourceId?: string; // the id of the asset being edited
-    resourceProfileId?: string; // the id of the timeseries profile being edited
     wellId?: string // the id of the asset well
     drillingScheduleId?: string // the id of the drilling schedule
     caseId?: string; // the case id

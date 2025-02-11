@@ -43,7 +43,6 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
                 resourceId: profile.resourceId,
                 newResourceObject,
                 previousResourceObject: profile,
-                resourceProfileId: profile.id,
             })
         }
         setIsOpen(!isOpen)

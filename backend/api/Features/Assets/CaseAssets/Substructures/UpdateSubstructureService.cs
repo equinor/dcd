@@ -8,13 +8,9 @@ namespace api.Features.Assets.CaseAssets.Substructures;
 
 public class UpdateSubstructureService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task UpdateSubstructure(
-        Guid projectId,
-        Guid caseId,
-        Guid substructureId,
-        UpdateSubstructureDto updatedSubstructureDto)
+    public async Task UpdateSubstructure(Guid projectId, Guid caseId, UpdateSubstructureDto updatedSubstructureDto)
     {
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == substructureId);
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
         existingSubstructure.Currency = updatedSubstructureDto.Currency;
@@ -32,13 +28,9 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    public async Task UpdateSubstructure(
-        Guid projectId,
-        Guid caseId,
-        Guid substructureId,
-        ProspUpdateSubstructureDto updatedSubstructureDto)
+    public async Task UpdateSubstructure(Guid projectId, Guid caseId, ProspUpdateSubstructureDto updatedSubstructureDto)
     {
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == substructureId);
+        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
         existingSubstructure.Currency = updatedSubstructureDto.Currency;

@@ -8,13 +8,9 @@ namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 
 public class UpdateOnshorePowerSupplyService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task UpdateOnshorePowerSupply(
-        Guid projectId,
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        UpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
+    public async Task UpdateOnshorePowerSupply(Guid projectId, Guid caseId, UpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == onshorePowerSupplyId);
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
         existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
@@ -26,13 +22,9 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, Recalculation
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    public async Task UpdateOnshorePowerSupply(
-        Guid projectId,
-        Guid caseId,
-        Guid onshorePowerSupplyId,
-        ProspUpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
+    public async Task UpdateOnshorePowerSupply(Guid projectId, Guid caseId, ProspUpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.Id == onshorePowerSupplyId);
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
         existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;

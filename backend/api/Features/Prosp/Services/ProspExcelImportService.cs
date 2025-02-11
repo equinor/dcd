@@ -141,7 +141,7 @@ public class ProspExcelImportService(
             CessationCost = cessationCost,
         };
 
-        await updateSurfService.UpdateSurf(projectId, caseItem.Id, caseItem.SurfId, updatedSurfDto);
+        await updateSurfService.UpdateSurf(projectId, caseItem.Id, updatedSurfDto);
         await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, caseItem.Id, costProfile);
     }
 
@@ -220,7 +220,7 @@ public class ProspExcelImportService(
             PeakElectricityImported = peakElectricityImported
         };
 
-        await updateTopsideService.UpdateTopside(projectId, caseItem.Id, caseItem.TopsideId, updateTopsideDto);
+        await updateTopsideService.UpdateTopside(projectId, caseItem.Id, updateTopsideDto);
         await topsideCostProfileService.AddOrUpdateTopsideCostProfile(projectId, caseItem.Id, costProfile);
     }
 
@@ -266,7 +266,7 @@ public class ProspExcelImportService(
             CostYear = costYear
         };
 
-        await updateSubstructureService.UpdateSubstructure(projectId, caseItem.Id, caseItem.SubstructureId, updateSubstructureDto);
+        await updateSubstructureService.UpdateSubstructure(projectId, caseItem.Id, updateSubstructureDto);
         await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(projectId, caseItem.Id, costProfile);
     }
 
@@ -310,7 +310,7 @@ public class ProspExcelImportService(
             GasExportPipelineLength = gasExportPipelineLength
         };
 
-        await updateTransportService.UpdateTransport(projectId, caseItem.Id, caseItem.TransportId, updateTransportDto);
+        await updateTransportService.UpdateTransport(projectId, caseItem.Id, updateTransportDto);
         await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, costProfile);
     }
 
@@ -468,7 +468,6 @@ public class ProspExcelImportService(
     {
         await updateSurfService.UpdateSurf(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.SurfId,
             new ProspUpdateSurfDto
             {
                 Source = Source.ConceptApp
@@ -481,7 +480,6 @@ public class ProspExcelImportService(
     {
         await updateTopsideService.UpdateTopside(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.TopsideId,
             new ProspUpdateTopsideDto
             {
                 Source = Source.ConceptApp
@@ -494,7 +492,6 @@ public class ProspExcelImportService(
     {
         await updateSubstructureService.UpdateSubstructure(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.SubstructureId,
             new ProspUpdateSubstructureDto
             {
                 Source = Source.ConceptApp
@@ -507,7 +504,6 @@ public class ProspExcelImportService(
     {
         await updateTransportService.UpdateTransport(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.TransportId,
             new ProspUpdateTransportDto
             {
                 Source = Source.ConceptApp
@@ -520,7 +516,6 @@ public class ProspExcelImportService(
     {
         await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId,
             caseItem.Id,
-            caseItem.OnshorePowerSupplyId,
             new ProspUpdateOnshorePowerSupplyDto
             {
                 Source = Source.ConceptApp

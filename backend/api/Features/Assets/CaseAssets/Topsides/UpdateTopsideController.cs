@@ -11,10 +11,9 @@ public class UpdateTopsideController(UpdateTopsideService updateTopsideService) 
     public async Task<NoContentResult> UpdateTopside(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid topsideId,
         [FromBody] UpdateTopsideDto dto)
     {
-        await updateTopsideService.UpdateTopside(projectId, caseId, topsideId, dto);
+        await updateTopsideService.UpdateTopside(projectId, caseId, dto);
         return NoContent();
     }
 }

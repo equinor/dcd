@@ -55,7 +55,6 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
                 resourceId: profile.resourceId,
                 newResourceObject,
                 previousResourceObject: profile,
-                resourceProfileId: profile.id,
             })
 
             params.api.redrawRows()

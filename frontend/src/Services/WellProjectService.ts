@@ -3,19 +3,6 @@ import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class WellProjectService extends __BaseService {
-    public async updateWellProject(
-        projectId: string,
-        caseId: string,
-        wellProjectId: string,
-        dto: Components.Schemas.UpdateWellProjectDto,
-    ): Promise<Components.Schemas.WellProjectDto> {
-        const res: Components.Schemas.WellProjectDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}`,
-            { body: dto },
-        )
-        return res
-    }
-
     public async createWellProjectWellDrillingSchedule(
         projectId: string,
         caseId: string,

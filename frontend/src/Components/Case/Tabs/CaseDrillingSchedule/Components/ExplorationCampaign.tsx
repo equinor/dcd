@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useRef } from "react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid2"
@@ -36,6 +36,7 @@ interface ExplorationCampaignProps extends DrillingCampaignProps {
 const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps) => {
     const styles = useStyles()
     const { addEdit } = useEditCase()
+    const ExplorationCampaignGridRef = useRef<any>(null)
     console.log("campaign", campaign)
     console.log(campaign.campaignId)
 
@@ -54,7 +55,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 },
                 resourceName: "explorationWellCostProfile",
                 resourceId: campaign.campaignId,
-                resourceProfileId: campaign.campaignId,
                 resourcePropertyKey: "rigMobDemobProfile",
                 overridable: true,
                 editable: true,
@@ -74,7 +74,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 },
                 resourceName: "explorationWellCostProfile",
                 resourceId: campaign.campaignId,
-                resourceProfileId: campaign.campaignId,
                 resourcePropertyKey: "rigUpgradingProfile",
                 overridable: true,
                 editable: true,
@@ -94,7 +93,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 },
                 resourceName: "explorationWellCostProfile",
                 resourceId: campaign.campaignId,
-                resourceProfileId: campaign.campaignId,
                 resourcePropertyKey: "campaignWell",
                 overridable: true,
                 editable: true,
@@ -208,6 +206,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                             includeFooter
                             totalRowName="Total"
                             addEdit={addEdit}
+                            gridRef={ExplorationCampaignGridRef}
                         />
                     </div>
                 </div>
