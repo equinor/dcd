@@ -43,6 +43,8 @@ stages:
                           inputs:
                             targetType: 'inline'
                             script: |
+                              # Change to the frontend directory
+                              cd $(Pipeline.Workspace)/ConceptApp/frontend
                               # Install fusion-framework-cli
                               npm install -g @equinor/fusion-framework-cli
                               # Run the npx command to upload the app
