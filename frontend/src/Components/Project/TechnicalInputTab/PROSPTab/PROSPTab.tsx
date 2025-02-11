@@ -3,11 +3,10 @@ import {
     Button,
     Input,
     Progress,
-    Switch,
     InputWrapper,
     Card,
 } from "@equinor/eds-core-react"
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Grid from "@mui/material/Grid2"
 
 import { GetProspService } from "@/Services/ProspService"
@@ -26,7 +25,6 @@ const PROSPTab = () => {
     const { editMode } = useAppContext()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
-    const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
@@ -121,20 +119,9 @@ const PROSPTab = () => {
                     )}
             </Grid>
             <Grid size={12} container justifyContent="flex-end">
-                <Grid>
-                    <Switch
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            setCheck(e.target.checked)
-                        }}
-                        checked={check}
-                        label="Advance settings"
-                        disabled={isEditDisabled || !editMode}
-                    />
-                </Grid>
                 <Grid size={12}>
                     <PROSPCaseTable
                         driveItems={driveItems}
-                        check={check}
                     />
                 </Grid>
             </Grid>

@@ -2,7 +2,6 @@ using System.Web;
 
 using api.Features.Prosp.Exceptions;
 using api.Features.Prosp.Models;
-using api.Models;
 
 using Microsoft.Graph;
 
@@ -174,7 +173,7 @@ public class ProspSharepointImportService(
             }
 
             var caseId = new Guid(importDto.Id);
-            await prospExcelImportService.ClearImportedProspData(caseId, projectId);
+            await prospExcelImportService.ClearImportedProspData(caseId);
         }
 
         var siteId = (await GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)).FirstOrDefault();
@@ -214,10 +213,8 @@ public class ProspSharepointImportService(
 
             foreach (var itemInfo in dtos.Where(importDto => importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
             {
-                var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside, itemInfo.Transport);
                 await prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
-                    assets,
                     itemInfo.SharePointFileId,
                     itemInfo.SharePointFileName,
                     itemInfo.SharePointFileUrl);
@@ -231,17 +228,5 @@ public class ProspSharepointImportService(
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
         var documentLibraryName = parentRefPath.Split('/')[3];
         return await GetDocumentLibraryDriveId(siteId, documentLibraryName);
-    }
-
-    private static Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
-    {
-        return new Dictionary<string, bool>
-        {
-            { nameof(Surf), surf },
-            { nameof(Topside), topside },
-            { nameof(Substructure), substructure },
-            { nameof(Transport), transport },
-            { nameof(OnshorePowerSupply), true }
-        };
     }
 }

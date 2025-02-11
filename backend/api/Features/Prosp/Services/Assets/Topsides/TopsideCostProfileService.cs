@@ -7,7 +7,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Prosp.Services.Assets;
+namespace api.Features.Prosp.Services.Assets.Topsides;
 
 public class TopsideCostProfileService(DcdDbContext context, RecalculationService recalculationService)
 {

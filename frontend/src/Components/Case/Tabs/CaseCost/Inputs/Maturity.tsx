@@ -3,7 +3,7 @@ import { useParams } from "react-router"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 
 interface props {
-    surfData: Components.Schemas.SurfOverviewDto
+    surfData: Components.Schemas.SurfDto
     projectId: string
     addEdit: any
 }
@@ -21,7 +21,7 @@ const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
     const addMaturityEdit = (e: any) => {
         const newValue = Number(e.newResourceObject.maturity)
         const previousResourceObject = structuredClone(surfData)
-        const newResourceObject: Components.Schemas.SurfOverviewDto = structuredClone(surfData)
+        const newResourceObject: Components.Schemas.SurfDto = structuredClone(surfData)
         newResourceObject.maturity = newValue as Components.Schemas.Maturity
 
         addEdit({
