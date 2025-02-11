@@ -27,23 +27,28 @@ stages:
                           inputs:
                             artifact: ConceptApp
 
-                        - task: FusionApp@2
-                          displayName: 'Deploying app'
+                        - task: AzureCLI@2
+                          displayName: 'Get Fusion Token'
                           inputs:
-                            action: deploy
-                            appKey: 'conceptapp'
-                            bundlePath: '$(Agent.BuildDirectory)/conceptapp.zip'
-                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
-                            tokenResource: ${{ parameters.FusionEnvId }}
-                            portalUrl: ${{ parameters.portalUrl }}
+                            azureSubscription: "dcd-pipeline-sp"
+                            scriptType: 'bash'
+                            scriptLocation: 'inlineScript'
+                            inlineScript: |
+                              az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
+                              FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
+                              echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
 
-                        - task: FusionApp@2
+                        - task: Bash@3
+                          displayName: 'Install fusion-framework-cli and Upload to Fusion'
                           inputs:
-                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
-                            portalUrl: ${{ parameters.portalUrl }}
-                            action: 'Publish'
-                            appKey: 'conceptapp'
-                            environment: ${{ parameters.FusionEnvId }}
+                            targetType: 'inline'
+                            script: |
+                              # Install fusion-framework-cli
+                              npm install -g @equinor/fusion-framework-cli
+                              # Run the npx command to upload the app
+                              npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.envshortname }}
+                          env:
+                            FUSION_TOKEN: $(FUSION_TOKEN)
 
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
@@ -79,7 +84,7 @@ stages:
                           $AzureClientId = "${{ parameters.SpAzureClientId }}"
                           $AzureTenantId = "${{ parameters.AzureTenantId }}"
                           $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
-                          
+
                           $url = "https://api.radix.equinor.com/api/v1/applications/dcd/pipelines/build-deploy"
                           az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId  --allow-no-subscriptions
                           $radixToken = az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv
@@ -92,8 +97,8 @@ stages:
                           }
                           '@
 
-                          $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post                          
-                          $pipelineName = $result.name                         
+                          $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post
+                          $pipelineName = $result.name
                           Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
                           Write-Host "Done. JobName:" $(radixJobName)
 
