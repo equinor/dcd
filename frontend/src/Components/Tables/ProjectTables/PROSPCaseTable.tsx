@@ -23,7 +23,6 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface Props {
     driveItems: DriveItem[] | undefined
-    check: boolean
 }
 interface RowData {
     id: string,
@@ -41,7 +40,6 @@ interface RowData {
 }
 const PROSPCaseList = ({
     driveItems,
-    check,
 }: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
@@ -253,23 +251,6 @@ const PROSPCaseList = ({
             setIsApplying(false)
         }
     }, [])
-
-    useEffect(() => {
-        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
-        const newColumnDefs = [...columnDefs]
-        const columnData: any = []
-        newColumnDefs.forEach((cd) => {
-            if (assetFields.indexOf(cd.field) > -1) {
-                const colDef = { ...cd }
-                columnData.push(colDef)
-            } else {
-                columnData.push(cd)
-            }
-        })
-        if (columnData.length > 0) {
-            setColumnDefs(columnData)
-        }
-    }, [check])
 
     useEffect(() => {
         casesToRowData()
