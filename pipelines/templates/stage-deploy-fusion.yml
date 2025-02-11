@@ -49,6 +49,7 @@ stages:
                         - task: Bash@3
                           displayName: 'Install fusion-framework-cli and Upload to Fusion'
                           inputs:
+                            workingDir: frontend
                             targetType: 'inline'
                             script: |
                               # List files in the current directory
