@@ -4,7 +4,7 @@ import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 
 import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import ProjectDetails from "./Components/Project/ProjectDetails"
 import CasesDetails from "./Components/ActiveCases/CasesDetails"
 import CurrentCaseEditHistory from "./Components/EditHistory/CurrentCaseEditHistory"

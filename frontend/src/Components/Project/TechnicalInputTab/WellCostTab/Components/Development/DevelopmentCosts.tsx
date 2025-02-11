@@ -5,7 +5,7 @@ import {
 } from "react"
 
 import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { useDebounce } from "@/Hooks/useDebounce"
 import OperationalWellCost from "../Shared/CostCell"
 import {

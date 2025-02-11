@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { getImageService } from "../../Services/ImageService"
 import { useAppStore } from "../../Store/AppStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { useProjectContext } from "@/Store/ProjectContext"
 
 const UploadBox = styled(Box)`

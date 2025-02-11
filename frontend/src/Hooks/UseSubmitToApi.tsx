@@ -195,45 +195,45 @@ export const useSubmitToApi = () => {
 
         try {
             switch (resourceName) {
-                case "case":
-                    return await updateCase({
-                        projectId, caseId, resourceObject,
-                    })
+            case "case":
+                return await updateCase({
+                    projectId, caseId, resourceObject,
+                })
 
-                case "topside":
-                    return await updateTopside({
-                        projectId, caseId, resourceObject,
-                    })
-                    
-                case "surf":
-                    return await updateSurf({
-                        projectId, caseId, resourceObject,
-                    })
-                    
-                case "substructure":
-                    return await updateSubstructure({
-                        projectId, caseId, resourceObject,
-                    })
-                    
-                case "transport":
-                    return await updateTransport({
-                        projectId, caseId, resourceObject,
-                    })
-                    
-                case "onshorePowerSupply":
-                    return await updateOnshorePowerSupply({
-                        projectId, caseId, resourceObject,
-                    })
-                    
-                case "drainageStrategy":
-                    return await updateDrainageStrategy({
-                        projectId, caseId, resourceObject,
-                    })
+            case "topside":
+                return await updateTopside({
+                    projectId, caseId, resourceObject,
+                })
 
-                case "explorationWellDrillingSchedule":
-                    return await createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
+            case "surf":
+                return await updateSurf({
+                    projectId, caseId, resourceObject,
+                })
+
+            case "substructure":
+                return await updateSubstructure({
+                    projectId, caseId, resourceObject,
+                })
+
+            case "transport":
+                return await updateTransport({
+                    projectId, caseId, resourceObject,
+                })
+
+            case "onshorePowerSupply":
+                return await updateOnshorePowerSupply({
+                    projectId, caseId, resourceObject,
+                })
+
+            case "drainageStrategy":
+                return await updateDrainageStrategy({
+                    projectId, caseId, resourceObject,
+                })
+
+            case "explorationWellDrillingSchedule":
+                return await createOrUpdateDrillingSchedule(
+                    projectId,
+                    caseId,
                         resourceId!,
                         wellId!,
                         drillingScheduleId!,
@@ -253,12 +253,12 @@ export const useSubmitToApi = () => {
                                 drillingScheduleId!,
                                 resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                             ),
-                    )
-                    
-                case "developmentWellDrillingSchedule":
-                    return await createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
+                )
+
+            case "developmentWellDrillingSchedule":
+                return await createOrUpdateDrillingSchedule(
+                    projectId,
+                    caseId,
                         resourceId!,
                         wellId!,
                         drillingScheduleId!,
@@ -278,7 +278,7 @@ export const useSubmitToApi = () => {
                                 drillingScheduleId!,
                                 resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                             ),
-                    )
+                )
             }
 
             const profileNameMap = new Map<string, string>([
@@ -306,7 +306,7 @@ export const useSubmitToApi = () => {
                     saveFunction: await (await GetCaseService()).saveProfile(
                         projectId,
                         caseId,
-                        {...resourceObject, profileType: profileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesDto,
+                        { ...resourceObject, profileType: profileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesDto,
                     ),
                 })
             }
@@ -342,11 +342,11 @@ export const useSubmitToApi = () => {
                     saveFunction: await (await GetCaseService()).saveOverrideProfile(
                         projectId,
                         caseId,
-                        {...resourceObject, profileType: overrideProfileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesOverrideDto,
+                        { ...resourceObject, profileType: overrideProfileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesOverrideDto,
                     ),
                 })
             }
-            
+
             return { success: false, error: new Error("Service not found") }
         } catch (error) {
             submitApiLogger.error("Service not found or error occurred", error)

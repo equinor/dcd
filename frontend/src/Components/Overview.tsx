@@ -17,15 +17,13 @@ import { useModalContext } from "@/Store/ModalContext"
 import { useAppStore } from "@/Store/AppStore"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import { useLocalStorage } from "@/Hooks/useLocalStorage"
+import { useEditCase, useDataFetch, useLocalStorage } from "@/Hooks"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import SidebarWrapper from "./Sidebar/SidebarWrapper"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
-import useEditCase from "@/Hooks/useEditCase"
 
 const ControlsWrapper = styled.div`
     position: sticky;

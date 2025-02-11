@@ -18,7 +18,7 @@ import { GetProspService } from "@/Services/ProspService"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 interface Props {
     sharePointFiles: Components.Schemas.SharePointFileDto[]

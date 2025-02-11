@@ -1,26 +1,21 @@
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router"
-import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
 
 import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useDataFetch } from "@/Hooks/useDataFetch"
 import { Concept, Currency } from "@/Models/enums"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
 `
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId, revisionId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -53,12 +48,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         12: "Cr13 + PIP",
         13: "HDPE lined CS (Water injection only)",
     }
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside

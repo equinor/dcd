@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid2"
 
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileNames } from "@/Models/Interfaces"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency } from "@/Models/enums"
 

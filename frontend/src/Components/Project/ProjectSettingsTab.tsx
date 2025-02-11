@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import useEditProject from "@/Hooks/useEditProject"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 import { Currency, PhysUnit } from "@/Models/enums"
 

@@ -1,7 +1,6 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
-import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
@@ -9,13 +8,14 @@ import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
 import { useAppStore } from "@/Store/AppStore"
 import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
-import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { useCaseApiData } from "@/Hooks"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppStore()
-    const { caseId, revisionId, tab } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+    const { tab } = useParams()
+    const { apiData } = useCaseApiData()
+    const { projectId } = useProjectContext()
 
     const [description, setDescription] = useState("")
 
@@ -34,17 +34,11 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
         3: "Subsea booster pumps",
     }
 
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
-
     useEffect(() => {
         if (apiData && apiData.case.description !== undefined) {
             setDescription(apiData.case.description)
         }
-    }, [apiData, isRevision])
+    }, [apiData])
 
     if (!apiData || !projectId) {
         return <CaseDescriptionTabSkeleton />

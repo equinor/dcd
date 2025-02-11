@@ -5,8 +5,6 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
@@ -14,18 +12,15 @@ import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useCaseStore } from "@/Store/CaseStore"
 import { defaultAxesData } from "@/Utils/common"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { useCaseApiData } from "@/Hooks"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId, revisionId } = useParams()
     const { activeTabCase } = useCaseStore()
-    const { projectId, isRevision } = useProjectContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -52,11 +47,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         1: "Injection",
     }
 
-    const { data: apiData, isLoading } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
+    const { apiData } = useCaseApiData()
 
     useEffect(() => {
         if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
@@ -89,7 +80,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
 
     if (activeTabCase !== 1) { return null }
 
-    if (isLoading || !apiData) {
+    if (!apiData) {
         return <CaseProductionProfilesTabSkeleton />
     }
 

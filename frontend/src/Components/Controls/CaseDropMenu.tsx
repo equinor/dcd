@@ -24,7 +24,7 @@ import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Store/ProjectContext"
 import Modal from "@/Components/Modal/Modal"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean

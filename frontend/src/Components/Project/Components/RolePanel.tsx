@@ -10,7 +10,7 @@ import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
 import { UserRole } from "@/Models/AccessManagement"
 import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 interface RolePanelProps {
     isSmallScreen: boolean;

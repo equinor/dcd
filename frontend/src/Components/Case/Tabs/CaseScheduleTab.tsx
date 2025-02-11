@@ -1,7 +1,6 @@
 import Grid from "@mui/material/Grid2"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
-import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
 
 import {
@@ -17,8 +16,8 @@ import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleT
 import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useAppStore } from "@/Store/AppStore"
+import { useCaseApiData } from "@/Hooks"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -83,14 +82,10 @@ const DECISION_GATES: DecisionGate[] = [
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppStore()
-    const { caseId, revisionId, tab } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+    const { tab } = useParams()
+    const { projectId } = useProjectContext()
 
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
+    const { apiData } = useCaseApiData()
 
     if (!apiData || !projectId) {
         return (<CaseScheduleTabSkeleton />)

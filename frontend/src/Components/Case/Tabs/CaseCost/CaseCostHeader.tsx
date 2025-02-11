@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid2"
 
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
