@@ -15,6 +15,7 @@ import { cellStyleRightAlign } from "@/Utils/common"
 import { GetWellService } from "@/Services/WellService"
 import { TableWell } from "@/Models/Wells"
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
+import { Currency } from "@/Models/enums"
 
   interface WellsTableProps {
     rowData: TableWell[]
@@ -150,7 +151,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             {
                 field: "wellCost",
                 headerName: `Cost (${
-                    revisionAndProjectData?.commonProjectAndRevisionData.currency === 1
+                    revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK
                         ? "mill NOK"
                         : "mill USD"
                 })`,
@@ -159,7 +160,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 headerComponentParams: {
                     columnHeader: "Cost",
                     unit:
-              revisionAndProjectData?.commonProjectAndRevisionData.currency === 1
+              revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK
                   ? "mill NOK"
                   : "mill USD",
                 },

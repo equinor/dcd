@@ -13,6 +13,7 @@ import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { useEditPeople } from "@/Hooks/useEditPeople"
+import { ProjectMemberRole } from "@/Models/enums"
 
 const AccessManagementTab = () => {
     const { projectId } = useProjectContext()
@@ -33,11 +34,11 @@ const AccessManagementTab = () => {
         : null
 
     const viewers = useMemo(
-        () => projectData?.projectMembers?.filter((m) => m.role === 0) ?? [],
+        () => projectData?.projectMembers?.filter((m) => m.role === ProjectMemberRole.Observer) ?? [],
         [projectData],
     )
     const editors = useMemo(
-        () => projectData?.projectMembers?.filter((m) => m.role === 1) ?? [],
+        () => projectData?.projectMembers?.filter((m) => m.role === ProjectMemberRole.Editor) ?? [],
         [projectData],
     )
 
