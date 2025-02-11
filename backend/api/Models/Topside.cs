@@ -10,14 +10,12 @@ public class Topside : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required string Name { get; set; }
     public required double DryWeight { get; set; }
     public required double OilCapacity { get; set; }
     public required double GasCapacity { get; set; }
     public required double WaterInjectionCapacity { get; set; }
     public required ArtificialLift ArtificialLift { get; set; }
     public required Maturity Maturity { get; set; }
-    public required Currency Currency { get; set; }
     public required double FuelConsumption { get; set; }
     public required double FlaredGas { get; set; }
     public required int ProducerCount { get; set; }

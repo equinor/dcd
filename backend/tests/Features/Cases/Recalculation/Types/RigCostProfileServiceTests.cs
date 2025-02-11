@@ -14,7 +14,7 @@ public class RigCostProfileServiceTests
         // Arrange
         var explorationCampaign1 = new Campaign
         {
-            CampaignType = CampaignTypes.ExplorationCampaign,
+            CampaignType = CampaignType.ExplorationCampaign,
             RigUpgradingCost = 2,
             RigMobDemobCost = 5,
             RigUpgradingCostValues = [0.3, 0, 0, 0.7],
@@ -25,7 +25,7 @@ public class RigCostProfileServiceTests
 
         var explorationCampaign2 = new Campaign
         {
-            CampaignType = CampaignTypes.ExplorationCampaign,
+            CampaignType = CampaignType.ExplorationCampaign,
             RigUpgradingCost = 1,
             RigMobDemobCost = 8,
             RigUpgradingCostValues = [0.2, 0.1, 0.7],
@@ -36,7 +36,7 @@ public class RigCostProfileServiceTests
 
         var developmentCampaign = new Campaign
         {
-            CampaignType = CampaignTypes.DevelopmentCampaign,
+            CampaignType = CampaignType.DevelopmentCampaign,
             RigUpgradingCost = 3,
             RigMobDemobCost = 4,
             RigUpgradingCostValues = [0.5, 0.2, 0.3],

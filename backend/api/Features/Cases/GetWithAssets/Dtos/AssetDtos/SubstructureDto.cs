@@ -8,11 +8,8 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 public class SubstructureDto
 {
     [Required] public required Guid Id { get; set; }
-    [Required] public required string Name { get; set; }
-    [Required] public required Guid ProjectId { get; set; }
     [Required] public required double DryWeight { get; set; }
     [Required] public required Maturity Maturity { get; set; }
-    [Required] public required Currency Currency { get; set; }
     [Required] public required string ApprovedBy { get; set; }
     [Required] public required int CostYear { get; set; }
     public required DateTime? ProspVersion { get; set; }

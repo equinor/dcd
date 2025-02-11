@@ -117,9 +117,6 @@ public class ProspExcelImportService(
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, ProspCellReferences.Surf.VersionDate);
         var costYear = ReadIntValue(cellData, ProspCellReferences.Surf.CostYear);
-        var importedCurrency = ReadIntValue(cellData, ProspCellReferences.Surf.ImportedCurrency);
-        var currency = importedCurrency == 1 ? Currency.NOK :
-            importedCurrency == 2 ? Currency.USD : 0;
 
         var updatedSurfDto = new ProspUpdateSurfDto
         {
@@ -131,7 +128,6 @@ public class ProspExcelImportService(
             ArtificialLift = artificialLift,
             Source = Source.Prosp,
             ProspVersion = versionDate,
-            Currency = currency,
             CostYear = costYear,
             DG3Date = dG3Date,
             DG4Date = dG4Date,
@@ -214,7 +210,6 @@ public class ProspExcelImportService(
             CO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile,
             Source = Source.Prosp,
             ProspVersion = versionDate,
-            Currency = currency,
             CostYear = costYear,
             FacilityOpex = facilityOpex,
             PeakElectricityImported = peakElectricityImported
@@ -251,9 +246,7 @@ public class ProspExcelImportService(
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, ProspCellReferences.SubStructure.VersionDate);
         var costYear = ReadIntValue(cellData, ProspCellReferences.SubStructure.CostYear);
-        var importedCurrency = ReadIntValue(cellData, ProspCellReferences.SubStructure.ImportedCurrency);
-        var currency = importedCurrency == 1 ? Currency.NOK :
-            importedCurrency == 2 ? Currency.USD : 0;
+
         var updateSubstructureDto = new ProspUpdateSubstructureDto
         {
             DryWeight = dryWeight,
@@ -262,7 +255,6 @@ public class ProspExcelImportService(
             DG4Date = dG4Date,
             Source = Source.Prosp,
             ProspVersion = versionDate,
-            Currency = currency,
             CostYear = costYear
         };
 
@@ -304,7 +296,6 @@ public class ProspExcelImportService(
             DG4Date = dG4Date,
             Source = Source.Prosp,
             ProspVersion = versionDate,
-            Currency = currency,
             CostYear = costYear,
             OilExportPipelineLength = oilExportPipelineLength,
             GasExportPipelineLength = gasExportPipelineLength

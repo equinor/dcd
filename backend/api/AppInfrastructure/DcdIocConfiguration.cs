@@ -1,4 +1,7 @@
 using api.AppInfrastructure.Authorization;
+using api.Features.Assets.CaseAssets.Campaigns.Create;
+using api.Features.Assets.CaseAssets.Campaigns.Delete;
+using api.Features.Assets.CaseAssets.Campaigns.Get;
 using api.Features.Assets.CaseAssets.Campaigns.Update;
 using api.Features.Assets.CaseAssets.CampaignWells.Get;
 using api.Features.Assets.CaseAssets.CampaignWells.Save;
@@ -138,11 +141,15 @@ public static class DcdIocConfiguration
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
-        /* Case assets */
+        /* Drilling campaigns */
         services.AddScoped<UpdateCampaignService>();
+        services.AddScoped<CreateCampaignService>();
         services.AddScoped<SaveCampaignWellService>();
         services.AddScoped<GetCampaignWellService>();
+        services.AddScoped<GetCampaignService>();
+        services.AddScoped<DeleteCampaignService>();
 
+        /* Case assets */
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<UpdateOnshorePowerSupplyService>();
         services.AddScoped<UpdateSubstructureService>();

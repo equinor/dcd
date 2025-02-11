@@ -48,7 +48,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
 
         var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
-        var existingCampaign = await context.Campaigns.SingleAsync(x => x.CaseId == caseId && x.CampaignType == CampaignTypes.ExplorationCampaign);
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.CaseId == caseId && x.CampaignType == CampaignType.ExplorationCampaign);
 
         var newExplorationWell = new ExplorationWell
         {
@@ -103,7 +103,7 @@ public class DrillingScheduleService(DcdDbContext context, RecalculationService 
 
         var existingWell = await context.Wells.SingleAsync(x => x.ProjectId == projectId && x.Id == wellId);
 
-        var existingCampaign = await context.Campaigns.SingleAsync(x => x.CaseId == caseId && x.CampaignType == CampaignTypes.DevelopmentCampaign);
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.CaseId == caseId && x.CampaignType == CampaignType.DevelopmentCampaign);
 
         var newDevelopmentWell = new DevelopmentWell
         {

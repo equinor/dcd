@@ -207,6 +207,9 @@ declare namespace Components {
             co2Intensity: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
+        export interface CreateCampaignDto {
+            campaignType: string;
+        }
         export interface CreateCaseDto {
             name: string;
             description: string;
@@ -259,8 +262,6 @@ declare namespace Components {
         }
         export interface DrainageStrategyDto {
             id: string; // uuid
-            projectId: string; // uuid
-            name: string;
             description: string;
             nglYield: number; // double
             producerCount: number; // int32
@@ -330,8 +331,6 @@ declare namespace Components {
         export type NoAccessReason = 1 | 2 | 3 | 4; // int32
         export interface OnshorePowerSupplyDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             lastChangedDate: string | null; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
@@ -429,11 +428,8 @@ declare namespace Components {
         export type Source = 0 | 1; // int32
         export interface SubstructureDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             dryWeight: number; // double
             maturity: Maturity /* int32 */;
-            currency: Currency /* int32 */;
             approvedBy: string;
             costYear: number; // int32
             prospVersion: string | null; // date-time
@@ -449,8 +445,6 @@ declare namespace Components {
         }
         export interface SurfDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             cessationCost: number; // double
             maturity: Maturity /* int32 */;
             infieldPipelineSystemLength: number; // double
@@ -462,7 +456,6 @@ declare namespace Components {
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
             productionFlowline: ProductionFlowline /* int32 */;
-            currency: Currency /* int32 */;
             lastChangedDate: string; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
@@ -496,15 +489,12 @@ declare namespace Components {
         }
         export interface TopsideDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             dryWeight: number; // double
             oilCapacity: number; // double
             gasCapacity: number; // double
             waterInjectionCapacity: number; // double
             artificialLift: ArtificialLift /* int32 */;
             maturity: Maturity /* int32 */;
-            currency: Currency /* int32 */;
             fuelConsumption: number; // double
             flaredGas: number; // double
             producerCount: number; // int32
@@ -539,12 +529,9 @@ declare namespace Components {
         }
         export interface TransportDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
             maturity: Maturity /* int32 */;
             gasExportPipelineLength: number; // double
             oilExportPipelineLength: number; // double
-            currency: Currency /* int32 */;
             lastChangedDate: string | null; // date-time
             costYear: number; // int32
             source: Source /* int32 */;
@@ -663,7 +650,6 @@ declare namespace Components {
         }
         export interface UpdateSubstructureDto {
             dryWeight?: number; // double
-            currency?: Currency /* int32 */;
             costYear?: number; // int32
             source?: Source /* int32 */;
             concept?: Concept /* int32 */;
@@ -683,7 +669,6 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
-            currency?: Currency /* int32 */;
             costYear?: number; // int32
             source?: Source /* int32 */;
             approvedBy?: string | null;
@@ -701,7 +686,6 @@ declare namespace Components {
             gasCapacity?: number; // double
             waterInjectionCapacity?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
-            currency?: Currency /* int32 */;
             fuelConsumption?: number; // double
             flaredGas?: number; // double
             producerCount?: number; // int32
@@ -725,7 +709,6 @@ declare namespace Components {
         export interface UpdateTransportDto {
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
-            currency?: Currency /* int32 */;
             costYear?: number; // int32
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
@@ -880,7 +863,39 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateCampaignDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CampaignDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignId {
+        namespace Delete {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
         namespace Put {
             namespace Parameters {
                 export type CampaignId = string; // uuid

@@ -55,3 +55,8 @@ export enum Source {
     ConceptApp = 0,
     Prosp = 1,
 }
+
+export enum CampaignType {
+    DevelopmentCampaign = 1,
+    ExplorationCampaign = 2,
+}

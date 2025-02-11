@@ -108,8 +108,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             DevelopmentRigUpgradingCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigUpgradingCostProfileOverride)),
             DevelopmentRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemob)),
             DevelopmentRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemobOverride)),
-            DevelopmentCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignTypes.DevelopmentCampaign).Select(CampaignMapper.MapToDto).ToList(),
-            ExplorationCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignTypes.ExplorationCampaign).Select(CampaignMapper.MapToDto).ToList()
+            DevelopmentCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.DevelopmentCampaign).Select(CampaignMapper.MapToDto).ToList(),
+            ExplorationCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.ExplorationCampaign).Select(CampaignMapper.MapToDto).ToList()
         };
     }
 

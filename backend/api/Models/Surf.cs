@@ -10,7 +10,6 @@ public class Surf : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required string Name { get; set; }
     public required double CessationCost { get; set; }
     public required Maturity Maturity { get; set; }
     public required double InfieldPipelineSystemLength { get; set; }
@@ -22,7 +21,6 @@ public class Surf : IChangeTrackable, IDateTrackedEntity
     public required int GasInjectorCount { get; set; }
     public required int WaterInjectorCount { get; set; }
     public required ProductionFlowline ProductionFlowline { get; set; }
-    public required Currency Currency { get; set; }
     public required DateTime? LastChangedDate { get; set; }
     public required int CostYear { get; set; }
     public required Source Source { get; set; }

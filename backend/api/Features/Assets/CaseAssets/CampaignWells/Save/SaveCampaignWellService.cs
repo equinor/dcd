@@ -15,7 +15,7 @@ public class SaveCampaignWellService(DcdDbContext context)
 
         switch (existingCampaign.CampaignType)
         {
-            case CampaignTypes.ExplorationCampaign:
+            case CampaignType.ExplorationCampaign:
                 await SaveHandleExplorationCampaignWell(existingCampaign, campaignId, caseItem.ExplorationId, wellId, dto);
                 break;
             default:

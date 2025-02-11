@@ -6,7 +6,6 @@ namespace api.Features.Assets.CaseAssets.Substructures;
 public class UpdateSubstructureDto
 {
     public double DryWeight { get; set; }
-    public Currency Currency { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }
     public Concept Concept { get; set; }
@@ -19,7 +18,6 @@ public class UpdateSubstructureDto
 public class ProspUpdateSubstructureDto
 {
     public double DryWeight { get; set; }
-    public Currency Currency { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }
     public Concept Concept { get; set; }
