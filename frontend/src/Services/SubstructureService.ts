@@ -6,11 +6,10 @@ class SubstructureService extends __BaseService {
     public async updateSubstructure(
         projectId: string,
         caseId: string,
-        substructureId: string,
         dto: Components.Schemas.UpdateSubstructureDto,
     ): Promise<Components.Schemas.SubstructureDto> {
         const res: Components.Schemas.SubstructureDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/substructures/${substructureId}`,
+            `projects/${projectId}/cases/${caseId}/substructure`,
             { body: dto },
         )
         return res

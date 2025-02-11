@@ -9,10 +9,6 @@ public class WellProject : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required string Name { get; set; }
-    public required ArtificialLift ArtificialLift { get; set; }
-    public required Currency Currency { get; set; }
-
     public required List<DevelopmentWell> DevelopmentWells { get; set; } = [];
 
     #region Change tracking

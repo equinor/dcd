@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createLogger } from "../Utils/logger"
 
+import { createLogger } from "@/Utils/logger"
 import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
 import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
 import { GetSubstructureService } from "@/Services/SubstructureService"
@@ -198,33 +198,29 @@ export const useSubmitToApi = () => {
 
         try {
             switch (resourceName) {
-            case "case":
-                return await updateCase({
-                    projectId, caseId, resourceObject,
-                })
             case "topside":
                 return await updateTopside({
-                    projectId, caseId, resourceId, resourceObject,
+                    projectId, caseId, resourceObject,
                 })
             case "surf":
                 return await updateSurf({
-                    projectId, caseId, resourceId, resourceObject,
+                    projectId, caseId, resourceObject,
                 })
             case "substructure":
                 return await updateSubstructure({
-                    projectId, caseId, resourceId, resourceObject,
+                    projectId, caseId, resourceObject,
                 })
             case "transport":
                 return await updateTransport({
-                    projectId, caseId, resourceId, resourceObject,
+                    projectId, caseId, resourceObject,
                 })
             case "onshorePowerSupply":
                 return await updateOnshorePowerSupply({
-                    projectId, caseId, resourceId, resourceObject,
+                    projectId, caseId, resourceObject,
                 })
             case "drainageStrategy":
                 return await updateDrainageStrategy({
-                    projectId, caseId, resourceId, resourceObject,
+                    projectId, caseId, resourceObject,
                 })
             case "explorationWellDrillingSchedule":
                 return await createOrUpdateDrillingSchedule(
@@ -250,7 +246,6 @@ export const useSubmitToApi = () => {
                             resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                         ),
                 )
-
             case "developmentWellDrillingSchedule":
                 return await createOrUpdateDrillingSchedule(
                     projectId,
@@ -275,25 +270,29 @@ export const useSubmitToApi = () => {
                             resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                         ),
                 )
+            case "campaign":
+                return await updateCampaign({
+                    projectId, caseId, resourceId, resourceObject,
+                })
             default:
             }
 
             const profileNameMap = new Map<string, string>([
-                ["productionProfileOil", "ProductionProfileOil"],
-                ["additionalProductionProfileOil", "AdditionalProductionProfileOil"],
-                ["productionProfileGas", "ProductionProfileGas"],
-                ["additionalProductionProfileGas", "AdditionalProductionProfileGas"],
-                ["productionProfileWater", "ProductionProfileWater"],
-                ["productionProfileWaterInjection", "ProductionProfileWaterInjection"],
-                ["deferredOilProduction", "DeferredOilProduction"],
-                ["deferredGasProduction", "DeferredGasProduction"],
-                ["totalOtherStudiesCostProfile", "TotalOtherStudiesCostProfile"],
-                ["onshoreRelatedOPEXCostProfile", "OnshoreRelatedOPEXCostProfile"],
-                ["additionalOPEXCostProfile", "AdditionalOPEXCostProfile"],
-                ["cessationOnshoreFacilitiesCostProfile", "CessationOnshoreFacilitiesCostProfile"],
-                ["seismicAcquisitionAndProcessing", "SeismicAcquisitionAndProcessing"],
-                ["countryOfficeCost", "CountryOfficeCost"],
-                ["projectSpecificDrillingCostProfile", "ProjectSpecificDrillingCostProfile"],
+                ["additionalOPEXCostProfile", ProfileTypes.AdditionalOPEXCostProfile],
+                ["additionalProductionProfileGas", ProfileTypes.AdditionalProductionProfileGas],
+                ["additionalProductionProfileOil", ProfileTypes.AdditionalProductionProfileOil],
+                ["cessationOnshoreFacilitiesCostProfile", ProfileTypes.CessationOnshoreFacilitiesCostProfile],
+                ["countryOfficeCost", ProfileTypes.CountryOfficeCost],
+                ["deferredGasProduction", ProfileTypes.DeferredGasProduction],
+                ["deferredOilProduction", ProfileTypes.DeferredOilProduction],
+                ["onshoreRelatedOPEXCostProfile", ProfileTypes.OnshoreRelatedOPEXCostProfile],
+                ["productionProfileGas", ProfileTypes.ProductionProfileGas],
+                ["productionProfileOil", ProfileTypes.ProductionProfileOil],
+                ["productionProfileWater", ProfileTypes.ProductionProfileWater],
+                ["productionProfileWaterInjection", ProfileTypes.ProductionProfileWaterInjection],
+                ["projectSpecificDrillingCostProfile", ProfileTypes.ProjectSpecificDrillingCostProfile],
+                ["seismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing],
+                ["totalOtherStudiesCostProfile", ProfileTypes.TotalOtherStudiesCostProfile],
             ])
 
             if (profileNameMap.has(resourceName)) {
@@ -309,27 +308,27 @@ export const useSubmitToApi = () => {
             }
 
             const overrideProfileNameMap = new Map<string, string>([
-                ["productionProfileFuelFlaringAndLossesOverride", "FuelFlaringAndLossesOverride"],
-                ["productionProfileNetSalesGasOverride", "NetSalesGasOverride"],
-                ["productionProfileImportedElectricityOverride", "ImportedElectricityOverride"],
-                ["totalFeasibilityAndConceptStudiesOverride", "TotalFeasibilityAndConceptStudiesOverride"],
-                ["totalFEEDStudiesOverride", "TotalFEEDStudiesOverride"],
-                ["historicCostCostProfile", "HistoricCostCostProfile"],
-                ["wellInterventionCostProfileOverride", "WellInterventionCostProfileOverride"],
-                ["offshoreFacilitiesOperationsCostProfileOverride", "OffshoreFacilitiesOperationsCostProfileOverride"],
-                ["cessationWellsCostOverride", "CessationWellsCostOverride"],
-                ["cessationOffshoreFacilitiesCostOverride", "CessationOffshoreFacilitiesCostOverride"],
-                ["surfCostOverride", "SurfCostProfileOverride"],
-                ["topsideCostOverride", "TopsideCostProfileOverride"],
-                ["substructureCostOverride", "SubstructureCostProfileOverride"],
-                ["transportCostOverride", "TransportCostProfileOverride"],
-                ["onshorePowerSupplyCostOverride", "OnshorePowerSupplyCostProfileOverride"],
-                ["wellProjectOilProducerCostOverride", "OilProducerCostProfileOverride"],
-                ["wellProjectGasProducerCostOverride", "GasProducerCostProfileOverride"],
-                ["wellProjectWaterInjectorCostOverride", "WaterInjectorCostProfileOverride"],
-                ["wellProjectGasInjectorCostOverride", "GasInjectorCostProfileOverride"],
-                ["gAndGAdminCost", "GAndGAdminCostOverride"],
-                ["co2EmissionsOverride", "Co2EmissionsOverride"],
+                ["cessationOffshoreFacilitiesCostOverride", ProfileTypes.CessationOffshoreFacilitiesCostOverride],
+                ["cessationWellsCostOverride", ProfileTypes.CessationWellsCostOverride],
+                ["co2EmissionsOverride", ProfileTypes.Co2EmissionsOverride],
+                ["gAndGAdminCost", ProfileTypes.GAndGAdminCostOverride],
+                ["historicCostCostProfile", ProfileTypes.HistoricCostCostProfile],
+                ["offshoreFacilitiesOperationsCostProfileOverride", ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride],
+                ["onshorePowerSupplyCostOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride],
+                ["productionProfileFuelFlaringAndLossesOverride", ProfileTypes.FuelFlaringAndLossesOverride],
+                ["productionProfileImportedElectricityOverride", ProfileTypes.ImportedElectricityOverride],
+                ["productionProfileNetSalesGasOverride", ProfileTypes.NetSalesGasOverride],
+                ["substructureCostOverride", ProfileTypes.SubstructureCostProfileOverride],
+                ["surfCostOverride", ProfileTypes.SurfCostProfileOverride],
+                ["topsideCostOverride", ProfileTypes.TopsideCostProfileOverride],
+                ["totalFeasibilityAndConceptStudiesOverride", ProfileTypes.TotalFeasibilityAndConceptStudiesOverride],
+                ["totalFEEDStudiesOverride", ProfileTypes.TotalFEEDStudiesOverride],
+                ["transportCostOverride", ProfileTypes.TransportCostProfileOverride],
+                ["wellInterventionCostProfileOverride", ProfileTypes.WellInterventionCostProfileOverride],
+                ["wellProjectGasInjectorCostOverride", ProfileTypes.GasInjectorCostProfileOverride],
+                ["wellProjectGasProducerCostOverride", ProfileTypes.GasProducerCostProfileOverride],
+                ["wellProjectOilProducerCostOverride", ProfileTypes.OilProducerCostProfileOverride],
+                ["wellProjectWaterInjectorCostOverride", ProfileTypes.WaterInjectorCostProfileOverride],
             ])
 
             if (overrideProfileNameMap.has(resourceName)) {

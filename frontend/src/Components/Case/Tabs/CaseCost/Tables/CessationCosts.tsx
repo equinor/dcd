@@ -4,6 +4,7 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -35,7 +36,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         const newCessationTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Cessation - Development wells",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationWellsCostData,
                 resourceName: "cessationWellsCostOverride",
                 resourceId: caseData.caseId,
@@ -46,7 +47,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             },
             {
                 profileName: "Cessation - Offshore facilities",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationOffshoreFacilitiesCostData,
                 resourceName: "cessationOffshoreFacilitiesCostOverride",
                 resourceId: caseData.caseId,
@@ -57,7 +58,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             },
             {
                 profileName: "CAPEX - Cessation - Onshore facilities",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationOnshoreFacilitiesCostProfileData,
                 resourceName: "cessationOnshoreFacilitiesCostProfile",
                 resourceId: caseData.caseId,

@@ -413,16 +413,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("RigMobDemob")
-                        .HasColumnType("float");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1481,9 +1471,6 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ArtificialLift")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1492,13 +1479,6 @@ namespace api.Migrations
 
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");

@@ -8,10 +8,6 @@ public class Exploration : IChangeTrackable, IDateTrackedEntity
 
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
-
-    public required string Name { get; set; }
-    public required double RigMobDemob { get; set; }
-    public required Currency Currency { get; set; }
     public required List<ExplorationWell> ExplorationWells { get; set; } = [];
 
     #region Change tracking
