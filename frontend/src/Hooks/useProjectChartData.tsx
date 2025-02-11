@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { compareCasesQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 interface TableCompareCase {
     id: string,

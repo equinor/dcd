@@ -18,7 +18,7 @@ import { useAppStore } from "@/Store/AppStore"
 import { cellStyleRightAlign } from "@/Utils/common"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 const StyledContainer = styled.div`
     display: flex;

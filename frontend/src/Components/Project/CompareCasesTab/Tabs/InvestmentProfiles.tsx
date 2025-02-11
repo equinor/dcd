@@ -1,7 +1,7 @@
 import React from "react"
 import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
-import { useDataFetch } from "@/Hooks/useDataFetch"
 import { Currency } from "@/Models/enums"
+import { useDataFetch } from "@/Hooks"
 
 interface InvestmentProfilesProps {
     investmentProfilesChartData?: object

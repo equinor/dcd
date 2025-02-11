@@ -6,7 +6,7 @@ import styled from "styled-components"
 
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useRevisions } from "@/Hooks/useRevision"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 interface MenuControlsContainerProps {
     $hasRevisions: boolean

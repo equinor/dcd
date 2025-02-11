@@ -7,7 +7,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import ProjectControls from "./ProjectControls"

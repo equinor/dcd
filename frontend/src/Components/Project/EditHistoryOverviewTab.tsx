@@ -3,7 +3,7 @@ import { Typography } from "@equinor/eds-core-react"
 
 import CaseEditHistory from "@/Components/Sidebar/Components/EditHistory/CaseEditHistory"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const Container = styled.div`

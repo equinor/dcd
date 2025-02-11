@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { PhysUnit } from "@/Models/enums"
 

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
 import Modal from "./Modal"
 import { useModalContext } from "@/Store/ModalContext"
-import { useLocalStorage } from "@/Hooks/useLocalStorage"
+import { useLocalStorage } from "@/Hooks"
 import { Version } from "@/Models/Interfaces"
 import { versions, whatsNewUpdates } from "@/Utils/whatsNewData"
 

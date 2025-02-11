@@ -19,12 +19,11 @@ import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/DateUtils"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import useEditProject from "@/Hooks/useEditProject"
-import useEditCase from "@/Hooks/useEditCase"
+import {
+    useDataFetch, useEditProject, useEditCase, useCaseApiData,
+} from "@/Hooks"
 import UndoControls from "./UndoControls"
 import CaseTabs from "./TabNavigators/CaseTabs"
 
@@ -81,29 +80,17 @@ const CaseControls: React.FC<props> = ({
     caseId,
     handleEdit,
 }) => {
-    const { isRevision } = useProjectContext()
     const nameInputRef = useRef<HTMLInputElement>(null)
     const { addProjectEdit } = useEditProject()
-    const { setSnackBarMessage, editMode } = useAppStore()
+    const { editMode } = useAppStore()
     const { addEdit } = useEditCase()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()
-    const { revisionId } = useParams()
+    const { apiData } = useCaseApiData()
 
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-
-    const { data: apiData, error } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-        refetchInterval: 20000,
-    })
-
-    if (error) {
-        setSnackBarMessage(error.message)
-    }
 
     useEffect(() => {
         if (apiData && apiData.case.name) {

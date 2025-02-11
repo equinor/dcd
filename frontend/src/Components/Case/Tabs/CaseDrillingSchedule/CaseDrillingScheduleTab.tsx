@@ -5,25 +5,20 @@ import {
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseStore } from "@/Store/CaseStore"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseStore()
-    const { caseId, revisionId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -43,12 +38,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [, setSidetrackCount] = useState<number>(0)
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
 
     const wells = revisionAndProjectData?.commonProjectAndRevisionData.wells
 
@@ -114,8 +103,8 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const caseData = apiData.case
-    const explorationId = apiData.explorationId
-    const wellProjectId = apiData.wellProjectId
+    const { explorationId } = apiData
+    const { wellProjectId } = apiData
     const developmentWellsData = apiData.developmentWells
     const explorationWellsData = apiData.explorationWells
 

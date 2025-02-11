@@ -32,7 +32,7 @@ import {
 import { GetCaseService } from "@/Services/CaseService"
 import { useModalContext } from "@/Store/ModalContext"
 import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppStore()

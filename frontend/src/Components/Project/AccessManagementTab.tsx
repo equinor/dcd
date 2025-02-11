@@ -11,7 +11,7 @@ import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkelet
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { useEditPeople } from "@/Hooks/useEditPeople"
 import { ProjectMemberRole } from "@/Models/enums"
 
