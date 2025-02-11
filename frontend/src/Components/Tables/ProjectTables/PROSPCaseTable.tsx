@@ -277,7 +277,7 @@ const PROSPCaseList = ({
                             enableClickSelection: false,
                             headerCheckbox: true,
                             checkboxes: true,
-                            isRowSelectable: rowIsChanged,
+                            isRowSelectable: () => editMode,
                         }}
                         animateRows
                         domLayout="autoHeight"
