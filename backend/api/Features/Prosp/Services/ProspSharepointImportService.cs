@@ -173,7 +173,7 @@ public class ProspSharepointImportService(
             }
 
             var caseId = new Guid(importDto.Id);
-            await prospExcelImportService.ClearImportedProspData(caseId, projectId);
+            await prospExcelImportService.ClearImportedProspData(caseId);
         }
 
         var siteId = (await GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)).FirstOrDefault();

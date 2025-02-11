@@ -42,7 +42,11 @@ using api.Features.Projects.Create;
 using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
-using api.Features.Prosp.Services.Assets;
+using api.Features.Prosp.Services.Assets.OnshorePowerSupplies;
+using api.Features.Prosp.Services.Assets.Substructures;
+using api.Features.Prosp.Services.Assets.Surfs;
+using api.Features.Prosp.Services.Assets.Topsides;
+using api.Features.Prosp.Services.Assets.Transports;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
@@ -128,10 +132,15 @@ public static class DcdIocConfiguration
         services.AddScoped<ProspExcelImportService>();
         services.AddScoped<ProspSharepointImportService>();
         services.AddScoped<OnshorePowerSupplyCostProfileService>();
+        services.AddScoped<OnshorePowerSupplyProspService>();
         services.AddScoped<SubstructureCostProfileService>();
+        services.AddScoped<SubstructureProspService>();
         services.AddScoped<SurfCostProfileService>();
+        services.AddScoped<SurfProspService>();
         services.AddScoped<TopsideCostProfileService>();
+        services.AddScoped<TopsideProspService>();
         services.AddScoped<TransportCostProfileService>();
+        services.AddScoped<TransportProspService>();
 
         /* Stea / Excel export */
         services.AddScoped<SteaService>();
