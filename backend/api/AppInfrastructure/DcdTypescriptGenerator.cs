@@ -17,7 +17,8 @@ public static class DcdTypescriptGenerator
         typeof(PhysUnit),
         typeof(Concept),
         typeof(ProjectMemberRole),
-        typeof(Source)
+        typeof(Source),
+        typeof(CampaignType)
     ];
 
     public static async Task GenerateTypescriptFiles()

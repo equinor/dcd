@@ -36,8 +36,8 @@ public class CreateCampaignService(DcdDbContext context, RecalculationService re
     {
         switch (createCampaignDto.CampaignType)
         {
-            case CampaignTypes.ExplorationCampaign:
-            case CampaignTypes.DevelopmentCampaign:
+            case CampaignType.ExplorationCampaign:
+            case CampaignType.DevelopmentCampaign:
                 return;
             default:
                 throw new InvalidInputException("Invalid campaign type");

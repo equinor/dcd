@@ -15,7 +15,7 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     public string RigUpgradingCostInternalData { get; set; } = string.Empty;
     public int RigMobDemobCostStartYear { get; set; }
     public string RigMobDemobCostInternalData { get; set; } = string.Empty;
-    public required string CampaignType { get; set; }
+    public required CampaignType CampaignType { get; set; }
     public double RigUpgradingCost { get; set; }
     public double RigMobDemobCost { get; set; }
 
@@ -44,8 +44,8 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     #endregion
 }
 
-public static class CampaignTypes
+public enum CampaignType
 {
-    public const string DevelopmentCampaign = "DevelopmentCampaign";
-    public const string ExplorationCampaign = "ExplorationCampaign";
+    DevelopmentCampaign = 1,
+    ExplorationCampaign = 2
 }

@@ -11,14 +11,14 @@ public static class RigCostProfileService
     {
         var explorationRigUpgradingList = CreateTimeSeriesList(
             caseItem,
-            CampaignTypes.ExplorationCampaign,
+            CampaignType.ExplorationCampaign,
             c => c.RigUpgradingCostValues,
             c => c.RigUpgradingCost,
             c => c.RigUpgradingCostStartYear
         );
         var explorationRigMobDemobList = CreateTimeSeriesList(
             caseItem,
-            CampaignTypes.ExplorationCampaign,
+            CampaignType.ExplorationCampaign,
             c => c.RigMobDemobCostValues,
             c => c.RigMobDemobCost,
             c => c.RigMobDemobCostStartYear
@@ -26,14 +26,14 @@ public static class RigCostProfileService
 
         var developmentRigUpgradingList = CreateTimeSeriesList(
             caseItem,
-            CampaignTypes.DevelopmentCampaign,
+            CampaignType.DevelopmentCampaign,
             c => c.RigUpgradingCostValues,
             c => c.RigUpgradingCost,
             c => c.RigUpgradingCostStartYear
         );
         var developmentRigMobDemobList = CreateTimeSeriesList(
             caseItem,
-            CampaignTypes.DevelopmentCampaign,
+            CampaignType.DevelopmentCampaign,
             c => c.RigMobDemobCostValues,
             c => c.RigMobDemobCost,
             c => c.RigMobDemobCostStartYear
@@ -47,7 +47,7 @@ public static class RigCostProfileService
 
     private static List<TimeSeriesCost> CreateTimeSeriesList(
         Case caseItem,
-        string campaignType,
+        CampaignType campaignType,
         Func<Campaign, double[]> valueSelector,
         Func<Campaign, double> costSelector,
         Func<Campaign, int> startYearSelector
