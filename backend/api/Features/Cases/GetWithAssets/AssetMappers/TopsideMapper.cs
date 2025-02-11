@@ -16,7 +16,6 @@ public static class TopsideMapper
             WaterInjectionCapacity = entity.WaterInjectionCapacity,
             ArtificialLift = entity.ArtificialLift,
             Maturity = entity.Maturity,
-            Currency = entity.Currency,
             FuelConsumption = entity.FuelConsumption,
             FlaredGas = entity.FlaredGas,
             ProducerCount = entity.ProducerCount,

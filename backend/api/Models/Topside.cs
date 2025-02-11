@@ -16,7 +16,6 @@ public class Topside : IChangeTrackable, IDateTrackedEntity
     public required double WaterInjectionCapacity { get; set; }
     public required ArtificialLift ArtificialLift { get; set; }
     public required Maturity Maturity { get; set; }
-    public required Currency Currency { get; set; }
     public required double FuelConsumption { get; set; }
     public required double FlaredGas { get; set; }
     public required int ProducerCount { get; set; }

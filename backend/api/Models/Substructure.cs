@@ -12,7 +12,6 @@ public class Substructure : IChangeTrackable, IDateTrackedEntity
 
     public required double DryWeight { get; set; }
     public required Maturity Maturity { get; set; }
-    public required Currency Currency { get; set; }
     public required string ApprovedBy { get; set; }
     public required int CostYear { get; set; }
     public required DateTime? ProspVersion { get; set; }

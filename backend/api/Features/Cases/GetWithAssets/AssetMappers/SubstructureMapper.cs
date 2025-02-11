@@ -12,7 +12,6 @@ public static class SubstructureMapper
             Id = entity.Id,
             DryWeight = entity.DryWeight,
             Maturity = entity.Maturity,
-            Currency = entity.Currency,
             ApprovedBy = entity.ApprovedBy,
             CostYear = entity.CostYear,
             ProspVersion = entity.ProspVersion,

@@ -12,7 +12,6 @@ public class Transport : IChangeTrackable, IDateTrackedEntity
     public required double GasExportPipelineLength { get; set; }
     public required double OilExportPipelineLength { get; set; }
     public required Maturity Maturity { get; set; }
-    public required Currency Currency { get; set; }
     public required DateTime? LastChangedDate { get; set; }
     public required int CostYear { get; set; }
     public required Source Source { get; set; }

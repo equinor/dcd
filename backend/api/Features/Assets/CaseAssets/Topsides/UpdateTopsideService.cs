@@ -17,7 +17,6 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         existingTopside.GasCapacity = updatedTopsideDto.GasCapacity;
         existingTopside.WaterInjectionCapacity = updatedTopsideDto.WaterInjectionCapacity;
         existingTopside.ArtificialLift = updatedTopsideDto.ArtificialLift;
-        existingTopside.Currency = updatedTopsideDto.Currency;
         existingTopside.FuelConsumption = updatedTopsideDto.FuelConsumption;
         existingTopside.FlaredGas = updatedTopsideDto.FlaredGas;
         existingTopside.ProducerCount = updatedTopsideDto.ProducerCount;
@@ -52,7 +51,6 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         existingTopside.GasCapacity = updatedTopsideDto.GasCapacity;
         existingTopside.WaterInjectionCapacity = updatedTopsideDto.WaterInjectionCapacity;
         existingTopside.ArtificialLift = updatedTopsideDto.ArtificialLift;
-        existingTopside.Currency = updatedTopsideDto.Currency;
         existingTopside.FuelConsumption = updatedTopsideDto.FuelConsumption;
         existingTopside.FlaredGas = updatedTopsideDto.FlaredGas;
         existingTopside.ProducerCount = updatedTopsideDto.ProducerCount;

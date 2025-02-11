@@ -13,7 +13,6 @@ public static class TransportMapper
             Maturity = entity.Maturity,
             GasExportPipelineLength = entity.GasExportPipelineLength,
             OilExportPipelineLength = entity.OilExportPipelineLength,
-            Currency = entity.Currency,
             LastChangedDate = entity.LastChangedDate,
             CostYear = entity.CostYear,
             Source = entity.Source,

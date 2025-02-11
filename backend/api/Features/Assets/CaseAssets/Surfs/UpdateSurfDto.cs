@@ -15,7 +15,6 @@ public class UpdateSurfDto
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public ProductionFlowline ProductionFlowline { get; set; }
-    public Currency Currency { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }
     public string ApprovedBy { get; set; } = string.Empty;
@@ -36,7 +35,6 @@ public class ProspUpdateSurfDto
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public ProductionFlowline ProductionFlowline { get; set; }
-    public Currency Currency { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }
     public string ApprovedBy { get; set; } = string.Empty;

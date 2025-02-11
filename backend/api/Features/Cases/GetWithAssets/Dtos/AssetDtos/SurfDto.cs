@@ -19,7 +19,6 @@ public class SurfDto
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }
     [Required] public required ProductionFlowline ProductionFlowline { get; set; }
-    [Required] public required Currency Currency { get; set; }
     [Required] public required DateTime LastChangedDate { get; set; }
     [Required] public required int CostYear { get; set; }
     [Required] public required Source Source { get; set; }

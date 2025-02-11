@@ -14,7 +14,6 @@ public class UpdateTransportService(DcdDbContext context, RecalculationService r
 
         existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
         existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
-        existing.Currency = updatedTransportDto.Currency;
         existing.CostYear = updatedTransportDto.CostYear;
         existing.DG3Date = updatedTransportDto.DG3Date;
         existing.DG4Date = updatedTransportDto.DG4Date;
@@ -33,7 +32,6 @@ public class UpdateTransportService(DcdDbContext context, RecalculationService r
         existing.ProspVersion = updatedTransportDto.ProspVersion;
         existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
         existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
-        existing.Currency = updatedTransportDto.Currency;
         existing.CostYear = updatedTransportDto.CostYear;
         existing.DG3Date = updatedTransportDto.DG3Date;
         existing.DG4Date = updatedTransportDto.DG4Date;
