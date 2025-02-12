@@ -24,7 +24,7 @@ const PROSPTab = () => {
     const { editMode } = useAppContext()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
-    const [driveItems, setDriveItems] = useState<Components.Schemas.DriveItemDto[]>([])
+    const [sharePointFiles, setSharePointFiles] = useState<Components.Schemas.SharePointFileDto[]>([])
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
 
@@ -40,7 +40,7 @@ const PROSPTab = () => {
 
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl }, revisionAndProjectData.projectId)
-            setDriveItems(result)
+            setSharePointFiles(result)
             setErrorMessage("")
 
             if (revisionAndProjectData && sharepointUrl !== revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl) {
@@ -69,7 +69,7 @@ const PROSPTab = () => {
                     try {
                         const result = await (await GetProspService())
                             .getSharePointFileNamesAndId({ url: revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl }, revisionAndProjectData.projectId)
-                        setDriveItems(result)
+                        setSharePointFiles(result)
                         setErrorMessage("")
                     } catch (error) {
                         console.error("[PROSPTab] error while fetching SharePoint files", error)
@@ -124,7 +124,7 @@ const PROSPTab = () => {
             <Grid size={12} container justifyContent="flex-end">
                 <Grid size={12}>
                     <PROSPCaseTable
-                        driveItems={driveItems}
+                        sharePointFiles={sharePointFiles}
                     />
                 </Grid>
             </Grid>

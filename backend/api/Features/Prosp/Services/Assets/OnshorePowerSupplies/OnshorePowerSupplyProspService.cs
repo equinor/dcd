@@ -1,4 +1,3 @@
-using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -20,30 +19,19 @@ public static class OnshorePowerSupplyProspService
         asset.DG4Date = null;
         asset.ProspVersion = null;
 
-        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, new UpdateTimeSeriesCostDto());
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, []);
     }
 
     public static void ImportOnshorePowerSupply(List<Cell> cellData, Case caseItem)
     {
-        List<string> costProfileCoords =
-        [
-            "J114",
-            "K114",
-            "L114",
-            "M114",
-            "N114",
-            "O114",
-            "P114"
-        ];
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.OnshorePowerSupply.CostProfileStartYear);
+        List<string> costProfileCoords = ["J114", "K114", "L114", "M114", "N114", "O114", "P114"];
+
         var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.OnshorePowerSupply.Dg4Date);
 
-        var costProfile = new UpdateTimeSeriesCostDto
-        {
-            Values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
-        };
+        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.OnshorePowerSupply.CostProfileStartYear);
+        var startYear = costProfileStartYear - dG4Date.Year;
+        var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
 
-        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, costProfile);
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, startYear, values);
     }
 }

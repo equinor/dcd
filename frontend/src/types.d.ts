@@ -265,10 +265,6 @@ declare namespace Components {
             artificialLift: ArtificialLift /* int32 */;
             gasSolution: GasSolution /* int32 */;
         }
-        export interface DriveItemDto {
-            name: string;
-            id: string;
-        }
         export interface ExplorationOperationalWellCostsOverviewDto {
             explorationOperationalWellCostsId: string; // uuid
             projectId: string; // uuid
@@ -370,11 +366,18 @@ declare namespace Components {
             values: number /* double */[];
             override: boolean;
         }
+        export interface SharePointFileDto {
+            name: string;
+            id: string;
+        }
         export interface SharePointImportDto {
             caseId: string; // uuid
             sharePointFileId: string;
             sharePointFileName: string;
             sharePointSiteUrl: string;
+        }
+        export interface SharePointSiteUrlDto {
+            url: string;
         }
         export type Source = 0 | 1; // int32
         export interface SubstructureDto {
@@ -655,9 +658,6 @@ declare namespace Components {
             updateWellDtos: UpdateWellDto[];
             createWellDtos: CreateWellDto[];
             deleteWellDtos: DeleteWellDto[];
-        }
-        export interface UrlDto {
-            url: string;
         }
         export interface UserActionsDto {
             canView: boolean;
@@ -1338,6 +1338,34 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdProspImport {
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SharePointImportDto[];
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDataDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdProspList {
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SharePointSiteUrlDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.SharePointFileDto[];
+            }
+        }
+    }
     namespace Projects$ProjectIdRevisions {
         namespace Post {
             namespace Parameters {
@@ -1420,34 +1448,6 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectExistsDto;
-            }
-        }
-    }
-    namespace Prosp$ProjectIdSharepoint {
-        namespace Post {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.SharePointImportDto[];
-            namespace Responses {
-                export type $200 = Components.Schemas.ProjectDataDto;
-            }
-        }
-    }
-    namespace ProspProjects$ProjectIdSharepoint {
-        namespace Post {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UrlDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.DriveItemDto[];
             }
         }
     }

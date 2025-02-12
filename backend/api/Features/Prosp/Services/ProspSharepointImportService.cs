@@ -3,16 +3,18 @@ using System.Web;
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Prosp.Exceptions;
 using api.Features.Prosp.Models;
 
 using Microsoft.Graph;
 
 namespace api.Features.Prosp.Services;
 
-public class ProspSharepointImportService(GraphServiceClient graphServiceClient, ProspExcelImportService prospExcelImportService, RecalculationService recalculationService, DcdDbContext context)
+public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
+    ProspExcelImportService prospExcelImportService,
+    RecalculationService recalculationService,
+    DcdDbContext context)
 {
-    public async Task<List<DriveItemDto>> GetFilesFromSharepoint(string url)
+    public async Task<List<SharePointFileDto>> GetFilesFromSharePoint(string url)
     {
         var (siteId, driveId, itemPath) = await GetSharepointInfo(url);
 
@@ -20,12 +22,7 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
             ? await graphServiceClient.Sites[siteId].Drives[driveId].Root.Delta().Request().GetAsync()
             : await graphServiceClient.Sites[siteId].Drives[driveId].Root.ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
 
-        if (driveItemsDelta == null)
-        {
-            return [];
-        }
-
-        return driveItemsDelta.Select(x => new DriveItemDto
+        return driveItemsDelta.Select(x => new SharePointFileDto
         {
             Name = x.Name,
             Id = x.Id
@@ -33,7 +30,7 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
             .ToList();
     }
 
-    public async Task ImportFilesFromSharepoint(Guid projectId, SharePointImportDto[] dtos)
+    public async Task ImportFilesFromSharePoint(Guid projectId, SharePointImportDto[] dtos)
     {
         await prospExcelImportService.ClearImportedProspData(projectId, dtos.Select(x => x.CaseId).ToList());
 
@@ -52,68 +49,43 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
                 .Content.Request()
                 .GetAsync();
 
-            if (driveItemStream.Length == 0)
-            {
-                continue;
-            }
-
             await prospExcelImportService.ImportProsp(driveItemStream, projectId, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
-
-            await context.UpdateCaseUpdatedUtc(dto.CaseId);
         }
 
         await context.SaveChangesAsync();
 
         foreach (var dto in dtos)
         {
+            await context.UpdateCaseUpdatedUtc(dto.CaseId);
             await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
         }
     }
 
-    private async Task<(string? SiteId, string? DriveId, string? ItemPath)> GetSharepointInfo(string url)
+    private async Task<(string SiteId, string DriveId, string ItemPath)> GetSharepointInfo(string url)
     {
-        var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
-        var siteId = siteIdAndParentRef[0];
+        var validatedUri = new Uri(url);
 
-        var getDrivesInSite = await graphServiceClient.Sites[siteId].Drives.Request().GetAsync();
-        var decodedDocumentLibraryName = HttpUtility.UrlDecode(siteIdAndParentRef[1].Split('/')[3]) == "Shared Documents"
+        var site = await graphServiceClient
+            .Sites
+            .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
+            .Request()
+            .GetAsync();
+
+        var pathFromIdParameter = HttpUtility.ParseQueryString(validatedUri.Query).Get("id");
+
+        var path = pathFromIdParameter != null
+            ? $"/drive/root:/{string.Join('/', pathFromIdParameter.Split('/').Skip(3))}"
+            : $"/drive/root:/{validatedUri.AbsolutePath.Split('/')[3]}";
+
+        var getDrivesInSite = await graphServiceClient.Sites[site.Id].Drives.Request().GetAsync();
+        var decodedDocumentLibraryName = HttpUtility.UrlDecode(path.Split('/')[3]) == "Shared Documents"
             ? "Documents"
-            : HttpUtility.UrlDecode(siteIdAndParentRef[1].Split('/')[3]);
+            : HttpUtility.UrlDecode(path.Split('/')[3]);
 
-        var driveId = getDrivesInSite.Where(x => x.Name == decodedDocumentLibraryName).Select(i => i.Id).FirstOrDefault();
+        var driveId = getDrivesInSite.Where(x => x.Name == decodedDocumentLibraryName).Select(i => i.Id).First();
 
-        var itemPath = string.Join('/', siteIdAndParentRef[1].Split('/').Skip(4));
+        var itemPath = string.Join('/', path.Split('/').Skip(4));
 
-        return (siteId, driveId, itemPath);
-    }
-
-    private async Task<List<string>> GetSiteIdAndParentReferencePath(string url)
-    {
-        var siteData = new List<string>();
-
-        try
-        {
-            var validatedUri = new Uri(url);
-
-            var site = await graphServiceClient
-                .Sites
-                .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
-                .Request()
-                .GetAsync();
-
-            siteData.Add(site.Id);
-
-            var pathFromIdParameter = HttpUtility.ParseQueryString(validatedUri.Query).Get("id");
-
-            siteData.Add(pathFromIdParameter != null
-                ? $"/drive/root:/{string.Join('/', pathFromIdParameter.Split('/').Skip(3))}"
-                : $"/drive/root:/{validatedUri.AbsolutePath.Split('/')[3]}");
-        }
-        catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-        {
-            throw new AccessDeniedException("Access to SharePoint resource was denied.", ex);
-        }
-
-        return siteData;
+        return (site.Id, driveId, itemPath);
     }
 }

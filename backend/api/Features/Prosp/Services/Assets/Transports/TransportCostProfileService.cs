@@ -1,50 +1,49 @@
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
 
 namespace api.Features.Prosp.Services.Assets.Transports;
 
 public static class TransportCostProfileService
 {
-    public static void AddOrUpdateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateTransportCostProfile(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile) != null)
         {
-            UpdateTransportCostProfile(caseItem, dto);
+            UpdateTransportCostProfile(caseItem, startYear, values);
             return;
         }
 
-        CreateTransportCostProfile(caseItem, dto);
+        CreateTransportCostProfile(caseItem, startYear, values);
     }
 
-    private static void CreateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateTransportCostProfile(Case caseItem, int startYear, double[] values)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TransportCostProfile);
 
-        costProfile.StartYear = dto.StartYear;
-        costProfile.Values = dto.Values;
+        costProfile.StartYear = startYear;
+        costProfile.Values = values;
 
-        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride);
-
-        if (costProfileOverride != null)
-        {
-            costProfileOverride.Override = false;
-        }
+        SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride), false);
     }
 
-    private static void UpdateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateTransportCostProfile(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.Transport.ProspVersion == null)
         {
-            if (caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride) != null)
-            {
-                caseItem.GetProfile(ProfileTypes.TransportCostProfileOverride).Override = true;
-            }
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride), true);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.TransportCostProfile);
 
-        existingProfile.StartYear = dto.StartYear;
-        existingProfile.Values = dto.Values;
+        existingProfile.StartYear = startYear;
+        existingProfile.Values = values;
+    }
+
+    private static void SetOverrideFlag(TimeSeriesProfile? overrideProfile, bool overrideValue)
+    {
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = overrideValue;
+        }
     }
 }

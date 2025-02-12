@@ -18,40 +18,6 @@ public class ProspExcelImportService(DcdDbContext context)
 {
     private const string SheetName = "main";
 
-    public async Task ImportProsp(Stream stream, Guid projectId, Guid caseId, string sharepointFileId, string sharepointFileName)
-    {
-        using var document = SpreadsheetDocument.Open(stream, false);
-
-        if (document.WorkbookPart == null)
-        {
-            return;
-        }
-
-        var mainSheet = document.WorkbookPart
-            .Workbook
-            .Descendants<Sheet>()
-            .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
-
-        if (mainSheet?.Id == null)
-        {
-            return;
-        }
-
-        var cellData = ((WorksheetPart)document.WorkbookPart.GetPartById(mainSheet.Id!)).Worksheet.Descendants<Cell>().ToList();
-
-        var caseItem = (await LoadCaseData(projectId, caseId)).Single();
-
-        caseItem.SharepointFileId = sharepointFileId;
-        caseItem.SharepointFileName = sharepointFileName;
-        caseItem.SharepointFileUrl = null;
-
-        SurfProspService.ImportSurf(cellData, caseItem);
-        TopsideProspService.ImportTopside(cellData, caseItem);
-        SubstructureProspService.ImportSubstructure(cellData, caseItem);
-        TransportProspService.ImportTransport(cellData, caseItem);
-        OnshorePowerSupplyProspService.ImportOnshorePowerSupply(cellData, caseItem);
-    }
-
     public async Task ClearImportedProspData(Guid projectId, List<Guid> caseIds)
     {
         var caseItems = await LoadCaseData(projectId, caseIds);
@@ -71,6 +37,32 @@ public class ProspExcelImportService(DcdDbContext context)
         }
 
         await context.SaveChangesAsync();
+    }
+
+    public async Task ImportProsp(Stream stream, Guid projectId, Guid caseId, string sharepointFileId, string sharepointFileName)
+    {
+        using var document = SpreadsheetDocument.Open(stream, false);
+
+        var mainSheetId = document.WorkbookPart!
+            .Workbook
+            .Descendants<Sheet>()
+            .Single(x => x.Name?.ToString()?.ToLower() == SheetName)
+            .Id;
+
+        var worksheetPart = (WorksheetPart)document.WorkbookPart.GetPartById(mainSheetId!);
+        var cellData = worksheetPart.Worksheet.Descendants<Cell>().ToList();
+
+        var caseItem = (await LoadCaseData(projectId, caseId)).Single();
+
+        caseItem.SharepointFileId = sharepointFileId;
+        caseItem.SharepointFileName = sharepointFileName;
+        caseItem.SharepointFileUrl = null;
+
+        SurfProspService.ImportSurf(cellData, caseItem);
+        TopsideProspService.ImportTopside(cellData, caseItem);
+        SubstructureProspService.ImportSubstructure(cellData, caseItem);
+        TransportProspService.ImportTransport(cellData, caseItem);
+        OnshorePowerSupplyProspService.ImportOnshorePowerSupply(cellData, caseItem);
     }
 
     private async Task<List<Case>> LoadCaseData(Guid projectId, params List<Guid> caseIds)

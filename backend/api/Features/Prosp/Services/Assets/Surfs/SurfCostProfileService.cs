@@ -1,50 +1,49 @@
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
 
 namespace api.Features.Prosp.Services.Assets.Surfs;
 
 public static class SurfCostProfileService
 {
-    public static void AddOrUpdateSurfCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateSurfCostProfile(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile) != null)
         {
-            UpdateSurfTimeSeries(caseItem, dto);
+            UpdateSurfTimeSeries(caseItem, startYear, values);
             return;
         }
 
-        CreateSurfCostProfile(caseItem, dto);
+        CreateSurfCostProfile(caseItem, startYear, values);
     }
 
-    private static void CreateSurfCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateSurfCostProfile(Case caseItem, int startYear, double[] values)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SurfCostProfile);
 
-        costProfile.StartYear = dto.StartYear;
-        costProfile.Values = dto.Values;
+        costProfile.StartYear = startYear;
+        costProfile.Values = values;
 
-        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride);
-
-        if (costProfileOverride != null)
-        {
-            costProfileOverride.Override = false;
-        }
+        SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride), false);
     }
 
-    private static void UpdateSurfTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateSurfTimeSeries(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.Surf.ProspVersion == null)
         {
-            if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride) != null)
-            {
-                caseItem.GetProfile(ProfileTypes.SurfCostProfileOverride).Override = true;
-            }
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride), true);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.SurfCostProfile);
 
-        existingProfile.StartYear = dto.StartYear;
-        existingProfile.Values = dto.Values;
+        existingProfile.StartYear = startYear;
+        existingProfile.Values = values;
+    }
+
+    private static void SetOverrideFlag(TimeSeriesProfile? overrideProfile, bool overrideValue)
+    {
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = overrideValue;
+        }
     }
 }

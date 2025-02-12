@@ -1,50 +1,49 @@
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
 
 namespace api.Features.Prosp.Services.Assets.OnshorePowerSupplies;
 
 public static class OnshorePowerSupplyCostProfileService
 {
-    public static void AddOrUpdateOnshorePowerSupplyCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateOnshorePowerSupplyCostProfile(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile) != null)
         {
-            UpdateOnshorePowerSupplyTimeSeries(caseItem, dto);
+            UpdateOnshorePowerSupplyTimeSeries(caseItem, startYear, values);
             return;
         }
 
-        CreateOnshorePowerSupplyCostProfile(caseItem, dto);
+        CreateOnshorePowerSupplyCostProfile(caseItem, startYear, values);
     }
 
-    private static void CreateOnshorePowerSupplyCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateOnshorePowerSupplyCostProfile(Case caseItem, int startYear, double[] values)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.OnshorePowerSupplyCostProfile);
 
-        costProfile.StartYear = dto.StartYear;
-        costProfile.Values = dto.Values;
+        costProfile.StartYear = startYear;
+        costProfile.Values = values;
 
-        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
-
-        if (costProfileOverride != null)
-        {
-            costProfileOverride.Override = false;
-        }
+        SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride), false);
     }
 
-    private static void UpdateOnshorePowerSupplyTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateOnshorePowerSupplyTimeSeries(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.OnshorePowerSupply.ProspVersion == null)
         {
-            if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride) != null)
-            {
-                caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfileOverride).Override = true;
-            }
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride), true);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfile);
 
-        existingProfile.StartYear = dto.StartYear;
-        existingProfile.Values = dto.Values;
+        existingProfile.StartYear = startYear;
+        existingProfile.Values = values;
+    }
+
+    private static void SetOverrideFlag(TimeSeriesProfile? overrideProfile, bool overrideValue)
+    {
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = overrideValue;
+        }
     }
 }

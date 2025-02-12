@@ -1,4 +1,3 @@
-using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -22,34 +21,23 @@ public static class TransportProspService
         asset.DG3Date = null;
         asset.DG4Date = null;
 
-        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, new UpdateTimeSeriesCostDto());
+        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, 0, []);
     }
 
     public static void ImportTransport(List<Cell> cellData, Case caseItem)
     {
-        List<string> costProfileCoords =
-        [
-            "J113",
-            "K113",
-            "L113",
-            "M113",
-            "N113",
-            "O113",
-            "P113"
-        ];
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Transport.CostProfileStartYear);
+        List<string> costProfileCoords = ["J113", "K113", "L113", "M113", "N113", "O113", "P113"];
+
         var dG3Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Transport.Dg3Date);
         var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Transport.Dg4Date);
-        var costProfile = new UpdateTimeSeriesCostDto
-        {
-            Values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year,
-        };
-
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Transport.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Transport.CostYear);
         var oilExportPipelineLength = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Transport.OilExportPipelineLength);
         var gasExportPipelineLength = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Transport.GasExportPipelineLength);
+
+        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Transport.CostProfileStartYear);
+        var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
+        var startYear = costProfileStartYear - dG4Date.Year;
 
         var asset = caseItem.Transport;
 
@@ -62,6 +50,6 @@ public static class TransportProspService
         asset.DG3Date = dG3Date;
         asset.DG4Date = dG4Date;
 
-        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, costProfile);
+        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, startYear, values);
     }
 }

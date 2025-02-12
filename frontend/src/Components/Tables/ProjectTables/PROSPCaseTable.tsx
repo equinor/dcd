@@ -21,7 +21,7 @@ import { useAppContext } from "@/Context/AppContext"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface Props {
-    driveItems: Components.Schemas.DriveItemDto[]
+    sharePointFiles: Components.Schemas.SharePointFileDto[]
 }
 interface RowData {
     id: string,
@@ -29,7 +29,7 @@ interface RowData {
     sharePointFileName?: string | null
     sharePointFileId?: string | null
     sharepointFileUrl?: string | null
-    driveItem: [Components.Schemas.DriveItemDto[] | undefined, string | undefined | null]
+    driveItem: [Components.Schemas.SharePointFileDto[] | undefined, string | undefined | null]
     fileLink?: string | null
     surfStateChanged: boolean,
     substructureStateChanged: boolean,
@@ -38,7 +38,7 @@ interface RowData {
     sharePointFileChanged: boolean,
 }
 const PROSPCaseList = ({
-    driveItems,
+    sharePointFiles,
 }: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
@@ -61,7 +61,7 @@ const PROSPCaseList = ({
                     sharePointFileName: c.sharepointFileName,
                     sharepointFileUrl: c.sharepointFileUrl,
                     fileLink: c.sharepointFileUrl,
-                    driveItem: [driveItems, c.sharepointFileId],
+                    driveItem: [sharePointFiles, c.sharepointFileId],
                     surfStateChanged: false,
                     substructureStateChanged: false,
                     topsideStateChanged: false,
@@ -103,7 +103,7 @@ const PROSPCaseList = ({
         gridRef.current.redrawRows()
     }
 
-    const sharePointFileDropdownOptions = (items: Components.Schemas.DriveItemDto[]) => {
+    const sharePointFileDropdownOptions = (items: Components.Schemas.SharePointFileDto[]) => {
         const options: JSX.Element[] = []
         items?.slice(1).forEach((item) => {
             options.push(<option key={item.id} value={item.id!}>{item.name}</option>)
@@ -157,7 +157,7 @@ const PROSPCaseList = ({
 
     const fileSelectorRenderer = (p: any) => {
         const fileId = p.value[1] || ""
-        const items: Components.Schemas.DriveItemDto[] = p.value[0] || []
+        const items: Components.Schemas.SharePointFileDto[] = p.value[0] || []
 
         return (
             <NativeSelect
@@ -254,7 +254,7 @@ const PROSPCaseList = ({
         const dtos = gridDataToDtos(p.commonProjectAndRevisionData)
         if (dtos.length > 0) {
             setIsApplying(true)
-            const newProject = await (await GetProspService()).importFromSharepoint(p.projectId, dtos)
+            const newProject = await (await GetProspService()).importFromSharePoint(p.projectId, dtos)
             addProjectEdit(newProject.projectId, newProject.commonProjectAndRevisionData)
             setIsApplying(false)
         }
@@ -265,7 +265,7 @@ const PROSPCaseList = ({
         if (gridRef.current.redrawRows) {
             gridRef.current.redrawRows()
         }
-    }, [revisionAndProjectData, driveItems])
+    }, [revisionAndProjectData, sharePointFiles])
 
     return (
         <Grid container spacing={1}>

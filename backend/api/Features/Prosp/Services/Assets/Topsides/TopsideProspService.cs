@@ -1,4 +1,3 @@
-using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -38,22 +37,13 @@ public static class TopsideProspService
         asset.PeakElectricityImported = 0;
         asset.ProspVersion = null;
 
-        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, new UpdateTimeSeriesCostDto());
+        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, 0, []);
     }
 
     public static void ImportTopside(List<Cell> cellData, Case caseItem)
     {
-        List<string> costProfileCoords =
-        [
-            "J104",
-            "K104",
-            "L104",
-            "M104",
-            "N104",
-            "O104",
-            "P104"
-        ];
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.CostProfileStartYear);
+        List<string> costProfileCoords = ["J104", "K104", "L104", "M104", "N104", "O104", "P104"];
+
         var dG3Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.Dg3Date);
         var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.Dg4Date);
         var artificialLiftInt = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.ArtificialLiftInt);
@@ -74,15 +64,13 @@ public static class TopsideProspService
         var cO2OnMaxGasProfile = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2OnMaxGasProfile);
         var cO2OnMaxWaterInjectionProfile = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2OnMaxWaterInjectionProfile);
         var facilityOpex = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.TopSide.FacilityOpex);
-        var costProfile = new UpdateTimeSeriesCostDto
-        {
-            Values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year,
-        };
         var peakElectricityImported = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.TopSide.PeakElectricityImported);
-
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.CostYear);
+
+        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.CostProfileStartYear);
+        var startYear = costProfileStartYear - dG4Date.Year;
+        var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
 
         var asset = caseItem.Topside;
 
@@ -111,6 +99,6 @@ public static class TopsideProspService
         asset.PeakElectricityImported = peakElectricityImported;
         asset.ProspVersion = versionDate;
 
-        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, costProfile);
+        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, startYear, values);
     }
 }
