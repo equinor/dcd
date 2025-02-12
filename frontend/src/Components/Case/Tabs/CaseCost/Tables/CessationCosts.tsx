@@ -11,7 +11,6 @@ interface CessationCostsProps {
     cessationGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const CessationCosts: React.FC<CessationCostsProps> = ({
@@ -19,7 +18,6 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     cessationGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -81,7 +79,6 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            
         />
     )
 }

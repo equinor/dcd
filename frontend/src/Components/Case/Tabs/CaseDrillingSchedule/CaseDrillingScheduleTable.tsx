@@ -20,6 +20,7 @@ import {
 import { useAppStore } from "../../../../Store/AppStore"
 import { useProjectContext } from "../../../../Store/ProjectContext"
 import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
+import useEditCase from "@/Hooks/useEditCase"
 
 interface Props {
     dg4Year: number
@@ -31,7 +32,6 @@ interface Props {
     wells: Components.Schemas.WellOverviewDto[] | undefined
     resourceId: string
     isExplorationTable: boolean
-    addEdit: any
 }
 
 const CaseDrillingScheduleTabTable = ({
@@ -44,12 +44,12 @@ const CaseDrillingScheduleTabTable = ({
     wells,
     resourceId,
     isExplorationTable,
-    addEdit,
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppStore()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const styles = useStyles()
+    const { addEdit } = useEditCase()
 
     const [rowData, setRowData] = useState<any[]>([])
     const [stagedEdit, setStagedEdit] = useState<any>()
