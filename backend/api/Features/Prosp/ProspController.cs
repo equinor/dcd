@@ -10,9 +10,7 @@ using Microsoft.Graph;
 
 namespace api.Features.Prosp;
 
-public class ProspController(ProspSharepointImportService prospSharepointImportImportService,
-    GetProjectDataService getProjectDataService,
-    ILogger<ProspController> logger)
+public class ProspController(ProspSharepointImportService prospSharepointImportImportService, GetProjectDataService getProjectDataService)
     : ControllerBase
 {
     [HttpPost("prosp/projects/{projectId:guid}/sharepoint")]
@@ -21,22 +19,24 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     {
         if (string.IsNullOrWhiteSpace(urlDto.Url))
         {
-            return BadRequest("URL is required.");
+            return Ok(new List<DriveItemDto>());
+        }
+
+        if (!IsValidUrl(urlDto.Url))
+        {
+            return BadRequest("URL is malformed.");
         }
 
         try
         {
-            var driveItems = await prospSharepointImportImportService.GetFilesFromSharepoint(urlDto.Url);
-            return Ok(driveItems);
+            return Ok(await prospSharepointImportImportService.GetFilesFromSharepoint(urlDto.Url));
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", urlDto.Url);
             return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
         }
         catch (AccessDeniedException ex)
         {
-            logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.Url);
             return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
         }
     }
@@ -45,6 +45,16 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     [AuthorizeActionType(ActionType.Edit)]
     public async Task<ActionResult<ProjectDataDto>> ImportFilesFromSharepoint(Guid projectId, [FromBody] SharePointImportDto[] dtos)
     {
+        if (!dtos.Any())
+        {
+            return BadRequest("URL is required.");
+        }
+
+        if (!IsValidUrl(dtos.First().SharePointSiteUrl))
+        {
+            return BadRequest("URL is malformed.");
+        }
+
         try
         {
             await prospSharepointImportImportService.ImportFilesFromSharepoint(projectId, dtos);
@@ -53,8 +63,12 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            logger.LogError($"Access denied when trying to import files from SharePoint for project {projectId}: {ex.Message}");
             return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
         }
+    }
+
+    private static bool IsValidUrl(string url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out _);
     }
 }

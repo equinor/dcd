@@ -35,11 +35,6 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 
     public async Task ImportFilesFromSharepoint(Guid projectId, SharePointImportDto[] dtos)
     {
-        if (!dtos.Any())
-        {
-            return;
-        }
-
         await prospExcelImportService.ClearImportedProspData(projectId, dtos.Select(x => x.CaseId).ToList());
 
         var (siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
@@ -98,10 +93,7 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 
         try
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var validatedUri))
-            {
-                return [];
-            }
+            var validatedUri = new Uri(url);
 
             var site = await graphServiceClient
                 .Sites
