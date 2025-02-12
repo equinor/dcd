@@ -11,20 +11,17 @@ import {
     archive,
     unarchive,
 } from "@equinor/eds-icons"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useCaseApiData, useDataFetch } from "@/Hooks"
 
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
 import { useModalContext } from "@/Store/ModalContext"
 import { ResourceObject } from "@/Models/Interfaces"
-import { caseQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
-import { useProjectContext } from "@/Store/ProjectContext"
 import Modal from "@/Components/Modal/Modal"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useDataFetch } from "@/Hooks"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -45,20 +42,13 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const queryClient = useQueryClient()
     const { addNewCase } = useModalContext()
     const { addProjectEdit } = useEditProject()
-    const { projectId } = useProjectContext()
     const { updateCase } = useSubmitToApi()
     const { isEditDisabled } = useEditDisabled()
-    const { isRevision } = useProjectContext()
-    const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
-    const { data: caseApiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
+    const { apiData } = useCaseApiData()
 
     const deleteAndGoToProject = async () => {
         if (!caseId || !revisionAndProjectData) { return }
@@ -72,8 +62,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     }
 
     const archiveCase = async (archived: boolean) => {
-        if (!caseApiData?.case || !caseId || !revisionAndProjectData?.projectId) { return }
-        const newResourceObject = { ...caseApiData?.case, archived } as ResourceObject
+        if (!apiData?.case || !caseId || !revisionAndProjectData?.projectId) { return }
+        const newResourceObject = { ...apiData?.case, archived } as ResourceObject
         const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId, resourceObject: newResourceObject })
         if (result.success) {
             queryClient.invalidateQueries(
