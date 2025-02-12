@@ -7,14 +7,13 @@ namespace api.Features.Assets.CaseAssets.Surfs;
 public class UpdateSurfController(UpdateSurfService updateSurfService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/surfs/{surfId:guid}")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/surf")]
     public async Task<NoContentResult> UpdateSurf(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid surfId,
         [FromBody] UpdateSurfDto dto)
     {
-        await updateSurfService.UpdateSurf(projectId, caseId, surfId, dto);
+        await updateSurfService.UpdateSurf(projectId, caseId, dto);
         return NoContent();
     }
 }

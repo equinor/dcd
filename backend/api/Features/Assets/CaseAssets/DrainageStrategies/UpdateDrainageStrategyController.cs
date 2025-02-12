@@ -7,14 +7,13 @@ namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 public class UpdateDrainageStrategyController(UpdateDrainageStrategyService updateDrainageStrategyService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategies/{drainageStrategyId:guid}")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/drainage-strategy")]
     public async Task<NoContentResult> UpdateDrainageStrategy(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid drainageStrategyId,
         [FromBody] UpdateDrainageStrategyDto dto)
     {
-        await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, drainageStrategyId, dto);
+        await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, dto);
         return NoContent();
     }
 }

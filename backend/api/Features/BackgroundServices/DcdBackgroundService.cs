@@ -56,7 +56,6 @@ public abstract class DcdBackgroundService(IServiceScopeFactory serviceScopeFact
         var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.ChangeTracker.LazyLoadingEnabled = false;
 
         dbContext.BackgroundJobLogs.Add(new BackgroundJobLog
         {

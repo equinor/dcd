@@ -2,7 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -34,14 +34,13 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Where(y => profileTypes.Contains(y.ProfileType))
             .LoadAsync();
 
-        var drillingSchedulesForWellProjectWell = await context.WellProjectWell
-            .Where(w => w.WellProjectId == caseItem.WellProjectLink)
-            .Select(x => x.DrillingSchedule)
+        var developmentWells = await context.DevelopmentWells
+            .Where(w => w.WellProjectId == caseItem.WellProjectId)
             .ToListAsync();
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
         var flaringsTotal = GetFlaringsProfileTotal(caseItem);
-        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, drillingSchedulesForWellProjectWell);
+        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, developmentWells);
 
         return new Co2DrillingFlaringFuelTotalsDto
         {
@@ -77,21 +76,16 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private static double CalculateDrillingEmissionsTotal(Project project, List<DrillingSchedule?> drillingSchedulesForWellProjectWell)
+    private static double CalculateDrillingEmissionsTotal(Project project, List<DevelopmentWell> developmentWells)
     {
         var wellDrillingSchedules = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
+        foreach (var developmentWell in developmentWells)
         {
-            if (drillingSchedule == null)
-            {
-                continue;
-            }
-
             var timeSeries = new TimeSeriesCost
             {
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values.Select(v => (double)v).ToArray()
+                StartYear = developmentWell.StartYear,
+                Values = developmentWell.Values.Select(v => (double)v).ToArray()
             };
 
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);

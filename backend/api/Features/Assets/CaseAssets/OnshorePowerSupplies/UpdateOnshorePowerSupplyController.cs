@@ -7,14 +7,13 @@ namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 public class UpdateOnshorePowerSupplyController(UpdateOnshorePowerSupplyService updateOnshorePowerSupplyService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/onshore-power-supplies/{onshorePowerSupplyId:guid}")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/onshore-power-supply")]
     public async Task<NoContentResult> UpdateOnshorePowerSupply(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid onshorePowerSupplyId,
         [FromBody] UpdateOnshorePowerSupplyDto dto)
     {
-        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(projectId, caseId, onshorePowerSupplyId, dto);
+        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(projectId, caseId, dto);
         return NoContent();
     }
 }

@@ -4,6 +4,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -32,22 +33,20 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Historic cost",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
                 resourceName: "historicCostCostProfile",
                 resourceId: caseData.caseId,
-                resourceProfileId: historicCostCostProfileData?.id,
                 resourcePropertyKey: "historicCostCostProfile",
                 editable: true,
                 overridable: false,
             },
             {
                 profileName: "Well intervention",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
                 resourceName: "wellInterventionCostProfileOverride",
                 resourceId: caseData.caseId,
-                resourceProfileId: wellInterventionCostProfileOverrideData?.id,
                 resourcePropertyKey: "wellInterventionCostProfileOverride",
                 overridable: true,
                 overrideProfile: wellInterventionCostProfileOverrideData,
@@ -55,11 +54,10 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Offshore facilities operations",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
                 resourceName: "offshoreFacilitiesOperationsCostProfileOverride",
                 resourceId: caseData.caseId,
-                resourceProfileId: offshoreFacilitiesOperationsCostProfileOverrideData?.id,
                 resourcePropertyKey: "offshoreFacilitiesOperationsCostProfileOverride",
                 overridable: true,
                 overrideProfile: offshoreFacilitiesOperationsCostProfileOverrideData,
@@ -67,22 +65,20 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Onshore related OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOPEXCostProfileData,
                 resourceName: "onshoreRelatedOPEXCostProfile",
                 resourceId: caseData.caseId,
-                resourceProfileId: onshoreRelatedOPEXCostProfileData?.id,
                 resourcePropertyKey: "onshoreRelatedOPEXCostProfile",
                 editable: true,
                 overridable: false,
             },
             {
                 profileName: "Additional OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: additionalOPEXCostProfileData,
                 resourceName: "additionalOPEXCostProfile",
                 resourceId: caseData.caseId,
-                resourceProfileId: additionalOPEXCostProfileData?.id,
                 resourcePropertyKey: "additionalOPEXCostProfile",
                 editable: true,
                 overridable: false,

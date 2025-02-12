@@ -30,7 +30,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    // WellProjectWell
+    // DevelopmentWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
     const [gasProducerCount, setGasProducerCount] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>(0)
@@ -41,7 +41,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
 
     const [, setSidetrackCount] = useState<number>(0)
-    const wellProjectWellsGridRef = useRef(null)
+    const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
     const { data: apiData } = useQuery({
@@ -55,9 +55,9 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {
             const explorationDrillingSchedule = apiData.explorationWells?.map((ew) => ew.drillingSchedule) ?? []
-            const wellProjectDrillingSchedule = apiData.wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
+            const developmentDrillingSchedule = apiData.developmentWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
-                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                [...explorationDrillingSchedule, ...developmentDrillingSchedule],
                 getYearFromDateString(apiData.case.dG4Date),
                 setStartYear,
                 setEndYear,
@@ -72,11 +72,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = apiData.explorationWells?.filter((ew) => ew.explorationId === apiData.exploration?.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
-                    filteredExplorationWells?.filter((few) => few.wellId === fw.id).forEach((ew) => {
+                    apiData.explorationWells?.filter((few) => few.wellId === fw.id).forEach((ew) => {
                         if (ew.drillingSchedule
                             && ew.drillingSchedule.values
                             && ew.drillingSchedule.values.length > 0) {
@@ -86,11 +85,10 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 })
                 return sum
             }
-            const filteredWellProjectWells = apiData.wellProjectWells?.filter((wpw) => wpw.wellProjectId === apiData.wellProject?.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
-                filteredWellProjectWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                apiData.developmentWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
                     if (ew.drillingSchedule && ew.drillingSchedule.values && ew.drillingSchedule.values.length > 0) {
                         sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
                     }
@@ -116,18 +114,18 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const caseData = apiData.case
-    const explorationData = apiData.exploration
-    const wellProjectData = apiData.wellProject
-    const wellProjectWellsData = apiData.wellProjectWells
+    const explorationId = apiData.explorationId
+    const wellProjectId = apiData.wellProjectId
+    const developmentWellsData = apiData.developmentWells
     const explorationWellsData = apiData.explorationWells
 
     if (
         activeTabCase !== 3
         || !explorationWellsData
         || !caseData
-        || !wellProjectWellsData
-        || !explorationData
-        || !wellProjectData
+        || !developmentWellsData
+        || !explorationId
+        || !wellProjectId
     ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
@@ -139,78 +137,83 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             <Grid size={12}>
                 <Typography>Create wells in technical input in order to see them in the list below.</Typography>
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
-                    label="Exploration wells"
-                    previousResourceObject={caseData}
-                    value={explorationWellCount}
-                    integer
-                    disabled
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Exploration wells"
+                            previousResourceObject={caseData}
+                            value={explorationWellCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Oil producer wells"
+                            previousResourceObject={caseData}
+                            value={oilProducerCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Water injector wells"
+                            previousResourceObject={caseData}
+                            value={waterInjectorCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Appraisal wells"
+                            previousResourceObject={caseData}
+                            value={appraisalWellCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Gas producer wells"
+                            previousResourceObject={caseData}
+                            value={gasProducerCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Gas injector wells"
+                            previousResourceObject={caseData}
+                            value={gasInjectorCount}
+                            integer
+                            disabled
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
-                    label="Appraisal wells"
-                    previousResourceObject={caseData}
-                    value={appraisalWellCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Oil producer wells"
-                    previousResourceObject={caseData}
-                    value={oilProducerCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Gas producer wells"
-                    previousResourceObject={caseData}
-                    value={gasProducerCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Water injector wells"
-                    previousResourceObject={caseData}
-                    value={waterInjectorCount}
-                    integer
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
-                    label="Gas injector wells"
-                    previousResourceObject={caseData}
-                    value={gasInjectorCount}
-                    integer
-                    disabled
-                />
-            </Grid>
+
             <DateRangePicker
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
@@ -225,24 +228,24 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    resourceId={explorationData.id}
+                    resourceId={explorationId}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
-                    alignedGridsRef={[wellProjectWellsGridRef]}
+                    alignedGridsRef={[developmentWellsGridRef]}
                 />
             </Grid>
             <Grid size={12}>
                 <CaseDrillingScheduleTable
                     addEdit={addEdit}
-                    assetWells={wellProjectWellsData}
+                    assetWells={developmentWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    resourceId={wellProjectData.id}
+                    resourceId={wellProjectId}
                     wells={wells}
                     isExplorationTable={false}
-                    gridRef={wellProjectWellsGridRef}
+                    gridRef={developmentWellsGridRef}
                     alignedGridsRef={[explorationWellsGridRef]}
                 />
             </Grid>

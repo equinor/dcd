@@ -10,6 +10,6 @@ public class GetIsWellInUseController(GetIsWellInUseService getIsWellInUseServic
     [AuthorizeActionType(ActionType.Edit)]
     public async Task<bool> IsWellInUse([FromRoute] Guid projectId, [FromRoute] Guid wellId)
     {
-        return await getIsWellInUseService.IsWellInUse(wellId);
+        return await getIsWellInUseService.IsWellInUse(projectId, wellId);
     }
 }

@@ -19,7 +19,7 @@ import {
     ModalContent,
     ModalActions,
     FormSection,
-    InputGroup
+    InputGroup,
 } from "./styles"
 
 import {
@@ -209,7 +209,6 @@ const CreateCaseModal = () => {
                             onChange={handleProductionStrategyChange}
                             value={productionStrategy}
                         >
-                            <option key={undefined} value={undefined} aria-label="None"> </option>
                             <option key={0} value={0}>Depletion</option>
                             <option key={1} value={1}>Water injection</option>
                             <option key={2} value={2}>Gas injection</option>
@@ -268,10 +267,10 @@ const CreateCaseModal = () => {
                 </ModalContent>
             )}
             actions={(
-                <ModalActions 
-                    container 
-                    spacing={2} 
-                    justifyContent="flex-end" 
+                <ModalActions
+                    container
+                    spacing={2}
+                    justifyContent="flex-end"
                 >
                     <Grid>
                         <Button

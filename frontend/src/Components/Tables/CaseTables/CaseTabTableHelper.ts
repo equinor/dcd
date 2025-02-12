@@ -55,7 +55,6 @@ export const SetTableYearsFromProfiles = (
         const profileLastYear = GetTimeSeriesLastYear(profile)
         if (profileLastYear !== undefined) {
             const adjustedProfileLastYear = profileLastYear + dG4Year
-
             if (lastYear === undefined) {
                 lastYear = adjustedProfileLastYear
             } else if (adjustedProfileLastYear > lastYear) {

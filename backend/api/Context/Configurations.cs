@@ -34,55 +34,59 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
     public void Configure(EntityTypeBuilder<Case> builder)
     {
         builder.HasOne(c => c.DrainageStrategy)
-            .WithMany()
-            .HasForeignKey(c => c.DrainageStrategyLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<DrainageStrategy>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.WellProject)
-            .WithMany()
-            .HasForeignKey(c => c.WellProjectLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<WellProject>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Exploration)
-            .WithMany()
-            .HasForeignKey(c => c.ExplorationLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Exploration>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Transport)
-            .WithMany()
-            .HasForeignKey(c => c.TransportLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Transport>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.OnshorePowerSupply)
-            .WithMany()
-            .HasForeignKey(c => c.OnshorePowerSupplyLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<OnshorePowerSupply>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Topside)
-            .WithMany()
-            .HasForeignKey(c => c.TopsideLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Topside>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Substructure)
-            .WithMany()
-            .HasForeignKey(c => c.SubstructureLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Substructure>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Surf)
-            .WithMany()
-            .HasForeignKey(c => c.SurfLink)
-            .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(c => c.Case)
+            .HasForeignKey<Surf>(c => c.CaseId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
-public class WellProjectWellConfiguration : IEntityTypeConfiguration<WellProjectWell>
+public class DevelopmentWellConfiguration : IEntityTypeConfiguration<DevelopmentWell>
 {
-    public void Configure(EntityTypeBuilder<WellProjectWell> builder)
+    public void Configure(EntityTypeBuilder<DevelopmentWell> builder)
     {
-        builder.HasKey(wc => new { wc.WellProjectId, wc.WellId });
+        builder.HasIndex(wc => new { wc.WellProjectId, wc.WellId }).IsUnique();
 
         builder.HasOne(w => w.Well)
-            .WithMany(w => w.WellProjectWells)
+            .WithMany(w => w.DevelopmentWells)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(w => w.Campaign)
+            .WithMany(w => w.DevelopmentWells)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }
@@ -91,9 +95,13 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
 {
     public void Configure(EntityTypeBuilder<ExplorationWell> builder)
     {
-        builder.HasKey(ew => new { ew.ExplorationId, ew.WellId });
+        builder.HasIndex(ew => new { ew.ExplorationId, ew.WellId }).IsUnique();
 
         builder.HasOne(w => w.Well)
+            .WithMany(w => w.ExplorationWells)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(w => w.Campaign)
             .WithMany(w => w.ExplorationWells)
             .OnDelete(DeleteBehavior.NoAction);
     }

@@ -4,7 +4,7 @@ import { Box } from "@mui/material"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import ExternalAccessInfo from "@/Components/Project/Components/ExternalAccessInfo"
-import { NoAccessReason } from "@/Models/Interfaces"
+import { NoAccessReason } from "@/Models/enums"
 
 const Container = styled.div`
   max-width: 800px;
@@ -16,7 +16,7 @@ const Header = styled(Box)`
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 24px 0 16px 0;
+  padding: 20px 0 16px 0;
 `
 
 const InfoContainer = styled(Box)`
@@ -57,7 +57,6 @@ const NoAccessErrorView: React.FC<Props> = ({ projectClassification }) => {
             <InfoContainer>
                 <ExternalAccessInfo />
             </InfoContainer>
-            
         </Container>
     )
 }

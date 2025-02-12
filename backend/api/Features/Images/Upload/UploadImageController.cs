@@ -5,7 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Images.Upload;
 
-public class UploadImageController(UploadImageService uploadImageService, GetImageService getImageService) : ControllerBase
+public class UploadImageController(
+    UploadCaseImageService uploadCaseImageService,
+    UploadProjectImageService uploadProjectImageService,
+    GetCaseImageService getCaseImageService,
+    GetProjectImageService getProjectImageService) : ControllerBase
 {
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/images")]
     [AuthorizeActionType(ActionType.Edit)]
@@ -13,8 +17,8 @@ public class UploadImageController(UploadImageService uploadImageService, GetIma
     {
         UploadImageValidator.EnsureIsValid(image);
 
-        var imageId = await uploadImageService.SaveImage(image, projectId, caseId);
-        return await getImageService.GetImage(imageId);
+        var imageId = await uploadCaseImageService.SaveImage(image, projectId, caseId);
+        return await getCaseImageService.GetImage(imageId);
     }
 
     [HttpPost("projects/{projectId:guid}/images")]
@@ -23,7 +27,7 @@ public class UploadImageController(UploadImageService uploadImageService, GetIma
     {
         UploadImageValidator.EnsureIsValid(image);
 
-        var imageId = await uploadImageService.SaveImage(image, projectId, null);
-        return await getImageService.GetImage(imageId);
+        var imageId = await uploadProjectImageService.SaveImage(image, projectId);
+        return await getProjectImageService.GetImage(imageId);
     }
 }

@@ -31,15 +31,10 @@ public class CommonProjectAndRevisionDto
     [Required] public required double GasPriceNOK { get; set; }
     [Required] public required double DiscountRate { get; set; }
     [Required] public required double ExchangeRateUSDToNOK { get; set; }
+    [Required] public required int NpvYear { get; set; }
 
     [Required] public required ExplorationOperationalWellCostsOverviewDto ExplorationOperationalWellCosts { get; set; }
     [Required] public required DevelopmentOperationalWellCostsOverviewDto DevelopmentOperationalWellCosts { get; set; }
     [Required] public required List<CaseOverviewDto> Cases { get; set; }
     [Required] public required List<WellOverviewDto> Wells { get; set; }
-    [Required] public required List<SurfOverviewDto> Surfs { get; set; }
-    [Required] public required List<SubstructureOverviewDto> Substructures { get; set; }
-    [Required] public required List<TopsideOverviewDto> Topsides { get; set; }
-    [Required] public required List<TransportOverviewDto> Transports { get; set; }
-    [Required] public required List<OnshorePowerSupplyOverviewDto> OnshorePowerSupplies { get; set; }
-    [Required] public required List<DrainageStrategyOverviewDto> DrainageStrategies { get; set; }
 }

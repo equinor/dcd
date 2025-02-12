@@ -10,15 +10,12 @@ public static class TopsideMapper
         return new TopsideDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            ProjectId = entity.ProjectId,
             DryWeight = entity.DryWeight,
             OilCapacity = entity.OilCapacity,
             GasCapacity = entity.GasCapacity,
             WaterInjectionCapacity = entity.WaterInjectionCapacity,
             ArtificialLift = entity.ArtificialLift,
             Maturity = entity.Maturity,
-            Currency = entity.Currency,
             FuelConsumption = entity.FuelConsumption,
             FlaredGas = entity.FlaredGas,
             ProducerCount = entity.ProducerCount,

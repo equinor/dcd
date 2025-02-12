@@ -6,6 +6,7 @@ import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileNames } from "@/Models/Interfaces"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -111,11 +112,10 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
-                    unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD",
+                    unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD",
                     profile: aggregatedProfile,
                     resourceName,
                     resourceId: apiData.case.caseId,
-                    resourceProfileId: aggregatedProfile.id,
                     resourcePropertyKey: profileName,
                     overridable: false,
                     editable: false,
@@ -199,7 +199,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
+            text: "Annual Cost Profile", // (${project?.currency === Currency.NOK ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
         subtitle: { text: "(MNOK)" },
@@ -321,10 +321,10 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
-            <Grid size={{ xs: 12,  xl: 6 }}>
+            <Grid size={{ xs: 12, xl: 6 }}>
                 <AgCharts options={barChartOptions} style={{ height: "450px" }} />
             </Grid>
-            <Grid size={{ xs: 12,  xl: 6 }}>
+            <Grid size={{ xs: 12, xl: 6 }}>
                 <AgCharts options={pieChartOptions} style={{ height: "380px" }} />
             </Grid>
         </Grid>

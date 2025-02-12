@@ -11,6 +11,7 @@ using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
 using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
 
@@ -18,31 +19,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Recalculation;
 
-public class RecalculationService(DcdDbContext context, RecalculationRepository recalculationRepository, RecalculationDeterminerService recalculationDeterminerService)
+public class RecalculationService(DcdDbContext context, RecalculationRepository recalculationRepository)
 {
     public async Task SaveChangesAndRecalculateCase(Guid caseId)
     {
-        var originalLazyLoadingEnabled = context.ChangeTracker.LazyLoadingEnabled;
-        context.ChangeTracker.LazyLoadingEnabled = false;
+        RunRecalculations(await recalculationRepository.LoadCaseData(caseId));
 
-        var caseNeedsRecalculation = CaseNeedsRecalculation();
         await context.SaveChangesAsync();
-
-        if (caseNeedsRecalculation)
-        {
-            RunRecalculations(await recalculationRepository.LoadCaseData(caseId));
-
-            await context.SaveChangesAsync();
-        }
-
-        context.ChangeTracker.LazyLoadingEnabled = originalLazyLoadingEnabled;
     }
 
     public async Task SaveChangesAndRecalculateProject(Guid projectId)
     {
-        var originalLazyLoadingEnabled = context.ChangeTracker.LazyLoadingEnabled;
-        context.ChangeTracker.LazyLoadingEnabled = false;
-
         var caseIds = await context.Cases
             .Where(x => x.ProjectId == projectId)
             .Select(x => x.Id)
@@ -56,44 +43,25 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         }
 
         await context.SaveChangesAsync();
-
-        context.ChangeTracker.LazyLoadingEnabled = originalLazyLoadingEnabled;
-    }
-
-    private bool CaseNeedsRecalculation()
-    {
-        return recalculationDeterminerService.CalculateExplorationAndWellProjectCost()
-               || recalculationDeterminerService.CalculateStudyCost()
-               || recalculationDeterminerService.CalculateCessationCostProfile()
-               || recalculationDeterminerService.CalculateFuelFlaringAndLosses()
-               || recalculationDeterminerService.CalculateGAndGAdminCost()
-               || recalculationDeterminerService.CalculateImportedElectricity()
-               || recalculationDeterminerService.CalculateNetSalesGas()
-               || recalculationDeterminerService.CalculateOpex()
-               || recalculationDeterminerService.CalculateCo2Intensity()
-               || recalculationDeterminerService.CalculateCo2Emissions()
-               || recalculationDeterminerService.CalculateTotalIncome()
-               || recalculationDeterminerService.CalculateTotalCost()
-               || recalculationDeterminerService.CalculateNpv()
-               || recalculationDeterminerService.CalculateBreakEvenOilPrice();
     }
 
     private static void RunRecalculations(CaseWithDrillingSchedules caseWithDrillingSchedules)
     {
         var caseItem = caseWithDrillingSchedules.CaseItem;
-        var drillingSchedulesForExplorationWell = caseWithDrillingSchedules.DrillingSchedulesForExplorationWell;
-        var drillingSchedulesForWellProjectWell = caseWithDrillingSchedules.DrillingSchedulesForWellProjectWell;
+        var explorationWells = caseWithDrillingSchedules.ExplorationWells;
+        var developmentWell = caseWithDrillingSchedules.DevelopmentWells;
 
-        WellProjectWellCostProfileService.RunCalculation(caseItem);
+        DevelopmentWellCostProfileService.RunCalculation(caseItem);
         ExplorationWellCostProfileService.RunCalculation(caseItem);
+        RigCostProfileService.RunCalculation(caseItem);
         StudyCostProfileService.RunCalculation(caseItem);
-        CessationCostProfileService.RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
+        CessationCostProfileService.RunCalculation(caseItem, developmentWell);
         FuelFlaringLossesProfileService.RunCalculation(caseItem);
-        GenerateGAndGAdminCostProfile.RunCalculation(caseItem, drillingSchedulesForExplorationWell);
+        GenerateGAndGAdminCostProfile.RunCalculation(caseItem, explorationWells);
         ImportedElectricityProfileService.RunCalculation(caseItem);
         NetSaleGasProfileService.RunCalculation(caseItem);
-        OpexCostProfileService.RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
-        Co2EmissionsProfileService.RunCalculation(caseItem, drillingSchedulesForWellProjectWell);
+        OpexCostProfileService.RunCalculation(caseItem, developmentWell);
+        Co2EmissionsProfileService.RunCalculation(caseItem, developmentWell);
         Co2IntensityProfileService.RunCalculation(caseItem);
         CalculateTotalIncomeService.RunCalculation(caseItem);
         CalculateTotalCostService.RunCalculation(caseItem);

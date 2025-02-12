@@ -28,7 +28,6 @@ public class DcdRequestLogMiddleware(RequestDelegate next)
             var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DcdDbContext>>();
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            dbContext.ChangeTracker.LazyLoadingEnabled = false;
 
             var requestEndUtc = DateTime.UtcNow;
             dbContext.RequestLogs.Add(new RequestLog

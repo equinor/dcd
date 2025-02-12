@@ -77,6 +77,15 @@ public static class ProfileTypes
 
     public const string CountryOfficeCost = "CountryOfficeCost";
 
+    public const string ProjectSpecificDrillingCostProfile = "ProjectSpecificDrillingCostProfile";
+
+    public const string ExplorationRigUpgradingCostProfile = "ExplorationRigUpgradingCostProfile";
+    public const string ExplorationRigUpgradingCostProfileOverride = "ExplorationRigUpgradingCostProfileOverride";
+
+    public const string ExplorationRigMobDemob = "ExplorationRigMobDemob";
+    public const string ExplorationRigMobDemobOverride = "ExplorationRigMobDemobOverride";
+
+
     /* Well project profiles */
     public const string OilProducerCostProfile = "OilProducerCostProfile";
     public const string OilProducerCostProfileOverride = "OilProducerCostProfileOverride";
@@ -89,6 +98,12 @@ public static class ProfileTypes
 
     public const string GasInjectorCostProfile = "GasInjectorCostProfile";
     public const string GasInjectorCostProfileOverride = "GasInjectorCostProfileOverride";
+
+    public const string DevelopmentRigUpgradingCostProfile = "DevelopmentRigUpgradingCostProfile";
+    public const string DevelopmentRigUpgradingCostProfileOverride = "DevelopmentRigUpgradingCostProfileOverride";
+
+    public const string DevelopmentRigMobDemob = "DevelopmentRigMobDemob";
+    public const string DevelopmentRigMobDemobOverride = "DevelopmentRigMobDemobOverride";
 
     /* Drainage strategy profiles */
     public const string FuelFlaringAndLosses = "FuelFlaringAndLosses";

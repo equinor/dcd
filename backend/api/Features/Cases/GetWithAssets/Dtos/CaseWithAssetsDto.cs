@@ -77,8 +77,11 @@ public class CaseWithAssetsDto
     public required TimeSeriesCostDto? OnshorePowerSupplyCostProfile { get; set; }
     public required TimeSeriesCostOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
-    [Required] public required ExplorationDto Exploration { get; set; }
+    [Required] public required Guid ExplorationId { get; set; }
     public required List<ExplorationWellDto> ExplorationWells { get; set; }
+
+    [Required] public required List<CampaignDto> ExplorationCampaigns { get; set; }
+
     public required TimeSeriesCostDto? ExplorationWellCostProfile { get; set; }
     public required TimeSeriesCostDto? AppraisalWellCostProfile { get; set; }
     public required TimeSeriesCostDto? SidetrackCostProfile { get; set; }
@@ -87,9 +90,19 @@ public class CaseWithAssetsDto
     public required TimeSeriesCostDto? SeismicAcquisitionAndProcessing { get; set; }
     public required TimeSeriesCostDto? CountryOfficeCost { get; set; }
 
+    public required TimeSeriesCostDto? ProjectSpecificDrillingCostProfile { get; set; }
 
-    [Required] public required WellProjectDto WellProject { get; set; }
-    public required List<WellProjectWellDto> WellProjectWells { get; set; }
+    public required TimeSeriesCostDto? ExplorationRigUpgradingCostProfile { get; set; }
+    public required TimeSeriesCostOverrideDto? ExplorationRigUpgradingCostProfileOverride { get; set; }
+
+    public required TimeSeriesCostDto? ExplorationRigMobDemob { get; set; }
+    public required TimeSeriesCostOverrideDto? ExplorationRigMobDemobOverride { get; set; }
+
+    [Required] public required Guid WellProjectId { get; set; }
+    public required List<DevelopmentWellDto> DevelopmentWells { get; set; }
+
+    [Required] public required List<CampaignDto> DevelopmentCampaigns { get; set; }
+
     public required TimeSeriesCostDto? OilProducerCostProfile { get; set; }
     public required TimeSeriesCostOverrideDto? OilProducerCostProfileOverride { get; set; }
     public required TimeSeriesCostDto? GasProducerCostProfile { get; set; }
@@ -98,4 +111,10 @@ public class CaseWithAssetsDto
     public required TimeSeriesCostOverrideDto? WaterInjectorCostProfileOverride { get; set; }
     public required TimeSeriesCostDto? GasInjectorCostProfile { get; set; }
     public required TimeSeriesCostOverrideDto? GasInjectorCostProfileOverride { get; set; }
+
+    public required TimeSeriesCostDto? DevelopmentRigUpgradingCostProfile { get; set; }
+    public required TimeSeriesCostOverrideDto? DevelopmentRigUpgradingCostProfileOverride { get; set; }
+
+    public required TimeSeriesCostDto? DevelopmentRigMobDemob { get; set; }
+    public required TimeSeriesCostOverrideDto? DevelopmentRigMobDemobOverride { get; set; }
 }

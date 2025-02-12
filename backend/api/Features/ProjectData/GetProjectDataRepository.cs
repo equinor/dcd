@@ -97,10 +97,11 @@ public class GetProjectDataRepository(DcdDbContext context)
                 GasPriceNOK = x.GasPriceNOK,
                 DiscountRate = x.DiscountRate,
                 ExchangeRateUSDToNOK = x.ExchangeRateUSDToNOK,
+                NpvYear = x.NpvYear,
                 SharepointSiteUrl = x.SharepointSiteUrl,
                 ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsOverviewDto
                 {
-                    ProjectId = x.ExplorationOperationalWellCosts!.ProjectId,
+                    ProjectId = x.ExplorationOperationalWellCosts.ProjectId,
                     ExplorationOperationalWellCostsId = x.ExplorationOperationalWellCosts.Id,
                     ExplorationRigUpgrading = x.ExplorationOperationalWellCosts.ExplorationRigUpgrading,
                     ExplorationRigMobDemob = x.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
@@ -110,7 +111,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 },
                 DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCostsOverviewDto
                 {
-                    ProjectId = x.DevelopmentOperationalWellCosts!.ProjectId,
+                    ProjectId = x.DevelopmentOperationalWellCosts.ProjectId,
                     DevelopmentOperationalWellCostsId = x.DevelopmentOperationalWellCosts.Id,
                     RigUpgrading = x.DevelopmentOperationalWellCosts.RigUpgrading,
                     RigMobDemob = x.DevelopmentOperationalWellCosts.RigMobDemob,
@@ -118,13 +119,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                     PluggingAndAbandonment = x.DevelopmentOperationalWellCosts.PluggingAndAbandonment
                 },
                 Cases = new List<CaseOverviewDto>(),
-                Wells = new List<WellOverviewDto>(),
-                Surfs = new List<SurfOverviewDto>(),
-                Substructures = new List<SubstructureOverviewDto>(),
-                Topsides = new List<TopsideOverviewDto>(),
-                Transports = new List<TransportOverviewDto>(),
-                OnshorePowerSupplies = new List<OnshorePowerSupplyOverviewDto>(),
-                DrainageStrategies = new List<DrainageStrategyOverviewDto>()
+                Wells = new List<WellOverviewDto>()
             })
             .SingleAsync();
     }
@@ -167,11 +162,11 @@ public class GetProjectDataRepository(DcdDbContext context)
                 DG4Date = x.DG4Date,
                 CreateTime = x.CreatedUtc,
                 ModifyTime = x.UpdatedUtc,
-                SurfLink = x.SurfLink,
-                SubstructureLink = x.SubstructureLink,
-                TopsideLink = x.TopsideLink,
-                TransportLink = x.TransportLink,
-                OnshorePowerSupplyLink = x.OnshorePowerSupplyLink,
+                SurfId = x.SurfId,
+                SubstructureId = x.SubstructureId,
+                TopsideId = x.TopsideId,
+                TransportId = x.TransportId,
+                OnshorePowerSupplyId = x.OnshorePowerSupplyId,
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
                 SharepointFileUrl = x.SharepointFileUrl
@@ -190,85 +185,6 @@ public class GetProjectDataRepository(DcdDbContext context)
                 WellCategory = x.WellCategory,
                 WellCost = x.WellCost,
                 DrillingDays = x.DrillingDays
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<SurfOverviewDto>> GetSurfs(Guid projectId)
-    {
-        return await context.Surfs
-            .Where(x => x.ProjectId == projectId)
-            .Select(x => new SurfOverviewDto
-            {
-                Id = x.Id,
-                Maturity = x.Maturity,
-                Source = x.Source
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<SubstructureOverviewDto>> GetSubstructures(Guid projectId)
-    {
-        return await context.Substructures
-            .Where(x => x.ProjectId == projectId)
-            .Select(x => new SubstructureOverviewDto
-            {
-                Id = x.Id,
-                Source = x.Source
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<TopsideOverviewDto>> GetTopsides(Guid projectId)
-    {
-        return await context.Topsides
-            .Where(x => x.ProjectId == projectId)
-            .Select(x => new TopsideOverviewDto
-            {
-                Id = x.Id,
-                FuelConsumption = x.FuelConsumption,
-                CO2ShareOilProfile = x.CO2ShareOilProfile,
-                CO2ShareGasProfile = x.CO2ShareGasProfile,
-                CO2ShareWaterInjectionProfile = x.CO2ShareWaterInjectionProfile,
-                CO2OnMaxOilProfile = x.CO2OnMaxOilProfile,
-                CO2OnMaxGasProfile = x.CO2OnMaxGasProfile,
-                CO2OnMaxWaterInjectionProfile = x.CO2OnMaxWaterInjectionProfile,
-                Source = x.Source
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<TransportOverviewDto>> GetTransports(Guid projectId)
-    {
-        return await context.Transports
-            .Where(x => x.ProjectId == projectId)
-            .Select(x => new TransportOverviewDto
-            {
-                Id = x.Id,
-                Source = x.Source
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<OnshorePowerSupplyOverviewDto>> GetOnshorePowerSupplies(Guid projectId)
-    {
-        return await context.OnshorePowerSupplies
-            .Where(x => x.ProjectId == projectId)
-            .Select(x => new OnshorePowerSupplyOverviewDto
-            {
-                Id = x.Id,
-                Source = x.Source
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<DrainageStrategyOverviewDto>> GetDrainageStrategies(Guid projectId)
-    {
-        return await context.DrainageStrategies
-            .Where(x => x.ProjectId == projectId)
-            .Select(x => new DrainageStrategyOverviewDto
-            {
-                Id = x.Id
             })
             .ToListAsync();
     }

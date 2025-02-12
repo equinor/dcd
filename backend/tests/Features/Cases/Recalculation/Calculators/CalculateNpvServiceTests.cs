@@ -18,35 +18,36 @@ public class CalculateNpvServiceTests
             DiscountRate = 8,
             OilPriceUSD = 75,
             GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10
+            ExchangeRateUSDToNOK = 10,
+            NpvYear = 2020
         };
 
         var caseItem = new Case
         {
             Id = caseId,
             Project = project,
-            DG4Date = new DateTime(DateTime.Now.Year + 6, 1, 1),
-            DrainageStrategyLink = Guid.NewGuid(),
+            DG4Date = new DateTime(2030, 1, 1),
+            DrainageStrategyId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()
                 {
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
-                    StartYear = -3,
-                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                    StartYear = -10,
+                    Values = [200.0, 400.0, 100.0, 100.0]
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,
-                    StartYear = 0,
-                    Values = [6217.5, 6217.5, 6217.5, 6217.5, 2958.75, 2958.75]
+                    StartYear = -7,
+                    Values = [4717.5,4717.5,4717.5,4717.5, 2358.75,2358.75]
                 }
             }
         };
 
         CalculateNpvService.RunCalculation(caseItem);
 
-        var actualNpvValue = 1081.62;
+        var actualNpvValue = 1531.106;
         Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);
     }
 }

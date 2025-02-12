@@ -8,13 +8,12 @@ namespace api.Features.Assets.CaseAssets.Transports;
 
 public class UpdateTransportService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, UpdateTransportDto updatedTransportDto)
+    public async Task UpdateTransport(Guid projectId, Guid caseId, UpdateTransportDto updatedTransportDto)
     {
-        var existing = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
+        var existing = await context.Transports.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
         existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
-        existing.Currency = updatedTransportDto.Currency;
         existing.CostYear = updatedTransportDto.CostYear;
         existing.DG3Date = updatedTransportDto.DG3Date;
         existing.DG4Date = updatedTransportDto.DG4Date;
@@ -26,14 +25,13 @@ public class UpdateTransportService(DcdDbContext context, RecalculationService r
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    public async Task UpdateTransport(Guid projectId, Guid caseId, Guid transportId, ProspUpdateTransportDto updatedTransportDto)
+    public async Task UpdateTransport(Guid projectId, Guid caseId, ProspUpdateTransportDto updatedTransportDto)
     {
-        var existing = await context.Transports.SingleAsync(x => x.ProjectId == projectId && x.Id == transportId);
+        var existing = await context.Transports.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existing.ProspVersion = updatedTransportDto.ProspVersion;
         existing.GasExportPipelineLength = updatedTransportDto.GasExportPipelineLength;
         existing.OilExportPipelineLength = updatedTransportDto.OilExportPipelineLength;
-        existing.Currency = updatedTransportDto.Currency;
         existing.CostYear = updatedTransportDto.CostYear;
         existing.DG3Date = updatedTransportDto.DG3Date;
         existing.DG4Date = updatedTransportDto.DG4Date;

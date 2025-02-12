@@ -92,41 +92,51 @@ const ProjectOverviewTab = () => {
     return (
         <Grid container columnSpacing={2} rowSpacing={3}>
             <Gallery />
-            <Grid size={12} container spacing={1} justifyContent="space-between">
-                <Grid size={4}>
-                    <Typography group="input" variant="label">Project Phase</Typography>
-                    {renderProjectPhase()}
-                </Grid>
-                <Grid size={4}>
-                    <Typography group="input" variant="label">Project Category</Typography>
-                    <Typography aria-label="Project category">
-                        {getProjectCategoryName(revisionAndProjectData.commonProjectAndRevisionData.projectCategory)}
-                    </Typography>
-                </Grid>
-                <Grid size={4}>
-                    <Typography group="input" variant="label">Country</Typography>
-                    <Typography aria-label="Country">
-                        {revisionAndProjectData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
-                    </Typography>
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={12} container spacing={1} justifyContent="space-between">
+                        <Grid size={4}>
+                            <Typography group="input" variant="label">Project Phase</Typography>
+                            {renderProjectPhase()}
+                        </Grid>
+                        <Grid size={4}>
+                            <Typography group="input" variant="label">Project Category</Typography>
+                            <Typography aria-label="Project category">
+                                {getProjectCategoryName(revisionAndProjectData.commonProjectAndRevisionData.projectCategory)}
+                            </Typography>
+                        </Grid>
+                        <Grid size={4}>
+                            <Typography group="input" variant="label">Country</Typography>
+                            <Typography aria-label="Country">
+                                {revisionAndProjectData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
+                            </Typography>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
-            <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
-                <Typography group="input" variant="label">Description</Typography>
-                {editMode
-                    ? (
-                        <MarkdownEditor
-                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onInput={handleDescriptionChange}
-                        >
-                            {revisionAndProjectData.commonProjectAndRevisionData.description ?? ""}
-                        </MarkdownEditor>
-                    )
-                    : (
-                        <MarkdownViewer
-                            value={revisionAndProjectData.commonProjectAndRevisionData.description ?? ""}
-                        />
-                    )}
+
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                        <Typography group="input" variant="label">Description</Typography>
+                        {editMode
+                            ? (
+                                <MarkdownEditor
+                                    menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                                    onInput={handleDescriptionChange}
+                                >
+                                    {revisionAndProjectData.commonProjectAndRevisionData.description ?? ""}
+                                </MarkdownEditor>
+                            )
+                            : (
+                                <MarkdownViewer
+                                    value={revisionAndProjectData.commonProjectAndRevisionData.description ?? ""}
+                                />
+                            )}
+                    </Grid>
+                </Grid>
             </Grid>
+
             <Grid size={12} container spacing={1} justifyContent="space-between">
                 <Grid size={12}>
                     <Typography variant="h3">Cases</Typography>

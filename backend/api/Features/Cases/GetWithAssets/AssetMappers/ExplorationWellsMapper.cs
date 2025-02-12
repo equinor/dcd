@@ -9,17 +9,17 @@ public static class ExplorationWellsMapper
     public static List<ExplorationWellDto> MapToDtos(IEnumerable<ExplorationWell> entities)
     {
         return entities
-            .Where(x => x.DrillingScheduleId.HasValue)
             .Select(x => new ExplorationWellDto
             {
                 ExplorationId = x.ExplorationId,
                 WellId = x.WellId,
                 DrillingSchedule = new TimeSeriesScheduleDto
                 {
-                    Id = x.DrillingSchedule!.Id,
-                    StartYear = x.DrillingSchedule.StartYear,
-                    Values = x.DrillingSchedule.Values.ToArray()
-                }
+                    Id = x.Id,
+                    StartYear = x.StartYear,
+                    Values = x.Values.ToArray()
+                },
+                UpdatedUtc = x.UpdatedUtc,
             }).ToList();
     }
 }

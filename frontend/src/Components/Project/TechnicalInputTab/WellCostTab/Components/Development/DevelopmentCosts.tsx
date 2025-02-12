@@ -17,6 +17,7 @@ import {
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
 import { useAppContext } from "@/Context/AppContext"
+import { Currency } from "@/Models/enums"
 
 type DevelopmentCostsState = Omit<
     Components.Schemas.DevelopmentOperationalWellCostsOverviewDto,
@@ -78,7 +79,7 @@ const DevelopmentCosts = () => {
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${currency === Currency.NOK ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

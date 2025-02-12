@@ -10,11 +10,8 @@ public static class SubstructureMapper
         return new SubstructureDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            ProjectId = entity.ProjectId,
             DryWeight = entity.DryWeight,
             Maturity = entity.Maturity,
-            Currency = entity.Currency,
             ApprovedBy = entity.ApprovedBy,
             CostYear = entity.CostYear,
             ProspVersion = entity.ProspVersion,

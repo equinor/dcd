@@ -20,36 +20,15 @@ public class SteaService(DcdDbContext context, SteaRepository steaRepository)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var data = new SteaDbData
-        {
-            Project = await steaRepository.GetProjectWithCasesAndAssets(projectPk),
-            DrainageStrategies = await steaRepository.GetDrainageStrategies(projectPk),
-            Explorations = await steaRepository.GetExplorations(projectPk),
-            OnshorePowerSupplies = await steaRepository.GetOnshorePowerSupplies(projectPk),
-            Substructures = await steaRepository.GetSubstructures(projectPk),
-            Surfs = await steaRepository.GetSurfs(projectPk),
-            Topsides = await steaRepository.GetTopsides(projectPk),
-            Transports = await steaRepository.GetTransports(projectPk),
-            WellProjects = await steaRepository.GetWellProjects(projectPk)
-        };
+        var project = await steaRepository.GetProjectWithCasesAndProfiles(projectPk);
 
-        var steaCaseDtos = new List<SteaCaseDto>();
-
-        foreach (var caseItem in data.Project.Cases)
-        {
-            if (caseItem.Archived)
-            {
-                continue;
-            }
-
-            steaCaseDtos.Add(SteaCaseDtoBuilder.Build(caseItem, data));
-        }
+        var steaCaseDtos = project.Cases.Select(SteaCaseDtoBuilder.Build).ToList();
 
         var startYears = steaCaseDtos.Where(x => x.StartYear > 0).Select(x => x.StartYear).ToList();
 
         return new SteaProjectDto
         {
-            Name = data.Project.Name,
+            Name = project.Name,
             SteaCases = steaCaseDtos,
             StartYear = startYears.Any() ? startYears.Min() : 0
         };

@@ -13,10 +13,10 @@ public static class DcdEnvironments
     public static bool UseSqlite => CurrentEnvironment is LocalDev;
     public static bool EnableSwagger => CurrentEnvironment is LocalDev or Ci or RadixDev;
     public static bool RunProjectMasterBackgroundServiceHourly => CurrentEnvironment is not RadixProd;
-    public static bool EnableVerboseEntityFrameworkLogging => CurrentEnvironment is Ci or RadixDev;
     public static bool ReturnExceptionDetails => CurrentEnvironment is not RadixProd;
     public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
     public static bool RunBackgroundJobsOnLocalMachine => CurrentEnvironment is LocalDev or Ci;
+    public static bool WriteTypescriptFiles => CurrentEnvironment is LocalDev or Ci;
 
     public static string FusionEnvironment => CurrentEnvironment switch
     {

@@ -14,9 +14,11 @@ interface CalculationSourceToggleProps {
     addEdit: any
     isProsp?: boolean
     sharepointFileId?: string
+    editMode: boolean
 }
 
 const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
+    editMode,
     clickedElement,
     addEdit,
     isProsp,
@@ -28,6 +30,10 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     const { apiQueue } = useAppContext()
 
     const handleToggleClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
+        if (!editMode) {
+            return
+        }
+
         if (params?.data?.override !== undefined && caseId) {
             const profile = {
                 ...params.data.overrideProfile,
@@ -49,7 +55,6 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
                 resourceId: profile.resourceId,
                 newResourceObject,
                 previousResourceObject: profile,
-                resourceProfileId: profile.id,
             })
 
             params.api.redrawRows()
@@ -80,9 +85,9 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     }
 
     return isProsp ? (
-        <ExcelToggle clickedElement={clickedElement} onClick={handleToggleClick} />
+        <ExcelToggle clickedElement={clickedElement} onClick={handleToggleClick} editMode={editMode} />
     ) : (
-        <CalculatorToggle clickedElement={clickedElement} onClick={handleToggleClick} />
+        <CalculatorToggle clickedElement={clickedElement} onClick={handleToggleClick} editMode={editMode} />
     )
 }
 

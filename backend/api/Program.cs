@@ -20,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 DcdEnvironments.CurrentEnvironment = builder.Configuration["AppConfiguration:Environment"] ?? "CI";
 Console.WriteLine($"Loading config for: {DcdEnvironments.CurrentEnvironment}");
 
+await DcdTypescriptGenerator.GenerateTypescriptFiles();
+
 builder.AddDcdAzureAppConfiguration();
 builder.ConfigureDcdDatabase();
 builder.AddDcdFusionConfiguration();
@@ -75,6 +77,5 @@ app.UseMiddleware<DcdClaimsMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<DcdRequestLogMiddleware>();
-app.UseMiddleware<DisableLazyLoadingMiddleware>();
 
 app.Run();

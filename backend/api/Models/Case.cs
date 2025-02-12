@@ -1,15 +1,13 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class Case : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
     public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Project Project { get; set; } = null!;
 
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -44,47 +42,40 @@ public class Case : IHasProjectId, IChangeTrackable, IDateTrackedEntity
     public double? BreakEvenOverride { get; set; }
     public string? Host { get; set; }
 
+    public Guid DrainageStrategyId { get; set; }
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+
+    public Guid WellProjectId { get; set; }
+    public WellProject WellProject { get; set; } = null!;
+
+    public Guid SurfId { get; set; }
+    public Surf Surf { get; set; } = null!;
+
+    public Guid SubstructureId { get; set; }
+    public Substructure Substructure { get; set; } = null!;
+
+    public Guid TopsideId { get; set; }
+    public Topside Topside { get; set; } = null!;
+
+    public Guid TransportId { get; set; }
+    public Transport Transport { get; set; } = null!;
+
+    public Guid OnshorePowerSupplyId { get; set; }
+    public OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
+
+    public Guid ExplorationId { get; set; }
+    public Exploration Exploration { get; set; } = null!;
+
+    public List<CaseImage> Images { get; set; } = [];
+    public List<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
+    public List<Campaign> Campaigns { get; set; } = [];
+
+    #region Change tracking
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
-
-    public Guid DrainageStrategyLink { get; set; }
-
-    [ForeignKey("DrainageStrategyLink")]
-    public virtual DrainageStrategy? DrainageStrategy { get; set; }
-
-    public Guid WellProjectLink { get; set; }
-    [ForeignKey("WellProjectLink")]
-    public virtual WellProject? WellProject { get; set; }
-
-    public Guid SurfLink { get; set; }
-    [ForeignKey("SurfLink")]
-    public virtual Surf? Surf { get; set; }
-
-    public Guid SubstructureLink { get; set; }
-    [ForeignKey("SubstructureLink")]
-    public virtual Substructure? Substructure { get; set; }
-
-    public Guid TopsideLink { get; set; }
-    [ForeignKey("TopsideLink")]
-    public virtual Topside? Topside { get; set; }
-
-    public Guid TransportLink { get; set; }
-    [ForeignKey("TransportLink")]
-    public virtual Transport? Transport { get; set; }
-
-    public Guid OnshorePowerSupplyLink { get; set; }
-    [ForeignKey("OnshorePowerSupplyLink")]
-    public virtual OnshorePowerSupply? OnshorePowerSupply { get; set; }
-
-    public Guid ExplorationLink { get; set; }
-    [ForeignKey("ExplorationLink")]
-    public virtual Exploration? Exploration { get; set; }
-
-    public virtual ICollection<Image> Images { get; set; } = [];
-
-    public virtual ICollection<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
+    #endregion
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);

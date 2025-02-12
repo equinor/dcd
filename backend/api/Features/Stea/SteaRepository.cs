@@ -7,75 +7,22 @@ namespace api.Features.Stea;
 
 public class SteaRepository(DcdDbContext context)
 {
-    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectPk)
+    public async Task<Project> GetProjectWithCasesAndProfiles(Guid projectPk)
     {
         var project = await context.Projects
-            .Include(p => p.Cases).ThenInclude(c => c.TimeSeriesProfiles)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
+
+        await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => !x.Archived)
+            .LoadAsync();
+
+        await context.TimeSeriesProfiles
+            .Where(x => x.Case.ProjectId == projectPk)
+            .LoadAsync();
 
         project.Cases = project.Cases.OrderBy(c => c.CreatedUtc).ToList();
 
         return project;
-    }
-
-    public async Task<List<Exploration>> GetExplorations(Guid projectPk)
-    {
-        return await context.Explorations
-            .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
-            .Where(d => d.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<Transport>> GetTransports(Guid projectPk)
-    {
-        return await context.Transports
-            .Where(c => c.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<Topside>> GetTopsides(Guid projectPk)
-    {
-        return await context.Topsides
-            .Where(c => c.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<Surf>> GetSurfs(Guid projectPk)
-    {
-        return await context.Surfs
-            .Where(c => c.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<OnshorePowerSupply>> GetOnshorePowerSupplies(Guid projectPk)
-    {
-        return await context.OnshorePowerSupplies
-            .Where(c => c.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<DrainageStrategy>> GetDrainageStrategies(Guid projectPk)
-    {
-        return await context.DrainageStrategies
-            .Where(d => d.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<WellProject>> GetWellProjects(Guid projectPk)
-    {
-        return await context.WellProjects
-            .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
-            .Where(d => d.ProjectId == projectPk)
-            .ToListAsync();
-    }
-
-    public async Task<List<Substructure>> GetSubstructures(Guid projectPk)
-    {
-        return await context.Substructures
-            .Where(c => c.ProjectId == projectPk)
-            .ToListAsync();
     }
 }

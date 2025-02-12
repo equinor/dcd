@@ -26,14 +26,14 @@ public class CalculateBreakEvenOilPriceServiceTests
             Id = caseId,
             Project = project,
             DG4Date = new DateTime(2030, 1, 1),
-            DrainageStrategyLink = Guid.NewGuid(),
+            DrainageStrategyId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()
                 {
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = 2027,
-                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                    Values = [200.0, 400.0, 100.0, 100.0]
                 },
                 new()
                 {

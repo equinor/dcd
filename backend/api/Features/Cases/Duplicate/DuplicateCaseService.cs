@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Images.Copy;
 using api.Features.Images.Shared;
+using api.Features.Revisions.Create;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -14,29 +15,27 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var caseItem = await duplicateCaseRepository.GetDetachedCaseGraph(projectPk, caseId);
+        var existingCase = await duplicateCaseRepository.GetFullCaseGraph(projectPk, caseId);
 
+        var duplicate = ProjectDuplicator.DuplicateCase(existingCase, projectPk, Guid.NewGuid());
+
+        duplicate.Name = await GetUniqueCopyName(projectPk, existingCase.Name);
+
+        context.Cases.Add(duplicate);
+
+        await CopyCaseImages(projectPk, caseId, duplicate.Id);
+
+        await context.SaveChangesAsync();
+    }
+
+    private async Task<string> GetUniqueCopyName(Guid projectPk, string originalName)
+    {
         var existingCaseNames = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .Select(x => x.Name)
             .Distinct()
             .ToHashSetAsync();
 
-        var duplicateCaseId = Guid.NewGuid();
-
-        ResetIdPropertiesInCaseGraphService.ResetPrimaryKeysAndForeignKeysInGraph(caseItem, duplicateCaseId);
-
-        caseItem.Name = GetUniqueCopyName(existingCaseNames, caseItem.Name);
-
-        context.Cases.Add(caseItem);
-
-        await CopyCaseImages(projectPk, caseId, duplicateCaseId);
-
-        await context.SaveChangesAsync();
-    }
-
-    private static string GetUniqueCopyName(HashSet<string> existingCaseNames, string originalName)
-    {
         var firstCopyName = originalName + " - copy";
 
         if (!existingCaseNames.Contains(firstCopyName))
@@ -59,21 +58,20 @@ public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepositor
 
     private async Task CopyCaseImages(Guid projectPk, Guid sourceCaseId, Guid destinationCaseId)
     {
-        var images = await context.Images
-            .Where(x => x.ProjectId == projectPk && x.CaseId == sourceCaseId)
+        var images = await context.CaseImages
+            .Where(x => x.Case.ProjectId == projectPk && x.CaseId == sourceCaseId)
             .ToListAsync();
 
         foreach (var image in images)
         {
             var newImageId = Guid.NewGuid();
 
-            var sourceUrl = ImageHelper.GetBlobName(sourceCaseId, image.ProjectId, image.Id);
-            var destinationUrl = ImageHelper.GetBlobName(destinationCaseId, projectPk, newImageId);
+            var sourceUrl = ImageHelper.GetCaseBlobName(sourceCaseId, image.Id);
+            var destinationUrl = ImageHelper.GetCaseBlobName(destinationCaseId, newImageId);
 
-            context.Images.Add(new Image
+            context.CaseImages.Add(new CaseImage
             {
                 Id = newImageId,
-                ProjectId = projectPk,
                 CaseId = destinationCaseId,
                 Description = image.Description,
                 Url = destinationUrl

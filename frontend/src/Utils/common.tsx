@@ -448,19 +448,16 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
         resourceId: profileInTimeSeriesData?.resourceId,
         newResourceObject: newProfile,
         previousResourceObject: existingProfile,
-        resourceProfileId: profileInTimeSeriesData?.resourceProfileId,
         tabName: tab,
         tableName,
     }
 }
 
-export const sortVersions = (versions: string[]): string[] => {
-    return versions.sort((a, b) => {
-        const [aMajor, aMinor, aPatch] = a.split(".").map(Number)
-        const [bMajor, bMinor, bPatch] = b.split(".").map(Number)
+export const sortVersions = (versions: string[]): string[] => versions.sort((a, b) => {
+    const [aMajor, aMinor, aPatch] = a.split(".").map(Number)
+    const [bMajor, bMinor, bPatch] = b.split(".").map(Number)
 
-        if (aMajor !== bMajor) { return bMajor - aMajor }
-        if (aMinor !== bMinor) { return bMinor - aMinor }
-        return bPatch - aPatch
-    })
-}
+    if (aMajor !== bMajor) { return bMajor - aMajor }
+    if (aMinor !== bMinor) { return bMinor - aMinor }
+    return bPatch - aPatch
+})

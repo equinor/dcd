@@ -26,7 +26,7 @@ public class CalculateTotalIncomeServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid(),
+            DrainageStrategyId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()
@@ -91,7 +91,7 @@ public class CalculateTotalIncomeServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid(),
+            DrainageStrategyId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()

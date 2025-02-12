@@ -8,10 +8,10 @@ import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import IndexView from "@/Views/IndexView"
-import { NoAccessReason } from "@/Models/Interfaces"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import NoAccessErrorView from "@/Views/NoAccessErrorView"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
+import { NoAccessReason } from "@/Models/enums"
 
 // Banner components
 const SelectProjectBanner = () => (

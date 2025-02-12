@@ -48,31 +48,54 @@ const NumberInputWithValidation = ({
 }: Props) => {
     const { setSnackBarMessage } = useAppContext()
     const [hasError, setHasError] = useState(false)
-    const [inputValue, setInputValue] = useState(defaultValue)
+    const [inputValue, setInputValue] = useState<string>(defaultValue?.toString() ?? "0")
     const [helperText, setHelperText] = useState("\u200B")
-    const validateInput = (newValue: number) => {
-        setInputValue(newValue)
+
+    const validateInput = (value: string) => {
+        if (value === "") {
+            setInputValue("0")
+            setHasError(false)
+            setHelperText("\u200B")
+            return true
+        }
+
+        const numValue = Number(value)
         if (min !== undefined && max !== undefined) {
-            if (!isWithinRange(newValue, min, max)) {
+            if (!isWithinRange(numValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
                 return false
             }
             setHasError(false)
             setHelperText("\u200B")
-
             return true
         }
         return true
     }
 
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-        const newValue = Number(event.target.value)
-        if (validateInput(newValue)) {
-            onSubmit(newValue)
+    const handleBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => {
+        if (value === "") {
+            setInputValue("0")
+            onSubmit(0)
+            return
+        }
+
+        const numValue = Number(value)
+        if (validateInput(value)) {
+            onSubmit(numValue)
         } else {
             setSnackBarMessage(`The input for ${label} was not saved, because it's outside the allowed range (min: ${min}, max: ${max}).`)
         }
+    }
+
+    const handleChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+        // If the input is "0" and user starts typing, clear it
+        if (inputValue === "0" && value.length === 2 && value.startsWith("0")) {
+            setInputValue(value.slice(1))
+            return
+        }
+        setInputValue(value)
+        validateInput(value)
     }
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -83,9 +106,10 @@ const NumberInputWithValidation = ({
 
     useEffect(() => {
         if (defaultValue !== undefined) {
-            validateInput(defaultValue)
+            setInputValue(defaultValue.toString())
+            validateInput(defaultValue.toString())
         } else {
-            setInputValue(defaultValue)
+            setInputValue("0")
         }
     }, [defaultValue])
 
@@ -98,7 +122,7 @@ const NumberInputWithValidation = ({
         >
             <StyledInput
                 id={id}
-                type="number"
+                type="text"
                 value={inputValue}
                 disabled={disabled}
                 onBlur={handleBlur}
@@ -106,7 +130,7 @@ const NumberInputWithValidation = ({
                 onInput={(event: React.FormEvent<HTMLInputElement>) => checkInput(event as unknown as React.KeyboardEvent<HTMLInputElement>)}
                 rightAdornments={[unit, hasError ? <ErrorIcon size={16} data={error_filled} /> : undefined]}
                 variant={hasError ? "error" : undefined}
-                onChange={(e: any) => validateInput(Number(e.target.value))}
+                onChange={handleChange}
             />
         </InputWrapper>
     )

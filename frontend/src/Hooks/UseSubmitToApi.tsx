@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { createLogger } from "../Utils/logger"
 
 import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
 import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
@@ -15,7 +16,7 @@ import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
-import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
+import { ProfileTypes } from "@/Models/enums"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -23,6 +24,11 @@ interface UpdateResourceParams {
     resourceObject: ResourceObject;
     resourceId?: string;
 }
+
+const submitApiLogger = createLogger({
+    name: "SUBMIT_API",
+    enabled: false, // Set to true to enable debug logging. Don't leave this on for production
+})
 
 export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
@@ -32,7 +38,6 @@ export const useSubmitToApi = () => {
         projectId: string,
         caseId: string,
         resourceId?: string,
-        resourceProfileId?: string,
         wellId?: string,
         drillingScheduleId?: string,
         serviceMethod: object,
@@ -50,7 +55,6 @@ export const useSubmitToApi = () => {
             )
         },
         onError: (error: any) => {
-            console.error("Failed to update data:", error)
             setSnackBarMessage(error.message)
         },
         onSettled: () => {
@@ -101,29 +105,23 @@ export const useSubmitToApi = () => {
 
     const updateCase = (params: UpdateResourceParams) => updateResource(GetCaseService, "updateCase", { ...params })
 
-    interface CreateOrUpdateTimeSeriesProfileParams {
+    interface SaveTimeSeriesProfileParams {
         projectId: string;
         caseId: string;
-        resourceId: string | undefined;
-        resourceProfileId: string | undefined;
-        createOrUpdateFunction: any;
+        saveFunction: any;
     }
-    const createOrUpdateTimeSeriesProfile = async ({
+    const saveTimeSeriesProfile = async ({
         projectId,
         caseId,
-        resourceId,
-        resourceProfileId,
-        createOrUpdateFunction,
-    }: CreateOrUpdateTimeSeriesProfileParams) => {
+        saveFunction,
+    }: SaveTimeSeriesProfileParams) => {
         try {
             const result = await mutation.mutateAsync({
                 projectId,
                 caseId,
-                resourceId,
-                resourceProfileId,
-                serviceMethod: createOrUpdateFunction,
+                serviceMethod: saveFunction,
             })
-            const returnValue = { ...result, resourceProfileId: result.id }
+            const returnValue = { ...result }
             return { success: true, data: returnValue }
         } catch (error) {
             return { success: false, error }
@@ -148,7 +146,7 @@ export const useSubmitToApi = () => {
                 drillingScheduleId,
                 serviceMethod: createOrUpdateFunction,
             })
-            const returnValue = { ...result, resourceProfileId: result.id }
+            const returnValue = { ...result }
             return { success: true, data: returnValue }
         } catch (error) {
             return { success: false, error }
@@ -161,7 +159,6 @@ export const useSubmitToApi = () => {
         resourceName: string,
         resourceId?: string,
         resourceObject: ResourceObject,
-        resourceProfileId?: string,
         wellId?: string,
         drillingScheduleId?: string,
     }
@@ -172,571 +169,189 @@ export const useSubmitToApi = () => {
         resourceName,
         resourceId,
         resourceObject,
-        resourceProfileId,
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
+        submitApiLogger.warn("Submitting to API:", {
+            resourceName,
+            resourceId,
+            resourceObject,
+        })
+
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
+            submitApiLogger.warn("Setting production overrides calculation flag")
         }
 
         if (totalStudyCostOverrideResources.includes(resourceName)) {
             setIsCalculatingTotalStudyCostOverrides(true)
+            submitApiLogger.warn("Setting total study cost overrides calculation flag")
         }
 
         if (resourceName !== "case" && !resourceId) {
-            console.log("asset id is required for this service")
+            submitApiLogger.error("Asset ID is required for this service", null)
             return { success: false, error: new Error("Asset ID is required for this service") }
         }
 
-        let result
-        switch (resourceName) {
-        case "case":
-            result = await updateCase({
-                projectId, caseId, resourceObject,
-            })
-            break
-        case "topside":
-            result = await updateTopside({
-                projectId, caseId, resourceId, resourceObject,
-            })
-            break
-        case "surf":
-            result = await updateSurf({
-                projectId, caseId, resourceId, resourceObject,
-            })
-            break
-        case "substructure":
-            result = await updateSubstructure({
-                projectId, caseId, resourceId, resourceObject,
-            })
-            break
-        case "transport":
-            result = await updateTransport({
-                projectId, caseId, resourceId, resourceObject,
-            })
-            break
-        case "onshorePowerSupply":
-            result = await updateOnshorePowerSupply({
-                projectId, caseId, resourceId, resourceObject,
-            })
-            break
-        case "drainageStrategy":
-            result = await updateDrainageStrategy({
-                projectId, caseId, resourceId, resourceObject,
-            })
-            break
-        case "productionProfileOil":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "ProductionProfileOil" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "additionalProductionProfileOil":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "AdditionalProductionProfileOil" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "productionProfileGas":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "ProductionProfileGas" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "additionalProductionProfileGas":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "AdditionalProductionProfileGas" } as Components.Schemas.SaveTimeSeriesDto,
-                )
-            })
-            break
-        case "productionProfileWater":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "ProductionProfileWater" } as Components.Schemas.SaveTimeSeriesDto,
-                )
-            })
-            break
-        case "productionProfileWaterInjection":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "ProductionProfileWaterInjection" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "productionProfileFuelFlaringAndLossesOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "FuelFlaringAndLossesOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "productionProfileNetSalesGasOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "NetSalesGasOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "productionProfileImportedElectricityOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "ImportedElectricityOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "deferredOilProduction":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
+        try {
+            switch (resourceName) {
+                case "case":
+                    return await updateCase({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "topside":
+                    return await updateTopside({
+                        projectId, caseId, resourceObject,
+                    })
+                    
+                case "surf":
+                    return await updateSurf({
+                        projectId, caseId, resourceObject,
+                    })
+                    
+                case "substructure":
+                    return await updateSubstructure({
+                        projectId, caseId, resourceObject,
+                    })
+                    
+                case "transport":
+                    return await updateTransport({
+                        projectId, caseId, resourceObject,
+                    })
+                    
+                case "onshorePowerSupply":
+                    return await updateOnshorePowerSupply({
+                        projectId, caseId, resourceObject,
+                    })
+                    
+                case "drainageStrategy":
+                    return await updateDrainageStrategy({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "explorationWellDrillingSchedule":
+                    return await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
-                        {...resourceObject, profileType: "DeferredOilProduction" } as Components.Schemas.SaveTimeSeriesDto,
-                    ),
-            })
-            break
-        case "deferredGasProduction":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "DeferredGasProduction" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "totalFeasibilityAndConceptStudiesOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "TotalFeasibilityAndConceptStudiesOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "totalFEEDStudiesOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "TotalFEEDStudiesOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "totalOtherStudiesCostProfile":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "TotalOtherStudiesCostProfile" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "historicCostCostProfile":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "HistoricCostCostProfile" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "wellInterventionCostProfileOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "WellInterventionCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "offshoreFacilitiesOperationsCostProfileOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: !await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "OffshoreFacilitiesOperationsCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "onshoreRelatedOPEXCostProfile":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "OnshoreRelatedOPEXCostProfile" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "additionalOPEXCostProfile":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "AdditionalOPEXCostProfile" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "cessationWellsCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "CessationWellsCostOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "cessationOffshoreFacilitiesCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "CessationOffshoreFacilitiesCostOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "cessationOnshoreFacilitiesCostProfile":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "CessationOnshoreFacilitiesCostProfile" } as Components.Schemas.SaveTimeSeriesDto,
-                ),
-            })
-            break
-        case "surfCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "SurfCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "topsideCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "TopsideCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "substructureCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "SubstructureCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "transportCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "TransportCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "onshorePowerSupplyCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "OnshorePowerSupplyCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "wellProjectOilProducerCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "OilProducerCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "wellProjectGasProducerCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "GasProducerCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "wellProjectWaterInjectorCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "WaterInjectorCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "wellProjectGasInjectorCostOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "GasInjectorCostProfileOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "gAndGAdminCost":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "GAndGAdminCostOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "seismicAcquisitionAndProcessing":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "SeismicAcquisitionAndProcessing" } as Components.Schemas.SaveTimeSeriesDto
-                ),
-            })
-            break
-        case "countryOfficeCost":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "CountryOfficeCost" } as Components.Schemas.SaveTimeSeriesDto
-                ),
-            })
-            break
-        case "co2EmissionsOverride":
-            result = await createOrUpdateTimeSeriesProfile({
-                projectId,
-                caseId,
-                resourceId,
-                resourceProfileId,
-                createOrUpdateFunction: await (await GetCaseService()).saveOverrideProfile(
-                    projectId,
-                    caseId,
-                    {...resourceObject, profileType: "Co2EmissionsOverride" } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                ),
-            })
-            break
-        case "explorationWellDrillingSchedule":
-            result = await createOrUpdateDrillingSchedule(
-                projectId,
-                caseId,
-                    resourceId!,
-                    wellId!,
-                    drillingScheduleId!,
-                    !drillingScheduleId
-                        ? await (await GetExplorationService()).createExplorationWellDrillingSchedule(
-                            projectId,
-                            caseId,
-                            resourceId!,
-                            wellId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                        )
-                        : await (await GetExplorationService()).updateExplorationWellDrillingSchedule(
-                            projectId,
-                            caseId,
-                            resourceId!,
-                            wellId!,
-                            drillingScheduleId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
-                        ),
-            )
-            break
-        case "wellProjectWellDrillingSchedule":
-            result = await createOrUpdateDrillingSchedule(
-                projectId,
-                caseId,
-                    resourceId!,
-                    wellId!,
-                    drillingScheduleId!,
-                    !drillingScheduleId
-                        ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
-                            projectId,
-                            caseId,
-                            resourceId!,
-                            wellId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                        )
-                        : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
-                            projectId,
-                            caseId,
-                            resourceId!,
-                            wellId!,
-                            drillingScheduleId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
-                        ),
-            )
+                        resourceId!,
+                        wellId!,
+                        drillingScheduleId!,
+                        !drillingScheduleId
+                            ? await (await GetExplorationService()).createExplorationWellDrillingSchedule(
+                                projectId,
+                                caseId,
+                                resourceId!,
+                                wellId!,
+                                resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
+                            )
+                            : await (await GetExplorationService()).updateExplorationWellDrillingSchedule(
+                                projectId,
+                                caseId,
+                                resourceId!,
+                                wellId!,
+                                drillingScheduleId!,
+                                resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
+                            ),
+                    )
+                    
+                case "developmentWellDrillingSchedule":
+                    return await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        wellId!,
+                        drillingScheduleId!,
+                        !drillingScheduleId
+                            ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
+                                projectId,
+                                caseId,
+                                resourceId!,
+                                wellId!,
+                                resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
+                            )
+                            : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
+                                projectId,
+                                caseId,
+                                resourceId!,
+                                wellId!,
+                                drillingScheduleId!,
+                                resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
+                            ),
+                    )
+            }
 
-            break
-        default:
-            console.log("Service not found")
+            const profileNameMap = new Map<string, string>([
+                ["additionalOPEXCostProfile", ProfileTypes.AdditionalOPEXCostProfile],
+                ["additionalProductionProfileGas", ProfileTypes.AdditionalProductionProfileGas],
+                ["additionalProductionProfileOil", ProfileTypes.AdditionalProductionProfileOil],
+                ["cessationOnshoreFacilitiesCostProfile", ProfileTypes.CessationOnshoreFacilitiesCostProfile],
+                ["countryOfficeCost", ProfileTypes.CountryOfficeCost],
+                ["deferredGasProduction", ProfileTypes.DeferredGasProduction],
+                ["deferredOilProduction", ProfileTypes.DeferredOilProduction],
+                ["onshoreRelatedOPEXCostProfile", ProfileTypes.OnshoreRelatedOPEXCostProfile],
+                ["productionProfileGas", ProfileTypes.ProductionProfileGas],
+                ["productionProfileOil", ProfileTypes.ProductionProfileOil],
+                ["productionProfileWater", ProfileTypes.ProductionProfileWater],
+                ["productionProfileWaterInjection", ProfileTypes.ProductionProfileWaterInjection],
+                ["projectSpecificDrillingCostProfile", ProfileTypes.ProjectSpecificDrillingCostProfile],
+                ["seismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing],
+                ["totalOtherStudiesCostProfile", ProfileTypes.TotalOtherStudiesCostProfile],
+            ])
+
+            if (profileNameMap.has(resourceName)) {
+                return await saveTimeSeriesProfile({
+                    projectId,
+                    caseId,
+                    saveFunction: await (await GetCaseService()).saveProfile(
+                        projectId,
+                        caseId,
+                        {...resourceObject, profileType: profileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesDto,
+                    ),
+                })
+            }
+
+            const overrideProfileNameMap = new Map<string, string>([
+                ["cessationOffshoreFacilitiesCostOverride", ProfileTypes.CessationOffshoreFacilitiesCostOverride],
+                ["cessationWellsCostOverride", ProfileTypes.CessationWellsCostOverride],
+                ["co2EmissionsOverride", ProfileTypes.Co2EmissionsOverride],
+                ["gAndGAdminCost", ProfileTypes.GAndGAdminCostOverride],
+                ["historicCostCostProfile", ProfileTypes.HistoricCostCostProfile],
+                ["offshoreFacilitiesOperationsCostProfileOverride", ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride],
+                ["onshorePowerSupplyCostOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride],
+                ["productionProfileFuelFlaringAndLossesOverride", ProfileTypes.FuelFlaringAndLossesOverride],
+                ["productionProfileImportedElectricityOverride", ProfileTypes.ImportedElectricityOverride],
+                ["productionProfileNetSalesGasOverride", ProfileTypes.NetSalesGasOverride],
+                ["substructureCostOverride", ProfileTypes.SubstructureCostProfileOverride],
+                ["surfCostOverride", ProfileTypes.SurfCostProfileOverride],
+                ["topsideCostOverride", ProfileTypes.TopsideCostProfileOverride],
+                ["totalFeasibilityAndConceptStudiesOverride", ProfileTypes.TotalFeasibilityAndConceptStudiesOverride],
+                ["totalFEEDStudiesOverride", ProfileTypes.TotalFEEDStudiesOverride],
+                ["transportCostOverride", ProfileTypes.TransportCostProfileOverride],
+                ["wellInterventionCostProfileOverride", ProfileTypes.WellInterventionCostProfileOverride],
+                ["wellProjectGasInjectorCostOverride", ProfileTypes.GasInjectorCostProfileOverride],
+                ["wellProjectGasProducerCostOverride", ProfileTypes.GasProducerCostProfileOverride],
+                ["wellProjectOilProducerCostOverride", ProfileTypes.OilProducerCostProfileOverride],
+                ["wellProjectWaterInjectorCostOverride", ProfileTypes.WaterInjectorCostProfileOverride],
+            ])
+
+            if (overrideProfileNameMap.has(resourceName)) {
+                return await saveTimeSeriesProfile({
+                    projectId,
+                    caseId,
+                    saveFunction: await (await GetCaseService()).saveOverrideProfile(
+                        projectId,
+                        caseId,
+                        {...resourceObject, profileType: overrideProfileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesOverrideDto,
+                    ),
+                })
+            }
+            
+            return { success: false, error: new Error("Service not found") }
+        } catch (error) {
+            submitApiLogger.error("Service not found or error occurred", error)
             return { success: false, error: new Error("Service not found") }
         }
-        return result
     }
 
     return { submitToApi, updateCase, mutation }

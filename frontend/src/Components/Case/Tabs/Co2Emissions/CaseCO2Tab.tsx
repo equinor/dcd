@@ -23,6 +23,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { PhysUnit } from "@/Models/enums"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -43,7 +44,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     })
 
     const sumValues = (input: Components.Schemas.TimeSeriesCostDto | undefined) => {
-        if (!input || input?.values) {
+        if (!input || !input?.values) {
             return 0
         }
 
@@ -57,7 +58,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const co2EmissionsData = apiData?.co2Emissions
     const co2IntensityData = apiData?.co2Intensity
 
-    // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2DistributionChartData, setCo2DistributionChartData] = useState<ICo2DistributionChartData[]>([
         { profile: "Drilling", value: 0 },
         { profile: "Flaring", value: 0 },
@@ -70,9 +70,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const totalOilProduction = (sumValues(apiData?.productionProfileOil) ?? 0)
-        + (sumValues(apiData?.additionalProductionProfileOil) ?? 0)
     const co2GridRef = useRef<any>(null)
+    const co2EmissionsSum = sumValues(co2EmissionsOverrideData ?? co2EmissionsData)
+    const oilProductionSum = sumValues(apiData?.productionProfileOil) + sumValues(apiData?.additionalProductionProfileOil)
 
     const co2IntensityLine = {
         type: "line",
@@ -154,25 +154,23 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Annual CO2 emissions",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MTPA" : "MTPA"}`,
                 profile: co2EmissionsData,
                 overridable: true,
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
                 resourceName: "co2EmissionsOverride",
                 resourceId: drainageStrategyData?.id!,
-                resourceProfileId: co2EmissionsOverrideData?.id,
                 resourcePropertyKey: "co2EmissionsOverride",
             },
             {
                 profileName: "Year-by-year CO2 intensity",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2IntensityData,
                 overridable: false,
                 editable: false,
                 resourceName: "co2Intensity",
                 resourceId: drainageStrategyData?.id!,
-                resourceProfileId: co2IntensityData?.id,
                 resourcePropertyKey: "co2Intensity",
             },
         ]
@@ -192,21 +190,21 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const dataArray = []
         if (!caseData) { return [{}] }
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
-        for (let i = startYear; i <= endYear; i += 1) {
+        for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
                 co2Emissions:
                     setValueToCorrespondingYear(
                         useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
-                        startYear,
+                        tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
                         co2IntensityData,
                         i,
-                        startYear,
+                        tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
                     ),
             })
@@ -240,7 +238,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             <Grid size={12}>
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
-            <Grid size={12}>
+            <div>
                 <SwitchableNumberInput
                     addEdit={addEdit}
                     resourceName="topside"
@@ -252,7 +250,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     integer={false}
                     unit="million Sm³ gas/sd"
                 />
-            </Grid>
+            </div>
             <Grid size={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
@@ -274,7 +272,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 <Grid size={12}>
                     <Typography variant="h1_bold">
                         {sumValues(co2IntensityData) && co2IntensityData?.values && co2IntensityData.values.length > 0
-                            ? ((sumValues(co2EmissionsData) * 1000) / (totalOilProduction * 6.29)).toFixed(4)
+                            ? ((co2EmissionsSum * 1000) / ((oilProductionSum ?? 0) * 6.29)).toFixed(4)
                             : "0.0000"}
                     </Typography>
                 </Grid>

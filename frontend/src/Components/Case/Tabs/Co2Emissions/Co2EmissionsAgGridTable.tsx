@@ -7,7 +7,7 @@ import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 
 interface Props {
-    topside: Components.Schemas.TopsideOverviewDto,
+    topside: Components.Schemas.TopsideDto,
 }
 
 const CaseCO2DistributionTable = ({
@@ -64,7 +64,7 @@ const CaseCO2DistributionTable = ({
             width: 60,
             field: "set",
             aggFunc: "",
-            cellStyle: { fontWeight: "normal" },
+            cellStyle: { fontWeight: "normal", display: "flex", alignItems: "center" },
             cellRenderer: lockIcon,
         },
     ])

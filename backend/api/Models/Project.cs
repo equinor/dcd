@@ -7,7 +7,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public Guid Id { get; set; } // If the project is a revision, this is the revision's id
 
     public Guid? OriginalProjectId { get; set; } // Id of the project the revision is based on
-    public virtual Project? OriginalProject { get; set; }
+    public Project? OriginalProject { get; set; }
 
     public string Name { get; set; } = string.Empty;
     public bool IsRevision { get; set; }
@@ -23,7 +23,6 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
-
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
@@ -36,45 +35,24 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
+    public int NpvYear { get; set; }
 
+    public ExplorationOperationalWellCosts ExplorationOperationalWellCosts { get; set; } = null!;
+    public DevelopmentOperationalWellCosts DevelopmentOperationalWellCosts { get; set; } = null!;
+    public RevisionDetails? RevisionDetails { get; set; }
+
+    public List<Case> Cases { get; set; } = [];
+    public List<Well> Wells { get; set; } = [];
+    public List<Project> Revisions { get; set; } = [];
+    public List<ProjectMember> ProjectMembers { get; set; } = [];
+    public List<ProjectImage> Images { get; set; } = [];
+
+    #region Change tracking
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
-
-    public virtual ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
-    public virtual DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
-    public virtual RevisionDetails? RevisionDetails { get; set; }
-
-    public virtual ICollection<Case> Cases { get; set; } = [];
-    public virtual ICollection<Well> Wells { get; set; } = [];
-    public virtual ICollection<Surf> Surfs { get; set; } = [];
-    public virtual ICollection<Substructure> Substructures { get; set; } = [];
-    public virtual ICollection<Topside> Topsides { get; set; } = [];
-    public virtual ICollection<Transport> Transports { get; set; } = [];
-    public virtual ICollection<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = [];
-    public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = [];
-    public virtual ICollection<WellProject> WellProjects { get; set; } = [];
-    public virtual ICollection<Exploration> Explorations { get; set; } = [];
-    public virtual ICollection<Project> Revisions { get; set; } = [];
-    public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = [];
-    public virtual ICollection<Image> Images { get; set; } = [];
-}
-
-public class RevisionDetails : IChangeTrackable, IDateTrackedEntity
-{
-    public Guid Id { get; set; }
-
-    public virtual Project Revision { get; set; } = null!;
-    public Guid RevisionId { get; set; }
-    public string? RevisionName { get; set; }
-    public bool Arena { get; set; }
-    public bool Mdqc { get; set; }
-    public ProjectClassification Classification { get; set; }
-    public DateTime CreatedUtc { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime UpdatedUtc { get; set; }
-    public string? UpdatedBy { get; set; }
+    #endregion
 }
 
 public enum PhysUnit
@@ -91,7 +69,7 @@ public enum Currency
 
 public enum InternalProjectPhase
 {
-    APbo, // Approval Point Business Oppertunity
+    APbo, // Approval Point Business Opportunity
     BOR, // Business Opportunity Reconfirmation
     VPbo, // Valid Point Business Opportunity
 }

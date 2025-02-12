@@ -1,13 +1,17 @@
 using api.AppInfrastructure.Authorization;
+using api.Features.Assets.CaseAssets.Campaigns.Create;
+using api.Features.Assets.CaseAssets.Campaigns.Delete;
+using api.Features.Assets.CaseAssets.Campaigns.Get;
+using api.Features.Assets.CaseAssets.Campaigns.Update;
+using api.Features.Assets.CaseAssets.CampaignWells.Get;
+using api.Features.Assets.CaseAssets.CampaignWells.Save;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
-using api.Features.Assets.CaseAssets.Explorations;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
-using api.Features.Assets.CaseAssets.WellProjects;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
@@ -38,7 +42,11 @@ using api.Features.Projects.Create;
 using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
-using api.Features.Prosp.Services.Assets;
+using api.Features.Prosp.Services.Assets.OnshorePowerSupplies;
+using api.Features.Prosp.Services.Assets.Substructures;
+using api.Features.Prosp.Services.Assets.Surfs;
+using api.Features.Prosp.Services.Assets.Topsides;
+using api.Features.Prosp.Services.Assets.Transports;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
@@ -66,8 +74,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateRevisionService>();
 
         services.AddScoped<UpdateWellsService>();
-        services.AddScoped<UpdateExplorationWellCostProfilesService>();
-        services.AddScoped<UpdateWellProjectCostProfilesService>();
 
         /* Project members */
         services.AddScoped<GetProjectMemberService>();
@@ -92,12 +98,19 @@ public static class DcdIocConfiguration
         services.AddScoped<CaseWithAssetsService>();
         services.AddScoped<CaseWithAssetsRepository>();
 
-        /* Images */
-        services.AddScoped<GetImageService>();
-        services.AddScoped<DeleteImageService>();
-        services.AddScoped<UploadImageService>();
+        /* Case images */
+        services.AddScoped<GetCaseImageService>();
+        services.AddScoped<DeleteCaseImageService>();
+        services.AddScoped<UploadCaseImageService>();
+        services.AddScoped<UpdateCaseImageService>();
+
+        /* Project images */
+        services.AddScoped<GetProjectImageService>();
+        services.AddScoped<DeleteProjectImageService>();
+        services.AddScoped<UploadProjectImageService>();
+        services.AddScoped<UpdateProjectImageService>();
+
         services.AddScoped<CopyImageService>();
-        services.AddScoped<UpdateImageService>();
 
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();
@@ -110,7 +123,6 @@ public static class DcdIocConfiguration
         /* Recalculation services */
         services.AddScoped<RecalculationService>();
         services.AddScoped<RecalculationRepository>();
-        services.AddScoped<RecalculationDeterminerService>();
 
         /* Auth */
         services.AddScoped<CurrentUser>();
@@ -120,10 +132,15 @@ public static class DcdIocConfiguration
         services.AddScoped<ProspExcelImportService>();
         services.AddScoped<ProspSharepointImportService>();
         services.AddScoped<OnshorePowerSupplyCostProfileService>();
+        services.AddScoped<OnshorePowerSupplyProspService>();
         services.AddScoped<SubstructureCostProfileService>();
+        services.AddScoped<SubstructureProspService>();
         services.AddScoped<SurfCostProfileService>();
+        services.AddScoped<SurfProspService>();
         services.AddScoped<TopsideCostProfileService>();
+        services.AddScoped<TopsideProspService>();
         services.AddScoped<TransportCostProfileService>();
+        services.AddScoped<TransportProspService>();
 
         /* Stea / Excel export */
         services.AddScoped<SteaService>();
@@ -133,15 +150,21 @@ public static class DcdIocConfiguration
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
+        /* Drilling campaigns */
+        services.AddScoped<UpdateCampaignService>();
+        services.AddScoped<CreateCampaignService>();
+        services.AddScoped<SaveCampaignWellService>();
+        services.AddScoped<GetCampaignWellService>();
+        services.AddScoped<GetCampaignService>();
+        services.AddScoped<DeleteCampaignService>();
+
         /* Case assets */
         services.AddScoped<UpdateDrainageStrategyService>();
-        services.AddScoped<UpdateExplorationService>();
         services.AddScoped<UpdateOnshorePowerSupplyService>();
         services.AddScoped<UpdateSubstructureService>();
         services.AddScoped<UpdateSurfService>();
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
-        services.AddScoped<UpdateWellProjectService>();
 
         /* Drilling schedules */
         services.AddScoped<DrillingScheduleService>();

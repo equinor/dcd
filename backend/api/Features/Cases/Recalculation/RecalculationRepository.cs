@@ -30,52 +30,48 @@ public class RecalculationRepository(DcdDbContext context)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
-        var wellProjectIds = caseItems.Select(x => x.WellProjectLink).ToList();
+        var wellProjectIds = caseItems.Select(x => x.WellProjectId).ToList();
 
-        await context.WellProjectWell
-            .Include(x => x.DrillingSchedule)
+        await context.DevelopmentWells
             .Include(x => x.Well)
             .Where(x => wellProjectIds.Contains(x.WellProjectId))
             .LoadAsync();
 
-        var explorationIds = caseItems.Select(x => x.ExplorationLink).ToList();
+        var explorationIds = caseItems.Select(x => x.ExplorationId).ToList();
 
         await context.ExplorationWell
-            .Include(x => x.DrillingSchedule)
             .Include(x => x.Well)
             .Where(x => explorationIds.Contains(x.ExplorationId))
             .LoadAsync();
 
-        var drillingSchedulesForWellProjectWell = await (
+        var drillingSchedulesForDevelopmentWell = await (
                 from caseItem in context.Cases
-                join wp in context.WellProjects on caseItem.WellProjectLink equals wp.Id
-                join wpw in context.WellProjectWell on wp.Id equals wpw.WellProjectId
-                where wpw.DrillingSchedule != null
+                join wp in context.WellProjects on caseItem.WellProjectId equals wp.Id
+                join dw in context.DevelopmentWells on wp.Id equals dw.WellProjectId
                 select new
                 {
                     CaseId = caseItem.Id,
-                    DrillingSchedule = wpw.DrillingSchedule!
+                    DevelopmentWell = dw
                 })
-            .GroupBy(x => x.CaseId, x => x.DrillingSchedule)
+            .GroupBy(x => x.CaseId, x => x.DevelopmentWell)
             .ToDictionaryAsync(x => x.Key, x => x.ToList());
 
         var drillingSchedulesForExplorationWell = await (
                 from caseItem in context.Cases
-                join ew in context.ExplorationWell on caseItem.ExplorationLink equals ew.ExplorationId
-                where ew.DrillingSchedule != null
+                join ew in context.ExplorationWell on caseItem.ExplorationId equals ew.ExplorationId
                 select new
                 {
                     CaseId = caseItem.Id,
-                    DrillingSchedule = ew.DrillingSchedule!
+                    ExplorationWell = ew
                 })
-            .GroupBy(x => x.CaseId, x => x.DrillingSchedule)
+            .GroupBy(x => x.CaseId, x => x.ExplorationWell)
             .ToDictionaryAsync(x => x.Key, x => x.ToList());
 
         return caseItems.Select(caseItem => new CaseWithDrillingSchedules
         {
             CaseItem = caseItem,
-            DrillingSchedulesForExplorationWell = drillingSchedulesForExplorationWell.TryGetValue(caseItem.Id, out var expSchedules) ? expSchedules : [],
-            DrillingSchedulesForWellProjectWell = drillingSchedulesForWellProjectWell.TryGetValue(caseItem.Id, out var wpwSchedules) ? wpwSchedules : []
+            ExplorationWells = drillingSchedulesForExplorationWell.TryGetValue(caseItem.Id, out var expSchedules) ? expSchedules : [],
+            DevelopmentWells = drillingSchedulesForDevelopmentWell.TryGetValue(caseItem.Id, out var wpwSchedules) ? wpwSchedules : []
         }).ToList();
     }
 }
@@ -83,6 +79,6 @@ public class RecalculationRepository(DcdDbContext context)
 public class CaseWithDrillingSchedules
 {
     public required Case CaseItem { get; set; }
-    public required List<DrillingSchedule> DrillingSchedulesForWellProjectWell { get; set; }
-    public required List<DrillingSchedule> DrillingSchedulesForExplorationWell { get; set; }
+    public required List<DevelopmentWell> DevelopmentWells { get; set; }
+    public required List<ExplorationWell> ExplorationWells { get; set; }
 }

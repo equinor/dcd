@@ -2,26 +2,27 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DrainageStrategy : IHasProjectId, IChangeTrackable, IDateTrackedEntity
+public class DrainageStrategy : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
-    public Guid ProjectId { get; set; }
-    public virtual Project Project { get; set; } = null!;
+    public Guid CaseId { get; set; }
+    public Case Case { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public double NGLYield { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public GasSolution GasSolution { get; set; }
+    public required string Description { get; set; }
+    public required double NGLYield { get; set; }
+    public required int ProducerCount { get; set; }
+    public required int GasInjectorCount { get; set; }
+    public required int WaterInjectorCount { get; set; }
+    public required ArtificialLift ArtificialLift { get; set; }
+    public required GasSolution GasSolution { get; set; }
 
+    #region Change tracking
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
+    #endregion
 }
 
 public enum GasSolution

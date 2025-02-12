@@ -19,6 +19,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import CaseTabTableWithGrouping from "@/Components/Tables/CaseTables/CaseTabTableWithGrouping"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
@@ -190,7 +191,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalExplorationCostData,
                     group: "Exploration",
                 },
@@ -199,31 +200,31 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newCapexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Drilling",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalDrillingCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Offshore facilities",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: offshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - offshore facilities",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - onshore facilities",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: cessationOnshoreFacilitiesCostProfileData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Onshore (Power from shore)",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: onshorePowerSupplyCostProfileData,
                     group: "CAPEX",
                 },
@@ -232,19 +233,19 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newStudycostTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Feasibility & Conceptual studies",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "FEED studies (DG2-DG3)",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "Other studies",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalOtherStudiesCostProfileData,
                     group: "Study cost",
                 },
@@ -253,25 +254,25 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newOpexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Historic cost",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: historicCostCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Offshore related OPEX, incl. well intervention",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: offshoreOpexPlussWellInterventionData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Onshore related OPEX",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: onshoreRelatedOPEXCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Additional OPEX",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: additionalOPEXCostProfileData,
                     group: "OPEX",
                 },
@@ -294,64 +295,73 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="npv"
-                    label="NPV before tax (MUSD)"
-                    value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    allowNegative
-                    disabled
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="npv"
+                            label="NPV before tax (MUSD)"
+                            value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            allowNegative
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="npvOverride"
+                            label="STEA NPV after tax(MUSD)"
+                            value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            allowNegative
+                            min={0}
+                            max={1000000}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="npvOverride"
-                    label="STEA NPV after tax(MUSD)"
-                    value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    allowNegative
-                    min={0}
-                    max={1000000}
-                    resourceId={caseData.caseId}
-                />
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="breakEven"
+                            previousResourceObject={caseData}
+                            label="B/E before tax (USD/bbl)"
+                            value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
+                            integer={false}
+                            min={0}
+                            max={1000000}
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="breakEvenOverride"
+                            label="STEA B/E after tax(MUSD)"
+                            value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            allowNegative
+                            min={0}
+                            max={1000000}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="breakEven"
-                    previousResourceObject={caseData}
-                    label="B/E before tax (USD/bbl)"
-                    value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
-                    integer={false}
-                    min={0}
-                    max={1000000}
-                    disabled
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="breakEvenOverride"
-                    label="STEA B/E after tax(MUSD)"
-                    value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    allowNegative
-                    min={0}
-                    max={1000000}
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
+
             <Grid size={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}

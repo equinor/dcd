@@ -7,12 +7,16 @@ namespace api.Features.Revisions.Create;
 
 public class CreateRevisionRepository(DcdDbContext context)
 {
-    public async Task<Project> GetDetachedProjectGraph(Guid projectPk)
+    public async Task<Project> GetFullProjectGraph(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
+
+        await context.ProjectMembers
+            .Where(p => p.ProjectId == projectPk)
+            .LoadAsync();
 
         var caseItems = await context.Cases
             .Include(x => x.DrainageStrategy)
@@ -21,8 +25,8 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(x => x.Surf)
             .Include(x => x.Substructure)
             .Include(x => x.OnshorePowerSupply)
-            .Include(x => x.DrainageStrategy)
-            .Include(x => x.DrainageStrategy)
+            .Include(x => x.Exploration)
+            .Include(x => x.WellProject)
             .Where(x => x.ProjectId == projectPk)
             .ToListAsync();
 
@@ -32,33 +36,16 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Where(x => caseIds.Contains(x.Id))
             .LoadAsync();
 
-        await context.Explorations
+        await context.Campaigns
+            .Include(c => c.DevelopmentWells).ThenInclude(c => c.Well)
+            .Where(x => x.Case.ProjectId == projectPk)
+            .LoadAsync();
+
+        await context.Campaigns
             .Include(c => c.ExplorationWells).ThenInclude(c => c.Well)
-            .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
-            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Case.ProjectId == projectPk)
             .LoadAsync();
-
-        await context.WellProjects
-            .Include(c => c.WellProjectWells).ThenInclude(c => c.Well)
-            .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
-            .Where(x => x.ProjectId == projectPk)
-            .LoadAsync();
-
-        DetachEntriesToEnablePrimaryKeyEdits();
 
         return project;
-    }
-
-    private void DetachEntriesToEnablePrimaryKeyEdits()
-    {
-        var entries = context.ChangeTracker
-            .Entries()
-            .Where(e => e.State != EntityState.Detached)
-            .ToList();
-
-        foreach (var entry in entries)
-        {
-            entry.State = EntityState.Detached;
-        }
     }
 }

@@ -10,7 +10,7 @@ export type ResourceName =
     "wellProject" |
     "exploration" |
     "explorationWellDrillingSchedule" |
-    "wellProjectWellDrillingSchedule" | ProfileNames
+    "developmentWellDrillingSchedule" | ProfileNames
 
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
     "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
@@ -26,27 +26,21 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
-    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" |
+    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" | "projectSpecificDrillingCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2EmissionsOverride" | "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride"
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
-    Components.Schemas.TopsideOverviewDto |
     Components.Schemas.SurfDto |
     Components.Schemas.SubstructureDto |
     Components.Schemas.TransportDto |
     Components.Schemas.CaseOverviewDto |
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
-    Components.Schemas.WellProjectDto |
-    Components.Schemas.ExplorationDto |
     Components.Schemas.OnshorePowerSupplyDto |
-    ProfileObject
-
-export type ProfileObject =
     Components.Schemas.TimeSeriesCostOverrideDto |
-    Components.Schemas.TimeSeriesCostDto;
+    Components.Schemas.TimeSeriesCostDto
 
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
@@ -56,9 +50,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.OnshorePowerSupplyDto |
     keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
-    keyof Components.Schemas.WellProjectDto |
-    keyof Components.Schemas.ExplorationDto |
-    keyof Components.Schemas.WellProjectWellDto |
+    keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     ProfilePropertyKey
@@ -77,7 +69,6 @@ export interface EditInstance {
     resourceName: ResourceName; // the asset being edited
     resourcePropertyKey: ResourcePropertyKey; // the key of the asset being edited
     resourceId?: string; // the id of the asset being edited
-    resourceProfileId?: string; // the id of the timeseries profile being edited
     wellId?: string // the id of the asset well
     drillingScheduleId?: string // the id of the drilling schedule
     caseId?: string; // the case id
@@ -105,21 +96,14 @@ export interface TableCase {
     referenceCaseId?: string
 }
 
-export enum NoAccessReason {
-    ProjectDoesNotExist = 1,
-    ClassificationInternal = 2,
-    ClassificationRestricted = 3,
-    ClassificationConfidential = 4
-}
-
 export type Version = `${number}.${number}.${number}`;
 export type Category = "New Functionalities" | "UI Improvements" | "Bugfixes" | "Other";
 export type UpdateEntry = {
     description: string;
 };
 
-export type WhatsNewUpdates = { 
-    [key in Version]: { 
-        [key in Category]?: UpdateEntry[] 
-    } 
+export type WhatsNewUpdates = {
+    [key in Version]: {
+        [key in Category]?: UpdateEntry[]
+    }
 };

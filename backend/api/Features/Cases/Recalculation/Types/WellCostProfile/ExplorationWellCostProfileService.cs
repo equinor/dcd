@@ -1,6 +1,6 @@
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.WellCostProfile;
@@ -18,28 +18,28 @@ public static class ExplorationWellCostProfileService
 
         foreach (var profileType in profileTypes)
         {
-            var wells = caseItem.Exploration!.ExplorationWells.Where(ew => ew.Well.WellCategory == profileType.Value).ToList();
+            var wells = caseItem.Exploration.ExplorationWells.Where(ew => ew.Well.WellCategory == profileType.Value).ToList();
 
             var profilesToMerge = new List<TimeSeriesCost>();
 
             foreach (var explorationWell in wells)
             {
-                if (explorationWell.DrillingSchedule?.Values.Length > 0)
+                if (explorationWell.Values.Length > 0)
                 {
                     profilesToMerge.Add(new TimeSeriesCost
                     {
-                        Values = explorationWell.DrillingSchedule.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
-                        StartYear = explorationWell.DrillingSchedule.StartYear,
+                        Values = explorationWell.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
+                        StartYear = explorationWell.StartYear
                     });
                 }
             }
 
             var profileValues = TimeSeriesMerger.MergeTimeSeries(profilesToMerge);
 
-            var sidetrackCostProfile = caseItem.CreateProfileIfNotExists(profileType.Key);
+            var profile = caseItem.CreateProfileIfNotExists(profileType.Key);
 
-            sidetrackCostProfile.Values = profileValues.Values;
-            sidetrackCostProfile.StartYear = profileValues.StartYear;
+            profile.Values = profileValues.Values;
+            profile.StartYear = profileValues.StartYear;
         }
     }
 }

@@ -1,14 +1,14 @@
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 
 public static class Co2EmissionsProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    public static void RunCalculation(Case caseItem, List<DevelopmentWell> developmentWells)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)
         {
@@ -29,7 +29,7 @@ public static class Co2EmissionsProfileService
             Values = convertedValues.ToArray()
         };
 
-        var drillingEmissionsProfile = CalculateDrillingEmissions(caseItem.Project, drillingSchedulesForWellProjectWell);
+        var drillingEmissionsProfile = CalculateDrillingEmissions(caseItem.Project, developmentWells);
 
         var totalProfile = TimeSeriesMerger.MergeTimeSeries(newProfile, drillingEmissionsProfile);
 
@@ -72,16 +72,16 @@ public static class Co2EmissionsProfileService
         };
     }
 
-    private static TimeSeriesCost CalculateDrillingEmissions(Project project, List<DrillingSchedule> drillingSchedulesForWellProjectWell)
+    private static TimeSeriesCost CalculateDrillingEmissions(Project project, List<DevelopmentWell> developmentWells)
     {
         var wellDrillingSchedules = new TimeSeriesCost();
 
-        foreach (var drillingSchedule in drillingSchedulesForWellProjectWell)
+        foreach (var developmentWell in developmentWells)
         {
             var timeSeries = new TimeSeriesCost
             {
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values.Select(v => (double)v).ToArray()
+                StartYear = developmentWell.StartYear,
+                Values = developmentWell.Values.Select(v => (double)v).ToArray()
             };
 
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);

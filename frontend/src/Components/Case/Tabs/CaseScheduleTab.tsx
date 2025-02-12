@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid2"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
+import styled from "styled-components"
 
 import {
     isDefaultDateString,
@@ -18,6 +19,10 @@ import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useAppContext } from "@/Context/AppContext"
+
+const TabContainer = styled(Grid)`
+    max-width: 800px;
+`
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppContext()
@@ -202,7 +207,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     return (
-        <Grid container spacing={2}>
+        <TabContainer container spacing={2}>
             {caseDateKeys
                 .filter((caseDateKey) => Object.keys(caseData)
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
@@ -233,7 +238,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         )
                         : null
                 ))}
-        </Grid>
+        </TabContainer>
     )
 }
 

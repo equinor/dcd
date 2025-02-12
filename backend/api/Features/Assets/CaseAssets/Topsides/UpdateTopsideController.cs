@@ -7,14 +7,13 @@ namespace api.Features.Assets.CaseAssets.Topsides;
 public class UpdateTopsideController(UpdateTopsideService updateTopsideService) : ControllerBase
 {
     [AuthorizeActionType(ActionType.Edit)]
-    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/topsides/{topsideId:guid}")]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/topside")]
     public async Task<NoContentResult> UpdateTopside(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid topsideId,
         [FromBody] UpdateTopsideDto dto)
     {
-        await updateTopsideService.UpdateTopside(projectId, caseId, topsideId, dto);
+        await updateTopsideService.UpdateTopside(projectId, caseId, dto);
         return NoContent();
     }
 }

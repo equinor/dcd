@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { default as Grid } from "@mui/material/Grid2"
-import { Typography, TextField, Button, Icon } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
+import {
+    Typography,
+    TextField,
+    Button,
+    Icon,
+} from "@equinor/eds-core-react"
 import { undo } from "@equinor/eds-icons"
 import Slider from "@mui/material/Slider"
 import styled from "styled-components"
@@ -115,9 +120,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     const handleStartYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value
         setLocalStartYear(inputValue)
-        
+
         const value = parseInt(inputValue, 10)
-        if (!isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
+        if (!Number.isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
             if (value <= endYear) {
                 setStartYear(value)
             }
@@ -127,9 +132,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     const handleEndYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value
         setLocalEndYear(inputValue)
-        
+
         const value = parseInt(inputValue, 10)
-        if (!isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
+        if (!Number.isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
             if (value >= startYear) {
                 setEndYear(value)
             }
@@ -138,7 +143,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     const handleStartYearBlur = () => {
         const value = parseInt(localStartYear, 10)
-        if (isNaN(value)) {
+        if (Number.isNaN(value)) {
             setStartYear(MIN_YEAR)
             setLocalStartYear(MIN_YEAR.toString())
         } else if (value > endYear) {
@@ -158,7 +163,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     const handleEndYearBlur = () => {
         const value = parseInt(localEndYear, 10)
-        if (isNaN(value)) {
+        if (Number.isNaN(value)) {
             setEndYear(MIN_YEAR)
             setLocalEndYear(MIN_YEAR.toString())
         } else if (value < startYear) {

@@ -77,112 +77,121 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     return (
         <Grid container spacing={2}>
             <Gallery />
-            <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
-                <Typography group="input" variant="label">Description</Typography>
-                {editMode ? (
-                    <div
-                        key="input"
-                        id="Description"
-                    >
-                        <MarkdownEditor
-                            id="case-description-editor"
-                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            value={description}
-                            onInput={handleChange}
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                        <Typography group="input" variant="label">Description</Typography>
+                        {editMode ? (
+                            <div
+                                key="input"
+                                id="Description"
+                            >
+                                <MarkdownEditor
+                                    id="case-description-editor"
+                                    menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                                    value={description}
+                                    onInput={handleChange}
+                                />
+                            </div>
+                        ) : (
+                            <div
+                                key="input"
+                            >
+                                <MarkdownViewer
+                                    value={caseData.description ?? ""}
+                                    id="case-description-viewer"
+                                />
+                            </div>
+                        )}
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid container size={12} justifyContent="flex-start">
+                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="producerCount"
+                            label="Production wells"
+                            value={caseData.producerCount ?? 0}
+                            previousResourceObject={caseData}
+                            integer
+                            min={0}
+                            max={100000}
+                            resourceId={caseData.caseId}
                         />
-                    </div>
-                ) : (
-                    <div
-                        key="input"
-                    >
-                        <MarkdownViewer
-                            value={caseData.description ?? ""}
-                            id="case-description-viewer"
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="waterInjectorCount"
+                            label="Water injector wells"
+                            value={caseData.waterInjectorCount ?? 0}
+                            previousResourceObject={caseData}
+                            integer
+                            disabled={false}
+                            min={0}
+                            max={100000}
+                            resourceId={caseData.caseId}
                         />
-                    </div>
-                )}
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="producerCount"
-                    label="Production wells"
-                    value={caseData.producerCount ?? 0}
-                    previousResourceObject={caseData}
-                    integer
-                    min={0}
-                    max={100000}
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="waterInjectorCount"
-                    label="Water injector wells"
-                    value={caseData.waterInjectorCount ?? 0}
-                    previousResourceObject={caseData}
-                    integer
-                    disabled={false}
-                    min={0}
-                    max={100000}
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="gasInjectorCount"
-                    label="Gas injector wells"
-                    value={caseData.gasInjectorCount ?? 0}
-                    previousResourceObject={caseData}
-                    integer
-                    min={0}
-                    max={100000}
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableDropdownInput
-                    addEdit={addEdit}
-                    value={caseData.productionStrategyOverview ?? 0}
-                    resourceName="case"
-                    resourcePropertyKey="productionStrategyOverview"
-                    options={productionStrategyOptions}
-                    previousResourceObject={caseData}
-                    label="Production strategy overview"
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableDropdownInput
-                    addEdit={addEdit}
-                    value={caseData.artificialLift ?? 0}
-                    resourceName="case"
-                    resourcePropertyKey="artificialLift"
-                    options={artificialLiftOptions}
-                    previousResourceObject={caseData}
-                    label="Artificial lift"
-                    resourceId={caseData.caseId}
-                />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="case"
-                    resourcePropertyKey="facilitiesAvailability"
-                    label="Facilities availability"
-                    value={caseData.facilitiesAvailability ?? 0}
-                    previousResourceObject={caseData}
-                    integer={false}
-                    unit="%"
-                    min={0}
-                    max={100}
-                    resourceId={caseData.caseId}
-                />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="gasInjectorCount"
+                            label="Gas injector wells"
+                            value={caseData.gasInjectorCount ?? 0}
+                            previousResourceObject={caseData}
+                            integer
+                            min={0}
+                            max={100000}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableDropdownInput
+                            addEdit={addEdit}
+                            value={caseData.productionStrategyOverview ?? 0}
+                            resourceName="case"
+                            resourcePropertyKey="productionStrategyOverview"
+                            options={productionStrategyOptions}
+                            previousResourceObject={caseData}
+                            label="Production strategy overview"
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableDropdownInput
+                            addEdit={addEdit}
+                            value={caseData.artificialLift ?? 0}
+                            resourceName="case"
+                            resourcePropertyKey="artificialLift"
+                            options={artificialLiftOptions}
+                            previousResourceObject={caseData}
+                            label="Artificial lift"
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            addEdit={addEdit}
+                            resourceName="case"
+                            resourcePropertyKey="facilitiesAvailability"
+                            label="Facilities availability"
+                            value={caseData.facilitiesAvailability ?? 0}
+                            previousResourceObject={caseData}
+                            integer={false}
+                            unit="%"
+                            min={0}
+                            max={100}
+                            resourceId={caseData.caseId}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     )

@@ -1,5 +1,5 @@
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Calculators.Helpers;
@@ -13,7 +13,7 @@ public static class EconomicsHelper
 
         for (int i = 0; i < values.Length; i++)
         {
-            accumulatedVolume += values[i] / Math.Pow(discountFactor, startIndex + i + 1);
+            accumulatedVolume += values[i] / Math.Pow(discountFactor, startIndex + i);
         }
 
         return accumulatedVolume;

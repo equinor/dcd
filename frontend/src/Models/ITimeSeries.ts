@@ -44,7 +44,6 @@ export interface ITimeSeriesTableData {
     resourceId: string
     resourcePropertyKey: string
     resourceName: ProfileNames
-    resourceProfileId?: string
     editable: boolean
     total?: string
     hideIfEmpty?: boolean

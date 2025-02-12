@@ -13,6 +13,7 @@ import {
     ColDef,
     GridReadyEvent,
     ICellRendererParams,
+    CellClickedEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
@@ -40,6 +41,7 @@ import {
 } from "@/Models/ITimeSeries"
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import { createLogger } from "@/Utils/logger"
+import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 
 interface Props {
     timeSeriesData: ITimeSeriesTableDataWithSet[]
@@ -61,6 +63,9 @@ const CenterGridIcons = styled.div`
     padding-top: 0px;
     padding-left: 0px;
     height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 `
 
 const logger = createLogger({
@@ -91,12 +96,34 @@ const CaseTabTable = memo(({
     const [editQueue, setEditQueue] = useState<any[]>([])
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
+    const gridInitializedRef = useRef(false)
+
+    const [selectedRow, setSelectedRow] = useState<any>(null)
+    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
+    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
+
+    const gridRowData = useMemo(
+        () => {
+            if (!presentedTableData?.length) { return [] }
+            return profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
+        },
+        [presentedTableData, editMode, dg4Year, tableName],
+    )
+
+    useEffect(() => {
+        if (timeSeriesData?.length > 0) {
+            setPresentedTableData(timeSeriesData)
+        }
+    }, [timeSeriesData])
+
+    useEffect(() => {
+        if (gridRef.current?.api && gridRowData.length > 0) {
+            gridRef.current.api.setGridOption("rowData", gridRowData)
+        }
+    }, [gridRowData])
 
     useEffect(() => {
         if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
-            if (timeSeriesData?.length > 0 && editQueue.length === 0) {
-                setPresentedTableData(timeSeriesData)
-            }
             previousTimeSeriesDataRef.current = timeSeriesData
         }
     }, [timeSeriesData])
@@ -127,7 +154,6 @@ const CaseTabTable = memo(({
         }
     }, [editQueue, isSaving])
 
-    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
     useEffect(() => {
         if (editQueue.length > 0) {
             const timer = setTimeout(() => {
@@ -181,15 +207,6 @@ const CaseTabTable = memo(({
         }
     }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
 
-    const gridRowData = useMemo(
-        () => {
-            if (!presentedTableData?.length) { return [] }
-            const data = profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
-            return data
-        },
-        [presentedTableData, editMode, dg4Year, tableName, tableYears],
-    )
-
     useEffect(() => {
         if (gridRef.current?.api && presentedTableData?.length > 0 && gridRowData.length > 0) {
             const currentNodes = gridRef.current.api.getRenderedNodes()
@@ -201,7 +218,7 @@ const CaseTabTable = memo(({
     }, [gridRowData, presentedTableData])
 
     const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!params.data || !editMode) {
+        if (!params.data) {
             return null
         }
 
@@ -218,6 +235,7 @@ const CaseTabTable = memo(({
         return (
             <CenterGridIcons>
                 <CalculationSourceToggle
+                    editMode={editMode}
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
@@ -296,10 +314,11 @@ const CaseTabTable = memo(({
     }, [generateTableYearColDefs])
 
     const initializeGridWithData = useCallback((gridReadyEvent: GridReadyEvent) => {
-        if (presentedTableData?.length > 0) {
+        gridInitializedRef.current = true
+        if (gridRowData.length > 0) {
             gridReadyEvent.api.setGridOption("rowData", gridRowData)
         }
-    }, [gridRowData, presentedTableData])
+    }, [gridRowData])
 
     // Handle grid blur event
     useEffect(() => {
@@ -325,6 +344,26 @@ const CaseTabTable = memo(({
             fileName: "export.xlsx",
         }
     }, [tableYears])
+
+    const handleCellClicked = (event: CellClickedEvent) => {
+        if (!event.data || editMode) { return } // Don't open sidesheet in edit mode
+
+        // Get the clicked column's field (year)
+        const clickedYear = event.column.getColId()
+
+        logger.info("Cell clicked", {
+            rowData: event.data,
+            profileName: event.data.profileName,
+            values: event.data.profile?.values,
+            clickedYear,
+        })
+
+        setSelectedRow({
+            ...event.data,
+            clickedYear, // Add the clicked year to the row data
+        })
+        setIsSidesheetOpen(true)
+    }
 
     const gridConfig = useMemo(() => ({
         // Column configuration
@@ -352,6 +391,12 @@ const CaseTabTable = memo(({
         cellSelection: true,
         copyHeadersToClipboard: false,
         stopEditingWhenCellsLoseFocus: true,
+        onCellClicked: handleCellClicked,
+        rowSelection: "single" as const,
+        context: {
+            setSelectedRow,
+            setIsSidesheetOpen,
+        },
     }), [
         editMode,
         handleCellValueChange,
@@ -361,22 +406,35 @@ const CaseTabTable = memo(({
         includeFooter,
         initializeGridWithData,
         defaultExcelExportParams,
+        handleCellClicked,
+        setSelectedRow,
+        setIsSidesheetOpen,
     ])
 
     return (
-        <div className={styles.root}>
-            <div
-                id={tableName}
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    {...gridConfig}
-                />
+        <>
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        {...gridConfig}
+                    />
+                </div>
             </div>
-        </div>
+            <SidesheetWrapper
+                isOpen={isSidesheetOpen}
+                onClose={() => setIsSidesheetOpen(false)}
+                rowData={selectedRow}
+                dg4Year={dg4Year}
+                allTimeSeriesData={timeSeriesData}
+                isProsp={isProsp}
+            />
+        </>
     )
 })
 

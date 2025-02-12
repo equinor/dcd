@@ -10,7 +10,6 @@ public class UpdateTopsideDto
     public double GasCapacity { get; set; }
     public double WaterInjectionCapacity { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
-    public Currency Currency { get; set; }
     public double FuelConsumption { get; set; }
     public double FlaredGas { get; set; }
     public int ProducerCount { get; set; }
@@ -39,7 +38,6 @@ public class ProspUpdateTopsideDto
     public double GasCapacity { get; set; }
     public double WaterInjectionCapacity { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
-    public Currency Currency { get; set; }
     public double FuelConsumption { get; set; }
     public double FlaredGas { get; set; }
     public int ProducerCount { get; set; }

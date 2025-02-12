@@ -1,6 +1,6 @@
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
-using api.Features.TimeSeriesCalculators;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.Helpers;
@@ -12,7 +12,7 @@ public static class EmissionCalculationHelper
 
     public static TimeSeriesCost CalculateTotalFuelConsumptions(Case caseItem)
     {
-        var factor = caseItem.Topside!.FuelConsumption * Cd * caseItem.FacilitiesAvailability / 100 * 1000000;
+        var factor = caseItem.Topside.FuelConsumption * Cd * caseItem.FacilitiesAvailability / 100 * 1000000;
         var totalUseOfPower = CalculateTotalUseOfPower(caseItem, caseItem.FacilitiesAvailability);
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
 
@@ -25,7 +25,7 @@ public static class EmissionCalculationHelper
 
     public static TimeSeriesCost CalculateTotalUseOfPower(Case caseItem, double facilitiesAvailability)
     {
-        var topside = caseItem.Topside!;
+        var topside = caseItem.Topside;
 
         var co2ShareCo2MaxOil = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
         var co2ShareCo2MaxGas = topside.CO2ShareGasProfile * topside.CO2OnMaxGasProfile;

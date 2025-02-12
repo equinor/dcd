@@ -25,14 +25,14 @@ public class CalculateTotalCostServiceTests
             Id = caseId,
             Project = project,
             ProjectId = project.Id,
-            DrainageStrategyLink = Guid.NewGuid(),
-            WellProjectLink = Guid.NewGuid(),
-            SubstructureLink = Guid.NewGuid(),
-            SurfLink = Guid.NewGuid(),
-            TopsideLink = Guid.NewGuid(),
-            TransportLink = Guid.NewGuid(),
-            OnshorePowerSupplyLink = Guid.NewGuid(),
-            ExplorationLink = Guid.NewGuid(),
+            DrainageStrategyId = Guid.NewGuid(),
+            WellProjectId = Guid.NewGuid(),
+            SubstructureId = Guid.NewGuid(),
+            SurfId = Guid.NewGuid(),
+            TopsideId = Guid.NewGuid(),
+            TransportId = Guid.NewGuid(),
+            OnshorePowerSupplyId = Guid.NewGuid(),
+            ExplorationId = Guid.NewGuid(),
             TimeSeriesProfiles = new List<TimeSeriesProfile>
             {
                 new()
