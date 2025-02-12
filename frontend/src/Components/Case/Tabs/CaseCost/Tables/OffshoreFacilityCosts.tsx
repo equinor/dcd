@@ -11,7 +11,6 @@ interface OffshoreFacillityCostsProps {
     capexGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
@@ -19,7 +18,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     capexGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -118,7 +116,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            
             isProsp
             sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />

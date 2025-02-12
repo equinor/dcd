@@ -11,11 +11,10 @@ interface OpexCostsProps {
     opexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
     apiData: Components.Schemas.CaseWithAssetsDto
-    addEdit: any
 }
 
 const OpexCosts: React.FC<OpexCostsProps> = ({
-    tableYears, opexGridRef, alignedGridsRef, apiData, addEdit,
+    tableYears, opexGridRef, alignedGridsRef, apiData,
 }) => {
     const revisionAndProjectData = useDataFetch()
     const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
@@ -98,7 +97,6 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            
         />
     )
 }
