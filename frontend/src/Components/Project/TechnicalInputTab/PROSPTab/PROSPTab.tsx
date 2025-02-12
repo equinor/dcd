@@ -11,7 +11,6 @@ import Grid from "@mui/material/Grid2"
 
 import { GetProspService } from "@/Services/ProspService"
 import { GetProjectService } from "@/Services/ProjectService"
-import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import useEditProject from "@/Hooks/useEditProject"
@@ -25,7 +24,7 @@ const PROSPTab = () => {
     const { editMode } = useAppContext()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
-    const [driveItems, setDriveItems] = useState<DriveItem[]>()
+    const [driveItems, setDriveItems] = useState<Components.Schemas.DriveItemDto[]>([])
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
 
@@ -35,6 +34,10 @@ const PROSPTab = () => {
         }
         setIsRefreshing(true)
         e.preventDefault()
+        if (!sharepointUrl) {
+            return
+        }
+
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl }, revisionAndProjectData.projectId)
             setDriveItems(result)

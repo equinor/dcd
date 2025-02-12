@@ -1,3 +1,5 @@
+import { ProfileTypes } from "@/Models/enums"
+
 export const profileNameMap = new Map<string, string>([
     ["additionalOPEXCostProfile", ProfileTypes.AdditionalOPEXCostProfile],
     ["additionalProductionProfileGas", ProfileTypes.AdditionalProductionProfileGas],
