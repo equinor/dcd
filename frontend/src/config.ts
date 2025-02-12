@@ -15,18 +15,22 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
 import { EnvironmentVariables } from "./environmentVariables"
 
-// Only import license in development
 const isDevelopment = EnvironmentVariables.ENVIRONMENT === "dev"
 let agGridLicenseKey: string | undefined
-if (isDevelopment) {
-    import("./agGridLicense").then((licenseModule) => {
-        agGridLicenseKey = licenseModule.agGridLicenseKey
-    }).catch(() => {
-        console.warn("AG Grid license file not found in development mode")
-    })
+
+// Initialize AG Grid configuration
+const initializeAgGrid = async () => {
+    if (isDevelopment) {
+        try {
+            const licenseModule = await import("./agGridLicense")
+            agGridLicenseKey = licenseModule.agGridLicenseKey
+        } catch (error) {
+            console.warn("AG Grid license file not found in development mode")
+        }
+    }
 }
 
-export const configure: AppModuleInitiator = (configurator, args) => {
+export const configure: AppModuleInitiator = async (configurator, args) => {
     const { basename } = args.env
 
     ModuleRegistry.registerModules([
@@ -42,11 +46,15 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         ExcelExportModule,
     ])
 
+    await initializeAgGrid()
+
     if (isDevelopment && agGridLicenseKey && agGridLicenseKey.length > 0) {
+        console.log("Enabling AG Grid with enterprise license")
         enableAgGrid(configurator, {
             licenseKey: agGridLicenseKey,
         })
     } else {
+        console.log("Enabling AG Grid without enterprise license")
         enableAgGrid(configurator)
     }
 

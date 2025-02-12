@@ -373,7 +373,8 @@ const useEditCase = () => {
             const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
                 (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
             )
-
+            console.log("caseEditsBelongingToCurrentCase:", caseEditsBelongingToCurrentCase)
+            console.log("current editing indeX:", currentEditIndex)
             // Handle case where we're at the first edit
             if (currentEditIndex === 0) {
                 const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
@@ -515,6 +516,9 @@ const useEditCase = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
             (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
         )
+
+        console.log("caseEditsBelongingToCurrentCase", caseEditsBelongingToCurrentCase)
+        console.log("currentEditIndex", currentEditIndex)
         if (currentEditIndex <= 0) {
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
             if (lastEdit) {
