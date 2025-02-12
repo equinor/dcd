@@ -55,7 +55,6 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
         editIndexes,
     } = useCaseStore()
 
-
     useEffect(() => {
         const currentEditId = getCurrentEditId(editIndexes, caseId)
         setActiveEdit(currentEditId)
