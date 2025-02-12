@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
@@ -8,21 +7,34 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace api.Features.Prosp.Services.Assets.Surfs;
 
-public class SurfProspService(UpdateSurfService updateSurfService, SurfCostProfileService surfCostProfileService)
+public static class SurfProspService
 {
-    public async Task ClearImportedSurf(Case caseItem)
+    public static void ClearImportedSurf(Case caseItem)
     {
-        await updateSurfService.UpdateSurf(caseItem.ProjectId,
-            caseItem.Id,
-            new ProspUpdateSurfDto
-            {
-                Source = Source.ConceptApp
-            });
+        var asset = caseItem.Surf;
 
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
+        asset.Source = Source.ConceptApp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.CessationCost = 0;
+        asset.InfieldPipelineSystemLength = 0;
+        asset.UmbilicalSystemLength = 00;
+        asset.ArtificialLift = ArtificialLift.NoArtificialLift;
+        asset.RiserCount = 0;
+        asset.TemplateCount = 0;
+        asset.ProducerCount = 0;
+        asset.GasInjectorCount = 0;
+        asset.WaterInjectorCount = 0;
+        asset.ProductionFlowline = ProductionFlowline.No_production_flowline;
+        asset.CostYear = 0;
+        asset.ApprovedBy = "";
+        asset.DG3Date = null;
+        asset.DG4Date = null;
+        asset.ProspVersion = null;
+
+        SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, new UpdateTimeSeriesCostDto());
     }
 
-    public async Task ImportSurf(List<Cell> cellData, Guid projectId, Case caseItem)
+    public static void ImportSurf(List<Cell> cellData, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -59,26 +71,26 @@ public class SurfProspService(UpdateSurfService updateSurfService, SurfCostProfi
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Surf.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Surf.CostYear);
 
-        var updatedSurfDto = new ProspUpdateSurfDto
-        {
-            ProductionFlowline = productionFlowLine,
-            UmbilicalSystemLength = lengthUmbilicalSystem,
-            InfieldPipelineSystemLength = lengthProductionLine,
-            RiserCount = riserCount,
-            TemplateCount = templateCount,
-            ArtificialLift = artificialLift,
-            Source = Source.Prosp,
-            ProspVersion = versionDate,
-            CostYear = costYear,
-            DG3Date = dG3Date,
-            DG4Date = dG4Date,
-            ProducerCount = producerCount,
-            GasInjectorCount = gasInjectorCount,
-            WaterInjectorCount = waterInjectorCount,
-            CessationCost = cessationCost,
-        };
+        var asset = caseItem.Surf;
 
-        await updateSurfService.UpdateSurf(projectId, caseItem.Id, updatedSurfDto);
-        await surfCostProfileService.AddOrUpdateSurfCostProfile(projectId, caseItem.Id, costProfile);
+        asset.Source = Source.Prosp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.CessationCost = cessationCost;
+        asset.InfieldPipelineSystemLength = lengthProductionLine;
+        asset.UmbilicalSystemLength = lengthUmbilicalSystem;
+        asset.ArtificialLift = artificialLift;
+        asset.RiserCount = riserCount;
+        asset.TemplateCount = templateCount;
+        asset.ProducerCount = producerCount;
+        asset.GasInjectorCount = gasInjectorCount;
+        asset.WaterInjectorCount = waterInjectorCount;
+        asset.ProductionFlowline = productionFlowLine;
+        asset.CostYear = costYear;
+        asset.ApprovedBy = "";
+        asset.DG3Date = dG3Date;
+        asset.DG4Date = dG4Date;
+        asset.ProspVersion = versionDate;
+
+        SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, costProfile);
     }
 }

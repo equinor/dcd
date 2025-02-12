@@ -33,30 +33,4 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
-
-    public async Task UpdateSurf(Guid projectId, Guid caseId, ProspUpdateSurfDto updatedSurfDto)
-    {
-        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
-
-        existingSurf.CessationCost = updatedSurfDto.CessationCost;
-        existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
-        existingSurf.UmbilicalSystemLength = updatedSurfDto.UmbilicalSystemLength;
-        existingSurf.ArtificialLift = updatedSurfDto.ArtificialLift;
-        existingSurf.RiserCount = updatedSurfDto.RiserCount;
-        existingSurf.TemplateCount = updatedSurfDto.TemplateCount;
-        existingSurf.ProducerCount = updatedSurfDto.ProducerCount;
-        existingSurf.GasInjectorCount = updatedSurfDto.GasInjectorCount;
-        existingSurf.WaterInjectorCount = updatedSurfDto.WaterInjectorCount;
-        existingSurf.ProductionFlowline = updatedSurfDto.ProductionFlowline;
-        existingSurf.CostYear = updatedSurfDto.CostYear;
-        existingSurf.Source = updatedSurfDto.Source;
-        existingSurf.ApprovedBy = updatedSurfDto.ApprovedBy;
-        existingSurf.DG3Date = updatedSurfDto.DG3Date;
-        existingSurf.DG4Date = updatedSurfDto.DG4Date;
-        existingSurf.ProspVersion = updatedSurfDto.ProspVersion;
-        existingSurf.LastChangedDate = DateTime.UtcNow;
-
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateCase(caseId);
-    }
 }

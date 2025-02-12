@@ -1,5 +1,8 @@
 using System.Web;
 
+using api.Context;
+using api.Context.Extensions;
+using api.Features.Cases.Recalculation;
 using api.Features.Prosp.Exceptions;
 using api.Features.Prosp.Models;
 
@@ -7,7 +10,7 @@ using Microsoft.Graph;
 
 namespace api.Features.Prosp.Services;
 
-public class ProspSharepointImportService(GraphServiceClient graphServiceClient, ProspExcelImportService prospExcelImportService)
+public class ProspSharepointImportService(GraphServiceClient graphServiceClient, ProspExcelImportService prospExcelImportService, RecalculationService recalculationService, DcdDbContext context)
 {
     public async Task<List<DriveItemDto>> GetFilesFromSharepoint(string url)
     {
@@ -55,13 +58,19 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 
         foreach (var dto in dtos)
         {
-            await prospExcelImportService.ClearImportedProspData(dto.CaseId);
+            await prospExcelImportService.ClearImportedProspData(projectId, dto.CaseId);
         }
 
         var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(dtos.First().SharePointSiteUrl);
 
         if (!siteIdAndParentRef.Any())
         {
+            foreach (var dto in dtos)
+            {
+                await context.UpdateCaseUpdatedUtc(dto.CaseId);
+                await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
+            }
+
             return;
         }
 
@@ -88,11 +97,10 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
                 continue;
             }
 
-            await prospExcelImportService.ImportProsp(driveItemStream,
-                dto.CaseId,
-                projectId,
-                dto.SharePointFileId,
-                dto.SharePointFileName);
+            await prospExcelImportService.ImportProsp(driveItemStream, projectId, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
+
+            await context.UpdateCaseUpdatedUtc(dto.CaseId);
+            await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
         }
     }
 
