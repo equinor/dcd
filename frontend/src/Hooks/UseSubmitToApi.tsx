@@ -17,6 +17,7 @@ import {
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
+import { overrideProfileNameMap, profileNameMap } from "@/Utils/profileNameMaps"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -277,24 +278,6 @@ export const useSubmitToApi = () => {
             default:
             }
 
-            const profileNameMap = new Map<string, string>([
-                ["additionalOPEXCostProfile", ProfileTypes.AdditionalOPEXCostProfile],
-                ["additionalProductionProfileGas", ProfileTypes.AdditionalProductionProfileGas],
-                ["additionalProductionProfileOil", ProfileTypes.AdditionalProductionProfileOil],
-                ["cessationOnshoreFacilitiesCostProfile", ProfileTypes.CessationOnshoreFacilitiesCostProfile],
-                ["countryOfficeCost", ProfileTypes.CountryOfficeCost],
-                ["deferredGasProduction", ProfileTypes.DeferredGasProduction],
-                ["deferredOilProduction", ProfileTypes.DeferredOilProduction],
-                ["onshoreRelatedOPEXCostProfile", ProfileTypes.OnshoreRelatedOPEXCostProfile],
-                ["productionProfileGas", ProfileTypes.ProductionProfileGas],
-                ["productionProfileOil", ProfileTypes.ProductionProfileOil],
-                ["productionProfileWater", ProfileTypes.ProductionProfileWater],
-                ["productionProfileWaterInjection", ProfileTypes.ProductionProfileWaterInjection],
-                ["projectSpecificDrillingCostProfile", ProfileTypes.ProjectSpecificDrillingCostProfile],
-                ["seismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing],
-                ["totalOtherStudiesCostProfile", ProfileTypes.TotalOtherStudiesCostProfile],
-            ])
-
             if (profileNameMap.has(resourceName)) {
                 return await saveTimeSeriesProfile({
                     projectId,
@@ -306,30 +289,6 @@ export const useSubmitToApi = () => {
                     ),
                 })
             }
-
-            const overrideProfileNameMap = new Map<string, string>([
-                ["cessationOffshoreFacilitiesCostOverride", ProfileTypes.CessationOffshoreFacilitiesCostOverride],
-                ["cessationWellsCostOverride", ProfileTypes.CessationWellsCostOverride],
-                ["co2EmissionsOverride", ProfileTypes.Co2EmissionsOverride],
-                ["gAndGAdminCost", ProfileTypes.GAndGAdminCostOverride],
-                ["historicCostCostProfile", ProfileTypes.HistoricCostCostProfile],
-                ["offshoreFacilitiesOperationsCostProfileOverride", ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride],
-                ["onshorePowerSupplyCostOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride],
-                ["productionProfileFuelFlaringAndLossesOverride", ProfileTypes.FuelFlaringAndLossesOverride],
-                ["productionProfileImportedElectricityOverride", ProfileTypes.ImportedElectricityOverride],
-                ["productionProfileNetSalesGasOverride", ProfileTypes.NetSalesGasOverride],
-                ["substructureCostOverride", ProfileTypes.SubstructureCostProfileOverride],
-                ["surfCostOverride", ProfileTypes.SurfCostProfileOverride],
-                ["topsideCostOverride", ProfileTypes.TopsideCostProfileOverride],
-                ["totalFeasibilityAndConceptStudiesOverride", ProfileTypes.TotalFeasibilityAndConceptStudiesOverride],
-                ["totalFEEDStudiesOverride", ProfileTypes.TotalFEEDStudiesOverride],
-                ["transportCostOverride", ProfileTypes.TransportCostProfileOverride],
-                ["wellInterventionCostProfileOverride", ProfileTypes.WellInterventionCostProfileOverride],
-                ["wellProjectGasInjectorCostOverride", ProfileTypes.GasInjectorCostProfileOverride],
-                ["wellProjectGasProducerCostOverride", ProfileTypes.GasProducerCostProfileOverride],
-                ["wellProjectOilProducerCostOverride", ProfileTypes.OilProducerCostProfileOverride],
-                ["wellProjectWaterInjectorCostOverride", ProfileTypes.WaterInjectorCostProfileOverride],
-            ])
 
             if (overrideProfileNameMap.has(resourceName)) {
                 return await saveTimeSeriesProfile({

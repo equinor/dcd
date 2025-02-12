@@ -47,7 +47,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
         if (campaign.rigMobDemobProfile) {
             const mobDemobRow: ITimeSeriesTableDataWithSet = {
                 profileName: "Rig mob/demob",
-                unit: "%",
+                unit: "Percentage in decimals",
                 profile: {
                     id: campaign.campaignId,
                     startYear: campaign.rigMobDemobProfile.startYear,
@@ -66,7 +66,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
         if (campaign.rigUpgradingProfile) {
             const upgradingRow: ITimeSeriesTableDataWithSet = {
                 profileName: "Rig upgrading",
-                unit: "%",
+                unit: "Percentage in decimals",
                 profile: {
                     id: campaign.campaignId,
                     startYear: campaign.rigUpgradingProfile.startYear,
@@ -85,7 +85,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
         campaign.campaignWells?.forEach((well: Well) => {
             const wellRow: ITimeSeriesTableDataWithSet = {
                 profileName: well.wellName,
-                unit: "%",
+                unit: "Well",
                 profile: {
                     id: campaign.campaignId,
                     startYear: well.startYear,

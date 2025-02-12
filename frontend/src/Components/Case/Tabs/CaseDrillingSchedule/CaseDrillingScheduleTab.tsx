@@ -1,7 +1,6 @@
 import {
     useState,
     useEffect,
-    useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
@@ -19,7 +18,7 @@ import { caseQueryFn } from "@/Services/QueryFunctions"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
+// import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 import ExplorationCampaign from "./Components/ExplorationCampaign"
 import {
     CampaignHeader,
@@ -52,8 +51,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
 
     const [, setSidetrackCount] = useState<number>(0)
-    const developmentWellsGridRef = useRef(null)
-    const explorationWellsGridRef = useRef(null)
 
     const { data: apiData } = useQuery({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
@@ -124,11 +121,13 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
-    const caseData = apiData.case
-    const explorationId = apiData.explorationId
-    const wellProjectId = apiData.wellProjectId
-    const developmentWellsData = apiData.developmentWells
-    const explorationWellsData = apiData.explorationWells
+    const {
+        case: caseData,
+        explorationId,
+        wellProjectId,
+        developmentWells: developmentWellsData,
+        explorationWells: explorationWellsData,
+    } = apiData
 
     if (
         activeTabCase !== 3
