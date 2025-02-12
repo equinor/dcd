@@ -98,7 +98,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
+            
         />
     )
 }

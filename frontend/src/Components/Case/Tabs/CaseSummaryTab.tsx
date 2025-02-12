@@ -17,7 +17,7 @@ import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTa
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency } from "@/Models/enums"
 
-const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
+const CaseSummaryTab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
@@ -286,8 +286,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="npv"
                             label="NPV before tax (MUSD)"
@@ -299,8 +298,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="npvOverride"
                             label="STEA NPV after tax(MUSD)"
@@ -319,8 +317,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="breakEven"
                             previousResourceObject={caseData}
@@ -333,8 +330,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="breakEvenOverride"
                             label="STEA B/E after tax(MUSD)"

@@ -118,7 +118,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
+            
             isProsp
             sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />

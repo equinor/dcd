@@ -19,7 +19,7 @@ import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { useCaseApiData } from "@/Hooks"
 
-const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
+const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()
 
     const [startYear, setStartYear] = useState<number>(2020)
@@ -128,7 +128,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 setTableYears={setTableYears}
                 caseData={apiData.case}
                 surfData={apiData.surf}
-                addEdit={addEdit}
+                
             />
             <Grid size={12}>
                 <AggregatedTotals
@@ -152,7 +152,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+                    
                 />
             </Grid>
             <Grid size={12}>
@@ -161,7 +161,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+                    
                 />
             </Grid>
             <Grid size={12}>
@@ -170,7 +170,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+                    
                 />
             </Grid>
             <Grid size={12}>
@@ -179,7 +179,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+                    
                 />
             </Grid>
             <Grid size={12}>
@@ -188,7 +188,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+                    
                 />
             </Grid>
             <Grid size={12}>
@@ -197,7 +197,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+                    
                 />
             </Grid>
         </Grid>

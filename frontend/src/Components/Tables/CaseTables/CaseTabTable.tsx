@@ -42,6 +42,7 @@ import {
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import { createLogger } from "@/Utils/logger"
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
+import useEditCase from "@/Hooks/useEditCase"
 
 interface Props {
     timeSeriesData: ITimeSeriesTableDataWithSet[]
@@ -54,7 +55,6 @@ interface Props {
     totalRowName?: string
     calculatedFields?: string[]
     ongoingCalculation?: boolean
-    addEdit: any
     isProsp?: boolean
     sharepointFileId?: string
 }
@@ -84,7 +84,6 @@ const CaseTabTable = memo(({
     totalRowName,
     calculatedFields,
     ongoingCalculation,
-    addEdit,
     isProsp,
     sharepointFileId,
 }: Props) => {
@@ -101,6 +100,8 @@ const CaseTabTable = memo(({
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
+
+    const { addEdit } = useEditCase()
 
     const gridRowData = useMemo(
         () => {
@@ -235,11 +236,12 @@ const CaseTabTable = memo(({
         return (
             <CenterGridIcons>
                 <CalculationSourceToggle
+                    addEdit={addEdit}
                     editMode={editMode}
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
-                    addEdit={addEdit}
+
                 />
             </CenterGridIcons>
         )

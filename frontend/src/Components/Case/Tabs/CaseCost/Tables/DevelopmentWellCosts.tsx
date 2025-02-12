@@ -101,7 +101,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
+            
         />
     )
 }

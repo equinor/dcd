@@ -25,7 +25,7 @@ interface ICo2DistributionChartData {
     value: number | undefined
 }
 
-const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
+const CaseCO2Tab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
@@ -226,9 +226,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
             <div>
-                <SwitchableNumberInput
-                    addEdit={addEdit}
-                    resourceName="topside"
+                <SwitchableNumberInput                    resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
                     resourceId={topsideData.id}
                     label="Fuel consumption"
@@ -285,7 +283,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             />
             <Grid size={12}>
                 <CaseTabTable
-                    addEdit={addEdit}
                     timeSeriesData={timeSeriesData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableYears={tableYears}

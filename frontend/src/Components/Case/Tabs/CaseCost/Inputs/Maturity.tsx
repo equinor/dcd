@@ -39,8 +39,7 @@ const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
     }
 
     return (
-        <SwitchableDropdownInput
-            addEdit={addMaturityEdit}
+        <SwitchableDropdownInput            addEdit={addMaturityEdit}
             resourceName="surf"
             resourcePropertyKey="maturity"
             resourceId={surfData.id}

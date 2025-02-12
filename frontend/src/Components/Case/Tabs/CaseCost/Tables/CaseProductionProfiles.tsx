@@ -11,11 +11,12 @@ interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
     tableYears: [number, number],
     alignedGridsRef: any,
-    addEdit: any,
 }
 
 const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
-    apiData, tableYears, alignedGridsRef, addEdit,
+    apiData,
+    tableYears,
+    alignedGridsRef,
 }) => {
     const { isCalculatingProductionOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
@@ -176,7 +177,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             gridRef={alignedGridsRef}
             calculatedFields={calculatedFields}
             ongoingCalculation={isCalculatingProductionOverrides}
-            addEdit={addEdit}
         />
     )
 }

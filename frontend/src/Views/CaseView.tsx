@@ -66,28 +66,28 @@ const CaseView = () => {
     return (
         <Wrapper size={{ xs: 12 }}>
             <div role="tabpanel" hidden={activeTabCase !== 0}>
-                <CaseDescriptionTab addEdit={addEdit} />
+                <CaseDescriptionTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 1}>
-                <CaseProductionProfilesTab addEdit={addEdit} />
+                <CaseProductionProfilesTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 2}>
-                <CaseScheduleTab addEdit={addEdit} />
+                <CaseScheduleTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 3}>
-                <CaseDrillingScheduleTab addEdit={addEdit} />
+                <CaseDrillingScheduleTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 4}>
-                <CaseFacilitiesTab addEdit={addEdit} />
+                <CaseFacilitiesTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 5}>
-                <CaseCostTab addEdit={addEdit} />
+                <CaseCostTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 6}>
-                <CaseCO2Tab addEdit={addEdit} />
+                <CaseCO2Tab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 7}>
-                <CaseSummaryTab addEdit={addEdit} />
+                <CaseSummaryTab />
             </div>
         </Wrapper>
     )
