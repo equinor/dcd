@@ -16,11 +16,6 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
     {
         var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
 
-        if (!siteIdAndParentRef.Any())
-        {
-            return [];
-        }
-
         var siteId = siteIdAndParentRef[0];
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
 
@@ -56,23 +51,9 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
             return;
         }
 
-        foreach (var dto in dtos)
-        {
-            await prospExcelImportService.ClearImportedProspData(projectId, dto.CaseId);
-        }
+        await prospExcelImportService.ClearImportedProspData(projectId, dtos.Select(x => x.CaseId).ToList());
 
         var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(dtos.First().SharePointSiteUrl);
-
-        if (!siteIdAndParentRef.Any())
-        {
-            foreach (var dto in dtos)
-            {
-                await context.UpdateCaseUpdatedUtc(dto.CaseId);
-                await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
-            }
-
-            return;
-        }
 
         var siteId = siteIdAndParentRef.First();
 
@@ -100,6 +81,12 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
             await prospExcelImportService.ImportProsp(driveItemStream, projectId, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
 
             await context.UpdateCaseUpdatedUtc(dto.CaseId);
+        }
+
+        await context.SaveChangesAsync();
+
+        foreach (var dto in dtos)
+        {
             await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
         }
     }

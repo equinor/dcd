@@ -39,7 +39,7 @@ public class ProspExcelImportService(DcdDbContext context)
 
         var cellData = ((WorksheetPart)document.WorkbookPart.GetPartById(mainSheet.Id!)).Worksheet.Descendants<Cell>().ToList();
 
-        var caseItem = await LoadCase(projectId, caseId);
+        var caseItem = (await LoadCaseData(projectId, caseId)).Single();
 
         caseItem.SharepointFileId = sharepointFileId;
         caseItem.SharepointFileName = sharepointFileName;
@@ -52,22 +52,28 @@ public class ProspExcelImportService(DcdDbContext context)
         OnshorePowerSupplyProspService.ImportOnshorePowerSupply(cellData, caseItem);
     }
 
-    public async Task ClearImportedProspData(Guid projectId, Guid caseId)
+    public async Task ClearImportedProspData(Guid projectId, List<Guid> caseIds)
     {
-        var caseItem = await LoadCase(projectId, caseId);
+        var caseItems = await LoadCaseData(projectId, caseIds);
 
-        caseItem.SharepointFileId = null;
-        caseItem.SharepointFileName = null;
-        caseItem.SharepointFileUrl = null;
+        foreach (var caseItem in caseItems)
+        {
+            caseItem.UpdatedUtc = DateTime.UtcNow;
+            caseItem.SharepointFileId = null;
+            caseItem.SharepointFileName = null;
+            caseItem.SharepointFileUrl = null;
 
-        SurfProspService.ClearImportedSurf(caseItem);
-        TopsideProspService.ClearImportedTopside(caseItem);
-        SubstructureProspService.ClearImportedSubstructure(caseItem);
-        TransportProspService.ClearImportedTransport(caseItem);
-        OnshorePowerSupplyProspService.ClearImportedOnshorePowerSupply(caseItem);
+            SurfProspService.ClearImportedSurf(caseItem);
+            TopsideProspService.ClearImportedTopside(caseItem);
+            SubstructureProspService.ClearImportedSubstructure(caseItem);
+            TransportProspService.ClearImportedTransport(caseItem);
+            OnshorePowerSupplyProspService.ClearImportedOnshorePowerSupply(caseItem);
+        }
+
+        await context.SaveChangesAsync();
     }
 
-    private async Task<Case> LoadCase(Guid projectId, Guid caseId)
+    private async Task<List<Case>> LoadCaseData(Guid projectId, params List<Guid> caseIds)
     {
         var profileTypes = new List<string>
         {
@@ -78,19 +84,20 @@ public class ProspExcelImportService(DcdDbContext context)
             ProfileTypes.SurfCostProfile, ProfileTypes.SurfCostProfileOverride
         };
 
-        var caseItem = await context.Cases
+        var caseItems = await context.Cases
             .Include(x => x.OnshorePowerSupply)
             .Include(x => x.Transport)
             .Include(x => x.Substructure)
             .Include(x => x.Topside)
             .Include(x => x.Surf)
-            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+            .Where(x => x.ProjectId == projectId && caseIds.Contains(x.Id))
+            .ToListAsync();
 
         await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
+            .Where(x => caseIds.Contains(x.CaseId))
             .Where(x => profileTypes.Contains(x.ProfileType))
             .LoadAsync();
 
-        return caseItem;
+        return caseItems;
     }
 }
