@@ -39,10 +39,10 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
         }
 
         return driveItemsDelta.Select(x => new DriveItemDto
-            {
-                Name = x.Name,
-                Id = x.Id
-            })
+        {
+            Name = x.Name,
+            Id = x.Id
+        })
             .ToList();
     }
 
