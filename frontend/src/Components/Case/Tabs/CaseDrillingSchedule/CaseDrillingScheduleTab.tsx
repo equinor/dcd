@@ -15,7 +15,7 @@ import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 
-const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
+const CaseDrillingScheduleTab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
@@ -129,8 +129,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Exploration wells"
@@ -141,8 +140,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Oil producer wells"
@@ -153,8 +151,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Water injector wells"
@@ -165,8 +162,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Appraisal wells"
@@ -177,8 +173,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Gas producer wells"
@@ -189,8 +184,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Gas injector wells"
@@ -212,7 +206,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             />
             <Grid size={12}>
                 <CaseDrillingScheduleTable
-                    addEdit={addEdit}
+                    
                     assetWells={explorationWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Exploration wells"
@@ -226,7 +220,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={12}>
                 <CaseDrillingScheduleTable
-                    addEdit={addEdit}
+                    
                     assetWells={developmentWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"

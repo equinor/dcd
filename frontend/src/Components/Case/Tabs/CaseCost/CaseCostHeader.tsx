@@ -54,20 +54,20 @@ const Header: React.FC<HeaderProps> = ({
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <CapexFactorFeasibilityStudies
                             caseData={caseData}
-                            addEdit={addEdit}
+                            
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <CapexFactorFeedStudies
                             caseData={caseData}
-                            addEdit={addEdit}
+                            
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Maturity
                             surfData={surfData}
                             projectId={revisionAndProjectData.projectId}
-                            addEdit={addEdit}
+                            
                         />
                     </Grid>
                 </Grid>

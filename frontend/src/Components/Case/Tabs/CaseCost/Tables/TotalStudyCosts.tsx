@@ -90,7 +90,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             totalRowName="Total"
             ongoingCalculation={isCalculatingTotalStudyCostOverrides}
             calculatedFields={calculatedFields}
-            addEdit={addEdit}
+            
         />
     )
 }

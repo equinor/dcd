@@ -4,6 +4,7 @@ import { Input } from "@equinor/eds-core-react"
 import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
 import InputSwitcher from "./Components/InputSwitcher"
 import { useProjectContext } from "../../Store/ProjectContext"
+import useEditCase from "@/Hooks/useEditCase"
 
 interface CaseEditInputProps {
     label: string;
@@ -12,7 +13,6 @@ interface CaseEditInputProps {
     resourcePropertyKey: ResourcePropertyKey
     resourceId?: string;
     previousResourceObject: ResourceObject;
-    addEdit: any;
 }
 
 const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
@@ -22,10 +22,10 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     resourcePropertyKey,
     resourceId,
     previousResourceObject,
-    addEdit,
 }: CaseEditInputProps) => {
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
+    const { addEdit } = useEditCase()
 
     const [inputValue, setInputValue] = useState(value || "")
 

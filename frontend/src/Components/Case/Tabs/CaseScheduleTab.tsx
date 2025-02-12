@@ -80,7 +80,7 @@ const DECISION_GATES: DecisionGate[] = [
     },
 ]
 
-const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
+const CaseScheduleTab = () => {
     const { editMode } = useAppStore()
     const { tab } = useParams()
     const { projectId } = useProjectContext()

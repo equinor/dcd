@@ -6,8 +6,7 @@ interface props {
     addEdit: any
 }
 const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData, addEdit }) => (
-    <SwitchableNumberInput
-        resourceName="case"
+    <SwitchableNumberInput        resourceName="case"
         resourcePropertyKey="capexFactorFeasibilityStudies"
         previousResourceObject={caseData}
         label="CAPEX factor feasibility studies"
@@ -16,7 +15,7 @@ const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData, addEdit }) =
         unit="%"
         min={0}
         max={100}
-        addEdit={addEdit}
+        
     />
 )
 
