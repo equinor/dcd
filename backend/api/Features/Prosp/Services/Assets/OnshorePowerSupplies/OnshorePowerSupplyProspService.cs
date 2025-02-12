@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
@@ -8,23 +7,23 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace api.Features.Prosp.Services.Assets.OnshorePowerSupplies;
 
-public class OnshorePowerSupplyProspService(
-    UpdateOnshorePowerSupplyService updateOnshorePowerSupplyService,
-    OnshorePowerSupplyCostProfileService onshorePowerSupplyCostProfileService)
+public static class OnshorePowerSupplyProspService
 {
-    public async Task ClearImportedOnshorePowerSupply(Case caseItem)
+    public static void ClearImportedOnshorePowerSupply(Case caseItem)
     {
-        await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId,
-            caseItem.Id,
-            new ProspUpdateOnshorePowerSupplyDto
-            {
-                Source = Source.ConceptApp
-            });
+        var asset = caseItem.OnshorePowerSupply;
 
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
+        asset.Source = Source.ConceptApp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.CostYear = 0;
+        asset.DG3Date = null;
+        asset.DG4Date = null;
+        asset.ProspVersion = null;
+
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, new UpdateTimeSeriesCostDto());
     }
 
-    public async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid projectId, Case caseItem)
+    public static void ImportOnshorePowerSupply(List<Cell> cellData, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -42,9 +41,9 @@ public class OnshorePowerSupplyProspService(
         var costProfile = new UpdateTimeSeriesCostDto
         {
             Values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year,
+            StartYear = costProfileStartYear - dG4Date.Year
         };
 
-        await onshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, caseItem.Id, costProfile);
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, costProfile);
     }
 }

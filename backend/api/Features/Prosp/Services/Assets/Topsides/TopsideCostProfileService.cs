@@ -1,35 +1,23 @@
-using api.Context;
-using api.Context.Extensions;
-using api.Features.Cases.Recalculation;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Prosp.Services.Assets.Topsides;
 
-public class TopsideCostProfileService(DcdDbContext context, RecalculationService recalculationService)
+public static class TopsideCostProfileService
 {
-    public async Task AddOrUpdateTopsideCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateTopsideCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var profileTypes = new List<string> { ProfileTypes.TopsideCostProfile, ProfileTypes.TopsideCostProfileOverride };
-
-        var caseItem = await context.Cases
-            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
-            .Include(x => x.Topside)
-            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
-
         if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile) != null)
         {
-            await UpdateTopsideTimeSeries(caseItem, dto);
+            UpdateTopsideTimeSeries(caseItem, dto);
             return;
         }
 
-        await CreateTopsideCostProfile(caseItem, dto);
+        CreateTopsideCostProfile(caseItem, dto);
     }
 
-    private async Task CreateTopsideCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateTopsideCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TopsideCostProfile);
 
@@ -42,12 +30,9 @@ public class TopsideCostProfileService(DcdDbContext context, RecalculationServic
         {
             costProfileOverride.Override = false;
         }
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 
-    private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
         if (caseItem.Topside.ProspVersion == null)
         {
@@ -61,8 +46,5 @@ public class TopsideCostProfileService(DcdDbContext context, RecalculationServic
 
         existingProfile.StartYear = dto.StartYear;
         existingProfile.Values = dto.Values;
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 }

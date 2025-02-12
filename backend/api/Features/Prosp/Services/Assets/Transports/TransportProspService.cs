@@ -1,4 +1,3 @@
-using api.Features.Assets.CaseAssets.Transports;
 using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
@@ -8,21 +7,25 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace api.Features.Prosp.Services.Assets.Transports;
 
-public class TransportProspService(UpdateTransportService updateTransportService, TransportCostProfileService transportCostProfileService)
+public static class TransportProspService
 {
-    public async Task ClearImportedTransport(Case caseItem)
+    public static void ClearImportedTransport(Case caseItem)
     {
-        await updateTransportService.UpdateTransport(caseItem.ProjectId,
-            caseItem.Id,
-            new ProspUpdateTransportDto
-            {
-                Source = Source.ConceptApp
-            });
+        var asset = caseItem.Transport;
 
-        await transportCostProfileService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
+        asset.Source = Source.ConceptApp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.ProspVersion = null;
+        asset.GasExportPipelineLength = 0;
+        asset.OilExportPipelineLength = 0;
+        asset.CostYear = 0;
+        asset.DG3Date = null;
+        asset.DG4Date = null;
+
+        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, new UpdateTimeSeriesCostDto());
     }
 
-    public async Task ImportTransport(List<Cell> cellData, Guid projectId, Case caseItem)
+    public static void ImportTransport(List<Cell> cellData, Case caseItem)
     {
         List<string> costProfileCoords =
         [
@@ -42,24 +45,23 @@ public class TransportProspService(UpdateTransportService updateTransportService
             Values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-        // Prosp meta data
+
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Transport.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Transport.CostYear);
         var oilExportPipelineLength = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Transport.OilExportPipelineLength);
         var gasExportPipelineLength = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Transport.GasExportPipelineLength);
 
-        var updateTransportDto = new ProspUpdateTransportDto
-        {
-            DG3Date = dG3Date,
-            DG4Date = dG4Date,
-            Source = Source.Prosp,
-            ProspVersion = versionDate,
-            CostYear = costYear,
-            OilExportPipelineLength = oilExportPipelineLength,
-            GasExportPipelineLength = gasExportPipelineLength
-        };
+        var asset = caseItem.Transport;
 
-        await updateTransportService.UpdateTransport(projectId, caseItem.Id, updateTransportDto);
-        await transportCostProfileService.AddOrUpdateTransportCostProfile(projectId, caseItem.Id, costProfile);
+        asset.Source = Source.Prosp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.ProspVersion = versionDate;
+        asset.GasExportPipelineLength = gasExportPipelineLength;
+        asset.OilExportPipelineLength = oilExportPipelineLength;
+        asset.CostYear = costYear;
+        asset.DG3Date = dG3Date;
+        asset.DG4Date = dG4Date;
+
+        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, costProfile);
     }
 }

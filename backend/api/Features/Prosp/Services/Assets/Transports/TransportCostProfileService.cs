@@ -1,35 +1,23 @@
-using api.Context;
-using api.Context.Extensions;
-using api.Features.Cases.Recalculation;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Features.Prosp.Services.Assets.Transports;
 
-public class TransportCostProfileService(DcdDbContext context, RecalculationService recalculationService)
+public static class TransportCostProfileService
 {
-    public async Task AddOrUpdateTransportCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
-        var profileTypes = new List<string> { ProfileTypes.TransportCostProfile, ProfileTypes.TransportCostProfileOverride };
-
-        var caseItem = await context.Cases
-            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
-            .Include(x => x.Transport)
-            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
-
         if (caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile) != null)
         {
-            await UpdateTransportCostProfile(caseItem, dto);
+            UpdateTransportCostProfile(caseItem, dto);
             return;
         }
 
-        await CreateTransportCostProfile(caseItem, dto);
+        CreateTransportCostProfile(caseItem, dto);
     }
 
-    private async Task CreateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TransportCostProfile);
 
@@ -42,12 +30,9 @@ public class TransportCostProfileService(DcdDbContext context, RecalculationServ
         {
             costProfileOverride.Override = false;
         }
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 
-    private async Task UpdateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateTransportCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
     {
         if (caseItem.Transport.ProspVersion == null)
         {
@@ -61,8 +46,5 @@ public class TransportCostProfileService(DcdDbContext context, RecalculationServ
 
         existingProfile.StartYear = dto.StartYear;
         existingProfile.Values = dto.Values;
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
     }
 }
