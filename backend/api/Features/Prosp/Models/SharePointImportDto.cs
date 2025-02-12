@@ -1,10 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace api.Features.Prosp.Models;
 
 public class SharePointImportDto
 {
-    public string? Id { get; set; }
-    public string SharePointFileId { get; set; } = null!;
-    public string? SharePointFileName { get; set; }
-    public string? SharePointFileUrl { get; set; }
-    public string? SharePointSiteUrl { get; set; }
+    [Required] public required Guid CaseId { get; set; }
+    [Required] public required string SharePointFileId { get; set; }
+    [Required] public required string SharePointFileName { get; set; }
+    [Required] public required string SharePointSiteUrl { get; set; }
 }
