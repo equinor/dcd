@@ -14,18 +14,7 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 {
     public async Task<List<DriveItemDto>> GetFilesFromSharepoint(string url)
     {
-        var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
-
-        var siteId = siteIdAndParentRef[0];
-        var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
-
-        if (string.IsNullOrWhiteSpace(siteId))
-        {
-            return [];
-        }
-
-        var itemPath = string.Join('/', parentRefPath.Split('/').Skip(4));
-        var driveId = await GetDocumentLibraryDriveId(siteId, parentRefPath.Split('/')[3]);
+        var (siteId, driveId, itemPath) = await GetSharepointInfo(url);
 
         var driveItemsDelta = string.IsNullOrWhiteSpace(itemPath)
             ? await graphServiceClient.Sites[siteId].Drives[driveId].Root.Delta().Request().GetAsync()
@@ -53,12 +42,7 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 
         await prospExcelImportService.ClearImportedProspData(projectId, dtos.Select(x => x.CaseId).ToList());
 
-        var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(dtos.First().SharePointSiteUrl);
-
-        var siteId = siteIdAndParentRef.First();
-
-        var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
-        var driveId = await GetDocumentLibraryDriveId(siteId, parentRefPath.Split('/')[3]);
+        var (siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
 
         foreach (var dto in dtos)
         {
@@ -91,16 +75,21 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
         }
     }
 
-    private async Task<string?> GetDocumentLibraryDriveId(string siteId, string? documentLibraryName)
+    private async Task<(string? SiteId, string? DriveId, string? ItemPath)> GetSharepointInfo(string url)
     {
+        var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
+        var siteId = siteIdAndParentRef[0];
+
         var getDrivesInSite = await graphServiceClient.Sites[siteId].Drives.Request().GetAsync();
-
-        // Sharepoint document library 'Documents' will have the name "Shared Documents" in Url
-        var decodedDocumentLibraryName = HttpUtility.UrlDecode(documentLibraryName) == "Shared Documents"
+        var decodedDocumentLibraryName = HttpUtility.UrlDecode(siteIdAndParentRef[1].Split('/')[3]) == "Shared Documents"
             ? "Documents"
-            : HttpUtility.UrlDecode(documentLibraryName);
+            : HttpUtility.UrlDecode(siteIdAndParentRef[1].Split('/')[3]);
 
-        return getDrivesInSite.Where(x => x.Name == decodedDocumentLibraryName).Select(i => i.Id).FirstOrDefault();
+        var driveId = getDrivesInSite.Where(x => x.Name == decodedDocumentLibraryName).Select(i => i.Id).FirstOrDefault();
+
+        var itemPath = string.Join('/', siteIdAndParentRef[1].Split('/').Skip(4));
+
+        return (siteId, driveId, itemPath);
     }
 
     private async Task<List<string>> GetSiteIdAndParentReferencePath(string url)
