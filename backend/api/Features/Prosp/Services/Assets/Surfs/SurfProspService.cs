@@ -16,7 +16,7 @@ public static class SurfProspService
         asset.LastChangedDate = DateTime.UtcNow;
         asset.CessationCost = 0;
         asset.InfieldPipelineSystemLength = 0;
-        asset.UmbilicalSystemLength = 00;
+        asset.UmbilicalSystemLength = 0;
         asset.ArtificialLift = ArtificialLift.NoArtificialLift;
         asset.RiserCount = 0;
         asset.TemplateCount = 0;
