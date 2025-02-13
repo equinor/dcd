@@ -25,7 +25,7 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "substructureCostProfileOverride" |
     "netSalesGasOverride" |
     "oilProducerCostProfileOverride" | "gasInjectorCostProfileOverride" |
-    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" | "projectSpecificDrillingCostProfile" |
+    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "projectSpecificDrillingCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
 

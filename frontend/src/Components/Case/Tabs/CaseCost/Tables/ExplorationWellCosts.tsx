@@ -4,7 +4,7 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface ExplorationWellCostsProps {
     tableYears: [number, number];
@@ -97,9 +97,9 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 profileName: "Appraisal well",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: appraisalWellCostProfileData,
-                resourceName: "appraisalWellCostProfile",
+                resourceName: ProfileTypes.AppraisalWellCostProfile,
                 resourceId: explorationId,
-                resourcePropertyKey: "appraisalWellCostProfile",
+                resourcePropertyKey: ProfileTypes.AppraisalWellCostProfile,
                 editable: false,
                 overridable: false,
             },
