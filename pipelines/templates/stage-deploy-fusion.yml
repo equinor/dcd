@@ -62,6 +62,14 @@ stages:
                               echo "##vso[task.setvariable variable=frontendVersion;isOutput=true]$version"
                               echo "Frontend Version: $version"
 
+                        - task: Bash@3
+                          displayName: "Log frontendVersion"
+                          inputs:
+                            targetType: 'inline'
+                            script: |
+                              echo "Logging frontendVersion variable:"
+                              echo "Frontend Version: $(frontendVersion)"
+
                         - task: AzureCLI@2
                           displayName: 'Get Fusion Token'
                           inputs:
@@ -86,6 +94,8 @@ stages:
                               npm install -g @equinor/fusion-framework-cli
                               # Run the npx command to upload the app
                               npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.envshortname }}
+                              echo "envshortname: ${{ parameters.envshortname }}"
+                              echo "frontendVersion: $(frontendVersion)"
                               # Tag build with latest
                               npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.envshortname }} -v $(frontendVersion)
                           env:
