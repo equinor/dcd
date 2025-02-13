@@ -28,6 +28,9 @@ stages:
       azAppConfig: $(azureAppConfig)
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
+    # Define the frontendVersion as an output variable
+    outputs:
+      frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -44,7 +47,7 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
+        frontendVersion: $[ dependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -61,8 +64,7 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
-
+        frontendVersion: $[ dependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -79,5 +81,4 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
-
+        frontendVersion: $[ dependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]

@@ -26,6 +26,9 @@ stages:
                         steps:
                         - checkout: self
 
+                        - script: echo "Frontend Version ${{ parameters.frontendVersion }}"
+                          displayName: 'Print frontendVersion'
+
                         - task: DownloadPipelineArtifact@2
                           inputs:
                             artifact: ConceptApp
