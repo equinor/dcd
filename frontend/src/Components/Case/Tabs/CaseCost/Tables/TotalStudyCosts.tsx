@@ -5,7 +5,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
@@ -25,7 +25,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
 
     const calculatedFields = useMemo(() => [
         "totalFeasibilityAndConceptStudiesOverride",
-        "totalFEEDStudiesOverride",
+        ProfileTypes.TotalFEEDStudiesOverride,
     ], [])
 
     const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
@@ -54,9 +54,9 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 profileName: "FEED studies (DG2-DG3)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalFEEDStudiesData,
-                resourceName: "totalFEEDStudiesOverride",
+                resourceName: ProfileTypes.TotalFEEDStudiesOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "totalFEEDStudiesOverride",
+                resourcePropertyKey: ProfileTypes.TotalFEEDStudiesOverride,
                 overridable: true,
                 overrideProfile: totalFEEDStudiesOverrideData,
                 editable: true,
