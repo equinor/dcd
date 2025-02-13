@@ -13,9 +13,10 @@ import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
-import { agGridLicenseKey } from "./agGridLicense"
+// import { agGridLicenseKey } from "./agGridLicense"
 
-export const configure: AppModuleInitiator = async (configurator, args) => {
+export const configure: AppModuleInitiator = (configurator, args) => {
+    // const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
     const { basename } = args.env
 
     ModuleRegistry.registerModules([
@@ -31,15 +32,15 @@ export const configure: AppModuleInitiator = async (configurator, args) => {
         ExcelExportModule,
     ])
 
-    if (agGridLicenseKey && agGridLicenseKey.length > 0) {
-        console.log("Enabling AG Grid with enterprise license")
-        enableAgGrid(configurator, {
-            licenseKey: agGridLicenseKey,
-        })
-    } else {
-        console.log("Enabling AG Grid without enterprise license")
-        enableAgGrid(configurator)
-    }
+    // if (agGridLicenseKey && agGridLicenseKey.length > 0) {
+    //     enableAgGrid(configurator, {
+    //         licenseKey: agGridLicenseKey || "",
+    //     })
+    // } else {
+    //     enableAgGrid(configurator)
+    // }
+
+    enableAgGrid(configurator)
 
     configurator.useFrameworkServiceClient("portal")
 
