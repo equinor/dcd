@@ -1,10 +1,11 @@
 import Grid from "@mui/material/Grid2"
 
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
+import { Currency } from "@/Models/enums"
 
 interface HeaderProps {
     startYear: number;
@@ -13,8 +14,7 @@ interface HeaderProps {
     setEndYear: (endYear: number) => void;
     setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseOverviewDto;
-    surfData: Components.Schemas.SurfOverviewDto
-    addEdit: any
+    surfData: Components.Schemas.SurfDto
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -25,7 +25,6 @@ const Header: React.FC<HeaderProps> = ({
     setTableYears,
     caseData,
     surfData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -34,9 +33,9 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     const datePickerValue = (() => {
-        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === 1) {
+        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK) {
             return "MNOK"
-        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === 2) {
+        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.USD) {
             return "MUSD"
         }
         return ""
@@ -53,20 +52,18 @@ const Header: React.FC<HeaderProps> = ({
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <CapexFactorFeasibilityStudies
                             caseData={caseData}
-                            addEdit={addEdit}
+
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <CapexFactorFeedStudies
                             caseData={caseData}
-                            addEdit={addEdit}
+
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Maturity
                             surfData={surfData}
-                            projectId={revisionAndProjectData.projectId}
-                            addEdit={addEdit}
                         />
                     </Grid>
                 </Grid>

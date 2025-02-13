@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface OpexCostsProps {
     tableYears: [number, number]
     opexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
     apiData: Components.Schemas.CaseWithAssetsDto
-    addEdit: any
 }
 
 const OpexCosts: React.FC<OpexCostsProps> = ({
-    tableYears, opexGridRef, alignedGridsRef, apiData, addEdit,
+    tableYears, opexGridRef, alignedGridsRef, apiData,
 }) => {
     const revisionAndProjectData = useDataFetch()
     const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
@@ -32,7 +32,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Historic cost",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
                 resourceName: "historicCostCostProfile",
                 resourceId: caseData.caseId,
@@ -42,7 +42,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Well intervention",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
                 resourceName: "wellInterventionCostProfileOverride",
                 resourceId: caseData.caseId,
@@ -53,7 +53,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Offshore facilities operations",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
                 resourceName: "offshoreFacilitiesOperationsCostProfileOverride",
                 resourceId: caseData.caseId,
@@ -64,7 +64,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Onshore related OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOPEXCostProfileData,
                 resourceName: "onshoreRelatedOPEXCostProfile",
                 resourceId: caseData.caseId,
@@ -74,7 +74,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Additional OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: additionalOPEXCostProfileData,
                 resourceName: "additionalOPEXCostProfile",
                 resourceId: caseData.caseId,
@@ -97,7 +97,6 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
         />
     )
 }

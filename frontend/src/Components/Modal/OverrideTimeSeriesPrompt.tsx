@@ -3,9 +3,9 @@ import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
 import Modal from "./Modal"
-import useEditCase from "../../Hooks/useEditCase"
-import { ProfileNames } from "../../Models/Interfaces"
-import { useProjectContext } from "../../Context/ProjectContext"
+import useEditCase from "@/Hooks/useEditCase"
+import { ProfileNames } from "@/Models/Interfaces"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 type Props = {
     isOpen: boolean

@@ -3,7 +3,8 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import useEditCase from "@/Hooks/useEditCase"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
@@ -13,7 +14,6 @@ interface SwitchableDropdownInputProps {
     previousResourceObject: ResourceObject
     resourceId?: string;
     label: string;
-    addEdit: any;
 }
 
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
@@ -24,11 +24,11 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     previousResourceObject,
     resourceId,
     label,
-    addEdit,
 }: SwitchableDropdownInputProps) => {
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const [localValue, setLocalValue] = useState(value)
+    const { addEdit } = useEditCase()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!caseId || !projectId) { return }

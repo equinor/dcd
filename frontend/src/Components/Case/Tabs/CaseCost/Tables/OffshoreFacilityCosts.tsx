@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react"
 
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
     capexGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
@@ -18,7 +18,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     capexGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -49,7 +48,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         const newCapexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Subsea production system",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: surfCostData,
                 resourceName: "surfCostOverride",
                 resourceId: surf.id,
@@ -60,7 +59,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Topside",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: topsideCostData,
                 resourceName: "topsideCostOverride",
                 resourceId: topside.id,
@@ -71,7 +70,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Substructure",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: substructureCostData,
                 resourceName: "substructureCostOverride",
                 resourceId: substructure.id,
@@ -82,7 +81,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Transport system",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
                 resourceName: "transportCostOverride",
                 resourceId: transport.id,
@@ -93,7 +92,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Onshore (Power from shore)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: onshorePowerSupplyCostData,
                 resourceName: "onshorePowerSupplyCostOverride",
                 resourceId: onshorePowerSupply.id,
@@ -117,7 +116,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
             isProsp
             sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />

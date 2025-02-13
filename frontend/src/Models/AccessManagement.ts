@@ -1,9 +1,6 @@
-export enum UserRole {
-    Editor = 1,
-    Viewer = 0
-}
+import { ProjectMemberRole } from "./enums"
 
 export interface User {
     UserId: string
-    Role: UserRole
+    Role: ProjectMemberRole
 }

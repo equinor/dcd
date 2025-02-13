@@ -7,7 +7,7 @@ public static class CampaignMapper
 {
     public static CampaignDto MapToDto(Campaign campaign)
     {
-        var wells = campaign.CampaignType == CampaignTypes.ExplorationCampaign
+        var wells = campaign.CampaignType == CampaignType.ExplorationCampaign
             ? MapExplorationWells(campaign.ExplorationWells)
             : MapDevelopmentWells(campaign.DevelopmentWells);
 

@@ -28,9 +28,8 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CampaignType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CampaignType")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uniqueidentifier");
@@ -373,10 +372,6 @@ namespace api.Migrations
 
                     b.Property<double>("NGLYield")
                         .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProducerCount")
                         .HasColumnType("int");
@@ -785,10 +780,6 @@ namespace api.Migrations
                     b.Property<DateTime?>("LastChangedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ProspVersion")
                         .HasColumnType("datetime2");
 
@@ -1065,9 +1056,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DG3Date")
                         .HasColumnType("datetime2");
 
@@ -1082,10 +1070,6 @@ namespace api.Migrations
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ProspVersion")
                         .HasColumnType("datetime2");
@@ -1135,9 +1119,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DG3Date")
                         .HasColumnType("datetime2");
 
@@ -1155,10 +1136,6 @@ namespace api.Migrations
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProducerCount")
                         .HasColumnType("int");
@@ -1284,9 +1261,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DG3Date")
                         .HasColumnType("datetime2");
 
@@ -1316,10 +1290,6 @@ namespace api.Migrations
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OilCapacity")
                         .HasColumnType("float");
@@ -1374,9 +1344,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DG3Date")
                         .HasColumnType("datetime2");
 
@@ -1391,10 +1358,6 @@ namespace api.Migrations
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OilExportPipelineLength")
                         .HasColumnType("float");

@@ -1,6 +1,7 @@
 import React from "react"
 import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { Currency } from "@/Models/enums"
+import { useDataFetch } from "@/Hooks"
 
 interface InvestmentProfilesProps {
     investmentProfilesChartData?: object
@@ -23,7 +24,7 @@ const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfi
                 "Development well costs",
                 "Exploration well costs",
             ]}
-            unit={`${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"}`}
+            unit={`${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "mill NOK" : "mill USD"}`}
         />
     )
 }

@@ -3,7 +3,7 @@ import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useMemo } from "react"
 
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 const StyledChip = styled(Chip)`
     border-width: 0;

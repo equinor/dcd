@@ -1,18 +1,18 @@
 import { useState, useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
+import { useDataFetch } from "@/Hooks"
 import { ActiveCasesTable } from "./Components/ActiveCasesTable"
 import { ArchivedCasesTable } from "./Components/ArchivedCasesTable"
 import { STEAExportButton } from "./Components/STEAExportButton"
 import TableCasesDropMenu from "./Components/TableCasesDropMenu"
-import { useModalContext } from "@/Context/ModalContext"
+import { useModalContext } from "@/Store/ModalContext"
 
 const CasesTable = () => {
     const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
-    const { setShowRevisionReminder } = useAppContext()
+    const { setShowRevisionReminder } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)

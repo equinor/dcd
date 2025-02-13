@@ -16,7 +16,7 @@ import {
 
 import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
 import { EMPTY_GUID } from "@/Utils/constants"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
 import { gridRefArrayToAlignedGrid } from "@/Components/AgGrid/AgGridHelperFunctions"
@@ -46,7 +46,7 @@ const CaseTabTableWithGrouping = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
-    const { editMode, setShowRevisionReminder } = useAppContext()
+    const { editMode, setShowRevisionReminder } = useAppStore()
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [selectedRow, setSelectedRow] = useState<any>(null)
 

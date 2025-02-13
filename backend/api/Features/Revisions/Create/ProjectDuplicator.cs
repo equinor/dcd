@@ -67,6 +67,7 @@ public static class ProjectDuplicator
             GasPriceNOK = existingProject.GasPriceNOK,
             DiscountRate = existingProject.DiscountRate,
             ExchangeRateUSDToNOK = existingProject.ExchangeRateUSDToNOK,
+            NpvYear = existingProject.NpvYear,
 
             ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts
             {
@@ -160,7 +161,6 @@ public static class ProjectDuplicator
             {
                 Id = drainageStrategyId,
                 CaseId = caseId,
-                Name = existingCaseItem.DrainageStrategy.Name,
                 Description = existingCaseItem.DrainageStrategy.Description,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
@@ -175,7 +175,6 @@ public static class ProjectDuplicator
             {
                 Id = surfId,
                 CaseId = caseId,
-                Name = existingCaseItem.Surf.Name,
                 CessationCost = existingCaseItem.Surf.CessationCost,
                 Maturity = existingCaseItem.Surf.Maturity,
                 InfieldPipelineSystemLength = existingCaseItem.Surf.InfieldPipelineSystemLength,
@@ -187,7 +186,6 @@ public static class ProjectDuplicator
                 GasInjectorCount = existingCaseItem.Surf.GasInjectorCount,
                 WaterInjectorCount = existingCaseItem.Surf.WaterInjectorCount,
                 ProductionFlowline = existingCaseItem.Surf.ProductionFlowline,
-                Currency = existingCaseItem.Surf.Currency,
                 LastChangedDate = existingCaseItem.Surf.LastChangedDate,
                 CostYear = existingCaseItem.Surf.CostYear,
                 Source = existingCaseItem.Surf.Source,
@@ -202,10 +200,8 @@ public static class ProjectDuplicator
             {
                 Id = substructureId,
                 CaseId = caseId,
-                Name = existingCaseItem.Substructure.Name,
                 DryWeight = existingCaseItem.Substructure.DryWeight,
                 Maturity = existingCaseItem.Substructure.Maturity,
-                Currency = existingCaseItem.Substructure.Currency,
                 ApprovedBy = existingCaseItem.Substructure.ApprovedBy,
                 CostYear = existingCaseItem.Substructure.CostYear,
                 ProspVersion = existingCaseItem.Substructure.ProspVersion,
@@ -221,14 +217,12 @@ public static class ProjectDuplicator
             {
                 Id = topsideId,
                 CaseId = caseId,
-                Name = existingCaseItem.Topside.Name,
                 DryWeight = existingCaseItem.Topside.DryWeight,
                 OilCapacity = existingCaseItem.Topside.OilCapacity,
                 GasCapacity = existingCaseItem.Topside.GasCapacity,
                 WaterInjectionCapacity = existingCaseItem.Topside.WaterInjectionCapacity,
                 ArtificialLift = existingCaseItem.Topside.ArtificialLift,
                 Maturity = existingCaseItem.Topside.Maturity,
-                Currency = existingCaseItem.Topside.Currency,
                 FuelConsumption = existingCaseItem.Topside.FuelConsumption,
                 FlaredGas = existingCaseItem.Topside.FlaredGas,
                 ProducerCount = existingCaseItem.Topside.ProducerCount,
@@ -256,11 +250,9 @@ public static class ProjectDuplicator
             {
                 Id = transportId,
                 CaseId = caseId,
-                Name = existingCaseItem.Transport.Name,
                 GasExportPipelineLength = existingCaseItem.Transport.GasExportPipelineLength,
                 OilExportPipelineLength = existingCaseItem.Transport.OilExportPipelineLength,
                 Maturity = existingCaseItem.Transport.Maturity,
-                Currency = existingCaseItem.Transport.Currency,
                 LastChangedDate = existingCaseItem.Transport.LastChangedDate,
                 CostYear = existingCaseItem.Transport.CostYear,
                 Source = existingCaseItem.Transport.Source,
@@ -274,7 +266,6 @@ public static class ProjectDuplicator
             {
                 Id = onshorePowerSupplyId,
                 CaseId = caseId,
-                Name = existingCaseItem.OnshorePowerSupply.Name,
                 LastChangedDate = existingCaseItem.OnshorePowerSupply.LastChangedDate,
                 CostYear = existingCaseItem.OnshorePowerSupply.CostYear,
                 Source = existingCaseItem.OnshorePowerSupply.Source,

@@ -7,7 +7,7 @@ import CalculationsTab from "./Tabs/CalculationsTab/CalculationsTab"
 import EditHistoryTab from "./Tabs/EditHistoryTab"
 import MetadataTab from "./Tabs/MetadataTab"
 import TimeSeriesTab from "./Tabs/TimeSeriesTab"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import { formatFullDate } from "@/Utils/DateUtils"
 
 const DrawerContent = styled.div`
@@ -67,7 +67,7 @@ const SidesheetWrapper = ({
     dg4Year,
     isProsp,
 }: Props) => {
-    const { developerMode } = useAppContext()
+    const { developerMode } = useAppStore()
     const [activeTab, setActiveTab] = useState(0)
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {

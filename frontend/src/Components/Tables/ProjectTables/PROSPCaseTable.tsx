@@ -1,5 +1,5 @@
 import {
-    Button, Checkbox, Icon, NativeSelect, Progress,
+    Button, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent, useCallback, useEffect, useMemo, useRef, useState,
@@ -14,30 +14,22 @@ import {
 import { external_link } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
 
-import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import { GetProspService } from "@/Services/ProspService"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useAppContext } from "@/Context/AppContext"
-import { ProspImportStatusEnum } from "@/Models/ProspImportStatusEnum"
-import SharePointImport from "@/Models/sharepoint/SharePointImport"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppStore } from "@/Store/AppStore"
+import { useDataFetch } from "@/Hooks"
 
 interface Props {
-    driveItems: DriveItem[] | undefined
-    check: boolean
+    sharePointFiles: Components.Schemas.SharePointFileDto[]
 }
 interface RowData {
     id: string,
     name: string,
-    surfState: ProspImportStatusEnum
-    substructureState: ProspImportStatusEnum
-    topsideState: ProspImportStatusEnum
-    transportState: ProspImportStatusEnum
     sharePointFileName?: string | null
     sharePointFileId?: string | null
     sharepointFileUrl?: string | null
-    driveItem: [DriveItem[] | undefined, string | undefined | null]
+    driveItem: [Components.Schemas.SharePointFileDto[] | undefined, string | undefined | null]
     fileLink?: string | null
     surfStateChanged: boolean,
     substructureStateChanged: boolean,
@@ -46,15 +38,14 @@ interface RowData {
     sharePointFileChanged: boolean,
 }
 const PROSPCaseList = ({
-    driveItems,
-    check,
+    sharePointFiles,
 }: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
     const { isEditDisabled } = useEditDisabled()
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
 
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
@@ -66,15 +57,11 @@ const PROSPCaseList = ({
                 const tableCase: RowData = {
                     id: c.caseId!,
                     name: c.name ?? "",
-                    surfState: SharePointImport.surfStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
-                    substructureState: SharePointImport.substructureStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
-                    topsideState: SharePointImport.topsideStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
-                    transportState: SharePointImport.transportStatus(c, revisionAndProjectData.commonProjectAndRevisionData),
                     sharePointFileId: c.sharepointFileId,
                     sharePointFileName: c.sharepointFileName,
                     sharepointFileUrl: c.sharepointFileUrl,
                     fileLink: c.sharepointFileUrl,
-                    driveItem: [driveItems, c.sharepointFileId],
+                    driveItem: [sharePointFiles, c.sharepointFileId],
                     surfStateChanged: false,
                     substructureStateChanged: false,
                     topsideStateChanged: false,
@@ -116,65 +103,7 @@ const PROSPCaseList = ({
         gridRef.current.redrawRows()
     }
 
-    const handleAdvancedSettingsChange = (p: any, value: ProspImportStatusEnum) => {
-        if (revisionAndProjectData && revisionAndProjectData.commonProjectAndRevisionData.cases) {
-            const projectCase = revisionAndProjectData.commonProjectAndRevisionData.cases.find((el: any) => p.data.id && p.data.id === el.id)
-            const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
-            if (projectCase) {
-                switch (p.column.colId) {
-                case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
-                    break
-                case "substructureState":
-                    rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
-                    break
-                case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
-                    break
-                case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, revisionAndProjectData.commonProjectAndRevisionData) !== value)
-                    break
-                default:
-                    break
-                }
-            }
-        }
-        p.setValue(value)
-        caseAutoSelect(p.node?.data.id)
-    }
-
-    const advancedSettingsRenderer = (
-        p: any,
-    ) => {
-        if (p.value === ProspImportStatusEnum.Selected) {
-            return (
-                <Checkbox
-                    checked
-                    disabled={isEditDisabled || !editMode}
-                    onChange={() => handleAdvancedSettingsChange(p, ProspImportStatusEnum.NotSelected)}
-                />
-            )
-        }
-        if (p.value === ProspImportStatusEnum.NotSelected) {
-            return (
-                <Checkbox
-                    checked={false}
-                    disabled={isEditDisabled || !editMode}
-                    onChange={() => handleAdvancedSettingsChange(p, ProspImportStatusEnum.Selected)}
-                />
-            )
-        }
-        return (
-            <Checkbox
-                checked
-                disabled={isEditDisabled || !editMode}
-                onChange={() => handleAdvancedSettingsChange(p, ProspImportStatusEnum.Selected)}
-            />
-        )
-    }
-
-    const sharePointFileDropdownOptions = (items: DriveItem[]) => {
+    const sharePointFileDropdownOptions = (items: Components.Schemas.SharePointFileDto[]) => {
         const options: JSX.Element[] = []
         items?.slice(1).forEach((item) => {
             options.push(<option key={item.id} value={item.id!}>{item.name}</option>)
@@ -228,7 +157,7 @@ const PROSPCaseList = ({
 
     const fileSelectorRenderer = (p: any) => {
         const fileId = p.value[1] || ""
-        const items: DriveItem[] = p.value[0] || []
+        const items: Components.Schemas.SharePointFileDto[] = p.value[0] || []
 
         return (
             <NativeSelect
@@ -280,34 +209,6 @@ const PROSPCaseList = ({
             cellRenderer: fileLinkRenderer,
             flex: 1,
         },
-        {
-            field: "surfState",
-            headerName: "Surf",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-        {
-            field: "substructureState",
-            headerName: "Substructure",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-        {
-            field: "topsideState",
-            headerName: "Topside",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-        {
-            field: "transportState",
-            headerName: "Transport",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
     ]
 
     const [columnDefs, setColumnDefs] = useState(GetColumnDefs())
@@ -321,26 +222,31 @@ const PROSPCaseList = ({
     }
 
     const gridDataToDtos = (p: Components.Schemas.CommonProjectAndRevisionDto) => {
-        const dtos: any[] = []
+        const dtos: Components.Schemas.SharePointImportDto[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
-            const dto: any = {}
-            dto.sharePointFileId = node.data?.driveItem[1]
-            dto.sharePointFileName = node.data?.driveItem[0]?.find(
-                (di) => di.id === dto.sharePointFileId,
-            )?.name
-            dto.sharepointFileUrl = node.data?.driveItem[0]?.find(
-                (di) => di.id === dto.sharePointFileId,
-            )?.sharepointFileUrl
-            dto.sharePointSiteUrl = p.sharepointSiteUrl
-            dto.id = node.data?.id
-            dto.surf = node.data?.surfState === ProspImportStatusEnum.Selected
-            dto.substructure = node.data?.substructureState === ProspImportStatusEnum.Selected
-            dto.topside = node.data?.topsideState === ProspImportStatusEnum.Selected
-            dto.transport = node.data?.transportState === ProspImportStatusEnum.Selected
-            if (node.isSelected()) {
-                dtos.push(dto)
+            if (!node.isSelected()) {
+                return
             }
+
+            if (!node.data?.id) {
+                return
+            }
+
+            if (!p.sharepointSiteUrl) {
+                return
+            }
+
+            const sharePointFileId = node.data?.driveItem[1]
+            const sharePointFileName = node.data?.driveItem[0]?.find((di) => di.id === sharePointFileId)?.name
+
+            dtos.push({
+                caseId: node.data?.id,
+                sharePointFileId: sharePointFileId || "",
+                sharePointFileName: sharePointFileName || "",
+                sharePointSiteUrl: p.sharepointSiteUrl,
+            })
         })
+
         return dtos
     }
 
@@ -348,36 +254,18 @@ const PROSPCaseList = ({
         const dtos = gridDataToDtos(p.commonProjectAndRevisionData)
         if (dtos.length > 0) {
             setIsApplying(true)
-            const newProject = await (await GetProspService()).importFromSharepoint(p.projectId, dtos)
+            const newProject = await (await GetProspService()).importFromSharePoint(p.projectId, dtos)
             addProjectEdit(newProject.projectId, newProject.commonProjectAndRevisionData)
             setIsApplying(false)
         }
     }, [])
 
     useEffect(() => {
-        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
-        const newColumnDefs = [...columnDefs]
-        const columnData: any = []
-        newColumnDefs.forEach((cd) => {
-            if (assetFields.indexOf(cd.field) > -1) {
-                const colDef = { ...cd }
-                colDef.hide = !check
-                columnData.push(colDef)
-            } else {
-                columnData.push(cd)
-            }
-        })
-        if (columnData.length > 0) {
-            setColumnDefs(columnData)
-        }
-    }, [check])
-
-    useEffect(() => {
         casesToRowData()
         if (gridRef.current.redrawRows) {
             gridRef.current.redrawRows()
         }
-    }, [revisionAndProjectData, driveItems])
+    }, [revisionAndProjectData, sharePointFiles])
 
     return (
         <Grid container spacing={1}>
@@ -397,7 +285,7 @@ const PROSPCaseList = ({
                             enableClickSelection: false,
                             headerCheckbox: true,
                             checkboxes: true,
-                            isRowSelectable: rowIsChanged,
+                            isRowSelectable: () => editMode,
                         }}
                         animateRows
                         domLayout="autoHeight"

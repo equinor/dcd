@@ -5,8 +5,9 @@ import Grid from "@mui/material/Grid2"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import useEditProject from "@/Hooks/useEditProject"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
+import { Currency, PhysUnit } from "@/Models/enums"
 
 const ProjectSettingsTab = () => {
     const { addProjectEdit } = useEditProject()
@@ -96,8 +97,8 @@ const ProjectSettingsTab = () => {
         }
     }
 
-    const getPhysicalUnit = () => (revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "SI" : "Oil field")
-    const getCurrency = () => (revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD")
+    const getPhysicalUnit = () => (revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "SI" : "Oil field")
+    const getCurrency = () => (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "NOK" : "USD")
 
     if (!revisionAndProjectData) {
         return <ProjectSkeleton />

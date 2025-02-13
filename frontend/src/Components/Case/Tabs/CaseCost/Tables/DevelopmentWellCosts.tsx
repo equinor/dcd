@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react"
 
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface DevelopmentWellCostsProps {
     tableYears: [number, number];
     developmentWellsGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
@@ -18,7 +18,6 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     developmentWellsGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -43,7 +42,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         const newDevelopmentTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Oil producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectOilProducerCostData,
                 resourceName: "wellProjectOilProducerCostOverride",
                 resourceId: wellProjectId,
@@ -54,7 +53,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasProducerCostData,
                 resourceName: "wellProjectGasProducerCostOverride",
                 resourceId: wellProjectId,
@@ -65,7 +64,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Water injector",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
                 resourceName: "wellProjectWaterInjectorCostOverride",
                 resourceId: wellProjectId,
@@ -76,7 +75,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas injector",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
                 resourceName: "wellProjectGasInjectorCostOverride",
                 resourceId: wellProjectId,
@@ -100,7 +99,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
+
         />
     )
 }

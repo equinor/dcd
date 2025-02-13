@@ -3,31 +3,28 @@ import {
     Button,
     Input,
     Progress,
-    Switch,
     InputWrapper,
     Card,
 } from "@equinor/eds-core-react"
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Grid from "@mui/material/Grid2"
 
 import { GetProspService } from "@/Services/ProspService"
 import { GetProjectService } from "@/Services/ProjectService"
-import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import useEditProject from "@/Hooks/useEditProject"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import PROSPCaseTable from "@/Components/Tables/ProjectTables/PROSPCaseTable"
 
 const PROSPTab = () => {
     const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
     const { isEditDisabled } = useEditDisabled()
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
-    const [check, setCheck] = useState(false)
-    const [driveItems, setDriveItems] = useState<DriveItem[]>()
+    const [sharePointFiles, setSharePointFiles] = useState<Components.Schemas.SharePointFileDto[]>([])
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
 
@@ -37,9 +34,13 @@ const PROSPTab = () => {
         }
         setIsRefreshing(true)
         e.preventDefault()
+        if (!sharepointUrl) {
+            return
+        }
+
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl }, revisionAndProjectData.projectId)
-            setDriveItems(result)
+            setSharePointFiles(result)
             setErrorMessage("")
 
             if (revisionAndProjectData && sharepointUrl !== revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl) {
@@ -68,7 +69,7 @@ const PROSPTab = () => {
                     try {
                         const result = await (await GetProspService())
                             .getSharePointFileNamesAndId({ url: revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl }, revisionAndProjectData.projectId)
-                        setDriveItems(result)
+                        setSharePointFiles(result)
                         setErrorMessage("")
                     } catch (error) {
                         console.error("[PROSPTab] error while fetching SharePoint files", error)
@@ -121,20 +122,9 @@ const PROSPTab = () => {
                     )}
             </Grid>
             <Grid size={12} container justifyContent="flex-end">
-                <Grid>
-                    <Switch
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            setCheck(e.target.checked)
-                        }}
-                        checked={check}
-                        label="Advance settings"
-                        disabled={isEditDisabled || !editMode}
-                    />
-                </Grid>
                 <Grid size={12}>
                     <PROSPCaseTable
-                        driveItems={driveItems}
-                        check={check}
+                        sharePointFiles={sharePointFiles}
                     />
                 </Grid>
             </Grid>

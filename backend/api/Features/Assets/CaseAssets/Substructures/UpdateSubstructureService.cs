@@ -13,7 +13,6 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
-        existingSubstructure.Currency = updatedSubstructureDto.Currency;
         existingSubstructure.CostYear = updatedSubstructureDto.CostYear;
         existingSubstructure.Source = updatedSubstructureDto.Source;
         existingSubstructure.Concept = updatedSubstructureDto.Concept;
@@ -21,25 +20,6 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         existingSubstructure.DG4Date = updatedSubstructureDto.DG4Date;
         existingSubstructure.Maturity = updatedSubstructureDto.Maturity;
         existingSubstructure.ApprovedBy = updatedSubstructureDto.ApprovedBy;
-
-        existingSubstructure.LastChangedDate = DateTime.UtcNow;
-
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateCase(caseId);
-    }
-
-    public async Task UpdateSubstructure(Guid projectId, Guid caseId, ProspUpdateSubstructureDto updatedSubstructureDto)
-    {
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
-
-        existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
-        existingSubstructure.Currency = updatedSubstructureDto.Currency;
-        existingSubstructure.CostYear = updatedSubstructureDto.CostYear;
-        existingSubstructure.Source = updatedSubstructureDto.Source;
-        existingSubstructure.Concept = updatedSubstructureDto.Concept;
-        existingSubstructure.DG3Date = updatedSubstructureDto.DG3Date;
-        existingSubstructure.DG4Date = updatedSubstructureDto.DG4Date;
-        existingSubstructure.ProspVersion = updatedSubstructureDto.ProspVersion;
 
         existingSubstructure.LastChangedDate = DateTime.UtcNow;
 

@@ -5,12 +5,8 @@ import {
     useMemo,
 } from "react"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router"
-import { useQuery } from "@tanstack/react-query"
-
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useCaseStore } from "@/Store/CaseStore"
+import useEditCase from "@/Hooks/useEditCase"
 import CaseCostHeader from "./CaseCostHeader"
 import OpexCosts from "./Tables/OpexCosts"
 import CessationCosts from "./Tables/CessationCosts"
@@ -22,11 +18,11 @@ import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { useCaseApiData } from "@/Hooks"
 
-const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
-    const { caseId, revisionId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+const CaseCostTab = () => {
+    const { activeTabCase } = useCaseStore()
+    const { addEdit } = useEditCase()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -59,11 +55,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         totalIncomeColor: "#9F9F9F",
     }
 
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
+    const { apiData } = useCaseApiData()
 
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
@@ -138,7 +130,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 setTableYears={setTableYears}
                 caseData={apiData.case}
                 surfData={apiData.surf}
-                addEdit={addEdit}
+
             />
             <Grid size={12}>
                 <AggregatedTotals
@@ -162,7 +154,6 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
                 />
             </Grid>
             <Grid size={12}>
@@ -171,7 +162,6 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
                 />
             </Grid>
             <Grid size={12}>
@@ -180,7 +170,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+
                 />
             </Grid>
             <Grid size={12}>
@@ -189,7 +179,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+
                 />
             </Grid>
             <Grid size={12}>
@@ -198,7 +188,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+
                 />
             </Grid>
             <Grid size={12}>
@@ -207,7 +197,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    addEdit={addEdit}
+
                 />
             </Grid>
         </Grid>

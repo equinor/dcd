@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Grid from "@mui/material/Grid2"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import WellCostsTab from "./WellCostTab/WellCostsTab"
 import PROSPTab from "./PROSPTab/PROSPTab"
 import CO2Tab from "./CO2Tab/CO2Tab"

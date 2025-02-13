@@ -1,8 +1,6 @@
 import {
     useState, useEffect,
 } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
 import Grid from "@mui/material/Grid2"
 import {
     ITimeSeries,
@@ -11,33 +9,24 @@ import {
 } from "@/Models/ITimeSeries"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { mergeTimeseriesList } from "@/Utils/common"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 import CaseTabTableWithGrouping from "@/Components/Tables/CaseTables/CaseTabTableWithGrouping"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
-const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
-    const { caseId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
-    const { revisionId } = useParams()
+const CaseSummaryTab = () => {
+    const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -190,7 +179,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalExplorationCostData,
                     group: "Exploration",
                 },
@@ -199,31 +188,31 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newCapexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Drilling",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalDrillingCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Offshore facilities",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: offshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - offshore facilities",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - onshore facilities",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: cessationOnshoreFacilitiesCostProfileData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Onshore (Power from shore)",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: onshorePowerSupplyCostProfileData,
                     group: "CAPEX",
                 },
@@ -232,19 +221,19 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newStudycostTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Feasibility & Conceptual studies",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "FEED studies (DG2-DG3)",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "Other studies",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: totalOtherStudiesCostProfileData,
                     group: "Study cost",
                 },
@@ -253,25 +242,25 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newOpexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Historic cost",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: historicCostCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Offshore related OPEX, incl. well intervention",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: offshoreOpexPlussWellInterventionData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Onshore related OPEX",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: onshoreRelatedOPEXCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Additional OPEX",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                     profile: additionalOPEXCostProfileData,
                     group: "OPEX",
                 },
@@ -297,8 +286,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="npv"
                             label="NPV before tax (MUSD)"
@@ -310,8 +298,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="npvOverride"
                             label="STEA NPV after tax(MUSD)"
@@ -330,8 +317,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="breakEven"
                             previousResourceObject={caseData}
@@ -344,8 +330,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="breakEvenOverride"
                             label="STEA B/E after tax(MUSD)"

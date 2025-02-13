@@ -50,7 +50,7 @@ public static class ProspCellReferences
         public const string WaterInjectionCapacity = "E33";
     }
 
-    public static class SubStructure
+    public static class Substructure
     {
         public const string CostProfileStartYear = "J103";
         public const string Dg3Date = "F105";

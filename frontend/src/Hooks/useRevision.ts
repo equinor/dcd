@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 
 import { GetProjectService } from "@/Services/ProjectService"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
 export const useRevisions = () => {

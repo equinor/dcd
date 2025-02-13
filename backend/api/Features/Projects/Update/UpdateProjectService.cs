@@ -1,3 +1,4 @@
+using api.AppInfrastructure.Authorization;
 using api.Context;
 using api.Models;
 using api.Models.Infrastructure.ProjectRecalculation;
@@ -6,13 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Projects.Update;
 
-public class UpdateProjectService(DcdDbContext context)
+public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser)
 {
     public async Task UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
-        var existingProject = await context.Projects.SingleAsync(p => p.Id == projectId);
+        var existingProject = await context.Projects
+            .Include(x => x.ProjectMembers)
+            .SingleAsync(p => p.Id == projectId);
 
         var shouldTriggerRecalculation = ShouldTriggerRecalculation(existingProject, projectDto);
+
+        ProjectClassificationHelper.AddCurrentUserAsEditorIfClassificationBecomesMoreStrict(
+            existingProject,
+            projectDto.Classification,
+            currentUser);
 
         existingProject.Name = projectDto.Name;
         existingProject.ReferenceCaseId = projectDto.ReferenceCaseId;

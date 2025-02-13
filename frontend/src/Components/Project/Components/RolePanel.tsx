@@ -8,23 +8,23 @@ import {
 import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion-react-person"
 
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
-import { UserRole } from "@/Models/AccessManagement"
-import { useAppContext } from "@/Context/AppContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppStore } from "@/Store/AppStore"
+import { useDataFetch } from "@/Hooks"
+import { ProjectMemberRole } from "@/Models/enums"
 
 interface RolePanelProps {
     isSmallScreen: boolean;
     isViewers?: boolean;
     people?: Components.Schemas.ProjectMemberDto[] | undefined;
-    handleAddPerson: (e: PersonSelectEvent, role: UserRole) => void;
-    handleSwitchPerson: (userId: string, role: UserRole) => void;
+    handleAddPerson: (e: PersonSelectEvent, role: ProjectMemberRole) => void;
+    handleSwitchPerson: (userId: string, role: ProjectMemberRole) => void;
     handleRemovePerson: (userId: string) => void;
 }
 
 const RolePanel = ({
     isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson,
 }: RolePanelProps) => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const orgChartPeople = useMemo(() => people?.filter((person) => person.isPmt === true), [people])
@@ -41,7 +41,7 @@ const RolePanel = ({
                     <PersonSelect
                         placeholder={`Add new ${isViewers ? "viewer" : "editor"}`}
                         selectedPerson={null}
-                        onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, isViewers ? UserRole.Viewer : UserRole.Editor)}
+                        onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, isViewers ? ProjectMemberRole.Observer : ProjectMemberRole.Editor)}
                     />
                 )}
                 {manuallyAddedPeople && manuallyAddedPeople.length > 0 ? (
@@ -51,7 +51,7 @@ const RolePanel = ({
                                 {editMode && revisionAndProjectData?.userActions.canEditProjectData && (
                                     <>
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
-                                            <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? UserRole.Editor : UserRole.Viewer)}>
+                                            <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}>
                                                 <Icon data={swap_horizontal} />
                                             </Button>
                                         </Tooltip>

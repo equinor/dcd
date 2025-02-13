@@ -32,9 +32,7 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
-    Components.Schemas.TopsideOverviewDto |
     Components.Schemas.SurfDto |
-    Components.Schemas.SurfOverviewDto |
     Components.Schemas.SubstructureDto |
     Components.Schemas.TransportDto |
     Components.Schemas.CaseOverviewDto |
@@ -96,13 +94,6 @@ export interface TableCase {
     gasInjectorCount: number
     createdAt?: string
     referenceCaseId?: string
-}
-
-export enum NoAccessReason {
-    ProjectDoesNotExist = 1,
-    ClassificationInternal = 2,
-    ClassificationRestricted = 3,
-    ClassificationConfidential = 4
 }
 
 export type Version = `${number}.${number}.${number}`;

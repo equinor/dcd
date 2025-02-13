@@ -1,13 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
 public class UpdateDrainageStrategyDto
 {
-    public double NGLYield { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public GasSolution GasSolution { get; set; }
+    [Required] public double NGLYield { get; set; }
+    [Required] public int ProducerCount { get; set; }
+    [Required] public int GasInjectorCount { get; set; }
+    [Required] public int WaterInjectorCount { get; set; }
+    [Required] public ArtificialLift ArtificialLift { get; set; }
+    [Required] public GasSolution GasSolution { get; set; }
 }

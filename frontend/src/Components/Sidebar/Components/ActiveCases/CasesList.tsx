@@ -8,9 +8,9 @@ import {
     productionStrategyOverviewToString, truncateText,
 } from "@/Utils/common"
 import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
+import { useDataFetch } from "@/Hooks"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { useAppNavigation } from "@/Hooks/useNavigate"
@@ -23,7 +23,7 @@ const SideBarRefCaseWrapper = styled.div`
 `
 
 const CasesList: React.FC = () => {
-    const { sidebarOpen, setEditMode } = useAppContext()
+    const { sidebarOpen, setEditMode } = useAppStore()
     const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()

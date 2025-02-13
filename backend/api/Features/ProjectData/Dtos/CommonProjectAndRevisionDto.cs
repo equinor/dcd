@@ -37,10 +37,4 @@ public class CommonProjectAndRevisionDto
     [Required] public required DevelopmentOperationalWellCostsOverviewDto DevelopmentOperationalWellCosts { get; set; }
     [Required] public required List<CaseOverviewDto> Cases { get; set; }
     [Required] public required List<WellOverviewDto> Wells { get; set; }
-    [Required] public required List<SurfOverviewDto> Surfs { get; set; }
-    [Required] public required List<SubstructureOverviewDto> Substructures { get; set; }
-    [Required] public required List<TopsideOverviewDto> Topsides { get; set; }
-    [Required] public required List<TransportOverviewDto> Transports { get; set; }
-    [Required] public required List<OnshorePowerSupplyOverviewDto> OnshorePowerSupplies { get; set; }
-    [Required] public required List<DrainageStrategyOverviewDto> DrainageStrategies { get; set; }
 }

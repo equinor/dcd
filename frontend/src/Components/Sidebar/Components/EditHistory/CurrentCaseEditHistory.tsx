@@ -3,8 +3,8 @@ import styled from "styled-components"
 import { Typography, Tooltip } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 
-import { useCaseContext } from "@/Context/CaseContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useCaseStore } from "@/Store/CaseStore"
+import { useAppStore } from "@/Store/AppStore"
 import HistoryButton from "@/Components/Buttons/HistoryButton"
 import CaseEditHistory from "@/Components/Sidebar/Components/EditHistory/CaseEditHistory"
 import { Header, StyledDivider } from "@/Components/Sidebar/SidebarWrapper"
@@ -33,10 +33,10 @@ const NextValue = styled(Typography)`
 `
 
 const CurrentCaseEditHistory: React.FC = () => {
-    const { caseEditsBelongingToCurrentCase } = useCaseContext()
+    const { caseEditsBelongingToCurrentCase } = useCaseStore()
     const { caseId } = useParams()
 
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen } = useAppStore()
 
         return (
             <Container $sidebarOpen={sidebarOpen}>

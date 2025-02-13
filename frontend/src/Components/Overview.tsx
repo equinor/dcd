@@ -11,22 +11,19 @@ import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
 
-import { useFeatureContext } from "@/Context/FeatureContext"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useModalContext } from "@/Context/ModalContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useFeatureContext } from "@/Store/FeatureContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useModalContext } from "@/Store/ModalContext"
+import { useAppStore } from "@/Store/AppStore"
 import { peopleQueryFn } from "@/Services/QueryFunctions"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import { useLocalStorage } from "@/Hooks/useLocalStorage"
+import { useEditCase, useDataFetch, useLocalStorage } from "@/Hooks"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import SidebarWrapper from "./Sidebar/SidebarWrapper"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
-import { useCaseContext } from "@/Context/CaseContext"
-import useEditCase from "@/Hooks/useEditCase"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -63,7 +60,7 @@ const Overview = () => {
         showRevisionReminder,
         setShowRevisionReminder,
         editMode,
-    } = useAppContext()
+    } = useAppStore()
     const {
         projectId,
         setProjectId,
@@ -74,15 +71,11 @@ const Overview = () => {
     const {
         apiQueue,
         setIsSaving,
-        developerMode,
-    } = useAppContext()
-    const {
-        caseEdits,
-        editIndexes,
-    } = useCaseContext()
+    } = useAppStore()
+
     const {
         processQueue,
-    } = useEditCase()   
+    } = useEditCase()
 
     const { featuresModalIsOpen } = useModalContext()
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -98,27 +91,27 @@ const Overview = () => {
     })
 
     useEffect(() => {
-            let timer: NodeJS.Timeout | undefined
-            if (apiQueue.length > 0) {
-                setIsSaving(true)
-    
-                if (timer) {
-                    clearTimeout(timer)
-                }
-    
-                timer = setTimeout(() => {
-                    processQueue()
-                }, 3000)
-            } else {
-                setIsSaving(false)
+        let timer: NodeJS.Timeout | undefined
+        if (apiQueue.length > 0) {
+            setIsSaving(true)
+
+            if (timer) {
+                clearTimeout(timer)
             }
-    
-            return () => {
-                if (timer) {
-                    clearTimeout(timer)
-                }
+
+            timer = setTimeout(() => {
+                processQueue()
+            }, 3000)
+        } else {
+            setIsSaving(false)
+        }
+
+        return () => {
+            if (timer) {
+                clearTimeout(timer)
             }
-        }, [apiQueue])
+        }
+    }, [apiQueue])
 
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)

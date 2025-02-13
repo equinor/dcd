@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { Typography, Icon } from "@equinor/eds-core-react"
 import { arrow_forward } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { formatTime, getCurrentEditId } from "@/Utils/common"
 
 const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
@@ -53,8 +53,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     const {
         caseEdits,
         editIndexes,
-    } = useCaseContext()
-
+    } = useCaseStore()
 
     useEffect(() => {
         const currentEditId = getCurrentEditId(editIndexes, caseId)

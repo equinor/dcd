@@ -5,25 +5,20 @@ import {
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useCaseStore } from "@/Store/CaseStore"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 
-const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
-    const { caseId, revisionId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+const CaseDrillingScheduleTab = () => {
+    const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -43,12 +38,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const [, setSidetrackCount] = useState<number>(0)
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
 
     const wells = revisionAndProjectData?.commonProjectAndRevisionData.wells
 
@@ -114,8 +103,8 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const caseData = apiData.case
-    const explorationId = apiData.explorationId
-    const wellProjectId = apiData.wellProjectId
+    const { explorationId } = apiData
+    const { wellProjectId } = apiData
     const developmentWellsData = apiData.developmentWells
     const explorationWellsData = apiData.explorationWells
 
@@ -141,7 +130,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Exploration wells"
@@ -153,7 +141,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Oil producer wells"
@@ -165,7 +152,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Water injector wells"
@@ -177,7 +163,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Appraisal wells"
@@ -189,7 +174,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Gas producer wells"
@@ -201,7 +185,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Gas injector wells"
@@ -223,7 +206,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             />
             <Grid size={12}>
                 <CaseDrillingScheduleTable
-                    addEdit={addEdit}
                     assetWells={explorationWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Exploration wells"
@@ -237,7 +219,6 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={12}>
                 <CaseDrillingScheduleTable
-                    addEdit={addEdit}
                     assetWells={developmentWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableName="Development wells"

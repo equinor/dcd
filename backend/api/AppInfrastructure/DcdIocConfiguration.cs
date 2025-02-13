@@ -1,4 +1,7 @@
 using api.AppInfrastructure.Authorization;
+using api.Features.Assets.CaseAssets.Campaigns.Create;
+using api.Features.Assets.CaseAssets.Campaigns.Delete;
+using api.Features.Assets.CaseAssets.Campaigns.Get;
 using api.Features.Assets.CaseAssets.Campaigns.Update;
 using api.Features.Assets.CaseAssets.CampaignWells.Get;
 using api.Features.Assets.CaseAssets.CampaignWells.Save;
@@ -39,7 +42,6 @@ using api.Features.Projects.Create;
 using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
-using api.Features.Prosp.Services.Assets;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
@@ -124,11 +126,6 @@ public static class DcdIocConfiguration
         /* Prosp / Excel import */
         services.AddScoped<ProspExcelImportService>();
         services.AddScoped<ProspSharepointImportService>();
-        services.AddScoped<OnshorePowerSupplyCostProfileService>();
-        services.AddScoped<SubstructureCostProfileService>();
-        services.AddScoped<SurfCostProfileService>();
-        services.AddScoped<TopsideCostProfileService>();
-        services.AddScoped<TransportCostProfileService>();
 
         /* Stea / Excel export */
         services.AddScoped<SteaService>();
@@ -138,11 +135,15 @@ public static class DcdIocConfiguration
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartProjectMemberService>();
 
-        /* Case assets */
+        /* Drilling campaigns */
         services.AddScoped<UpdateCampaignService>();
+        services.AddScoped<CreateCampaignService>();
         services.AddScoped<SaveCampaignWellService>();
         services.AddScoped<GetCampaignWellService>();
+        services.AddScoped<GetCampaignService>();
+        services.AddScoped<DeleteCampaignService>();
 
+        /* Case assets */
         services.AddScoped<UpdateDrainageStrategyService>();
         services.AddScoped<UpdateOnshorePowerSupplyService>();
         services.AddScoped<UpdateSubstructureService>();

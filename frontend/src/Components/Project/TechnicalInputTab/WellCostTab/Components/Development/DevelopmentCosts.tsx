@@ -5,7 +5,7 @@ import {
 } from "react"
 
 import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { useDebounce } from "@/Hooks/useDebounce"
 import OperationalWellCost from "../Shared/CostCell"
 import {
@@ -16,7 +16,8 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
-import { useAppContext } from "@/Context/AppContext"
+import { Currency } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
 
 type DevelopmentCostsState = Omit<
     Components.Schemas.DevelopmentOperationalWellCostsOverviewDto,
@@ -30,7 +31,7 @@ const DevelopmentCosts = () => {
     const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
     const { addDevelopmentWellCostEdit } = useTechnicalInputEdits()
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const previousCostsRef = useRef<DevelopmentCostsState | null>(null)
 
     const [costs, setCosts] = useState<DevelopmentCostsState>({
@@ -78,7 +79,7 @@ const DevelopmentCosts = () => {
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${currency === Currency.NOK ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

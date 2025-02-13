@@ -9,6 +9,7 @@ using api.Models.Infrastructure;
 
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 
 namespace api.AppInfrastructure.Middleware;
 
@@ -113,20 +114,16 @@ public class DcdExceptionHandlingMiddleware(
         {
             case NotFoundInDbException:
                 return (HttpStatusCode.NotFound, exception.Message);
-
             case UnauthorizedAccessException:
                 return (HttpStatusCode.Unauthorized, exception.Message);
-
-            case ProjectMasterMismatchException:
-            case InvalidInputException:
+            case ProjectMasterMismatchException or InvalidInputException:
                 return (HttpStatusCode.BadRequest, exception.Message);
-
             case UnprocessableContentException:
                 return (HttpStatusCode.UnprocessableContent, exception.Message);
-
             case ResourceAlreadyExistsException:
                 return (HttpStatusCode.Conflict, exception.Message);
-
+            case ServiceException { StatusCode: HttpStatusCode.Forbidden }:
+                return (HttpStatusCode.Forbidden, "Access to SharePoint resource was denied.");
             default:
                 return (HttpStatusCode.InternalServerError, "An unexpected error occurred");
         }

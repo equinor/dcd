@@ -7,7 +7,7 @@ namespace api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 public class CampaignDto
 {
     [Required] public required Guid CampaignId { get; set; }
-    [Required] public required string CampaignType { get; set; }
+    [Required] public required CampaignType CampaignType { get; set; }
     [Required] public required double RigUpgradingCost { get; set; }
     [Required] public required double RigMobDemobCost { get; set; }
     [Required] public required RigProfileDto RigUpgradingProfile { get; set; }

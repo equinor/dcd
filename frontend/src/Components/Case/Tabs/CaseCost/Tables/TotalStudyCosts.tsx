@@ -2,16 +2,16 @@ import React, { useEffect, useMemo, useState } from "react"
 
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppContext } from "@/Context/AppContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppStore } from "@/Store/AppStore"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { Currency } from "@/Models/enums"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
@@ -19,9 +19,8 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     studyGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
-    const { isCalculatingTotalStudyCostOverrides } = useAppContext()
+    const { isCalculatingTotalStudyCostOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const calculatedFields = useMemo(() => [
@@ -42,7 +41,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         const newStudyTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Feasibility & conceptual stud.",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalFeasibilityAndConceptStudiesData,
                 resourceName: "totalFeasibilityAndConceptStudiesOverride",
                 resourceId: caseData.caseId,
@@ -53,7 +52,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             },
             {
                 profileName: "FEED studies (DG2-DG3)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalFEEDStudiesData,
                 resourceName: "totalFEEDStudiesOverride",
                 resourceId: caseData.caseId,
@@ -64,7 +63,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             },
             {
                 profileName: "Other studies",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalOtherStudiesCostProfileData,
                 resourceName: "totalOtherStudiesCostProfile",
                 resourceId: caseData.caseId,
@@ -89,7 +88,6 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             totalRowName="Total"
             ongoingCalculation={isCalculatingTotalStudyCostOverrides}
             calculatedFields={calculatedFields}
-            addEdit={addEdit}
         />
     )
 }

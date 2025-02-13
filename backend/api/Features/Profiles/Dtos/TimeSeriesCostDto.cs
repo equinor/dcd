@@ -18,9 +18,3 @@ public class TimeSeriesCostOverrideDto
     [Required] public bool Override { get; set; }
     [Required] public DateTime UpdatedUtc { get; set; }
 }
-
-public class UpdateTimeSeriesCostDto
-{
-    [Required] public int StartYear { get; set; }
-    [Required] public double[] Values { get; set; } = [];
-}

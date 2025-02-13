@@ -10,8 +10,6 @@ public static class OnshorePowerSupplyMapper
         return new OnshorePowerSupplyDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            ProjectId = entity.Case.ProjectId,
             LastChangedDate = entity.LastChangedDate,
             CostYear = entity.CostYear,
             Source = entity.Source,
