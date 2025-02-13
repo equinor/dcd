@@ -23,8 +23,8 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
-    "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
-    "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
+    "deferredOilProduction" | "deferredGasProduction" |
+    "netSalesGasOverride" | "co2EmissionsOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" | "projectSpecificDrillingCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |

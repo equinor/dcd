@@ -24,7 +24,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     const calculatedFields = useMemo(() => [
         ProfileTypes.FuelFlaringAndLossesOverride,
         ProfileTypes.NetSalesGasOverride,
-        "productionProfileImportedElectricityOverride",
+        ProfileTypes.ImportedElectricityOverride,
     ], [])
 
     useEffect(() => {
@@ -133,9 +133,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Imported electricity",
                 unit: "GWh",
                 profile: importedElectricityData,
-                resourceName: "productionProfileImportedElectricityOverride",
+                resourceName: ProfileTypes.ImportedElectricityOverride,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileImportedElectricityOverride",
+                resourcePropertyKey: ProfileTypes.ImportedElectricityOverride,
                 overrideProfile: importedElectricityOverrideData,
                 editable: true,
                 overridable: true,
