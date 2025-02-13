@@ -24,7 +24,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     const revisionAndProjectData = useDataFetch()
 
     const calculatedFields = useMemo(() => [
-        "totalFeasibilityAndConceptStudiesOverride",
+        ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
         ProfileTypes.TotalFEEDStudiesOverride,
     ], [])
 
@@ -43,9 +43,9 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 profileName: "Feasibility & conceptual stud.",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalFeasibilityAndConceptStudiesData,
-                resourceName: "totalFeasibilityAndConceptStudiesOverride",
+                resourceName: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "totalFeasibilityAndConceptStudiesOverride",
+                resourcePropertyKey: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
                 overridable: true,
                 overrideProfile: totalFeasibilityAndConceptStudiesOverrideData,
                 editable: true,
