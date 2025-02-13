@@ -1,105 +1,106 @@
 parameters:
-    - name: appName
-    - name: envshortname
-    - name: envfullname
-    - name: portalUrl
-    - name: buildId
-    - name: radixToken
-    - name: branch
-    - name: FusionEnvId
-    - name: FusionServiceConnection
-    - name: ContainerTag
-    - name: SpAzureClientId
-    - name: SpAzureClientSecret
-    - name: AzureTenantId
+  - name: appName
+  - name: envshortname
+  - name: envfullname
+  - name: portalUrl
+  - name: buildId
+  - name: radixToken
+  - name: branch
+  - name: FusionEnvId
+  - name: FusionServiceConnection
+  - name: ContainerTag
+  - name: SpAzureClientId
+  - name: SpAzureClientSecret
+  - name: AzureTenantId
 
 stages:
-    - stage: ${{ parameters.appName }}
-      displayName: "Deploy ${{ parameters.envshortname }}"
-      jobs:
-          - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
-            environment: ${{ parameters.envfullname }}
-            strategy:
-                runOnce:
-                    deploy:
-                        steps:
-                        - checkout: self
+  - stage: ${{ parameters.appName }}
+    displayName: "Deploy ${{ parameters.envshortname }}"
+    jobs:
+      - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
+        environment: ${{ parameters.envfullname }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
 
-                        - task: DownloadPipelineArtifact@2
-                          inputs:
-                            artifact: ConceptApp
+                - task: DownloadPipelineArtifact@2
+                  displayName: "Download ConceptApp Artifact"
+                  inputs:
+                    artifact: ConceptApp
 
-                        - task: Bash@3
-                          displayName: 'List contents of Build.SourcesDirectory'
-                          inputs:
-                            targetType: 'inline'
-                            script: |
-                              # List files in the Build.SourcesDirectory directory
-                              ls -la $(Build.SourcesDirectory)
+                - task: Bash@3
+                  displayName: 'List contents of Build.SourcesDirectory'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      # List files in the Build.SourcesDirectory directory
+                      ls -la $(Build.SourcesDirectory)
 
-                        - task: Bash@3
-                          displayName: 'List contents of Pipeline.Workspace'
-                          inputs:
-                            targetType: 'inline'
-                            script: |
-                              # List files in the Pipeline.Workspace directory
-                              ls -la $(Pipeline.Workspace)
+                - task: Bash@3
+                  displayName: 'List contents of Pipeline.Workspace'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      # List files in the Pipeline.Workspace directory
+                      ls -la $(Pipeline.Workspace)
 
-                        - task: Bash@3
-                          displayName: "Extract app-manifest.json"
-                          inputs:
-                            targetType: 'inline'
-                            script: |
-                              unzip $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -d $(Pipeline.Workspace)/ConceptApp
-                              cat $(Pipeline.Workspace)/ConceptApp/app-manifest.json
+                - task: Bash@3
+                  displayName: "Extract app-manifest.json"
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      unzip $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -d $(Pipeline.Workspace)/ConceptApp
+                      cat $(Pipeline.Workspace)/ConceptApp/app-manifest.json
 
-                        - task: Bash@3
-                          displayName: "Read version from app-manifest.json"
-                          inputs:
-                            targetType: 'inline'
-                            script: |
-                              version=$(jq -r '.version' $(Pipeline.Workspace)/ConceptApp/app-manifest.json)
-                              echo "##vso[task.setvariable variable=frontendVersion;isOutput=true]$version"
-                              echo "Frontend Version: $version"
+                - task: Bash@3
+                  displayName: "Read version from app-manifest.json"
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      version=$(jq -r '.version' $(Pipeline.Workspace)/ConceptApp/app-manifest.json)
+                      echo "##vso[task.setvariable variable=frontendVersion]$version"
+                      echo "Frontend Version: $version"
 
-                        - task: Bash@3
-                          displayName: "Log frontendVersion"
-                          inputs:
-                            targetType: 'inline'
-                            script: |
-                              echo "Logging frontendVersion variable:"
-                              echo "Frontend Version: $(frontendVersion)"
+                - task: Bash@3
+                  displayName: "Log frontendVersion"
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      echo "Logging frontendVersion variable:"
+                      echo "Frontend Version: $(frontendVersion)"
 
-                        - task: AzureCLI@2
-                          displayName: 'Get Fusion Token'
-                          inputs:
-                            azureSubscription: "dcd-pipeline-sp"
-                            scriptType: 'bash'
-                            scriptLocation: 'inlineScript'
-                            inlineScript: |
-                              az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
-                              FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
-                              echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
+                - task: AzureCLI@2
+                  displayName: 'Get Fusion Token'
+                  inputs:
+                    azureSubscription: "dcd-pipeline-sp"
+                    scriptType: 'bash'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
+                      FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
+                      echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
 
-                        - task: Bash@3
-                          displayName: 'Install fusion-framework-cli and Upload to Fusion'
-                          inputs:
-                            targetType: 'inline'
-                            script: |
-                              # Change to the frontend directory
-                              cd $(Build.SourcesDirectory)/frontend
-                              # List files in the current directory
-                              ls -la
-                              # Install fusion-framework-cli
-                              npm install -g @equinor/fusion-framework-cli
-                              # Run the npx command to upload the app
-                              npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.envshortname }}
-                              echo "envshortname: ${{ parameters.envshortname }}"
-                              echo "frontendVersion: $(frontendVersion)"
-                              # Tag build with latest
-                              npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.envshortname }} -v $(frontendVersion)
-                          env:
-                            FUSION_TOKEN: $(FUSION_TOKEN)
+                - task: Bash@3
+                  displayName: 'Install fusion-framework-cli and Upload to Fusion'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      # Change to the frontend directory
+                      cd $(Build.SourcesDirectory)/frontend
+                      # List files in the current directory
+                      ls -la
+                      # Install fusion-framework-cli
+                      npm install -g @equinor/fusion-framework-cli
+                      # Run the npx command to upload the app
+                      npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.envshortname }}
+                      echo "envshortname: ${{ parameters.envshortname }}"
+                      echo "frontendVersion: $(frontendVersion)"
+                      # Tag build with latest
+                      npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.envshortname }} -v $(frontendVersion)
+                  env:
+                    FUSION_TOKEN: $(FUSION_TOKEN)
 
           # - deployment: "Update_${{ parameters.envshortname }}_Tags"
           #   environment: ${{ parameters.envfullname }}
