@@ -17,7 +17,7 @@ export type ResourceName =
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
     "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
     "wellProjectWaterInjectorCostOverride" | "wellProjectGasInjectorCostOverride" | "gAndGAdminCost" |
-    "historicCostCostProfile" | "wellInterventionCostProfileOverride" | "offshoreFacilitiesOperationsCostProfileOverride" |
+    "wellInterventionCostProfileOverride" | "offshoreFacilitiesOperationsCostProfileOverride" |
     "onshoreRelatedOPEXCostProfile" | "additionalOPEXCostProfile" | "totalOtherStudiesCostProfile" |
     "topsideCostProfileOverride" |
     "surfCostProfileOverride" |

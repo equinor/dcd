@@ -4,7 +4,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -34,9 +34,9 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 profileName: "Historic cost",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
-                resourceName: "historicCostCostProfile",
+                resourceName: ProfileTypes.HistoricCostCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "historicCostCostProfile",
+                resourcePropertyKey: ProfileTypes.HistoricCostCostProfile,
                 editable: true,
                 overridable: false,
             },
