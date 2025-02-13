@@ -22,7 +22,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     const revisionAndProjectData = useDataFetch()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
     const calculatedFields = useMemo(() => [
-        "productionProfileFuelFlaringAndLossesOverride",
+        ProfileTypes.FuelFlaringAndLossesOverride,
         ProfileTypes.NetSalesGasOverride,
         "productionProfileImportedElectricityOverride",
     ], [])
@@ -111,9 +111,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Fuel, flaring and losses",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: fuelFlaringAndLossesData,
-                resourceName: "productionProfileFuelFlaringAndLossesOverride",
+                resourceName: ProfileTypes.FuelFlaringAndLossesOverride,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileFuelFlaringAndLossesOverride",
+                resourcePropertyKey: ProfileTypes.FuelFlaringAndLossesOverride,
                 overrideProfile: fuelFlaringAndLossesOverrideData,
                 editable: true,
                 overridable: true,
