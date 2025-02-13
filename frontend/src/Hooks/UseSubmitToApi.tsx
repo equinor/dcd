@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 
-import { createLogger } from "@/Utils/logger"
 import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
+import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
 import { GetSubstructureService } from "@/Services/SubstructureService"
 import { GetExplorationService } from "@/Services/ExplorationService"
@@ -10,14 +11,14 @@ import { GetTransportService } from "@/Services/TransportService"
 import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
 import { GetCaseService } from "@/Services/CaseService"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
+import { createLogger } from "@/Utils/logger"
 import { ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
-import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
-import { overrideProfileNameMap, profileNameMap } from "@/Utils/profileNameMaps"
+import { ordinaryTimeSeriesTypes, overrideTimeSeriesTypes } from "@/Utils/TimeseriesTypes"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -26,21 +27,36 @@ interface UpdateResourceParams {
     resourceId?: string;
 }
 
+interface SubmissionHistoryEntry {
+    before: {
+        projectId: string;
+        caseId: string;
+        resourceName: string;
+        resourceId?: string;
+        resourceObject: ResourceObject;
+        wellId?: string;
+        drillingScheduleId?: string;
+    };
+    after: {
+        data: any;
+    };
+}
+
 const submitApiLogger = createLogger({
     name: "SUBMIT_API",
-    enabled: false, // Set to true to enable debug logging. Don't leave this on for production
+    enabled: true, // Enable logging temporarily to debug
 })
 
 export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppContext()
+    const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppStore()
+    const [submissionHistory, setSubmissionHistory] = useState<SubmissionHistoryEntry[]>([])
 
     const mutationFn = async ({ serviceMethod }: {
         projectId: string,
         caseId: string,
         resourceId?: string,
         wellId?: string,
-        campaignId?: string,
         drillingScheduleId?: string,
         serviceMethod: object,
     }) => serviceMethod
@@ -182,7 +198,18 @@ export const useSubmitToApi = () => {
             resourceObject,
         })
 
-        if (productionOverrideResources.includes(resourceName)) {
+        // Create the before state
+        const beforeState = {
+            projectId,
+            caseId,
+            resourceName,
+            resourceId,
+            resourceObject,
+            wellId,
+            drillingScheduleId,
+        }
+
+        if (productionOverrideResources.find(x => x.toString() === resourceName)) {
             setIsCalculatingProductionOverrides(true)
             submitApiLogger.warn("Setting production overrides calculation flag")
         }
@@ -198,116 +225,152 @@ export const useSubmitToApi = () => {
         }
 
         try {
-            switch (resourceName) {
-            case "topside":
-                return await updateTopside({
-                    projectId, caseId, resourceObject,
-                })
-            case "surf":
-                return await updateSurf({
-                    projectId, caseId, resourceObject,
-                })
-            case "substructure":
-                return await updateSubstructure({
-                    projectId, caseId, resourceObject,
-                })
-            case "transport":
-                return await updateTransport({
-                    projectId, caseId, resourceObject,
-                })
-            case "onshorePowerSupply":
-                return await updateOnshorePowerSupply({
-                    projectId, caseId, resourceObject,
-                })
-            case "drainageStrategy":
-                return await updateDrainageStrategy({
-                    projectId, caseId, resourceObject,
-                })
-            case "explorationWellDrillingSchedule":
-                return await createOrUpdateDrillingSchedule(
-                    projectId,
-                    caseId,
-                    resourceId!,
-                    wellId!,
-                    drillingScheduleId!,
-                    !drillingScheduleId
-                        ? await (await GetExplorationService()).createExplorationWellDrillingSchedule(
-                            projectId,
-                            caseId,
-                            resourceId!,
-                            wellId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                        )
-                        : await (await GetExplorationService()).updateExplorationWellDrillingSchedule(
-                            projectId,
-                            caseId,
+            const result = await (async () => {
+                switch (resourceName) {
+                case "case":
+                    return await updateCase({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "topside":
+                    return await updateTopside({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "surf":
+                    return await updateSurf({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "substructure":
+                    return await updateSubstructure({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "transport":
+                    return await updateTransport({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "onshorePowerSupply":
+                    return await updateOnshorePowerSupply({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "drainageStrategy":
+                    return await updateDrainageStrategy({
+                        projectId, caseId, resourceObject,
+                    })
+
+                case "explorationWellDrillingSchedule":
+                    return await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
                             resourceId!,
                             wellId!,
                             drillingScheduleId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
-                        ),
-                )
-            case "developmentWellDrillingSchedule":
-                return await createOrUpdateDrillingSchedule(
-                    projectId,
-                    caseId,
-                    resourceId!,
-                    wellId!,
-                    drillingScheduleId!,
-                    !drillingScheduleId
-                        ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
-                            projectId,
-                            caseId,
-                            resourceId!,
-                            wellId!,
-                            resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                        )
-                        : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
-                            projectId,
-                            caseId,
+                            !drillingScheduleId
+                                ? await (await GetExplorationService()).createExplorationWellDrillingSchedule(
+                                    projectId,
+                                    caseId,
+                                    resourceId!,
+                                    wellId!,
+                                    resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
+                                )
+                                : await (await GetExplorationService()).updateExplorationWellDrillingSchedule(
+                                    projectId,
+                                    caseId,
+                                    resourceId!,
+                                    wellId!,
+                                    drillingScheduleId!,
+                                    resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
+                                ),
+                    )
+
+                case "developmentWellDrillingSchedule":
+                    return await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
                             resourceId!,
                             wellId!,
                             drillingScheduleId!,
-                            resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
+                            !drillingScheduleId
+                                ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
+                                    projectId,
+                                    caseId,
+                                    resourceId!,
+                                    wellId!,
+                                    resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
+                                )
+                                : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
+                                    projectId,
+                                    caseId,
+                                    resourceId!,
+                                    wellId!,
+                                    drillingScheduleId!,
+                                    resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
+                                ),
+                    )
+                }
+
+                if (ordinaryTimeSeriesTypes.find(x => x === resourceName)) {
+                    return await saveTimeSeriesProfile({
+                        projectId,
+                        caseId,
+                        saveFunction: await (await GetCaseService()).saveProfile(
+                            projectId,
+                            caseId,
+                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesDto,
                         ),
-                )
-            case "campaign":
-                return await updateCampaign({
-                    projectId, caseId, resourceId, resourceObject,
-                })
-            default:
-            }
+                    })
+                }
 
-            if (profileNameMap.has(resourceName)) {
-                return await saveTimeSeriesProfile({
-                    projectId,
-                    caseId,
-                    saveFunction: await (await GetCaseService()).saveProfile(
+                if (overrideTimeSeriesTypes.find(x => x === resourceName)) {
+                    return await saveTimeSeriesProfile({
                         projectId,
                         caseId,
-                        { ...resourceObject, profileType: profileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesDto,
-                    ),
+                        saveFunction: await (await GetCaseService()).saveOverrideProfile(
+                            projectId,
+                            caseId,
+                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesOverrideDto,
+                        ),
+                    })
+                }
+
+                return { success: false, error: new Error("Service not found") }
+            })()
+
+            if (result.success) {
+                submitApiLogger.info("Submission successful, updating history. Current history length:", submissionHistory.length)
+                // Add to history only if submission was successful
+                setSubmissionHistory((prev) => {
+                    const newHistory = [...prev, {
+                        before: beforeState,
+                        after: { data: result.data },
+                    }]
+                    submitApiLogger.info("New history length:", newHistory.length)
+                    return newHistory
                 })
             }
 
-            if (overrideProfileNameMap.has(resourceName)) {
-                return await saveTimeSeriesProfile({
-                    projectId,
-                    caseId,
-                    saveFunction: await (await GetCaseService()).saveOverrideProfile(
-                        projectId,
-                        caseId,
-                        { ...resourceObject, profileType: overrideProfileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                    ),
-                })
-            }
-
-            return { success: false, error: new Error("Service not found") }
+            return result
         } catch (error) {
             submitApiLogger.error("Service not found or error occurred", error)
             return { success: false, error: new Error("Service not found") }
         }
     }
 
-    return { submitToApi, updateCase, mutation }
+    const getSubmissionHistory = () => {
+        submitApiLogger.info("Getting submission history, current length:", submissionHistory.length)
+        return submissionHistory
+    }
+
+    const clearSubmissionHistory = () => {
+        submitApiLogger.info("Clearing submission history")
+        setSubmissionHistory([])
+    }
+
+    return {
+        submitToApi, updateCase, mutation, getSubmissionHistory, clearSubmissionHistory,
+    }
 }

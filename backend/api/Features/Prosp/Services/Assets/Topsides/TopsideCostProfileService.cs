@@ -1,68 +1,49 @@
-using api.Context;
-using api.Context.Extensions;
-using api.Features.Cases.Recalculation;
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Prosp.Services.Assets.Topsides;
 
-public class TopsideCostProfileService(DcdDbContext context, RecalculationService recalculationService)
+public static class TopsideCostProfileService
 {
-    public async Task AddOrUpdateTopsideCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateTopsideCostProfile(Case caseItem, int startYear, double[] values)
     {
-        var profileTypes = new List<string> { ProfileTypes.TopsideCostProfile, ProfileTypes.TopsideCostProfileOverride };
-
-        var caseItem = await context.Cases
-            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
-            .Include(x => x.Topside)
-            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
-
         if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile) != null)
         {
-            await UpdateTopsideTimeSeries(caseItem, dto);
+            UpdateTopsideTimeSeries(caseItem, startYear, values);
             return;
         }
 
-        await CreateTopsideCostProfile(caseItem, dto);
+        CreateTopsideCostProfile(caseItem, startYear, values);
     }
 
-    private async Task CreateTopsideCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateTopsideCostProfile(Case caseItem, int startYear, double[] values)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.TopsideCostProfile);
 
-        costProfile.StartYear = dto.StartYear;
-        costProfile.Values = dto.Values;
+        costProfile.StartYear = startYear;
+        costProfile.Values = values;
 
-        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride);
-
-        if (costProfileOverride != null)
-        {
-            costProfileOverride.Override = false;
-        }
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
+        SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride), false);
     }
 
-    private async Task UpdateTopsideTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateTopsideTimeSeries(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.Topside.ProspVersion == null)
         {
-            if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride) != null)
-            {
-                caseItem.GetProfile(ProfileTypes.TopsideCostProfileOverride).Override = true;
-            }
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride), true);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.TopsideCostProfile);
 
-        existingProfile.StartYear = dto.StartYear;
-        existingProfile.Values = dto.Values;
+        existingProfile.StartYear = startYear;
+        existingProfile.Values = values;
+    }
 
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
+    private static void SetOverrideFlag(TimeSeriesProfile? overrideProfile, bool overrideValue)
+    {
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = overrideValue;
+        }
     }
 }

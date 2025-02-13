@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
 import _ from "lodash"
 
+import { useCaseStore } from "@/Store/CaseStore"
+import { useAppStore } from "@/Store/AppStore"
 import {
     EditInstance,
     EditEntry,
@@ -9,8 +11,6 @@ import {
     ResourcePropertyKey,
     ResourceObject,
 } from "@/Models/Interfaces"
-import { useCaseContext } from "@/Context/CaseContext"
-import { useAppContext } from "@/Context/AppContext"
 import { useLocalStorage } from "@/Hooks/useLocalStorage"
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { useAppNavigation } from "@/Hooks/useNavigate"
@@ -45,14 +45,14 @@ const useEditCase = () => {
         apiQueue,
         setApiQueue,
         setIsSaving,
-    } = useAppContext()
+    } = useAppStore()
     const {
         caseEdits,
         setCaseEdits,
         editIndexes,
         setEditIndexes,
         caseEditsBelongingToCurrentCase,
-    } = useCaseContext()
+    } = useCaseStore()
     const { submitToApi } = useSubmitToApi()
     const { navigateToCaseTab } = useAppNavigation()
     const [storedEditIndexes, setStoredEditIndexes] = useLocalStorage<EditEntry[]>("editIndexes", [])

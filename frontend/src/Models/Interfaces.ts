@@ -1,3 +1,5 @@
+import { ProfileTypes } from "@/Models/enums"
+
 export type ResourceName =
     "case" |
     "topside" |
@@ -11,25 +13,8 @@ export type ResourceName =
     "exploration" |
     "campaign" |
     "explorationWellDrillingSchedule" |
-    "developmentWellDrillingSchedule" | ProfileNames
-
-export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
-    "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
-    "wellProjectWaterInjectorCostOverride" | "wellProjectGasInjectorCostOverride" | "gAndGAdminCost" |
-    "totalFEEDStudiesOverride" | "historicCostCostProfile" | "wellInterventionCostProfileOverride" | "offshoreFacilitiesOperationsCostProfileOverride" |
-    "onshoreRelatedOPEXCostProfile" | "additionalOPEXCostProfile" | "totalOtherStudiesCostProfile" |
-    "topsideCostProfileOverride" |
-    "surfCostProfileOverride" |
-    "transportCostProfileOverride" |
-    "substructureCostProfileOverride" |
-    "productionProfileOil" | "additionalProductionProfileOil" | "productionProfileGas" | "additionalProductionProfileGas" | "productionProfileWater" |
-    "productionProfileWaterInjection" | "productionProfileFuelFlaringAndLossesOverride" |
-    "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
-    "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
-    "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
-    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" | "projectSpecificDrillingCostProfile" |
-    "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
-    "co2EmissionsOverride" | "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride"
+    "developmentWellDrillingSchedule" |
+    `${ProfileTypes}`
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |

@@ -6,9 +6,9 @@ import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useParams } from "react-router-dom"
 import useEditCase from "../../Hooks/useEditCase"
-import { useCaseContext } from "../../Context/CaseContext"
+import { useCaseStore } from "../../Store/CaseStore"
 import { getCurrentEditId } from "../../Utils/common"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppStore } from "../../Store/AppStore"
 
 const Container = styled.div`
    display: flex;
@@ -27,10 +27,10 @@ const UndoControls: React.FC = () => {
     const {
         editIndexes,
         caseEditsBelongingToCurrentCase,
-    } = useCaseContext()
+    } = useCaseStore()
     const { undoEdit, redoEdit } = useEditCase()
     const { caseId } = useParams()
-    const { isSaving } = useAppContext()
+    const { isSaving } = useAppStore()
 
     const currentEditId = getCurrentEditId(editIndexes, caseId)
 
@@ -121,7 +121,6 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
-            {/* comment out for qa release */}
         </Container>
     )
 }

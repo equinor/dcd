@@ -10,12 +10,10 @@ import CaseCO2Tab from "@/Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import CaseCostTab from "@/Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseScheduleTab from "@/Components/Case/Tabs/CaseScheduleTab"
 import CaseSummaryTab from "@/Components/Case/Tabs/CaseSummaryTab"
-import { useCaseContext } from "@/Context/CaseContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import useEditCase from "@/Hooks/useEditCase"
+import { useCaseStore } from "@/Store/CaseStore"
+import { useDataFetch, useEditCase, useLocalStorage } from "@/Hooks"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import { useLocalStorage } from "@/Hooks/useLocalStorage"
 
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
@@ -29,7 +27,7 @@ const CaseView = () => {
         setActiveTabCase,
         caseEdits,
         setCaseEditsBelongingToCurrentCase,
-    } = useCaseContext()
+    } = useCaseStore()
     const { navigateToCase, navigateToProject } = useAppNavigation()
     const [, setCaseEditsStorage] = useLocalStorage("caseEdits", caseEdits)
 
@@ -68,28 +66,28 @@ const CaseView = () => {
     return (
         <Wrapper size={{ xs: 12 }}>
             <div role="tabpanel" hidden={activeTabCase !== 0}>
-                <CaseDescriptionTab addEdit={addEdit} />
+                <CaseDescriptionTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 1}>
-                <CaseProductionProfilesTab addEdit={addEdit} />
+                <CaseProductionProfilesTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 2}>
-                <CaseScheduleTab addEdit={addEdit} />
+                <CaseScheduleTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 3}>
-                <CaseDrillingScheduleTab addEdit={addEdit} />
+                <CaseDrillingScheduleTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 4}>
-                <CaseFacilitiesTab addEdit={addEdit} />
+                <CaseFacilitiesTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 5}>
-                <CaseCostTab addEdit={addEdit} />
+                <CaseCostTab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 6}>
-                <CaseCO2Tab addEdit={addEdit} />
+                <CaseCO2Tab />
             </div>
             <div role="tabpanel" hidden={activeTabCase !== 7}>
-                <CaseSummaryTab addEdit={addEdit} />
+                <CaseSummaryTab />
             </div>
         </Wrapper>
     )

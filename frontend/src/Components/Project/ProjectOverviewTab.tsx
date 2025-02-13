@@ -7,19 +7,19 @@ import Grid from "@mui/material/Grid2"
 import { ChangeEventHandler, useState } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
-import { useModalContext } from "@/Context/ModalContext"
-import { useAppContext } from "@/Context/AppContext"
+import { useModalContext } from "@/Store/ModalContext"
+import { useAppStore } from "@/Store/AppStore"
 import useEditProject from "@/Hooks/useEditProject"
 import { INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import CasesTable from "@/Components/Tables/ProjectTables/OverviewCasesTable/CasesTable"
 import Gallery from "@/Components/Gallery/Gallery"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
 const ProjectOverviewTab = () => {
-    const { editMode } = useAppContext()
+    const { editMode } = useAppStore()
     const { addProjectEdit } = useEditProject()
     const { addNewCase } = useModalContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()

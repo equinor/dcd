@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 using api.Models.Enums;
 
@@ -5,55 +7,28 @@ namespace api.Features.Assets.CaseAssets.Topsides;
 
 public class UpdateTopsideDto
 {
-    public double DryWeight { get; set; }
-    public double OilCapacity { get; set; }
-    public double GasCapacity { get; set; }
-    public double WaterInjectionCapacity { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public double FuelConsumption { get; set; }
-    public double FlaredGas { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public double CO2ShareOilProfile { get; set; }
-    public double CO2ShareGasProfile { get; set; }
-    public double CO2ShareWaterInjectionProfile { get; set; }
-    public double CO2OnMaxOilProfile { get; set; }
-    public double CO2OnMaxGasProfile { get; set; }
-    public double CO2OnMaxWaterInjectionProfile { get; set; }
-    public int CostYear { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
-    public double FacilityOpex { get; set; }
-    public double PeakElectricityImported { get; set; }
-    public Source Source { get; set; }
-    public Maturity Maturity { get; set; }
-    public string ApprovedBy { get; set; } = string.Empty;
-}
-
-public class ProspUpdateTopsideDto
-{
-    public double DryWeight { get; set; }
-    public double OilCapacity { get; set; }
-    public double GasCapacity { get; set; }
-    public double WaterInjectionCapacity { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public double FuelConsumption { get; set; }
-    public double FlaredGas { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public double CO2ShareOilProfile { get; set; }
-    public double CO2ShareGasProfile { get; set; }
-    public double CO2ShareWaterInjectionProfile { get; set; }
-    public double CO2OnMaxOilProfile { get; set; }
-    public double CO2OnMaxGasProfile { get; set; }
-    public double CO2OnMaxWaterInjectionProfile { get; set; }
-    public int CostYear { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
-    public double FacilityOpex { get; set; }
-    public double PeakElectricityImported { get; set; }
-    public Source Source { get; set; }
-    public DateTime? ProspVersion { get; set; }
+    [Required] public required double DryWeight { get; set; }
+    [Required] public required double OilCapacity { get; set; }
+    [Required] public required double GasCapacity { get; set; }
+    [Required] public required double WaterInjectionCapacity { get; set; }
+    [Required] public required ArtificialLift ArtificialLift { get; set; }
+    [Required] public required double FuelConsumption { get; set; }
+    [Required] public required double FlaredGas { get; set; }
+    [Required] public required int ProducerCount { get; set; }
+    [Required] public required int GasInjectorCount { get; set; }
+    [Required] public required int WaterInjectorCount { get; set; }
+    [Required] public required double CO2ShareOilProfile { get; set; }
+    [Required] public required double CO2ShareGasProfile { get; set; }
+    [Required] public required double CO2ShareWaterInjectionProfile { get; set; }
+    [Required] public required double CO2OnMaxOilProfile { get; set; }
+    [Required] public required double CO2OnMaxGasProfile { get; set; }
+    [Required] public required double CO2OnMaxWaterInjectionProfile { get; set; }
+    [Required] public required int CostYear { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
+    [Required] public required double FacilityOpex { get; set; }
+    [Required] public required double PeakElectricityImported { get; set; }
+    [Required] public required Source Source { get; set; }
+    [Required] public required Maturity Maturity { get; set; }
+    [Required] public required string ApprovedBy { get; set; }
 }

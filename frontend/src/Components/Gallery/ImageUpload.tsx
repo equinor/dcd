@@ -8,9 +8,9 @@ import { tokens } from "@equinor/eds-tokens"
 import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { getImageService } from "../../Services/ImageService"
-import { useAppContext } from "../../Context/AppContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppStore } from "../../Store/AppStore"
+import { useDataFetch } from "@/Hooks"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -47,7 +47,7 @@ interface ImageUploadProps {
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
     const { caseId } = useParams()
-    const { setSnackBarMessage } = useAppContext()
+    const { setSnackBarMessage } = useAppStore()
     const revisionAndProjectData = useDataFetch()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId

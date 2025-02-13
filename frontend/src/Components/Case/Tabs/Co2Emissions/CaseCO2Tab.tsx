@@ -5,9 +5,6 @@ import {
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router"
-import { useQuery } from "@tanstack/react-query"
-
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
@@ -16,32 +13,22 @@ import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { AgChartsPie } from "@/Components/AgGrid/AgChartsPie"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { PhysUnit } from "@/Models/enums"
+import { PhysUnit, ProfileTypes } from "@/Models/enums"
 
 interface ICo2DistributionChartData {
     profile: string
     value: number | undefined
 }
 
-const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId } = useParams()
-    const { activeTabCase } = useCaseContext()
-    const { projectId, isRevision } = useProjectContext()
-    const { revisionId } = useParams()
+const CaseCO2Tab = () => {
+    const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
+    const { apiData } = useCaseApiData()
 
     const sumValues = (input: Components.Schemas.TimeSeriesCostDto | undefined) => {
         if (!input || !input?.values) {
@@ -159,9 +146,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 overridable: true,
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
-                resourceName: "co2EmissionsOverride",
+                resourceName: ProfileTypes.Co2EmissionsOverride,
                 resourceId: drainageStrategyData?.id!,
-                resourcePropertyKey: "co2EmissionsOverride",
+                resourcePropertyKey: ProfileTypes.Co2EmissionsOverride,
             },
             {
                 profileName: "Year-by-year CO2 intensity",
@@ -169,9 +156,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 profile: co2IntensityData,
                 overridable: false,
                 editable: false,
-                resourceName: "co2Intensity",
+                resourceName: ProfileTypes.Co2Intensity,
                 resourceId: drainageStrategyData?.id!,
-                resourcePropertyKey: "co2Intensity",
+                resourcePropertyKey: ProfileTypes.Co2Intensity,
             },
         ]
         setTimeSeriesData(newTimeSeriesData)
@@ -240,7 +227,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <div>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
                     resourceId={topsideData.id}
@@ -298,7 +284,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             />
             <Grid size={12}>
                 <CaseTabTable
-                    addEdit={addEdit}
                     timeSeriesData={timeSeriesData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
                     tableYears={tableYears}

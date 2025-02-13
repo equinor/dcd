@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react"
 
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
     capexGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
@@ -19,7 +18,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     capexGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -52,9 +50,9 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 profileName: "Subsea production system",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: surfCostData,
-                resourceName: "surfCostOverride",
+                resourceName: ProfileTypes.SurfCostProfileOverride,
                 resourceId: surf.id,
-                resourcePropertyKey: "surfCostOverride",
+                resourcePropertyKey: ProfileTypes.SurfCostProfileOverride,
                 overridable: true,
                 overrideProfile: surfCostOverrideData,
                 editable: true,
@@ -63,9 +61,9 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 profileName: "Topside",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: topsideCostData,
-                resourceName: "topsideCostOverride",
+                resourceName: ProfileTypes.TopsideCostProfileOverride,
                 resourceId: topside.id,
-                resourcePropertyKey: "topsideCostOverride",
+                resourcePropertyKey: ProfileTypes.TopsideCostProfileOverride,
                 overridable: true,
                 overrideProfile: topsideCostOverrideData,
                 editable: true,
@@ -74,9 +72,9 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 profileName: "Substructure",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: substructureCostData,
-                resourceName: "substructureCostOverride",
+                resourceName: ProfileTypes.SubstructureCostProfileOverride,
                 resourceId: substructure.id,
-                resourcePropertyKey: "substructureCostOverride",
+                resourcePropertyKey: ProfileTypes.SubstructureCostProfileOverride,
                 overridable: true,
                 overrideProfile: substructureCostOverrideData,
                 editable: true,
@@ -85,9 +83,9 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 profileName: "Transport system",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
-                resourceName: "transportCostOverride",
+                resourceName: ProfileTypes.TransportCostProfileOverride,
                 resourceId: transport.id,
-                resourcePropertyKey: "transportCostOverride",
+                resourcePropertyKey: ProfileTypes.TransportCostProfileOverride,
                 overridable: true,
                 overrideProfile: transportCostOverrideData,
                 editable: true,
@@ -96,9 +94,9 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 profileName: "Onshore (Power from shore)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: onshorePowerSupplyCostData,
-                resourceName: "onshorePowerSupplyCostOverride",
+                resourceName: ProfileTypes.OnshorePowerSupplyCostProfileOverride,
                 resourceId: onshorePowerSupply.id,
-                resourcePropertyKey: "onshorePowerSupplyCostOverride",
+                resourcePropertyKey: ProfileTypes.OnshorePowerSupplyCostProfileOverride,
                 overridable: true,
                 overrideProfile: onshorePowerSupplyCostOverrideData,
                 editable: true,
@@ -118,7 +116,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
-            addEdit={addEdit}
             isProsp
             sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />

@@ -1,5 +1,5 @@
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useDataFetch } from "@/Hooks"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const useEditDisabled = () => {
     const { isRevision } = useProjectContext()

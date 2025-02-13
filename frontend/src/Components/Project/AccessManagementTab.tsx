@@ -4,14 +4,12 @@ import { PersonSelectEvent } from "@equinor/fusion-react-person"
 import Grid from "@mui/material/Grid2"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-
-import { UserRole } from "@/Models/AccessManagement"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { useEditPeople } from "@/Hooks/useEditPeople"
 import { ProjectMemberRole } from "@/Models/enums"
 
@@ -47,7 +45,7 @@ const AccessManagementTab = () => {
         deletePerson(projectId, userId)
     }
 
-    const handleAddPerson = (e: PersonSelectEvent, role: UserRole) => {
+    const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
 
         if (
@@ -61,7 +59,7 @@ const AccessManagementTab = () => {
         addPerson(projectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = (personId: string, role: UserRole) => {
+    const handleSwitchPerson = (personId: string, role: ProjectMemberRole) => {
         if (!personId || !projectId) { return }
         updatePerson(projectId, personId, role)
     }

@@ -4,21 +4,16 @@ import { __BaseService } from "./__BaseService"
 import { loginAccessTokenKey, getToken } from "../Utils/common"
 
 export class __ProspService extends __BaseService {
-    async getSharePointFileNamesAndId(body: Components.Schemas.UrlDto, projectId: string) {
-        const driveItem: Components.Schemas.DriveItemDto[] = await this.post(`projects/${projectId}/sharepoint`, { body })
+    async getSharePointFileNamesAndId(body: Components.Schemas.SharePointSiteUrlDto, projectId: string) {
+        const driveItem: Components.Schemas.SharePointFileDto[] = await this.post(`projects/${projectId}/prosp/list`, { body })
         return driveItem
     }
 
-    public async importFromSharepoint(
+    public async importFromSharePoint(
         projectId: string,
         body: Components.Schemas.SharePointImportDto[],
     ): Promise<Components.Schemas.ProjectDataDto> {
-        const res: Components.Schemas.ProjectDataDto = await this.postWithParams(
-            `${projectId}/sharepoint`,
-            { body },
-
-            { params: { projectId } },
-        )
+        const res: Components.Schemas.ProjectDataDto = await this.post(`projects/${projectId}/prosp/import`, { body })
         return res
     }
 }

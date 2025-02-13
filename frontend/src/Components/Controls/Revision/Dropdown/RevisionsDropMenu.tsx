@@ -7,7 +7,7 @@ import styled from "styled-components"
 import { truncateText } from "@/Utils/common"
 import { formatFullDate } from "@/Utils/DateUtils"
 import { useRevisions } from "@/Hooks/useRevision"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import MenuControls from "./MenuControls"
 
 interface RevisionsDropMenuProps {

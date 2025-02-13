@@ -2,17 +2,16 @@ import React, { useEffect, useMemo, useState } from "react"
 
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppContext } from "@/Context/AppContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useAppStore } from "@/Store/AppStore"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
@@ -20,14 +19,13 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     studyGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
-    const { isCalculatingTotalStudyCostOverrides } = useAppContext()
+    const { isCalculatingTotalStudyCostOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const calculatedFields = useMemo(() => [
-        "totalFeasibilityAndConceptStudiesOverride",
-        "totalFEEDStudiesOverride",
+        ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
+        ProfileTypes.TotalFEEDStudiesOverride,
     ], [])
 
     const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
@@ -45,9 +43,9 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 profileName: "Feasibility & conceptual stud.",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalFeasibilityAndConceptStudiesData,
-                resourceName: "totalFeasibilityAndConceptStudiesOverride",
+                resourceName: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "totalFeasibilityAndConceptStudiesOverride",
+                resourcePropertyKey: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
                 overridable: true,
                 overrideProfile: totalFeasibilityAndConceptStudiesOverrideData,
                 editable: true,
@@ -56,9 +54,9 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 profileName: "FEED studies (DG2-DG3)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalFEEDStudiesData,
-                resourceName: "totalFEEDStudiesOverride",
+                resourceName: ProfileTypes.TotalFEEDStudiesOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "totalFEEDStudiesOverride",
+                resourcePropertyKey: ProfileTypes.TotalFEEDStudiesOverride,
                 overridable: true,
                 overrideProfile: totalFEEDStudiesOverrideData,
                 editable: true,
@@ -67,9 +65,9 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 profileName: "Other studies",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: totalOtherStudiesCostProfileData,
-                resourceName: "totalOtherStudiesCostProfile",
+                resourceName: ProfileTypes.TotalOtherStudiesCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "totalOtherStudiesCostProfile",
+                resourcePropertyKey: ProfileTypes.TotalOtherStudiesCostProfile,
                 editable: true,
                 overridable: false,
             },
@@ -90,7 +88,6 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             totalRowName="Total"
             ongoingCalculation={isCalculatingTotalStudyCostOverrides}
             calculatedFields={calculatedFields}
-            addEdit={addEdit}
         />
     )
 }

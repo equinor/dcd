@@ -4,9 +4,9 @@ import { add, exit_to_app, gear } from "@equinor/eds-icons"
 import MenuItem from "@mui/material/MenuItem"
 import styled from "styled-components"
 
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useRevisions } from "@/Hooks/useRevision"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 
 interface MenuControlsContainerProps {
     $hasRevisions: boolean

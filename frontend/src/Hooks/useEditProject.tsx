@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { GetProjectService } from "../Services/ProjectService"
-import { useAppContext } from "../Context/AppContext"
+import { useAppStore } from "../Store/AppStore"
 
 export const useProjectEdits = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage, setIsSaving } = useAppContext()
+    const { setSnackBarMessage, setIsSaving } = useAppStore()
 
     type UpdateProjectVariables = {
         projectId: string;

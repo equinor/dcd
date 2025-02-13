@@ -1,8 +1,6 @@
 import {
     useState, useEffect,
 } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
 import Grid from "@mui/material/Grid2"
 import {
     ITimeSeries,
@@ -11,34 +9,24 @@ import {
 } from "@/Models/ITimeSeries"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useCaseContext } from "@/Context/CaseContext"
+import { useCaseStore } from "@/Store/CaseStore"
 import { mergeTimeseriesList } from "@/Utils/common"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 import CaseTabTableWithGrouping from "@/Components/Tables/CaseTables/CaseTabTableWithGrouping"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency } from "@/Models/enums"
 
-const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
-    const { activeTabCase } = useCaseContext()
-    const { caseId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
-    const { revisionId } = useParams()
+const CaseSummaryTab = () => {
+    const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -298,8 +286,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="npv"
                             label="NPV before tax (MUSD)"
@@ -311,8 +298,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="npvOverride"
                             label="STEA NPV after tax(MUSD)"
@@ -331,8 +317,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="breakEven"
                             previousResourceObject={caseData}
@@ -345,8 +330,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput
-                            addEdit={addEdit}
+                        <SwitchableNumberInput                            
                             resourceName="case"
                             resourcePropertyKey="breakEvenOverride"
                             label="STEA B/E after tax(MUSD)"

@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import styled from "styled-components"
 
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { revisionQueryFn } from "@/Services/QueryFunctions"
 import { truncateText } from "@/Utils/common"
 import RevisionDetailsModal from "../Revision/RevisionDetailsModal"

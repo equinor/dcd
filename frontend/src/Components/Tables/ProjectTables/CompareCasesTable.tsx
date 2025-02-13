@@ -8,8 +8,8 @@ import { tokens } from "@equinor/eds-tokens"
 
 import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
 import { cellStyleRightAlign } from "@/Utils/common"
-import { useDataFetch } from "@/Hooks/useDataFetch"
 import { Currency, PhysUnit } from "@/Models/enums"
+import { useDataFetch } from "@/Hooks"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};

@@ -2,8 +2,9 @@ import React from "react"
 import { useParams } from "react-router-dom"
 
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import InputSwitcher from "./Components/InputSwitcher"
+import useEditCase from "@/Hooks/useEditCase"
 import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 
 interface CaseEditInputProps {
@@ -19,7 +20,6 @@ interface CaseEditInputProps {
     allowNegative?: boolean;
     min?: number;
     max?: number;
-    addEdit: any;
 }
 
 const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
@@ -35,10 +35,10 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     allowNegative,
     min,
     max,
-    addEdit,
 }: CaseEditInputProps) => {
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
+    const { addEdit } = useEditCase()
 
     const addToEditsAndSubmit = (insertedValue: number) => {
         if (!caseId || projectId === "") { return }

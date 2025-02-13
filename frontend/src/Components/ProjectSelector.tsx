@@ -4,8 +4,8 @@ import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation } from "react-router-dom"
 import { GetProjectService } from "../Services/ProjectService"
-import { useAppContext } from "../Context/AppContext"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppStore } from "../Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import IndexView from "@/Views/IndexView"
 import CreateCaseModal from "./Modal/CreateCaseModal"
@@ -17,8 +17,6 @@ import { NoAccessReason } from "@/Models/enums"
 const SelectProjectBanner = () => (
     <IndexView />
 )
-
-
 
 const NoAccessBanner = () => (
     <Banner>
@@ -38,7 +36,7 @@ const ProjectSelector = (): JSX.Element => {
         setIsLoading,
         setSnackBarMessage,
         isLoading,
-    } = useAppContext()
+    } = useAppStore()
     const { currentContext } = useModuleCurrentContext()
     const { navigateToProject } = useAppNavigation()
     const location = useLocation()
@@ -106,13 +104,12 @@ const ProjectSelector = (): JSX.Element => {
         initializeProject()
     }, [currentContext?.externalId])
 
-
     if (!currentContext) {
         return <SelectProjectBanner />
     }
 
     if (isLoading) {
-        return <ProjectSkeleton />   
+        return <ProjectSkeleton />
     }
 
     if (noAccessReason && noAccessReason !== NoAccessReason.ProjectDoesNotExist) {

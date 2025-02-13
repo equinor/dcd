@@ -1,5 +1,3 @@
-using api.Features.Assets.CaseAssets.Substructures;
-using api.Features.Profiles.Dtos;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -8,60 +6,50 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace api.Features.Prosp.Services.Assets.Substructures;
 
-public class SubstructureProspService(UpdateSubstructureService updateSubstructureService, SubstructureCostProfileService substructureCostProfileService)
+public static class SubstructureProspService
 {
-    public async Task ClearImportedSubstructure(Case caseItem)
+    public static void ClearImportedSubstructure(Case caseItem)
     {
-        await updateSubstructureService.UpdateSubstructure(caseItem.ProjectId,
-            caseItem.Id,
-            new ProspUpdateSubstructureDto
-            {
-                Source = Source.ConceptApp
-            });
+        var asset = caseItem.Substructure;
 
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, new UpdateTimeSeriesCostDto());
+        asset.Source = Source.ConceptApp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.DryWeight = 0;
+        asset.CostYear = 0;
+        asset.Concept = Concept.NO_CONCEPT;
+        asset.DG3Date = null;
+        asset.DG4Date = null;
+        asset.ProspVersion = null;
+
+        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, 0, []);
     }
 
-    public async Task ImportSubstructure(List<Cell> cellData, Guid projectId, Case caseItem)
+    public static void ImportSubstructure(List<Cell> cellData, Case caseItem)
     {
-        List<string> costProfileCoords =
-        [
-            "J105",
-            "K105",
-            "L105",
-            "M105",
-            "N105",
-            "O105",
-            "P105"
-        ];
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.SubStructure.CostProfileStartYear);
-        var dG3Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.SubStructure.Dg3Date);
-        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.SubStructure.Dg4Date);
-        var dryWeight = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.SubStructure.DryWeight);
-        var conceptInt = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.SubStructure.ConceptInt);
-        var concept = ParseHelpers.MapSubstructureConcept(conceptInt);
-        var costProfile = new UpdateTimeSeriesCostDto
-        {
-            Values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
-        };
+        List<string> costProfileCoords = ["J105", "K105", "L105", "M105", "N105", "O105", "P105"];
 
-        // Prosp meta data
-        var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.SubStructure.VersionDate);
-        var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.SubStructure.CostYear);
+        var dG3Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Substructure.Dg3Date);
+        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Substructure.Dg4Date);
+        var dryWeight = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Substructure.DryWeight);
+        var concept = ParseHelpers.MapSubstructureConcept(ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Substructure.ConceptInt));
+        var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Substructure.VersionDate);
+        var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Substructure.CostYear);
 
-        var updateSubstructureDto = new ProspUpdateSubstructureDto
-        {
-            DryWeight = dryWeight,
-            Concept = concept,
-            DG3Date = dG3Date,
-            DG4Date = dG4Date,
-            Source = Source.Prosp,
-            ProspVersion = versionDate,
-            CostYear = costYear
-        };
+        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Substructure.CostProfileStartYear);
+        var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
+        var startYear = costProfileStartYear - dG4Date.Year;
 
-        await updateSubstructureService.UpdateSubstructure(projectId, caseItem.Id, updateSubstructureDto);
-        await substructureCostProfileService.AddOrUpdateSubstructureCostProfile(projectId, caseItem.Id, costProfile);
+        var asset = caseItem.Substructure;
+
+        asset.Source = Source.Prosp;
+        asset.LastChangedDate = DateTime.UtcNow;
+        asset.DryWeight = dryWeight;
+        asset.CostYear = costYear;
+        asset.Concept = concept;
+        asset.DG3Date = dG3Date;
+        asset.DG4Date = dG4Date;
+        asset.ProspVersion = versionDate;
+
+        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, startYear, values);
     }
 }

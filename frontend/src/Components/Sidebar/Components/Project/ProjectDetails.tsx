@@ -16,14 +16,14 @@ import {
 } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import {
     TimelineElement,
     Timeline,
     Header,
     StyledDivider,
 } from "@/Components/Sidebar/SidebarWrapper"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { projectTabNames } from "@/Utils/constants"
 
@@ -63,7 +63,7 @@ const icons = [
 
 const ProjectDetails: React.FC = () => {
     const { currentContext } = useModuleCurrentContext()
-    const { sidebarOpen, setDeveloperMode, developerMode } = useAppContext()
+    const { sidebarOpen, setDeveloperMode, developerMode } = useAppStore()
     const { setActiveTabProject, activeTabProject } = useProjectContext()
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()

@@ -1,29 +1,30 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { PhysUnit } from "@/Models/enums"
+import { PhysUnit, ProfileTypes } from "@/Models/enums"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
     tableYears: [number, number],
     alignedGridsRef: any,
-    addEdit: any,
 }
 
 const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
-    apiData, tableYears, alignedGridsRef, addEdit,
+    apiData,
+    tableYears,
+    alignedGridsRef,
 }) => {
-    const { isCalculatingProductionOverrides } = useAppContext()
+    const { isCalculatingProductionOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
     const calculatedFields = useMemo(() => [
-        "productionProfileFuelFlaringAndLossesOverride",
-        "productionProfileNetSalesGasOverride",
-        "productionProfileImportedElectricityOverride",
+        ProfileTypes.FuelFlaringAndLossesOverride,
+        ProfileTypes.NetSalesGasOverride,
+        ProfileTypes.ImportedElectricityOverride,
     ], [])
 
     useEffect(() => {
@@ -48,9 +49,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Oil production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: oilProductionData,
-                resourceName: "productionProfileOil",
+                resourceName: ProfileTypes.ProductionProfileOil,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileOil",
+                resourcePropertyKey: ProfileTypes.ProductionProfileOil,
                 editable: true,
                 overridable: false,
             },
@@ -58,9 +59,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Additional Oil production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: additionalOilProductionData,
-                resourceName: "additionalProductionProfileOil",
+                resourceName: ProfileTypes.AdditionalProductionProfileOil,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "additionalProductionProfileOil",
+                resourcePropertyKey: ProfileTypes.AdditionalProductionProfileOil,
                 editable: true,
                 overridable: false,
                 hideIfEmpty: true,
@@ -69,9 +70,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Rich gas production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: gasProductionData,
-                resourceName: "productionProfileGas",
+                resourceName: ProfileTypes.ProductionProfileGas,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileGas",
+                resourcePropertyKey: ProfileTypes.ProductionProfileGas,
                 editable: true,
                 overridable: false,
             },
@@ -79,9 +80,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Additional rich gas production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: additionalGasProductionData,
-                resourceName: "additionalProductionProfileGas",
+                resourceName: ProfileTypes.AdditionalProductionProfileGas,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "additionalProductionProfileGas",
+                resourcePropertyKey: ProfileTypes.AdditionalProductionProfileGas,
                 editable: true,
                 overridable: false,
                 hideIfEmpty: true,
@@ -90,9 +91,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Water production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: waterProductionData,
-                resourceName: "productionProfileWater",
+                resourceName: ProfileTypes.ProductionProfileWater,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileWater",
+                resourcePropertyKey: ProfileTypes.ProductionProfileWater,
                 editable: true,
                 overridable: false,
             },
@@ -100,9 +101,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Water injection",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: waterInjectionData,
-                resourceName: "productionProfileWaterInjection",
+                resourceName: ProfileTypes.ProductionProfileWaterInjection,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileWaterInjection",
+                resourcePropertyKey: ProfileTypes.ProductionProfileWaterInjection,
                 editable: true,
                 overridable: false,
             },
@@ -110,9 +111,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Fuel, flaring and losses",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: fuelFlaringAndLossesData,
-                resourceName: "productionProfileFuelFlaringAndLossesOverride",
+                resourceName: ProfileTypes.FuelFlaringAndLossesOverride,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileFuelFlaringAndLossesOverride",
+                resourcePropertyKey: ProfileTypes.FuelFlaringAndLossesOverride,
                 overrideProfile: fuelFlaringAndLossesOverrideData,
                 editable: true,
                 overridable: true,
@@ -121,9 +122,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Net sales gas",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: netSalesGasData,
-                resourceName: "productionProfileNetSalesGasOverride",
+                resourceName: ProfileTypes.NetSalesGasOverride,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileNetSalesGasOverride",
+                resourcePropertyKey: ProfileTypes.NetSalesGasOverride,
                 overrideProfile: netSalesGasOverrideData,
                 editable: true,
                 overridable: true,
@@ -132,9 +133,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Imported electricity",
                 unit: "GWh",
                 profile: importedElectricityData,
-                resourceName: "productionProfileImportedElectricityOverride",
+                resourceName: ProfileTypes.ImportedElectricityOverride,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileImportedElectricityOverride",
+                resourcePropertyKey: ProfileTypes.ImportedElectricityOverride,
                 overrideProfile: importedElectricityOverrideData,
                 editable: true,
                 overridable: true,
@@ -143,9 +144,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Deferred oil production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: deferredOilData,
-                resourceName: "deferredOilProduction",
+                resourceName: ProfileTypes.DeferredOilProduction,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "deferredOilProduction",
+                resourcePropertyKey: ProfileTypes.DeferredOilProduction,
                 editable: true,
                 overridable: false,
                 hideIfEmpty: true,
@@ -154,9 +155,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Deferred gas production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: deferredGasData,
-                resourceName: "deferredGasProduction",
+                resourceName: ProfileTypes.DeferredGasProduction,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "deferredGasProduction",
+                resourcePropertyKey: ProfileTypes.DeferredGasProduction,
                 editable: true,
                 overridable: false,
                 hideIfEmpty: true,
@@ -176,7 +177,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             gridRef={alignedGridsRef}
             calculatedFields={calculatedFields}
             ongoingCalculation={isCalculatingProductionOverrides}
-            addEdit={addEdit}
         />
     )
 }

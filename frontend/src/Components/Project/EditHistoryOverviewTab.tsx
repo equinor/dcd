@@ -2,8 +2,8 @@ import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 
 import CaseEditHistory from "@/Components/Sidebar/Components/EditHistory/CaseEditHistory"
-import { useCaseContext } from "@/Context/CaseContext"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useCaseStore } from "@/Store/CaseStore"
+import { useDataFetch } from "@/Hooks"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
 
 const Container = styled.div`
@@ -21,7 +21,7 @@ const CaseEdits = styled.div`
 `
 
 const EditHistoryOverviewTab = () => {
-    const { caseEdits } = useCaseContext()
+    const { caseEdits } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
 
     if (!revisionAndProjectData) {

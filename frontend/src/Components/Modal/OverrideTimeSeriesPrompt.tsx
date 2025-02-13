@@ -3,28 +3,28 @@ import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
 import Modal from "./Modal"
-import useEditCase from "../../Hooks/useEditCase"
-import { ProfileNames } from "../../Models/Interfaces"
-import { useProjectContext } from "../../Context/ProjectContext"
+import useEditCase from "@/Hooks/useEditCase"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { ProfileTypes } from "@/Models/enums"
 
 type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
-    profileName: ProfileNames | undefined;
+    profileType: ProfileTypes | undefined;
     profile: any
 }
 
 export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
     isOpen,
     setIsOpen,
-    profileName,
+    profileType,
     profile,
 }) => {
     const { addEdit } = useEditCase()
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
 
-    if (!isOpen || !projectId || !profileName) { return null }
+    if (!isOpen || !projectId || !profileType) { return null }
     const toggleIsOpen = () => {
         setIsOpen(!isOpen)
     }
@@ -35,7 +35,7 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
             addEdit({
                 newDisplayValue: (!profile.override).toString(),
                 previousDisplayValue: profile.override.toString(),
-                inputLabel: profileName,
+                inputLabel: profileType,
                 projectId,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
@@ -59,7 +59,7 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
                             Are you sure you want to
                             {profile.override ? " lock " : " unlock "}
                             <br />
-                            {profileName.toLowerCase()}
+                            {profileType.toLowerCase()}
                             ?
                             The time series will
                             <br />

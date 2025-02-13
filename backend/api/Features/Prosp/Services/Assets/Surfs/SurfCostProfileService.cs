@@ -1,68 +1,49 @@
-using api.Context;
-using api.Context.Extensions;
-using api.Features.Cases.Recalculation;
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Prosp.Services.Assets.Surfs;
 
-public class SurfCostProfileService(DcdDbContext context, RecalculationService recalculationService)
+public static class SurfCostProfileService
 {
-    public async Task AddOrUpdateSurfCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateSurfCostProfile(Case caseItem, int startYear, double[] values)
     {
-        var profileTypes = new List<string> { ProfileTypes.SurfCostProfile, ProfileTypes.SurfCostProfileOverride };
-
-        var caseItem = await context.Cases
-            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
-            .Include(x => x.Surf)
-            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
-
         if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile) != null)
         {
-            await UpdateSurfTimeSeries(caseItem, dto);
+            UpdateSurfTimeSeries(caseItem, startYear, values);
             return;
         }
 
-        await CreateSurfCostProfile(caseItem, dto);
+        CreateSurfCostProfile(caseItem, startYear, values);
     }
 
-    private async Task CreateSurfCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateSurfCostProfile(Case caseItem, int startYear, double[] values)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.SurfCostProfile);
 
-        costProfile.StartYear = dto.StartYear;
-        costProfile.Values = dto.Values;
+        costProfile.StartYear = startYear;
+        costProfile.Values = values;
 
-        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride);
-
-        if (costProfileOverride != null)
-        {
-            costProfileOverride.Override = false;
-        }
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
+        SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride), false);
     }
 
-    private async Task UpdateSurfTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateSurfTimeSeries(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.Surf.ProspVersion == null)
         {
-            if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride) != null)
-            {
-                caseItem.GetProfile(ProfileTypes.SurfCostProfileOverride).Override = true;
-            }
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride), true);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.SurfCostProfile);
 
-        existingProfile.StartYear = dto.StartYear;
-        existingProfile.Values = dto.Values;
+        existingProfile.StartYear = startYear;
+        existingProfile.Values = values;
+    }
 
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
+    private static void SetOverrideFlag(TimeSeriesProfile? overrideProfile, bool overrideValue)
+    {
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = overrideValue;
+        }
     }
 }

@@ -49,7 +49,7 @@ const FeatureContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 export const useFeatureContext = (): FeatureContextType => {
     const context = useContext(FeatureContext)
     if (context === undefined) {
-        throw new Error("useAppContext must be used within an FeatureContextProvider")
+        throw new Error("useAppStore must be used within an FeatureContextProvider")
     }
     return context
 }

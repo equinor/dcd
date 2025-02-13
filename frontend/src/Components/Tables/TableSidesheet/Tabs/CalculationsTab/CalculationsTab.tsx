@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material"
-import { ProfileNames } from "@/Models/Interfaces"
 import GAndGAdmin from "./Calculations/GAndGAdmin"
 import FuelFlaringLosses from "./Calculations/FuelFlaringLosses"
 import CO2Emissions from "./Calculations/CO2Emissions"
@@ -15,7 +14,7 @@ import WaterInjectorWell from "./Calculations/WaterInjectorWell"
 import GasInjectorWell from "./Calculations/GasInjectorWell"
 import ImportedElectricity from "./Calculations/ImportedElectricity"
 import CessationOffshoreFacilities from "./Calculations/CessationOffshoreFacilities"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import SubmitMistakes from "./submitMistakes"
 import {
     Container,
@@ -26,9 +25,10 @@ import {
     Note,
     SpecialNote,
 } from "../../shared.styles"
+import { ProfileTypes } from "@/Models/enums"
 
 interface Props {
-    profileName: ProfileNames
+    profileType: ProfileTypes
     rowData?: {
         resourceName?: string
         resourceType?: string
@@ -36,88 +36,88 @@ interface Props {
     }
 }
 
-const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) => {
-    const { developerMode } = useAppContext()
+const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) => {
+    const { developerMode } = useAppStore()
     // determine which calculation to show
     const getCalculationType = () => {
         // Check resource name first
-        if (rowData?.resourceName === "gAndGAdminCost" || rowData?.resourceName === "gAndGAdminCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.GAndGAdminCost || rowData?.resourceName === ProfileTypes.GAndGAdminCostOverride) {
             return "gAndGAdmin"
         }
-        if (rowData?.resourceName === "cessationOffshoreFacilitiesCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.CessationOffshoreFacilitiesCostOverride) {
             return "cessationOffshoreFacilities"
         }
-        if (rowData?.resourceName === "productionProfileFuelFlaringAndLossesOverride") {
+        if (rowData?.resourceName === ProfileTypes.FuelFlaringAndLossesOverride) {
             return "fuelFlaringLosses"
         }
-        if (rowData?.resourceName === "co2EmissionsOverride") {
+        if (rowData?.resourceName === ProfileTypes.Co2EmissionsOverride) {
             return "co2Emissions"
         }
-        if (rowData?.resourceName === "netSalesGasOverride" || rowData?.resourceName === "productionProfileNetSalesGasOverride") {
+        if (rowData?.resourceName === ProfileTypes.NetSalesGasOverride) {
             return "netSalesGas"
         }
-        if (rowData?.resourceName === "totalFeasibilityAndConceptStudiesOverride") {
+        if (rowData?.resourceName === ProfileTypes.TotalFeasibilityAndConceptStudiesOverride) {
             return "feasibilityStudies"
         }
-        if (rowData?.resourceName === "totalFEEDStudiesOverride") {
+        if (rowData?.resourceName === ProfileTypes.TotalFEEDStudiesOverride) {
             return "feedStudies"
         }
-        if (rowData?.resourceName === "wellInterventionCostProfileOverride") {
+        if (rowData?.resourceName === ProfileTypes.WellInterventionCostProfileOverride) {
             return "wellIntervention"
         }
-        if (rowData?.resourceName === "offshoreFacilitiesOperationsCostProfileOverride") {
+        if (rowData?.resourceName === ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride) {
             return "offshoreFacilitiesOperations"
         }
-        if (rowData?.resourceName === "cessationWellsCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.CessationWellsCostOverride) {
             return "cessationWells"
         }
-        if (rowData?.resourceName === "wellProjectOilProducerCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.OilProducerCostProfileOverride) {
             return "oilProducerWell"
         }
-        if (rowData?.resourceName === "wellProjectGasProducerCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.GasProducerCostProfileOverride) {
             return "gasProducerWell"
         }
-        if (rowData?.resourceName === "wellProjectWaterInjectorCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.WaterInjectorCostProfileOverride) {
             return "waterInjectorWell"
         }
-        if (rowData?.resourceName === "wellProjectGasInjectorCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.GasInjectorCostProfileOverride) {
             return "gasInjectorWell"
         }
-        if (rowData?.resourceName === "productionProfileImportedElectricityOverride") {
+        if (rowData?.resourceName === ProfileTypes.ImportedElectricityOverride) {
             return "importedElectricity"
         }
 
         // Fallback to profile name checks
-        switch (profileName) {
-        case "gAndGAdminCost":
+        switch (profileType) {
+        case ProfileTypes.GAndGAdminCostOverride:
             return "gAndGAdmin"
-        case "cessationOffshoreFacilitiesCostOverride":
+        case ProfileTypes.CessationOffshoreFacilitiesCostOverride:
             return "cessationOffshoreFacilities"
-        case "productionProfileFuelFlaringAndLossesOverride":
+        case ProfileTypes.FuelFlaringAndLossesOverride:
             return "fuelFlaringLosses"
-        case "co2EmissionsOverride":
+        case ProfileTypes.Co2EmissionsOverride:
             return "co2Emissions"
-        case "netSalesGasOverride":
+        case ProfileTypes.NetSalesGasOverride:
             return "netSalesGas"
-        case "totalFeasibilityAndConceptStudiesOverride":
+        case ProfileTypes.TotalFeasibilityAndConceptStudiesOverride:
             return "feasibilityStudies"
-        case "totalFEEDStudiesOverride":
+        case ProfileTypes.TotalFEEDStudiesOverride:
             return "feedStudies"
-        case "wellInterventionCostProfileOverride":
+        case ProfileTypes.WellInterventionCostProfileOverride:
             return "wellIntervention"
-        case "offshoreFacilitiesOperationsCostProfileOverride":
+        case ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride:
             return "offshoreFacilitiesOperations"
-        case "cessationWellsCostOverride":
+        case ProfileTypes.CessationWellsCostOverride:
             return "cessationWells"
-        case "wellProjectOilProducerCostOverride":
+        case ProfileTypes.OilProducerCostProfileOverride:
             return "oilProducerWell"
-        case "wellProjectGasProducerCostOverride":
+        case ProfileTypes.GasProducerCostProfileOverride:
             return "gasProducerWell"
-        case "wellProjectWaterInjectorCostOverride":
+        case ProfileTypes.WaterInjectorCostProfileOverride:
             return "waterInjectorWell"
-        case "wellProjectGasInjectorCostOverride":
+        case ProfileTypes.GasInjectorCostProfileOverride:
             return "gasInjectorWell"
-        case "productionProfileImportedElectricityOverride":
+        case ProfileTypes.ImportedElectricityOverride:
             return "importedElectricity"
         default:
             return "unknown"
@@ -128,7 +128,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         <>
             <div style={{ fontStyle: "italic" }}>
                 <SubmitMistakes
-                    profileName={profileName}
+                    profileType={profileType}
                     rowData={rowData}
                 />
             </div>
@@ -192,7 +192,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
                                         <br />
                                         <strong>Profile Name:</strong>
                                         {" "}
-                                        {profileName}
+                                        {profileType}
                                         {rowData?.resourceName && (
                                             <>
                                                 <br />

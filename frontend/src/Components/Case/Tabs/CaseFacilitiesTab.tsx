@@ -1,26 +1,21 @@
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router"
-import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
 
 import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useDataFetch } from "@/Hooks/useDataFetch"
 import { Concept, Currency } from "@/Models/enums"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
 `
 
-const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId, revisionId } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+const CaseFacilitiesTab = () => {
     const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -54,12 +49,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
-
     const caseData = apiData?.case
     const topsideData = apiData?.topside
     const surfData = apiData?.surf
@@ -81,7 +70,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         <TabContainer container spacing={2}>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
-                    addEdit={addEdit}
                     resourceName="substructure"
                     resourcePropertyKey="concept"
                     resourceId={substructureData.id}
@@ -94,7 +82,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             {substructureData.concept === Concept.TIE_BACK && (
                 <Grid size={{ xs: 12, md: 4 }}>
                     <SwitchableStringInput
-                        addEdit={addEdit}
                         label="Host"
                         resourceName="case"
                         resourcePropertyKey="host"
@@ -105,7 +92,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             )}
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="facilityOpex"
                     resourceId={topsideData.id}
@@ -118,7 +104,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourcePropertyKey="cessationCost"
                     resourceName="surf"
                     resourceId={surfData.id}
@@ -134,7 +119,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="dryWeight"
                     resourceId={topsideData.id}
@@ -149,7 +133,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     previousResourceObject={caseData}
@@ -164,7 +147,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="peakElectricityImported"
                     resourceId={topsideData.id}
@@ -179,7 +161,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="oilCapacity"
                     resourceId={topsideData.id}
@@ -194,7 +175,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="gasCapacity"
                     resourceId={topsideData.id}
@@ -209,7 +189,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="waterInjectionCapacity"
                     resourceId={topsideData.id}
@@ -225,7 +204,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="producerCount"
                     resourceId={topsideData.id}
@@ -239,7 +217,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="gasInjectorCount"
                     resourceId={topsideData.id}
@@ -253,7 +230,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="waterInjectorCount"
                     resourceId={topsideData.id}
@@ -270,7 +246,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="templateCount"
                     resourceId={surfData.id}
@@ -284,7 +259,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="riserCount"
                     resourceId={surfData.id}
@@ -298,7 +272,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="infieldPipelineSystemLength"
                     resourceId={surfData.id}
@@ -313,7 +286,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="umbilicalSystemLength"
                     resourceId={surfData.id}
@@ -328,7 +300,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="productionFlowline"
                     resourceId={surfData.id}
@@ -343,7 +314,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="producerCount"
                     resourceId={surfData.id}
@@ -355,7 +325,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="gasInjectorCount"
                     resourceId={surfData.id}
@@ -369,7 +338,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="surf"
                     resourcePropertyKey="waterInjectorCount"
                     resourceId={surfData.id}
@@ -386,7 +354,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="transport"
                     resourcePropertyKey="oilExportPipelineLength"
                     resourceId={transportData.id}
@@ -401,7 +368,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="transport"
                     resourcePropertyKey="gasExportPipelineLength"
                     resourceId={transportData.id}
@@ -419,7 +385,6 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="substructure"
                     resourcePropertyKey="dryWeight"
                     resourceId={substructureData.id}

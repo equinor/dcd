@@ -1,21 +1,22 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
-import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
-import { useAppContext } from "@/Context/AppContext"
+import { useAppStore } from "@/Store/AppStore"
 import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
-import { caseQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useCaseApiData } from "@/Hooks"
+import useEditCase from "@/Hooks/useEditCase"
 
-const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
-    const { editMode } = useAppContext()
-    const { caseId, revisionId, tab } = useParams()
-    const { projectId, isRevision } = useProjectContext()
+const CaseDescriptionTab = () => {
+    const { editMode } = useAppStore()
+    const { tab } = useParams()
+    const { apiData } = useCaseApiData()
+    const { projectId } = useProjectContext()
 
     const [description, setDescription] = useState("")
 
@@ -34,17 +35,11 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
         3: "Subsea booster pumps",
     }
 
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
-        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
-
     useEffect(() => {
         if (apiData && apiData.case.description !== undefined) {
             setDescription(apiData.case.description)
         }
-    }, [apiData, isRevision])
+    }, [apiData])
 
     if (!apiData || !projectId) {
         return <CaseDescriptionTabSkeleton />
@@ -54,6 +49,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const handleChange = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
+        const { addEdit } = useEditCase()
         const previousResourceObject = structuredClone(caseData)
         const newResourceObject = structuredClone(caseData)
         newResourceObject.description = newValue
@@ -111,7 +107,6 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="producerCount"
                             label="Production wells"
@@ -125,7 +120,6 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="waterInjectorCount"
                             label="Water injector wells"
@@ -140,7 +134,6 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="gasInjectorCount"
                             label="Gas injector wells"
@@ -154,7 +147,6 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableDropdownInput
-                            addEdit={addEdit}
                             value={caseData.productionStrategyOverview ?? 0}
                             resourceName="case"
                             resourcePropertyKey="productionStrategyOverview"
@@ -166,7 +158,6 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableDropdownInput
-                            addEdit={addEdit}
                             value={caseData.artificialLift ?? 0}
                             resourceName="case"
                             resourcePropertyKey="artificialLift"
@@ -178,7 +169,6 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="case"
                             resourcePropertyKey="facilitiesAvailability"
                             label="Facilities availability"

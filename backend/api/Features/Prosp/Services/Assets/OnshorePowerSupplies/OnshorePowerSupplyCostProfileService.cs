@@ -1,66 +1,49 @@
-using api.Context;
-using api.Context.Extensions;
-using api.Features.Cases.Recalculation;
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Prosp.Services.Assets.OnshorePowerSupplies;
 
-public class OnshorePowerSupplyCostProfileService(DcdDbContext context, RecalculationService recalculationService)
+public static class OnshorePowerSupplyCostProfileService
 {
-    public async Task AddOrUpdateOnshorePowerSupplyCostProfile(Guid projectId, Guid caseId, UpdateTimeSeriesCostDto dto)
+    public static void AddOrUpdateOnshorePowerSupplyCostProfile(Case caseItem, int startYear, double[] values)
     {
-        var profileTypes = new List<string> { ProfileTypes.OnshorePowerSupplyCostProfile, ProfileTypes.OnshorePowerSupplyCostProfileOverride };
-
-        var caseItem = await context.Cases
-            .Include(t => t.TimeSeriesProfiles.Where(x => profileTypes.Contains(x.ProfileType)))
-            .Include(x => x.OnshorePowerSupply)
-            .SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
-
         if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile) != null)
         {
-            await UpdateOnshorePowerSupplyTimeSeries(caseItem, dto);
+            UpdateOnshorePowerSupplyTimeSeries(caseItem, startYear, values);
             return;
         }
-        await CreateOnshorePowerSupplyCostProfile(caseItem, dto);
+
+        CreateOnshorePowerSupplyCostProfile(caseItem, startYear, values);
     }
 
-    private async Task CreateOnshorePowerSupplyCostProfile(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void CreateOnshorePowerSupplyCostProfile(Case caseItem, int startYear, double[] values)
     {
         var costProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.OnshorePowerSupplyCostProfile);
 
-        costProfile.StartYear = dto.StartYear;
-        costProfile.Values = dto.Values;
+        costProfile.StartYear = startYear;
+        costProfile.Values = values;
 
-        var costProfileOverride = caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride);
-
-        if (costProfileOverride != null)
-        {
-            costProfileOverride.Override = false;
-        }
-
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
+        SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride), false);
     }
 
-    private async Task UpdateOnshorePowerSupplyTimeSeries(Case caseItem, UpdateTimeSeriesCostDto dto)
+    private static void UpdateOnshorePowerSupplyTimeSeries(Case caseItem, int startYear, double[] values)
     {
         if (caseItem.OnshorePowerSupply.ProspVersion == null)
         {
-            if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride) != null)
-            {
-                caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfileOverride).Override = true;
-            }
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride), true);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfile);
-        existingProfile.StartYear = dto.StartYear;
-        existingProfile.Values = dto.Values;
 
-        await context.UpdateCaseUpdatedUtc(caseItem.Id);
-        await recalculationService.SaveChangesAndRecalculateCase(caseItem.Id);
+        existingProfile.StartYear = startYear;
+        existingProfile.Values = values;
+    }
+
+    private static void SetOverrideFlag(TimeSeriesProfile? overrideProfile, bool overrideValue)
+    {
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = overrideValue;
+        }
     }
 }

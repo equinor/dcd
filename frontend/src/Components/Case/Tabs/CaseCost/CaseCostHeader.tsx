@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid2"
 
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useDataFetch } from "@/Hooks/useDataFetch"
+import { useDataFetch } from "@/Hooks"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
@@ -15,7 +15,6 @@ interface HeaderProps {
     setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseOverviewDto;
     surfData: Components.Schemas.SurfDto
-    addEdit: any
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -26,7 +25,6 @@ const Header: React.FC<HeaderProps> = ({
     setTableYears,
     caseData,
     surfData,
-    addEdit,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
@@ -54,20 +52,18 @@ const Header: React.FC<HeaderProps> = ({
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <CapexFactorFeasibilityStudies
                             caseData={caseData}
-                            addEdit={addEdit}
+
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <CapexFactorFeedStudies
                             caseData={caseData}
-                            addEdit={addEdit}
+
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Maturity
                             surfData={surfData}
-                            projectId={revisionAndProjectData.projectId}
-                            addEdit={addEdit}
                         />
                     </Grid>
                 </Grid>
