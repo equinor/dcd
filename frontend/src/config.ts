@@ -13,22 +13,7 @@ import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
-import { EnvironmentVariables } from "./environmentVariables"
-
-const isDevelopment = EnvironmentVariables.ENVIRONMENT === "dev"
-let agGridLicenseKey: string | undefined
-
-// Initialize AG Grid configuration
-const initializeAgGrid = async () => {
-    if (isDevelopment) {
-        try {
-            const licenseModule = await import("./agGridLicense")
-            agGridLicenseKey = licenseModule.agGridLicenseKey
-        } catch (error) {
-            console.warn("AG Grid license file not found in development mode")
-        }
-    }
-}
+import { agGridLicenseKey } from "./agGridLicense"
 
 export const configure: AppModuleInitiator = async (configurator, args) => {
     const { basename } = args.env
@@ -46,9 +31,7 @@ export const configure: AppModuleInitiator = async (configurator, args) => {
         ExcelExportModule,
     ])
 
-    await initializeAgGrid()
-
-    if (isDevelopment && agGridLicenseKey && agGridLicenseKey.length > 0) {
+    if (agGridLicenseKey && agGridLicenseKey.length > 0) {
         console.log("Enabling AG Grid with enterprise license")
         enableAgGrid(configurator, {
             licenseKey: agGridLicenseKey,
