@@ -1,3 +1,4 @@
+import { ProfileTypes } from "@/Models/enums"
 import { visibility, lock, type IconData } from "@equinor/eds-icons"
 
 export const EMPTY_GUID = "00000000-0000-0000-0000-000000000000"
@@ -78,7 +79,7 @@ export const projectTabNames = [
 ]
 
 export const productionOverrideResources = [
-    "productionProfileOil",
+    ProfileTypes.ProductionProfileOil,
     "additionalProductionProfileOil",
     "productionProfileGas",
     "additionalProductionProfileGas",

@@ -5,7 +5,7 @@ import { useAppStore } from "@/Store/AppStore"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { PhysUnit } from "@/Models/enums"
+import { PhysUnit, ProfileTypes } from "@/Models/enums"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
@@ -49,9 +49,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 profileName: "Oil production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: oilProductionData,
-                resourceName: "productionProfileOil",
+                resourceName: ProfileTypes.ProductionProfileOil,
                 resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: "productionProfileOil",
+                resourcePropertyKey: ProfileTypes.ProductionProfileOil,
                 editable: true,
                 overridable: false,
             },
