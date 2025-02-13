@@ -521,12 +521,12 @@ declare namespace Components {
             pluggingAndAbandonment?: number; // double
         }
         export interface UpdateDrainageStrategyDto {
-            nglYield?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            artificialLift?: ArtificialLift /* int32 */;
-            gasSolution?: GasSolution /* int32 */;
+            nglYield: number; // double
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            artificialLift: ArtificialLift /* int32 */;
+            gasSolution: GasSolution /* int32 */;
         }
         export interface UpdateExplorationOperationalWellCostsDto {
             explorationRigUpgrading?: number; // double
@@ -539,10 +539,10 @@ declare namespace Components {
             description: string | null;
         }
         export interface UpdateOnshorePowerSupplyDto {
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
+            costYear: number; // int32
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
+            source: Source /* int32 */;
         }
         export interface UpdateProjectDto {
             name: string;
@@ -579,71 +579,71 @@ declare namespace Components {
             mdqc: boolean;
         }
         export interface UpdateSubstructureDto {
-            dryWeight?: number; // double
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            concept?: Concept /* int32 */;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
+            dryWeight: number; // double
+            costYear: number; // int32
+            source: Source /* int32 */;
+            concept: Concept /* int32 */;
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
+            maturity: Maturity /* int32 */;
+            approvedBy: string;
         }
         export interface UpdateSurfDto {
-            cessationCost?: number; // double
-            infieldPipelineSystemLength?: number; // double
-            umbilicalSystemLength?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            riserCount?: number; // int32
-            templateCount?: number; // int32
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            productionFlowline?: ProductionFlowline /* int32 */;
-            costYear?: number; // int32
-            source?: Source /* int32 */;
-            approvedBy?: string | null;
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            maturity?: Maturity /* int32 */;
+            cessationCost: number; // double
+            infieldPipelineSystemLength: number; // double
+            umbilicalSystemLength: number; // double
+            artificialLift: ArtificialLift /* int32 */;
+            riserCount: number; // int32
+            templateCount: number; // int32
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            productionFlowline: ProductionFlowline /* int32 */;
+            costYear: number; // int32
+            source: Source /* int32 */;
+            approvedBy: string;
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
+            maturity: Maturity /* int32 */;
         }
         export interface UpdateTimeSeriesScheduleDto {
             startYear: number; // int32
             values: number /* int32 */[];
         }
         export interface UpdateTopsideDto {
-            dryWeight?: number; // double
-            oilCapacity?: number; // double
-            gasCapacity?: number; // double
-            waterInjectionCapacity?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            fuelConsumption?: number; // double
-            flaredGas?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            cO2ShareOilProfile?: number; // double
-            cO2ShareGasProfile?: number; // double
-            cO2ShareWaterInjectionProfile?: number; // double
-            cO2OnMaxOilProfile?: number; // double
-            cO2OnMaxGasProfile?: number; // double
-            cO2OnMaxWaterInjectionProfile?: number; // double
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            facilityOpex?: number; // double
-            peakElectricityImported?: number; // double
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
-            approvedBy?: string | null;
+            dryWeight: number; // double
+            oilCapacity: number; // double
+            gasCapacity: number; // double
+            waterInjectionCapacity: number; // double
+            artificialLift: ArtificialLift /* int32 */;
+            fuelConsumption: number; // double
+            flaredGas: number; // double
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            cO2ShareOilProfile: number; // double
+            cO2ShareGasProfile: number; // double
+            cO2ShareWaterInjectionProfile: number; // double
+            cO2OnMaxOilProfile: number; // double
+            cO2OnMaxGasProfile: number; // double
+            cO2OnMaxWaterInjectionProfile: number; // double
+            costYear: number; // int32
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
+            facilityOpex: number; // double
+            peakElectricityImported: number; // double
+            source: Source /* int32 */;
+            maturity: Maturity /* int32 */;
+            approvedBy: string;
         }
         export interface UpdateTransportDto {
-            gasExportPipelineLength?: number; // double
-            oilExportPipelineLength?: number; // double
-            costYear?: number; // int32
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
-            source?: Source /* int32 */;
-            maturity?: Maturity /* int32 */;
+            gasExportPipelineLength: number; // double
+            oilExportPipelineLength: number; // double
+            costYear: number; // int32
+            dG3Date: string | null; // date-time
+            dG4Date: string | null; // date-time
+            source: Source /* int32 */;
+            maturity: Maturity /* int32 */;
         }
         export interface UpdateWellDto {
             id: string; // uuid

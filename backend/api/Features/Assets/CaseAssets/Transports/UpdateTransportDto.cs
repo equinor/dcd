@@ -1,14 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models.Enums;
 
 namespace api.Features.Assets.CaseAssets.Transports;
 
 public class UpdateTransportDto
 {
-    public double GasExportPipelineLength { get; set; }
-    public double OilExportPipelineLength { get; set; }
-    public int CostYear { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime? DG4Date { get; set; }
-    public Source Source { get; set; }
-    public Maturity Maturity { get; set; }
+    [Required] public required double GasExportPipelineLength { get; set; }
+    [Required] public required double OilExportPipelineLength { get; set; }
+    [Required] public required int CostYear { get; set; }
+    public required DateTime? DG3Date { get; set; }
+    public required DateTime? DG4Date { get; set; }
+    [Required] public required Source Source { get; set; }
+    [Required] public required Maturity Maturity { get; set; }
 }
