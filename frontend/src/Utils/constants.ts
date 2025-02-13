@@ -89,7 +89,7 @@ export const productionOverrideResources = [
 
 export const totalStudyCostOverrideResources = [
     "surfCostOverride",
-    "topsideCostOverride",
+    ProfileTypes.TopsideCostProfileOverride,
     ProfileTypes.TransportCostProfileOverride,
     ProfileTypes.SubstructureCostProfileOverride,
     "onshorePowerSupplyCostOverride",
