@@ -92,7 +92,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         switch (profileName) {
         case "gAndGAdminCost":
             return "gAndGAdmin"
-        case "cessationOffshoreFacilitiesCostOverride":
+        case ProfileTypes.CessationOffshoreFacilitiesCostOverride:
             return "cessationOffshoreFacilities"
         case ProfileTypes.FuelFlaringAndLossesOverride:
             return "fuelFlaringLosses"
