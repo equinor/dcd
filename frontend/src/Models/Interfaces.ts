@@ -15,14 +15,12 @@ export type ResourceName =
     "developmentWellDrillingSchedule" | ProfileNames
     
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
-    "wellProjectOilProducerCostOverride" |
     "gAndGAdminCost" |
     "topsideCostProfileOverride" |
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
     "netSalesGasOverride" |
-    "oilProducerCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
