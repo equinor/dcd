@@ -14,7 +14,7 @@ export type ResourceName =
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" | ProfileNames
     
-export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
+export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" |
     "gAndGAdminCost" |
     "topsideCostProfileOverride" |
     "surfCostProfileOverride" |

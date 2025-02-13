@@ -4,7 +4,7 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -58,9 +58,9 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 profileName: "CAPEX - Cessation - Onshore facilities",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationOnshoreFacilitiesCostProfileData,
-                resourceName: "cessationOnshoreFacilitiesCostProfile",
+                resourceName: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "cessationOnshoreFacilitiesCostProfile",
+                resourcePropertyKey: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
                 editable: true,
                 overridable: false,
             },
