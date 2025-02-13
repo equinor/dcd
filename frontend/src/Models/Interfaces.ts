@@ -16,7 +16,7 @@ export type ResourceName =
     
 export type ProfileNames =
     "gAndGAdminCost" |
-    "co2Intensity" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
+    "co2Intensity" | `${ProfileTypes}`
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |

@@ -92,7 +92,7 @@ export const totalStudyCostOverrideResources = [
     ProfileTypes.TopsideCostProfileOverride,
     ProfileTypes.TransportCostProfileOverride,
     ProfileTypes.SubstructureCostProfileOverride,
-    "onshorePowerSupplyCostOverride",
+    ProfileTypes.OnshorePowerSupplyCostProfileOverride,
     "case",
 ]
 
