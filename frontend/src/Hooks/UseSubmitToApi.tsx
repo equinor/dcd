@@ -326,6 +326,22 @@ export const useSubmitToApi = () => {
                     ["projectSpecificDrillingCostProfile", ProfileTypes.ProjectSpecificDrillingCostProfile],
                     ["seismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing],
                     ["totalOtherStudiesCostProfile", ProfileTypes.TotalOtherStudiesCostProfile],
+
+                    [ProfileTypes.AdditionalOPEXCostProfile, ProfileTypes.AdditionalOPEXCostProfile],
+                    [ProfileTypes.AdditionalProductionProfileGas, ProfileTypes.AdditionalProductionProfileGas],
+                    [ProfileTypes.AdditionalProductionProfileOil, ProfileTypes.AdditionalProductionProfileOil],
+                    [ProfileTypes.CessationOnshoreFacilitiesCostProfile, ProfileTypes.CessationOnshoreFacilitiesCostProfile],
+                    [ProfileTypes.CountryOfficeCost, ProfileTypes.CountryOfficeCost],
+                    [ProfileTypes.DeferredGasProduction, ProfileTypes.DeferredGasProduction],
+                    [ProfileTypes.DeferredOilProduction, ProfileTypes.DeferredOilProduction],
+                    [ProfileTypes.OnshoreRelatedOPEXCostProfile, ProfileTypes.OnshoreRelatedOPEXCostProfile],
+                    [ProfileTypes.ProductionProfileGas, ProfileTypes.ProductionProfileGas],
+                    [ProfileTypes.ProductionProfileOil, ProfileTypes.ProductionProfileOil],
+                    [ProfileTypes.ProductionProfileWater, ProfileTypes.ProductionProfileWater],
+                    [ProfileTypes.ProductionProfileWaterInjection, ProfileTypes.ProductionProfileWaterInjection],
+                    [ProfileTypes.ProjectSpecificDrillingCostProfile, ProfileTypes.ProjectSpecificDrillingCostProfile],
+                    [ProfileTypes.SeismicAcquisitionAndProcessing, ProfileTypes.SeismicAcquisitionAndProcessing],
+                    [ProfileTypes.TotalOtherStudiesCostProfile, ProfileTypes.TotalOtherStudiesCostProfile],
                 ])
 
                 if (profileNameMap.has(resourceName)) {
@@ -362,6 +378,28 @@ export const useSubmitToApi = () => {
                     ["wellProjectGasProducerCostOverride", ProfileTypes.GasProducerCostProfileOverride],
                     ["wellProjectOilProducerCostOverride", ProfileTypes.OilProducerCostProfileOverride],
                     ["wellProjectWaterInjectorCostOverride", ProfileTypes.WaterInjectorCostProfileOverride],
+
+                    [ProfileTypes.CessationOffshoreFacilitiesCostOverride, ProfileTypes.CessationOffshoreFacilitiesCostOverride],
+                    [ProfileTypes.CessationWellsCostOverride, ProfileTypes.CessationWellsCostOverride],
+                    [ProfileTypes.Co2EmissionsOverride, ProfileTypes.Co2EmissionsOverride],
+                    [ProfileTypes.GAndGAdminCostOverride, ProfileTypes.GAndGAdminCostOverride],
+                    [ProfileTypes.HistoricCostCostProfile, ProfileTypes.HistoricCostCostProfile],
+                    [ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride, ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride],
+                    [ProfileTypes.OnshorePowerSupplyCostProfileOverride, ProfileTypes.OnshorePowerSupplyCostProfileOverride],
+                    [ProfileTypes.FuelFlaringAndLossesOverride, ProfileTypes.FuelFlaringAndLossesOverride],
+                    [ProfileTypes.ImportedElectricityOverride, ProfileTypes.ImportedElectricityOverride],
+                    [ProfileTypes.NetSalesGasOverride, ProfileTypes.NetSalesGasOverride],
+                    [ProfileTypes.SubstructureCostProfileOverride, ProfileTypes.SubstructureCostProfileOverride],
+                    [ProfileTypes.SurfCostProfileOverride, ProfileTypes.SurfCostProfileOverride],
+                    [ProfileTypes.TopsideCostProfileOverride, ProfileTypes.TopsideCostProfileOverride],
+                    [ProfileTypes.TotalFeasibilityAndConceptStudiesOverride, ProfileTypes.TotalFeasibilityAndConceptStudiesOverride],
+                    [ProfileTypes.TotalFEEDStudiesOverride, ProfileTypes.TotalFEEDStudiesOverride],
+                    [ProfileTypes.TransportCostProfileOverride, ProfileTypes.TransportCostProfileOverride],
+                    [ProfileTypes.WellInterventionCostProfileOverride, ProfileTypes.WellInterventionCostProfileOverride],
+                    [ProfileTypes.GasInjectorCostProfileOverride, ProfileTypes.GasInjectorCostProfileOverride],
+                    [ProfileTypes.GasProducerCostProfileOverride, ProfileTypes.GasProducerCostProfileOverride],
+                    [ProfileTypes.OilProducerCostProfileOverride, ProfileTypes.OilProducerCostProfileOverride],
+                    [ProfileTypes.WaterInjectorCostProfileOverride, ProfileTypes.WaterInjectorCostProfileOverride],
                 ])
 
                 if (overrideProfileNameMap.has(resourceName)) {
