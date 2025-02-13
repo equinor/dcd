@@ -84,7 +84,7 @@ export const productionOverrideResources = [
     ProfileTypes.ProductionProfileGas,
     ProfileTypes.AdditionalProductionProfileGas,
     ProfileTypes.ProductionProfileWater,
-    "productionProfileWaterInjection",
+    ProfileTypes.ProductionProfileWaterInjection,
 ]
 
 export const totalStudyCostOverrideResources = [

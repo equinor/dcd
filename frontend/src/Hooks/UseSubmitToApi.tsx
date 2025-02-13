@@ -12,7 +12,7 @@ import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
 import { GetCaseService } from "@/Services/CaseService"
 import { useAppStore } from "@/Store/AppStore"
-import { ResourceObject } from "@/Models/Interfaces"
+import { ResourceName, ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
@@ -206,7 +206,7 @@ export const useSubmitToApi = () => {
             drillingScheduleId,
         }
 
-        if (productionOverrideResources.includes(resourceName)) {
+        if (productionOverrideResources.find(x => x.toString() === resourceName)) {
             setIsCalculatingProductionOverrides(true)
             submitApiLogger.warn("Setting production overrides calculation flag")
         }
