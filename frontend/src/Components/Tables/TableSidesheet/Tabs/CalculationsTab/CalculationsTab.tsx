@@ -69,7 +69,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         if (rowData?.resourceName === ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride) {
             return "offshoreFacilitiesOperations"
         }
-        if (rowData?.resourceName === "cessationWellsCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.CessationWellsCostOverride) {
             return "cessationWells"
         }
         if (rowData?.resourceName === ProfileTypes.OilProducerCostProfileOverride) {
@@ -108,7 +108,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
             return "wellIntervention"
         case ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride:
             return "offshoreFacilitiesOperations"
-        case "cessationWellsCostOverride":
+        case ProfileTypes.CessationWellsCostOverride:
             return "cessationWells"
         case ProfileTypes.OilProducerCostProfileOverride:
             return "oilProducerWell"
