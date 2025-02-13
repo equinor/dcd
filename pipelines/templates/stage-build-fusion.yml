@@ -46,9 +46,6 @@ stages:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
 
-        outputs:
-          frontendVersion: $(frontendVersion)
-
       # - job: "Build_backend_container_and_Push_To_acr"
       #   steps:
       #     - template: step-dtlogin.yml
