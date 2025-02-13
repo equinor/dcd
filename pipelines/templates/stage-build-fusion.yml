@@ -46,8 +46,9 @@ stages:
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
-        outputs:
-          frontendVersion: $(frontendVersion)
+
+    outputs:
+      frontendVersion: $(frontendVersion)
 
       # - job: "Build_backend_container_and_Push_To_acr"
       #   steps:
@@ -73,4 +74,3 @@ stages:
       #         registry: "DCD Registry"
       #         repository: "backend"
       #         buildId: $(Build.BuildId)
-
