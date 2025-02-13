@@ -13,7 +13,7 @@ export type ResourceName =
     "exploration" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" | ProfileNames
-
+    
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
     "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
     "wellProjectWaterInjectorCostOverride" | "wellProjectGasInjectorCostOverride" | "gAndGAdminCost" |
@@ -23,7 +23,7 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
-    "productionProfileGas" | "additionalProductionProfileGas" | "productionProfileWater" |
+    "additionalProductionProfileGas" | "productionProfileWater" |
     "productionProfileWaterInjection" | "productionProfileFuelFlaringAndLossesOverride" |
     "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
