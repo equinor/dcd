@@ -2,13 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { GetProjectMembersService } from "../Services/ProjectMembersService"
 import { GetOrgChartMembersService } from "../Services/OrgChartMembersService"
 import { useAppStore } from "../Store/AppStore"
-import { UserRole } from "../Models/AccessManagement"
+import { ProjectMemberRole } from "@/Models/enums";
 
 type AddPersonVariables = {
     projectId: string;
     body: {
         userId: string;
-        role: UserRole;
+        role: ProjectMemberRole;
     };
 };
 
@@ -16,7 +16,7 @@ type UpdatePersonVariables = {
     projectId: string;
     body: {
         userId: string;
-        role: UserRole;
+        role: ProjectMemberRole;
     };
 };
 
@@ -107,7 +107,7 @@ export const useEditPeople = () => {
     const addPerson = (
         projectId: string,
         userId: string,
-        role: UserRole,
+        role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
         addPersonMutation.mutate({ projectId, body: { userId, role } })
@@ -116,7 +116,7 @@ export const useEditPeople = () => {
     const updatePerson = (
         projectId: string,
         userId: string,
-        role: UserRole,
+        role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
         updatePersonMutation.mutate({ projectId, body: { userId, role } })
