@@ -16,7 +16,6 @@ export type ResourceName =
     
 export type ProfileNames =
     "gAndGAdminCost" |
-    "topsideCostProfileOverride" |
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
