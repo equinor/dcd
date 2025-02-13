@@ -67,6 +67,7 @@ public static class ProjectDuplicator
             GasPriceNOK = existingProject.GasPriceNOK,
             DiscountRate = existingProject.DiscountRate,
             ExchangeRateUSDToNOK = existingProject.ExchangeRateUSDToNOK,
+            NpvYear = existingProject.NpvYear,
 
             ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts
             {
