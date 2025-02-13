@@ -7,6 +7,7 @@ parameters:
   - name: sourcesDirectory
   - name: name
   - name: azAppConfig
+  - name: frontendVersion
 
 stages:
   - stage: ${{ parameters.name }}
@@ -45,6 +46,8 @@ stages:
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
+        outputs:
+          frontendVersion: $(frontendVersion)
 
       # - job: "Build_backend_container_and_Push_To_acr"
       #   steps:
