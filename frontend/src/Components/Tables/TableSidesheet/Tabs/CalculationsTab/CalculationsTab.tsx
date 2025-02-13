@@ -98,7 +98,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
             return "fuelFlaringLosses"
         case ProfileTypes.Co2EmissionsOverride:
             return "co2Emissions"
-        case "netSalesGasOverride":
+        case ProfileTypes.NetSalesGasOverride:
             return "netSalesGas"
         case ProfileTypes.TotalFeasibilityAndConceptStudiesOverride:
             return "feasibilityStudies"

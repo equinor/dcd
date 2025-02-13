@@ -20,7 +20,6 @@ export type ProfileNames =
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
-    "netSalesGasOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
