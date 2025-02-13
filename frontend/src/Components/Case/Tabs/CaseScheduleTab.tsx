@@ -13,11 +13,12 @@ import {
     dateFromTimestamp,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
-import { ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
+import { ResourceName, ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseApiData } from "@/Hooks"
+import useEditCase from "@/Hooks/useEditCase"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -84,7 +85,7 @@ const CaseScheduleTab = () => {
     const { editMode } = useAppStore()
     const { tab } = useParams()
     const { projectId } = useProjectContext()
-
+    const { addEdit } = useEditCase()
     const { apiData } = useCaseApiData()
 
     if (!apiData || !projectId) {
@@ -145,7 +146,7 @@ const CaseScheduleTab = () => {
         return {
             inputLabel: dateKey,
             projectId: currentCaseData.projectId,
-            resourceName: "case",
+            resourceName: "case" as ResourceName,
             resourcePropertyKey: dateKey as ResourcePropertyKey,
             caseId: currentCaseData.caseId,
             newDisplayValue: formatDate(newDate.toISOString()),
