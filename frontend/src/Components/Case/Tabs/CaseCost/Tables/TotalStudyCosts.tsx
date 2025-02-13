@@ -12,7 +12,6 @@ interface TotalStudyCostsProps {
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
@@ -20,7 +19,6 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     studyGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const { isCalculatingTotalStudyCostOverrides } = useAppStore()
     const revisionAndProjectData = useDataFetch()
@@ -90,7 +88,6 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             totalRowName="Total"
             ongoingCalculation={isCalculatingTotalStudyCostOverrides}
             calculatedFields={calculatedFields}
-            
         />
     )
 }

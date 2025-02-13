@@ -16,7 +16,6 @@ import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 
 const CaseDrillingScheduleTab = () => {
-const CaseDrillingScheduleTab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()

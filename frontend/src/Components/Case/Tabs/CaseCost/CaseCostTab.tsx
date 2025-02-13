@@ -6,6 +6,7 @@ import {
 } from "react"
 import Grid from "@mui/material/Grid2"
 import { useCaseStore } from "@/Store/CaseStore"
+import useEditCase from "@/Hooks/useEditCase"
 import CaseCostHeader from "./CaseCostHeader"
 import OpexCosts from "./Tables/OpexCosts"
 import CessationCosts from "./Tables/CessationCosts"
@@ -21,6 +22,7 @@ import { useCaseApiData } from "@/Hooks"
 
 const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()
+    const { addEdit } = useEditCase()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -128,7 +130,7 @@ const CaseCostTab = () => {
                 setTableYears={setTableYears}
                 caseData={apiData.case}
                 surfData={apiData.surf}
-                
+
             />
             <Grid size={12}>
                 <AggregatedTotals
@@ -152,7 +154,6 @@ const CaseCostTab = () => {
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    
                 />
             </Grid>
             <Grid size={12}>
@@ -161,7 +162,6 @@ const CaseCostTab = () => {
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    
                 />
             </Grid>
             <Grid size={12}>
@@ -170,7 +170,7 @@ const CaseCostTab = () => {
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    
+
                 />
             </Grid>
             <Grid size={12}>
@@ -179,7 +179,7 @@ const CaseCostTab = () => {
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    
+
                 />
             </Grid>
             <Grid size={12}>
@@ -188,7 +188,7 @@ const CaseCostTab = () => {
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    
+
                 />
             </Grid>
             <Grid size={12}>
@@ -197,7 +197,7 @@ const CaseCostTab = () => {
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
-                    
+
                 />
             </Grid>
         </Grid>
