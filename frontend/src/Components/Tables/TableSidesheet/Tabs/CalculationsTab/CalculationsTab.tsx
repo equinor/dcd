@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material"
-import { ProfileNames } from "@/Models/Interfaces"
 import GAndGAdmin from "./Calculations/GAndGAdmin"
 import FuelFlaringLosses from "./Calculations/FuelFlaringLosses"
 import CO2Emissions from "./Calculations/CO2Emissions"
@@ -29,7 +28,7 @@ import {
 import { ProfileTypes } from "@/Models/enums"
 
 interface Props {
-    profileName: ProfileNames
+    profileType: ProfileTypes
     rowData?: {
         resourceName?: string
         resourceType?: string
@@ -37,7 +36,7 @@ interface Props {
     }
 }
 
-const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) => {
+const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) => {
     const { developerMode } = useAppStore()
     // determine which calculation to show
     const getCalculationType = () => {
@@ -89,7 +88,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         }
 
         // Fallback to profile name checks
-        switch (profileName) {
+        switch (profileType) {
         case ProfileTypes.GAndGAdminCostOverride:
             return "gAndGAdmin"
         case ProfileTypes.CessationOffshoreFacilitiesCostOverride:
@@ -129,7 +128,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         <>
             <div style={{ fontStyle: "italic" }}>
                 <SubmitMistakes
-                    profileName={profileName}
+                    profileType={profileType}
                     rowData={rowData}
                 />
             </div>
@@ -193,7 +192,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
                                         <br />
                                         <strong>Profile Name:</strong>
                                         {" "}
-                                        {profileName}
+                                        {profileType}
                                         {rowData?.resourceName && (
                                             <>
                                                 <br />

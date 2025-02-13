@@ -12,10 +12,9 @@ export type ResourceName =
     "wellProject" |
     "exploration" |
     "explorationWellDrillingSchedule" |
-    "developmentWellDrillingSchedule" | ProfileNames
+    "developmentWellDrillingSchedule" |
+    `${ProfileTypes}`
     
-export type ProfileNames = `${ProfileTypes}`
-
 export type ResourceObject =
     Components.Schemas.TopsideDto |
     Components.Schemas.SurfDto |

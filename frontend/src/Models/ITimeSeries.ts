@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { ProfileNames } from "./Interfaces"
+import { ProfileTypes } from "./enums"
 
 export interface ITimeSeries {
     id: string
@@ -43,7 +43,7 @@ export interface ITimeSeriesTableData {
     overridable: boolean
     resourceId: string
     resourcePropertyKey: string
-    resourceName: ProfileNames
+    resourceName: ProfileTypes
     editable: boolean
     total?: string
     hideIfEmpty?: boolean
