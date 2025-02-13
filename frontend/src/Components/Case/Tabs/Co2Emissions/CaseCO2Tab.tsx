@@ -18,7 +18,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { PhysUnit } from "@/Models/enums"
+import { PhysUnit, ProfileTypes } from "@/Models/enums"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -146,9 +146,9 @@ const CaseCO2Tab = () => {
                 overridable: true,
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
-                resourceName: "co2EmissionsOverride",
+                resourceName: ProfileTypes.Co2EmissionsOverride,
                 resourceId: drainageStrategyData?.id!,
-                resourcePropertyKey: "co2EmissionsOverride",
+                resourcePropertyKey: ProfileTypes.Co2EmissionsOverride,
             },
             {
                 profileName: "Year-by-year CO2 intensity",

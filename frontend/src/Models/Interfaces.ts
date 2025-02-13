@@ -23,11 +23,11 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
-    "netSalesGasOverride" | "co2EmissionsOverride" |
+    "netSalesGasOverride" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" | "projectSpecificDrillingCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
-    "co2EmissionsOverride" | "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
+    "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
