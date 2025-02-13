@@ -26,6 +26,7 @@ import {
     Note,
     SpecialNote,
 } from "../../shared.styles"
+import { ProfileTypes } from "@/Models/enums"
 
 interface Props {
     profileName: ProfileNames
@@ -53,7 +54,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         if (rowData?.resourceName === "co2EmissionsOverride") {
             return "co2Emissions"
         }
-        if (rowData?.resourceName === "netSalesGasOverride" || rowData?.resourceName === "productionProfileNetSalesGasOverride") {
+        if (rowData?.resourceName === ProfileTypes.NetSalesGasOverride) {
             return "netSalesGas"
         }
         if (rowData?.resourceName === "totalFeasibilityAndConceptStudiesOverride") {
