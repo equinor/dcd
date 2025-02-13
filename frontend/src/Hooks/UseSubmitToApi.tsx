@@ -209,7 +209,7 @@ export const useSubmitToApi = () => {
             drillingScheduleId,
         }
 
-        if (productionOverrideResources.find(x => x.toString() === resourceName)) {
+        if (productionOverrideResources.find((x) => x.toString() === resourceName)) {
             setIsCalculatingProductionOverrides(true)
             submitApiLogger.warn("Setting production overrides calculation flag")
         }
@@ -228,42 +228,42 @@ export const useSubmitToApi = () => {
             const result = await (async () => {
                 switch (resourceName) {
                 case "case":
-                    return await updateCase({
+                    return updateCase({
                         projectId, caseId, resourceObject,
                     })
 
                 case "topside":
-                    return await updateTopside({
+                    return updateTopside({
                         projectId, caseId, resourceObject,
                     })
 
                 case "surf":
-                    return await updateSurf({
+                    return updateSurf({
                         projectId, caseId, resourceObject,
                     })
 
                 case "substructure":
-                    return await updateSubstructure({
+                    return updateSubstructure({
                         projectId, caseId, resourceObject,
                     })
 
                 case "transport":
-                    return await updateTransport({
+                    return updateTransport({
                         projectId, caseId, resourceObject,
                     })
 
                 case "onshorePowerSupply":
-                    return await updateOnshorePowerSupply({
+                    return updateOnshorePowerSupply({
                         projectId, caseId, resourceObject,
                     })
 
                 case "drainageStrategy":
-                    return await updateDrainageStrategy({
+                    return updateDrainageStrategy({
                         projectId, caseId, resourceObject,
                     })
 
                 case "explorationWellDrillingSchedule":
-                    return await createOrUpdateDrillingSchedule(
+                    return createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
                             resourceId!,
@@ -288,7 +288,7 @@ export const useSubmitToApi = () => {
                     )
 
                 case "developmentWellDrillingSchedule":
-                    return await createOrUpdateDrillingSchedule(
+                    return createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
                             resourceId!,
@@ -311,10 +311,18 @@ export const useSubmitToApi = () => {
                                     resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                                 ),
                     )
+
+                case "campaign":
+                    return updateCampaign({
+                        projectId, caseId, resourceObject,
+                    })
+
+                default:
+                    console.log("Resource name not found", resourceName)
                 }
 
-                if (ordinaryTimeSeriesTypes.find(x => x === resourceName)) {
-                    return await saveTimeSeriesProfile({
+                if (ordinaryTimeSeriesTypes.find((x) => x === resourceName)) {
+                    return saveTimeSeriesProfile({
                         projectId,
                         caseId,
                         saveFunction: await (await GetCaseService()).saveProfile(
@@ -325,8 +333,8 @@ export const useSubmitToApi = () => {
                     })
                 }
 
-                if (overrideTimeSeriesTypes.find(x => x === resourceName)) {
-                    return await saveTimeSeriesProfile({
+                if (overrideTimeSeriesTypes.find((x) => x === resourceName)) {
+                    return saveTimeSeriesProfile({
                         projectId,
                         caseId,
                         saveFunction: await (await GetCaseService()).saveOverrideProfile(

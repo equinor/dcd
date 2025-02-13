@@ -18,6 +18,7 @@ import useEditCase from "@/Hooks/useEditCase"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ProfileTypes } from "@/Models/enums"
 
 const NameCellRenderer = (params: any) => {
     const { data } = params
@@ -53,7 +54,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     startYear: campaign.rigMobDemobProfile.startYear,
                     values: campaign.rigMobDemobProfile.values,
                 },
-                resourceName: "explorationWellCostProfile",
+                resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigMobDemobProfile",
                 overridable: true,
@@ -72,7 +73,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     startYear: campaign.rigUpgradingProfile.startYear,
                     values: campaign.rigUpgradingProfile.values,
                 },
-                resourceName: "explorationWellCostProfile",
+                resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigUpgradingProfile",
                 overridable: true,
@@ -91,7 +92,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     startYear: well.startYear,
                     values: well.values,
                 },
-                resourceName: "explorationWellCostProfile",
+                resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "campaignWell",
                 overridable: true,
@@ -164,7 +165,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
             <Grid container size={12} spacing={2} style={{ maxWidth: "600px" }}>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
-                        addEdit={addEdit}
                         resourceName="campaign"
                         resourcePropertyKey="rigUpgradingCost"
                         label="Rig upgrading cost - Exploration"
@@ -177,7 +177,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
-                        addEdit={addEdit}
                         resourceName="campaign"
                         resourcePropertyKey="rigMobDemobCost"
                         label="Rig mob/demob cost - Exploration"
@@ -205,7 +204,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                             tableName="Exploration campaign"
                             includeFooter
                             totalRowName="Total"
-                            addEdit={addEdit}
                             gridRef={ExplorationCampaignGridRef}
                         />
                     </div>
