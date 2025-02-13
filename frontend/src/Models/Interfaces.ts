@@ -16,7 +16,7 @@ export type ResourceName =
     
 export type ProfileNames =
     "gAndGAdminCost" |
-    "countryOfficeCost" | "explorationWellCostProfile" |
+    "countryOfficeCost" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
 
