@@ -44,7 +44,7 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ stageDependencies.DCD.outputs['DCD.frontendVersion'] ]
+        frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -61,7 +61,7 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ stageDependencies.DCD.outputs['DCD.frontendVersion'] ]
+        frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
 
   - template: templates/stage-deploy-fusion.yml
@@ -79,5 +79,5 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ stageDependencies.DCD.outputs['DCD.frontendVersion'] ]
+        frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
