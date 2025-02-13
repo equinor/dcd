@@ -75,7 +75,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
         if (rowData?.resourceName === "wellProjectOilProducerCostOverride") {
             return "oilProducerWell"
         }
-        if (rowData?.resourceName === "wellProjectGasProducerCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.GasProducerCostProfileOverride) {
             return "gasProducerWell"
         }
         if (rowData?.resourceName === ProfileTypes.WaterInjectorCostProfileOverride) {
@@ -112,7 +112,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
             return "cessationWells"
         case "wellProjectOilProducerCostOverride":
             return "oilProducerWell"
-        case "wellProjectGasProducerCostOverride":
+        case ProfileTypes.GasProducerCostProfileOverride:
             return "gasProducerWell"
         case ProfileTypes.WaterInjectorCostProfileOverride:
             return "waterInjectorWell"
