@@ -82,7 +82,7 @@ export const productionOverrideResources = [
     ProfileTypes.ProductionProfileOil,
     ProfileTypes.AdditionalProductionProfileOil,
     ProfileTypes.ProductionProfileGas,
-    "additionalProductionProfileGas",
+    ProfileTypes.AdditionalProductionProfileGas,
     "productionProfileWater",
     "productionProfileWaterInjection",
 ]
