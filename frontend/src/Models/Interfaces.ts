@@ -16,13 +16,13 @@ export type ResourceName =
     
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
     "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
-    "wellProjectWaterInjectorCostOverride" | "wellProjectGasInjectorCostOverride" | "gAndGAdminCost" |
+    "wellProjectWaterInjectorCostOverride" | "gAndGAdminCost" |
     "topsideCostProfileOverride" |
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
     "netSalesGasOverride" |
-    "oilProducerCostProfileOverride" | "gasInjectorCostProfileOverride" |
+    "oilProducerCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`

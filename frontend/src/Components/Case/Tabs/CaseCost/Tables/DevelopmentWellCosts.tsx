@@ -4,7 +4,7 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface DevelopmentWellCostsProps {
     tableYears: [number, number];
@@ -77,9 +77,9 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 profileName: "Gas injector",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
-                resourceName: "wellProjectGasInjectorCostOverride",
+                resourceName: ProfileTypes.GasInjectorCostProfileOverride,
                 resourceId: wellProjectId,
-                resourcePropertyKey: "wellProjectGasInjectorCostOverride",
+                resourcePropertyKey: ProfileTypes.GasInjectorCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellProjectGasInjectorCostOverrideData,
                 editable: true,
