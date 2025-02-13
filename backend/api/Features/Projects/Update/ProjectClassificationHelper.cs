@@ -15,8 +15,7 @@ public static class ProjectClassificationHelper
             return;
         }
 
-        if (currentUser.ApplicationRoles.Contains(ApplicationRole.Admin) ||
-            currentUser.ApplicationRoles.Contains(ApplicationRole.ReadOnly))
+        if (currentUser.ApplicationRoles.Contains(ApplicationRole.Admin))
         {
             return;
         }
