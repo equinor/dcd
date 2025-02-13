@@ -28,9 +28,6 @@ stages:
       azAppConfig: $(azureAppConfig)
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
-    # Define the frontendVersion as an output variable
-    outputs:
-      frontendVersion: $[ stageDependencies.DCD.outputs['Build_Fusion_App.frontendVersion'] ]
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
