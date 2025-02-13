@@ -28,8 +28,9 @@ stages:
               buildId=$(Build.BuildId)
               currentVersion=$(jq -r '.version' frontend/package.json)
               majorMinorVersion=$(echo $currentVersion | cut -d. -f1,2)
-              newVersion="$majorMinorVersion.$buildId"
-              sed -i 's/"version": "'$currentVersion'"/"version": "'$newVersion'"/' frontend/package.json
+              frontendVersion="$majorMinorVersion.$buildId"
+              sed -i 's/"version": "'$currentVersion'"/"version": "'$frontendVersion'"/' frontend/package.json
+              echo "##vso[task.setvariable variable=frontendVersion;isOutput=true]$frontendVersion"
             displayName: "Update version in package.json"
 
           - task: Npm@1
@@ -44,6 +45,8 @@ stages:
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
+    variables:
+      frontendVersion: $[ dependencies.Build_Fusion_App.outputs['Build_Fusion_App.frontendVersion'] ]
 
       # - job: "Build_backend_container_and_Push_To_acr"
       #   steps:
@@ -69,3 +72,4 @@ stages:
       #         registry: "DCD Registry"
       #         repository: "backend"
       #         buildId: $(Build.BuildId)
+
