@@ -29,55 +29,68 @@ stages:
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
 
-  - template: templates/stage-deploy-fusion.yml
-    parameters:
-        appName: Deploy_CI
-        envshortname: ci
-        envfullname: CI
-        portalUrl: $(FusionCIPortalUrl)
-        buildId: $(Build.BuildId)
-        radixToken: $(RadixToken)
-        branch: main
-        FusionEnvId: $(FusionAppIdCi)
-        FusionServiceConnection: 'conceptapp-preprod'
-        ContainerTag: "release"
-        SpAzureClientId: $(SpPreProdAzureClientId)
-        SpAzureClientSecret: $(SpPreProdAzureClientSecret)
-        AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ dependencies.Build_App.outputs['Build_Fusion_App.frontendVersion'] ]
+  - stage: Deploy_CI
+    dependsOn: Build_App
+    variables:
+      frontendVersion: $[ dependencies.Build_App.outputs['Build_Fusion_App.frontendVersion'] ]
+    jobs:
+      - template: templates/stage-deploy-fusion.yml
+        parameters:
+          appName: Deploy_CI
+          envshortname: ci
+          envfullname: CI
+          portalUrl: $(FusionCIPortalUrl)
+          buildId: $(Build.BuildId)
+          radixToken: $(RadixToken)
+          branch: main
+          FusionEnvId: $(FusionAppIdCi)
+          FusionServiceConnection: 'conceptapp-preprod'
+          ContainerTag: "release"
+          SpAzureClientId: $(SpPreProdAzureClientId)
+          SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+          AzureTenantId: $(SpAzureTenantId)
+          frontendVersion: $(frontendVersion)
 
-  - template: templates/stage-deploy-fusion.yml
-    parameters:
-        appName: Deploy_QA
-        envshortname: qa
-        envfullname: QA
-        portalUrl: $(FusionQAPortalUrl)
-        buildId: $(Build.BuildId)
-        radixToken: $(RadixToken)
-        branch: main
-        FusionEnvId: $(FusionAppIdQA)
-        FusionServiceConnection: 'conceptapp-preprod'
-        ContainerTag: "release"
-        SpAzureClientId: $(SpPreProdAzureClientId)
-        SpAzureClientSecret: $(SpPreProdAzureClientSecret)
-        AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ dependencies.Build_App.outputs['Build_Fusion_App.frontendVersion'] ]
+  - stage: Deploy_QA
+    dependsOn: Build_App
+    variables:
+      frontendVersion: $[ dependencies.Build_App.outputs['Build_Fusion_App.frontendVersion'] ]
+    jobs:
+      - template: templates/stage-deploy-fusion.yml
+        parameters:
+          appName: Deploy_QA
+          envshortname: qa
+          envfullname: QA
+          portalUrl: $(FusionQAPortalUrl)
+          buildId: $(Build.BuildId)
+          radixToken: $(RadixToken)
+          branch: main
+          FusionEnvId: $(FusionAppIdQA)
+          FusionServiceConnection: 'conceptapp-preprod'
+          ContainerTag: "release"
+          SpAzureClientId: $(SpPreProdAzureClientId)
+          SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+          AzureTenantId: $(SpAzureTenantId)
+          frontendVersion: $(frontendVersion)
 
-
-  - template: templates/stage-deploy-fusion.yml
-    parameters:
-        appName: Deploy_Prod
-        envshortname: prod
-        envfullname: Production
-        portalUrl: $(FusionPRDPortalUrl)
-        buildId: $(Build.BuildId)
-        radixToken: $(RadixToken)
-        branch: main
-        FusionEnvId: $(FusionAppIdFPRD)
-        FusionServiceConnection: 'conceptapp-prod'
-        ContainerTag: "release"
-        SpAzureClientId: $(SpPreProdAzureClientId)
-        SpAzureClientSecret: $(SpPreProdAzureClientSecret)
-        AzureTenantId: $(SpAzureTenantId)
-        frontendVersion: $[ dependencies.Build_App.outputs['Build_Fusion_App.frontendVersion'] ]
-
+  - stage: Deploy_Prod
+    dependsOn: Build_App
+    variables:
+      frontendVersion: $[ dependencies.Build_App.outputs['Build_Fusion_App.frontendVersion'] ]
+    jobs:
+      - template: templates/stage-deploy-fusion.yml
+        parameters:
+          appName: Deploy_Prod
+          envshortname: prod
+          envfullname: Production
+          portalUrl: $(FusionPRDPortalUrl)
+          buildId: $(Build.BuildId)
+          radixToken: $(RadixToken)
+          branch: main
+          FusionEnvId: $(FusionAppIdFPRD)
+          FusionServiceConnection: 'conceptapp-prod'
+          ContainerTag: "release"
+          SpAzureClientId: $(SpPreProdAzureClientId)
+          SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+          AzureTenantId: $(SpAzureTenantId)
+          frontendVersion: $(frontendVersion)

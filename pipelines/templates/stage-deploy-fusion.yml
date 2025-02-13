@@ -16,7 +16,7 @@ parameters:
 
 stages:
     - stage: ${{ parameters.appName }}
-      displayName: "Deploy  ${{ parameters.envshortname }}"
+      displayName: "Deploy ${{ parameters.envshortname }}"
       jobs:
           - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
             environment: ${{ parameters.envfullname }}

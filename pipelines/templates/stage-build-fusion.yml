@@ -45,8 +45,6 @@ stages:
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
-    variables:
-      frontendVersion: $[ dependencies.Build_Fusion_App.outputs['Build_Fusion_App.frontendVersion'] ]
 
       # - job: "Build_backend_container_and_Push_To_acr"
       #   steps:
