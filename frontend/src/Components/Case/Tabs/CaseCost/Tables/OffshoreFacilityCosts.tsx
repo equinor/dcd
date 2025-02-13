@@ -4,7 +4,7 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
@@ -83,9 +83,9 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 profileName: "Transport system",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
-                resourceName: "transportCostOverride",
+                resourceName: ProfileTypes.TransportCostProfileOverride,
                 resourceId: transport.id,
-                resourcePropertyKey: "transportCostOverride",
+                resourcePropertyKey: ProfileTypes.TransportCostProfileOverride,
                 overridable: true,
                 overrideProfile: transportCostOverrideData,
                 editable: true,
