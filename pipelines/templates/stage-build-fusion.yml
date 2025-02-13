@@ -30,7 +30,6 @@ stages:
               majorMinorVersion=$(echo $currentVersion | cut -d. -f1,2)
               frontendVersion="$majorMinorVersion.$buildId"
               sed -i 's/"version": "'$currentVersion'"/"version": "'$frontendVersion'"/' frontend/package.json
-              echo "##vso[task.setvariable variable=frontendVersion;isOutput=true]$frontendVersion"
             displayName: "Update version in package.json"
             name: "UpdateVersion"
 
