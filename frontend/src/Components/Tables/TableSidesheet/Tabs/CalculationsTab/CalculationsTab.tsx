@@ -42,10 +42,10 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
     // determine which calculation to show
     const getCalculationType = () => {
         // Check resource name first
-        if (rowData?.resourceName === "gAndGAdminCost" || rowData?.resourceName === "gAndGAdminCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.GAndGAdminCost || rowData?.resourceName === ProfileTypes.GAndGAdminCostOverride) {
             return "gAndGAdmin"
         }
-        if (rowData?.resourceName === "cessationOffshoreFacilitiesCostOverride") {
+        if (rowData?.resourceName === ProfileTypes.CessationOffshoreFacilitiesCostOverride) {
             return "cessationOffshoreFacilities"
         }
         if (rowData?.resourceName === ProfileTypes.FuelFlaringAndLossesOverride) {
@@ -90,7 +90,7 @@ const CalculationsTab: React.FC<Props> = ({ profileName, rowData = [] }: Props) 
 
         // Fallback to profile name checks
         switch (profileName) {
-        case "gAndGAdminCost":
+        case ProfileTypes.GAndGAdminCostOverride:
             return "gAndGAdmin"
         case ProfileTypes.CessationOffshoreFacilitiesCostOverride:
             return "cessationOffshoreFacilities"
