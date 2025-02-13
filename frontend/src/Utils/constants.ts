@@ -80,7 +80,7 @@ export const projectTabNames = [
 
 export const productionOverrideResources = [
     ProfileTypes.ProductionProfileOil,
-    "additionalProductionProfileOil",
+    ProfileTypes.AdditionalProductionProfileOil,
     "productionProfileGas",
     "additionalProductionProfileGas",
     "productionProfileWater",
