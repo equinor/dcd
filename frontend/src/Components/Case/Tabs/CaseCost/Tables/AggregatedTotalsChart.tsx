@@ -3,10 +3,9 @@ import { AgCharts } from "ag-charts-react"
 import Grid from "@mui/material/Grid2"
 
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { ProfileNames } from "@/Models/Interfaces"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -108,7 +107,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
             Object.entries(profiles).forEach(([profileName, profileData]) => {
                 const aggregatedProfile = aggregateProfiles(profileData, dg4Year)
-                const resourceName: ProfileNames = profileName as ProfileNames
+                const resourceName: ProfileTypes = profileName as ProfileTypes
 
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),

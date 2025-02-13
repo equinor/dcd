@@ -4,7 +4,7 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -34,9 +34,9 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 profileName: "Historic cost",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
-                resourceName: "historicCostCostProfile",
+                resourceName: ProfileTypes.HistoricCostCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "historicCostCostProfile",
+                resourcePropertyKey: ProfileTypes.HistoricCostCostProfile,
                 editable: true,
                 overridable: false,
             },
@@ -44,9 +44,9 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 profileName: "Well intervention",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
-                resourceName: "wellInterventionCostProfileOverride",
+                resourceName: ProfileTypes.WellInterventionCostProfileOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "wellInterventionCostProfileOverride",
+                resourcePropertyKey: ProfileTypes.WellInterventionCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellInterventionCostProfileOverrideData,
                 editable: true,
@@ -55,9 +55,9 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 profileName: "Offshore facilities operations",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
-                resourceName: "offshoreFacilitiesOperationsCostProfileOverride",
+                resourceName: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "offshoreFacilitiesOperationsCostProfileOverride",
+                resourcePropertyKey: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
                 overridable: true,
                 overrideProfile: offshoreFacilitiesOperationsCostProfileOverrideData,
                 editable: true,
@@ -66,9 +66,9 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 profileName: "Onshore related OPEX (input req.)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOPEXCostProfileData,
-                resourceName: "onshoreRelatedOPEXCostProfile",
+                resourceName: ProfileTypes.OnshoreRelatedOPEXCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "onshoreRelatedOPEXCostProfile",
+                resourcePropertyKey: ProfileTypes.OnshoreRelatedOPEXCostProfile,
                 editable: true,
                 overridable: false,
             },
@@ -76,9 +76,9 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 profileName: "Additional OPEX (input req.)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: additionalOPEXCostProfileData,
-                resourceName: "additionalOPEXCostProfile",
+                resourceName: ProfileTypes.AdditionalOPEXCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "additionalOPEXCostProfile",
+                resourcePropertyKey: ProfileTypes.AdditionalOPEXCostProfile,
                 editable: true,
                 overridable: false,
             },

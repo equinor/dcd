@@ -120,7 +120,7 @@ const SidesheetWrapper = ({
         },
         {
             label: "Calculations",
-            content: <CalculationsTab profileName={headerData.title} rowData={rowData} />,
+            content: <CalculationsTab profileType={headerData.title} rowData={rowData} />,
         },
         {
             label: "Edit history",
