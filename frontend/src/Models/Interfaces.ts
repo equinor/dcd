@@ -15,8 +15,7 @@ export type ResourceName =
     "developmentWellDrillingSchedule" | ProfileNames
     
 export type ProfileNames =
-    "gAndGAdminCost" |
-    "co2Intensity" | `${ProfileTypes}`
+    "gAndGAdminCost" | `${ProfileTypes}`
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |

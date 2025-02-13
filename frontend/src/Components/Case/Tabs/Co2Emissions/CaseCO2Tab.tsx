@@ -156,9 +156,9 @@ const CaseCO2Tab = () => {
                 profile: co2IntensityData,
                 overridable: false,
                 editable: false,
-                resourceName: "co2Intensity",
+                resourceName: ProfileTypes.Co2Intensity,
                 resourceId: drainageStrategyData?.id!,
-                resourcePropertyKey: "co2Intensity",
+                resourcePropertyKey: ProfileTypes.Co2Intensity,
             },
         ]
         setTimeSeriesData(newTimeSeriesData)
