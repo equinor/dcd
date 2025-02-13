@@ -18,7 +18,6 @@ export type ProfileNames =
     "gAndGAdminCost" |
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
-    "substructureCostProfileOverride" |
     "countryOfficeCost" | "explorationWellCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
     "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride" | `${ProfileTypes}`
