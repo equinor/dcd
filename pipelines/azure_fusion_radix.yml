@@ -32,6 +32,7 @@ stages:
   - template: templates/stage-deploy-fusion.yml
     parameters:
         appName: Deploy_CI
+        fusionEnvironment: ci
         envshortname: ci
         envfullname: CI
         portalUrl: $(FusionCIPortalUrl)
@@ -48,6 +49,7 @@ stages:
   - template: templates/stage-deploy-fusion.yml
     parameters:
         appName: Deploy_QA
+        fusionEnvironment: fqa
         envshortname: qa
         envfullname: QA
         portalUrl: $(FusionQAPortalUrl)
@@ -64,6 +66,7 @@ stages:
   - template: templates/stage-deploy-fusion.yml
     parameters:
         appName: Deploy_Prod
+        fusionEnvironment: fprd
         envshortname: prod
         envfullname: Production
         portalUrl: $(FusionPRDPortalUrl)

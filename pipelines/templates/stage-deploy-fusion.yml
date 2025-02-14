@@ -1,5 +1,6 @@
 parameters:
   - name: appName
+  - name: fusionEnvironment
   - name: envshortname
   - name: envfullname
   - name: portalUrl
@@ -74,7 +75,7 @@ stages:
                       # Tag build with latest
                       echo "envshortname: ${{ parameters.envshortname }}"
                       echo "frontendVersion: $(frontendVersion)"
-                      npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.envshortname }} -v $(frontendVersion)
+                      npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.fusionEnvironment }} -v $(frontendVersion)
                   env:
                     FUSION_TOKEN: $(FUSION_TOKEN)
 
