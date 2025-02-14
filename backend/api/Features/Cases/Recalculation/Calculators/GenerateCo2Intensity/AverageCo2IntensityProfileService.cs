@@ -19,7 +19,10 @@ public static class AverageCo2IntensityProfileService
             if (denominator > 0)
             {
                 caseItem.AverageCo2Intensity = co2EmissionsProfile * 1000 / denominator;
+                return;
             }
         }
+
+        caseItem.AverageCo2Intensity = 0;
     }
 }
