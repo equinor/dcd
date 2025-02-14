@@ -1,6 +1,8 @@
 using api.Features.Profiles;
 using api.Models;
 
+using static api.Features.Profiles.VolumeConstants;
+
 namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
 public static class AverageCo2IntensityProfileService
@@ -14,7 +16,7 @@ public static class AverageCo2IntensityProfileService
 
         if (co2IntensityData != null && co2IntensityData.Values.Any())
         {
-            var denominator = (oilProductionSum + netSalesGasSum) * 6.29;
+            var denominator = (oilProductionSum + netSalesGasSum) * BarrelsPerCubicMeter;
 
             if (denominator > 0)
             {

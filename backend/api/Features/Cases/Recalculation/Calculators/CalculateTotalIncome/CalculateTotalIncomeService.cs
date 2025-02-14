@@ -4,6 +4,8 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
+using static api.Features.Profiles.VolumeConstants;
+
 namespace api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 
 public static class CalculateTotalIncomeService
@@ -13,7 +15,6 @@ public static class CalculateTotalIncomeService
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
-        var cubicMetersToBarrelsFactor = 6.29;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
@@ -21,7 +22,7 @@ public static class CalculateTotalIncomeService
         );
 
         // Convert oil production from million sm³ to barrels in millions
-        var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * cubicMetersToBarrelsFactor).ToArray();
+        var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * BarrelsPerCubicMeter).ToArray();
 
         var oilIncome = new TimeSeriesCost
         {

@@ -1,5 +1,7 @@
 using api.Models.Enums;
 
+using static api.Features.Profiles.VolumeConstants;
+
 namespace api.Features.Profiles;
 
 public static class UnitConversionHelpers
@@ -24,7 +26,7 @@ public static class UnitConversionHelpers
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)
     {
         var conversionFactor = GetConversionFactor(type, unit, toDto: true);
-        return Array.ConvertAll(values, x => x * conversionFactor);
+        return Array.ConvertAll(values, x => Math.Round(x * conversionFactor, 10));
     }
 
     public static double[] ConvertValuesFromDto(double[]? values, PhysUnit unit, string type)
@@ -36,14 +38,14 @@ public static class UnitConversionHelpers
 
         var conversionFactor = GetConversionFactor(type, unit, toDto: false);
 
-        return Array.ConvertAll(values, x => x * conversionFactor);
+        return Array.ConvertAll(values, x => Math.Round(x * conversionFactor, 10));
     }
 
     private static double GetConversionFactor(string type, PhysUnit unit, bool toDto)
     {
         var returnValue = 1.0;
 
-        if (ConversionFactors.TryGetValue(type, out double conversionFactor))
+        if (ConversionFactors.TryGetValue(type, out var conversionFactor))
         {
             returnValue = toDto ? 1.0 / conversionFactor : conversionFactor;
         }
@@ -56,7 +58,9 @@ public static class UnitConversionHelpers
                 case ProfileTypes.AdditionalProductionProfileOil:
                 case ProfileTypes.ProductionProfileWater:
                 case ProfileTypes.ProductionProfileWaterInjection:
-                    return toDto ? 6.290 * returnValue : 1.0 / 6.290 * returnValue;
+                    return toDto
+                        ? BarrelsPerCubicMeter * returnValue
+                        : 1.0 / BarrelsPerCubicMeter * returnValue;
                 case ProfileTypes.ProductionProfileGas:
                 case ProfileTypes.AdditionalProductionProfileGas:
                 case ProfileTypes.FuelFlaringAndLosses:
@@ -65,7 +69,9 @@ public static class UnitConversionHelpers
                 case ProfileTypes.DeferredGasProduction:
                 case ProfileTypes.NetSalesGas:
                 case ProfileTypes.NetSalesGasOverride:
-                    return toDto ? 35.315 * returnValue : 1.0 / 35.315 * returnValue;
+                    return toDto
+                        ? CubicFeetPerCubicMeter * returnValue
+                        : 1.0 / CubicFeetPerCubicMeter * returnValue;
             }
         }
 

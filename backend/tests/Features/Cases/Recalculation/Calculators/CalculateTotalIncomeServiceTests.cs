@@ -4,6 +4,8 @@ using api.Models;
 
 using Xunit;
 
+using static api.Features.Profiles.VolumeConstants;
+
 namespace tests.Features.Cases.Recalculation.Calculators;
 
 public class CalculateTotalIncomeServiceTests
@@ -27,42 +29,45 @@ public class CalculateTotalIncomeServiceTests
             Project = project,
             ProjectId = project.Id,
             DrainageStrategyId = Guid.NewGuid(),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileOil,
                     StartYear = 2020,
                     Values = [1000000.0, 2000000.0, 3000000.0] // SM³
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.AdditionalProductionProfileOil,
                     StartYear = 2020,
                     Values = [1000000.0, 2000000.0] // SM³
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileGas,
                     StartYear = 2020,
                     Values = [1000000000.0, 2000000000.0, 3000000000.0] // SM³
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.AdditionalProductionProfileGas,
                     StartYear = 2020,
                     Values = [1000000000.0, 2000000000.0] // SM³
                 }
-            }
+            ]
         };
 
         // Act
         CalculateTotalIncomeService.RunCalculation(caseItem);
 
         // Assert
-        var expectedFirstYearIncome = (2 * 1000000.0 * 75 * 6.29 * 10 + 2 * 1000000000.0 * 3) / 1000000;
-        var expectedSecondYearIncome = (4 * 1000000.0 * 75 * 6.29 * 10 + 4 * 1000000000.0 * 3) / 1000000;
-        var expectedThirdYearIncome = (3 * 1000000.0 * 75 * 6.29 * 10 + 3 * 1000000000.0 * 3) / 1000000;
+        var expectedFirstYearIncome = (2 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 2 * 1000000000.0 * 3) / 1000000;
+        var expectedSecondYearIncome = (4 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 4 * 1000000000.0 * 3) / 1000000;
+        var expectedThirdYearIncome = (3 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 3 * 1000000000.0 * 3) / 1000000;
 
         var calculatedTotalIncomeCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);
         Assert.NotNull(calculatedTotalIncomeCostProfile);
@@ -92,21 +97,22 @@ public class CalculateTotalIncomeServiceTests
             Project = project,
             ProjectId = project.Id,
             DrainageStrategyId = Guid.NewGuid(),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileOil,
                     StartYear = 2020,
                     Values = [0.0, 0.0, 0.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileGas,
                     StartYear = 2020,
                     Values = [0.0, 0.0, 0.0]
                 }
-            }
+            ]
         };
 
         // Act

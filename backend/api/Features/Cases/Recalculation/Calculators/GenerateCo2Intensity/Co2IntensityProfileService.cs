@@ -3,6 +3,8 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
+using static api.Features.Profiles.VolumeConstants;
+
 namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
 public static class Co2IntensityProfileService
@@ -13,8 +15,6 @@ public static class Co2IntensityProfileService
         var co2EmissionsProfile = GetCo2EmissionsProfile(caseItem);
 
         var co2IntensityValues = new List<double>();
-
-        const double boeConversionFactor = 6.29;
 
         var yearDifference = co2EmissionsProfile.StartYear - totalExportedVolumes.StartYear;
 
@@ -30,7 +30,7 @@ public static class Co2IntensityProfileService
             if (totalExportedVolumes.Values[totalExportedVolumesIndex] != 0)
             {
                 var totalExportedVolumesValue = totalExportedVolumes.Values[totalExportedVolumesIndex];
-                var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue * boeConversionFactor);
+                var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue * BarrelsPerCubicMeter);
                 co2IntensityValues.Add(co2Intensity);
             }
         }
