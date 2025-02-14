@@ -15,19 +15,19 @@ import { cellStyleRightAlign } from "@/Utils/common"
 import { GetWellService } from "@/Services/WellService"
 import { TableWell } from "@/Models/Wells"
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
-import { Currency } from "@/Models/enums"
+import { Currency, WellCategory } from "@/Models/enums"
 
   interface WellsTableProps {
     rowData: TableWell[]
     editMode: boolean
     isEditDisabled: boolean
-    wellOptions: Array<{ key: string; value: number; label: string }>
+    wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
       projectId: string,
       updatePayload: Components.Schemas.UpdateWellsDto,
     ) => void
-    defaultWellCategory: number
+    defaultWellCategory: WellCategory
     wellStagedForDeletion: any
     setWellStagedForDeletion: Dispatch<SetStateAction<any>>
   }

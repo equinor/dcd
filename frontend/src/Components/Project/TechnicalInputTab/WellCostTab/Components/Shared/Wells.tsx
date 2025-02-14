@@ -11,12 +11,13 @@ import { useDataFetch } from "@/Hooks"
 import { useAppStore } from "@/Store/AppStore"
 import { TableWell } from "@/Models/Wells"
 import { SectionHeader } from "./SharedWellStyles"
+import { WellCategory } from "@/Models/enums"
 
 interface WellsProps {
     title: string
     addButtonText: string
-    defaultWellCategory: number
-    wellOptions: Array<{ key: string; value: number; label: string }>
+    defaultWellCategory: WellCategory
+    wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     filterWells: (well: Components.Schemas.WellOverviewDto) => boolean
 }
 
@@ -44,8 +45,7 @@ const Wells: React.FC<WellsProps> = ({
         const tableWells: TableWell[] = wells.map((w) => ({
             id: w.id!,
             name: w.name ?? "",
-            wellCategory: w.wellCategory
-                || (defaultWellCategory as Components.Schemas.WellCategory),
+            wellCategory: w.wellCategory || defaultWellCategory,
             drillingDays: w.drillingDays ?? 0,
             wellCost: w.wellCost ?? 0,
             well: w,
@@ -55,13 +55,13 @@ const Wells: React.FC<WellsProps> = ({
         setRowData(tableWells)
     }
 
-    const createWell = async (category: number) => {
+    const createWell = async (category: WellCategory) => {
         if (!revisionAndProjectData) {
             return
         }
 
         const newWell: Components.Schemas.CreateWellDto = {
-            wellCategory: category as Components.Schemas.WellCategory,
+            wellCategory: category,
             name: "New well",
             wellInterventionCost: 0,
             plugingAndAbandonmentCost: 0,

@@ -10,14 +10,23 @@ namespace api.AppInfrastructure;
 public static class DcdTypescriptGenerator
 {
     private static readonly List<Type> EnumTypes = [
-        typeof(NoAccessReason),
-        typeof(ProjectPhase),
-        typeof(Currency),
-        typeof(PhysUnit),
+        typeof(ArtificialLift),
+        typeof(CampaignType),
         typeof(Concept),
+        typeof(Currency),
+        typeof(GasSolution),
+        typeof(InternalProjectPhase),
+        typeof(Maturity),
+        typeof(NoAccessReason),
+        typeof(PhysUnit),
+        typeof(ProductionFlowline),
+        typeof(ProductionStrategyOverview),
+        typeof(ProjectCategory),
+        typeof(ProjectClassification),
         typeof(ProjectMemberRole),
+        typeof(ProjectPhase),
         typeof(Source),
-        typeof(CampaignType)
+        typeof(WellCategory)
     ];
 
     private static readonly List<Type> ConstantTypes =

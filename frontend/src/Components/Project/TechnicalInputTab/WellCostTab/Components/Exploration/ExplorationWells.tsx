@@ -1,18 +1,19 @@
 import { isExplorationWell } from "@/Utils/common"
 import Wells from "../Shared/Wells"
+import { WellCategory } from "@/Models/enums"
 
 const ExplorationWells = () => {
     const wellOptions = [
-        { key: "4", value: 4, label: "Exploration well" },
-        { key: "5", value: 5, label: "Appraisal well" },
-        { key: "6", value: 6, label: "Sidetrack" },
+        { key: "4", value: WellCategory.Exploration_Well, label: "Exploration well" },
+        { key: "5", value: WellCategory.Appraisal_Well, label: "Appraisal well" },
+        { key: "6", value: WellCategory.Sidetrack, label: "Sidetrack" },
     ]
 
     return (
         <Wells
             title="Exploration Well Costs"
             addButtonText="Add new exploration well type"
-            defaultWellCategory={4}
+            defaultWellCategory={WellCategory.Exploration_Well}
             wellOptions={wellOptions}
             filterWells={isExplorationWell}
         />

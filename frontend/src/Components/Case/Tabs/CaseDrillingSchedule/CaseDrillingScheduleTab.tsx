@@ -14,6 +14,7 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
+import { WellCategory } from "@/Models/enums"
 
 const CaseDrillingScheduleTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -56,11 +57,11 @@ const CaseDrillingScheduleTab = () => {
         }
     }, [activeTabCase, apiData])
 
-    const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
+    const sumWellsForWellCategory = (category: WellCategory): number => {
         if (!apiData) { return 0 }
 
         if (wells && wells.length > 0) {
-            if (category >= 4) {
+            if ([WellCategory.Exploration_Well, WellCategory.Appraisal_Well, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -90,13 +91,13 @@ const CaseDrillingScheduleTab = () => {
 
     useEffect(() => {
         if (activeTabCase === 3) {
-            setOilProducerCount(sumWellsForWellCategory(0))
-            setGasProducerCount(sumWellsForWellCategory(1))
-            setWaterInjectorCount(sumWellsForWellCategory(2))
-            setGasInjectorCount(sumWellsForWellCategory(3))
-            setExplorationWellCount(sumWellsForWellCategory(4))
-            setAppraisalWellCount(sumWellsForWellCategory(5))
-            setSidetrackCount(sumWellsForWellCategory(6))
+            setOilProducerCount(sumWellsForWellCategory(WellCategory.Oil_Producer))
+            setGasProducerCount(sumWellsForWellCategory(WellCategory.Gas_Producer))
+            setWaterInjectorCount(sumWellsForWellCategory(WellCategory.Water_Injector))
+            setGasInjectorCount(sumWellsForWellCategory(WellCategory.Gas_Injector))
+            setExplorationWellCount(sumWellsForWellCategory(WellCategory.Exploration_Well))
+            setAppraisalWellCount(sumWellsForWellCategory(WellCategory.Appraisal_Well))
+            setSidetrackCount(sumWellsForWellCategory(WellCategory.Sidetrack))
         }
     }, [apiData, wells, activeTabCase])
 
