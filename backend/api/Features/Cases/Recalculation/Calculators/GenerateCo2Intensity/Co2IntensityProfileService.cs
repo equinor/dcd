@@ -15,22 +15,21 @@ public static class Co2IntensityProfileService
         var co2IntensityValues = new List<double>();
 
         const double boeConversionFactor = 6.29;
-        var yearDifference = 0;
-        if (co2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
-        {
-            yearDifference = co2EmissionsProfile.StartYear - totalExportedVolumes.StartYear;
-        }
+
+        var yearDifference = co2EmissionsProfile.StartYear - totalExportedVolumes.StartYear;
 
         for (var i = 0; i < co2EmissionsProfile.Values.Length; i++)
         {
-            if (yearDifference + i < 0)
+            var totalExportedVolumesIndex = i + yearDifference;
+
+            if (totalExportedVolumesIndex < 0 || totalExportedVolumesIndex >= totalExportedVolumes.Values.Length)
             {
                 continue;
             }
 
-            if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
+            if (totalExportedVolumes.Values[totalExportedVolumesIndex] != 0)
             {
-                var totalExportedVolumesValue = totalExportedVolumes.Values[i];
+                var totalExportedVolumesValue = totalExportedVolumes.Values[totalExportedVolumesIndex];
                 var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue * boeConversionFactor);
                 co2IntensityValues.Add(co2Intensity);
             }
