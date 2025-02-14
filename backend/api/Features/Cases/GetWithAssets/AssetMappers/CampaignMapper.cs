@@ -1,5 +1,6 @@
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Cases.GetWithAssets.AssetMappers;
 

@@ -3,7 +3,6 @@ using System.Text;
 
 using api.Features.Profiles;
 using api.Features.Projects.Exists;
-using api.Models;
 using api.Models.Enums;
 
 namespace api.AppInfrastructure;

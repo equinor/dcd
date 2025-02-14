@@ -1,5 +1,6 @@
 using api.AppInfrastructure.Authorization;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Projects.Update;
 

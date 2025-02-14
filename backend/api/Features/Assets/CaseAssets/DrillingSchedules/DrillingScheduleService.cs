@@ -4,6 +4,7 @@ using api.Exceptions;
 using api.Features.Cases.Recalculation;
 using api.Features.Profiles.Dtos;
 using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 

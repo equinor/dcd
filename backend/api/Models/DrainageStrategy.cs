@@ -1,3 +1,4 @@
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
@@ -23,10 +24,4 @@ public class DrainageStrategy : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
     #endregion
-}
-
-public enum GasSolution
-{
-    Export,
-    Injection,
 }

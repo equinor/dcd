@@ -3,6 +3,7 @@ using api.Exceptions;
 using api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 

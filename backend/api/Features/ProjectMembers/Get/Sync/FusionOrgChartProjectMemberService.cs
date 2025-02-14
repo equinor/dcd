@@ -2,6 +2,7 @@ using api.Context;
 using api.Exceptions;
 using api.Features.ProjectMembers.Get.Sync.Models;
 using api.Models;
+using api.Models.Enums;
 
 using Fusion.Integration;
 

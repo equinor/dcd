@@ -1,4 +1,4 @@
-using api.Models;
+using api.Models.Enums;
 
 using DocumentFormat.OpenXml.Spreadsheet;
 

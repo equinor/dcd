@@ -1,3 +1,4 @@
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
@@ -53,70 +54,4 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
     #endregion
-}
-
-public enum PhysUnit
-{
-    SI,
-    OilField,
-}
-
-public enum Currency
-{
-    NOK = 1,
-    USD = 2,
-}
-
-public enum InternalProjectPhase
-{
-    APbo, // Approval Point Business Opportunity
-    BOR, // Business Opportunity Reconfirmation
-    VPbo, // Valid Point Business Opportunity
-}
-public enum ProjectPhase
-{
-    Null,
-    BidPreparations,
-    BusinessIdentification,
-    BusinessPlanning, // DG0
-    ConceptPlanning, // DG1
-    ConcessionNegotiations,
-    Definition,
-    Execution,
-    Operation,
-    ScreeningBusinessOpportunities,
-}
-
-public enum ProjectCategory
-{
-    Null,
-    Brownfield,
-    Cessation,
-    DrillingUpgrade,
-    Onshore,
-    Pipeline,
-    PlatformFpso,
-    Subsea,
-    Solar,
-    Co2Storage,
-    Efuel,
-    Nuclear,
-    Co2Capture,
-    Fpso,
-    Hydrogen,
-    Hse,
-    OffshoreWind,
-    Platform,
-    PowerFromShore,
-    TieIn,
-    RenewableOther,
-    Ccs,
-}
-
-public enum ProjectClassification
-{
-    Open,
-    Internal,
-    Restricted,
-    Confidential
 }
