@@ -273,7 +273,7 @@ const CaseSummaryTab = () => {
                 newOpexTimeSeriesData,
             ])
         }
-    }, [revisionAndProjectData, tableYears])
+    }, [tableYears])
 
     const caseData = apiData?.case
 
