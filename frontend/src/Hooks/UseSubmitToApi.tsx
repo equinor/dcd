@@ -314,7 +314,7 @@ export const useSubmitToApi = () => {
 
                 case "campaign":
                     return updateCampaign({
-                        projectId, caseId, resourceObject,
+                        projectId, caseId, resourceId, resourceObject,
                     })
 
                 default:
