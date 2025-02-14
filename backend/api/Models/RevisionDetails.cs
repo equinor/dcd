@@ -1,3 +1,4 @@
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;

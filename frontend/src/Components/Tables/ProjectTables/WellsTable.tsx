@@ -15,19 +15,19 @@ import { cellStyleRightAlign } from "@/Utils/common"
 import { GetWellService } from "@/Services/WellService"
 import { TableWell } from "@/Models/Wells"
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
-import { Currency } from "@/Models/enums"
+import { Currency, WellCategory } from "@/Models/enums"
 
   interface WellsTableProps {
     rowData: TableWell[]
     editMode: boolean
     isEditDisabled: boolean
-    wellOptions: Array<{ key: string; value: number; label: string }>
+    wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
       projectId: string,
       updatePayload: Components.Schemas.UpdateWellsDto,
     ) => void
-    defaultWellCategory: number
+    defaultWellCategory: WellCategory
     wellStagedForDeletion: any
     setWellStagedForDeletion: Dispatch<SetStateAction<any>>
   }
@@ -60,18 +60,11 @@ const WellsTable: React.FC<WellsTableProps> = ({
         const updatedWell: Components.Schemas.UpdateWellDto = {
             id: previousData.id,
             name: updatedData.name || previousData.name || "",
-            wellCategory:
-          updatedData.wellCategory
-          || previousData.wellCategory
-          || defaultWellCategory,
-            drillingDays:
-          updatedData.drillingDays !== undefined
-              ? updatedData.drillingDays
-              : previousData.drillingDays ?? 0,
-            wellCost:
-          updatedData.wellCost !== undefined
-              ? updatedData.wellCost
-              : previousData.wellCost ?? 0,
+            wellCategory: updatedData.wellCategory || previousData.wellCategory || defaultWellCategory,
+            drillingDays: updatedData.drillingDays !== undefined ? updatedData.drillingDays : previousData.drillingDays ?? 0,
+            wellCost: updatedData.wellCost !== undefined ? updatedData.wellCost : previousData.wellCost ?? 0,
+            wellInterventionCost: updatedData.wellInterventionCost !== undefined ? updatedData.wellInterventionCost : previousData.wellInterventionCost ?? 0,
+            plugingAndAbandonmentCost: updatedData.plugingAndAbandonmentCost !== undefined ? updatedData.plugingAndAbandonmentCost : previousData.plugingAndAbandonmentCost ?? 0,
         }
 
         const updatePayload: Components.Schemas.UpdateWellsDto = {

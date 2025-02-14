@@ -1,5 +1,6 @@
 using api.Context;
 using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 

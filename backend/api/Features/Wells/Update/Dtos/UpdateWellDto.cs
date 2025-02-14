@@ -1,16 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Wells.Update.Dtos;
 
 public class UpdateWellDto
 {
-    [Required] public Guid Id { get; set; }
-    public string? Name { get; set; }
-    public double WellInterventionCost { get; set; }
-    public double PlugingAndAbandonmentCost { get; set; }
-    public WellCategory WellCategory { get; set; }
-    public double WellCost { get; set; }
-    public double DrillingDays { get; set; }
+    [Required] public required Guid Id { get; set; }
+    [Required] public required string Name { get; set; }
+    [Required] public required double WellInterventionCost { get; set; }
+    [Required] public required double PlugingAndAbandonmentCost { get; set; }
+    [Required] public required WellCategory WellCategory { get; set; }
+    [Required] public required double WellCost { get; set; }
+    [Required] public required double DrillingDays { get; set; }
 }

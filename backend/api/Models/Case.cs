@@ -1,3 +1,4 @@
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
@@ -93,21 +94,4 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
         return newProfile;
     }
-}
-
-public enum ArtificialLift
-{
-    NoArtificialLift,
-    GasLift,
-    ElectricalSubmergedPumps,
-    SubseaBoosterPumps
-}
-
-public enum ProductionStrategyOverview
-{
-    Depletion,
-    WaterInjection,
-    GasInjection,
-    WAG,
-    Mixed
 }

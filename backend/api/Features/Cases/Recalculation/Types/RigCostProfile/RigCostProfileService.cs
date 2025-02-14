@@ -2,6 +2,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Cases.Recalculation.Types.RigCostProfile;
 

@@ -1,6 +1,7 @@
 using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Profiles;
 using api.Models;
+using api.Models.Enums;
 
 using Xunit;
 

@@ -7,7 +7,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.ProjectAccess;
-using api.Models;
+using api.Models.Enums;
 
 using Fusion;
 

@@ -120,7 +120,7 @@ declare namespace Components {
             onshorePowerSupplyCostProfile: TimeSeriesCostDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesCostOverrideDto;
             explorationId: string; // uuid
-            explorationWells: ExplorationWellDto[] | null;
+            explorationWells: ExplorationWellDto[];
             explorationCampaigns: CampaignDto[];
             explorationWellCostProfile: TimeSeriesCostDto;
             appraisalWellCostProfile: TimeSeriesCostDto;
@@ -135,7 +135,7 @@ declare namespace Components {
             explorationRigMobDemob: TimeSeriesCostDto;
             explorationRigMobDemobOverride: TimeSeriesCostOverrideDto;
             wellProjectId: string; // uuid
-            developmentWells: DevelopmentWellDto[] | null;
+            developmentWells: DevelopmentWellDto[];
             developmentCampaigns: CampaignDto[];
             oilProducerCostProfile: TimeSeriesCostDto;
             oilProducerCostProfileOverride: TimeSeriesCostOverrideDto;
@@ -232,10 +232,10 @@ declare namespace Components {
         export interface CreateWellDto {
             name: string;
             wellCategory: WellCategory /* int32 */;
-            wellInterventionCost?: number; // double
-            plugingAndAbandonmentCost?: number; // double
-            wellCost?: number; // double
-            drillingDays?: number; // double
+            wellInterventionCost: number; // double
+            plugingAndAbandonmentCost: number; // double
+            wellCost: number; // double
+            drillingDays: number; // double
         }
         export type Currency = 1 | 2; // int32
         export interface DeleteWellDto {
@@ -515,10 +515,10 @@ declare namespace Components {
             sharepointFileUrl: string | null;
         }
         export interface UpdateDevelopmentOperationalWellCostsDto {
-            rigUpgrading?: number; // double
-            rigMobDemob?: number; // double
-            annualWellInterventionCostPerWell?: number; // double
-            pluggingAndAbandonment?: number; // double
+            rigUpgrading: number; // double
+            rigMobDemob: number; // double
+            annualWellInterventionCostPerWell: number; // double
+            pluggingAndAbandonment: number; // double
         }
         export interface UpdateDrainageStrategyDto {
             nglYield: number; // double
@@ -529,11 +529,11 @@ declare namespace Components {
             gasSolution: GasSolution /* int32 */;
         }
         export interface UpdateExplorationOperationalWellCostsDto {
-            explorationRigUpgrading?: number; // double
-            explorationRigMobDemob?: number; // double
-            explorationProjectDrillingCosts?: number; // double
-            appraisalRigMobDemob?: number; // double
-            appraisalProjectDrillingCosts?: number; // double
+            explorationRigUpgrading: number; // double
+            explorationRigMobDemob: number; // double
+            explorationProjectDrillingCosts: number; // double
+            appraisalRigMobDemob: number; // double
+            appraisalProjectDrillingCosts: number; // double
         }
         export interface UpdateImageDto {
             description: string | null;
@@ -647,12 +647,12 @@ declare namespace Components {
         }
         export interface UpdateWellDto {
             id: string; // uuid
-            name?: string | null;
-            wellInterventionCost?: number; // double
-            plugingAndAbandonmentCost?: number; // double
-            wellCategory?: WellCategory /* int32 */;
-            wellCost?: number; // double
-            drillingDays?: number; // double
+            name: string;
+            wellInterventionCost: number; // double
+            plugingAndAbandonmentCost: number; // double
+            wellCategory: WellCategory /* int32 */;
+            wellCost: number; // double
+            drillingDays: number; // double
         }
         export interface UpdateWellsDto {
             updateWellDtos: UpdateWellDto[];

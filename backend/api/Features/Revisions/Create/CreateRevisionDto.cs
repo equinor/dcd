@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Revisions.Create;
 

@@ -1,3 +1,4 @@
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
@@ -25,16 +26,4 @@ public class Well : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
     #endregion
-}
-
-public enum WellCategory
-{
-    Oil_Producer,
-    Gas_Producer,
-    Water_Injector,
-    Gas_Injector,
-    Exploration_Well,
-    Appraisal_Well,
-    Sidetrack,
-    RigMobDemob,
 }

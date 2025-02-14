@@ -78,6 +78,13 @@ export enum ProfileTypes {
     WellInterventionCostProfileOverride = "WellInterventionCostProfileOverride",
 }
 
+export enum ArtificialLift {
+    NoArtificialLift = 0,
+    GasLift = 1,
+    ElectricalSubmergedPumps = 2,
+    SubseaBoosterPumps = 3,
+}
+
 export enum CampaignType {
     DevelopmentCampaign = 1,
     ExplorationCampaign = 2,
@@ -104,6 +111,24 @@ export enum Currency {
     USD = 2,
 }
 
+export enum GasSolution {
+    Export = 0,
+    Injection = 1,
+}
+
+export enum InternalProjectPhase {
+    APbo = 0,
+    BOR = 1,
+    VPbo = 2,
+}
+
+export enum Maturity {
+    A = 0,
+    B = 1,
+    C = 2,
+    D = 3,
+}
+
 export enum NoAccessReason {
     ProjectDoesNotExist = 1,
     ClassificationInternal = 2,
@@ -114,6 +139,63 @@ export enum NoAccessReason {
 export enum PhysUnit {
     SI = 0,
     OilField = 1,
+}
+
+export enum ProductionFlowline {
+    No_production_flowline = 0,
+    Carbon = 1,
+    SSClad = 2,
+    Cr13 = 3,
+    Carbon_Insulation = 4,
+    SSClad_Insulation = 5,
+    Cr13_Insulation = 6,
+    Carbon_Insulation_DEH = 7,
+    SSClad_Insulation_DEH = 8,
+    Cr13_Insulation_DEH = 9,
+    Carbon_PIP = 10,
+    SSClad_PIP = 11,
+    Cr13_PIP = 12,
+    HDPELinedCS = 13,
+}
+
+export enum ProductionStrategyOverview {
+    Depletion = 0,
+    WaterInjection = 1,
+    GasInjection = 2,
+    WAG = 3,
+    Mixed = 4,
+}
+
+export enum ProjectCategory {
+    Null = 0,
+    Brownfield = 1,
+    Cessation = 2,
+    DrillingUpgrade = 3,
+    Onshore = 4,
+    Pipeline = 5,
+    PlatformFpso = 6,
+    Subsea = 7,
+    Solar = 8,
+    Co2Storage = 9,
+    Efuel = 10,
+    Nuclear = 11,
+    Co2Capture = 12,
+    Fpso = 13,
+    Hydrogen = 14,
+    Hse = 15,
+    OffshoreWind = 16,
+    Platform = 17,
+    PowerFromShore = 18,
+    TieIn = 19,
+    RenewableOther = 20,
+    Ccs = 21,
+}
+
+export enum ProjectClassification {
+    Open = 0,
+    Internal = 1,
+    Restricted = 2,
+    Confidential = 3,
 }
 
 export enum ProjectMemberRole {
@@ -137,4 +219,15 @@ export enum ProjectPhase {
 export enum Source {
     ConceptApp = 0,
     Prosp = 1,
+}
+
+export enum WellCategory {
+    Oil_Producer = 0,
+    Gas_Producer = 1,
+    Water_Injector = 2,
+    Gas_Injector = 3,
+    Exploration_Well = 4,
+    Appraisal_Well = 5,
+    Sidetrack = 6,
+    RigMobDemob = 7,
 }
