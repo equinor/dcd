@@ -1,7 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
-using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 

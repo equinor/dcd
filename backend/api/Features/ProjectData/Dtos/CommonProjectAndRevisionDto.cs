@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.ProjectData.Dtos.AssetDtos;
-using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.ProjectData.Dtos;
 

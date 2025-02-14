@@ -4,7 +4,7 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
+import { Currency, ProfileTypes } from "@/Models/enums"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -36,9 +36,9 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 profileName: "Cessation - Development wells",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationWellsCostData,
-                resourceName: "cessationWellsCostOverride",
+                resourceName: ProfileTypes.CessationWellsCostOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "cessationWellsCostOverride",
+                resourcePropertyKey: ProfileTypes.CessationWellsCostOverride,
                 overridable: true,
                 overrideProfile: cessationWellsCostOverrideData,
                 editable: true,
@@ -47,9 +47,9 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 profileName: "Cessation - Offshore facilities",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationOffshoreFacilitiesCostData,
-                resourceName: "cessationOffshoreFacilitiesCostOverride",
+                resourceName: ProfileTypes.CessationOffshoreFacilitiesCostOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "cessationOffshoreFacilitiesCostOverride",
+                resourcePropertyKey: ProfileTypes.CessationOffshoreFacilitiesCostOverride,
                 overridable: true,
                 overrideProfile: cessationOffshoreFacilitiesCostOverrideData,
                 editable: true,
@@ -58,9 +58,9 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 profileName: "CAPEX - Cessation - Onshore facilities",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: cessationOnshoreFacilitiesCostProfileData,
-                resourceName: "cessationOnshoreFacilitiesCostProfile",
+                resourceName: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: "cessationOnshoreFacilitiesCostProfile",
+                resourcePropertyKey: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
                 editable: true,
                 overridable: false,
             },

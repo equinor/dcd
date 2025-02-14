@@ -12,7 +12,7 @@ import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
 import { GetCaseService } from "@/Services/CaseService"
 import { useAppStore } from "@/Store/AppStore"
-import { ResourceObject } from "@/Models/Interfaces"
+import { ResourceName, ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
@@ -206,7 +206,7 @@ export const useSubmitToApi = () => {
             drillingScheduleId,
         }
 
-        if (productionOverrideResources.includes(resourceName)) {
+        if (productionOverrideResources.find(x => x.toString() === resourceName)) {
             setIsCalculatingProductionOverrides(true)
             submitApiLogger.warn("Setting production overrides calculation flag")
         }
@@ -310,68 +310,68 @@ export const useSubmitToApi = () => {
                     )
                 }
 
-                const profileNameMap = new Map<string, string>([
-                    ["additionalOPEXCostProfile", ProfileTypes.AdditionalOPEXCostProfile],
-                    ["additionalProductionProfileGas", ProfileTypes.AdditionalProductionProfileGas],
-                    ["additionalProductionProfileOil", ProfileTypes.AdditionalProductionProfileOil],
-                    ["cessationOnshoreFacilitiesCostProfile", ProfileTypes.CessationOnshoreFacilitiesCostProfile],
-                    ["countryOfficeCost", ProfileTypes.CountryOfficeCost],
-                    ["deferredGasProduction", ProfileTypes.DeferredGasProduction],
-                    ["deferredOilProduction", ProfileTypes.DeferredOilProduction],
-                    ["onshoreRelatedOPEXCostProfile", ProfileTypes.OnshoreRelatedOPEXCostProfile],
-                    ["productionProfileGas", ProfileTypes.ProductionProfileGas],
-                    ["productionProfileOil", ProfileTypes.ProductionProfileOil],
-                    ["productionProfileWater", ProfileTypes.ProductionProfileWater],
-                    ["productionProfileWaterInjection", ProfileTypes.ProductionProfileWaterInjection],
-                    ["projectSpecificDrillingCostProfile", ProfileTypes.ProjectSpecificDrillingCostProfile],
-                    ["seismicAcquisitionAndProcessing", ProfileTypes.SeismicAcquisitionAndProcessing],
-                    ["totalOtherStudiesCostProfile", ProfileTypes.TotalOtherStudiesCostProfile],
-                ])
+                const ordinaryTimeSeriesTypes = [
+                    ProfileTypes.AdditionalProductionProfileGas,
+                    ProfileTypes.AdditionalOPEXCostProfile,
+                    ProfileTypes.AdditionalProductionProfileOil,
+                    ProfileTypes.CessationOnshoreFacilitiesCostProfile,
+                    ProfileTypes.CountryOfficeCost,
+                    ProfileTypes.HistoricCostCostProfile,
+                    ProfileTypes.DeferredGasProduction,
+                    ProfileTypes.DeferredOilProduction,
+                    ProfileTypes.OnshoreRelatedOPEXCostProfile,
+                    ProfileTypes.ProductionProfileGas,
+                    ProfileTypes.ProductionProfileOil,
+                    ProfileTypes.ProductionProfileWater,
+                    ProfileTypes.ProductionProfileWaterInjection,
+                    ProfileTypes.ProjectSpecificDrillingCostProfile,
+                    ProfileTypes.SeismicAcquisitionAndProcessing,
+                    ProfileTypes.TotalOtherStudiesCostProfile,
+                ]
 
-                if (profileNameMap.has(resourceName)) {
+                if (ordinaryTimeSeriesTypes.find(x => x === resourceName)) {
                     return await saveTimeSeriesProfile({
                         projectId,
                         caseId,
                         saveFunction: await (await GetCaseService()).saveProfile(
                             projectId,
                             caseId,
-                            { ...resourceObject, profileType: profileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesDto,
+                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesDto,
                         ),
                     })
                 }
 
-                const overrideProfileNameMap = new Map<string, string>([
-                    ["cessationOffshoreFacilitiesCostOverride", ProfileTypes.CessationOffshoreFacilitiesCostOverride],
-                    ["cessationWellsCostOverride", ProfileTypes.CessationWellsCostOverride],
-                    ["co2EmissionsOverride", ProfileTypes.Co2EmissionsOverride],
-                    ["gAndGAdminCost", ProfileTypes.GAndGAdminCostOverride],
-                    ["historicCostCostProfile", ProfileTypes.HistoricCostCostProfile],
-                    ["offshoreFacilitiesOperationsCostProfileOverride", ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride],
-                    ["onshorePowerSupplyCostOverride", ProfileTypes.OnshorePowerSupplyCostProfileOverride],
-                    ["productionProfileFuelFlaringAndLossesOverride", ProfileTypes.FuelFlaringAndLossesOverride],
-                    ["productionProfileImportedElectricityOverride", ProfileTypes.ImportedElectricityOverride],
-                    ["productionProfileNetSalesGasOverride", ProfileTypes.NetSalesGasOverride],
-                    ["substructureCostOverride", ProfileTypes.SubstructureCostProfileOverride],
-                    ["surfCostOverride", ProfileTypes.SurfCostProfileOverride],
-                    ["topsideCostOverride", ProfileTypes.TopsideCostProfileOverride],
-                    ["totalFeasibilityAndConceptStudiesOverride", ProfileTypes.TotalFeasibilityAndConceptStudiesOverride],
-                    ["totalFEEDStudiesOverride", ProfileTypes.TotalFEEDStudiesOverride],
-                    ["transportCostOverride", ProfileTypes.TransportCostProfileOverride],
-                    ["wellInterventionCostProfileOverride", ProfileTypes.WellInterventionCostProfileOverride],
-                    ["wellProjectGasInjectorCostOverride", ProfileTypes.GasInjectorCostProfileOverride],
-                    ["wellProjectGasProducerCostOverride", ProfileTypes.GasProducerCostProfileOverride],
-                    ["wellProjectOilProducerCostOverride", ProfileTypes.OilProducerCostProfileOverride],
-                    ["wellProjectWaterInjectorCostOverride", ProfileTypes.WaterInjectorCostProfileOverride],
-                ])
+                const overrideTimeSeriesTypes =[
+                    ProfileTypes.CessationOffshoreFacilitiesCostOverride,
+                    ProfileTypes.CessationWellsCostOverride,
+                    ProfileTypes.Co2EmissionsOverride,
+                    ProfileTypes.GAndGAdminCostOverride,
+                    ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
+                    ProfileTypes.OnshorePowerSupplyCostProfileOverride,
+                    ProfileTypes.FuelFlaringAndLossesOverride,
+                    ProfileTypes.ImportedElectricityOverride,
+                    ProfileTypes.NetSalesGasOverride,
+                    ProfileTypes.SubstructureCostProfileOverride,
+                    ProfileTypes.SurfCostProfileOverride,
+                    ProfileTypes.TopsideCostProfileOverride,
+                    ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
+                    ProfileTypes.TotalFEEDStudiesOverride,
+                    ProfileTypes.TransportCostProfileOverride,
+                    ProfileTypes.WellInterventionCostProfileOverride,
+                    ProfileTypes.GasInjectorCostProfileOverride,
+                    ProfileTypes.GasProducerCostProfileOverride,
+                    ProfileTypes.OilProducerCostProfileOverride,
+                    ProfileTypes.WaterInjectorCostProfileOverride,
+                ]
 
-                if (overrideProfileNameMap.has(resourceName)) {
+                if (overrideTimeSeriesTypes.find(x => x === resourceName)) {
                     return await saveTimeSeriesProfile({
                         projectId,
                         caseId,
                         saveFunction: await (await GetCaseService()).saveOverrideProfile(
                             projectId,
                             caseId,
-                            { ...resourceObject, profileType: overrideProfileNameMap.get(resourceName) } as Components.Schemas.SaveTimeSeriesOverrideDto,
+                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesOverrideDto,
                         ),
                     })
                 }

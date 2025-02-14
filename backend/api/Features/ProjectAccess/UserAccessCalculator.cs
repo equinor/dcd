@@ -1,6 +1,6 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.ProjectAccess;
 

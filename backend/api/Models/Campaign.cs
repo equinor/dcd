@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
@@ -42,10 +43,4 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
     #endregion
-}
-
-public enum CampaignType
-{
-    DevelopmentCampaign = 1,
-    ExplorationCampaign = 2
 }

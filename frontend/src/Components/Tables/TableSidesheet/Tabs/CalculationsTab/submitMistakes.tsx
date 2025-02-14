@@ -37,7 +37,7 @@ const ButtonContainer = styled.div`
 `
 
 interface SubmitMistakesProps {
-    profileName?: string
+    profileType?: string
     rowData?: {
         resourceName?: string
         resourceType?: string
@@ -45,7 +45,7 @@ interface SubmitMistakesProps {
     }
 }
 
-const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileName, rowData }) => {
+const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileType, rowData }) => {
     const [showForm, setShowForm] = useState(false)
     const [explanation, setExplanation] = useState("")
 
@@ -60,7 +60,7 @@ const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileName, rowData })
         }
         const subject = encodeURIComponent("Possible mistake in code explanation")
         const body = encodeURIComponent(
-            `I believe there might be an issue with the AI-generated explanation.\nProfile: ${profileName || "N/A"}\n`
+            `I believe there might be an issue with the AI-generated explanation.\nProfile: ${profileType || "N/A"}\n`
             + `Resource Name: ${rowData?.resourceName || "N/A"}\nResource Type: ${rowData?.resourceType || "N/A"}\n\nDetails:\n${explanation}\n`,
         )
         window.location.href = `mailto:agars@equinor.com?subject=${subject}&body=${body}`

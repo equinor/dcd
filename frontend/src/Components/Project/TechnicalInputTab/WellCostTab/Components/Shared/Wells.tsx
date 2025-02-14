@@ -63,6 +63,10 @@ const Wells: React.FC<WellsProps> = ({
         const newWell: Components.Schemas.CreateWellDto = {
             wellCategory: category as Components.Schemas.WellCategory,
             name: "New well",
+            wellInterventionCost: 0,
+            plugingAndAbandonmentCost: 0,
+            wellCost: 0,
+            drillingDays: 0,
         }
 
         const createWells: Components.Schemas.UpdateWellsDto = {

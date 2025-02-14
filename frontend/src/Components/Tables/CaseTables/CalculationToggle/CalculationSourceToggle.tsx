@@ -5,9 +5,9 @@ import { ICellRendererParams } from "@ag-grid-community/core"
 import { DisabledExcelHideIcon } from "@/Media/Icons/DisabledExcelHideIcon"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
-import { ProfileNames } from "@/Models/Interfaces"
 import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 import { CalculatorToggle, ExcelToggle } from "./ToggleIcons"
+import { ProfileTypes } from "@/Models/enums"
 
 interface CalculationSourceToggleProps {
     clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>
@@ -62,7 +62,7 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
         }
     }
 
-    if (apiQueue.find((item) => item.resourceName === clickedElement.data?.resourceName as ProfileNames)) {
+    if (apiQueue.find((item) => item.resourceName === clickedElement.data?.resourceName as ProfileTypes)) {
         return (
             <Button variant="ghost_icon" color="secondary" disabled>
                 <CircularProgress value={0} size={16} />

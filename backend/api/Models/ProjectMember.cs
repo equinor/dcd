@@ -1,3 +1,4 @@
+using api.Models.Enums;
 using api.Models.Interfaces;
 
 namespace api.Models;
@@ -19,10 +20,4 @@ public class ProjectMember : IChangeTrackable, IDateTrackedEntity
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
     #endregion
-}
-
-public enum ProjectMemberRole
-{
-    Observer,
-    Editor,
 }

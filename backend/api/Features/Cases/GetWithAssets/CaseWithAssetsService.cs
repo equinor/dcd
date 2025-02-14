@@ -5,6 +5,7 @@ using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 

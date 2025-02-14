@@ -60,18 +60,11 @@ const WellsTable: React.FC<WellsTableProps> = ({
         const updatedWell: Components.Schemas.UpdateWellDto = {
             id: previousData.id,
             name: updatedData.name || previousData.name || "",
-            wellCategory:
-          updatedData.wellCategory
-          || previousData.wellCategory
-          || defaultWellCategory,
-            drillingDays:
-          updatedData.drillingDays !== undefined
-              ? updatedData.drillingDays
-              : previousData.drillingDays ?? 0,
-            wellCost:
-          updatedData.wellCost !== undefined
-              ? updatedData.wellCost
-              : previousData.wellCost ?? 0,
+            wellCategory: updatedData.wellCategory || previousData.wellCategory || defaultWellCategory,
+            drillingDays: updatedData.drillingDays !== undefined ? updatedData.drillingDays : previousData.drillingDays ?? 0,
+            wellCost: updatedData.wellCost !== undefined ? updatedData.wellCost : previousData.wellCost ?? 0,
+            wellInterventionCost: updatedData.wellInterventionCost !== undefined ? updatedData.wellInterventionCost : previousData.wellInterventionCost ?? 0,
+            plugingAndAbandonmentCost: updatedData.plugingAndAbandonmentCost !== undefined ? updatedData.plugingAndAbandonmentCost : previousData.plugingAndAbandonmentCost ?? 0,
         }
 
         const updatePayload: Components.Schemas.UpdateWellsDto = {

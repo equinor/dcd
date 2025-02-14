@@ -1,3 +1,4 @@
+import { ProfileTypes } from "@/Models/enums"
 import { visibility, lock, type IconData } from "@equinor/eds-icons"
 
 export const EMPTY_GUID = "00000000-0000-0000-0000-000000000000"
@@ -78,20 +79,20 @@ export const projectTabNames = [
 ]
 
 export const productionOverrideResources = [
-    "productionProfileOil",
-    "additionalProductionProfileOil",
-    "productionProfileGas",
-    "additionalProductionProfileGas",
-    "productionProfileWater",
-    "productionProfileWaterInjection",
+    ProfileTypes.ProductionProfileOil,
+    ProfileTypes.AdditionalProductionProfileOil,
+    ProfileTypes.ProductionProfileGas,
+    ProfileTypes.AdditionalProductionProfileGas,
+    ProfileTypes.ProductionProfileWater,
+    ProfileTypes.ProductionProfileWaterInjection,
 ]
 
 export const totalStudyCostOverrideResources = [
-    "surfCostOverride",
-    "topsideCostOverride",
-    "transportCostOverride",
-    "substructureCostOverride",
-    "onshorePowerSupplyCostOverride",
+    ProfileTypes.SurfCostProfileOverride,
+    ProfileTypes.TopsideCostProfileOverride,
+    ProfileTypes.TransportCostProfileOverride,
+    ProfileTypes.SubstructureCostProfileOverride,
+    ProfileTypes.OnshorePowerSupplyCostProfileOverride,
     "case",
 ]
 
