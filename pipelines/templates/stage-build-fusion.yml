@@ -24,6 +24,7 @@ stages:
                 command: "install"
                 workingDir: "frontend"
 
+          # Add build id to version in package.json
           - script: |
               buildId=$(Build.BuildId)
               currentVersion=$(jq -r '.version' frontend/package.json)
@@ -46,27 +47,27 @@ stages:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
 
-      # - job: "Build_backend_container_and_Push_To_acr"
-      #   steps:
-      #     - template: step-dtlogin.yml
-      #       parameters:
-      #         dt_tenant: ${{ parameters.dt_tenant }}
-      #         dt_url: ${{ parameters.dt_url }}
-      #         dt_password: ${{ parameters.dt_password }}
+      - job: "Build_backend_container_and_Push_To_acr"
+        steps:
+          - template: step-dtlogin.yml
+            parameters:
+              dt_tenant: ${{ parameters.dt_tenant }}
+              dt_url: ${{ parameters.dt_url }}
+              dt_password: ${{ parameters.dt_password }}
 
-      #     - template: step-dtdockerbuild.yml
-      #       parameters:
-      #         dt_tenant: ${{ parameters.dt_tenant }}
-      #         dt_url: ${{ parameters.dt_url }}
-      #         dt_password: ${{ parameters.dt_password }}
-      #         azAppConfig: ${{ parameters.azAppConfig }}
-      #         buildId: $(Build.BuildId)
-      #         sourcesDirectory: $(Build.SourcesDirectory)
-      #         appName: "backend"
+          - template: step-dtdockerbuild.yml
+            parameters:
+              dt_tenant: ${{ parameters.dt_tenant }}
+              dt_url: ${{ parameters.dt_url }}
+              dt_password: ${{ parameters.dt_password }}
+              azAppConfig: ${{ parameters.azAppConfig }}
+              buildId: $(Build.BuildId)
+              sourcesDirectory: $(Build.SourcesDirectory)
+              appName: "backend"
 
-      #     - template: step-docker-push.yml
-      #       parameters:
-      #         name: "Push_backend-container_to_ACR"
-      #         registry: "DCD Registry"
-      #         repository: "backend"
-      #         buildId: $(Build.BuildId)
+          - template: step-docker-push.yml
+            parameters:
+              name: "Push_backend-container_to_ACR"
+              registry: "DCD Registry"
+              repository: "backend"
+              buildId: $(Build.BuildId)
