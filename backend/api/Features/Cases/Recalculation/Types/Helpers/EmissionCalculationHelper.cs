@@ -37,14 +37,12 @@ public static class EmissionCalculationHelper
         var totalPowerGas = CalculateTotalUseOfPowerGas(caseItem, topside, facilitiesAvailability);
         var totalPowerWi = CalculateTotalUseOfPowerWi(caseItem, topside, facilitiesAvailability);
 
-        var mergedPowerProfile = TimeSeriesMerger.MergeTimeSeries(totalPowerOil, totalPowerGas, totalPowerWi);
-
-        var totalUseOfPowerValues = mergedPowerProfile.Values.Select(v => v + co2ShareCo2Max).ToArray();
+        var totalUseOfPowerValues = TimeSeriesMerger.MergeTimeSeries(totalPowerOil, totalPowerGas, totalPowerWi);
 
         return new TimeSeriesCost
         {
-            StartYear = mergedPowerProfile.StartYear,
-            Values = totalUseOfPowerValues
+            StartYear = totalUseOfPowerValues.StartYear,
+            Values = totalUseOfPowerValues.Values
         };
     }
 
@@ -62,8 +60,8 @@ public static class EmissionCalculationHelper
         }
 
         var step1 = wsp * wom;
-        var wrp = wr.Select(v => v / Cd * facilitiesAvailability / 100 / wic);
-        var wrpWspWom = wrp.Select(v => step1 + (v * wsp * (1 - wom)));
+        var wrp = wr.Select(v => v / (Cd * (facilitiesAvailability / 100)) / wic);
+        var wrpWspWom = wrp.Select(v => step1 + (v * 100 * wsp * (1 - wom)));
 
         return new TimeSeriesCost
         {
@@ -102,7 +100,7 @@ public static class EmissionCalculationHelper
         }
 
         var step1 = gsp * gom;
-        var grp = mergedProfile.Values.Select(v => v / Cd * facilitiesAvailability / 100 / gc / 1000000);
+        var grp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / gc / 1000000);
         var grpGspGom = grp.Select(v => step1 + (v * gsp * (1 - gom)));
 
         return new TimeSeriesCost
@@ -145,7 +143,7 @@ public static class EmissionCalculationHelper
         }
 
         var step1 = osp * oom;
-        var orp = mergedProfile.Values.Select(v => v / Cd * facilitiesAvailability / 100 / oc);
+        var orp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / oc);
         var orpOspOom = orp.Select(v => step1 + (v * osp * (1 - oom)));
 
         return new TimeSeriesCost
