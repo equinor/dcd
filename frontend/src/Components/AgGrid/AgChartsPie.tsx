@@ -50,6 +50,18 @@ export const AgChartsPie = ({
                 },
             },
         ],
+        highlightStyle: {
+            item: {
+                fill: undefined,
+                stroke: undefined,
+                strokeWidth: 1,
+            },
+            series: {
+                enabled: true,
+                dimOpacity: 0.2,
+                strokeWidth: 2,
+            },
+        },
         legend: {
             legendItemKey: "profile",
             enabled: enableLegend,
