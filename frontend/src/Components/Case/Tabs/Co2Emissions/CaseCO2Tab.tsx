@@ -205,9 +205,9 @@ const CaseCO2Tab = () => {
                 const flaringPercentage = co2Flaring / totalEmissions
                 const fuelPercentage = co2Fuel / totalEmissions
 
-                setDrillingPortion(drillingPercentage * averageCo2IntensityData)
-                setFlaringPortion(flaringPercentage * averageCo2IntensityData)
-                setFuelPortion(fuelPercentage * averageCo2IntensityData)
+                setDrillingPortion(parseFloat((drillingPercentage * averageCo2IntensityData).toFixed(4)))
+                setFlaringPortion(parseFloat((flaringPercentage * averageCo2IntensityData).toFixed(4)))
+                setFuelPortion(parseFloat((fuelPercentage * averageCo2IntensityData).toFixed(4)))
             } else {
                 setDrillingPortion(0)
                 setFlaringPortion(0)
