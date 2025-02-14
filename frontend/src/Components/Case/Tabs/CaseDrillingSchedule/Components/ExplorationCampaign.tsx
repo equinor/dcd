@@ -14,7 +14,6 @@ import {
     DrillingCampaignProps,
     Well,
 } from "@/Models/ICampaigns"
-import useEditCase from "@/Hooks/useEditCase"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
@@ -36,10 +35,9 @@ interface ExplorationCampaignProps extends DrillingCampaignProps {
 
 const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps) => {
     const styles = useStyles()
-    const { addEdit } = useEditCase()
     const ExplorationCampaignGridRef = useRef<any>(null)
-    console.log("campaign", campaign)
-    console.log(campaign.campaignId)
+    // console.log("campaign", campaign)
+    // console.log(campaign.campaignId)
 
     const generateRowData = (): ITimeSeriesTableDataWithSet[] => {
         const rows: ITimeSeriesTableDataWithSet[] = []
