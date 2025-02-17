@@ -1,4 +1,3 @@
-import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
 import { getToken, loginAccessTokenKey } from "../Utils/common"
@@ -11,6 +10,5 @@ export class CaseGeneratedProfileService extends __BaseService {
 }
 
 export const GetGenerateProfileService = async () => new CaseGeneratedProfileService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

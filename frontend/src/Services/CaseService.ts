@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class CaseService extends __BaseService {
@@ -78,6 +77,5 @@ class CaseService extends __BaseService {
 }
 
 export const GetCaseService = async () => new CaseService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

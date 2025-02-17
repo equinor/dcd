@@ -1,7 +1,5 @@
 import { __BaseService } from "./__BaseService"
 
-import { config } from "./config"
-
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class __TechnicalInputService extends __BaseService {
@@ -36,11 +34,9 @@ class __TechnicalInputService extends __BaseService {
 }
 
 export const TechnicalInputService = new __TechnicalInputService({
-    ...config.BaseUrl,
     accessToken: window.sessionStorage.getItem("loginAccessToken")!,
 })
 
 export const GetTechnicalInputService = async () => new __TechnicalInputService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

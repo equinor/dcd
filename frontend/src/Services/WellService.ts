@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class WellService extends __BaseService {
@@ -13,6 +12,5 @@ class WellService extends __BaseService {
 }
 
 export const GetWellService = async () => new WellService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

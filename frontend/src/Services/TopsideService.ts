@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class TopsideService extends __BaseService {
@@ -17,6 +16,5 @@ class TopsideService extends __BaseService {
 }
 
 export const GetTopsideService = async () => new TopsideService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

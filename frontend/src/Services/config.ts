@@ -1,7 +1,5 @@
 export type ServiceConfig = {
-    BASE_URL: string
     accessToken?: string
-    headers?: Record<string, string>
 }
 
 const configuration = {

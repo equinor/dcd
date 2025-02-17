@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class SubstructureService extends __BaseService {
@@ -17,6 +16,5 @@ class SubstructureService extends __BaseService {
 }
 
 export const GetSubstructureService = async () => new SubstructureService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

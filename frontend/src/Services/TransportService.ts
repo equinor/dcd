@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class TransportService extends __BaseService {
@@ -17,6 +16,5 @@ class TransportService extends __BaseService {
 }
 
 export const GetTransportService = async () => new TransportService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

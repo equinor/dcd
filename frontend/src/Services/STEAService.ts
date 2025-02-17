@@ -1,8 +1,6 @@
 import FileSaver from "file-saver"
 import { __BaseService } from "./__BaseService"
 
-import { config } from "./config"
-
 import { loginAccessTokenKey, getToken } from "../Utils/common"
 
 class STEAService extends __BaseService {
@@ -13,6 +11,5 @@ class STEAService extends __BaseService {
 }
 
 export const GetSTEAService = async () => new STEAService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, ResponseType } from "axios"
-import { ServiceConfig } from "./config"
+import { ServiceConfig, config } from "./config"
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -18,16 +18,13 @@ type RequestOptions = {
 }
 
 export class __BaseService {
-    private config: ServiceConfig
     private client: any
 
-    constructor(config: ServiceConfig) {
-        this.config = config
-        this.client = axios.create({ baseURL: this.config.BASE_URL })
+    constructor(serviceConfig: ServiceConfig) {
+        this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
         this.client.defaults.headers.common = {
             Accept: "application/json",
-            Authorization: `Bearer ${config.accessToken}`,
-            ...this.config.headers,
+            Authorization: `Bearer ${serviceConfig.accessToken}`,
         }
         this.client.interceptors.response.use(
             (response: any) => response,

@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class SurfService extends __BaseService {
@@ -17,6 +16,5 @@ class SurfService extends __BaseService {
 }
 
 export const GetSurfService = async () => new SurfService({
-    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })
