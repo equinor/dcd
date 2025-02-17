@@ -11,6 +11,8 @@ import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { ProfileTypes } from "@/Models/enums"
+import { useCaseApiData } from "@/Hooks/useCaseApiData"
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
 interface ExplorationCampaignProps extends DrillingCampaignProps {
     campaign: Components.Schemas.CampaignDto
@@ -18,6 +20,7 @@ interface ExplorationCampaignProps extends DrillingCampaignProps {
 
 const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps) => {
     const styles = useStyles()
+    const { apiData } = useCaseApiData()
     const ExplorationCampaignGridRef = useRef<any>(null)
 
     const generateRowData = (): ITimeSeriesTableData[] => {
@@ -31,7 +34,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 profile: {
                     id: campaign.campaignId,
                     startYear: campaign.rigMobDemobProfile.startYear,
-                    values: campaign.rigMobDemobProfile.values,
+                    values: campaign.rigMobDemobProfile.values || [],
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
@@ -51,7 +54,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 profile: {
                     id: campaign.campaignId,
                     startYear: campaign.rigUpgradingProfile.startYear,
-                    values: campaign.rigUpgradingProfile.values,
+                    values: campaign.rigUpgradingProfile.values || [],
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
@@ -71,7 +74,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 profile: {
                     id: campaign.campaignId,
                     startYear: well.startYear,
-                    values: well.values,
+                    values: well.values || [],
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
@@ -79,7 +82,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 overridable: true,
                 editable: true,
             }
-            console.log("wellRow fra explorationCampaign: ", wellRow)
             rows.push(wellRow)
         })
 
@@ -87,7 +89,10 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     }
 
     const rowData = useMemo(() => generateRowData(), [campaign, tableYears])
-    console.log("rowData fra campaign: ", rowData)
+
+    if (!apiData) {
+        return <ProjectSkeleton />
+    }
 
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
@@ -128,7 +133,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     >
                         <CaseTabTable
                             timeSeriesData={rowData}
-                            dg4Year={getYearFromDateString(campaign.rigMobDemobProfile.startYear.toString())}
+                            dg4Year={getYearFromDateString(apiData?.case.dG4Date ?? "")}
                             tableYears={tableYears}
                             tableName="Exploration campaign"
                             includeFooter

@@ -96,7 +96,6 @@ const CaseTabTable = memo(({
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
     const gridInitializedRef = useRef(false)
-    console.log("timeSeriesData fra caseTabTable: ", timeSeriesData)
 
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)

@@ -164,7 +164,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
         ]
 
-        console.log("newTimeSeriesData fra caseProductionProfiles: ", newTimeSeriesData)
         setCaseProductionProfilesData(newTimeSeriesData)
     }, [apiData, revisionAndProjectData, tableYears])
 
