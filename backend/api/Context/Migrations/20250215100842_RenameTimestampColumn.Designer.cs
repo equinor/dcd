@@ -12,15 +12,15 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250211101312_RemoveAssetCurrency")]
-    partial class RemoveAssetCurrency
+    [Migration("20250215100842_RenameTimestampColumn")]
+    partial class RenameTimestampColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -31,9 +31,8 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CampaignType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CampaignType")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uniqueidentifier");
@@ -91,6 +90,9 @@ namespace api.Migrations
 
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
+
+                    b.Property<double>("AverageCo2Intensity")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("BORDate")
                         .HasColumnType("datetime2");
@@ -626,11 +628,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Infrastructure.ExceptionLog", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DisplayUrl")
                         .IsRequired()
@@ -667,12 +669,12 @@ namespace api.Migrations
                     b.Property<string>("StackTrace")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UtcTimestamp")
+                    b.Property<DateTime>("TimestampUtc")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UtcTimestamp");
+                    b.HasIndex("TimestampUtc");
 
                     b.ToTable("ExceptionLogs");
                 });

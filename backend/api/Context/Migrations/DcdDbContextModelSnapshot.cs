@@ -666,12 +666,12 @@ namespace api.Migrations
                     b.Property<string>("StackTrace")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UtcTimestamp")
+                    b.Property<DateTime>("TimestampUtc")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UtcTimestamp");
+                    b.HasIndex("TimestampUtc");
 
                     b.ToTable("ExceptionLogs");
                 });

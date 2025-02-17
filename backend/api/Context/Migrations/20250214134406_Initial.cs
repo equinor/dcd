@@ -85,7 +85,7 @@ namespace api.Migrations
                 name: "ExceptionLogs",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UtcTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HttpStatusCode = table.Column<int>(type: "int", nullable: false),
@@ -222,6 +222,7 @@ namespace api.Migrations
                     BreakEven = table.Column<double>(type: "float", nullable: false),
                     BreakEvenOverride = table.Column<double>(type: "float", nullable: true),
                     Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AverageCo2Intensity = table.Column<double>(type: "float", nullable: false),
                     DrainageStrategyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WellProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SurfId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -412,7 +413,7 @@ namespace api.Migrations
                     RigUpgradingCostInternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RigMobDemobCostStartYear = table.Column<int>(type: "int", nullable: false),
                     RigMobDemobCostInternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CampaignType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CampaignType = table.Column<int>(type: "int", nullable: false),
                     RigUpgradingCost = table.Column<double>(type: "float", nullable: false),
                     RigMobDemobCost = table.Column<double>(type: "float", nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -461,7 +462,6 @@ namespace api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NGLYield = table.Column<double>(type: "float", nullable: false),
                     ProducerCount = table.Column<int>(type: "int", nullable: false),
@@ -513,7 +513,6 @@ namespace api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastChangedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CostYear = table.Column<int>(type: "int", nullable: false),
                     Source = table.Column<int>(type: "int", nullable: false),
@@ -542,10 +541,8 @@ namespace api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DryWeight = table.Column<double>(type: "float", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
                     ApprovedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CostYear = table.Column<int>(type: "int", nullable: false),
                     ProspVersion = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -576,7 +573,6 @@ namespace api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CessationCost = table.Column<double>(type: "float", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
                     InfieldPipelineSystemLength = table.Column<double>(type: "float", nullable: false),
@@ -588,7 +584,6 @@ namespace api.Migrations
                     GasInjectorCount = table.Column<int>(type: "int", nullable: false),
                     WaterInjectorCount = table.Column<int>(type: "int", nullable: false),
                     ProductionFlowline = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
                     LastChangedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CostYear = table.Column<int>(type: "int", nullable: false),
                     Source = table.Column<int>(type: "int", nullable: false),
@@ -644,14 +639,12 @@ namespace api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DryWeight = table.Column<double>(type: "float", nullable: false),
                     OilCapacity = table.Column<double>(type: "float", nullable: false),
                     GasCapacity = table.Column<double>(type: "float", nullable: false),
                     WaterInjectionCapacity = table.Column<double>(type: "float", nullable: false),
                     ArtificialLift = table.Column<int>(type: "int", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
                     FuelConsumption = table.Column<double>(type: "float", nullable: false),
                     FlaredGas = table.Column<double>(type: "float", nullable: false),
                     ProducerCount = table.Column<int>(type: "int", nullable: false),
@@ -694,11 +687,9 @@ namespace api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GasExportPipelineLength = table.Column<double>(type: "float", nullable: false),
                     OilExportPipelineLength = table.Column<double>(type: "float", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
                     LastChangedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CostYear = table.Column<int>(type: "int", nullable: false),
                     Source = table.Column<int>(type: "int", nullable: false),

@@ -93,7 +93,7 @@ public class DcdExceptionHandlingMiddleware(
         dbContext.ExceptionLogs.Add(new ExceptionLog
         {
             Environment = DcdEnvironments.CurrentEnvironment,
-            UtcTimestamp = DateTime.UtcNow,
+            TimestampUtc = DateTime.UtcNow,
             HttpStatusCode = (int)httpStatusCode,
             DisplayUrl = httpContext.Request.GetDisplayUrl(),
             RequestUrl = httpContext.Request.Path.Value,
