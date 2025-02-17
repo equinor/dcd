@@ -2,6 +2,9 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using api.Models.Enums;
+
+using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.CaseComparison;
 
@@ -72,7 +75,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     private static double CalculateTotalOilProduction(Project project, Case caseItem, bool excludeOilFieldConversion)
     {
         const double million = 1E6;
-        const double bblConversionFactor = 6.29;
 
         var sumOilProduction = 0.0;
 
@@ -86,9 +88,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumOilProduction += caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileOil).Values.Sum();
         }
 
-        if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
+        if (project.PhysicalUnit != PhysUnit.SI && !excludeOilFieldConversion)
         {
-            return sumOilProduction * bblConversionFactor / million;
+            return sumOilProduction * BarrelsPerCubicMeter / million;
         }
 
         return sumOilProduction / million;
@@ -97,7 +99,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     private static double CalculateTotalGasProduction(Project project, Case caseItem, bool excludeOilFieldConversion)
     {
         const double billion = 1E9;
-        const double scfConversionFactor = 35.315;
 
         var sumGasProduction = 0.0;
 
@@ -111,9 +112,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumGasProduction += caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileGas).Values.Sum();
         }
 
-        if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
+        if (project.PhysicalUnit != PhysUnit.SI && !excludeOilFieldConversion)
         {
-            return sumGasProduction * scfConversionFactor / billion;
+            return sumGasProduction * CubicFeetPerCubicMeter / billion;
         }
 
         return sumGasProduction / billion;
@@ -121,11 +122,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
     private static double CalculateTotalExportedVolumes(Project project, Case caseItem, bool excludeOilFieldConversion)
     {
-        const double oilEquivalentFactor = 5.61;
-
-        if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
+        if (project.PhysicalUnit != PhysUnit.SI && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(project, caseItem, false) + CalculateTotalGasProduction(project, caseItem, false) / oilEquivalentFactor;
+            return CalculateTotalOilProduction(project, caseItem, false) + CalculateTotalGasProduction(project, caseItem, false) / CubicFeetPerBarrel;
         }
 
         return CalculateTotalOilProduction(project, caseItem, true) + CalculateTotalGasProduction(project, caseItem, true);

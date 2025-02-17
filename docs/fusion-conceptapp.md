@@ -56,7 +56,7 @@ Concept App is a Fusion application that lets the user create and mature early p
 - What is monitored and logged
     - User activity and error situations.
 - How is the logging monitored
-    - Dynatrace
+    - DB and app insights
 - Who have the responsibility to monitor
     - The team
 - Who have access to azure infrastructure

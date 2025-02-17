@@ -2,6 +2,8 @@ using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
 using api.Models;
 
+using static api.Features.Profiles.VolumeConstants;
+
 namespace api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 
 public static class CalculateBreakEvenOilPriceService
@@ -64,9 +66,9 @@ public static class CalculateBreakEvenOilPriceService
 
         var gor = discountedGasVolume / discountedOilVolume;
 
-        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * 6.29 * defaultOilPrice) : 0;
+        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * BarrelsPerCubicMeter * defaultOilPrice) : 0;
 
-        var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / 6.29;
+        var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / BarrelsPerCubicMeter;
 
         caseItem.BreakEven = breakEvenPrice;
     }

@@ -68,6 +68,6 @@ export class ImageService extends __BaseService {
 }
 
 export const getImageService = async () => new ImageService({
-    ...config.ImageService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

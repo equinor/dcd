@@ -42,6 +42,7 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public double BreakEven { get; set; }
     public double? BreakEvenOverride { get; set; }
     public string? Host { get; set; }
+    public double AverageCo2Intensity { get; set; }
 
     public Guid DrainageStrategyId { get; set; }
     public DrainageStrategy DrainageStrategy { get; set; } = null!;

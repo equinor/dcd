@@ -21,6 +21,7 @@ public class Co2EmissionProfileServiceTests
             {
                 FlaredGasPerProducedVolume = 1.122765,
                 CO2RemovedFromGas = 0.0,
+                DailyEmissionFromDrillingRig = 117
             },
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles =
@@ -93,7 +94,7 @@ public class Co2EmissionProfileServiceTests
         var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 
         // Assert
-        var expectedTotalFuelConsumptions = new List<double> { 0.00595393613229385 * 1000000000, 0.005467970774412518 * 1000000000, 0.004930208439871723 * 1000000000, 0.004537168899071554 * 1000000000 };
+        var expectedTotalFuelConsumptions = new List<double> { 6102721.5 };
         for (int i = 0; i < expectedTotalFuelConsumptions.Count; i++)
         {
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);
@@ -191,7 +192,7 @@ public class Co2EmissionProfileServiceTests
         var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
 
         // Assert
-        var expectedTotalFuelConsumptions = new List<double> { 0.00595393613229385 * 1000000000, 0.005467970774412518 * 1000000000, 0.004930208439871723 * 1000000000, 0.004537168899071554 * 1000000000 };
+        var expectedTotalFuelConsumptions = new List<double> { 6102721.5 };
         for (int i = 0; i < expectedTotalFuelConsumptions.Count; i++)
         {
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);

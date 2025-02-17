@@ -36,11 +36,11 @@ class __TechnicalInputService extends __BaseService {
 }
 
 export const TechnicalInputService = new __TechnicalInputService({
-    ...config.TechnicalInputService,
+    ...config.BaseUrl,
     accessToken: window.sessionStorage.getItem("loginAccessToken")!,
 })
 
 export const GetTechnicalInputService = async () => new __TechnicalInputService({
-    ...config.TechnicalInputService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

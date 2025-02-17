@@ -34,6 +34,7 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.BreakEven = updateCaseDto.BreakEven;
         existingCase.BreakEvenOverride = updateCaseDto.BreakEvenOverride;
         existingCase.Host = updateCaseDto.Host;
+        existingCase.AverageCo2Intensity = updateCaseDto.AverageCo2Intensity;
         existingCase.DGADate = updateCaseDto.DGADate;
         existingCase.DGBDate = updateCaseDto.DGBDate;
         existingCase.DGCDate = updateCaseDto.DGCDate;

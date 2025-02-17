@@ -63,6 +63,7 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         OpexCostProfileService.RunCalculation(caseItem, developmentWell);
         Co2EmissionsProfileService.RunCalculation(caseItem, developmentWell);
         Co2IntensityProfileService.RunCalculation(caseItem);
+        AverageCo2IntensityProfileService.RunCalculation(caseItem);
         CalculateTotalIncomeService.RunCalculation(caseItem);
         CalculateTotalCostService.RunCalculation(caseItem);
         CalculateNpvService.RunCalculation(caseItem);

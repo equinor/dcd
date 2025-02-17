@@ -149,6 +149,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 CapexFactorFeasibilityStudies = x.CapexFactorFeasibilityStudies,
                 CapexFactorFEEDStudies = x.CapexFactorFEEDStudies,
                 Host = x.Host,
+                AverageCo2Intensity = x.AverageCo2Intensity,
                 DGADate = x.DGADate,
                 DGBDate = x.DGBDate,
                 DGCDate = x.DGCDate,

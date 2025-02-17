@@ -13,6 +13,6 @@ class STEAService extends __BaseService {
 }
 
 export const GetSTEAService = async () => new STEAService({
-    ...config.STEAService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

@@ -10,6 +10,6 @@ class __OrgChartMembersService extends __BaseService {
 }
 
 export const GetOrgChartMembersService = async () => new __OrgChartMembersService({
-    ...config.OrgChartService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

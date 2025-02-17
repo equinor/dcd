@@ -23,7 +23,7 @@ public class JobCleanupBackgroundService(IServiceScopeFactory serviceScopeFactor
             .ExecuteDeleteAsync();
 
         await dbContext.ExceptionLogs
-            .Where(x => x.UtcTimestamp < oneHundredDaysAgo)
+            .Where(x => x.TimestampUtc < oneHundredDaysAgo)
             .OrderBy(x => x.Id)
             .Take(500)
             .ExecuteDeleteAsync();

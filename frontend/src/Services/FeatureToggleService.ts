@@ -11,6 +11,6 @@ export class __FeatureToggleService extends __BaseService {
 }
 
 export const GetFeatureToggleService = async () => new __FeatureToggleService({
-    ...config.FeatureToggleService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

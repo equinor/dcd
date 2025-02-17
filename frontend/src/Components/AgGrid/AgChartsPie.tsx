@@ -1,4 +1,5 @@
 import { AgCharts } from "ag-charts-react"
+import { size } from "lodash"
 
 interface Props {
     data: any
@@ -6,11 +7,10 @@ interface Props {
     barColors: string[]
     unit?: string
     enableLegend?: boolean
-    totalCo2Emission: string | undefined
 }
 
 export const AgChartsPie = ({
-    data, chartTitle, barColors, unit, enableLegend, totalCo2Emission,
+    data, chartTitle, barColors, unit, enableLegend,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -40,38 +40,37 @@ export const AgChartsPie = ({
         theme: figmaTheme,
         series: [
             {
-                type: "donut",
-                calloutLabelKey: "profile",
+                type: "pie",
                 angleKey: "value",
-                calloutLabel: { enabled: false },
-                innerRadiusOffset: -25,
+                calloutLabelKey: "value",
+                sectorLabelKey: "profile",
                 strokes: ["white"],
-                innerLabels: [
-                    {
-                        text: totalCo2Emission ?? "0",
-                        fontSize: 42,
-                    },
-                    {
-                        text: "million tonnes",
-                        fontSize: 14,
-                        color: "#B4B4B4",
-                    },
-                ],
-                highlightStyle: {
-                    item: {
-                        fill: undefined,
-                        stroke: undefined,
-                        strokeWidth: 1,
-                    },
-                    series: {
-                        enabled: true,
-                        dimOpacity: 0.2,
-                        strokeWidth: 2,
-                    },
+                sectorLabel: {
+                    enabled: false,
                 },
             },
         ],
-        legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
+        highlightStyle: {
+            item: {
+                fill: undefined,
+                stroke: undefined,
+                strokeWidth: 1,
+            },
+            series: {
+                enabled: true,
+                dimOpacity: 0.2,
+                strokeWidth: 2,
+            },
+        },
+        legend: {
+            legendItemKey: "profile",
+            enabled: enableLegend,
+            position: "bottom",
+            spacing: 40,
+            label: {
+                fontSize: 14,
+            },
+        },
     }
 
     return (

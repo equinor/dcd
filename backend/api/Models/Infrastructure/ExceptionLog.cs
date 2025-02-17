@@ -3,7 +3,7 @@ namespace api.Models.Infrastructure;
 public class ExceptionLog
 {
     public int Id { get; set; }
-    public required DateTime UtcTimestamp { get; set; }
+    public required DateTime TimestampUtc { get; set; }
     public required int HttpStatusCode { get; set; }
     public required string Method { get; set; }
     public required string RequestBody { get; set; }

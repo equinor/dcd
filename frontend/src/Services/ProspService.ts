@@ -19,6 +19,6 @@ export class __ProspService extends __BaseService {
 }
 
 export const GetProspService = async () => new __ProspService({
-    ...config.UploadService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })
