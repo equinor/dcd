@@ -26,11 +26,11 @@ class __DrillingCampaignsService extends __BaseService {
 }
 
 export const DrillingCampaignsService = new __DrillingCampaignsService({
-    ...config.DrillingCampaignsService,
+    ...config.BaseUrl,
     accessToken: window.sessionStorage.getItem("loginAccessToken")!,
 })
 
 export const GetDrillingCampaignsService = async () => new __DrillingCampaignsService({
-    ...config.DrillingCampaignsService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

@@ -8,7 +8,7 @@ import {
     Well,
 } from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
-import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { ProfileTypes } from "@/Models/enums"
 
@@ -20,12 +20,12 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     const styles = useStyles()
     const ExplorationCampaignGridRef = useRef<any>(null)
 
-    const generateRowData = (): ITimeSeriesTableDataWithSet[] => {
-        const rows: ITimeSeriesTableDataWithSet[] = []
+    const generateRowData = (): ITimeSeriesTableData[] => {
+        const rows: ITimeSeriesTableData[] = []
 
         // Add rig mob/demob profile row
         if (campaign.rigMobDemobProfile) {
-            const mobDemobRow: ITimeSeriesTableDataWithSet = {
+            const mobDemobRow: ITimeSeriesTableData = {
                 profileName: "Rig mob/demob",
                 unit: "Percentage in decimals",
                 profile: {
@@ -37,6 +37,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigMobDemobProfile",
                 overridable: true,
+                overrideProfile: undefined,
                 editable: true,
             }
             rows.push(mobDemobRow)
@@ -44,7 +45,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
 
         // Add rig upgrading profile row
         if (campaign.rigUpgradingProfile) {
-            const upgradingRow: ITimeSeriesTableDataWithSet = {
+            const upgradingRow: ITimeSeriesTableData = {
                 profileName: "Rig upgrading",
                 unit: "Percentage in decimals",
                 profile: {
@@ -56,7 +57,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigUpgradingProfile",
                 overridable: true,
-                // override profile ???
+                overrideProfile: undefined,
                 editable: true,
             }
             rows.push(upgradingRow)
@@ -64,7 +65,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
 
         // Add wells from campaignWells
         campaign.campaignWells?.forEach((well: Well) => {
-            const wellRow: ITimeSeriesTableDataWithSet = {
+            const wellRow: ITimeSeriesTableData = {
                 profileName: well.wellName,
                 unit: "Well",
                 profile: {
@@ -78,6 +79,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 overridable: true,
                 editable: true,
             }
+            console.log("wellRow fra explorationCampaign: ", wellRow)
             rows.push(wellRow)
         })
 
@@ -85,6 +87,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     }
 
     const rowData = useMemo(() => generateRowData(), [campaign, tableYears])
+    console.log("rowData fra campaign: ", rowData)
 
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
