@@ -6,11 +6,12 @@ public static class TimeSeriesCostMerger
 {
     public static void AddValues(TimeSeriesCostDto target, TimeSeriesCostDto timeSeriesCost)
     {
-        if (timeSeriesCost?.Values == null || timeSeriesCost.Values.Length == 0)
+        if (timeSeriesCost.Values.Length == 0)
         {
             return;
         }
-        if (target.Values == null || target.Values.Length == 0)
+
+        if (target.Values.Length == 0)
         {
             target.Values = timeSeriesCost.Values;
             target.StartYear = timeSeriesCost.StartYear;
@@ -58,8 +59,9 @@ public static class TimeSeriesCostMerger
     {
         var t1Year = t1.StartYear;
         var t2Year = t2.StartYear;
-        var t1Values = t1.Values ?? [];
-        var t2Values = t2.Values ?? [];
+        var t1Values = t1.Values;
+        var t2Values = t2.Values;
+
         if (t1Values.Length == 0)
         {
             if (t2Values.Length == 0)

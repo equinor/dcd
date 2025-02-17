@@ -5,7 +5,7 @@ import { loginAccessTokenKey, getToken } from "../Utils/common"
 
 class STEAService extends __BaseService {
     public async excelToSTEA(project: Components.Schemas.ProjectDataDto) {
-        const postExcelResponse: any = await this.postExcel(project.projectId, "blob", { headers: { accept: "text/plain" } })
+        const postExcelResponse: any = await this.postExcel(`stea/${project.projectId}`, "blob", { headers: { accept: "text/plain" } })
         FileSaver.saveAs(postExcelResponse, (`${project.commonProjectAndRevisionData.name}.xlsx`))
     }
 }
