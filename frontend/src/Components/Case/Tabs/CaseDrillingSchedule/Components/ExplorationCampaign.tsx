@@ -1,33 +1,16 @@
 import { useMemo, useRef } from "react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid2"
 
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import { cellStyleRightAlign } from "@/Utils/common"
-import {
-    NameCell,
-    MainText,
-    SubText,
-} from "./SharedCampaignStyles"
 import {
     DrillingCampaignProps,
     Well,
 } from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
-import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
+import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { ProfileTypes } from "@/Models/enums"
-
-const NameCellRenderer = (params: any) => {
-    const { data } = params
-    return (
-        <NameCell>
-            <MainText>{data.name}</MainText>
-            <SubText>{data.subheader}</SubText>
-        </NameCell>
-    )
-}
 
 interface ExplorationCampaignProps extends DrillingCampaignProps {
     campaign: Components.Schemas.CampaignDto
@@ -36,8 +19,6 @@ interface ExplorationCampaignProps extends DrillingCampaignProps {
 const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps) => {
     const styles = useStyles()
     const ExplorationCampaignGridRef = useRef<any>(null)
-    // console.log("campaign", campaign)
-    // console.log(campaign.campaignId)
 
     const generateRowData = (): ITimeSeriesTableDataWithSet[] => {
         const rows: ITimeSeriesTableDataWithSet[] = []
@@ -75,6 +56,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigUpgradingProfile",
                 overridable: true,
+                // override profile ???
                 editable: true,
             }
             rows.push(upgradingRow)
@@ -103,60 +85,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     }
 
     const rowData = useMemo(() => generateRowData(), [campaign, tableYears])
-
-    const columnDefs = useMemo<ColDef[]>(() => {
-        const yearColumns = Array.from(
-            { length: tableYears[1] - tableYears[0] + 1 },
-            (_, index) => {
-                const year = tableYears[0] + index
-                return {
-                    field: year.toString(),
-                    width: 100,
-                    cellStyle: {
-                        ...cellStyleRightAlign,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        padding: "4px 8px",
-                    },
-                }
-            },
-        )
-
-        return [
-            {
-                field: "name",
-                headerName: "Exploration campaign",
-                width: 250,
-                editable: false,
-                pinned: "left",
-                cellRenderer: NameCellRenderer,
-            },
-            ...yearColumns,
-            {
-                field: "total",
-                headerName: "Total",
-                width: 100,
-                editable: false,
-                pinned: "right",
-                cellStyle: {
-                    fontWeight: "bold",
-                    textAlign: "right",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    padding: "4px 8px",
-                },
-            },
-        ]
-    }, [tableYears])
-
-    const defaultColDef = useMemo(() => ({
-        sortable: true,
-        filter: true,
-        resizable: true,
-        suppressHeaderMenuButton: true,
-    }), [])
 
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
