@@ -32,8 +32,7 @@ export const useRevisions = () => {
         revision: Components.Schemas.CreateRevisionDto,
     ) => {
         setIsRevisionsLoading(true)
-        const projectService = await GetProjectService()
-        const newRevision = await projectService.createRevision(projectId, revision)
+        const newRevision = await GetProjectService().createRevision(projectId, revision)
         if (newRevision) {
             setIsRevisionsLoading(false)
             setIsCreateRevisionModalOpen(false)

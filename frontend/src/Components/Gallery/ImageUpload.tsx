@@ -57,7 +57,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         const loadImages = async () => {
             if (revisionAndProjectData && caseId) {
                 try {
-                    const imageService = await getImageService()
+                    const imageService = getImageService()
                     const imageDtos = caseId
                         ? await imageService.getCaseImages(projectId, caseId)
                         : await imageService.getProjectImages(projectId)
@@ -102,7 +102,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             return
         }
 
-        const imageService = await getImageService()
+        const imageService = getImageService()
 
         // if we could avoid project name here, we could drop the project query
         const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(

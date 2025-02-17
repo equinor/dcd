@@ -12,7 +12,7 @@ import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
 import { GetCaseService } from "@/Services/CaseService"
 import { useAppStore } from "@/Store/AppStore"
-import { ResourceName, ResourceObject } from "@/Models/Interfaces"
+import { ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
@@ -81,7 +81,7 @@ export const useSubmitToApi = () => {
     })
 
     const updateResource = async (
-        getService: () => Promise<any>,
+        getService: () => any,
         updateMethodName: string,
         {
             projectId,
@@ -89,9 +89,8 @@ export const useSubmitToApi = () => {
             resourceObject,
             resourceId,
         }: UpdateResourceParams,
-
     ) => {
-        const service = await getService()
+        const service = getService()
 
         const serviceMethod = resourceId
             ? service[updateMethodName](projectId, caseId, resourceId, resourceObject)
@@ -267,14 +266,14 @@ export const useSubmitToApi = () => {
                             wellId!,
                             drillingScheduleId!,
                             !drillingScheduleId
-                                ? await (await GetExplorationService()).createExplorationWellDrillingSchedule(
+                                ? await GetExplorationService().createExplorationWellDrillingSchedule(
                                     projectId,
                                     caseId,
                                     resourceId!,
                                     wellId!,
                                     resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
                                 )
-                                : await (await GetExplorationService()).updateExplorationWellDrillingSchedule(
+                                : await GetExplorationService().updateExplorationWellDrillingSchedule(
                                     projectId,
                                     caseId,
                                     resourceId!,
@@ -292,14 +291,14 @@ export const useSubmitToApi = () => {
                             wellId!,
                             drillingScheduleId!,
                             !drillingScheduleId
-                                ? await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(
+                                ? await GetWellProjectService().createWellProjectWellDrillingSchedule(
                                     projectId,
                                     caseId,
                                     resourceId!,
                                     wellId!,
                                     resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
                                 )
-                                : await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(
+                                : await GetWellProjectService().updateWellProjectWellDrillingSchedule(
                                     projectId,
                                     caseId,
                                     resourceId!,
@@ -333,7 +332,7 @@ export const useSubmitToApi = () => {
                     return await saveTimeSeriesProfile({
                         projectId,
                         caseId,
-                        saveFunction: await (await GetCaseService()).saveProfile(
+                        saveFunction: await GetCaseService().saveProfile(
                             projectId,
                             caseId,
                             { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesDto,
@@ -368,7 +367,7 @@ export const useSubmitToApi = () => {
                     return await saveTimeSeriesProfile({
                         projectId,
                         caseId,
-                        saveFunction: await (await GetCaseService()).saveOverrideProfile(
+                        saveFunction: await GetCaseService().saveOverrideProfile(
                             projectId,
                             caseId,
                             { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesOverrideDto,

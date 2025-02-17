@@ -8,8 +8,7 @@ export const caseQueryFn = async (projectId: string, caseId: string | undefined)
         console.error("projectId or caseId is undefined")
         return null
     }
-    const caseService = await GetCaseService()
-    return caseService.getCaseWithAssets(projectId, caseId)
+    return GetCaseService().getCaseWithAssets(projectId, caseId)
 }
 
 export const projectQueryFn = async (projectId: string | undefined) => {
@@ -17,8 +16,8 @@ export const projectQueryFn = async (projectId: string | undefined) => {
         console.error("projectId is undefined")
         return null
     }
-    const projectService = await GetProjectService()
-    return projectService.getProject(projectId!)
+    
+    return GetProjectService().getProject(projectId!)
 }
 
 export const peopleQueryFn = async (projectId: string | undefined) => {
@@ -26,8 +25,7 @@ export const peopleQueryFn = async (projectId: string | undefined) => {
         console.error("projectId is undefined")
         return null
     }
-    const projectMemberService = await GetProjectMembersService()
-    return projectMemberService.getPeople(projectId)
+    return GetProjectMembersService().getPeople(projectId)
 }
 
 export const revisionQueryFn = async (projectId: string | undefined, revisionId: string | undefined) => {
@@ -35,8 +33,7 @@ export const revisionQueryFn = async (projectId: string | undefined, revisionId:
         console.error("projectId or revisionId is undefined")
         return null
     }
-    const projectService = await GetProjectService()
-    return projectService.getRevision(projectId, revisionId)
+    return GetProjectService().getRevision(projectId, revisionId)
 }
 
 export const compareCasesQueryFn = async (projectId: string | undefined) => {
@@ -44,12 +41,9 @@ export const compareCasesQueryFn = async (projectId: string | undefined) => {
         console.error("projectId is undefined")
         return null
     }
-    const projectService = await GetProjectService()
-    return projectService.compareCases(projectId!)
+    return GetProjectService().compareCases(projectId!)
 }
 
 export const featureToggleQueryFn = async () => {
-    const featureToggleService = await GetFeatureToggleService()
-
-    return featureToggleService.getFeatureToggles()
+    return GetFeatureToggleService().getFeatureToggles()
 }

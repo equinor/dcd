@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class DrainageStrategyService extends __BaseService {
     public async updateDrainageStrategy(
@@ -15,6 +14,4 @@ class DrainageStrategyService extends __BaseService {
     }
 }
 
-export const GetDrainageStrategyService = async () => new DrainageStrategyService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetDrainageStrategyService = () => new DrainageStrategyService()

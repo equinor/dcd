@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class TopsideService extends __BaseService {
     public async updateTopside(
@@ -15,6 +14,4 @@ class TopsideService extends __BaseService {
     }
 }
 
-export const GetTopsideService = async () => new TopsideService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetTopsideService = () => new TopsideService()

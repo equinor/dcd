@@ -107,7 +107,7 @@ const CaseCO2Tab = () => {
         (async () => {
             try {
                 if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
+                    const co2DFFTotal = await GetGenerateProfileService().generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
