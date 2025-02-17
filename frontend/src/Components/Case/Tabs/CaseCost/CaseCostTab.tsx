@@ -131,6 +131,7 @@ const CaseCostTab = () => {
                 caseData={apiData.case}
                 surfData={apiData.surf}
 
+
             />
             <Grid size={12}>
                 <AggregatedTotals
@@ -170,6 +171,7 @@ const CaseCostTab = () => {
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+
 
                 />
             </Grid>

@@ -31,7 +31,7 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         GridChartsModule,
         ExcelExportModule,
     ])
-/*
+    /*
     if (agGridLicenseKey && agGridLicenseKey.length > 0) {
         enableAgGrid(configurator, {
             licenseKey: agGridLicenseKey || "",

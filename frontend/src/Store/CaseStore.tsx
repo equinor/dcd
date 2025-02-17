@@ -14,12 +14,6 @@ interface CaseState {
     setCaseEditsBelongingToCurrentCase: (value: SetStateAction<EditInstance[]>) => void;
 }
 
-// Helper function to filter out old edits
-const filterOldEdits = (edits: EditInstance[]) => {
-    const oneHourAgo = new Date().getTime() - (60 * 60 * 1000)
-    return edits.filter((edit) => edit.timeStamp > oneHourAgo)
-}
-
 export const useCaseStore = create<CaseState>()(
     persist(
         (set, get) => ({
@@ -53,7 +47,7 @@ export const useCaseStore = create<CaseState>()(
         {
             name: "case-storage",
             partialize: (state) => ({
-                caseEdits: filterOldEdits(state.caseEdits),
+                caseEdits: state.caseEdits,
                 editIndexes: state.editIndexes,
             }),
         },

@@ -10,6 +10,68 @@ namespace api.Features.Profiles.Save;
 
 public class SaveProfileService(DcdDbContext context, RecalculationService recalculationService)
 {
+    public async Task SaveTimeSeriesList(Guid projectId, Guid caseId, SaveTimeSeriesListDto dto)
+    {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var profileTypes = dto.TimeSeries.Select(x => x.ProfileType)
+            .Union(dto.OverrideTimeSeries.Select(x => x.ProfileType))
+            .ToList();
+
+        var existingEntities = await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .Where(x => x.Case.ProjectId == projectPk)
+            .Where(x => profileTypes.Contains(x.ProfileType))
+            .ToListAsync();
+
+        foreach (var timeSeriesDto in dto.TimeSeries)
+        {
+            var existingEntity = existingEntities.SingleOrDefault(x => x.ProfileType == timeSeriesDto.ProfileType);
+
+            if (existingEntity != null)
+            {
+                existingEntity.StartYear = timeSeriesDto.StartYear;
+                existingEntity.Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk);
+
+                continue;
+            }
+
+            context.TimeSeriesProfiles.Add(new TimeSeriesProfile
+            {
+                ProfileType = timeSeriesDto.ProfileType,
+                CaseId = caseId,
+                StartYear = timeSeriesDto.StartYear,
+                Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk)
+            });
+        }
+
+        foreach (var timeSeriesDto in dto.OverrideTimeSeries)
+        {
+            var existingEntity = existingEntities.SingleOrDefault(x => x.ProfileType == timeSeriesDto.ProfileType);
+
+            if (existingEntity != null)
+            {
+                existingEntity.StartYear = timeSeriesDto.StartYear;
+                existingEntity.Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk);
+                existingEntity.Override = timeSeriesDto.Override;
+
+                continue;
+            }
+
+            context.TimeSeriesProfiles.Add(new TimeSeriesProfile
+            {
+                ProfileType = timeSeriesDto.ProfileType,
+                CaseId = caseId,
+                StartYear = timeSeriesDto.StartYear,
+                Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk),
+                Override = timeSeriesDto.Override
+            });
+        }
+
+        await context.UpdateCaseUpdatedUtc(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
+    }
+
     public async Task<TimeSeriesDto> SaveTimeSeriesProfile(Guid projectId, Guid caseId, SaveTimeSeriesDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);

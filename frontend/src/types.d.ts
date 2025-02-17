@@ -361,6 +361,10 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
         }
+        export interface SaveTimeSeriesListDto {
+            timeSeries: SaveTimeSeriesDto[];
+            overrideTimeSeries: SaveTimeSeriesOverrideDto[];
+        }
         export interface SaveTimeSeriesOverrideDto {
             profileType: string;
             startYear: number; // int32
@@ -1054,6 +1058,23 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.SaveTimeSeriesDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdProfilesSaveBatch {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SaveTimeSeriesListDto;
+            namespace Responses {
+                export interface $200 {
+                }
             }
         }
     }

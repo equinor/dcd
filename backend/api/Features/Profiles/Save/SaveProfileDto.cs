@@ -16,3 +16,9 @@ public class SaveTimeSeriesOverrideDto
     [Required] public required double[] Values { get; set; }
     [Required] public required bool Override { get; set; }
 }
+
+public class SaveTimeSeriesListDto
+{
+    [Required] public required List<SaveTimeSeriesDto> TimeSeries { get; set; }
+    [Required] public required List<SaveTimeSeriesOverrideDto> OverrideTimeSeries { get; set; }
+}

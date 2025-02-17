@@ -1,13 +1,9 @@
 import React, { useEffect } from "react"
 import {
-    Typography, Icon, Tooltip, CircularProgress, Button,
+    Typography, Icon, Tooltip, CircularProgress,
 } from "@equinor/eds-core-react"
-import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
+import { check_circle_outlined } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useParams } from "react-router-dom"
-import useEditCase from "../../Hooks/useEditCase"
-import { useCaseStore } from "../../Store/CaseStore"
-import { getCurrentEditId } from "../../Utils/common"
 import { useAppStore } from "../../Store/AppStore"
 
 const Container = styled.div`
@@ -24,65 +20,34 @@ const Status = styled.div`
 `
 
 const UndoControls: React.FC = () => {
-    const {
-        editIndexes,
-        caseEditsBelongingToCurrentCase,
-    } = useCaseStore()
-    const { undoEdit, redoEdit } = useEditCase()
-    const { caseId } = useParams()
     const { isSaving } = useAppStore()
 
-    const currentEditId = getCurrentEditId(editIndexes, caseId)
-
-    const canUndo = () => {
-        if (!currentEditId || !caseEditsBelongingToCurrentCase) {
-            return false
-        }
-
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
-        return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > -1
-    }
-
-    const canRedo = () => {
-        if (!caseEditsBelongingToCurrentCase) {
-            return false
-        }
-
-        if (!currentEditId && caseEditsBelongingToCurrentCase.length > 0) {
-            return true
-        }
-
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
-        return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > 0
-    }
+    // Mock functions - will be reimplemented later
+    const canUndo = () => false
+    const canRedo = () => false
+    const undoEdit = () => { }
+    const redoEdit = () => { }
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             const isMac = navigator.userAgent.indexOf("Mac OS X") !== -1
             const undoKey = isMac ? event.metaKey && event.key === "z" : event.ctrlKey && event.key === "z"
-            const redoKey = isMac ? event.metaKey && event.key === "y" : event.ctrlKey && event.key === "y"
+            const redoKey = isMac
+                ? event.metaKey && event.shiftKey && event.key === "z"
+                : event.ctrlKey && event.key === "y"
 
-            if (undoKey) {
+            if (undoKey && canUndo()) {
                 event.preventDefault()
-                event.stopPropagation()
-                if (canUndo()) {
-                    undoEdit()
-                }
-            } else if (redoKey) {
+                undoEdit()
+            } else if (redoKey && canRedo()) {
                 event.preventDefault()
-                event.stopPropagation()
-                if (canRedo()) {
-                    redoEdit()
-                }
+                redoEdit()
             }
         }
 
         window.addEventListener("keydown", handleKeyDown)
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown)
-        }
-    }, [undoEdit, redoEdit, canUndo, canRedo])
+        return () => window.removeEventListener("keydown", handleKeyDown)
+    }, [])
 
     return (
         <Container>
@@ -103,6 +68,7 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
+            {/* Undo/Redo buttons temporarily disabled
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
@@ -121,6 +87,7 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
+            */}
         </Container>
     )
 }

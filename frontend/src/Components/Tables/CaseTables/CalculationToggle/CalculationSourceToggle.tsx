@@ -43,8 +43,8 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
                 editable: params.data.editable,
             }
 
-            const newResourceObject = structuredClone(profile)
-            newResourceObject.override = !profile.override
+            const resourceObject = structuredClone(profile)
+            resourceObject.override = !profile.override
 
             addEdit({
                 inputLabel: params.data.profileName,
@@ -53,7 +53,7 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
                 resourcePropertyKey: "override",
                 caseId,
                 resourceId: profile.resourceId,
-                newResourceObject,
+                resourceObject,
                 previousResourceObject: profile,
             })
 

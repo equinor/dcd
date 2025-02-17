@@ -7,7 +7,6 @@ import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
 import ProjectDetails from "./Components/Project/ProjectDetails"
 import CasesDetails from "./Components/ActiveCases/CasesDetails"
-import CurrentCaseEditHistory from "./Components/EditHistory/CurrentCaseEditHistory"
 import ArchivedCasesDetails from "./Components/ArchivedCases/ArchivedCasesDetails"
 import { sharedTimelineStyles } from "./sharedStyles"
 
@@ -57,7 +56,7 @@ export const TimelineElement = styled(Button)`
 `
 
 const Sidebar = () => {
-    const { sidebarOpen, setSidebarOpen, developerMode } = useAppStore()
+    const { sidebarOpen, setSidebarOpen } = useAppStore()
     const revisionAndProjectData = useDataFetch()
 
     const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseOverviewDto[]>([])
@@ -81,9 +80,6 @@ const Sidebar = () => {
                             <ArchivedCasesDetails />
                             <StyledDivider />
                         </>
-                    )}
-                    {developerMode && (
-                        <CurrentCaseEditHistory />
                     )}
                     <Footer>
                         <Toggle />

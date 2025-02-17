@@ -1,12 +1,10 @@
 import Grid from "@mui/material/Grid2"
 import { v4 as uuidv4 } from "uuid"
-import { useParams } from "react-router"
 import styled from "styled-components"
 
 import {
     isDefaultDateString,
     defaultDate,
-    formatDate,
     isDefaultDate,
     toMonthDate,
     dateStringToDateUtc,
@@ -83,7 +81,6 @@ const DECISION_GATES: DecisionGate[] = [
 
 const CaseScheduleTab = () => {
     const { editMode } = useAppStore()
-    const { tab } = useParams()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
     const { apiData } = useCaseApiData()
@@ -134,26 +131,21 @@ const CaseScheduleTab = () => {
 
     const createDateChangeEdit = (dateKey: string, newDate: Date, currentCaseData: any) => {
         const gate = DECISION_GATES.find((g) => g.key === dateKey)
-        const caseDataCopy = { ...currentCaseData }
 
         if (!gate) { return null }
 
         // Always update cascading dates for DG dates
-        const newResourceObject = gate.key.startsWith("dG")
+        const resourceObject = gate.key.startsWith("dG")
             ? updateCascadingDates(gate, newDate, currentCaseData)
             : { ...currentCaseData, [dateKey]: newDate.toISOString() }
 
         return {
-            inputLabel: dateKey,
+            uuid: uuidv4(),
             projectId: currentCaseData.projectId,
             resourceName: "case" as ResourceName,
             resourcePropertyKey: dateKey as ResourcePropertyKey,
             caseId: currentCaseData.caseId,
-            newDisplayValue: formatDate(newDate.toISOString()),
-            previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-            newResourceObject,
-            previousResourceObject: caseDataCopy,
-            tabName: tab,
+            resourceObject,
         }
     }
 

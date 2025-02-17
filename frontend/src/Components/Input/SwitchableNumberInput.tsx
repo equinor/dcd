@@ -1,5 +1,6 @@
 import React from "react"
 import { useParams } from "react-router-dom"
+import { v4 as uuidv4 } from "uuid"
 
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
 import { useProjectContext } from "@/Store/ProjectContext"
@@ -36,29 +37,24 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     min,
     max,
 }: CaseEditInputProps) => {
-    const { caseId, tab } = useParams()
+    const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
 
     const addToEditsAndSubmit = (insertedValue: number) => {
         if (!caseId || projectId === "") { return }
 
-        const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
+        const resourceObject: ResourceObject = structuredClone(previousResourceObject)
+        resourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
 
         addEdit({
-            previousDisplayValue: value,
-            newDisplayValue: insertedValue,
-            newResourceObject,
-            previousResourceObject,
-            inputLabel: label,
+            uuid: uuidv4(),
             projectId,
             resourceName,
             resourcePropertyKey,
             resourceId,
             caseId,
-            tabName: tab,
-            inputFieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
+            resourceObject,
         })
     }
 

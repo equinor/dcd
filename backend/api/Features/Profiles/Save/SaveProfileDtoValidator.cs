@@ -6,6 +6,19 @@ namespace api.Features.Profiles.Save;
 
 public static class SaveProfileDtoValidator
 {
+    public static void Validate(SaveTimeSeriesListDto dto)
+    {
+        foreach (var profile in dto.TimeSeries)
+        {
+            Validate(profile);
+        }
+
+        foreach (var profile in dto.OverrideTimeSeries)
+        {
+            Validate(profile);
+        }
+    }
+
     public static void Validate(SaveTimeSeriesDto dto)
     {
         if (dto.Values == null)

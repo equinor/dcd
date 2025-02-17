@@ -10,17 +10,18 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import isEqual from "lodash/isEqual"
+import { v4 as uuidv4 } from "uuid"
 import {
     cellStyleRightAlign,
     getValuesFromEntireRow,
     generateProfile,
-    roundToFourDecimalsAndJoin,
     numberValueParser,
 } from "../../../../Utils/common"
 import { useAppStore } from "../../../../Store/AppStore"
 import { useProjectContext } from "../../../../Store/ProjectContext"
 import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import useEditCase from "@/Hooks/useEditCase"
+import { EditInstance } from "@/Models/Interfaces"
 
 interface Props {
     dg4Year: number
@@ -46,13 +47,13 @@ const CaseDrillingScheduleTabTable = ({
     isExplorationTable,
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppStore()
-    const { caseId, tab } = useParams()
+    const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const styles = useStyles()
     const { addEdit } = useEditCase()
 
     const [rowData, setRowData] = useState<any[]>([])
-    const [stagedEdit, setStagedEdit] = useState<any>()
+    const [stagedEdit, setStagedEdit] = useState<EditInstance | undefined>()
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -122,20 +123,15 @@ const CaseDrillingScheduleTabTable = ({
 
                 if (!isEqual(newProfile.values, existingProfile.values)) {
                     setStagedEdit({
-                        newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
-                        previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
-                        inputLabel: params.data.name,
+                        uuid: uuidv4(),
                         projectId,
                         resourceName,
                         resourcePropertyKey: "drillingSchedule",
                         caseId,
                         resourceId,
-                        newResourceObject: newProfile,
-                        previousResourceObject: existingProfile,
+                        resourceObject: newProfile,
                         wellId: updatedWell.wellId,
                         drillingScheduleId: newProfile.id,
-                        tabName: tab,
-                        tableName,
                     })
                 }
             }

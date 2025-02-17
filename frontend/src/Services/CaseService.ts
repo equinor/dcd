@@ -73,6 +73,18 @@ class CaseService extends __BaseService {
         )
         return res
     }
+
+    public async saveProfiles(
+        projectId: string,
+        caseId: string,
+        dto: Components.Schemas.SaveTimeSeriesListDto,
+    ): Promise<object> {
+        const res: object = await this.post(
+            `projects/${projectId}/cases/${caseId}/profiles/save-batch`,
+            { body: dto },
+        )
+        return res
+    }
 }
 
 export const GetCaseService = () => new CaseService()

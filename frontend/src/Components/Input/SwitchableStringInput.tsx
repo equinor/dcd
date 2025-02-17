@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Input } from "@equinor/eds-core-react"
+import { v4 as uuidv4 } from "uuid"
 import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
 import InputSwitcher from "./Components/InputSwitcher"
 import { useProjectContext } from "../../Store/ProjectContext"
@@ -23,7 +24,7 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     resourceId,
     previousResourceObject,
 }: CaseEditInputProps) => {
-    const { caseId, tab } = useParams()
+    const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
 
@@ -36,21 +37,17 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     const addToEditsAndSubmit = (insertedValue: string) => {
         if (!caseId || projectId === "") { return }
 
-        const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
+        const resourceObject: ResourceObject = structuredClone(previousResourceObject)
+        resourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
 
         addEdit({
-            newResourceObject,
-            previousResourceObject,
-            newDisplayValue: insertedValue,
-            previousDisplayValue: value,
-            inputLabel: label,
+            uuid: uuidv4(),
+            resourceObject,
             projectId,
             resourceName,
             resourcePropertyKey,
             resourceId,
             caseId,
-            tabName: tab,
         })
     }
 
