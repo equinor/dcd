@@ -38,9 +38,6 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
-    ProfilePropertyKey
-
-export type ProfilePropertyKey =
     keyof Components.Schemas.TimeSeriesCostOverrideDto |
     keyof Components.Schemas.TimeSeriesCostDto;
 

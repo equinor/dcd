@@ -47,7 +47,7 @@ const Gallery = () => {
             const projectIdOrRevisionId = revisionId || projectId
             if (projectId) {
                 try {
-                    const imageService = await getImageService()
+                    const imageService = getImageService()
                     const imageDtos = caseId
                         ? await imageService.getCaseImages(projectIdOrRevisionId, caseId)
                         : await imageService.getProjectImages(projectIdOrRevisionId)
@@ -70,7 +70,7 @@ const Gallery = () => {
 
         const timeout = setTimeout(async () => {
             try {
-                const imageService = await getImageService()
+                const imageService = getImageService()
                 const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
                     const updateImageDto = {
@@ -96,7 +96,7 @@ const Gallery = () => {
     const handleDelete = async (imageId: string) => {
         try {
             if (projectId) {
-                const imageService = await getImageService()
+                const imageService = getImageService()
                 const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
                     

@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class WellProjectService extends __BaseService {
     public async createWellProjectWellDrillingSchedule(
@@ -32,6 +31,4 @@ class WellProjectService extends __BaseService {
     }
 }
 
-export const GetWellProjectService = async () => new WellProjectService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetWellProjectService = () => new WellProjectService()

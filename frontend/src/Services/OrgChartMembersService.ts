@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { getToken, loginAccessTokenKey } from "@/Utils/common"
 
 class __OrgChartMembersService extends __BaseService {
     public async getOrgChartPeople(projectId: string, contextId: string): Promise<Components.Schemas.ProjectMemberDto[]> {
@@ -8,6 +7,4 @@ class __OrgChartMembersService extends __BaseService {
     }
 }
 
-export const GetOrgChartMembersService = async () => new __OrgChartMembersService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetOrgChartMembersService = () => new __OrgChartMembersService()

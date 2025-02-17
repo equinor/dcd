@@ -1,8 +1,6 @@
 import FileSaver from "file-saver"
 import { __BaseService } from "./__BaseService"
 
-import { loginAccessTokenKey, getToken } from "../Utils/common"
-
 class STEAService extends __BaseService {
     public async excelToSTEA(project: Components.Schemas.ProjectDataDto) {
         const postExcelResponse: any = await this.postExcel(`stea/${project.projectId}`, "blob", { headers: { accept: "text/plain" } })
@@ -10,6 +8,4 @@ class STEAService extends __BaseService {
     }
 }
 
-export const GetSTEAService = async () => new STEAService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetSTEAService = () => new STEAService()

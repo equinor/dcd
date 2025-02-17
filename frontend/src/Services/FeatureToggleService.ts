@@ -1,7 +1,5 @@
 import { __BaseService } from "./__BaseService"
 
-import { getToken, loginAccessTokenKey } from "../Utils/common"
-
 export class __FeatureToggleService extends __BaseService {
     async getFeatureToggles() {
         const toggles: Components.Schemas.FeatureToggleDto = await this.get<Components.Schemas.FeatureToggleDto>("feature-toggles")
@@ -9,6 +7,4 @@ export class __FeatureToggleService extends __BaseService {
     }
 }
 
-export const GetFeatureToggleService = async () => new __FeatureToggleService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetFeatureToggleService = () => new __FeatureToggleService()
