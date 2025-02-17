@@ -13,6 +13,6 @@ class WellService extends __BaseService {
 }
 
 export const GetWellService = async () => new WellService({
-    ...config.WellService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

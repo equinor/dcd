@@ -11,6 +11,6 @@ export class CaseGeneratedProfileService extends __BaseService {
 }
 
 export const GetGenerateProfileService = async () => new CaseGeneratedProfileService({
-    ...config.GenerateProfileService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })

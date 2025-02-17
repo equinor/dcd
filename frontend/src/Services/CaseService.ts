@@ -78,6 +78,6 @@ class CaseService extends __BaseService {
 }
 
 export const GetCaseService = async () => new CaseService({
-    ...config.CaseService,
+    ...config.BaseUrl,
     accessToken: await getToken(loginAccessTokenKey)!,
 })
