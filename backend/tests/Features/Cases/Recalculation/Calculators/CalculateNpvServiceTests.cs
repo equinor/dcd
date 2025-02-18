@@ -48,7 +48,7 @@ public class CalculateNpvServiceTests
 
         CalculateNpvService.RunCalculation(caseItem);
 
-        var expectedNpvValue = 869.2;
+        var expectedNpvValue = 1531.106;
         Assert.Equal(expectedNpvValue, caseItem.NPV, precision: 1);
     }
 }

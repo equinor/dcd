@@ -35,7 +35,7 @@ public static class CalculateNpvService
                 npvYearInRelationToDg4Year
             );
 
-        caseItem.NPV = npvValue;
+        caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;
     }
 
     private static TimeSeries? GetCashflowProfile(Case caseItem)
