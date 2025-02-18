@@ -30,8 +30,10 @@ export type ResourceObject =
     ProfileObject
 
 export type ProfileObject =
-    Components.Schemas.TimeSeriesCostOverrideDto |
-    Components.Schemas.TimeSeriesCostDto
+    Components.Schemas.TimeSeriesOverrideDto |
+    Components.Schemas.TimeSeriesDto |
+    Components.Schemas.TimeSeriesOverrideDto |
+    Components.Schemas.TimeSeriesDto
 
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
@@ -45,11 +47,8 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.UpdateCampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
-    ProfilePropertyKey
-
-export type ProfilePropertyKey =
-    keyof Components.Schemas.TimeSeriesCostOverrideDto |
-    keyof Components.Schemas.TimeSeriesCostDto;
+    keyof Components.Schemas.TimeSeriesOverrideDto |
+    keyof Components.Schemas.TimeSeriesDto;
 
 export interface EditInstance {
     uuid: string; // unique identifier for the edit

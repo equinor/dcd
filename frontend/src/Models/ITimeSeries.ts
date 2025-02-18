@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction } from "react"
 import { ProfileTypes } from "./enums"
 
 export interface ITimeSeries {
-    id: string
     startYear: number
     name?: string
     values?: number[] | null

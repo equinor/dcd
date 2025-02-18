@@ -125,7 +125,7 @@ const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): numbe
 }
 
 export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    if (!t1) { return t2 || { id: "", startYear: 0, values: [] } }
+    if (!t1) { return t2 || { startYear: 0, values: [] } }
     if (!t2) { return t1 }
 
     const startYears = [t1, t2].map((t: ITimeSeries | undefined) => t?.startYear ?? 0)
@@ -137,14 +137,13 @@ export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     const mergedValues = mergeTimeSeriesValues(arrays, offsets)
 
     return {
-        id: t1.id || t2.id || "",
         startYear: minYear,
         values: mergedValues,
     }
 }
 
 export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
-    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 0, values: [] }
+    let mergedTimeSeries: ITimeSeries = { startYear: 0, values: [] }
 
     timeSeriesList.forEach((currentSeries, index) => {
         if (index === 0) {

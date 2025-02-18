@@ -3,7 +3,6 @@ using api.Context.Extensions;
 using api.Features.Cases.GetWithAssets.AssetMappers;
 using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Profiles;
-using api.Features.Profiles.Dtos;
 using api.Models;
 using api.Models.Enums;
 
@@ -114,32 +113,30 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         };
     }
 
-    private static TimeSeriesCostDto? MapToDto(TimeSeriesProfile? timeSeriesProfile)
+    private static TimeSeriesDto? MapToDto(TimeSeriesProfile? timeSeriesProfile)
     {
         if (timeSeriesProfile == null)
         {
             return null;
         }
 
-        return new TimeSeriesCostDto
+        return new TimeSeriesDto
         {
-            Id = timeSeriesProfile.Id,
             StartYear = timeSeriesProfile.StartYear,
             Values = timeSeriesProfile.Values,
             UpdatedUtc = timeSeriesProfile.UpdatedUtc,
         };
     }
 
-    private static TimeSeriesCostOverrideDto? MapToOverrideDto(TimeSeriesProfile? timeSeriesProfile)
+    private static TimeSeriesOverrideDto? MapToOverrideDto(TimeSeriesProfile? timeSeriesProfile)
     {
         if (timeSeriesProfile == null)
         {
             return null;
         }
 
-        return new TimeSeriesCostOverrideDto
+        return new TimeSeriesOverrideDto
         {
-            Id = timeSeriesProfile.Id,
             StartYear = timeSeriesProfile.StartYear,
             Values = timeSeriesProfile.Values,
             Override = timeSeriesProfile.Override,
@@ -147,32 +144,30 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         };
     }
 
-    private static TimeSeriesCostDto? ConversionMapToDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
+    private static TimeSeriesDto? ConversionMapToDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
     {
         if (entity == null)
         {
             return null;
         }
 
-        return new TimeSeriesCostDto
+        return new TimeSeriesDto
         {
-            Id = entity.Id,
             StartYear = entity.StartYear,
             Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
             UpdatedUtc = entity.UpdatedUtc,
         };
     }
 
-    private static TimeSeriesCostOverrideDto? ConversionMapToOverrideDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
+    private static TimeSeriesOverrideDto? ConversionMapToOverrideDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
     {
         if (entity == null)
         {
             return null;
         }
 
-        return new TimeSeriesCostOverrideDto
+        return new TimeSeriesOverrideDto
         {
-            Id = entity.Id,
             StartYear = entity.StartYear,
             Override = entity.Override,
             Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),

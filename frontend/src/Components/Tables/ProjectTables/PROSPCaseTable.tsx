@@ -254,7 +254,7 @@ const PROSPCaseList = ({
         const dtos = gridDataToDtos(p.commonProjectAndRevisionData)
         if (dtos.length > 0) {
             setIsApplying(true)
-            const newProject = await (await GetProspService()).importFromSharePoint(p.projectId, dtos)
+            const newProject = await GetProspService().importFromSharePoint(p.projectId, dtos)
             addProjectEdit(newProject.projectId, newProject.commonProjectAndRevisionData)
             setIsApplying(false)
         }

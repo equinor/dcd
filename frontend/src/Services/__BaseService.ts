@@ -1,5 +1,6 @@
-import axios, { AxiosRequestConfig, ResponseType } from "axios"
-import { ServiceConfig } from "./config"
+import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios"
+import { config } from "./config"
+import { getToken, loginAccessTokenKey } from "@/Utils/common"
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -18,17 +19,10 @@ type RequestOptions = {
 }
 
 export class __BaseService {
-    private config: ServiceConfig
-    private client: any
+    private client: AxiosInstance
 
-    constructor(config: ServiceConfig) {
-        this.config = config
-        this.client = axios.create({ baseURL: this.config.BASE_URL })
-        this.client.defaults.headers.common = {
-            Accept: "application/json",
-            Authorization: `Bearer ${config.accessToken}`,
-            ...this.config.headers,
-        }
+    constructor() {
+        this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
         this.client.interceptors.response.use(
             (response: any) => response,
             (error: any) => {
@@ -43,6 +37,12 @@ export class __BaseService {
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
+        const token = await getToken(loginAccessTokenKey)!
+        this.client.defaults.headers.common = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+
         const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
@@ -54,6 +54,12 @@ export class __BaseService {
     }
 
     private async requestExcel(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
+        const token = await getToken(loginAccessTokenKey)!
+        this.client.defaults.headers.common = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+
         const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
@@ -70,6 +76,12 @@ export class __BaseService {
         options?: RequestOptions,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
+        const token = await getToken(loginAccessTokenKey)!
+        this.client.defaults.headers.common = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+
         const { data } = await this.client.post(path, options?.body, requestQuery)
 
         return data
@@ -80,6 +92,12 @@ export class __BaseService {
         options?: RequestOptions,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
+        const token = await getToken(loginAccessTokenKey)!
+        this.client.defaults.headers.common = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+
         const { data } = await this.client.put(path, options?.body, requestQuery)
 
         return data
@@ -89,6 +107,12 @@ export class __BaseService {
         path: string,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
+        const token = await getToken(loginAccessTokenKey)!
+        this.client.defaults.headers.common = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+
         const { data } = await this.client.get(path, requestQuery)
 
         return data

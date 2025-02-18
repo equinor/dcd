@@ -1,6 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class OnshorePowerSupplyService extends __BaseService {
     public async updateOnshorePowerSupply(
@@ -16,7 +14,4 @@ class OnshorePowerSupplyService extends __BaseService {
     }
 }
 
-export const GetOnshorePowerSupplyService = async () => new OnshorePowerSupplyService({
-    ...config.BaseUrl,
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetOnshorePowerSupplyService = () => new OnshorePowerSupplyService()

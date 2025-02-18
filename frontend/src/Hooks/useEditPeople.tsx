@@ -31,8 +31,7 @@ export const useEditPeople = () => {
 
     const syncPmtMembers = async (projectId: string, contextId: string) => {
         try {
-            const projectMembersService = await GetOrgChartMembersService()
-            const syncPmt = await projectMembersService.getOrgChartPeople(projectId, contextId)
+            const syncPmt = await GetOrgChartMembersService().getOrgChartPeople(projectId, contextId)
             if (syncPmt) {
                 queryClient.invalidateQueries(
                     { queryKey: ["projectApiData", projectId] },
@@ -45,18 +44,15 @@ export const useEditPeople = () => {
     }
 
     const addPersonMutationFn = async ({ projectId, body }: AddPersonVariables) => {
-        const projectMembersService = await GetProjectMembersService()
-        return projectMembersService.addPerson(projectId, body)
+        return GetProjectMembersService().addPerson(projectId, body)
     }
 
     const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => {
-        const projectMembersService = await GetProjectMembersService()
-        return projectMembersService.updatePerson(projectId, body)
+        return GetProjectMembersService().updatePerson(projectId, body)
     }
 
     const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => {
-        const projectMembersService = await GetProjectMembersService()
-        return projectMembersService.deletePerson(projectId, userId)
+        return GetProjectMembersService().deletePerson(projectId, userId)
     }
 
     const addPersonMutation = useMutation({

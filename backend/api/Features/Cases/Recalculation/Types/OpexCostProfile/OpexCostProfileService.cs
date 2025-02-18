@@ -32,11 +32,11 @@ public static class OpexCostProfileService
             return;
         }
 
-        var wellInterventionCostsFromDrillingSchedule = new TimeSeriesCost();
+        var wellInterventionCostsFromDrillingSchedule = new TimeSeries();
 
         foreach (var developmentWell in developmentWells)
         {
-            var timeSeries = new TimeSeriesCost
+            var timeSeries = new TimeSeries
             {
                 StartYear = developmentWell.StartYear,
                 Values = developmentWell.Values.Select(v => (double)v).ToArray()
@@ -45,7 +45,7 @@ public static class OpexCostProfileService
             wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
-        var tempSeries = new TimeSeriesCost
+        var tempSeries = new TimeSeries
         {
             StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
             Values = wellInterventionCostsFromDrillingSchedule.Values
@@ -134,9 +134,9 @@ public static class OpexCostProfileService
     Input: [1, 2, 3, 4]
     Output: [1, 3, 6, 10]
     */
-    private static TimeSeriesCost GetCumulativeDrillingSchedule(TimeSeriesCost drillingSchedule)
+    private static TimeSeries GetCumulativeDrillingSchedule(TimeSeries drillingSchedule)
     {
-        var cumulativeSchedule = new TimeSeriesCost
+        var cumulativeSchedule = new TimeSeries
         {
             StartYear = drillingSchedule.StartYear
         };

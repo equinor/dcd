@@ -1,7 +1,4 @@
-import { config } from "./config"
 import { __BaseService } from "./__BaseService"
-
-import { loginAccessTokenKey, getToken } from "../Utils/common"
 
 export class __ProspService extends __BaseService {
     async getSharePointFileNamesAndId(body: Components.Schemas.SharePointSiteUrlDto, projectId: string) {
@@ -18,7 +15,4 @@ export class __ProspService extends __BaseService {
     }
 }
 
-export const GetProspService = async () => new __ProspService({
-    ...config.BaseUrl,
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetProspService = () => new __ProspService()

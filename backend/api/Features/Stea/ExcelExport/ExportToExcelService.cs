@@ -44,7 +44,7 @@ public static class ExportToExcelService
             businessCase.Cessation = CreateExcelRow("Cessation - Offshore Facilities", project.StartYear, c.Capex.CessationCost, rowCount, 1);
 
             rowCount++;
-            businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount.ToString(), "Production And Sales Volumes");
+            businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount, "Production And Sales Volumes");
 
             rowCount++;
             businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.TotalAndAnnualOil, 1_000_000), rowCount, 1);
@@ -59,43 +59,18 @@ public static class ExportToExcelService
             businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", project.StartYear, c.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
 
             rowCount += 2;
-            var allRows = new List<int>();
-            if (c.Exploration.Values != null)
+            var allRows = new List<int>
             {
-                allRows.Add(c.Exploration.Values.Length + c.Exploration.StartYear);
-            }
-            if (c.Capex.Summary.Values != null)
-            {
-                allRows.Add(c.Capex.Summary.Values.Length + c.Capex.Summary.StartYear);
-            }
-            if (c.Capex.CessationCost.Values != null)
-            {
-                allRows.Add(c.Capex.CessationCost.Values.Length + c.Capex.CessationCost.StartYear);
-            }
-            if (c.OpexCostProfile.Values != null)
-            {
-                allRows.Add(c.OpexCostProfile.Values.Length + c.OpexCostProfile.StartYear);
-            }
-            if (c.StudyCostProfile.Values != null)
-            {
-                allRows.Add(c.StudyCostProfile.Values.Length + c.StudyCostProfile.StartYear);
-            }
-            if (c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values != null)
-            {
-                allRows.Add(c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear);
-            }
-            if (c.ProductionAndSalesVolumes.AdditionalGas.Values != null)
-            {
-                allRows.Add(c.ProductionAndSalesVolumes.AdditionalGas.Values.Length + c.ProductionAndSalesVolumes.AdditionalGas.StartYear);
-            }
-            if (c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values != null)
-            {
-                allRows.Add(c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear);
-            }
-            if (c.ProductionAndSalesVolumes.Co2Emissions.Values != null)
-            {
-                allRows.Add(c.ProductionAndSalesVolumes.Co2Emissions.Values.Length + c.ProductionAndSalesVolumes.Co2Emissions.StartYear);
-            }
+                c.Exploration.Values.Length + c.Exploration.StartYear,
+                c.Capex.Summary.Values.Length + c.Capex.Summary.StartYear,
+                c.Capex.CessationCost.Values.Length + c.Capex.CessationCost.StartYear,
+                c.OpexCostProfile.Values.Length + c.OpexCostProfile.StartYear,
+                c.StudyCostProfile.Values.Length + c.StudyCostProfile.StartYear,
+                c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear,
+                c.ProductionAndSalesVolumes.AdditionalGas.Values.Length + c.ProductionAndSalesVolumes.AdditionalGas.StartYear,
+                c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear,
+                c.ProductionAndSalesVolumes.Co2Emissions.Values.Length + c.ProductionAndSalesVolumes.Co2Emissions.StartYear
+            };
 
             var maxYear = allRows.Count > 0 ? allRows.Max() - project.StartYear : 0;
 
@@ -106,28 +81,23 @@ public static class ExportToExcelService
         return businessCases;
     }
 
-    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeriesCostDto e, int projectStartYear, double factor)
+    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeries e, int projectStartYear, double factor)
     {
-        if (e.Values == null)
-        {
-            return;
-        }
-
         columnCount += e.StartYear - projectStartYear;
         columnCount++;
 
-        for (var i = 0; i < e.Values.Length; i++)
+        foreach (var value in e.Values)
         {
             var cellNo = ColumnNumber(columnCount++) + rowCount;
-            tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Values[i]).ToString()));
+            tableCells.Add(new ExcelTableCell(cellNo, (factor * value).ToString()));
         }
     }
 
-    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeriesCostDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeries e, int rowCount, double factor)
     {
         var tableCells = new List<ExcelTableCell>();
-        int columnCount = 1;
-        string cellNo = ColumnNumber(columnCount++) + rowCount;
+        var columnCount = 1;
+        var cellNo = ColumnNumber(columnCount++) + rowCount;
         tableCells.Add(new ExcelTableCell(cellNo, title));
 
         cellNo = ColumnNumber(columnCount) + rowCount;
@@ -169,9 +139,9 @@ public static class ExportToExcelService
         return rv;
     }
 
-    private static TimeSeriesCostDto DivideTimeSeriesValuesByFactor(TimeSeriesCostDto timeSeries, double factor)
+    private static TimeSeries DivideTimeSeriesValuesByFactor(TimeSeries timeSeries, double factor)
     {
-        return new TimeSeriesCostDto
+        return new TimeSeries
         {
             StartYear = timeSeries.StartYear,
             Values = timeSeries.Values.Select(v => v / factor).ToArray()

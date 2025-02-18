@@ -21,13 +21,13 @@ public static class ExplorationWellCostProfileService
         {
             var wells = caseItem.Exploration.ExplorationWells.Where(ew => ew.Well.WellCategory == profileType.Value).ToList();
 
-            var profilesToMerge = new List<TimeSeriesCost>();
+            var profilesToMerge = new List<TimeSeries>();
 
             foreach (var explorationWell in wells)
             {
                 if (explorationWell.Values.Length > 0)
                 {
-                    profilesToMerge.Add(new TimeSeriesCost
+                    profilesToMerge.Add(new TimeSeries
                     {
                         Values = explorationWell.Values.Select(ds => ds * explorationWell.Well.WellCost).ToArray(),
                         StartYear = explorationWell.StartYear

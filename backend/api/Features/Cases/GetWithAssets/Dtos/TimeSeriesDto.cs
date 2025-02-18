@@ -1,18 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.Profiles.Dtos;
+namespace api.Features.Cases.GetWithAssets.Dtos;
 
-public class TimeSeriesCostDto
+public class TimeSeriesDto
 {
-    [Required] public Guid Id { get; set; }
     [Required] public int StartYear { get; set; }
     [Required] public double[] Values { get; set; } = [];
     [Required] public DateTime UpdatedUtc { get; set; }
 }
 
-public class TimeSeriesCostOverrideDto
+public class TimeSeriesOverrideDto
 {
-    [Required] public Guid Id { get; set; }
     [Required] public int StartYear { get; set; }
     [Required] public double[] Values { get; set; } = [];
     [Required] public bool Override { get; set; }
