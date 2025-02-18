@@ -327,6 +327,12 @@ const CaseTabTable = memo(({
         const containerRef = document.getElementById(tableName)?.parentElement
 
         const handleClickOutside = (event: MouseEvent) => {
+            if (gridRef.current?.api) {
+                gridRef.current.api.clearFocusedCell()
+                gridRef.current.api.stopEditing()
+                gridRef.current.api.deselectAll()
+            }
+
             if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
                 submitEditQueue()
             }
