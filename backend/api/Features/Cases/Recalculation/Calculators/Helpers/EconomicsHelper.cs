@@ -8,7 +8,7 @@ public static class EconomicsHelper
 {
     public static double CalculateDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
     {
-        var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length+ Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
+        var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
 
         double accumulatedVolume = 0;
 
@@ -55,7 +55,7 @@ public static class EconomicsHelper
             double incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
             double costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
 
-            cashFlowValues[yearIndex] = (incomeValue/10) - costValue;
+            cashFlowValues[yearIndex] = (incomeValue / 10) - costValue;
         }
 
         return new TimeSeries
