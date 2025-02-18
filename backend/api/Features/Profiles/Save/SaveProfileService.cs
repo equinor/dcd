@@ -30,7 +30,6 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
 
             return new TimeSeriesCostDto
             {
-                Id = existingEntity.Id,
                 StartYear = existingEntity.StartYear,
                 Values = dto.Values
             };
@@ -56,7 +55,6 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
 
         return new TimeSeriesCostDto
         {
-            Id = newEntity.Id,
             StartYear = newEntity.StartYear,
             Values = dto.Values
         };
@@ -83,7 +81,6 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
 
             return new TimeSeriesCostOverrideDto
             {
-                Id = existingEntity.Id,
                 StartYear = existingEntity.StartYear,
                 Values = dto.Values,
                 Override = existingEntity.Override
@@ -111,7 +108,6 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
 
         return new TimeSeriesCostOverrideDto
         {
-            Id = newEntity.Id,
             StartYear = newEntity.StartYear,
             Values = dto.Values,
             Override = newEntity.Override

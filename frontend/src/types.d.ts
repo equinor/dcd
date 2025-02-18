@@ -416,13 +416,11 @@ declare namespace Components {
             dG4Date: string | null; // date-time
         }
         export interface TimeSeriesCostDto {
-            id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
             updatedUtc: string; // date-time
         }
         export interface TimeSeriesCostOverrideDto {
-            id: string; // uuid
             startYear: number; // int32
             values: number /* double */[];
             override: boolean;

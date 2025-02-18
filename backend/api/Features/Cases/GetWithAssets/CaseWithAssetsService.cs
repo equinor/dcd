@@ -123,7 +123,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         return new TimeSeriesCostDto
         {
-            Id = timeSeriesProfile.Id,
             StartYear = timeSeriesProfile.StartYear,
             Values = timeSeriesProfile.Values,
             UpdatedUtc = timeSeriesProfile.UpdatedUtc,
@@ -139,7 +138,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         return new TimeSeriesCostOverrideDto
         {
-            Id = timeSeriesProfile.Id,
             StartYear = timeSeriesProfile.StartYear,
             Values = timeSeriesProfile.Values,
             Override = timeSeriesProfile.Override,
@@ -156,7 +154,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         return new TimeSeriesCostDto
         {
-            Id = entity.Id,
             StartYear = entity.StartYear,
             Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
             UpdatedUtc = entity.UpdatedUtc,
@@ -172,7 +169,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         return new TimeSeriesCostOverrideDto
         {
-            Id = entity.Id,
             StartYear = entity.StartYear,
             Override = entity.Override,
             Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
