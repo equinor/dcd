@@ -22,6 +22,8 @@ import useEditDisabled from "@/Hooks/useEditDisabled"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "@/Components/Modal/Modal"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useCaseStore } from "@/Store/CaseStore"
+import { caseTabNames } from "@/Utils/constants"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -44,6 +46,7 @@ const CasesDropMenu = ({
     const { updateCase } = useSubmitToApi()
     const { isEditDisabled } = useEditDisabled()
     const revisionAndProjectData = useDataFetch()
+    const { activeTabCase } = useCaseStore()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -55,7 +58,8 @@ const CasesDropMenu = ({
     const openCase = async () => {
         try {
             if (selectedCaseId) {
-                navigateToCase(selectedCaseId)
+                const currentTab = caseTabNames[activeTabCase]
+                navigateToCase(selectedCaseId, currentTab)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
