@@ -171,20 +171,22 @@ const CaseCO2Tab = () => {
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
-                co2Emissions:
+                co2Emissions: Number(
                     setValueToCorrespondingYear(
                         useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
                         tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
-                    ),
-                co2Intensity:
+                    ).toFixed(4),
+                ),
+                co2Intensity: Number(
                     setValueToCorrespondingYear(
                         co2IntensityData,
                         i,
                         tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
-                    ),
+                    ).toFixed(4),
+                ),
             })
         }
         return dataArray
@@ -222,9 +224,9 @@ const CaseCO2Tab = () => {
 
     useEffect(() => {
         setCo2DistributionChartData([
-            { profile: "Drilling", value: drillingPortion ?? 0 },
-            { profile: "Flaring", value: flaringPortion ?? 0 },
-            { profile: "Fuel", value: fuelPortion ?? 0 },
+            { profile: "Drilling", value: Number((drillingPortion ?? 0.0000).toFixed(4)) },
+            { profile: "Flaring", value: Number((flaringPortion ?? 0.0000).toFixed(4)) },
+            { profile: "Fuel", value: Number((fuelPortion ?? 0.0000).toFixed(4)) },
         ])
     }, [drillingPortion, flaringPortion, fuelPortion])
 
