@@ -32,15 +32,13 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 profileName: "Rig mob/demob",
                 unit: "Percentage in decimals",
                 profile: {
-                    id: campaign.campaignId,
                     startYear: campaign.rigMobDemobProfile.startYear,
                     values: campaign.rigMobDemobProfile.values || [],
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigMobDemobProfile",
-                overridable: true,
-                overrideProfile: undefined,
+                overridable: false,
                 editable: true,
             }
             rows.push(mobDemobRow)
@@ -52,15 +50,13 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 profileName: "Rig upgrading",
                 unit: "Percentage in decimals",
                 profile: {
-                    id: campaign.campaignId,
                     startYear: campaign.rigUpgradingProfile.startYear,
                     values: campaign.rigUpgradingProfile.values || [],
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigUpgradingProfile",
-                overridable: true,
-                overrideProfile: undefined,
+                overridable: false,
                 editable: true,
             }
             rows.push(upgradingRow)
@@ -72,14 +68,13 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 profileName: well.wellName,
                 unit: "Well",
                 profile: {
-                    id: campaign.campaignId,
                     startYear: well.startYear,
                     values: well.values || [],
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "campaignWell",
-                overridable: true,
+                overridable: false,
                 editable: true,
             }
             rows.push(wellRow)

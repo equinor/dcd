@@ -1,6 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class __DrillingCampaignsService extends __BaseService {
     public async updateCampaign(
@@ -25,12 +23,4 @@ class __DrillingCampaignsService extends __BaseService {
     }
 }
 
-export const DrillingCampaignsService = new __DrillingCampaignsService({
-    ...config.BaseUrl,
-    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
-})
-
-export const GetDrillingCampaignsService = async () => new __DrillingCampaignsService({
-    ...config.BaseUrl,
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetDrillingCampaignsService = async () => new __DrillingCampaignsService()
