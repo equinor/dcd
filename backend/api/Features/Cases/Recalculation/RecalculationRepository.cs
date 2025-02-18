@@ -46,8 +46,7 @@ public class RecalculationRepository(DcdDbContext context)
 
         var drillingSchedulesForDevelopmentWell = await (
                 from caseItem in context.Cases
-                join wp in context.WellProjects on caseItem.WellProjectId equals wp.Id
-                join dw in context.DevelopmentWells on wp.Id equals dw.WellProjectId
+                join dw in context.DevelopmentWells on caseItem.WellProjectId equals dw.WellProjectId
                 select new
                 {
                     CaseId = caseItem.Id,

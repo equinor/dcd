@@ -28,23 +28,15 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
-        await context.Explorations
-            .Include(c => c.ExplorationWells)
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        await context.WellProjects
-            .Include(c => c.DevelopmentWells)
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
         await context.Campaigns
             .Include(x => x.DevelopmentWells).ThenInclude(x => x.Well)
+            .Include(x => x.DevelopmentWells).ThenInclude(x => x.WellProject)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
         await context.Campaigns
             .Include(x => x.ExplorationWells).ThenInclude(x => x.Well)
+            .Include(x => x.ExplorationWells).ThenInclude(x => x.Exploration)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
