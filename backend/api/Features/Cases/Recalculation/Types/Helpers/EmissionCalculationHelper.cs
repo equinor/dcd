@@ -10,20 +10,20 @@ public static class EmissionCalculationHelper
     private const double Cd = 365.25;
     private const int ConversionFactorFromMtoG = 1000;
 
-    public static TimeSeriesCost CalculateTotalFuelConsumptions(Case caseItem)
+    public static TimeSeries CalculateTotalFuelConsumptions(Case caseItem)
     {
         var factor = caseItem.Topside.FuelConsumption * Cd * caseItem.FacilitiesAvailability / 100 * 1000000;
         var totalUseOfPower = CalculateTotalUseOfPower(caseItem, caseItem.FacilitiesAvailability);
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             Values = fuelConsumptionValues,
             StartYear = totalUseOfPower.StartYear
         };
     }
 
-    public static TimeSeriesCost CalculateTotalUseOfPower(Case caseItem, double facilitiesAvailability)
+    public static TimeSeries CalculateTotalUseOfPower(Case caseItem, double facilitiesAvailability)
     {
         var topside = caseItem.Topside;
 
@@ -39,14 +39,14 @@ public static class EmissionCalculationHelper
 
         var totalUseOfPowerValues = TimeSeriesMerger.MergeTimeSeries(totalPowerOil, totalPowerGas, totalPowerWi);
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = totalUseOfPowerValues.StartYear,
             Values = totalUseOfPowerValues.Values
         };
     }
 
-    private static TimeSeriesCost CalculateTotalUseOfPowerWi(Case caseItem, Topside topside, double facilitiesAvailability)
+    private static TimeSeries CalculateTotalUseOfPowerWi(Case caseItem, Topside topside, double facilitiesAvailability)
     {
         var wic = topside.WaterInjectionCapacity;
         var wr = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection)?.Values;
@@ -56,34 +56,34 @@ public static class EmissionCalculationHelper
 
         if (wr == null || wr.Length == 0 || wic == 0 || facilitiesAvailability == 0)
         {
-            return new TimeSeriesCost();
+            return new TimeSeries();
         }
 
         var step1 = wsp * wom;
         var wrp = wr.Select(v => v / (Cd * (facilitiesAvailability / 100)) / wic);
         var wrpWspWom = wrp.Select(v => step1 + (v * 100 * wsp * (1 - wom)));
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             Values = wrpWspWom.ToArray(),
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.StartYear ?? 0
         };
     }
 
-    private static TimeSeriesCost CalculateTotalUseOfPowerGas(Case caseItem, Topside topside, double facilitiesAvailability)
+    private static TimeSeries CalculateTotalUseOfPowerGas(Case caseItem, Topside topside, double facilitiesAvailability)
     {
         var gc = topside.GasCapacity;
         var gr = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values ?? [];
         var additionalGr = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values ?? [];
 
         // Create TimeSeriesCost instances for both profiles
-        var productionProfileGas = new TimeSeriesCost
+        var productionProfileGas = new TimeSeries
         {
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.StartYear ?? 0,
             Values = gr
         };
 
-        var additionalProductionProfileGas = new TimeSeriesCost
+        var additionalProductionProfileGas = new TimeSeries
         {
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.StartYear ?? 0,
             Values = additionalGr
@@ -96,33 +96,33 @@ public static class EmissionCalculationHelper
 
         if (mergedProfile.Values.Length == 0 || gc == 0 || facilitiesAvailability == 0)
         {
-            return new TimeSeriesCost();
+            return new TimeSeries();
         }
 
         var step1 = gsp * gom;
         var grp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / gc / 1000000);
         var grpGspGom = grp.Select(v => step1 + (v * gsp * (1 - gom)));
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             Values = grpGspGom.ToArray(),
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.StartYear ?? 0
         };
     }
 
-    private static TimeSeriesCost CalculateTotalUseOfPowerOil(Case caseItem, Topside topside, double facilitiesAvailability)
+    private static TimeSeries CalculateTotalUseOfPowerOil(Case caseItem, Topside topside, double facilitiesAvailability)
     {
         var oc = topside.OilCapacity;
         var or = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values ?? [];
         var additionalOr = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values ?? [];
 
-        var productionProfileOil = new TimeSeriesCost
+        var productionProfileOil = new TimeSeries
         {
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0,
             Values = or
         };
 
-        var additionalProductionProfileOil = new TimeSeriesCost
+        var additionalProductionProfileOil = new TimeSeries
         {
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.StartYear ?? 0,
             Values = additionalOr
@@ -135,7 +135,7 @@ public static class EmissionCalculationHelper
 
         if (mergedProfile.Values.Length == 0 || oc == 0 || facilitiesAvailability == 0)
         {
-            return new TimeSeriesCost
+            return new TimeSeries
             {
                 Values = new double[(int)(osp * oom)],
                 StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0
@@ -146,14 +146,14 @@ public static class EmissionCalculationHelper
         var orp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / oc);
         var orpOspOom = orp.Select(v => step1 + (v * osp * (1 - oom)));
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             Values = orpOspOom.ToArray(),
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0
         };
     }
 
-    public static TimeSeriesCost CalculateFlaring(Case caseItem)
+    public static TimeSeries CalculateFlaring(Case caseItem)
     {
         var oilRate = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v).ToArray() ?? [];
         var additionalOilRate = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Select(v => v).ToArray() ?? [];
@@ -162,25 +162,25 @@ public static class EmissionCalculationHelper
         var additionalGasRate = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
 
         // Create TimeSeriesCost instances for both oil and gas profiles
-        var oilRateTs = new TimeSeriesCost
+        var oilRateTs = new TimeSeries
         {
             Values = oilRate,
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0
         };
 
-        var additionalOilRateTs = new TimeSeriesCost
+        var additionalOilRateTs = new TimeSeries
         {
             Values = additionalOilRate,
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.StartYear ?? 0
         };
 
-        var gasRateTs = new TimeSeriesCost
+        var gasRateTs = new TimeSeries
         {
             Values = gasRate,
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.StartYear ?? 0
         };
 
-        var additionalGasRateTs = new TimeSeriesCost
+        var additionalGasRateTs = new TimeSeries
         {
             Values = additionalGasRate,
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.StartYear ?? 0
@@ -192,26 +192,26 @@ public static class EmissionCalculationHelper
 
         var flaringValues = mergedOilAndGas.Values.Select(v => v * caseItem.Project.FlaredGasPerProducedVolume).ToArray();
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             Values = flaringValues,
             StartYear = mergedOilAndGas.StartYear
         };
     }
 
-    public static TimeSeriesCost CalculateLosses(Case caseItem)
+    public static TimeSeries CalculateLosses(Case caseItem)
     {
         var lossesValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v * caseItem.Project.CO2RemovedFromGas).ToArray() ?? [];
         var additionalGasLossesValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v * caseItem.Project.CO2RemovedFromGas).ToArray() ?? [];
 
         // Create TimeSeriesCost instances for both gas losses profiles
-        var gasLossesTs = new TimeSeriesCost
+        var gasLossesTs = new TimeSeries
         {
             Values = lossesValues,
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.StartYear ?? 0
         };
 
-        var additionalGasLossesTs = new TimeSeriesCost
+        var additionalGasLossesTs = new TimeSeries
         {
             Values = additionalGasLossesValues,
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.StartYear ?? 0
@@ -219,7 +219,7 @@ public static class EmissionCalculationHelper
 
         var mergedGasLosses = TimeSeriesMerger.MergeTimeSeries(gasLossesTs, additionalGasLossesTs);
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             Values = mergedGasLosses.Values,
             StartYear = mergedGasLosses.StartYear

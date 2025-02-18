@@ -28,19 +28,19 @@ public static class NetSaleGasProfileService
         profile.Values = calculateNetSaleGas.Values;
     }
 
-    private static TimeSeriesCost CalculateNetSaleGas(Case caseItem,
-        TimeSeriesCost fuelConsumption,
-        TimeSeriesCost flarings,
-        TimeSeriesCost losses)
+    private static TimeSeries CalculateNetSaleGas(Case caseItem,
+        TimeSeries fuelConsumption,
+        TimeSeries flarings,
+        TimeSeries losses)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) == null)
         {
-            return new TimeSeriesCost();
+            return new TimeSeries();
         }
 
         if (caseItem.DrainageStrategy.GasSolution == GasSolution.Injection)
         {
-            return new TimeSeriesCost();
+            return new TimeSeries();
         }
 
         var fuelFlaringLosses = TimeSeriesMerger.MergeTimeSeries(fuelConsumption, flarings, losses);
@@ -51,7 +51,7 @@ public static class NetSaleGasProfileService
             fuelFlaringLosses.Values = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).Values;
         }
 
-        var negativeFuelFlaringLosses = new TimeSeriesCost
+        var negativeFuelFlaringLosses = new TimeSeries
         {
             StartYear = fuelFlaringLosses.StartYear,
             Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()
@@ -59,10 +59,10 @@ public static class NetSaleGasProfileService
 
         var additionalProductionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas);
 
-        var additionalProductionProfileGas = new TimeSeriesCost(additionalProductionProfileGasProfile);
+        var additionalProductionProfileGas = new TimeSeries(additionalProductionProfileGasProfile);
 
         var productionProfileGasProfile = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas);
-        var productionProfileGasTimeSeries = new TimeSeriesCost(productionProfileGasProfile);
+        var productionProfileGasTimeSeries = new TimeSeries(productionProfileGasProfile);
 
         var gasProduction = TimeSeriesMerger.MergeTimeSeries(productionProfileGasTimeSeries, additionalProductionProfileGas);
         return TimeSeriesMerger.MergeTimeSeries(gasProduction, negativeFuelFlaringLosses);

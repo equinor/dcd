@@ -24,7 +24,7 @@ public static class CalculateTotalIncomeService
         // Convert oil production from million sm³ to barrels in millions
         var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * BarrelsPerCubicMeter).ToArray();
 
-        var oilIncome = new TimeSeriesCost
+        var oilIncome = new TimeSeries
         {
             StartYear = totalOilProductionInMegaCubics.StartYear,
             Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUsdToNok).ToArray(),
@@ -35,7 +35,7 @@ public static class CalculateTotalIncomeService
             caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
         );
 
-        var gasIncome = new TimeSeriesCost
+        var gasIncome = new TimeSeries
         {
             StartYear = totalGasProductionInGigaCubics.StartYear,
             Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray()

@@ -19,10 +19,10 @@ public static class EconomicsHelper
         return accumulatedVolume;
     }
 
-    public static TimeSeriesCost CalculateCashFlow(TimeSeriesCost income, TimeSeriesCost totalCost)
+    public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries total)
     {
-        int startYear = Math.Min(income.StartYear, totalCost.StartYear);
-        int endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
+        int startYear = Math.Min(income.StartYear, total.StartYear);
+        int endYear = Math.Max(income.StartYear + income.Values.Length - 1, total.StartYear + total.Values.Length - 1);
 
         int numberOfYears = endYear - startYear + 1;
         var cashFlowValues = new double[numberOfYears];
@@ -31,26 +31,26 @@ public static class EconomicsHelper
         {
             int currentYear = startYear + yearIndex;
             int incomeIndex = currentYear - income.StartYear;
-            int costIndex = currentYear - totalCost.StartYear;
+            int costIndex = currentYear - total.StartYear;
 
             double incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
-            double costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
+            double costValue = (costIndex >= 0 && costIndex < total.Values.Length) ? total.Values[costIndex] : 0;
 
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = startYear,
             Values = cashFlowValues
         };
     }
 
-    public static TimeSeriesCost MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
+    public static TimeSeries MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
     {
         return TimeSeriesMerger.MergeTimeSeries(
-            new TimeSeriesCost(t1),
-            new TimeSeriesCost(t2)
+            new TimeSeries(t1),
+            new TimeSeries(t2)
         );
     }
 }

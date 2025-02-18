@@ -11,42 +11,42 @@ public static class CalculateTotalCostService
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
 
-        var studiesProfile = new TimeSeriesCost
+        var studiesProfile = new TimeSeries
         {
             StartYear = totalStudyCost.StartYear,
             Values = totalStudyCost.Values
         };
 
         var totalOpexCost = CalculateOpexCost(caseItem);
-        var opexProfile = new TimeSeriesCost
+        var opexProfile = new TimeSeries
         {
             StartYear = totalOpexCost.StartYear,
             Values = totalOpexCost.Values
         };
 
         var totalCessationCost = CalculateCessationCost(caseItem);
-        var cessationProfile = new TimeSeriesCost
+        var cessationProfile = new TimeSeries
         {
             StartYear = totalCessationCost.StartYear,
             Values = totalCessationCost.Values
         };
 
         var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem);
-        var totalOffshoreFacilityProfile = new TimeSeriesCost
+        var totalOffshoreFacilityProfile = new TimeSeries
         {
             StartYear = totalOffshoreFacilityCost.StartYear,
             Values = totalOffshoreFacilityCost.Values
         };
 
         var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);
-        var developmentProfile = new TimeSeriesCost
+        var developmentProfile = new TimeSeries
         {
             StartYear = totalDevelopmentCost.StartYear,
             Values = totalDevelopmentCost.Values
         };
 
         var explorationCost = CalculateTotalExplorationCost(caseItem);
-        var explorationProfile = new TimeSeriesCost
+        var explorationProfile = new TimeSeries
         {
             StartYear = explorationCost.StartYear,
             Values = explorationCost.Values
@@ -67,7 +67,7 @@ public static class CalculateTotalCostService
         calculatedTotalCostCostProfile.StartYear = totalCost.StartYear;
     }
 
-    private static TimeSeriesCost CalculateStudyCost(Case caseItem)
+    private static TimeSeries CalculateStudyCost(Case caseItem)
     {
         var feasibilityProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies),
@@ -81,13 +81,13 @@ public static class CalculateTotalCostService
 
         var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
 
-        var otherStudies = new TimeSeriesCost(totalOtherStudiesCostProfile);
+        var otherStudies = new TimeSeries(totalOtherStudiesCostProfile);
 
         var totalStudyCost = TimeSeriesMerger.MergeTimeSeries(feasibilityProfile, feedProfile, otherStudies);
         return totalStudyCost;
     }
 
-    private static TimeSeriesCost CalculateOpexCost(Case caseItem)
+    private static TimeSeries CalculateOpexCost(Case caseItem)
     {
         var wellInterventionProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile),
@@ -99,13 +99,13 @@ public static class CalculateTotalCostService
         );
 
         var historicCostProfile = caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile);
-        var historicCost = new TimeSeriesCost(historicCostProfile);
+        var historicCost = new TimeSeries(historicCostProfile);
 
         var onshoreRelatedOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile);
-        var onshoreRelatedOpex = new TimeSeriesCost(onshoreRelatedOpexProfile);
+        var onshoreRelatedOpex = new TimeSeries(onshoreRelatedOpexProfile);
 
         var additionalOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile);
-        var additionalOpex = new TimeSeriesCost(additionalOpexProfile);
+        var additionalOpex = new TimeSeries(additionalOpexProfile);
 
         var totalOpexCost = TimeSeriesMerger.MergeTimeSeries(
             historicCost,
@@ -117,7 +117,7 @@ public static class CalculateTotalCostService
         return totalOpexCost;
     }
 
-    private static TimeSeriesCost CalculateCessationCost(Case caseItem)
+    private static TimeSeries CalculateCessationCost(Case caseItem)
     {
         var cessationWellsProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost),
@@ -129,7 +129,7 @@ public static class CalculateTotalCostService
         );
 
         var cessationOnshoreFacilitiesProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
-        var cessationOnshoreFacilitiesCost = new TimeSeriesCost(cessationOnshoreFacilitiesProfile);
+        var cessationOnshoreFacilitiesCost = new TimeSeries(cessationOnshoreFacilitiesProfile);
 
         var totalCessationCost = TimeSeriesMerger.MergeTimeSeries(
             cessationWellsProfile,
@@ -139,7 +139,7 @@ public static class CalculateTotalCostService
         return totalCessationCost;
     }
 
-    private static TimeSeriesCost CalculateTotalOffshoreFacilityCost(Case caseItem)
+    private static TimeSeries CalculateTotalOffshoreFacilityCost(Case caseItem)
     {
         var substructureProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile),
@@ -173,7 +173,7 @@ public static class CalculateTotalCostService
         return totalOffshoreFacilityCost;
     }
 
-    private static TimeSeriesCost CalculateTotalDevelopmentCost(Case caseItem)
+    private static TimeSeries CalculateTotalDevelopmentCost(Case caseItem)
     {
         var oilProducerProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile),
@@ -202,7 +202,7 @@ public static class CalculateTotalCostService
         return totalDevelopmentCost;
     }
 
-    public static TimeSeriesCost CalculateTotalExplorationCost(Case caseItem)
+    public static TimeSeries CalculateTotalExplorationCost(Case caseItem)
     {
         var gAndGAdminCostProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost),
@@ -211,23 +211,23 @@ public static class CalculateTotalCostService
 
         var seismicAcquisitionAndProcessingTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing);
 
-        var seismicAcquisitionAndProcessingProfile = new TimeSeriesCost(seismicAcquisitionAndProcessingTimeSeries);
+        var seismicAcquisitionAndProcessingProfile = new TimeSeries(seismicAcquisitionAndProcessingTimeSeries);
 
         var countryOfficeTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost);
 
-        var countryOfficeCostProfile = new TimeSeriesCost(countryOfficeTimeSeries);
+        var countryOfficeCostProfile = new TimeSeries(countryOfficeTimeSeries);
 
         var explorationWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile);
 
-        var explorationWellCostProfile = new TimeSeriesCost(explorationWellTimeSeries);
+        var explorationWellCostProfile = new TimeSeries(explorationWellTimeSeries);
 
         var appraisalWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile);
 
-        var appraisalWellCostProfile = new TimeSeriesCost(appraisalWellTimeSeries);
+        var appraisalWellCostProfile = new TimeSeries(appraisalWellTimeSeries);
 
         var sidetrackTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile);
 
-        var sidetrackCostProfile = new TimeSeriesCost(sidetrackTimeSeries);
+        var sidetrackCostProfile = new TimeSeries(sidetrackTimeSeries);
 
         var totalExploration = TimeSeriesMerger.MergeTimeSeries(
             gAndGAdminCostProfile,
@@ -241,11 +241,11 @@ public static class CalculateTotalCostService
         return totalExploration;
     }
 
-    private static TimeSeriesCost UseOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
+    private static TimeSeries UseOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
     {
         if (profileOverride?.Override == true)
         {
-            return new TimeSeriesCost
+            return new TimeSeries
             {
                 StartYear = profileOverride.StartYear,
                 Values = profileOverride.Values
@@ -254,13 +254,13 @@ public static class CalculateTotalCostService
 
         if (profile != null)
         {
-            return new TimeSeriesCost
+            return new TimeSeries
             {
                 StartYear = profile.StartYear,
                 Values = profile.Values
             };
         }
 
-        return new TimeSeriesCost { StartYear = 0, Values = [] };
+        return new TimeSeries { StartYear = 0, Values = [] };
     }
 }

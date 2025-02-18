@@ -41,7 +41,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
             var profile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride) ?? caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
 
-            var generateCo2EmissionsProfile = new TimeSeriesCost(profile);
+            var generateCo2EmissionsProfile = new TimeSeries(profile);
 
             var totalCo2Emissions = generateCo2EmissionsProfile.Values.Sum();
             var co2Intensity = caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity)?.Values.Sum() ?? 0;
@@ -136,16 +136,16 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             ? caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)
             : caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies);
 
-        var feasibility = new TimeSeriesCost(feasibilityProfile);
+        var feasibility = new TimeSeries(feasibilityProfile);
 
         var feedProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true
             ? caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)
             : caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies);
 
-        var feed = new TimeSeriesCost(feedProfile);
+        var feed = new TimeSeries(feedProfile);
 
         var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
-        var otherStudies = new TimeSeriesCost(totalOtherStudiesCostProfile);
+        var otherStudies = new TimeSeries(totalOtherStudiesCostProfile);
 
         var studyTimeSeries = TimeSeriesMerger.MergeTimeSeries(feasibility, feed, otherStudies);
 
@@ -153,22 +153,22 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             ? caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)
             : caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile);
 
-        var wellIntervention = new TimeSeriesCost(wellInterventionProfile);
+        var wellIntervention = new TimeSeries(wellInterventionProfile);
 
         var offshoreFacilitiesProfile = caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true
             ? caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)
             : caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
 
-        var offshoreFacilities = new TimeSeriesCost(offshoreFacilitiesProfile);
+        var offshoreFacilities = new TimeSeries(offshoreFacilitiesProfile);
 
         var historicCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile);
-        var historicCost = new TimeSeriesCost(historicCostCostProfile);
+        var historicCost = new TimeSeries(historicCostCostProfile);
 
         var onshoreRelatedOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile);
-        var onshoreOpex = new TimeSeriesCost(onshoreRelatedOpexCostProfile);
+        var onshoreOpex = new TimeSeries(onshoreRelatedOpexCostProfile);
 
         var additionalOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile);
-        var additionalOpex = new TimeSeriesCost(additionalOpexCostProfile);
+        var additionalOpex = new TimeSeries(additionalOpexCostProfile);
 
         var opexTimeSeries = TimeSeriesMerger.MergeTimeSeries(
             wellIntervention,
@@ -190,16 +190,16 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             ? caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)
             : caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost);
 
-        var cessationWellsCost = new TimeSeriesCost(cessationWellsCostProfile);
+        var cessationWellsCost = new TimeSeries(cessationWellsCostProfile);
 
         var cessationOffshoreFacilitiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)?.Override == true
             ? caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)
             : caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost);
 
-        var cessationOffshoreFacilitiesCost = new TimeSeriesCost(cessationOffshoreFacilitiesCostProfile);
+        var cessationOffshoreFacilitiesCost = new TimeSeries(cessationOffshoreFacilitiesCostProfile);
 
         var cessationOnshoreFacilitiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOnshoreFacilitiesCostProfile);
-        var cessationOnshoreFacilitiesCost = new TimeSeriesCost(cessationOnshoreFacilitiesCostProfile);
+        var cessationOnshoreFacilitiesCost = new TimeSeries(cessationOnshoreFacilitiesCostProfile);
 
         var cessationTimeSeries = TimeSeriesMerger.MergeTimeSeries(cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
 

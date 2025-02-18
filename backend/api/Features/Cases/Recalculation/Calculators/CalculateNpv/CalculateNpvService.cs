@@ -37,7 +37,7 @@ public static class CalculateNpvService
         caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;
     }
 
-    private static TimeSeriesCost? GetCashflowProfile(Case caseItem)
+    private static TimeSeries? GetCashflowProfile(Case caseItem)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile) == null ||
             caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile) == null)
@@ -45,8 +45,8 @@ public static class CalculateNpvService
             return null;
         }
 
-        var calculatedTotalIncomeCostProfile = new TimeSeriesCost(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
-        var calculatedTotalCostCostProfile = new TimeSeriesCost(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
+        var calculatedTotalIncomeCostProfile = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
+        var calculatedTotalCostCostProfile = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
 
         return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfile, calculatedTotalCostCostProfile);
     }

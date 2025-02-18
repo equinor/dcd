@@ -10,7 +10,7 @@ public class TimeSeriesMergerTests
     [Fact]
     public void Creating_time_series_from_null__should_generate_default_time_series()
     {
-        var timeSeries = new TimeSeriesCost(null);
+        var timeSeries = new TimeSeries(null);
 
         Assert.Equal(0, timeSeries.StartYear);
         Assert.NotNull(timeSeries.Values);
@@ -20,13 +20,13 @@ public class TimeSeriesMergerTests
     [Fact]
     public void Merging_time_series__should_add_values_when_start_year_and_length_is_the_same()
     {
-        var series1 = new TimeSeriesCost
+        var series1 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3]
         };
 
-        var series2 = new TimeSeriesCost
+        var series2 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3]
@@ -46,13 +46,13 @@ public class TimeSeriesMergerTests
     [Fact]
     public void Merging_time_series__should_add_values_when_start_year_is_same_but_series1_length_is_longer()
     {
-        var series1 = new TimeSeriesCost
+        var series1 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3, 4]
         };
 
-        var series2 = new TimeSeriesCost
+        var series2 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3]
@@ -73,13 +73,13 @@ public class TimeSeriesMergerTests
     [Fact]
     public void Merging_time_series__should_add_values_when_start_year_is_same_but_series2_length_is_longer()
     {
-        var series1 = new TimeSeriesCost
+        var series1 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3]
         };
 
-        var series2 = new TimeSeriesCost
+        var series2 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3, 4]
@@ -100,19 +100,19 @@ public class TimeSeriesMergerTests
     [Fact]
     public void Merging_time_series__should_add_all_values_from_multiple_series()
     {
-        var series1 = new TimeSeriesCost
+        var series1 = new TimeSeries
         {
             StartYear = 2019,
             Values = [1, 2, 3]
         };
 
-        var series2 = new TimeSeriesCost
+        var series2 = new TimeSeries
         {
             StartYear = 2020,
             Values = [1, 2, 3, 4]
         };
 
-        var series3 = new TimeSeriesCost
+        var series3 = new TimeSeries
         {
             StartYear = 2021,
             Values = [1, 2, 3, 4]
