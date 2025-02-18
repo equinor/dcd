@@ -164,29 +164,36 @@ const CaseCO2Tab = () => {
         setTableYears([startYear, endYear])
     }
 
+    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0.0000).toFixed(4)))
+
     const co2EmissionsChartData = () => {
         const dataArray = []
         if (!caseData) { return [{}] }
+
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
-                co2Emissions:
+                co2Emissions: formatValue(
                     setValueToCorrespondingYear(
                         useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
                         tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
                     ),
-                co2Intensity:
+                ),
+                co2Intensity: formatValue(
                     setValueToCorrespondingYear(
                         co2IntensityData,
                         i,
                         tableYears[0],
                         getYearFromDateString(caseData.dG4Date),
                     ),
+                ),
             })
         }
+
         return dataArray
     }
 
@@ -222,9 +229,9 @@ const CaseCO2Tab = () => {
 
     useEffect(() => {
         setCo2DistributionChartData([
-            { profile: "Drilling", value: drillingPortion ?? 0 },
-            { profile: "Flaring", value: flaringPortion ?? 0 },
-            { profile: "Fuel", value: fuelPortion ?? 0 },
+            { profile: "Drilling", value: formatValue(drillingPortion) },
+            { profile: "Flaring", value: formatValue(flaringPortion) },
+            { profile: "Fuel", value: formatValue(fuelPortion) },
         ])
     }, [drillingPortion, flaringPortion, fuelPortion])
 
