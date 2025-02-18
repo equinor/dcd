@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Cases.GetWithAssets.Dtos;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ namespace api.Features.Profiles.Save;
 
 public class SaveProfileService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task<TimeSeriesCostDto> SaveTimeSeriesProfile(Guid projectId, Guid caseId, SaveTimeSeriesDto dto)
+    public async Task<TimeSeriesDto> SaveTimeSeriesProfile(Guid projectId, Guid caseId, SaveTimeSeriesDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
@@ -28,7 +28,7 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
             await context.UpdateCaseUpdatedUtc(caseId);
             await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
-            return new TimeSeriesCostDto
+            return new TimeSeriesDto
             {
                 StartYear = existingEntity.StartYear,
                 Values = dto.Values
@@ -53,14 +53,14 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
-        return new TimeSeriesCostDto
+        return new TimeSeriesDto
         {
             StartYear = newEntity.StartYear,
             Values = dto.Values
         };
     }
 
-    public async Task<TimeSeriesCostOverrideDto> SaveTimeSeriesOverrideProfile(Guid projectId, Guid caseId, SaveTimeSeriesOverrideDto dto)
+    public async Task<TimeSeriesOverrideDto> SaveTimeSeriesOverrideProfile(Guid projectId, Guid caseId, SaveTimeSeriesOverrideDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
@@ -79,7 +79,7 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
             await context.UpdateCaseUpdatedUtc(caseId);
             await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
-            return new TimeSeriesCostOverrideDto
+            return new TimeSeriesOverrideDto
             {
                 StartYear = existingEntity.StartYear,
                 Values = dto.Values,
@@ -106,7 +106,7 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
-        return new TimeSeriesCostOverrideDto
+        return new TimeSeriesOverrideDto
         {
             StartYear = newEntity.StartYear,
             Values = dto.Values,
