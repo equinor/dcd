@@ -4,15 +4,15 @@ namespace api.Features.Cases.GetWithAssets.Dtos;
 
 public class TimeSeriesDto
 {
-    [Required] public int StartYear { get; set; }
-    [Required] public double[] Values { get; set; } = [];
-    [Required] public DateTime UpdatedUtc { get; set; }
+    [Required] public required int StartYear { get; set; }
+    [Required] public required double[] Values { get; set; } = [];
+    [Required] public required DateTime UpdatedUtc { get; set; }
 }
 
 public class TimeSeriesOverrideDto
 {
-    [Required] public int StartYear { get; set; }
-    [Required] public double[] Values { get; set; } = [];
-    [Required] public bool Override { get; set; }
-    [Required] public DateTime UpdatedUtc { get; set; }
+    [Required] public required int StartYear { get; set; }
+    [Required] public required double[] Values { get; set; } = [];
+    [Required] public required bool Override { get; set; }
+    [Required] public required DateTime UpdatedUtc { get; set; }
 }

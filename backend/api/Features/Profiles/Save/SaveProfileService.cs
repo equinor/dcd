@@ -31,7 +31,8 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
             return new TimeSeriesDto
             {
                 StartYear = existingEntity.StartYear,
-                Values = dto.Values
+                Values = dto.Values,
+                UpdatedUtc = existingEntity.UpdatedUtc
             };
         }
 
@@ -56,7 +57,8 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
         return new TimeSeriesDto
         {
             StartYear = newEntity.StartYear,
-            Values = dto.Values
+            Values = dto.Values,
+            UpdatedUtc = newEntity.UpdatedUtc
         };
     }
 
@@ -83,7 +85,8 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
             {
                 StartYear = existingEntity.StartYear,
                 Values = dto.Values,
-                Override = existingEntity.Override
+                Override = existingEntity.Override,
+                UpdatedUtc = existingEntity.UpdatedUtc
             };
         }
 
@@ -110,7 +113,8 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
         {
             StartYear = newEntity.StartYear,
             Values = dto.Values,
-            Override = newEntity.Override
+            Override = newEntity.Override,
+            UpdatedUtc = newEntity.UpdatedUtc
         };
     }
 
