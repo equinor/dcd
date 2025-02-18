@@ -55,7 +55,7 @@ public static class EconomicsHelper
             double incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
             double costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
 
-            cashFlowValues[yearIndex] = incomeValue - costValue;
+            cashFlowValues[yearIndex] = (incomeValue/10) - costValue;
         }
 
         return new TimeSeries
