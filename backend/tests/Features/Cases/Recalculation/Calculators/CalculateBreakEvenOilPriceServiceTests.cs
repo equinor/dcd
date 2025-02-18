@@ -27,27 +27,29 @@ public class CalculateBreakEvenOilPriceServiceTests
             Project = project,
             DG4Date = new DateTime(2030, 1, 1),
             DrainageStrategyId = Guid.NewGuid(),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = 2027,
                     Values = [200.0, 400.0, 100.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileOil,
                     StartYear = 2030,
                     Values = [1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileGas,
                     StartYear = 2030,
                     Values = [500000000.0, 500000000.0, 500000000.0, 500000000.0, 200000000.0, 200000000.0]
-                },
-            }
+                }
+            ]
         };
 
         // Act
