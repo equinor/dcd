@@ -4,6 +4,45 @@ namespace api.Features.Profiles.TimeSeriesMerging;
 
 public static class TimeSeriesMerger
 {
+    public static void AddValues(TimeSeries target, TimeSeries timeSeriesCost)
+    {
+        if (timeSeriesCost.Values.Length == 0)
+        {
+            return;
+        }
+
+        if (target.Values.Length == 0)
+        {
+            target.Values = timeSeriesCost.Values;
+            target.StartYear = timeSeriesCost.StartYear;
+            return;
+        }
+
+        var newEndYear = target.StartYear + target.Values.Length > timeSeriesCost.StartYear + timeSeriesCost.Values.Length
+            ? target.StartYear + target.Values.Length
+            : timeSeriesCost.StartYear + timeSeriesCost.Values.Length;
+
+        var newStartYear = target.StartYear < timeSeriesCost.StartYear
+            ? target.StartYear
+            : timeSeriesCost.StartYear;
+
+        var newLength = newEndYear - newStartYear;
+        var values = new double[newLength];
+
+        for (var i = 0; i < target.Values.Length; i++)
+        {
+            values[target.StartYear - newStartYear + i] += target.Values[i];
+        }
+
+        for (var i = 0; i < timeSeriesCost.Values.Length; i++)
+        {
+            values[timeSeriesCost.StartYear - newStartYear + i] += timeSeriesCost.Values[i];
+        }
+
+        target.Values = values;
+        target.StartYear = newStartYear;
+    }
+
     public static TimeSeries MergeTimeSeries(params List<TimeSeries> timeSeriesItems)
     {
         if (timeSeriesItems.Count == 0)
