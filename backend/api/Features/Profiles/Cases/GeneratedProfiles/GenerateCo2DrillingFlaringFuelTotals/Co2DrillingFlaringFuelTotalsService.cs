@@ -1,5 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Exceptions;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
@@ -27,7 +28,12 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(x => x.Project)
             .Include(x => x.Topside)
-            .SingleAsync(x => x.Project.Id == projectPk && x.Id == caseId);
+            .SingleOrDefaultAsync(x => x.Project.Id == projectPk && x.Id == caseId);
+
+        if (caseItem == null)
+        {
+            throw new NotFoundInDbException($"Case with id {caseId} and projectId {projectPk} not found.");
+        }
 
         await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)

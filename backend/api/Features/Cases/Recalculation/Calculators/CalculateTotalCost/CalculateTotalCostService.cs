@@ -252,15 +252,6 @@ public static class CalculateTotalCostService
             };
         }
 
-        if (profile != null)
-        {
-            return new TimeSeries
-            {
-                StartYear = profile.StartYear,
-                Values = profile.Values
-            };
-        }
-
-        return new TimeSeries { StartYear = 0, Values = [] };
+        return new TimeSeries(profile);
     }
 }

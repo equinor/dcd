@@ -1,4 +1,5 @@
 using api.Context;
+using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,12 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(x => x.Surf)
             .Include(x => x.Transport)
             .Include(x => x.OnshorePowerSupply)
-            .SingleAsync(c => c.Id == caseId);
+            .SingleOrDefaultAsync(c => c.Id == caseId);
+
+        if (caseItem == null)
+        {
+            throw new NotFoundInDbException($"Case with id {caseId} not found.");
+        }
 
         await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
