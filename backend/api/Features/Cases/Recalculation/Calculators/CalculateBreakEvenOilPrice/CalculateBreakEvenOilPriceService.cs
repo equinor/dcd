@@ -70,9 +70,9 @@ public static class CalculateBreakEvenOilPriceService
 
         var gor = discountedNetSalesGasVolumeVolume / discountedOilVolume;
 
-        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * 6.29 * oilPrice) : 0;
+        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * BarrelsPerCubicMeter * oilPrice) : 0;
 
-        var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / 6.29;
+        var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / BarrelsPerCubicMeter;
         caseItem.BreakEven = breakEvenPrice;
 
     }
