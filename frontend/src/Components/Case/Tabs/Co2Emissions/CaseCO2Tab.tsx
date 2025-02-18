@@ -224,9 +224,9 @@ const CaseCO2Tab = () => {
 
     useEffect(() => {
         setCo2DistributionChartData([
-            { profile: "Drilling", value: Number((drillingPortion ?? 0).toFixed(4)) },
-            { profile: "Flaring", value: Number((flaringPortion ?? 0).toFixed(4)) },
-            { profile: "Fuel", value: Number((fuelPortion ?? 0).toFixed(4)) },
+            { profile: "Drilling", value: Number((drillingPortion ?? 0.0000).toFixed(4)) },
+            { profile: "Flaring", value: Number((flaringPortion ?? 0.0000).toFixed(4)) },
+            { profile: "Fuel", value: Number((fuelPortion ?? 0.0000).toFixed(4)) },
         ])
     }, [drillingPortion, flaringPortion, fuelPortion])
 
