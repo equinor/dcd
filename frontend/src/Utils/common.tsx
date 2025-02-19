@@ -420,6 +420,8 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
 
     let newProfile
     if (rowValues.length > 0) {
+        console.log("rowvalues are more than 0")
+        console.log("rowValues: ", rowValues)
         const firstYear = rowValues[0].year
         const lastYear = rowValues[rowValues.length - 1].year
         const startYear = firstYear - dg4Year

@@ -50,9 +50,9 @@ export const useTableQueue = ({ isSaving, addEdit, gridRef }: UseTableQueueProps
 
         const filteredEditQueue = reduceToLatestEdits(editQueue)
         const separatedEntries = separateOverrideEntries(filteredEditQueue)
-        // console.log("editQueue", editQueue)
-        // console.log("filteredEditQueue", filteredEditQueue)
-        // console.log("separatedEntries", separatedEntries)
+        console.log("editQueue", editQueue)
+        console.log("filteredEditQueue", filteredEditQueue)
+        console.log("separatedEntries", separatedEntries)
 
         const timeSeriesEntries = separatedEntries.timeseriesEntries.map((edit) => {
             const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesDto | Components.Schemas.SaveTimeSeriesOverrideDto
@@ -81,7 +81,7 @@ export const useTableQueue = ({ isSaving, addEdit, gridRef }: UseTableQueueProps
                 overrideTimeSeries: overrideEntries,
             },
         )
-
+        // invalidate case api data
         setEditQueue([])
     }, [editQueue, isSaving, addEdit])
 
