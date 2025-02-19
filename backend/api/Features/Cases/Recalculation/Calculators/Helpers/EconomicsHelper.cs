@@ -14,7 +14,14 @@ public static class EconomicsHelper
 
         for (int i = 0; i < values.Length; i++)
         {
-            var discountedValue = values[i] * discountFactors[i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)];
+            var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
+
+            if (discountFactorIndex < 0 || discountFactorIndex >= values.Length)
+            {
+                continue;
+            }
+
+            var discountedValue = values[i] * discountFactors[discountFactorIndex];
             accumulatedVolume += discountedValue;
 
         }
