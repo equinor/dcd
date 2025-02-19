@@ -11,6 +11,22 @@ public class UpdateCampaignService(DcdDbContext context,
     SaveCampaignWellService saveCampaignWellService,
     RecalculationService recalculationService)
 {
+    public async Task UpdateCampaignCost(
+        Guid projectId,
+        Guid caseId,
+        Guid campaignId,
+        UpdateCampaignCostDto updateCampaignCostDto)
+    {
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
+
+        existingCampaign.RigUpgradingCost = updateCampaignCostDto.RigUpgradingCost;
+
+        existingCampaign.RigMobDemobCost = updateCampaignCostDto.RigMobDemobCost;
+
+        await context.UpdateCaseUpdatedUtc(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
+    }
+
     public async Task UpdateCampaign(
         Guid projectId,
         Guid caseId,
@@ -19,11 +35,9 @@ public class UpdateCampaignService(DcdDbContext context,
     {
         var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
 
-        existingCampaign.RigUpgradingCost = updateCampaignDto.RigUpgradingCost;
         existingCampaign.RigUpgradingCostStartYear = updateCampaignDto.RigUpgradingCostStartYear;
         existingCampaign.RigUpgradingCostValues = updateCampaignDto.RigUpgradingCostValues;
 
-        existingCampaign.RigMobDemobCost = updateCampaignDto.RigMobDemobCost;
         existingCampaign.RigMobDemobCostStartYear = updateCampaignDto.RigMobDemobCostStartYear;
         existingCampaign.RigMobDemobCostValues = updateCampaignDto.RigMobDemobCostValues;
 
