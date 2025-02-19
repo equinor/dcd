@@ -43,7 +43,7 @@ const StyledAccordion = styled(Accordion)`
     margin-bottom: 8px;
     background-color: rgba(224, 247, 250, 0.4);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    
+
     &:before {
         display: none;
     }
@@ -131,12 +131,11 @@ const Feature = ({ icon, title, description }: { icon: React.ReactNode, title: s
     </Box>
 )
 
-const IndexView: React.FC = () => (
+const IndexView: React.FC = () => (//<Logo />
     <StyledContainer maxWidth="lg">
         <ContentWrapper>
-            <Logo />
             <StyledTitle variant="h1">
-                Digital Concept Development
+                Concept App
             </StyledTitle>
             <StyledSubtitle variant="h5">
                 A specialized platform for evaluating and maturing offshore field development concepts through detailed cost analysis and production planning
@@ -149,15 +148,15 @@ const IndexView: React.FC = () => (
                     <Feature
                         icon={<Icon data={trending_up} />}
                         title="Cost Analysis"
-                        description={`Track and analyze facility costs with time-series profiling for CAPEX and OPEX, 
-                            including detailed breakdowns for exploration, drilling, offshore facilities, and 
+                        description={`Track and analyze costs with time-series profiling for CAPEX and OPEX,
+                            including detailed breakdowns for exploration, drilling, offshore facilities, and
                             onshore power supply. Supports both manual input and PROSP integration.`}
                     />
                     <Feature
                         icon={<Icon data={bar_chart} />}
                         title="Production Profiles"
-                        description={`Model drainage strategies with detailed production profiles for oil, gas, and water. 
-                            Monitor environmental impact with CO2 emissions tracking and imported electricity consumption 
+                        description={`Model drainage strategies with detailed production profiles for oil, gas, and water.
+                            Monitor environmental impact with CO2 emissions tracking and imported electricity consumption
                             analysis.`}
                     />
                 </Grid2>
@@ -165,14 +164,14 @@ const IndexView: React.FC = () => (
                     <Feature
                         icon={<Icon data={compare} />}
                         title="Business Case Comparison"
-                        description={`Evaluate multiple development concepts with NPV calculations, break-even analysis, 
-                            and cash flow visualization. Create project revisions to track changes and compare different 
+                        description={`Evaluate multiple development concepts with NPV calculations, break-even analysis,
+                            and cash flow visualization. Create project revisions to track changes and compare different
                             scenarios over time.`}
                     />
                     <Feature
                         icon={<Icon data={grid_on} />}
                         title="Project Integration"
-                        description={`Export data to STEA, integrate with SharePoint for PROSP imports, and connect with 
+                        description={`Export data to STEA, integrate with SharePoint for PROSP imports, and connect with
                             Equinor's project portfolio through CommonLib. Includes role-based access control and project
                              classification support.`}
                     />
@@ -184,20 +183,19 @@ const IndexView: React.FC = () => (
             <SectionHeader>
                 <Icon data={history} />
                 <Typography variant="h4">
-                    Version History
+                    Release Notes
                 </Typography>
             </SectionHeader>
             {versions.map((version) => (
                 <StyledAccordion key={version}>
                     <StyledAccordionSummary expandIcon={<Icon data={chevron_down} />}>
                         <Typography variant="h4">
-                            Version
-                            {version}
+                            <strong> Version {version}</strong> {whatsNewUpdates[version].date}
                         </Typography>
                     </StyledAccordionSummary>
                     <StyledAccordionDetails>
                         <Grid2 container spacing={2}>
-                            {Object.entries(whatsNewUpdates[version]).map(([category, updates]) => (
+                            {Object.entries(whatsNewUpdates[version].updates).map(([category, updates]) => (
                                 <Grid2 size={{ xs: 12 }} key={category}>
                                     <StyledVersionHeading variant="h5">
                                         {category}

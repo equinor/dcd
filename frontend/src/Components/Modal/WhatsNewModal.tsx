@@ -57,7 +57,7 @@ const WhatsNewModal: React.FC = () => {
                         {" "}
                         {version}
                     </Header>
-                    {Object.entries(whatsNewUpdates[version]).map(([category, updates]) => (
+                    {Object.entries(whatsNewUpdates[version].updates).map(([category, updates]) => (
                         <div key={category}>
                             <SubHeader variant="h6">{category}</SubHeader>
                             <List>

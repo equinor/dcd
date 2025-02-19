@@ -14,7 +14,7 @@ export type ResourceName =
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" |
     `${ProfileTypes}`
-    
+
 export type ResourceObject =
     Components.Schemas.TopsideDto |
     Components.Schemas.SurfDto |
@@ -84,8 +84,13 @@ export type UpdateEntry = {
     description: string;
 };
 
+export type VersionUpdates = {
+    date: string; // ISO 8601 date string
+    updates: {
+        [key in Category]?: UpdateEntry[];
+    };
+};
+
 export type WhatsNewUpdates = {
-    [key in Version]: {
-        [key in Category]?: UpdateEntry[]
-    }
+    [key in Version]: VersionUpdates;
 };
