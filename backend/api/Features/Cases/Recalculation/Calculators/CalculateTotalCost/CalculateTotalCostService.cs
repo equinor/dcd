@@ -243,15 +243,8 @@ public static class CalculateTotalCostService
 
     private static TimeSeries UseOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
     {
-        if (profileOverride?.Override == true)
-        {
-            return new TimeSeries
-            {
-                StartYear = profileOverride.StartYear,
-                Values = profileOverride.Values
-            };
-        }
-
-        return new TimeSeries(profile);
+        return profileOverride?.Override == true
+            ? new TimeSeries(profileOverride)
+            : new TimeSeries(profile);
     }
 }
