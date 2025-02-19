@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { EditInstance } from "@/Models/Interfaces"
 import { GetCaseService } from "@/Services/CaseService"
+import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 // Reduces the queue to the latest edit for each resource given the order of the queue and the resourceName
 const reduceToLatestEdits = (queue: EditInstance[]): EditInstance[] => {
     const latestEditsMap = new Map<string, EditInstance>()
@@ -81,6 +82,21 @@ export const useTableQueue = ({ isSaving, addEdit, gridRef }: UseTableQueueProps
                 overrideTimeSeries: overrideEntries,
             },
         )
+
+        // await GetDrillingCampaignsService().updateCampaign(
+        //     firstEdit.projectId,
+        //     firstEdit.caseId,
+        //     firstEdit.campaignId!,
+        //     {
+        //         rigUpgradingCost: 0,
+        //         rigUpgradingCostStartYear: 0,
+        //         rigUpgradingCostValues: "",
+        //         rigMobDemobCost: 0,
+        //         rigMobDemobCostStartYear: "",
+        //         rigMobDemobCostValues: "",
+        //         campaignWells: [],
+        //     },
+        // )
         // invalidate case api data
         setEditQueue([])
     }, [editQueue, isSaving, addEdit])

@@ -62,6 +62,7 @@ export interface EditInstance {
     drillingScheduleId?: string;
     caseId?: string;
     resourceObject: ResourceObject;
+    campaignId?: string;
 }
 
 export interface EditEntry {
