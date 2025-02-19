@@ -1,5 +1,6 @@
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using static api.Features.Profiles.VolumeConstants;
@@ -28,10 +29,13 @@ public static class CalculateBreakEvenOilPriceService
 
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
-        var netSalesGasVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas),
-            caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)
-        );
+        var netSalesGasProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
+        var netSalesGasOverride = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
+
+        var netSalesGasVolume = netSalesGasOverride?.Override == true
+            ? new TimeSeries { StartYear = netSalesGasOverride.StartYear, Values = netSalesGasOverride.Values }
+            : new TimeSeries(netSalesGasProfile);
+
 
         netSalesGasVolume.Values = netSalesGasVolume.Values.Length != 0 ? netSalesGasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : [];
 
