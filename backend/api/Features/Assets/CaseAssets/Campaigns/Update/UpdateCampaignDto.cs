@@ -11,6 +11,4 @@ public class UpdateCampaignDto
 
     [Required] public required int RigMobDemobCostStartYear { get; set; }
     [Required] public required double[] RigMobDemobCostValues { get; set; }
-
-    [Required] public required List<SaveCampaignWellDto> CampaignWells { get; set; }
 }

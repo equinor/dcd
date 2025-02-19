@@ -29,4 +29,16 @@ public class UpdateCampaignController(UpdateCampaignService updateCampaignServic
         await updateCampaignService.UpdateCampaignCost(projectId, caseId, campaignId, dto);
         return NoContent();
     }
+
+    [AuthorizeActionType(ActionType.Edit)]
+    [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/campaigns/{campaignId:guid}/wells")]
+    public async Task<NoContentResult> UpdateCampaignWells(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid campaignId,
+        [FromBody] UpdateCampaignWellsDto dto)
+    {
+        await updateCampaignService.UpdateCampaignWells(projectId, caseId, campaignId, dto);
+        return NoContent();
+    }
 }

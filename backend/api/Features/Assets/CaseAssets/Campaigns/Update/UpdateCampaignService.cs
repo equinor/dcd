@@ -41,7 +41,17 @@ public class UpdateCampaignService(DcdDbContext context,
         existingCampaign.RigMobDemobCostStartYear = updateCampaignDto.RigMobDemobCostStartYear;
         existingCampaign.RigMobDemobCostValues = updateCampaignDto.RigMobDemobCostValues;
 
-        foreach (var well in updateCampaignDto.CampaignWells)
+        await context.UpdateCaseUpdatedUtc(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
+    }
+
+    public async Task UpdateCampaignWells(
+        Guid projectId,
+        Guid caseId,
+        Guid campaignId,
+        UpdateCampaignWellsDto updateCampaignWellsDto)
+    {
+        foreach (var well in updateCampaignWellsDto.CampaignWells)
         {
             await saveCampaignWellService.SaveCampaignWell(projectId, caseId, campaignId, well.WellId, well);
         }

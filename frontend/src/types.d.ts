@@ -486,6 +486,8 @@ declare namespace Components {
             rigUpgradingCostValues: number /* double */[];
             rigMobDemobCostStartYear: number; // int32
             rigMobDemobCostValues: number /* double */[];
+        }
+        export interface UpdateCampaignWellsDto {
             campaignWells: SaveCampaignWellDto[];
         }
         export interface UpdateCaseDto {
@@ -854,6 +856,25 @@ declare namespace Paths {
                 campaignId: Parameters.CampaignId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateCampaignCostDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdWells {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCampaignWellsDto;
             namespace Responses {
                 export interface $200 {
                 }
