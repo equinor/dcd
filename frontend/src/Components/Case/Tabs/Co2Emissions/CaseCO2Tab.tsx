@@ -169,7 +169,9 @@ const CaseCO2Tab = () => {
     const co2EmissionsChartData = () => {
         const dataArray = []
         if (!caseData) { return [{}] }
+
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
@@ -191,6 +193,7 @@ const CaseCO2Tab = () => {
                 ),
             })
         }
+
         return dataArray
     }
 
