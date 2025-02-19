@@ -14,7 +14,6 @@ public static class CalculateTotalIncomeService
     {
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
-        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),

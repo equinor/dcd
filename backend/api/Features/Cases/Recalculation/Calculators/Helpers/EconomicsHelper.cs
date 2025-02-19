@@ -22,38 +22,36 @@ public static class EconomicsHelper
         return accumulatedVolume;
     }
 
-    public static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
+    private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {
-        List<double> discountFactors = new List<double>();
-        double discountRate = 1 + (discountRatePercentage / 100);
+        var discountFactors = new List<double>();
+        var discountRate = 1 + (discountRatePercentage / 100);
 
-        for (int year = 0; year < numYears; year++)
+        for (var year = 0; year < numYears; year++)
         {
-            double discountFactor = (year == 0) ? 1 : 1 / Math.Pow(discountRate, year);
+            var discountFactor = year == 0 ? 1 : 1 / Math.Pow(discountRate, year);
             discountFactors.Add(discountFactor);
         }
 
         return discountFactors;
     }
 
-
-
     public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries totalCost)
     {
-        int startYear = Math.Min(income.StartYear, totalCost.StartYear);
-        int endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
+        var startYear = Math.Min(income.StartYear, totalCost.StartYear);
+        var endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
 
-        int numberOfYears = endYear - startYear + 1;
+        var numberOfYears = endYear - startYear + 1;
         var cashFlowValues = new double[numberOfYears];
 
-        for (int yearIndex = 0; yearIndex < numberOfYears; yearIndex++)
+        for (var yearIndex = 0; yearIndex < numberOfYears; yearIndex++)
         {
-            int currentYear = startYear + yearIndex;
-            int incomeIndex = currentYear - income.StartYear;
-            int costIndex = currentYear - totalCost.StartYear;
+            var currentYear = startYear + yearIndex;
+            var incomeIndex = currentYear - income.StartYear;
+            var costIndex = currentYear - totalCost.StartYear;
 
-            double incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
-            double costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
+            var incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
+            var costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
 
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }

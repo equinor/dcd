@@ -30,32 +30,28 @@ public static class CalculateBreakEvenOilPriceService
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
         var netSalesGasProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
-        var netSalesGasOverride = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
+        var netSalesGasOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
 
-        var netSalesGasVolume = netSalesGasOverride?.Override == true
-            ? new TimeSeries { StartYear = netSalesGasOverride.StartYear, Values = netSalesGasOverride.Values }
+        var netSalesGasVolume = netSalesGasOverrideProfile?.Override == true
+            ? new TimeSeries(netSalesGasOverrideProfile)
             : new TimeSeries(netSalesGasProfile);
 
+        netSalesGasVolume.Values = netSalesGasVolume.Values.Select(v => v / 1_000_000_000).ToArray();
 
-        netSalesGasVolume.Values = netSalesGasVolume.Values.Length != 0 ? netSalesGasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : [];
-
-        var currentYear = DateTime.Now.Year;
-        var nextYear = currentYear + 1;
         var dg4Year = caseItem.DG4Date.Year;
-        var nextYearInRelationToDg4Year = nextYear - dg4Year;
         var discountYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
         var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(
             oilVolume.Values,
             discountRate,
-            oilVolume?.StartYear ?? 0,
+            oilVolume.StartYear,
             discountYearInRelationToDg4Year
         );
 
         var discountedNetSalesGasVolumeVolume = EconomicsHelper.CalculateDiscountedVolume(
             netSalesGasVolume.Values,
             discountRate,
-            netSalesGasVolume?.StartYear ?? 0,
+            netSalesGasVolume.StartYear,
             discountYearInRelationToDg4Year
         );
 
@@ -63,7 +59,6 @@ public static class CalculateBreakEvenOilPriceService
         {
             return;
         }
-
 
         var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
             calculatedTotalCostCostProfile?.Values ?? [],
@@ -78,7 +73,6 @@ public static class CalculateBreakEvenOilPriceService
 
         var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / BarrelsPerCubicMeter;
         caseItem.BreakEven = breakEvenPrice;
-
     }
 }
 

@@ -31,7 +31,7 @@ public static class CalculateNpvService
         var npvValue = EconomicsHelper.CalculateDiscountedVolume(
                 cashflowProfile.Values,
                 discountRate,
-                cashflowProfile?.StartYear ?? 0,
+                cashflowProfile.StartYear,
                 npvYearInRelationToDg4Year
             );
 
