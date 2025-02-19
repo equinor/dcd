@@ -7,6 +7,6 @@ public static class DcdBlobStorageConfiguration
     public static void AddDcdBlobStorage(this WebApplicationBuilder builder)
     {
         var blobStorageConnectionString = builder.Configuration["BlobStorageConnectionString"];
-        builder.Services.AddScoped(_ => new BlobServiceClient(new Uri(blobStorageConnectionString!)));
+        builder.Services.AddScoped(_ => new BlobServiceClient(blobStorageConnectionString!));
     }
 }

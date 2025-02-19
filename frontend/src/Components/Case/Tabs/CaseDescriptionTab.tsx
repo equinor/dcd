@@ -1,8 +1,8 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router"
 import { useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
@@ -14,7 +14,6 @@ import useEditCase from "@/Hooks/useEditCase"
 
 const CaseDescriptionTab = () => {
     const { editMode } = useAppStore()
-    const { tab } = useParams()
     const { apiData } = useCaseApiData()
     const { projectId } = useProjectContext()
 
@@ -50,22 +49,17 @@ const CaseDescriptionTab = () => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
         const { addEdit } = useEditCase()
-        const previousResourceObject = structuredClone(caseData)
-        const newResourceObject = structuredClone(caseData)
-        newResourceObject.description = newValue
+        const resourceObject = structuredClone(caseData)
+        resourceObject.description = newValue
 
         addEdit({
-            newDisplayValue: newValue,
-            previousDisplayValue: caseData.description,
-            previousResourceObject,
-            newResourceObject,
-            inputLabel: "Description",
+            uuid: uuidv4(),
+            resourceObject,
             projectId,
             resourceName: "case",
             resourcePropertyKey: "description",
             resourceId: "",
             caseId: caseData.caseId,
-            tabName: tab,
         })
         setDescription(newValue)
     }

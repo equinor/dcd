@@ -1,5 +1,6 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
 import styled from "styled-components"
+import React from "react"
 
 import { useAppStore } from "@/Store/AppStore"
 
@@ -14,7 +15,7 @@ interface InputSwitcherProps {
 }
 
 const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
-    const { editMode } = useAppStore()
+    const { editMode, isSaving } = useAppStore()
 
     return (
         <InputWrapper
@@ -24,7 +25,7 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
         >
             {editMode ? (
                 <div key="input">
-                    {children}
+                    {React.cloneElement(children, { disabled: isSaving })}
                 </div>
             ) : (
                 <div key="text">

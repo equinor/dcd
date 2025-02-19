@@ -1,6 +1,7 @@
 import React, { ChangeEventHandler, useState } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
+import { v4 as uuidv4 } from "uuid"
 import InputSwitcher from "./Components/InputSwitcher"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
 import { useProjectContext } from "@/Store/ProjectContext"
@@ -25,7 +26,7 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     resourceId,
     label,
 }: SwitchableDropdownInputProps) => {
-    const { caseId, tab } = useParams()
+    const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const [localValue, setLocalValue] = useState(value)
     const { addEdit } = useEditCase()
@@ -36,22 +37,17 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
         const newValue = e.currentTarget.value
         setLocalValue(Number(newValue))
 
-        const newResourceObject: any = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey] = Number(newValue)
+        const resourceObject: any = structuredClone(previousResourceObject)
+        resourceObject[resourcePropertyKey] = Number(newValue)
 
         addEdit({
-            newResourceObject,
-            previousResourceObject,
-            inputLabel: label,
+            uuid: uuidv4(),
+            resourceObject,
             projectId,
             resourceName,
             resourcePropertyKey,
             resourceId,
             caseId,
-            newDisplayValue: options[newValue],
-            previousDisplayValue: options[value],
-            tabName: tab,
-            inputFieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
         })
     }
 

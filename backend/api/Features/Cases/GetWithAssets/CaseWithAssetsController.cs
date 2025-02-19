@@ -11,6 +11,6 @@ public class CaseWithAssetsController(CaseWithAssetsService caseWithAssetsServic
     [AuthorizeActionType(ActionType.Read)]
     public async Task<CaseWithAssetsDto> GetCaseWithAssets([FromRoute] Guid projectId, [FromRoute] Guid caseId)
     {
-        return await caseWithAssetsService.GetCaseWithAssetsNoTracking(projectId, caseId);
+        return await caseWithAssetsService.GetCaseWithAssets(projectId, caseId);
     }
 }

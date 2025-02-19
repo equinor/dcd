@@ -15,7 +15,8 @@ public class DcdClaimsMiddleware(RequestDelegate nextMiddleware)
     {
         if (httpContext.User.GetAzureUniqueId() == null || httpContext.User.GetAzureUniqueId() == null || httpContext.User.Identity is not ClaimsIdentity claimsIdentity)
         {
-            throw new UnauthorizedAccessException($"Unauthenticated access attempted on: {httpContext.Request.Path}");
+            await nextMiddleware(httpContext);
+            return;
         }
 
         currentUser.Username = httpContext.User.Identity!.Name!;

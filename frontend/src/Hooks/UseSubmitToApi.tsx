@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
 
 import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
@@ -27,30 +26,14 @@ interface UpdateResourceParams {
     resourceId?: string;
 }
 
-interface SubmissionHistoryEntry {
-    before: {
-        projectId: string;
-        caseId: string;
-        resourceName: string;
-        resourceId?: string;
-        resourceObject: ResourceObject;
-        wellId?: string;
-        drillingScheduleId?: string;
-    };
-    after: {
-        data: any;
-    };
-}
-
 const submitApiLogger = createLogger({
     name: "SUBMIT_API",
-    enabled: true, // Enable logging temporarily to debug
+    enabled: false, // Enable logging temporarily to debug
 })
 
 export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppStore()
-    const [submissionHistory, setSubmissionHistory] = useState<SubmissionHistoryEntry[]>([])
 
     const mutationFn = async ({ serviceMethod }: {
         projectId: string,
@@ -191,31 +174,20 @@ export const useSubmitToApi = () => {
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
-        submitApiLogger.warn("Submitting to API:", {
+        submitApiLogger.log("Submitting to API:", {
             resourceName,
             resourceId,
             resourceObject,
         })
 
-        // Create the before state
-        const beforeState = {
-            projectId,
-            caseId,
-            resourceName,
-            resourceId,
-            resourceObject,
-            wellId,
-            drillingScheduleId,
-        }
-
         if (productionOverrideResources.find((x) => x.toString() === resourceName)) {
             setIsCalculatingProductionOverrides(true)
-            submitApiLogger.warn("Setting production overrides calculation flag")
+            submitApiLogger.log("Setting production overrides calculation flag")
         }
 
         if (totalStudyCostOverrideResources.includes(resourceName)) {
             setIsCalculatingTotalStudyCostOverrides(true)
-            submitApiLogger.warn("Setting total study cost overrides calculation flag")
+            submitApiLogger.log("Setting total study cost overrides calculation flag")
         }
 
         if (resourceName !== "case" && !resourceId) {
@@ -348,16 +320,7 @@ export const useSubmitToApi = () => {
             })()
 
             if (result.success) {
-                submitApiLogger.info("Submission successful, updating history. Current history length:", submissionHistory.length)
-                // Add to history only if submission was successful
-                setSubmissionHistory((prev) => {
-                    const newHistory = [...prev, {
-                        before: beforeState,
-                        after: { data: result.data },
-                    }]
-                    submitApiLogger.info("New history length:", newHistory.length)
-                    return newHistory
-                })
+                submitApiLogger.info("Submission successful")
             }
 
             return result
@@ -367,17 +330,7 @@ export const useSubmitToApi = () => {
         }
     }
 
-    const getSubmissionHistory = () => {
-        submitApiLogger.info("Getting submission history, current length:", submissionHistory.length)
-        return submissionHistory
-    }
-
-    const clearSubmissionHistory = () => {
-        submitApiLogger.info("Clearing submission history")
-        setSubmissionHistory([])
-    }
-
     return {
-        submitToApi, updateCase, mutation, getSubmissionHistory, clearSubmissionHistory,
+        submitToApi, updateCase, mutation,
     }
 }

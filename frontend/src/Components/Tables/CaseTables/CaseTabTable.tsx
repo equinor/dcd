@@ -40,10 +40,21 @@ import {
     ITimeSeriesTableDataWithSet,
 } from "@/Models/ITimeSeries"
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
-import { createLogger } from "@/Utils/logger"
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 import useEditCase from "@/Hooks/useEditCase"
+import { useTableQueue } from "@/Hooks/useTableQueue"
 
+// Styled Components
+const CenterGridIcons = styled.div`
+    padding-top: 0px;
+    padding-left: 0px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+`
+
+// Component Props Interface
 interface Props {
     timeSeriesData: ITimeSeriesTableDataWithSet[]
     dg4Year: number
@@ -59,20 +70,6 @@ interface Props {
     sharepointFileId?: string
 }
 
-const CenterGridIcons = styled.div`
-    padding-top: 0px;
-    padding-left: 0px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-`
-
-const logger = createLogger({
-    name: "CaseTabTable",
-    enabled: false, // Set to true to enable debug logging. dont leave this on for production
-})
-
 const CaseTabTable = memo(({
     timeSeriesData,
     dg4Year,
@@ -87,22 +84,31 @@ const CaseTabTable = memo(({
     isProsp,
     sharepointFileId,
 }: Props) => {
+    // Hooks and Context
     const { editMode, setSnackBarMessage, isSaving } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
+    const { addEdit } = useEditCase()
 
-    const [editQueue, setEditQueue] = useState<any[]>([])
+    // State Management
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
+    const [selectedRow, setSelectedRow] = useState<any>(null)
+    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
+
+    // Custom Hooks
+    const { editQueue, addToQueue, submitEditQueue } = useTableQueue({
+        isSaving,
+        addEdit,
+        gridRef,
+    })
+
+    // Refs
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
     const gridInitializedRef = useRef(false)
 
-    const [selectedRow, setSelectedRow] = useState<any>(null)
-    const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
-    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
-
-    const { addEdit } = useEditCase()
-
+    // Memoized Data
     const gridRowData = useMemo(
         () => {
             if (!presentedTableData?.length) { return [] }
@@ -111,125 +117,13 @@ const CaseTabTable = memo(({
         [presentedTableData, editMode, dg4Year, tableName],
     )
 
-    useEffect(() => {
-        if (timeSeriesData?.length > 0) {
-            setPresentedTableData(timeSeriesData)
-        }
-    }, [timeSeriesData])
-
-    useEffect(() => {
-        if (gridRef.current?.api && gridRowData.length > 0) {
-            gridRef.current.api.setGridOption("rowData", gridRowData)
-        }
-    }, [gridRowData])
-
-    useEffect(() => {
-        if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
-            previousTimeSeriesDataRef.current = timeSeriesData
-        }
-    }, [timeSeriesData])
-
-    const submitEditQueue = useCallback(() => {
-        logger.info("submitting edit queue", { editQueue })
-        if (isSaving) {
-            return
-        }
-
-        if (editQueue.length === 0) {
-            return
-        }
-
-        const submittedEdits = []
-        editQueue.forEach((edit) => {
-            logger.info("Submitting edit", { edit })
-            const submitted = addEdit(edit)
-            if (!submitted) {
-                logger.error("Failed to submit edit", { edit })
-            } else {
-                logger.info("Submitted edit", { edit })
-                submittedEdits.push(edit)
-            }
-        })
-        if (submittedEdits.length === editQueue.length) {
-            setEditQueue([])
-        }
-    }, [editQueue, isSaving])
-
-    useEffect(() => {
-        if (editQueue.length > 0) {
-            const timer = setTimeout(() => {
-                const timeSinceLastEdit = Date.now() - lastEditTime
-                if (timeSinceLastEdit >= 3000) {
-                    logger.info("Auto-submitting edit queue after 5 seconds of inactivity")
-                    if (gridRef.current.api.getEditingCells().length > 0) {
-                        gridRef.current.api.stopEditing()
-                    } else {
-                        submitEditQueue()
-                    }
-                }
-            }, 3000)
-            return () => clearTimeout(timer)
-        }
-        return undefined
-    }, [editQueue, lastEditTime, submitEditQueue])
-
-    const handleCellValueChange = useCallback((event: any) => {
-        const params: ITableCellChangeParams = {
-            data: event.data,
-            newValue: event.newValue,
-            oldValue: event.oldValue,
-            profileName: event.data.profileName,
-            profile: event.data.profile,
-            resourceId: event.data.resourceId,
-        }
-        logger.info("handling cell value change, where the cell is", event.data.profileName, event.data.resourceName)
-        logger.info("the new value is", event.newValue)
-        logger.info("the old value is", event.oldValue)
-
-        const config: ITableCellChangeConfig = {
-            dg4Year,
-            caseId,
-            projectId,
-            tab,
-            tableName,
-            timeSeriesData: presentedTableData,
-            setSnackBarMessage,
-        }
-
-        if (!validateTableCellChange(params, config)) {
-            return
-        }
-
-        const edit = generateTableCellEdit(params, config)
-        if (edit) {
-            logger.info("Processing edit", { edit })
-            setLastEditTime(Date.now())
-            setEditQueue((prev) => [...prev, edit])
-        }
-    }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage])
-
-    useEffect(() => {
-        if (gridRef.current?.api && presentedTableData?.length > 0 && gridRowData.length > 0) {
-            const currentNodes = gridRef.current.api.getRenderedNodes()
-            const currentRowData = currentNodes.map((node: { data: any }) => node.data)
-            if (!isEqual(currentRowData, gridRowData)) {
-                gridRef.current.api.setGridOption("rowData", gridRowData)
-            }
-        }
-    }, [gridRowData, presentedTableData])
-
+    // Cell Renderers
     const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!params.data) {
-            return null
-        }
+        if (!params.data) { return null }
 
         const isUnlocked = params.data.overrideProfile?.override
 
-        if (
-            !isUnlocked
-            && calculatedFields
-            && calculatedFields.includes(params.data.resourceName)
-            && ongoingCalculation) {
+        if (!isUnlocked && calculatedFields?.includes(params.data.resourceName) && ongoingCalculation) {
             return <CircularProgress size={24} />
         }
 
@@ -241,12 +135,12 @@ const CaseTabTable = memo(({
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
-
                 />
             </CenterGridIcons>
         )
     }
 
+    // Column Definitions
     const generateTableYearColDefs = useCallback(() => {
         const columnPinned: any[] = [
             {
@@ -308,12 +202,45 @@ const CaseTabTable = memo(({
         return columnPinned.concat([...yearDefs])
     }, [tableYears, editMode, gridRowData, tableName, totalRowName])
 
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
+    // Event Handlers
+    const handleCellValueChange = useCallback((event: any) => {
+        const params: ITableCellChangeParams = {
+            data: event.data,
+            newValue: event.newValue,
+            oldValue: event.oldValue,
+            profileName: event.data.profileName,
+            profile: event.data.profile,
+            resourceId: event.data.resourceId,
+        }
 
-    useEffect(() => {
-        const newColDefs = generateTableYearColDefs()
-        setColumnDefs(newColDefs)
-    }, [generateTableYearColDefs])
+        const config: ITableCellChangeConfig = {
+            dg4Year,
+            caseId,
+            projectId,
+            tab,
+            tableName,
+            timeSeriesData: presentedTableData,
+            setSnackBarMessage,
+        }
+
+        if (!validateTableCellChange(params, config)) { return }
+
+        const edit = generateTableCellEdit(params, config)
+        if (edit) {
+            addToQueue(edit)
+        }
+    }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage, addToQueue])
+
+    const handleCellClicked = (event: CellClickedEvent) => {
+        if (!event.data || editMode) { return }
+
+        const clickedYear = event.column.getColId()
+        setSelectedRow({
+            ...event.data,
+            clickedYear,
+        })
+        setIsSidesheetOpen(true)
+    }
 
     const initializeGridWithData = useCallback((gridReadyEvent: GridReadyEvent) => {
         gridInitializedRef.current = true
@@ -322,53 +249,8 @@ const CaseTabTable = memo(({
         }
     }, [gridRowData])
 
-    // Handle grid blur event
-    useEffect(() => {
-        const containerRef = document.getElementById(tableName)?.parentElement
-
-        const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
-                submitEditQueue()
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-        }
-    }, [tableName, editQueue, submitEditQueue])
-
-    const defaultExcelExportParams = useMemo(() => {
-        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
-        const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
-        return {
-            columnKeys,
-            fileName: "export.xlsx",
-        }
-    }, [tableYears])
-
-    const handleCellClicked = (event: CellClickedEvent) => {
-        if (!event.data || editMode) { return } // Don't open sidesheet in edit mode
-
-        // Get the clicked column's field (year)
-        const clickedYear = event.column.getColId()
-
-        logger.info("Cell clicked", {
-            rowData: event.data,
-            profileName: event.data.profileName,
-            values: event.data.profile?.values,
-            clickedYear,
-        })
-
-        setSelectedRow({
-            ...event.data,
-            clickedYear, // Add the clicked year to the row data
-        })
-        setIsSidesheetOpen(true)
-    }
-
+    // Grid Configuration
     const gridConfig = useMemo(() => ({
-        // Column configuration
         defaultColDef: {
             sortable: true,
             filter: true,
@@ -379,7 +261,6 @@ const CaseTabTable = memo(({
             enableCellChangeFlash: editMode,
             suppressMovable: true,
         },
-        // Grid configuration
         rowData: gridRowData,
         columnDefs,
         animateRows: true,
@@ -389,7 +270,10 @@ const CaseTabTable = memo(({
         getRowStyle: getCaseRowStyle,
         suppressLastEmptyLineOnPaste: true,
         onGridReady: initializeGridWithData,
-        defaultExcelExportParams,
+        defaultExcelExportParams: {
+            columnKeys: ["profileName", "unit", ...Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString()), "total"],
+            fileName: "export.xlsx",
+        },
         cellSelection: true,
         copyHeadersToClipboard: false,
         stopEditingWhenCellsLoseFocus: true,
@@ -407,18 +291,67 @@ const CaseTabTable = memo(({
         alignedGridsRef,
         includeFooter,
         initializeGridWithData,
-        defaultExcelExportParams,
         handleCellClicked,
+        tableYears,
         setSelectedRow,
         setIsSidesheetOpen,
     ])
 
+    // Effects
+    useEffect(() => {
+        if (timeSeriesData?.length > 0) {
+            setPresentedTableData(timeSeriesData)
+        }
+    }, [timeSeriesData])
+
+    useEffect(() => {
+        if (gridRef.current?.api && gridRowData.length > 0) {
+            gridRef.current.api.setGridOption("rowData", gridRowData)
+        }
+    }, [gridRowData])
+
+    useEffect(() => {
+        if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
+            previousTimeSeriesDataRef.current = timeSeriesData
+        }
+    }, [timeSeriesData])
+
+    useEffect(() => {
+        setColumnDefs(generateTableYearColDefs())
+    }, [generateTableYearColDefs])
+
+    useEffect(() => {
+        const containerRef = document.getElementById(tableName)?.parentElement
+
+        const handleClickOutside = (event: MouseEvent) => {
+            /*
+            if (gridRef.current?.api) {
+                gridRef.current.api.clearFocusedCell()
+                gridRef.current.api.stopEditing()
+                gridRef.current.api.deselectAll()
+            }
+                */
+
+            if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
+                submitEditQueue()
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [tableName, editQueue, submitEditQueue])
+
+    // Render
     return (
         <>
             <div className={styles.root}>
                 <div
                     style={{
-                        display: "flex", flexDirection: "column", width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
                     }}
                     className="ag-theme-alpine-fusion"
                 >

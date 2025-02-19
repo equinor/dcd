@@ -54,7 +54,7 @@ public static class OpexCostProfileService
         var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
         cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
 
-        var interventionCost = caseItem.Project.DevelopmentOperationalWellCosts?.AnnualWellInterventionCostPerWell ?? 0;
+        var interventionCost = caseItem.Project.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell;
 
         var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
@@ -140,12 +140,13 @@ public static class OpexCostProfileService
         {
             StartYear = drillingSchedule.StartYear
         };
+
         var values = new List<double>();
         var sum = 0.0;
 
-        for (int i = 0; i < drillingSchedule.Values.Length; i++)
+        foreach (var value in drillingSchedule.Values)
         {
-            sum += drillingSchedule.Values[i];
+            sum += value;
             values.Add(sum);
         }
 

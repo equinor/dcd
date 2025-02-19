@@ -361,6 +361,10 @@ declare namespace Components {
             startYear: number; // int32
             values: number /* double */[];
         }
+        export interface SaveTimeSeriesListDto {
+            timeSeries: SaveTimeSeriesDto[];
+            overrideTimeSeries: SaveTimeSeriesOverrideDto[];
+        }
         export interface SaveTimeSeriesOverrideDto {
             profileType: string;
             startYear: number; // int32
@@ -664,6 +668,10 @@ declare namespace Components {
             canCreateRevision: boolean;
             canEditProjectData: boolean;
             canEditProjectMembers: boolean;
+        }
+        export interface VideoDto {
+            videoName: string;
+            base64EncodedData: string;
         }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellOverviewDto {
@@ -1050,6 +1058,23 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.SaveTimeSeriesDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TimeSeriesDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdProfilesSaveBatch {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SaveTimeSeriesListDto;
+            namespace Responses {
+                export interface $200 {
+                }
             }
         }
     }
@@ -1462,6 +1487,19 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Videos$VideoName {
+        namespace Get {
+            namespace Parameters {
+                export type VideoName = string;
+            }
+            export interface PathParameters {
+                videoName: Parameters.VideoName;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.VideoDto;
             }
         }
     }

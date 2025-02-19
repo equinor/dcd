@@ -168,6 +168,7 @@ const CaseProductionProfilesTab = () => {
                                 label=""
                                 disabled
                                 value={caseData.productionStrategyOverview}
+                                onChange={() => {}}
                             >
                                 {Object.entries(productionStrategyOptions).map(([value, label]) => (
                                     <option key={value} value={value}>{label}</option>
@@ -185,6 +186,7 @@ const CaseProductionProfilesTab = () => {
                                 label=""
                                 disabled
                                 value={caseData.artificialLift}
+                                onChange={() => {}}
                             >
                                 {Object.entries(artificialLiftOptions).map(([value, label]) => (
                                     <option key={value} value={value}>{label}</option>

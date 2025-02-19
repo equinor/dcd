@@ -30,4 +30,18 @@ public class SaveProfileController(SaveProfileService saveProfileService) : Cont
 
         return await saveProfileService.SaveTimeSeriesOverrideProfile(projectId, caseId, dto);
     }
+
+    [AuthorizeActionType(ActionType.Edit)]
+    [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/profiles/save-batch")]
+    public async Task<NoContentResult> SaveProfiles(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] SaveTimeSeriesListDto dto)
+    {
+        SaveProfileDtoValidator.Validate(dto);
+
+        await saveProfileService.SaveTimeSeriesList(projectId, caseId, dto);
+
+        return new NoContentResult();
+    }
 }

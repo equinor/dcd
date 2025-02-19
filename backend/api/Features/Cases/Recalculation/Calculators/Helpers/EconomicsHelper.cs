@@ -6,35 +6,59 @@ namespace api.Features.Cases.Recalculation.Calculators.Helpers;
 
 public static class EconomicsHelper
 {
-    public static double CalculateDiscountedVolume(double[] values, double discountRate, int startIndex)
+    public static double CalculateDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
     {
+        var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
+
         double accumulatedVolume = 0;
-        double discountFactor = 1 + (discountRate / 100);
 
         for (int i = 0; i < values.Length; i++)
         {
-            accumulatedVolume += values[i] / Math.Pow(discountFactor, startIndex + i);
+            var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
+
+            if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
+            {
+                continue;
+            }
+
+            var discountedValue = values[i] * discountFactors[discountFactorIndex];
+            accumulatedVolume += discountedValue;
+
         }
 
         return accumulatedVolume;
     }
 
-    public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries total)
+    private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {
-        int startYear = Math.Min(income.StartYear, total.StartYear);
-        int endYear = Math.Max(income.StartYear + income.Values.Length - 1, total.StartYear + total.Values.Length - 1);
+        var discountFactors = new List<double>();
+        var discountRate = 1 + (discountRatePercentage / 100);
 
-        int numberOfYears = endYear - startYear + 1;
+        for (var year = 0; year < numYears; year++)
+        {
+            var discountFactor = year == 0 ? 1 : 1 / Math.Pow(discountRate, year);
+            discountFactors.Add(discountFactor);
+        }
+
+        return discountFactors;
+    }
+
+    public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries totalCost)
+    {
+        var startYear = Math.Min(income.StartYear, totalCost.StartYear);
+        var endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
+
+        var numberOfYears = endYear - startYear + 1;
         var cashFlowValues = new double[numberOfYears];
 
-        for (int yearIndex = 0; yearIndex < numberOfYears; yearIndex++)
+        for (var yearIndex = 0; yearIndex < numberOfYears; yearIndex++)
         {
-            int currentYear = startYear + yearIndex;
-            int incomeIndex = currentYear - income.StartYear;
-            int costIndex = currentYear - total.StartYear;
+            var currentYear = startYear + yearIndex;
+            var incomeIndex = currentYear - income.StartYear;
+            var costIndex = currentYear - totalCost.StartYear;
 
-            double incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
-            double costValue = (costIndex >= 0 && costIndex < total.Values.Length) ? total.Values[costIndex] : 0;
+            var incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
+            var costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
 
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }

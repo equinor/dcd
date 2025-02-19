@@ -68,15 +68,6 @@ const Overview = () => {
         setIsCreateRevisionModalOpen,
     } = useProjectContext()
 
-    const {
-        apiQueue,
-        setIsSaving,
-    } = useAppStore()
-
-    const {
-        processQueue,
-    } = useEditCase()
-
     const { featuresModalIsOpen } = useModalContext()
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -89,29 +80,6 @@ const Overview = () => {
         queryFn: () => peopleQueryFn(projectId),
         enabled: !!projectId,
     })
-
-    useEffect(() => {
-        let timer: NodeJS.Timeout | undefined
-        if (apiQueue.length > 0) {
-            setIsSaving(true)
-
-            if (timer) {
-                clearTimeout(timer)
-            }
-
-            timer = setTimeout(() => {
-                processQueue()
-            }, 3000)
-        } else {
-            setIsSaving(false)
-        }
-
-        return () => {
-            if (timer) {
-                clearTimeout(timer)
-            }
-        }
-    }, [apiQueue])
 
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)

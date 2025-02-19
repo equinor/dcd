@@ -12,27 +12,6 @@ const Maturity: React.FC<props> = ({ surfData }) => {
         2: "C",
         3: "D",
     }
-    /*
-    const addMaturityEdit = (e: any) => {
-        const newValue = Number(e.newResourceObject.maturity)
-        const previousResourceObject = structuredClone(surfData)
-        const newResourceObject: Components.Schemas.SurfDto = structuredClone(surfData)
-        newResourceObject.maturity = newValue as Components.Schemas.Maturity
-
-        addEdit({
-            newDisplayValue: newValue,
-            previousDisplayValue: previousResourceObject.maturity,
-            newResourceObject,
-            previousResourceObject,
-            inputLabel: "Maturity",
-            projectId,
-            resourceName: "surf",
-            resourcePropertyKey: "maturity",
-            resourceId: surfData.id,
-            caseId,
-        })
-    }
-        */
 
     return (
         <SwitchableDropdownInput
