@@ -31,15 +31,15 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         GridChartsModule,
         ExcelExportModule,
     ])
-
-    // if (agGridLicenseKey && agGridLicenseKey.length > 0) {
-    //     enableAgGrid(configurator, {
-    //         licenseKey: agGridLicenseKey || "",
-    //     })
-    // } else {
-    //     enableAgGrid(configurator)
-    // }
-
+/*
+    if (agGridLicenseKey && agGridLicenseKey.length > 0) {
+        enableAgGrid(configurator, {
+            licenseKey: agGridLicenseKey || "",
+        })
+    } else {
+        enableAgGrid(configurator)
+    }
+*/
     enableAgGrid(configurator)
 
     configurator.useFrameworkServiceClient("portal")

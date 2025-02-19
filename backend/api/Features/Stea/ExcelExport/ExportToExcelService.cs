@@ -81,7 +81,7 @@ public static class ExportToExcelService
         return businessCases;
     }
 
-    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeriesCostDto e, int projectStartYear, double factor)
+    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeries e, int projectStartYear, double factor)
     {
         columnCount += e.StartYear - projectStartYear;
         columnCount++;
@@ -93,7 +93,7 @@ public static class ExportToExcelService
         }
     }
 
-    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeriesCostDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeries e, int rowCount, double factor)
     {
         var tableCells = new List<ExcelTableCell>();
         var columnCount = 1;
@@ -139,9 +139,9 @@ public static class ExportToExcelService
         return rv;
     }
 
-    private static TimeSeriesCostDto DivideTimeSeriesValuesByFactor(TimeSeriesCostDto timeSeries, double factor)
+    private static TimeSeries DivideTimeSeriesValuesByFactor(TimeSeries timeSeries, double factor)
     {
-        return new TimeSeriesCostDto
+        return new TimeSeries
         {
             StartYear = timeSeries.StartYear,
             Values = timeSeries.Values.Select(v => v / factor).ToArray()

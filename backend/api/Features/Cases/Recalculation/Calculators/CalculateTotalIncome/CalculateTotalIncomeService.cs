@@ -14,7 +14,6 @@ public static class CalculateTotalIncomeService
     {
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var oilPrice = caseItem.Project.OilPriceUSD;
-        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
@@ -24,10 +23,10 @@ public static class CalculateTotalIncomeService
         // Convert oil production from million sm³ to barrels in millions
         var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * BarrelsPerCubicMeter).ToArray();
 
-        var oilIncome = new TimeSeriesCost
+        var oilIncome = new TimeSeries
         {
             StartYear = totalOilProductionInMegaCubics.StartYear,
-            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUsdToNok).ToArray(),
+            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray(),
         };
 
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
@@ -35,10 +34,10 @@ public static class CalculateTotalIncomeService
             caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
         );
 
-        var gasIncome = new TimeSeriesCost
+        var gasIncome = new TimeSeries
         {
             StartYear = totalGasProductionInGigaCubics.StartYear,
-            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray()
+            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / 10).ToArray()
         };
 
         var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, gasIncome);

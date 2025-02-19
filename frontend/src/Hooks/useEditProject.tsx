@@ -12,8 +12,7 @@ export const useProjectEdits = () => {
     };
 
     const projectMutationFn = async ({ projectId, body }: UpdateProjectVariables) => {
-        const projectService = await GetProjectService()
-        const res = await projectService.updateProject(projectId, body)
+        const res = await GetProjectService().updateProject(projectId, body)
         return res
     }
 

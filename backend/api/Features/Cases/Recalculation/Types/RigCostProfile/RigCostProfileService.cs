@@ -46,7 +46,7 @@ public static class RigCostProfileService
         MergeAndSetProfile(caseItem, developmentRigMobDemobList, ProfileTypes.DevelopmentRigMobDemob);
     }
 
-    private static List<TimeSeriesCost> CreateTimeSeriesList(
+    private static List<TimeSeries> CreateTimeSeriesList(
         Case caseItem,
         CampaignType campaignType,
         Func<Campaign, double[]> valueSelector,
@@ -56,7 +56,7 @@ public static class RigCostProfileService
     {
         return caseItem.Campaigns
             .Where(c => c.CampaignType == campaignType)
-            .Select(c => new TimeSeriesCost
+            .Select(c => new TimeSeries
             {
                 Values = valueSelector(c).Select(v => v * costSelector(c)).ToArray(),
                 StartYear = startYearSelector(c)
@@ -64,7 +64,7 @@ public static class RigCostProfileService
             .ToList();
     }
 
-    private static void MergeAndSetProfile(Case caseItem, List<TimeSeriesCost> timeSeriesList, string profileType)
+    private static void MergeAndSetProfile(Case caseItem, List<TimeSeries> timeSeriesList, string profileType)
     {
         var mergedTimeSeries = TimeSeriesMerger.MergeTimeSeries(timeSeriesList);
         var profile = caseItem.CreateProfileIfNotExists(profileType);

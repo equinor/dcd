@@ -106,10 +106,9 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     }
 
     const updateRevisionName = async () => {
-        const projectService = await GetProjectService()
         const { revisionName, mdqc, arena } = revisionDetails
         const updateRevisionDto = { name: revisionName, mdqc, arena }
-        const updatedRevision = await projectService.updateRevision(
+        const updatedRevision = await GetProjectService().updateRevision(
             projectId,
             revisionId ?? "",
             updateRevisionDto,

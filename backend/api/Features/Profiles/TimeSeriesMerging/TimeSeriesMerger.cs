@@ -4,14 +4,53 @@ namespace api.Features.Profiles.TimeSeriesMerging;
 
 public static class TimeSeriesMerger
 {
-    public static TimeSeriesCost MergeTimeSeries(params List<TimeSeriesCost> timeSeriesItems)
+    public static void AddValues(TimeSeries target, TimeSeries timeSeries)
+    {
+        if (timeSeries.Values.Length == 0)
+        {
+            return;
+        }
+
+        if (target.Values.Length == 0)
+        {
+            target.Values = timeSeries.Values;
+            target.StartYear = timeSeries.StartYear;
+            return;
+        }
+
+        var newEndYear = target.StartYear + target.Values.Length > timeSeries.StartYear + timeSeries.Values.Length
+            ? target.StartYear + target.Values.Length
+            : timeSeries.StartYear + timeSeries.Values.Length;
+
+        var newStartYear = target.StartYear < timeSeries.StartYear
+            ? target.StartYear
+            : timeSeries.StartYear;
+
+        var newLength = newEndYear - newStartYear;
+        var values = new double[newLength];
+
+        for (var i = 0; i < target.Values.Length; i++)
+        {
+            values[target.StartYear - newStartYear + i] += target.Values[i];
+        }
+
+        for (var i = 0; i < timeSeries.Values.Length; i++)
+        {
+            values[timeSeries.StartYear - newStartYear + i] += timeSeries.Values[i];
+        }
+
+        target.Values = values;
+        target.StartYear = newStartYear;
+    }
+
+    public static TimeSeries MergeTimeSeries(params List<TimeSeries> timeSeriesItems)
     {
         if (timeSeriesItems.Count == 0)
         {
-            return new TimeSeriesCost();
+            return new TimeSeries();
         }
 
-        var mergedTimeSeries = new TimeSeriesCost();
+        var mergedTimeSeries = new TimeSeries();
 
         foreach (var ts in timeSeriesItems)
         {
@@ -21,7 +60,7 @@ public static class TimeSeriesMerger
         return mergedTimeSeries;
     }
 
-    private static TimeSeriesCost MergeTwoTimeSeries(TimeSeriesCost t1, TimeSeriesCost t2)
+    private static TimeSeries MergeTwoTimeSeries(TimeSeries t1, TimeSeries t2)
     {
         var t1Year = t1.StartYear;
         var t2Year = t2.StartYear;
@@ -32,7 +71,7 @@ public static class TimeSeriesMerger
         {
             if (t2.Values.Length == 0)
             {
-                return new TimeSeriesCost();
+                return new TimeSeries();
             }
 
             return t2;
@@ -51,7 +90,7 @@ public static class TimeSeriesMerger
             ? MergeTimeSeriesData(t1Values.ToList(), t2Values.ToList(), offset)
             : MergeTimeSeriesData(t2Values.ToList(), t1Values.ToList(), offset);
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = Math.Min(t1Year, t2Year),
             Values = values.ToArray()

@@ -105,7 +105,6 @@ const CaseSummaryTab = () => {
                 }
 
                 const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
-                    id: "developmentRigUpgradingAndMobDemob",
                     startYear: minStartYear,
                     name: "Development Rig Upgrading and Mob/Demob Costs",
                     values: [sumOfRigAndMobDemob],
@@ -273,7 +272,7 @@ const CaseSummaryTab = () => {
                 newOpexTimeSeriesData,
             ])
         }
-    }, [apiData, revisionAndProjectData])
+    }, [tableYears])
 
     const caseData = apiData?.case
 

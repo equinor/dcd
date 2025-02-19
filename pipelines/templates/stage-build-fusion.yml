@@ -13,7 +13,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-                versionSpec: "18.x"
+                versionSpec: "20.x"
 
           - task: Npm@1
             displayName: "NPM Install"
@@ -29,7 +29,6 @@ stages:
               frontendVersion="$majorMinorVersion.$buildId"
               sed -i 's/"version": "'$currentVersion'"/"version": "'$frontendVersion'"/' frontend/package.json
             displayName: "Update version in package.json"
-            name: "UpdateVersion"
 
           - task: Npm@1
             displayName: "Build frontend"

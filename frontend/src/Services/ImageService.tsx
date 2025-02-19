@@ -1,5 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 const projectUrl = (projectId: string) => `projects/${projectId}/images`
 const caseUrl = (projectId: string, caseId: string) => `projects/${projectId}/cases/${caseId}/images`
@@ -66,6 +65,4 @@ export class ImageService extends __BaseService {
     }
 }
 
-export const getImageService = async () => new ImageService({
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const getImageService = () => new ImageService()

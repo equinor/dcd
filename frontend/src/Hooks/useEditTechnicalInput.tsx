@@ -24,20 +24,17 @@ export const useTechnicalInputEdits = () => {
     const { setSnackBarMessage, setIsSaving } = useAppStore()
 
     const technicalInputMutationFn = async ({ projectId, body }: UpdateTechnicalInputVariables) => {
-        const technicalInputService = await GetTechnicalInputService()
-        const res = await technicalInputService.updateWells(projectId, body)
+        const res = await GetTechnicalInputService().updateWells(projectId, body)
         return res
     }
 
     const ExplorationWellCostMutationFn = async ({ projectId, explorationOperationalWellCostsId, body }: UpdateExplorationWellCostVariables) => {
-        const technicalInputService = await GetTechnicalInputService()
-        const res = await technicalInputService.updateExplorationOperationalWellCosts(projectId, explorationOperationalWellCostsId, body)
+        const res = await GetTechnicalInputService().updateExplorationOperationalWellCosts(projectId, explorationOperationalWellCostsId, body)
         return res
     }
 
     const DevelopmentWellCostMutationFn = async ({ projectId, developmentOperationalWellCostsId, body }: UpdateDevelopmentWellCostVariables) => {
-        const technicalInputService = await GetTechnicalInputService()
-        const res = await technicalInputService.updateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, body)
+        const res = await GetTechnicalInputService().updateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, body)
         return res
     }
 

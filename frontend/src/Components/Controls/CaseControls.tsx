@@ -131,7 +131,7 @@ const CaseControls: React.FC<props> = ({
             } else {
                 newProject.referenceCaseId = referenceCaseId ?? ""
             }
-            const updateProject = await (await GetProjectService()).updateProject(projectId, newProject)
+            const updateProject = await GetProjectService().updateProject(projectId, newProject)
             if (updateProject) {
                 addProjectEdit(updateProject.projectId, updateProject.commonProjectAndRevisionData)
             }

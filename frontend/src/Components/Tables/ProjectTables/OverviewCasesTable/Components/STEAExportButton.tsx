@@ -23,8 +23,8 @@ export const STEAExportButton = ({ projectOrRevisionId, setShowRevisionReminder 
         try {
             setShowRevisionReminder(true)
             const unwrappedProjectId = unwrapProjectId(projectOrRevisionId)
-            const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
-            await (await GetSTEAService()).excelToSTEA(projectResult)
+            const projectResult = await GetProjectService().getProject(unwrappedProjectId)
+            await GetSTEAService().excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] Error while exporting to STEA", error)
         }

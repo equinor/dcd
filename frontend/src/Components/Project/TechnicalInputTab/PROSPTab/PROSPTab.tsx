@@ -39,14 +39,14 @@ const PROSPTab = () => {
         }
 
         try {
-            const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl }, revisionAndProjectData.projectId)
+            const result = await GetProspService().getSharePointFileNamesAndId({ url: sharepointUrl }, revisionAndProjectData.projectId)
             setSharePointFiles(result)
             setErrorMessage("")
 
             if (revisionAndProjectData && sharepointUrl !== revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl) {
                 const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
                 newProject.sharepointSiteUrl = sharepointUrl ?? null
-                const projectResult = await (await GetProjectService()).updateProject(revisionAndProjectData.projectId, newProject)
+                const projectResult = await GetProjectService().updateProject(revisionAndProjectData.projectId, newProject)
                 addProjectEdit(revisionAndProjectData.projectId, projectResult.commonProjectAndRevisionData)
                 setSharepointUrl(projectResult.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
             }
@@ -67,7 +67,7 @@ const PROSPTab = () => {
                 setSharepointUrl(revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
                 if (revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl && revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl !== "") {
                     try {
-                        const result = await (await GetProspService())
+                        const result = await GetProspService()
                             .getSharePointFileNamesAndId({ url: revisionAndProjectData.commonProjectAndRevisionData.sharepointSiteUrl }, revisionAndProjectData.projectId)
                         setSharePointFiles(result)
                         setErrorMessage("")
