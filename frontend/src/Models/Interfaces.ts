@@ -85,7 +85,7 @@ export type UpdateEntry = {
 };
 
 export type VersionUpdates = {
-    date: string; // ISO 8601 date string
+    date: string;
     updates: {
         [key in Category]?: UpdateEntry[];
     };

@@ -19,7 +19,7 @@ import {
 } from "@equinor/eds-icons"
 import { versions, whatsNewUpdates } from "@/Utils/whatsNewData"
 import { UpdateEntry } from "@/Models/Interfaces"
-import Logo from "@/Components/Logo"
+import { formatFullDate } from "@/Utils/DateUtils"
 
 const StyledContainer = styled(Container)`
     padding-top: 40px;
@@ -117,6 +117,8 @@ const GridWrapper = styled.div`
     margin-bottom: 96px;
 `
 
+//const
+
 const Feature = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
     <Box mb={4}>
         <FeatureIcon>
@@ -131,7 +133,7 @@ const Feature = ({ icon, title, description }: { icon: React.ReactNode, title: s
     </Box>
 )
 
-const IndexView: React.FC = () => (//<Logo />
+const IndexView: React.FC = () => (
     <StyledContainer maxWidth="lg">
         <ContentWrapper>
             <StyledTitle variant="h1">
@@ -190,7 +192,9 @@ const IndexView: React.FC = () => (//<Logo />
                 <StyledAccordion key={version}>
                     <StyledAccordionSummary expandIcon={<Icon data={chevron_down} />}>
                         <Typography variant="h4">
-                            <strong> Version {version}</strong> {whatsNewUpdates[version].date}
+                             Version {version}
+                            <span style={{ color: "#999" }}> - {formatFullDate(whatsNewUpdates[version].date)}
+                            </span>
                         </Typography>
                     </StyledAccordionSummary>
                     <StyledAccordionDetails>

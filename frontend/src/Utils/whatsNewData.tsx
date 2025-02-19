@@ -3,7 +3,7 @@ import { sortVersions } from "./common"
 
 export const whatsNewUpdates: WhatsNewUpdates = {
     "2.0.0": {
-        date: "2021-06-01",
+        date: "2024-06-24",
         updates: {
             "New Functionalities": [
                 { description: "All input fields Auto-save on change" },
@@ -41,7 +41,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
         },
     },
     "2.1.0": {
-        date: "2021-07-01",
+        date: "2024-09-17",
         updates: {
             "New Functionalities": [
                 { description: "Undo/redo edits" },
@@ -62,7 +62,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
         },
     },
     "2.2.0": {
-        date: "2021-08-01",
+        date: "2024-10-30",
         updates: {
             "New Functionalities": [
                 { description: "Show manual input for facility cost profiles before PROSP import" },
@@ -93,7 +93,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
         },
     },
     "2.2.1": {
-        date: "2021-09-01",
+        date: "2024-11-29",
         updates: {
             "New Functionalities": [
                 { description: "Add, limit or remove access to a project in the new Access Management tab" },
@@ -107,7 +107,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
         },
     },
     "2.3.0": {
-        date: "17-01-2025",
+        date: "2025-01-17",
         updates: {
             "New Functionalities": [
                 { description: "Create project revisions - Snapshots of projects and cases that preserve the state at time of creation" },
@@ -126,7 +126,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
         },
     },
     "2.3.1": {
-        date: "2021-11-01",
+        date: "2025-01-30",
         updates: {
             "New Functionalities": [
                 { description: "Access Management: add, limit or remove access to a project in the new Access Management tab" },
