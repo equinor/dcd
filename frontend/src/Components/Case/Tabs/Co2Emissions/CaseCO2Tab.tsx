@@ -227,8 +227,6 @@ const CaseCO2Tab = () => {
         }
     }, [averageCo2IntensityData, co2DrillingFlaringFuelTotals])
 
-    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0.0000).toFixed(4)))
-
     useEffect(() => {
         setCo2DistributionChartData([
             { profile: "Drilling", value: formatValue(drillingPortion) },
