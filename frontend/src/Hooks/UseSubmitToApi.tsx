@@ -91,7 +91,7 @@ export const useSubmitToApi = () => {
             resourceId,
         }: UpdateResourceParams,
     ) => {
-        const service = getService()
+        const service = await getService()
 
         const serviceMethod = resourceId
             ? service[updateMethodName](projectId, caseId, resourceId, resourceObject)

@@ -1,6 +1,6 @@
 import { __BaseService } from "./__BaseService"
 
-class __DrillingCampaignsService extends __BaseService {
+class DrillingCampaignsService extends __BaseService {
     public async updateCampaign(
         projectId: string,
         caseId: string,
@@ -9,13 +9,12 @@ class __DrillingCampaignsService extends __BaseService {
     ): Promise<void> {
         const updateDto: Components.Schemas.UpdateCampaignDto = {
             rigUpgradingCost: body.rigUpgradingCost,
-            rigUpgradingCostStartYear: body.rigUpgradingProfile.startYear,
-            rigUpgradingCostValues: body.rigUpgradingProfile.values,
+            rigUpgradingCostStartYear: body.rigUpgradingProfile?.startYear,
+            rigUpgradingCostValues: body.rigUpgradingProfile?.values,
             rigMobDemobCost: body.rigMobDemobCost,
-            rigMobDemobCostStartYear: body.rigMobDemobProfile.startYear,
-            rigMobDemobCostValues: body.rigMobDemobProfile.values,
+            rigMobDemobCostStartYear: body.rigMobDemobProfile?.startYear,
+            rigMobDemobCostValues: body.rigMobDemobProfile?.values,
         }
-
         await this.put(
             `projects/${projectId}/cases/${caseId}/campaigns/${campaignId}`,
             { body: updateDto },
@@ -23,4 +22,4 @@ class __DrillingCampaignsService extends __BaseService {
     }
 }
 
-export const GetDrillingCampaignsService = async () => new __DrillingCampaignsService()
+export const GetDrillingCampaignsService = async () => new DrillingCampaignsService()
