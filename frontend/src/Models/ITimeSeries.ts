@@ -34,7 +34,7 @@ export interface ITimeSeriesTableData {
     overridable: boolean
     resourceId: string
     resourcePropertyKey: string
-    resourceName: ProfileTypes
+    resourceName: ProfileTypes | "campaign"
     editable: boolean
     total?: string
     hideIfEmpty?: boolean

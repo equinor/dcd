@@ -1,4 +1,4 @@
-import { ProfileTypes } from "./enums"
+import { ProfileTypes } from "@/Models/enums"
 
 export type ResourceName =
     "case" |
@@ -11,6 +11,7 @@ export type ResourceName =
     "fuelFlaringAndLossesOverride" |
     "wellProject" |
     "exploration" |
+    "campaign" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" |
     `${ProfileTypes}`
@@ -24,6 +25,13 @@ export type ResourceObject =
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.OnshorePowerSupplyDto |
+    Components.Schemas.UpdateCampaignDto |
+    Components.Schemas.CampaignDto |
+    ProfileObject
+
+export type ProfileObject =
+    Components.Schemas.TimeSeriesOverrideDto |
+    Components.Schemas.TimeSeriesDto |
     Components.Schemas.TimeSeriesOverrideDto |
     Components.Schemas.TimeSeriesDto |
     Components.Schemas.SaveTimeSeriesDto |
@@ -39,6 +47,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
+    keyof Components.Schemas.UpdateCampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
     keyof Components.Schemas.TimeSeriesDto;
@@ -53,6 +62,7 @@ export interface EditInstance {
     drillingScheduleId?: string;
     caseId?: string;
     resourceObject: ResourceObject;
+    campaignId?: string;
 }
 
 export interface EditEntry {
@@ -79,7 +89,7 @@ export type UpdateEntry = {
 };
 
 export type WhatsNewUpdates = {
-    [key in Version]: {
-        [category in Category]?: UpdateEntry[]
+    [versionKey in Version]: {
+        [categoryKey in Category]?: UpdateEntry[]
     }
 };

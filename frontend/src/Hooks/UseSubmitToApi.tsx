@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createLogger } from "../Utils/logger"
 
 import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyService"
+import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
 import { GetSubstructureService } from "@/Services/SubstructureService"
 import { GetExplorationService } from "@/Services/ExplorationService"
@@ -11,12 +11,13 @@ import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
 import { GetCaseService } from "@/Services/CaseService"
 import { useAppStore } from "@/Store/AppStore"
+import { createLogger } from "@/Utils/logger"
 import { ResourceObject } from "@/Models/Interfaces"
 import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
-import { ProfileTypes } from "@/Models/enums"
+import { ordinaryTimeSeriesTypes, overrideTimeSeriesTypes } from "@/Utils/TimeseriesTypes"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -73,7 +74,7 @@ export const useSubmitToApi = () => {
             resourceId,
         }: UpdateResourceParams,
     ) => {
-        const service = getService()
+        const service = await getService()
 
         const serviceMethod = resourceId
             ? service[updateMethodName](projectId, caseId, resourceId, resourceObject)
@@ -89,6 +90,8 @@ export const useSubmitToApi = () => {
             return { success: false, error }
         }
     }
+
+    const updateCampaign = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateCampaign", { ...params })
 
     const updateTopside = (params: UpdateResourceParams) => updateResource(GetTopsideService, "updateTopside", { ...params })
 
@@ -196,42 +199,42 @@ export const useSubmitToApi = () => {
             const result = await (async () => {
                 switch (resourceName) {
                 case "case":
-                    return await updateCase({
+                    return updateCase({
                         projectId, caseId, resourceObject,
                     })
 
                 case "topside":
-                    return await updateTopside({
+                    return updateTopside({
                         projectId, caseId, resourceObject,
                     })
 
                 case "surf":
-                    return await updateSurf({
+                    return updateSurf({
                         projectId, caseId, resourceObject,
                     })
 
                 case "substructure":
-                    return await updateSubstructure({
+                    return updateSubstructure({
                         projectId, caseId, resourceObject,
                     })
 
                 case "transport":
-                    return await updateTransport({
+                    return updateTransport({
                         projectId, caseId, resourceObject,
                     })
 
                 case "onshorePowerSupply":
-                    return await updateOnshorePowerSupply({
+                    return updateOnshorePowerSupply({
                         projectId, caseId, resourceObject,
                     })
 
                 case "drainageStrategy":
-                    return await updateDrainageStrategy({
+                    return updateDrainageStrategy({
                         projectId, caseId, resourceObject,
                     })
 
                 case "explorationWellDrillingSchedule":
-                    return await createOrUpdateDrillingSchedule(
+                    return createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
                             resourceId!,
@@ -256,7 +259,7 @@ export const useSubmitToApi = () => {
                     )
 
                 case "developmentWellDrillingSchedule":
-                    return await createOrUpdateDrillingSchedule(
+                    return createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
                             resourceId!,
@@ -279,29 +282,18 @@ export const useSubmitToApi = () => {
                                     resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                                 ),
                     )
+
+                case "campaign":
+                    return updateCampaign({
+                        projectId, caseId, resourceId, resourceObject,
+                    })
+
+                default:
+                    console.log("Resource name not found", resourceName)
                 }
 
-                const ordinaryTimeSeriesTypes = [
-                    ProfileTypes.AdditionalProductionProfileGas,
-                    ProfileTypes.AdditionalOPEXCostProfile,
-                    ProfileTypes.AdditionalProductionProfileOil,
-                    ProfileTypes.CessationOnshoreFacilitiesCostProfile,
-                    ProfileTypes.CountryOfficeCost,
-                    ProfileTypes.HistoricCostCostProfile,
-                    ProfileTypes.DeferredGasProduction,
-                    ProfileTypes.DeferredOilProduction,
-                    ProfileTypes.OnshoreRelatedOPEXCostProfile,
-                    ProfileTypes.ProductionProfileGas,
-                    ProfileTypes.ProductionProfileOil,
-                    ProfileTypes.ProductionProfileWater,
-                    ProfileTypes.ProductionProfileWaterInjection,
-                    ProfileTypes.ProjectSpecificDrillingCostProfile,
-                    ProfileTypes.SeismicAcquisitionAndProcessing,
-                    ProfileTypes.TotalOtherStudiesCostProfile,
-                ]
-
                 if (ordinaryTimeSeriesTypes.find((x) => x === resourceName)) {
-                    return await saveTimeSeriesProfile({
+                    return saveTimeSeriesProfile({
                         projectId,
                         caseId,
                         saveFunction: await GetCaseService().saveProfile(
@@ -312,31 +304,8 @@ export const useSubmitToApi = () => {
                     })
                 }
 
-                const overrideTimeSeriesTypes = [
-                    ProfileTypes.CessationOffshoreFacilitiesCostOverride,
-                    ProfileTypes.CessationWellsCostOverride,
-                    ProfileTypes.Co2EmissionsOverride,
-                    ProfileTypes.GAndGAdminCostOverride,
-                    ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
-                    ProfileTypes.OnshorePowerSupplyCostProfileOverride,
-                    ProfileTypes.FuelFlaringAndLossesOverride,
-                    ProfileTypes.ImportedElectricityOverride,
-                    ProfileTypes.NetSalesGasOverride,
-                    ProfileTypes.SubstructureCostProfileOverride,
-                    ProfileTypes.SurfCostProfileOverride,
-                    ProfileTypes.TopsideCostProfileOverride,
-                    ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
-                    ProfileTypes.TotalFEEDStudiesOverride,
-                    ProfileTypes.TransportCostProfileOverride,
-                    ProfileTypes.WellInterventionCostProfileOverride,
-                    ProfileTypes.GasInjectorCostProfileOverride,
-                    ProfileTypes.GasProducerCostProfileOverride,
-                    ProfileTypes.OilProducerCostProfileOverride,
-                    ProfileTypes.WaterInjectorCostProfileOverride,
-                ]
-
                 if (overrideTimeSeriesTypes.find((x) => x === resourceName)) {
-                    return await saveTimeSeriesProfile({
+                    return saveTimeSeriesProfile({
                         projectId,
                         caseId,
                         saveFunction: await GetCaseService().saveOverrideProfile(
