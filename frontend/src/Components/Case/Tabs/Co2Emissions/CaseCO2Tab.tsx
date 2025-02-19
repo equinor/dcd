@@ -164,7 +164,7 @@ const CaseCO2Tab = () => {
         setTableYears([startYear, endYear])
     }
 
-    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0.0000).toFixed(4)))
+    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
 
     const co2EmissionsChartData = () => {
         const dataArray = []
