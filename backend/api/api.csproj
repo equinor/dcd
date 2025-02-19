@@ -6,6 +6,11 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>$(NoWarn);CS8524</NoWarn>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
