@@ -27,7 +27,7 @@ public static class CalculateTotalIncomeService
         var oilIncome = new TimeSeries
         {
             StartYear = totalOilProductionInMegaCubics.StartYear,
-            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUsdToNok).ToArray(),
+            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray(),
         };
 
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
@@ -38,7 +38,7 @@ public static class CalculateTotalIncomeService
         var gasIncome = new TimeSeries
         {
             StartYear = totalGasProductionInGigaCubics.StartYear,
-            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray()
+            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / 10).ToArray()
         };
 
         var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, gasIncome);
