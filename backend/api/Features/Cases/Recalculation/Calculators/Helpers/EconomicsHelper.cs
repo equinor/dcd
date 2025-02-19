@@ -16,7 +16,7 @@ public static class EconomicsHelper
         {
             var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
 
-            if (discountFactorIndex < 0 || discountFactorIndex >= values.Length)
+            if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
             {
                 continue;
             }
