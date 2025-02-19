@@ -8,7 +8,7 @@ export const deleteCase = async (
     addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ): Promise<boolean> => {
     try {
-        const newProject = await (await GetCaseService()).deleteCase(projectId, caseId)
+        const newProject = await GetCaseService().deleteCase(projectId, caseId)
         addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
         return true
     } catch (error) {
@@ -23,7 +23,7 @@ export const duplicateCase = async (
     addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ): Promise<boolean> => {
     try {
-        const newProject = await (await GetCaseService()).duplicateCase(projectId, caseId)
+        const newProject = await GetCaseService().duplicateCase(projectId, caseId)
         addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
         return true
     } catch (error) {
@@ -44,7 +44,7 @@ export const setCaseAsReference = async (
         } else {
             projectDto.referenceCaseId = caseId ?? ""
         }
-        const newProject = await (await GetProjectService()).updateProject(project.projectId, projectDto)
+        const newProject = await GetProjectService().updateProject(project.projectId, projectDto)
         addProjectEdit(project.projectId, newProject.commonProjectAndRevisionData)
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)

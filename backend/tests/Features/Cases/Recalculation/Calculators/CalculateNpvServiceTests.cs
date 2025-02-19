@@ -28,26 +28,27 @@ public class CalculateNpvServiceTests
             Project = project,
             DG4Date = new DateTime(2030, 1, 1),
             DrainageStrategyId = Guid.NewGuid(),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = -10,
                     Values = [200.0, 400.0, 100.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,
                     StartYear = -7,
-                    Values = [4717.5,4717.5,4717.5,4717.5, 2358.75,2358.75]
+                    Values = [4717.5, 4717.5, 4717.5, 4717.5, 2358.75, 2358.75]
                 }
-            }
+            ]
         };
 
         CalculateNpvService.RunCalculation(caseItem);
 
-        var actualNpvValue = 1531.106;
-        Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);
+        var expectedNpvValue = 15311.106;
+        Assert.Equal(expectedNpvValue, caseItem.NPV, precision: 1);
     }
 }

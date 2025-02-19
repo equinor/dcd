@@ -1,6 +1,4 @@
 import { __BaseService } from "./__BaseService"
-import { config } from "./config"
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class CaseService extends __BaseService {
     public async create(
@@ -56,8 +54,8 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         dto: Components.Schemas.SaveTimeSeriesDto,
-    ): Promise<Components.Schemas.TimeSeriesCostDto> {
-        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
+    ): Promise<Components.Schemas.TimeSeriesDto> {
+        const res: Components.Schemas.TimeSeriesDto = await this.post(
             `projects/${projectId}/cases/${caseId}/profiles/save`,
             { body: dto },
         )
@@ -68,8 +66,8 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         dto: Components.Schemas.SaveTimeSeriesOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
+    ): Promise<Components.Schemas.TimeSeriesOverrideDto> {
+        const res: Components.Schemas.TimeSeriesOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/override-profiles/save`,
             { body: dto },
         )
@@ -77,7 +75,4 @@ class CaseService extends __BaseService {
     }
 }
 
-export const GetCaseService = async () => new CaseService({
-    ...config.CaseService,
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetCaseService = () => new CaseService()

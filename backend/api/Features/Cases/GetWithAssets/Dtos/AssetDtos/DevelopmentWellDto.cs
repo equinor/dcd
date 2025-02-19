@@ -9,5 +9,5 @@ public class DevelopmentWellDto
     [Required] public required TimeSeriesScheduleDto DrillingSchedule { get; set; }
     [Required] public required Guid WellProjectId { get; set; }
     [Required] public required Guid WellId { get; set; }
-    [Required] public DateTime UpdatedUtc { get; set; }
+    [Required] public required DateTime UpdatedUtc { get; set; }
 }

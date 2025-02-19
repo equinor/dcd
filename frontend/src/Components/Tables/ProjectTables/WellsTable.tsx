@@ -97,9 +97,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             disabled={!editMode || isEditDisabled}
             onClick={async () => {
                 if (!revisionAndProjectData) { return }
-                const isWellInUse = await (
-                    await GetWellService()
-                ).isWellInUse(revisionAndProjectData.projectId, p.data.id)
+                const isWellInUse = await GetWellService().isWellInUse(revisionAndProjectData.projectId, p.data.id)
 
                 if (isWellInUse) {
                     setWellStagedForDeletion(p)

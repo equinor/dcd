@@ -3,6 +3,8 @@ import styled from "styled-components"
 import { ReferenceCaseIcon } from "./ReferenceCaseIcon"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
+import { useCaseStore } from "@/Store/CaseStore"
+import { caseTabNames } from "@/Utils/constants"
 
 const Wrapper = styled.div`
     justify-content: center;
@@ -25,13 +27,15 @@ export const CaseNameCell = ({
 }: CaseNameCellProps) => {
     const { navigateToCase, navigateToRevisionCase } = useAppNavigation()
     const { setEditMode } = useAppStore()
+    const { activeTabCase } = useCaseStore()
 
     const navigateToSelectedCase = () => {
         setEditMode(false)
+        const currentTab = caseTabNames[activeTabCase]
         if (isRevision && revisionId) {
-            navigateToRevisionCase(revisionId, data.id)
+            navigateToRevisionCase(revisionId, data.id, currentTab)
         } else {
-            navigateToCase(data.id)
+            navigateToCase(data.id, currentTab)
         }
     }
 

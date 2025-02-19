@@ -22,9 +22,6 @@ stages:
     parameters:
       workSpace: $(Pipeline.Workspace)
       buildId: $(Build.BuildId)
-      dt_tenant: $(dynatracePreProdTenantId)
-      dt_password: $(dynatracePreProdToken)
-      dt_url: $(dynatrace_baseurl)
       azAppConfig: $(azureAppConfig)
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
@@ -35,12 +32,10 @@ stages:
         fusionEnvironment: ci
         envshortname: ci
         envfullname: CI
-        portalUrl: $(FusionCIPortalUrl)
+        FusionEnvId: $(FusionAppIdCi)
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        FusionEnvId: $(FusionAppIdCi)
-        FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
@@ -52,12 +47,10 @@ stages:
         fusionEnvironment: fqa
         envshortname: qa
         envfullname: QA
-        portalUrl: $(FusionQAPortalUrl)
+        FusionEnvId: $(FusionAppIdQA)
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        FusionEnvId: $(FusionAppIdQA)
-        FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
@@ -69,12 +62,10 @@ stages:
         fusionEnvironment: fprd
         envshortname: prod
         envfullname: Production
-        portalUrl: $(FusionPRDPortalUrl)
+        FusionEnvId: $(FusionAppIdFPRD)
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
-        FusionEnvId: $(FusionAppIdFPRD)
-        FusionServiceConnection: 'conceptapp-prod'
         ContainerTag: "release"
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)

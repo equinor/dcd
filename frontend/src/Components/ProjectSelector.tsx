@@ -69,7 +69,7 @@ const ProjectSelector = (): JSX.Element => {
             setIsLoading(true)
 
             try {
-                const projectService = await GetProjectService()
+                const projectService = GetProjectService()
                 const results = await projectService.projectExists(currentContext.externalId)
                 setProjectExists(results.projectExists)
                 setNoAccessReason(results.noAccessReason)

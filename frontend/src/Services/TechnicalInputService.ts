@@ -1,9 +1,5 @@
 import { __BaseService } from "./__BaseService"
 
-import { config } from "./config"
-
-import { getToken, loginAccessTokenKey } from "../Utils/common"
-
 class __TechnicalInputService extends __BaseService {
     public async updateWells(projectId: string, body: Components.Schemas.UpdateWellsDto): Promise<Components.Schemas.ProjectDataDto> {
         const res: Components.Schemas.ProjectDataDto = await this.put(`projects/${projectId}/wells`, { body })
@@ -35,12 +31,4 @@ class __TechnicalInputService extends __BaseService {
     }
 }
 
-export const TechnicalInputService = new __TechnicalInputService({
-    ...config.TechnicalInputService,
-    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
-})
-
-export const GetTechnicalInputService = async () => new __TechnicalInputService({
-    ...config.TechnicalInputService,
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetTechnicalInputService = () => new __TechnicalInputService()

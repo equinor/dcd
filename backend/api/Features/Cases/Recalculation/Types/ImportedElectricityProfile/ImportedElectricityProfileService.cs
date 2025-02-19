@@ -26,12 +26,12 @@ public static class ImportedElectricityProfileService
         profile.Values = calculateImportedElectricity.Values;
     }
 
-    private static TimeSeriesCost CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability, TimeSeriesCost totalUseOfPower)
+    private static TimeSeries CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability, TimeSeries totalUseOfPower)
     {
         const int hoursInOneYear = 8766;
         var peakElectricityImportedFromGrid = peakElectricityImported * 1.1;
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = totalUseOfPower.StartYear,
             Values = totalUseOfPower.Values

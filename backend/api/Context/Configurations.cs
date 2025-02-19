@@ -138,7 +138,7 @@ public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
 {
     public void Configure(EntityTypeBuilder<ExceptionLog> builder)
     {
-        builder.HasIndex(x => x.UtcTimestamp);
+        builder.HasIndex(x => x.TimestampUtc);
     }
 }
 

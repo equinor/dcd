@@ -1,5 +1,6 @@
 # Digital Concept Development (DCD)
 
+[![SCM Compliance](https://scm-compliance-api.radix.equinor.com/repos/equinor/dcd/badge)](https://scm-compliance-api.radix.equinor.com/repos/equinor/dcd/badge)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) 
 ![Known Vulnerabilities](https://snyk.io/test/github/equinor/dcd/badge.svg)
 [![Contributors][contributors-shield]][contributors-url]

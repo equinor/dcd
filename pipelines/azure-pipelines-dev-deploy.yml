@@ -16,9 +16,6 @@ stages:
     parameters:
       workSpace: $(Pipeline.Workspace)
       buildId: $(Build.BuildId)
-      dt_tenant: $(dynatrace_tenant)
-      dt_password: $(dynatrace-prod-token)
-      dt_url: $(dynatrace_baseurl)
       azAppConfig: $(azureAppConfig)
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"

@@ -1,7 +1,4 @@
-import { config } from "./config"
 import { __BaseService } from "./__BaseService"
-
-import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class CaseGeneratedProfileService extends __BaseService {
     async generateCo2DrillingFlaringFuelTotals(projectId: string, caseId: string): Promise<Components.Schemas.Co2DrillingFlaringFuelTotalsDto> {
@@ -10,7 +7,4 @@ export class CaseGeneratedProfileService extends __BaseService {
     }
 }
 
-export const GetGenerateProfileService = async () => new CaseGeneratedProfileService({
-    ...config.GenerateProfileService,
-    accessToken: await getToken(loginAccessTokenKey)!,
-})
+export const GetGenerateProfileService = () => new CaseGeneratedProfileService()

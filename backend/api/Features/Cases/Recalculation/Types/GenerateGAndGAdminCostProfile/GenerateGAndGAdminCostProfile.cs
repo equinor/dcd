@@ -33,9 +33,9 @@ public static class GenerateGAndGAdminCostProfile
 
             var gAndGAdminCost = caseItem.CreateProfileIfNotExists(ProfileTypes.GAndGAdminCost);
 
-            gAndGAdminCost.StartYear = (int)earliestYear - caseItem.DG4Date.Year;
+            gAndGAdminCost.StartYear = earliestYear - caseItem.DG4Date.Year;
 
-            var years = lastYear.Year - (int)earliestYear;
+            var years = lastYear.Year - earliestYear;
             var values = new List<double>();
 
             for (var i = 0; i < years; i++)

@@ -2,11 +2,11 @@ using api.Models;
 
 namespace api.Features.Profiles.Dtos;
 
-public class TimeSeriesCost
+public class TimeSeries
 {
-    public TimeSeriesCost() { }
+    public TimeSeries() { }
 
-    public TimeSeriesCost(TimeSeriesProfile? timeSeriesProfile)
+    public TimeSeries(TimeSeriesProfile? timeSeriesProfile)
     {
         if (timeSeriesProfile == null)
         {

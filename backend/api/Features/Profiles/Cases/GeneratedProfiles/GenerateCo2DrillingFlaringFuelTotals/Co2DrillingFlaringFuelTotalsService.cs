@@ -1,5 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Exceptions;
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
@@ -27,7 +28,12 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var caseItem = await context.Cases
             .Include(x => x.Project)
             .Include(x => x.Topside)
-            .SingleAsync(x => x.Project.Id == projectPk && x.Id == caseId);
+            .SingleOrDefaultAsync(x => x.Project.Id == projectPk && x.Id == caseId);
+
+        if (caseItem == null)
+        {
+            throw new NotFoundInDbException($"Case with id {caseId} and projectId {projectPk} not found.");
+        }
 
         await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
@@ -54,7 +60,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
 
-        var flaringsProfile = new TimeSeriesCost
+        var flaringsProfile = new TimeSeries
         {
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * caseItem.Project.CO2EmissionsFromFlaredGas).ToArray()
@@ -67,7 +73,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
     {
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
 
-        var fuelConsumptionsProfile = new TimeSeriesCost
+        var fuelConsumptionsProfile = new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray()
@@ -78,11 +84,11 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 
     private static double CalculateDrillingEmissionsTotal(Project project, List<DevelopmentWell> developmentWells)
     {
-        var wellDrillingSchedules = new TimeSeriesCost();
+        var wellDrillingSchedules = new TimeSeries();
 
         foreach (var developmentWell in developmentWells)
         {
-            var timeSeries = new TimeSeriesCost
+            var timeSeries = new TimeSeries
             {
                 StartYear = developmentWell.StartYear,
                 Values = developmentWell.Values.Select(v => (double)v).ToArray()

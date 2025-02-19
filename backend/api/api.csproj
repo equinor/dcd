@@ -39,7 +39,6 @@
         <PackageReference Include="Serilog.Sinks.AzureAnalytics" Version="5.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
-        <PackageReference Include="Serilog.Sinks.Dynatrace" Version="1.0.7" />
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
         <PackageReference Include="ClosedXML" Version="0.104.2" />
         <PackageReference Include="Fusion.Infrastructure.Database" Version="7.0.0" />

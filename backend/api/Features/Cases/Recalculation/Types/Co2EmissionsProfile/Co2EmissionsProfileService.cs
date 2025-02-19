@@ -23,7 +23,7 @@ public static class Co2EmissionsProfileService
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 
-        var newProfile = new TimeSeriesCost
+        var newProfile = new TimeSeries
         {
             StartYear = tempProfile.StartYear,
             Values = convertedValues.ToArray()
@@ -39,46 +39,46 @@ public static class Co2EmissionsProfileService
         co2Emissions.StartYear = totalProfile.StartYear;
     }
 
-    private static TimeSeriesCost GetLossesProfile(Case caseItem)
+    private static TimeSeries GetLossesProfile(Case caseItem)
     {
         var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = losses.StartYear,
             Values = losses.Values.Select(loss => loss * caseItem.Project.CO2Vented).ToArray()
         };
     }
 
-    private static TimeSeriesCost GetFlaringsProfile(Case caseItem)
+    private static TimeSeries GetFlaringsProfile(Case caseItem)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * caseItem.Project.CO2EmissionsFromFlaredGas).ToArray()
         };
     }
 
-    private static TimeSeriesCost GetFuelConsumptionsProfile(Case caseItem)
+    private static TimeSeries GetFuelConsumptionsProfile(Case caseItem)
     {
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray(),
         };
     }
 
-    private static TimeSeriesCost CalculateDrillingEmissions(Project project, List<DevelopmentWell> developmentWells)
+    private static TimeSeries CalculateDrillingEmissions(Project project, List<DevelopmentWell> developmentWells)
     {
-        var wellDrillingSchedules = new TimeSeriesCost();
+        var wellDrillingSchedules = new TimeSeries();
 
         foreach (var developmentWell in developmentWells)
         {
-            var timeSeries = new TimeSeriesCost
+            var timeSeries = new TimeSeries
             {
                 StartYear = developmentWell.StartYear,
                 Values = developmentWell.Values.Select(v => (double)v).ToArray()
@@ -87,7 +87,7 @@ public static class Co2EmissionsProfileService
             wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
         }
 
-        return new TimeSeriesCost
+        return new TimeSeries
         {
             StartYear = wellDrillingSchedules.StartYear,
             Values = wellDrillingSchedules.Values

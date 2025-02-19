@@ -1,5 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Profiles.Dtos;
+using api.Features.Cases.GetWithAssets.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +9,7 @@ public class SaveProfileController(SaveProfileService saveProfileService) : Cont
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/profiles/save")]
-    public async Task<TimeSeriesCostDto> SaveProfile(
+    public async Task<TimeSeriesDto> SaveProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromBody] SaveTimeSeriesDto dto)
@@ -21,7 +21,7 @@ public class SaveProfileController(SaveProfileService saveProfileService) : Cont
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/override-profiles/save")]
-    public async Task<TimeSeriesCostOverrideDto> SaveOverrideProfile(
+    public async Task<TimeSeriesOverrideDto> SaveOverrideProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromBody] SaveTimeSeriesOverrideDto dto)

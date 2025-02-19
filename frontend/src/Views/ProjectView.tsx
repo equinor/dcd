@@ -7,7 +7,6 @@ import TechnicalInputTab from "@/Components/Project/TechnicalInputTab/TechnicalI
 import ProjectOverviewTab from "@/Components/Project/ProjectOverviewTab"
 import ProjectSettingsTab from "@/Components/Project/ProjectSettingsTab"
 import AccessManagementTab from "@/Components/Project/AccessManagementTab"
-// import EditHistoryOverviewTab from "@/Components/Project/EditHistoryOverviewTab"
 import ProjectCompareCasesTab from "@/Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { projectTabNames } from "@/Utils/constants"

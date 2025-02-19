@@ -150,7 +150,6 @@ public class Co2EmissionProfileServiceTests
                     StartYear = 2023,
                     Values = [1180000]
                 }
-
             ],
             Topside = new Topside
             {
@@ -198,5 +197,4 @@ public class Co2EmissionProfileServiceTests
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);
         }
     }
-
 }

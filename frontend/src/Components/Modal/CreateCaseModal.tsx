@@ -130,14 +130,14 @@ const CreateCaseModal = () => {
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
 
-                await (await GetCaseService()).updateCase(
+                await GetCaseService().updateCase(
                     revisionAndProjectData.projectId,
                     projectCase.caseId,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
-                await (await GetCaseService()).create(
+                await GetCaseService().create(
                     revisionAndProjectData.projectId,
                     {
                         name: caseName,
