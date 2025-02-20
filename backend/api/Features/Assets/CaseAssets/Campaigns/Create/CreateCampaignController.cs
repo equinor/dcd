@@ -10,10 +10,7 @@ public class CreateCampaignController(CreateCampaignService createCampaignServic
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/campaigns")]
-    public async Task<CampaignDto> CreateCampaign(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] CreateCampaignDto dto)
+    public async Task<CampaignDto> CreateCampaign(Guid projectId, Guid caseId, [FromBody] CreateCampaignDto dto)
     {
         var campaignId = await createCampaignService.CreateCampaign(projectId, caseId, dto);
         return await getCampaignService.Get(projectId, caseId, campaignId);

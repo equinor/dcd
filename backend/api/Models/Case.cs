@@ -68,9 +68,13 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public Guid ExplorationId { get; set; }
     public Exploration Exploration { get; set; } = null!;
 
+    public Guid? OriginalCaseId { get; set; }
+    public Case? OriginalCase { get; set; }
+
     public List<CaseImage> Images { get; set; } = [];
     public List<TimeSeriesProfile> TimeSeriesProfiles { get; set; } = [];
     public List<Campaign> Campaigns { get; set; } = [];
+    public List<Case> RevisionCases { get; set; } = [];
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

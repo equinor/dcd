@@ -10,7 +10,7 @@ public class UpdateDevelopmentOperationalWellCostsController(UpdateDevelopmentOp
 {
     [HttpPut("projects/{projectId:guid}/development-operational-well-costs/{developmentOperationalWellCostsId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<DevelopmentOperationalWellCostsOverviewDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
+    public async Task<DevelopmentOperationalWellCostsOverviewDto> UpdateDevelopmentOperationalWellCosts(Guid projectId, Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
     {
         return await updateDevelopmentOperationalWellCostsService.UpdateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, dto);
     }

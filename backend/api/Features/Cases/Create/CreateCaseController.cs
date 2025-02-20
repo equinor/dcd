@@ -11,7 +11,7 @@ public class CreateCaseController(CreateCaseService createCaseService, GetProjec
 {
     [HttpPost("projects/{projectId:guid}/cases")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ProjectDataDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
+    public async Task<ProjectDataDto> CreateCase(Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
         if (DcdEnvironments.FeatureToggles.RevisionEnabled)
         {

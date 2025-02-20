@@ -11,7 +11,7 @@ public class UpdateWellsController(UpdateWellsService updateWellsService, GetPro
 {
     [HttpPut("projects/{projectId:guid}/wells")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ProjectDataDto> UpdateWells([FromRoute] Guid projectId, [FromBody] UpdateWellsDto dto)
+    public async Task<ProjectDataDto> UpdateWells(Guid projectId, [FromBody] UpdateWellsDto dto)
     {
         await updateWellsService.UpdateWells(projectId, dto);
         return await getProjectDataService.GetProjectData(projectId);
