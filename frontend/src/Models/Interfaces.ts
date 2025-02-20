@@ -53,6 +53,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.UpdateCampaignDto |
+    keyof Components.Schemas.CampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
     keyof Components.Schemas.TimeSeriesDto |
