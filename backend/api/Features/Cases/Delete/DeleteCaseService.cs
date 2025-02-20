@@ -22,15 +22,24 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
             await deleteCaseImageService.DeleteImage(projectPk, caseId, imageId);
         }
 
-        var campaigns = await context.Campaigns
-            .Where(x => x.Case.ProjectId == projectPk)
-            .Where(x => x.CaseId == caseId)
+        var revisionCases = await context.Cases
+            .Where(x => x.OriginalCaseId == caseId)
             .ToListAsync();
+
+        foreach (var revisionCase in revisionCases)
+        {
+            revisionCase.OriginalCaseId = null;
+        }
 
         var caseItem = await context.Cases
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
+
+        var campaigns = await context.Campaigns
+            .Where(x => x.Case.ProjectId == projectPk)
+            .Where(x => x.CaseId == caseId)
+            .ToListAsync();
 
         await context.Cases
             .Include(x => x.WellProject).ThenInclude(x => x.DevelopmentWells)
