@@ -91,7 +91,7 @@ public static class ProjectDuplicator
             },
 
             Wells = wells,
-            Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping)).ToList(),
+            Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping, true)).ToList(),
 
             // Mapped as a separate step later
             Images = [],
@@ -106,10 +106,10 @@ public static class ProjectDuplicator
 
     public static Case DuplicateCase(Case existingCaseItem, Guid projectId, Guid caseId)
     {
-        return DuplicateCase(existingCaseItem, projectId, caseId, null);
+        return DuplicateCase(existingCaseItem, projectId, caseId, null, false);
     }
 
-    private static Case DuplicateCase(Case existingCaseItem, Guid projectId, Guid caseId, Dictionary<Guid, Guid>? wellIdMapping)
+    private static Case DuplicateCase(Case existingCaseItem, Guid projectId, Guid caseId, Dictionary<Guid, Guid>? wellIdMapping, bool linkToOriginalCase)
     {
         var drainageStrategyId = Guid.NewGuid();
         var surfId = Guid.NewGuid();
@@ -155,6 +155,7 @@ public static class ProjectDuplicator
             BreakEven = existingCaseItem.BreakEven,
             BreakEvenOverride = existingCaseItem.BreakEvenOverride,
             Host = existingCaseItem.Host,
+            OriginalCaseId = linkToOriginalCase ? existingCaseItem.Id : null,
 
             DrainageStrategyId = drainageStrategyId,
             DrainageStrategy = new DrainageStrategy
