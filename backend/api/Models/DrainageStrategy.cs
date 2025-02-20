@@ -12,6 +12,7 @@ public class DrainageStrategy : IChangeTrackable, IDateTrackedEntity
 
     public required string Description { get; set; }
     public required double NGLYield { get; set; }
+    public required double GasShrinkageFactor { get; set; }
     public required int ProducerCount { get; set; }
     public required int GasInjectorCount { get; set; }
     public required int WaterInjectorCount { get; set; }

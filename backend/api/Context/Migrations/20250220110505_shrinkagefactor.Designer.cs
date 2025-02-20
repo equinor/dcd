@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250220110505_shrinkagefactor")]
+    partial class shrinkagefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,9 +171,6 @@ namespace api.Migrations
                     b.Property<Guid>("OnshorePowerSupplyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OriginalCaseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProducerCount")
                         .HasColumnType("int");
 
@@ -220,8 +220,6 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OriginalCaseId");
 
                     b.HasIndex("ProjectId");
 
@@ -1481,18 +1479,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Case", b =>
                 {
-                    b.HasOne("api.Models.Case", "OriginalCase")
-                        .WithMany("RevisionCases")
-                        .HasForeignKey("OriginalCaseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("api.Models.Project", "Project")
                         .WithMany("Cases")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("OriginalCase");
 
                     b.Navigation("Project");
                 });
@@ -1758,8 +1749,6 @@ namespace api.Migrations
 
                     b.Navigation("OnshorePowerSupply")
                         .IsRequired();
-
-                    b.Navigation("RevisionCases");
 
                     b.Navigation("Substructure")
                         .IsRequired();
