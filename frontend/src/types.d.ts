@@ -488,9 +488,6 @@ declare namespace Components {
             rigMobDemobCostStartYear: number; // int32
             rigMobDemobCostValues: number /* double */[];
         }
-        export interface UpdateCampaignWellsDto {
-            campaignWells: SaveCampaignWellDto[];
-        }
         export interface UpdateCaseDto {
             name: string;
             description: string;
@@ -532,17 +529,13 @@ declare namespace Components {
             pluggingAndAbandonment: number; // double
         }
         export interface UpdateDrainageStrategyDto {
-            nglYield?: number; // double
-            gasShrinkageFactor?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            artificialLift?: ArtificialLift /* int32 */;
-            gasSolution?: GasSolution /* int32 */;
-        }
-        export interface UpdateExplorationDto {
-            rigMobDemob?: number; // double
-            currency?: Currency /* int32 */;
+            nglYield: number; // double
+            gasShrinkageFactor: number; // double
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            artificialLift: ArtificialLift /* int32 */;
+            gasSolution: GasSolution /* int32 */;
         }
         export interface UpdateExplorationOperationalWellCostsDto {
             explorationRigUpgrading: number; // double
@@ -880,7 +873,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 campaignId: Parameters.CampaignId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCampaignWellsDto;
+            export type RequestBody = Components.Schemas.SaveCampaignWellDto[];
             namespace Responses {
                 export interface $200 {
                 }
