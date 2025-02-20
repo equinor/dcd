@@ -8,10 +8,7 @@ public class UpdateSurfController(UpdateSurfService updateSurfService) : Control
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/surf")]
-    public async Task<NoContentResult> UpdateSurf(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] UpdateSurfDto dto)
+    public async Task<NoContentResult> UpdateSurf(Guid projectId, Guid caseId, [FromBody] UpdateSurfDto dto)
     {
         await updateSurfService.UpdateSurf(projectId, caseId, dto);
         return NoContent();

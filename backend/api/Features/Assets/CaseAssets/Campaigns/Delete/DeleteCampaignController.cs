@@ -8,10 +8,7 @@ public class DeleteCampaignController(DeleteCampaignService deleteCampaignServic
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpDelete("projects/{projectId:guid}/cases/{caseId:guid}/campaigns/{campaignId:guid}")]
-    public async Task<NoContentResult> DeleteCampaign(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid campaignId)
+    public async Task<NoContentResult> DeleteCampaign(Guid projectId, Guid caseId, Guid campaignId)
     {
         await deleteCampaignService.DeleteCampaign(projectId, caseId, campaignId);
         return NoContent();

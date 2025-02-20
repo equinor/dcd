@@ -10,7 +10,7 @@ public class DeleteCaseController(DeleteCaseService deleteCaseService, GetProjec
 {
     [HttpDelete("projects/{projectId:guid}/cases/{caseId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ProjectDataDto> DeleteCase([FromRoute] Guid projectId, [FromRoute] Guid caseId)
+    public async Task<ProjectDataDto> DeleteCase(Guid projectId, Guid caseId)
     {
         await deleteCaseService.DeleteCase(projectId, caseId);
 

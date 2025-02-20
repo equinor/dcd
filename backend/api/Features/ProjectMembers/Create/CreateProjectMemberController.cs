@@ -9,7 +9,7 @@ public class CreateProjectMemberController(CreateProjectMemberService createProj
 {
     [HttpPost("projects/{projectId:guid}/members")]
     [AuthorizeActionType(ActionType.EditProjectMembers)]
-    public async Task<ProjectMemberDto> CreateProjectMember([FromRoute] Guid projectId, [FromBody] CreateProjectMemberDto createProjectMemberDto)
+    public async Task<ProjectMemberDto> CreateProjectMember(Guid projectId, [FromBody] CreateProjectMemberDto createProjectMemberDto)
     {
         var projectMemberId = await createProjectMemberService.CreateProjectMember(projectId, createProjectMemberDto);
 

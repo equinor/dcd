@@ -8,10 +8,7 @@ public class UpdateOnshorePowerSupplyController(UpdateOnshorePowerSupplyService 
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/onshore-power-supply")]
-    public async Task<NoContentResult> UpdateOnshorePowerSupply(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] UpdateOnshorePowerSupplyDto dto)
+    public async Task<NoContentResult> UpdateOnshorePowerSupply(Guid projectId, Guid caseId, [FromBody] UpdateOnshorePowerSupplyDto dto)
     {
         await updateOnshorePowerSupplyService.UpdateOnshorePowerSupply(projectId, caseId, dto);
         return NoContent();

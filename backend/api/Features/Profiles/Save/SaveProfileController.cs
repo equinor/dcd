@@ -9,10 +9,7 @@ public class SaveProfileController(SaveProfileService saveProfileService) : Cont
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/profiles/save")]
-    public async Task<TimeSeriesDto> SaveProfile(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] SaveTimeSeriesDto dto)
+    public async Task<TimeSeriesDto> SaveProfile(Guid projectId, Guid caseId, [FromBody] SaveTimeSeriesDto dto)
     {
         SaveProfileDtoValidator.Validate(dto);
 
@@ -21,10 +18,7 @@ public class SaveProfileController(SaveProfileService saveProfileService) : Cont
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/override-profiles/save")]
-    public async Task<TimeSeriesOverrideDto> SaveOverrideProfile(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] SaveTimeSeriesOverrideDto dto)
+    public async Task<TimeSeriesOverrideDto> SaveOverrideProfile(Guid projectId, Guid caseId, [FromBody] SaveTimeSeriesOverrideDto dto)
     {
         SaveProfileDtoValidator.Validate(dto);
 
@@ -33,10 +27,7 @@ public class SaveProfileController(SaveProfileService saveProfileService) : Cont
 
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/profiles/save-batch")]
-    public async Task<NoContentResult> SaveProfiles(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] SaveTimeSeriesListDto dto)
+    public async Task<NoContentResult> SaveProfiles(Guid projectId, Guid caseId, [FromBody] SaveTimeSeriesListDto dto)
     {
         SaveProfileDtoValidator.Validate(dto);
 

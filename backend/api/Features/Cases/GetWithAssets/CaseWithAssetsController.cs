@@ -9,7 +9,7 @@ public class CaseWithAssetsController(CaseWithAssetsService caseWithAssetsServic
 {
     [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/case-with-assets")]
     [AuthorizeActionType(ActionType.Read)]
-    public async Task<CaseWithAssetsDto> GetCaseWithAssets([FromRoute] Guid projectId, [FromRoute] Guid caseId)
+    public async Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId)
     {
         return await caseWithAssetsService.GetCaseWithAssets(projectId, caseId);
     }
