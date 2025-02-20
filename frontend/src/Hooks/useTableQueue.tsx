@@ -2,6 +2,13 @@ import { useState, useCallback, useEffect } from "react"
 import { EditInstance } from "@/Models/Interfaces"
 import { GetCaseService } from "@/Services/CaseService"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
+
+interface UseTableQueueProps {
+    isSaving: boolean
+    addEdit: (edit: EditInstance) => Promise<any>
+    gridRef: any
+}
+
 // Reduces the queue to the latest edit for each resource given the order of the queue and the resourceName
 const reduceToLatestEdits = (queue: EditInstance[]): EditInstance[] => {
     const latestEditsMap = new Map<string, EditInstance>()
@@ -13,15 +20,46 @@ const reduceToLatestEdits = (queue: EditInstance[]): EditInstance[] => {
     return Array.from(latestEditsMap.values())
 }
 
-interface UseTableQueueProps {
-    isSaving: boolean
-    addEdit: (edit: EditInstance) => Promise<any>
-    gridRef: any
+const submitCampaignEdit = async (editQueue: EditInstance[]) => {
+    console.log("this is a campaign resourceKey")
+    console.log("editQueue", editQueue)
+
+    // const result = editQueue.map((edit) => ({
+    //     rigUpgradingCostStartYear: edit.resourceObject.startYear,
+    //     rigUpgradingCostValues: edit.resourceObject.values,
+    //     rigMobDemobCostStartYear: 0,
+    //     rigMobDemobCostValues: [],
+    //     campaignWells: [],
+    // } as Components.Schemas.UpdateCampaignDto))
+    // console.log("result", result)
+    // await GetDrillingCampaignsService().updateCampaign(
+    //     campaignEdit.projectId,
+    //     campaignEdit.caseId!,
+    //     campaignEdit.campaignId!,
+    //     campaignEdit.resourceObject as Components.Schemas.UpdateCampaignDto,
+    // )
+
+    // await GetDrillingCampaignsService().updateCampaign(
+    //     firstEdit.projectId,
+    //     firstEdit.caseId,
+    //     firstEdit.campaignId!,
+    //     {
+    //         rigUpgradingCostStartYear: 0,
+    //         rigUpgradingCostValues: [],
+    //         rigMobDemobCostStartYear: 0,
+    //         rigMobDemobCostValues: [],
+    //         campaignWells: [],
+    //     },
+    // )
+}
+
+const submitCampaignWellsEdit = async (editQueue: EditInstance[]) => {
+    console.log("this is a campaign wells resourceKey")
+    console.log("editQueue", editQueue)
 }
 
 // Separates the queue into timeseries and override entries
-const separateOverrideEntries = (queue: EditInstance[]):
-{
+const separateOverrideEntries = (queue: EditInstance[]): {
     timeseriesEntries: EditInstance[],
     overrideEntries: EditInstance[]
 } => {
@@ -51,54 +89,45 @@ export const useTableQueue = ({ isSaving, addEdit, gridRef }: UseTableQueueProps
 
         const filteredEditQueue = reduceToLatestEdits(editQueue)
         const separatedEntries = separateOverrideEntries(filteredEditQueue)
-        console.log("editQueue", editQueue)
-        console.log("filteredEditQueue", filteredEditQueue)
-        console.log("separatedEntries", separatedEntries)
+        // console.log("editQueue", editQueue)
+        // console.log("filteredEditQueue", filteredEditQueue)
+        // console.log("separatedEntries", separatedEntries)
 
-        const timeSeriesEntries = separatedEntries.timeseriesEntries.map((edit) => {
-            const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesDto | Components.Schemas.SaveTimeSeriesOverrideDto
-            return {
-                profileType: edit.resourceName,
-                startYear: resourceObject.startYear,
-                values: resourceObject.values,
-            }
-        })
+        if (firstEdit.resourcePropertyKey === "rigUpgradingProfile" || firstEdit.resourcePropertyKey === "rigMobDemobProfile") {
+            submitCampaignEdit(editQueue)
+        } else if (firstEdit.resourcePropertyKey === "campaignWells") {
+            submitCampaignWellsEdit(editQueue)
+        } else {
+            const timeSeriesEntries = separatedEntries.timeseriesEntries.map((edit) => {
+                const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesDto | Components.Schemas.SaveTimeSeriesOverrideDto
+                return {
+                    profileType: edit.resourceName,
+                    startYear: resourceObject.startYear,
+                    values: resourceObject.values,
+                }
+            })
 
-        const overrideEntries = separatedEntries.overrideEntries.map((edit) => {
-            const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesOverrideDto
-            return {
-                profileType: edit.resourceName,
-                startYear: resourceObject.startYear,
-                values: resourceObject.values,
-                override: true,
-            }
-        })
+            const overrideEntries = separatedEntries.overrideEntries.map((edit) => {
+                const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesOverrideDto
+                return {
+                    profileType: edit.resourceName,
+                    startYear: resourceObject.startYear,
+                    values: resourceObject.values,
+                    override: true,
+                }
+            })
 
-        await GetCaseService().saveProfiles(
-            firstEdit.projectId,
-            firstEdit.caseId,
-            {
-                timeSeries: timeSeriesEntries,
-                overrideTimeSeries: overrideEntries,
-            },
-        )
-
-        // await GetDrillingCampaignsService().updateCampaign(
-        //     firstEdit.projectId,
-        //     firstEdit.caseId,
-        //     firstEdit.campaignId!,
-        //     {
-        //         rigUpgradingCost: 0,
-        //         rigUpgradingCostStartYear: 0,
-        //         rigUpgradingCostValues: "",
-        //         rigMobDemobCost: 0,
-        //         rigMobDemobCostStartYear: "",
-        //         rigMobDemobCostValues: "",
-        //         campaignWells: [],
-        //     },
-        // )
-        // invalidate case api data
-        setEditQueue([])
+            await GetCaseService().saveProfiles(
+                firstEdit.projectId,
+                firstEdit.caseId,
+                {
+                    timeSeries: timeSeriesEntries,
+                    overrideTimeSeries: overrideEntries,
+                },
+            )
+            // invalidate case api data
+            setEditQueue([])
+        }
     }, [editQueue, isSaving, addEdit])
 
     const addToQueue = useCallback((edit: EditInstance) => {

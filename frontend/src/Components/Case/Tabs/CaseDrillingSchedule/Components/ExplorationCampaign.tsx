@@ -73,7 +73,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 },
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
                 resourceId: campaign.campaignId,
-                resourcePropertyKey: "campaignWell",
+                resourcePropertyKey: "campaignWells",
                 overridable: false,
                 editable: true,
             }
@@ -92,7 +92,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
             <Grid container size={12} spacing={2} style={{ maxWidth: "600px" }}>
-                <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                {/* <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
                         resourceName="campaign"
                         resourcePropertyKey="rigUpgradingCost"
@@ -115,7 +115,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                         unit="MUSD"
                         integer
                     />
-                </Grid>
+                </Grid> */}
             </Grid>
             <Grid size={12} style={{ width: "100%" }}>
                 <div className={styles.root} style={{ width: "100%" }}>

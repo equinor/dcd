@@ -5,20 +5,18 @@ class DrillingCampaignsService extends __BaseService {
         projectId: string,
         caseId: string,
         campaignId: string,
-        body: Components.Schemas.CampaignDto,
+        body: Components.Schemas.UpdateCampaignDto,
     ): Promise<void> {
-        const updateDto: Components.Schemas.UpdateCampaignDto = {
-            // rigUpgradingCost: body.rigUpgradingCost,
-            // rigMobDemobCost: body.rigMobDemobCost,
-            rigUpgradingCostStartYear: body.rigUpgradingProfile?.startYear,
-            rigUpgradingCostValues: body.rigUpgradingProfile?.values,
-            rigMobDemobCostStartYear: body.rigMobDemobProfile?.startYear,
-            rigMobDemobCostValues: body.rigMobDemobProfile?.values,
-            campaignWells: body.campaignWells,
-        }
+        // const updateDto: Components.Schemas.UpdateCampaignDto = {
+        //     rigUpgradingCostStartYear: body.rigUpgradingProfile?.startYear,
+        //     rigUpgradingCostValues: body.rigUpgradingProfile?.values,
+        //     rigMobDemobCostStartYear: body.rigMobDemobProfile?.startYear,
+        //     rigMobDemobCostValues: body.rigMobDemobProfile?.values,
+        //     campaignWells: body.campaignWells,
+        // }
         await this.put(
             `projects/${projectId}/cases/${caseId}/campaigns/${campaignId}`,
-            { body: updateDto },
+            { body },
         )
     }
 }

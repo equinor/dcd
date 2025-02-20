@@ -16,6 +16,11 @@ export type ResourceName =
     "developmentWellDrillingSchedule" |
     `${ProfileTypes}`
 
+export type CampaignResourcePropertyKey =
+    "rigUpgradingProfile" |
+    "rigMobDemobProfile" |
+    "campaignWells"
+
 export type ResourceObject =
     Components.Schemas.TopsideDto |
     Components.Schemas.SurfDto |
