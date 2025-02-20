@@ -230,7 +230,6 @@ const CaseProductionProfilesTab = () => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="drainageStrategy"
                             resourcePropertyKey="nglYield"
                             label="NGL yield"
@@ -242,7 +241,6 @@ const CaseProductionProfilesTab = () => {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            addEdit={addEdit}
                             resourceName="drainageStrategy"
                             resourcePropertyKey="gasShrinkageFactor"
                             label="Gas shrinkage factor"
