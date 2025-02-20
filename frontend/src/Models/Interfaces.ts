@@ -55,7 +55,8 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.UpdateCampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
-    keyof Components.Schemas.TimeSeriesDto;
+    keyof Components.Schemas.TimeSeriesDto |
+    keyof Components.Schemas.CampaignDto
 
 export interface EditInstance {
     uuid: string;

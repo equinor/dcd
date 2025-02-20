@@ -34,7 +34,7 @@ export interface ITimeSeriesTableData {
     overridable: boolean
     resourceId: string
     resourcePropertyKey: string
-    resourceName: ProfileTypes | "campaign"
+    resourceName: ProfileTypes | "rigUpgrading" | "rigMobDemob" | "campaignWells" // todo: generate these from backend
     editable: boolean
     total?: string
     hideIfEmpty?: boolean

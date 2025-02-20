@@ -35,7 +35,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     startYear: campaign.rigMobDemobProfile.startYear,
                     values: campaign.rigMobDemobProfile.values || [],
                 },
-                resourceName: "campaign",
+                resourceName: "rigMobDemob",
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigMobDemobProfile",
                 overridable: false,
@@ -53,7 +53,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     startYear: campaign.rigUpgradingProfile.startYear,
                     values: campaign.rigUpgradingProfile.values || [],
                 },
-                resourceName: "campaign",
+                resourceName: "rigUpgrading",
                 resourceId: campaign.campaignId,
                 resourcePropertyKey: "rigUpgradingProfile",
                 overridable: false,
@@ -64,6 +64,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
 
         // Add wells from campaignWells
         campaign.campaignWells?.forEach((well: Well) => {
+            console.log("well", well)
             const wellRow: ITimeSeriesTableData = {
                 profileName: well.wellName,
                 unit: "Well",
@@ -71,8 +72,8 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     startYear: well.startYear,
                     values: well.values || [],
                 },
-                resourceName: ProfileTypes.ExplorationWellCostProfile,
-                resourceId: campaign.campaignId,
+                resourceName: "campaignWells",
+                resourceId: well.wellId,
                 resourcePropertyKey: "campaignWells",
                 overridable: false,
                 editable: true,

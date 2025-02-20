@@ -85,7 +85,9 @@ const CaseTabTable = memo(({
     sharepointFileId,
 }: Props) => {
     // Hooks and Context
-    const { editMode, setSnackBarMessage, isSaving } = useAppStore()
+    const {
+        setIsSaving, editMode, setSnackBarMessage, isSaving,
+    } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
@@ -102,6 +104,7 @@ const CaseTabTable = memo(({
         isSaving,
         addEdit,
         gridRef,
+        setIsSaving,
     })
 
     // Refs

@@ -19,6 +19,30 @@ class DrillingCampaignsService extends __BaseService {
             { body },
         )
     }
+
+    public async updateCampaignCost(
+        projectId: string,
+        caseId: string,
+        campaignId: string,
+        body: Components.Schemas.UpdateCampaignCostDto,
+    ): Promise<void> {
+        await this.put(
+            `projects/${projectId}/cases/${caseId}/campaigns/${campaignId}/cost`,
+            { body },
+        )
+    }
+
+    public async updateCampaignWells(
+        projectId: string,
+        caseId: string,
+        campaignId: string,
+        body: Components.Schemas.SaveCampaignWellDto[],
+    ): Promise<void> {
+        await this.put(
+            `projects/${projectId}/cases/${caseId}/campaigns/${campaignId}/wells`,
+            { body },
+        )
+    }
 }
 
 export const GetDrillingCampaignsService = () => new DrillingCampaignsService()
