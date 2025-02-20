@@ -228,6 +228,28 @@ const CaseProductionProfilesTab = () => {
                             disabled
                         />
                     </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            resourceName="drainageStrategy"
+                            resourcePropertyKey="nglYield"
+                            label="NGL yield"
+                            value={drainageStrategyData.nglYield}
+                            previousResourceObject={drainageStrategyData}
+                            resourceId={drainageStrategyData.id}
+                            integer
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            resourceName="drainageStrategy"
+                            resourcePropertyKey="gasShrinkageFactor"
+                            label="Gas shrinkage factor"
+                            value={drainageStrategyData.gasShrinkageFactor}
+                            previousResourceObject={drainageStrategyData}
+                            resourceId={drainageStrategyData.id}
+                            integer
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
 
