@@ -94,50 +94,28 @@ const submitCampaignEdit = async (editQueue: EditInstance[], submitToApi: any) =
     }
 }
 
-const submitCampaignWellsEdit = async (editQueue: EditInstance[], submitToApi: any) => {
-    tableQueueLogger.log("Submitting campaign wells edit", { editQueue })
-    const firstEdit = editQueue[0]
-    if (!firstEdit.projectId || !firstEdit.caseId) {
-        tableQueueLogger.warn("Missing required project or case ID", { firstEdit })
-        return
-    }
+const submitCampaignWellsEdits = async (editQueue: EditInstance[], submitToApi: any) => {
+    tableQueueLogger.log("Submitting campaign wells edits", { editQueue })
 
-    // For campaign edits, resourceId should be used as campaignId if campaignId is not present
-    const campaignId = firstEdit.resourceId
-    if (!campaignId) {
-        tableQueueLogger.warn("Missing resourceId for campaign wells", { firstEdit })
-        return
-    }
-
-    console.log("editQueue _______________________", editQueue)
-
-    // Map the well edits to the correct format
-    const wellEdits = editQueue.map((edit) => ({
-        wellId: edit.wellId,
-        startYear: (edit.resourceObject as TimeSeriesResourceObject).startYear,
-        values: (edit.resourceObject as TimeSeriesResourceObject).values,
-    }))
-
-    tableQueueLogger.log("Sending campaign wells update", {
-        projectId: firstEdit.projectId,
-        caseId: firstEdit.caseId,
-        campaignId,
-        wellEdits,
+    const promises = editQueue.map((edit) => {
+        const wellEditObject = {
+            wellId: edit.wellId,
+            startYear: (edit.resourceObject as TimeSeriesResourceObject).startYear,
+            values: (edit.resourceObject as TimeSeriesResourceObject).values,
+        }
+        return submitToApi({
+            projectId: edit.projectId,
+            caseId: edit.caseId,
+            resourceName: edit.resourceName,
+            resourceId: edit.resourceId,
+            resourceObject: wellEditObject,
+        }).catch((error: unknown) => {
+            tableQueueLogger.error("Campaign wells update failed", { error })
+            throw error
+        })
     })
 
-    try {
-        await submitToApi({
-            projectId: firstEdit.projectId,
-            caseId: firstEdit.caseId,
-            resourceName: firstEdit.resourceName,
-            resourceId: campaignId,
-            resourceObject: wellEdits,
-        })
-        tableQueueLogger.log("Campaign wells update successful")
-    } catch (error) {
-        tableQueueLogger.error("Campaign wells update failed", { error })
-        throw error
-    }
+    await Promise.all(promises)
 }
 
 // Separates the queue into timeseries and override entries
@@ -162,7 +140,7 @@ const separateOverrideEntries = (queue: EditInstance[]): {
 }
 
 export const useTableQueue = ({
-    isSaving, setIsSaving, addEdit, gridRef,
+    isSaving, setIsSaving, gridRef,
 }: UseTableQueueProps) => {
     const [editQueue, setEditQueue] = useState<EditInstance[]>([])
     const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
@@ -198,7 +176,7 @@ export const useTableQueue = ({
             if (firstEdit.resourcePropertyKey === "rigUpgradingProfile" || firstEdit.resourcePropertyKey === "rigMobDemobProfile") {
                 await submitCampaignEdit(editQueue, submitToApi)
             } else if (firstEdit.resourcePropertyKey === "campaignWells") {
-                await submitCampaignWellsEdit(editQueue, submitToApi)
+                await submitCampaignWellsEdits(editQueue, submitToApi)
             } else {
                 const filteredEditQueue = reduceToLatestEdits(editQueue)
                 const separatedEntries = separateOverrideEntries(filteredEditQueue)
