@@ -8,7 +8,7 @@ import {
     Well,
 } from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { ProfileTypes } from "@/Models/enums"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
@@ -23,7 +23,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     const { apiData } = useCaseApiData()
     const ExplorationCampaignGridRef = useRef<any>(null)
 
-    const generateRowData = (): ITimeSeriesTableData[] => {
+    const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
 
         // Add rig mob/demob profile row
@@ -64,8 +64,9 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
 
         // Add wells from campaignWells
         campaign.campaignWells?.forEach((well: Well) => {
-            console.log("well", well)
-            const wellRow: ITimeSeriesTableData = {
+            // console.log("well", well)
+            // well.wellId is defined
+            const wellRow: ItimeSeriesTableDataWithWell = {
                 profileName: well.wellName,
                 unit: "Well",
                 profile: {
@@ -73,7 +74,8 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     values: well.values || [],
                 },
                 resourceName: "campaignWells",
-                resourceId: well.wellId,
+                resourceId: campaign.campaignId,
+                wellId: well.wellId,
                 resourcePropertyKey: "campaignWells",
                 overridable: false,
                 editable: true,

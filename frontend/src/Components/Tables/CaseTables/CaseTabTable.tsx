@@ -214,7 +214,10 @@ const CaseTabTable = memo(({
             profileName: event.data.profileName,
             profile: event.data.profile,
             resourceId: event.data.resourceId,
+            wellId: event.data.wellId,
         }
+
+        console.log("event.data", event.data)
 
         const config: ITableCellChangeConfig = {
             dg4Year,

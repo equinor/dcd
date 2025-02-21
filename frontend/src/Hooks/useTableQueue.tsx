@@ -45,7 +45,7 @@ const submitCampaignEdit = async (editQueue: EditInstance[], submitToApi: any) =
     }
 
     // For campaign edits, resourceId should be used as campaignId if campaignId is not present
-    const campaignId = firstEdit.campaignId || firstEdit.resourceId
+    const campaignId = firstEdit.resourceId
     if (!campaignId) {
         tableQueueLogger.warn("Missing both campaignId and resourceId", { firstEdit })
         return
@@ -113,7 +113,7 @@ const submitCampaignWellsEdit = async (editQueue: EditInstance[], submitToApi: a
 
     // Map the well edits to the correct format
     const wellEdits = editQueue.map((edit) => ({
-        wellId: edit.resourceId,
+        wellId: edit.wellId,
         startYear: (edit.resourceObject as TimeSeriesResourceObject).startYear,
         values: (edit.resourceObject as TimeSeriesResourceObject).values,
     }))

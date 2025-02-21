@@ -40,7 +40,11 @@ export interface ITimeSeriesTableData {
     hideIfEmpty?: boolean
 }
 
-export interface ITimeSeriesTableDataWithSet extends ITimeSeriesTableData {
+export interface ItimeSeriesTableDataWithWell extends ITimeSeriesTableData {
+    wellId?: string
+}
+
+export interface ITimeSeriesTableDataWithSet extends ItimeSeriesTableDataWithWell {
     set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
     group?: string
