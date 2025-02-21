@@ -41,7 +41,7 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
 
         foreach (var campaignWellDto in campaignWellDtos)
         {
-            var existingExplorationWell = existingExplorationWells.SingleOrDefault(x => x.Id == campaignWellDto.WellId);
+            var existingExplorationWell = existingExplorationWells.SingleOrDefault(x => x.WellId == campaignWellDto.WellId);
 
             if (existingExplorationWell == null)
             {
@@ -74,7 +74,7 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
 
         foreach (var campaignWellDto in campaignWellDtos)
         {
-            var existingDevelopmentWell = existingDevelopmentWells.SingleOrDefault(x => x.Id == campaignWellDto.WellId);
+            var existingDevelopmentWell = existingDevelopmentWells.SingleOrDefault(x => x.WellId == campaignWellDto.WellId);
 
             if (existingDevelopmentWell == null)
             {
