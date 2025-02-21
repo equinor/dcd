@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaign;
 using api.Features.Profiles;
 using api.Features.Projects.Exists;
 using api.Models.Enums;
@@ -11,6 +12,7 @@ public static class DcdTypescriptGenerator
 {
     private static readonly List<Type> EnumTypes = [
         typeof(ArtificialLift),
+        typeof(CampaignCostType),
         typeof(CampaignType),
         typeof(Concept),
         typeof(Currency),
