@@ -12,11 +12,17 @@ public class UpdateCampaignService(DcdDbContext context, RecalculationService re
     {
         var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
 
-        existingCampaign.RigUpgradingCostStartYear = updateCampaignDto.RigUpgradingCostStartYear;
-        existingCampaign.RigUpgradingCostValues = updateCampaignDto.RigUpgradingCostValues;
-
-        existingCampaign.RigMobDemobCostStartYear = updateCampaignDto.RigMobDemobCostStartYear;
-        existingCampaign.RigMobDemobCostValues = updateCampaignDto.RigMobDemobCostValues;
+        switch (updateCampaignDto.CampaignCostType)
+        {
+            case CampaignCostType.RigUpgrading:
+                existingCampaign.RigUpgradingCostStartYear = updateCampaignDto.StartYear;
+                existingCampaign.RigUpgradingCostValues = updateCampaignDto.Values;
+                break;
+            case CampaignCostType.RigMobDemob:
+                existingCampaign.RigMobDemobCostStartYear = updateCampaignDto.StartYear;
+                existingCampaign.RigMobDemobCostValues = updateCampaignDto.Values;
+                break;
+        }
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

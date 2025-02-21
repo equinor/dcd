@@ -86,6 +86,11 @@ export enum ArtificialLift {
     SubseaBoosterPumps = 3,
 }
 
+export enum CampaignCostType {
+    RigUpgrading = 0,
+    RigMobDemob = 1,
+}
+
 export enum CampaignType {
     DevelopmentCampaign = 1,
     ExplorationCampaign = 2,
