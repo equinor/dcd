@@ -61,36 +61,36 @@ const submitCampaignEdit = async (editQueue: EditInstance[], submitToApi: any) =
         rigUpgradingEdit,
         rigMobDemobEdit,
     })
+    // Handle profile updates
+    const updateRigMobDemobDto = {
+        startYear: (rigMobDemobEdit?.resourceObject as TimeSeriesResourceObject)?.startYear ?? 0,
+        values: (rigMobDemobEdit?.resourceObject as TimeSeriesResourceObject)?.values ?? [],
+    }
 
-    if (rigUpgradingEdit || rigMobDemobEdit) {
-        // Handle profile updates
-        const updateDto = {
-            rigUpgradingCostStartYear: (rigUpgradingEdit?.resourceObject as TimeSeriesResourceObject)?.startYear ?? 0,
-            rigUpgradingCostValues: (rigUpgradingEdit?.resourceObject as TimeSeriesResourceObject)?.values ?? [],
-            rigMobDemobCostStartYear: (rigMobDemobEdit?.resourceObject as TimeSeriesResourceObject)?.startYear ?? 0,
-            rigMobDemobCostValues: (rigMobDemobEdit?.resourceObject as TimeSeriesResourceObject)?.values ?? [],
-        }
+    const updateRigUpgradingDto = {
+        startYear: (rigUpgradingEdit?.resourceObject as TimeSeriesResourceObject)?.startYear ?? 0,
+        values: (rigUpgradingEdit?.resourceObject as TimeSeriesResourceObject)?.values ?? [],
+    }
 
-        tableQueueLogger.log("Sending campaign update", {
+    tableQueueLogger.log("Sending campaign update", {
+        projectId: firstEdit.projectId,
+        caseId: firstEdit.caseId,
+        campaignId,
+        updateDto: rigUpgradingEdit ? updateRigUpgradingDto : updateRigMobDemobDto,
+    })
+
+    try {
+        await submitToApi({
             projectId: firstEdit.projectId,
             caseId: firstEdit.caseId,
-            campaignId,
-            updateDto,
+            resourceName: rigUpgradingEdit ? "rigUpgrading" : "rigMobDemob",
+            resourceId: campaignId,
+            resourceObject: rigUpgradingEdit ? updateRigUpgradingDto : updateRigMobDemobDto,
         })
-
-        try {
-            await submitToApi({
-                projectId: firstEdit.projectId,
-                caseId: firstEdit.caseId,
-                resourceName: rigUpgradingEdit ? "rigUpgrading" : "rigMobDemob",
-                resourceId: campaignId,
-                resourceObject: updateDto,
-            })
-            tableQueueLogger.log("Campaign update successful")
-        } catch (error) {
-            tableQueueLogger.error("Campaign update failed", { error })
-            throw error
-        }
+        tableQueueLogger.log("Campaign update successful")
+    } catch (error) {
+        tableQueueLogger.error("Campaign update failed", { error })
+        throw error
     }
 }
 

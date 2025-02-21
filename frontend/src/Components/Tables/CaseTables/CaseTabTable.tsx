@@ -284,7 +284,6 @@ const CaseTabTable = memo(({
         copyHeadersToClipboard: false,
         stopEditingWhenCellsLoseFocus: true,
         onCellClicked: handleCellClicked,
-        rowSelection: "single" as const,
         context: {
             setSelectedRow,
             setIsSidesheetOpen,

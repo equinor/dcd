@@ -1,6 +1,7 @@
 declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export type CampaignCostType = 0 | 1; // int32
         export interface CampaignDto {
             campaignId: string; // uuid
             campaignType: CampaignType /* int32 */;
@@ -483,10 +484,9 @@ declare namespace Components {
             rigMobDemobCost: number; // double
         }
         export interface UpdateCampaignDto {
-            rigUpgradingCostStartYear: number; // int32
-            rigUpgradingCostValues: number /* double */[];
-            rigMobDemobCostStartYear: number; // int32
-            rigMobDemobCostValues: number /* double */[];
+            campaignCostType: CampaignCostType /* int32 */;
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface UpdateCaseDto {
             name: string;

@@ -288,12 +288,18 @@ export const useSubmitToApi = () => {
 
                 case "rigUpgrading":
                     return updateCampaign({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId,
+                        caseId,
+                        resourceId,
+                        resourceObject: { ...resourceObject, campaignCostType: 0 as Components.Schemas.CampaignCostType },
                     })
 
                 case "rigMobDemob":
                     return updateCampaign({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId,
+                        caseId,
+                        resourceId,
+                        resourceObject: { ...resourceObject, campaignCostType: 1 as Components.Schemas.CampaignCostType },
                     })
 
                 case "campaignWells":
