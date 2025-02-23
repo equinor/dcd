@@ -36,20 +36,8 @@ const reduceToLatestEdits = (queue: EditInstance[]): EditInstance[] => {
 
 // todo: firstEdit is wrong, you may be able to get case and project id from context, but you need to get the campainId from the individual edit instances. also loop the edits and submit each one instead of firstEdit.blablabla
 
-const submitCampaignEdit = async (editQueue: EditInstance[], submitToApi: any) => {
+const submitProfileEdits = async (editQueue: EditInstance[], submitToApi: any) => {
     tableQueueLogger.log("Submitting campaign edit", { editQueue })
-    const firstEdit = editQueue[0]
-    if (!firstEdit.projectId || !firstEdit.caseId) {
-        tableQueueLogger.warn("Missing required project or case ID", { firstEdit })
-        return
-    }
-
-    // For campaign edits, resourceId should be used as campaignId if campaignId is not present
-    const campaignId = firstEdit.resourceId
-    if (!campaignId) {
-        tableQueueLogger.warn("Missing both campaignId and resourceId", { firstEdit })
-        return
-    }
 
     // Group edits by their property key
     const rigUpgradingEdit = editQueue.find((edit) => edit.resourcePropertyKey === "rigUpgradingProfile")
@@ -73,28 +61,25 @@ const submitCampaignEdit = async (editQueue: EditInstance[], submitToApi: any) =
     }
 
     tableQueueLogger.log("Sending campaign update", {
-        projectId: firstEdit.projectId,
-        caseId: firstEdit.caseId,
-        campaignId,
         updateDto: rigUpgradingEdit ? updateRigUpgradingDto : updateRigMobDemobDto,
     })
 
-    try {
-        await submitToApi({
-            projectId: firstEdit.projectId,
-            caseId: firstEdit.caseId,
-            resourceName: rigUpgradingEdit ? "rigUpgrading" : "rigMobDemob",
-            resourceId: campaignId,
-            resourceObject: rigUpgradingEdit ? updateRigUpgradingDto : updateRigMobDemobDto,
-        })
-        tableQueueLogger.log("Campaign update successful")
-    } catch (error) {
+    const promises = editQueue.map((edit) => submitToApi({
+        projectId: edit.projectId,
+        caseId: edit.caseId,
+        resourceName: rigUpgradingEdit ? "rigUpgrading" : "rigMobDemob",
+        resourceId: edit.campaignId,
+        resourceObject: rigUpgradingEdit ? updateRigUpgradingDto : updateRigMobDemobDto,
+    }).catch((error: unknown) => {
         tableQueueLogger.error("Campaign update failed", { error })
         throw error
-    }
+    }))
+
+    await Promise.all(promises)
+    tableQueueLogger.log("Campaign update successful")
 }
 
-const submitCampaignWellsEdits = async (editQueue: EditInstance[], submitToApi: any) => {
+const submitWellsEdits = async (editQueue: EditInstance[], submitToApi: any) => {
     tableQueueLogger.log("Submitting campaign wells edits", { editQueue })
 
     const promises = editQueue.map((edit) => {
@@ -108,7 +93,7 @@ const submitCampaignWellsEdits = async (editQueue: EditInstance[], submitToApi: 
             caseId: edit.caseId,
             resourceName: edit.resourceName,
             resourceId: edit.resourceId,
-            resourceObject: wellEditObject,
+            resourceObject: [wellEditObject],
         }).catch((error: unknown) => {
             tableQueueLogger.error("Campaign wells update failed", { error })
             throw error
@@ -137,6 +122,51 @@ const separateOverrideEntries = (queue: EditInstance[]): {
 
     tableQueueLogger.log("Separated entries result", { timeseriesEntries, overrideEntries })
     return { timeseriesEntries, overrideEntries }
+}
+
+const submitCaseEdit = async (editQueue: EditInstance[], submitToApi: any) => {
+    tableQueueLogger.log("Submitting case edit", { editQueue })
+
+    const firstEdit = editQueue[0]
+    const filteredEditQueue = reduceToLatestEdits(editQueue)
+    const separatedEntries = separateOverrideEntries(filteredEditQueue)
+
+    const timeSeriesEntries = separatedEntries.timeseriesEntries.map((edit) => {
+        const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesDto | Components.Schemas.SaveTimeSeriesOverrideDto
+        return {
+            profileType: edit.resourceName,
+            startYear: resourceObject.startYear,
+            values: resourceObject.values,
+        }
+    })
+
+    const overrideEntries = separatedEntries.overrideEntries.map((edit) => {
+        const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesOverrideDto
+        return {
+            profileType: edit.resourceName,
+            startYear: resourceObject.startYear,
+            values: resourceObject.values,
+            override: true,
+        }
+    })
+
+    tableQueueLogger.log("Sending case profiles update", {
+        projectId: firstEdit.projectId,
+        caseId: firstEdit.caseId,
+        timeSeriesEntries,
+        overrideEntries,
+    })
+
+    await submitToApi({
+        projectId: firstEdit.projectId,
+        caseId: firstEdit.caseId,
+        resourceName: "case",
+        resourceObject: {
+            timeSeries: timeSeriesEntries,
+            overrideTimeSeries: overrideEntries,
+        } as unknown as ResourceObject,
+    })
+    tableQueueLogger.log("Case profiles update successful")
 }
 
 export const useTableQueue = ({
@@ -174,49 +204,11 @@ export const useTableQueue = ({
         try {
             setIsSaving(true)
             if (firstEdit.resourcePropertyKey === "rigUpgradingProfile" || firstEdit.resourcePropertyKey === "rigMobDemobProfile") {
-                await submitCampaignEdit(editQueue, submitToApi)
+                await submitProfileEdits(editQueue, submitToApi)
             } else if (firstEdit.resourcePropertyKey === "campaignWells") {
-                await submitCampaignWellsEdits(editQueue, submitToApi)
+                await submitWellsEdits(editQueue, submitToApi)
             } else {
-                const filteredEditQueue = reduceToLatestEdits(editQueue)
-                const separatedEntries = separateOverrideEntries(filteredEditQueue)
-
-                const timeSeriesEntries = separatedEntries.timeseriesEntries.map((edit) => {
-                    const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesDto | Components.Schemas.SaveTimeSeriesOverrideDto
-                    return {
-                        profileType: edit.resourceName,
-                        startYear: resourceObject.startYear,
-                        values: resourceObject.values,
-                    }
-                })
-
-                const overrideEntries = separatedEntries.overrideEntries.map((edit) => {
-                    const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesOverrideDto
-                    return {
-                        profileType: edit.resourceName,
-                        startYear: resourceObject.startYear,
-                        values: resourceObject.values,
-                        override: true,
-                    }
-                })
-
-                tableQueueLogger.log("Sending case profiles update", {
-                    projectId: firstEdit.projectId,
-                    caseId: firstEdit.caseId,
-                    timeSeriesEntries,
-                    overrideEntries,
-                })
-
-                await submitToApi({
-                    projectId: firstEdit.projectId,
-                    caseId: firstEdit.caseId,
-                    resourceName: "case",
-                    resourceObject: {
-                        timeSeries: timeSeriesEntries,
-                        overrideTimeSeries: overrideEntries,
-                    } as unknown as ResourceObject,
-                })
-                tableQueueLogger.log("Case profiles update successful")
+                await submitCaseEdit(editQueue, submitToApi)
             }
         } catch (error) {
             tableQueueLogger.error("Edit submission failed", { error })
