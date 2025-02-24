@@ -22,7 +22,6 @@ interface UpdateResourceParams {
     projectId: string;
     caseId: string;
     resourceObject: ResourceObject;
-    resourceId?: string;
 }
 
 const submitApiLogger = createLogger({
@@ -70,18 +69,14 @@ export const useSubmitToApi = () => {
             projectId,
             caseId,
             resourceObject,
-            resourceId,
         }: UpdateResourceParams,
     ) => {
         const service = getService()
 
-        const serviceMethod = resourceId
-            ? service[updateMethodName](projectId, caseId, resourceId, resourceObject)
-            : service[updateMethodName](projectId, caseId, resourceObject) // for case
+        const serviceMethod = service[updateMethodName](projectId, caseId, resourceObject)
 
         try {
             const payload: any = { projectId, caseId, serviceMethod }
-            if (resourceId) { payload.resourceId = resourceId }
 
             const result = await mutation.mutateAsync(payload)
             return { success: true, data: result }
