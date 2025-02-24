@@ -284,7 +284,6 @@ export const useSubmitToApi = () => {
                     return updateCampaign({
                         projectId,
                         caseId,
-                        resourceId,
                         resourceObject: { ...resourceObject, campaignCostType: 0 as Components.Schemas.CampaignCostType },
                     })
 
@@ -292,13 +291,12 @@ export const useSubmitToApi = () => {
                     return updateCampaign({
                         projectId,
                         caseId,
-                        resourceId,
                         resourceObject: { ...resourceObject, campaignCostType: 1 as Components.Schemas.CampaignCostType },
                     })
 
                 case "campaignWells":
                     return updateCampaignWells({
-                        projectId, caseId, resourceId, resourceObject,
+                        projectId, caseId, resourceObject,
                     })
 
                 default:
