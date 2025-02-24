@@ -17,6 +17,8 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(x => x.Surf)
             .Include(x => x.Transport)
             .Include(x => x.OnshorePowerSupply)
+            .Include(x => x.WellProject)
+            .Include(x => x.Exploration)
             .SingleOrDefaultAsync(c => c.Id == caseId);
 
         if (caseItem == null)
@@ -28,12 +30,12 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
-        await context.Explorations
+        await context.Campaigns
             .Include(c => c.ExplorationWells)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
-        await context.WellProjects
+        await context.Campaigns
             .Include(c => c.DevelopmentWells)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();

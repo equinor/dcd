@@ -20,7 +20,7 @@ public static class DevelopmentWellCostProfileService
 
         foreach (var profileType in profileTypes)
         {
-            var wells = caseItem.WellProject.DevelopmentWells.Where(wpw => wpw.Well.WellCategory == profileType.Value).ToList();
+            var wells = caseItem.Campaigns.SelectMany(x => x.DevelopmentWells).Where(wpw => wpw.Well.WellCategory == profileType.Value).ToList();
 
             var profilesToMerge = new List<TimeSeries>();
 
@@ -31,7 +31,7 @@ public static class DevelopmentWellCostProfileService
                     profilesToMerge.Add(new TimeSeries
                     {
                         Values = developmentWell.Values.Select(ds => ds * developmentWell.Well.WellCost).ToArray(),
-                        StartYear = developmentWell.StartYear,
+                        StartYear = developmentWell.StartYear
                     });
                 }
             }
