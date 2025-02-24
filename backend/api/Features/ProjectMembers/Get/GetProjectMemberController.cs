@@ -10,14 +10,14 @@ public class GetProjectMemberController(
     GetProjectMemberService getProjectMemberService) : ControllerBase
 {
     [HttpGet("projects/{projectId:guid}/members")]
-    [AuthorizeActionType(ActionType.EditProjectMembers)]
+    [AuthorizeActionType(ActionType.Read)]
     public async Task<List<ProjectMemberDto>> GetProjectMembersWithoutUpdatingPmt(Guid projectId)
     {
         return await getProjectMemberService.GetProjectMembers(projectId);
     }
 
     [HttpGet("projects/{projectId:guid}/members/context/{contextId:guid}")]
-    [AuthorizeActionType(ActionType.EditProjectMembers)]
+    [AuthorizeActionType(ActionType.Read)]
     public async Task<List<ProjectMemberDto>> GetProjectMembersWithUpdatingPmt(Guid projectId, Guid contextId)
     {
         await fusionOrgChartProjectMemberService.SyncPmtMembersOnProject(projectId, contextId);

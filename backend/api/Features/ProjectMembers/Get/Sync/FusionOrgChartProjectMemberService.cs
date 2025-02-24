@@ -60,16 +60,21 @@ public class FusionOrgChartProjectMemberService(
     {
         var projectProjectMasterId = await context.Projects
             .Where(p => p.Id == projectId)
-            .Select(p => p.FusionProjectId)
-            .FirstAsync();
+            .Select(p => (Guid?)p.FusionProjectId)
+            .FirstOrDefaultAsync();
+
+        if (projectProjectMasterId == null)
+        {
+            throw new ProjectMasterMismatchException("ProjectMasterId not found in database");
+        }
 
         var fusionContext = await fusionContextResolver.GetContextAsync(fusionContextId);
 
-        var fusionProjectMasterId = fusionContext.ExternalId ?? throw new ProjectMasterMismatchException("Project master ID not found");
+        var fusionProjectMasterId = fusionContext.ExternalId ?? throw new ProjectMasterMismatchException("ProjectMasterId not found in Fusion");
 
         if (Guid.TryParse(fusionProjectMasterId, out var fusionProjectMasterGuid) && projectProjectMasterId != fusionProjectMasterGuid)
         {
-            throw new ProjectMasterMismatchException("Project master ID mismatch");
+            throw new ProjectMasterMismatchException("ProjectMasterId mismatch");
         }
     }
 
