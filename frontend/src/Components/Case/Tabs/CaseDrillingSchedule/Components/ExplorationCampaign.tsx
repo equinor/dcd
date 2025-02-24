@@ -130,9 +130,9 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                             dg4Year={getYearFromDateString(apiData?.case.dG4Date ?? "")}
                             tableYears={tableYears}
                             tableName="Exploration campaign"
-                            includeFooter
                             totalRowName="Total"
                             gridRef={ExplorationCampaignGridRef}
+                            includeFooter={false}
                         />
                     </div>
                 </div>
