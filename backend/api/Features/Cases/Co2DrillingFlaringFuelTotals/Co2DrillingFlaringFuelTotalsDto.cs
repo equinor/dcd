@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+namespace api.Features.Cases.Co2DrillingFlaringFuelTotals;
 
 public class Co2DrillingFlaringFuelTotalsDto
 {
