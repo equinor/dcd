@@ -131,13 +131,13 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             variant={editMode ? "outlined" : "contained"}
                             disabled={isEditDisabled}
                         >
-                            {editMode && (
+                            {editMode && !isEditDisabled && (
                                 <>
                                     <Icon data={visibility} />
                                     {!isSmallScreen && <span>View</span>}
                                 </>
                             )}
-                            {!editMode && (
+                            {(!editMode || isEditDisabled) && (
                                 <>
                                     <Icon data={edit} />
                                     {!isSmallScreen && <span>Edit</span>}
