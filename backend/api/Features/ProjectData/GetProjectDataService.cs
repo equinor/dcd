@@ -54,7 +54,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
         commonProjectAndRevisionData.Cases = await getProjectDataRepository.GetCases(projectId);
         commonProjectAndRevisionData.Wells = await getProjectDataRepository.GetWells(projectId);
-        commonProjectAndRevisionData.ModifyTime = commonProjectAndRevisionData.Cases.Select(c => c.ModifyTime).Append(commonProjectAndRevisionData.ModifyTime).Max();
+        commonProjectAndRevisionData.UpdatedUtc = commonProjectAndRevisionData.Cases.Select(c => c.UpdatedUtc).Append(commonProjectAndRevisionData.UpdatedUtc).Max();
 
         return commonProjectAndRevisionData;
     }
