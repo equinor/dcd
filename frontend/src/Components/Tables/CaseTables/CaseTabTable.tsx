@@ -102,7 +102,6 @@ const CaseTabTable = memo(({
     // Custom Hooks
     const { editQueue, addToQueue, submitEditQueue } = useTableQueue({
         isSaving,
-        addEdit,
         gridRef,
         setIsSaving,
     })
@@ -217,8 +216,6 @@ const CaseTabTable = memo(({
             wellId: event.data.wellId,
         }
 
-        console.log("event.data", event.data)
-
         const config: ITableCellChangeConfig = {
             dg4Year,
             caseId,
@@ -329,14 +326,6 @@ const CaseTabTable = memo(({
         const containerRef = document.getElementById(tableName)?.parentElement
 
         const handleClickOutside = (event: MouseEvent) => {
-            /*
-            if (gridRef.current?.api) {
-                gridRef.current.api.clearFocusedCell()
-                gridRef.current.api.stopEditing()
-                gridRef.current.api.deselectAll()
-            }
-                */
-
             if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
                 submitEditQueue()
             }

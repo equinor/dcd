@@ -75,12 +75,11 @@ export const useSubmitToApi = () => {
         }: UpdateResourceParams,
     ) => {
         const service = await getService()
-        console.log("service: ", service)
+
         const serviceMethod = resourceId
             ? service[updateMethodName](projectId, caseId, resourceId, resourceObject)
             : service[updateMethodName](projectId, caseId, resourceObject) // for case
 
-        console.log("service method______!!!!!!____!!!!__!!!: ", serviceMethod)
         try {
             const payload: any = { projectId, caseId, serviceMethod }
             if (resourceId) { payload.resourceId = resourceId }
@@ -303,7 +302,6 @@ export const useSubmitToApi = () => {
                     })
 
                 case "campaignWells":
-                    console.log("submitting this shiiit:", projectId, caseId, resourceId, resourceObject)
                     return updateCampaignWells({
                         projectId, caseId, resourceId, resourceObject,
                     })
