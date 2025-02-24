@@ -19,7 +19,18 @@ public static class ExplorationWellCostProfileService
 
         foreach (var profileType in profileTypes)
         {
-            var wells = caseItem.Campaigns.SelectMany(x => x.ExplorationWells).Where(ew => ew.Well.WellCategory == profileType.Value).ToList();
+            List<ExplorationWell> wells = [];
+
+            foreach (var campaign in caseItem.Campaigns)
+            {
+                foreach (var explorationWell in campaign.ExplorationWells)
+                {
+                    if (explorationWell.Well.WellCategory == profileType.Value)
+                    {
+                        wells.Add(explorationWell);
+                    }
+                }
+            }
 
             var profilesToMerge = new List<TimeSeries>();
 

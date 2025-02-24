@@ -31,12 +31,12 @@ public class RecalculationRepository(DcdDbContext context)
             .LoadAsync();
 
         await context.Campaigns
-            .Include(x => x.DevelopmentWells)
+            .Include(x => x.DevelopmentWells).ThenInclude(x => x.Well)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
         await context.Campaigns
-            .Include(x => x.ExplorationWells)
+            .Include(x => x.ExplorationWells).ThenInclude(x => x.Well)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
