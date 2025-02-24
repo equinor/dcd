@@ -51,8 +51,8 @@ declare namespace Components {
             dG2Date: string; // date-time
             dG3Date: string; // date-time
             dG4Date: string; // date-time
-            createTime: string; // date-time
-            modifyTime: string; // date-time
+            createdUtc: string; // date-time
+            updatedUtc: string; // date-time
             surfId: string; // uuid
             substructureId: string; // uuid
             topsideId: string; // uuid
@@ -158,7 +158,7 @@ declare namespace Components {
             co2Flaring: number; // double
         }
         export interface CommonProjectAndRevisionDto {
-            modifyTime: string; // date-time
+            updatedUtc: string; // date-time
             classification: ProjectClassification /* int32 */;
             name: string;
             fusionProjectId: string; // uuid
@@ -1049,38 +1049,6 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOverrideProfilesSave {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.SaveTimeSeriesOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdProfilesSave {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.SaveTimeSeriesDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesDto;
             }
         }
     }

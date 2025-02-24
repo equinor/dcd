@@ -22,6 +22,20 @@ public class SaveProfileDtoValidatorTests
     }
 
     [Fact]
+    public void Valid_TimeSeriesOverrideDto_does_not_throw()
+    {
+        var dto = new SaveTimeSeriesOverrideDto
+        {
+            ProfileType = ProfileTypes.Co2Emissions,
+            StartYear = 0,
+            Values = [],
+            Override = true
+        };
+
+        SaveProfileDtoValidator.Validate(dto);
+    }
+
+    [Fact]
     public void Invalid_TimeSeriesDto_ProfileType_throws()
     {
         var dto = new SaveTimeSeriesDto

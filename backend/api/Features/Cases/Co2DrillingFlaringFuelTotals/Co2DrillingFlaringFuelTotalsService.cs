@@ -2,13 +2,14 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+namespace api.Features.Cases.Co2DrillingFlaringFuelTotals;
 
 public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {

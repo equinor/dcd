@@ -39,8 +39,8 @@ public class CaseOverviewDto
     [Required] public required DateTime DG2Date { get; set; }
     [Required] public required DateTime DG3Date { get; set; }
     [Required] public required DateTime DG4Date { get; set; }
-    [Required] public required DateTime CreateTime { get; set; }
-    [Required] public required DateTime ModifyTime { get; set; }
+    [Required] public required DateTime CreatedUtc { get; set; }
+    [Required] public required DateTime UpdatedUtc { get; set; }
     [Required] public required Guid SurfId { get; set; }
     [Required] public required Guid SubstructureId { get; set; }
     [Required] public required Guid TopsideId { get; set; }
