@@ -203,21 +203,9 @@ export const useSubmitToApi = () => {
                     })
 
                 case "caseProfiles":
-                    try {
-                        const mutationResult = await mutation.mutateAsync({
-                            projectId,
-                            caseId,
-                            serviceMethod: await GetCaseService().saveProfiles(
-                                projectId,
-                                caseId,
-                                resourceObject as unknown as Components.Schemas.SaveTimeSeriesListDto,
-                            ),
-                        })
-                        return { success: true, data: mutationResult }
-                    } catch (error) {
-                        console.error("[UseSubmitToApi] Error saving case profiles:", error)
-                        return { success: false, error }
-                    }
+                    return updateCaseProfiles({
+                        projectId, caseId, resourceObject,
+                    })
 
                 case "topside":
                     return updateTopside({
