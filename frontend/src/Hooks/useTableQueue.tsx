@@ -126,20 +126,15 @@ const submitCaseUpdates = async (editQueue: EditInstance[], submitToApi: any, pr
     const timeSeriesData = timeseriesEntries.map((edit) => createTimeSeriesEntry(edit))
     const overrideData = overrideEntries.map((edit) => createTimeSeriesEntry(edit, true))
 
-    try {
-        await submitToApi({
-            projectId,
-            caseId,
-            resourceName: "case",
-            resourceObject: {
-                timeSeries: timeSeriesData,
-                overrideTimeSeries: overrideData,
-            } as unknown as ResourceObject,
-        })
-    } catch (error) {
-        console.error("Case update failed", { error, projectId, caseId })
-        throw error
-    }
+    await submitToApi({
+        projectId,
+        caseId,
+        resourceName: "caseProfiles",
+        resourceObject: {
+            timeSeries: timeSeriesData,
+            overrideTimeSeries: overrideData,
+        } as unknown as ResourceObject,
+    })
 }
 
 // Main hook
@@ -170,7 +165,7 @@ export const useTableQueue = ({
                 caseEdits.length > 0 && submitCaseUpdates(caseEdits, submitToApi, projectId, caseId),
             ].filter(Boolean))
         } catch (error) {
-            console.error("Edit submission failed", { error })
+            console.error("Edit submission failed:", error)
             throw error
         } finally {
             setIsSaving(false)

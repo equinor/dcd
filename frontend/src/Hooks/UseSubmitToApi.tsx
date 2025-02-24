@@ -102,6 +102,8 @@ export const useSubmitToApi = () => {
 
     const updateDrainageStrategy = (params: UpdateResourceParams) => updateResource(GetDrainageStrategyService, "updateDrainageStrategy", { ...params })
 
+    const updateCaseProfiles = (params: UpdateResourceParams) => updateResource(GetCaseService, "saveProfiles", { ...params })
+
     const updateCase = (params: UpdateResourceParams) => updateResource(GetCaseService, "updateCase", { ...params })
 
     interface SaveTimeSeriesProfileParams {
@@ -187,7 +189,7 @@ export const useSubmitToApi = () => {
             submitApiLogger.log("Setting total study cost overrides calculation flag")
         }
 
-        if (resourceName !== "case" && !resourceId) {
+        if (!["case", "caseProfiles"].includes(resourceName) && !resourceId) {
             submitApiLogger.error("Asset ID is required for this service", null)
             return { success: false, error: new Error("Asset ID is required for this service") }
         }
@@ -199,6 +201,23 @@ export const useSubmitToApi = () => {
                     return updateCase({
                         projectId, caseId, resourceObject,
                     })
+
+                case "caseProfiles":
+                    try {
+                        const mutationResult = await mutation.mutateAsync({
+                            projectId,
+                            caseId,
+                            serviceMethod: await GetCaseService().saveProfiles(
+                                projectId,
+                                caseId,
+                                resourceObject as unknown as Components.Schemas.SaveTimeSeriesListDto,
+                            ),
+                        })
+                        return { success: true, data: mutationResult }
+                    } catch (error) {
+                        console.error("[UseSubmitToApi] Error saving case profiles:", error)
+                        return { success: false, error }
+                    }
 
                 case "topside":
                     return updateTopside({
