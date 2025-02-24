@@ -29,7 +29,7 @@ public static class UpdateCaseDtoValidator
 
         if (dgDates.Any(x => x < earliestAllowedDgDate))
         {
-            throw new UnprocessableContentException($"One of the provided DG dates before than {earliestAllowedDgDate}.");
+            throw new UnprocessableContentException($"One of the provided DG dates is before {earliestAllowedDgDate}.");
         }
     }
 }
