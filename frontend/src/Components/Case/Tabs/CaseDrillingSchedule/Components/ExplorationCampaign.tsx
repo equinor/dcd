@@ -2,7 +2,6 @@ import { useMemo, useRef } from "react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import Grid from "@mui/material/Grid2"
 
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import {
     DrillingCampaignProps,
     Well,
@@ -10,7 +9,6 @@ import {
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { ProfileTypes } from "@/Models/enums"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
@@ -64,8 +62,6 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
 
         // Add wells from campaignWells
         campaign.campaignWells?.forEach((well: Well) => {
-            // console.log("well", well)
-            // well.wellId is defined
             const wellRow: ItimeSeriesTableDataWithWell = {
                 profileName: well.wellName,
                 unit: "Well",

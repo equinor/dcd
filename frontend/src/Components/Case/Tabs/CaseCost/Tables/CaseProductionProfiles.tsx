@@ -26,7 +26,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         ProfileTypes.NetSalesGasOverride,
         ProfileTypes.ImportedElectricityOverride,
     ], [])
-    console.log("HELLLLLOOOO: ", apiData)
 
     useEffect(() => {
         const drainageStrategyData = apiData.drainageStrategy
