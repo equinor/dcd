@@ -76,11 +76,11 @@ const CO2Tab = () => {
             field: "value",
             headerName: "Value",
             flex: 1,
-            editable: editMode,
-            cellClass: editMode ? "editableCell" : undefined,
+            editable: editMode && !isEditDisabled,
+            cellClass: editMode && !isEditDisabled ? "editableCell" : undefined,
             cellStyle: cellStyleRightAlign,
         },
-    ] as ColDef[], [editMode])
+    ] as ColDef[], [editMode, isEditDisabled])
 
     useEffect(() => {
         if (revisionAndProjectData) {
@@ -210,6 +210,7 @@ const CO2Tab = () => {
     useEffect(() => {
         if (revisionAndProjectData
             && editMode
+            && !isEditDisabled
             && cO2RemovedFromGas !== undefined
             && cO2EmissionsFromFlaredGas !== undefined
             && cO2EmissionsFromFuelGas !== undefined
@@ -275,7 +276,7 @@ const CO2Tab = () => {
                         onGridReady={onGridReady}
                         isExternalFilterPresent={isExternalFilterPresent}
                         doesExternalFilterPass={doesExternalFilterPass}
-                        singleClickEdit={editMode}
+                        singleClickEdit={editMode && !isEditDisabled}
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>

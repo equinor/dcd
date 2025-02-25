@@ -111,7 +111,7 @@ export const wellsToRowData = (
     assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.DevelopmentWellDto[],
     wells: Components.Schemas.WellOverviewDto[] | undefined,
     dg4Year: number,
-    editMode: boolean,
+    editAllowed: boolean,
     resourceId: string,
     isExplorationTable: boolean,
 ) => {
@@ -131,7 +131,7 @@ export const wellsToRowData = (
             drillingSchedule,
         }
 
-        if (editMode || tableWell.total > 0) {
+        if (editAllowed || tableWell.total > 0) {
             return tableWell
         }
         return undefined
@@ -148,7 +148,7 @@ export const profilesToRowData = (
     timeSeriesData: ITimeSeriesTableData[],
     dg4Year: number,
     tableName: string,
-    editMode: boolean,
+    editAllowed: boolean,
 ) => {
     const tableRows: ITimeSeriesTableData[] = []
 
@@ -193,7 +193,7 @@ export const profilesToRowData = (
         const isNotHidden = !rowObject.hideIfEmpty
         const hasProfileValues = rowObject.hideIfEmpty && rowObject.profile?.values.length > 0
 
-        if (editMode || isNotHidden || hasProfileValues) {
+        if (editAllowed || isNotHidden || hasProfileValues) {
             tableRows.push(rowObject)
         }
     })

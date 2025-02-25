@@ -92,7 +92,7 @@ const Wells: React.FC<WellsProps> = ({
         <>
             <SectionHeader>
                 <Typography variant="h2">{title}</Typography>
-                {editMode && (
+                {editMode && !isEditDisabled && (
                     <Button onClick={() => createWell(defaultWellCategory)} variant="outlined">
                         <Icon data={add} size={24} />
                         {addButtonText}

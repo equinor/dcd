@@ -17,6 +17,7 @@ import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseApiData } from "@/Hooks"
 import useEditCase from "@/Hooks/useEditCase"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -84,6 +85,7 @@ const CaseScheduleTab = () => {
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
     const { apiData } = useCaseApiData()
+    const { isEditDisabled } = useEditDisabled()
 
     if (!apiData || !projectId) {
         return (<CaseScheduleTabSkeleton />)
@@ -215,7 +217,7 @@ const CaseScheduleTab = () => {
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
                 .map((caseDate) => (
                     (caseDate.visible
-                        || editMode
+                        || editMode && !isEditDisabled
                         || toScheduleValue(caseData[caseDate.key as keyof typeof caseData])
                     )
                         ? (

@@ -11,6 +11,7 @@ import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescri
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseApiData } from "@/Hooks"
 import useEditCase from "@/Hooks/useEditCase"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const CaseDescriptionTab = () => {
     const { editMode } = useAppStore()
@@ -18,6 +19,7 @@ const CaseDescriptionTab = () => {
     const { projectId } = useProjectContext()
 
     const [description, setDescription] = useState("")
+    const { isEditDisabled } = useEditDisabled()
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -69,9 +71,9 @@ const CaseDescriptionTab = () => {
             <Gallery />
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
-                    <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                    <Grid size={12} sx={{ marginBottom: editMode && !isEditDisabled ? "32px" : 0 }}>
                         <Typography group="input" variant="label">Description</Typography>
-                        {editMode ? (
+                        {editMode && !isEditDisabled? (
                             <div
                                 key="input"
                                 id="Description"

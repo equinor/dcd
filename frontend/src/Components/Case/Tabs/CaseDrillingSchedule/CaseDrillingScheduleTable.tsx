@@ -22,6 +22,7 @@ import { useProjectContext } from "../../../../Store/ProjectContext"
 import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import useEditCase from "@/Hooks/useEditCase"
 import { EditInstance } from "@/Models/Interfaces"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface Props {
     dg4Year: number
@@ -51,6 +52,7 @@ const CaseDrillingScheduleTabTable = ({
     const { projectId } = useProjectContext()
     const styles = useStyles()
     const { addEdit } = useEditCase()
+    const { isEditDisabled } = useEditDisabled()
 
     const [rowData, setRowData] = useState<any[]>([])
     const [stagedEdit, setStagedEdit] = useState<EditInstance | undefined>()
@@ -79,8 +81,8 @@ const CaseDrillingScheduleTabTable = ({
                 field: index.toString(),
                 flex: 1,
                 minWidth: 100,
-                editable: editMode,
-                cellClass: editMode ? "editableCell" : undefined,
+                editable: editMode && !isEditDisabled,
+                cellClass: editMode && !isEditDisabled ? "editableCell" : undefined,
                 cellStyle: cellStyleRightAlign,
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
@@ -153,11 +155,11 @@ const CaseDrillingScheduleTabTable = ({
     }), [assetWells])
 
     useEffect(() => {
-        const newRowData = wellsToRowData(assetWells, wells, dg4Year, editMode, resourceId, isExplorationTable)
+        const newRowData = wellsToRowData(assetWells, wells, dg4Year, editMode && !isEditDisabled, resourceId, isExplorationTable)
         setRowData(newRowData)
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [assetWells, tableYears, wells, editMode])
+    }, [assetWells, tableYears, wells, editMode, isEditDisabled])
 
     useEffect(() => {
         if (stagedEdit) {

@@ -10,6 +10,7 @@ import GalleryImage from "./GalleryImage"
 import { useAppStore } from "@/Store/AppStore"
 import { getImageService } from "@/Services/ImageService"
 import { useProjectContext } from "@/Store/ProjectContext"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,6 +40,7 @@ const Gallery = () => {
     const { caseId } = useParams()
     const { revisionId } = useParams()
     const { projectId } = useProjectContext()
+    const { isEditDisabled } = useEditDisabled()
 
     const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
 
@@ -122,25 +124,25 @@ const Gallery = () => {
         setModalOpen(true)
     }
 
-    return gallery.length > 0 || editMode ? (
+    return gallery.length > 0 || (editMode && !isEditDisabled) ? (
         <Grid item xs={12}>
             <ImageModal image={expandedImage} modalOpen={modalOpen} setModalOpen={setModalOpen} />
             <GalleryLabel $warning={exeededLimit}>
-                {gallery.length > 0 && !editMode && "Gallery"}
-                {editMode && `Gallery (${gallery.length} / 4)`}
+                {gallery.length > 0 && (!editMode || isEditDisabled) && "Gallery"}
+                {editMode && !isEditDisabled && `Gallery (${gallery.length} / 4)`}
             </GalleryLabel>
             <Wrapper>
                 {gallery.map((image) => (
                     <GalleryImage
                         key={image.imageId}
                         image={image}
-                        editMode={editMode}
+                        editAllowed={editMode && !isEditDisabled}
                         onDelete={handleDelete}
                         onExpand={handleExpand}
                         onDescriptionChange={handleDescriptionChange}
                     />
                 ))}
-                {editMode && gallery.length < 4 && (
+                {editMode && !isEditDisabled && gallery.length < 4 && (
                     <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />
                 )}
             </Wrapper>

@@ -117,9 +117,9 @@ const ProjectOverviewTab = () => {
 
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
-                    <Grid size={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                    <Grid size={12} sx={{ marginBottom: (editMode && !isEditDisabled) ? "32px" : 0 }}>
                         <Typography group="input" variant="label">Description</Typography>
-                        {editMode
+                        {editMode && !isEditDisabled
                             ? (
                                 <MarkdownEditor
                                     menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}

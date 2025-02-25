@@ -22,6 +22,7 @@ import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer
 import { gridRefArrayToAlignedGrid } from "@/Components/AgGrid/AgGridHelperFunctions"
 import SidesheetWrapper from "@/Components/Tables/TableSidesheet/SidesheetWrapper"
 import { createLogger } from "@/Utils/logger"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -49,6 +50,7 @@ const CaseTabTableWithGrouping = ({
     const { editMode, setShowRevisionReminder } = useAppStore()
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [selectedRow, setSelectedRow] = useState<any>(null)
+    const { isEditDisabled } = useEditDisabled()
 
     const profilesToRowData = () => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
@@ -151,10 +153,10 @@ const CaseTabTableWithGrouping = ({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, editMode),
+                editable: (params: any) => tableCellisEditable(params, editMode, isEditDisabled),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
-                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
+                cellClass: (params: any) => (tableCellisEditable(params, editMode, isEditDisabled) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
         }
@@ -206,11 +208,11 @@ const CaseTabTableWithGrouping = ({
     }, [tableYears])
 
     const handleCellClicked = (event: CellClickedEvent) => {
-        if (!event.data || editMode) return // Don't open sidesheet in edit mode
-        
+        if (!event.data || (editMode && !isEditDisabled)) return // Don't open sidesheet in edit mode
+
         // Get the clicked column's field (year)
         const clickedYear = event.column.getColId()
-        
+
         logger.info("Cell clicked", {
             isGroup: event.data.group,
             rowData: event.data,

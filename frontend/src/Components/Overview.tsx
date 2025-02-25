@@ -24,6 +24,7 @@ import SidebarWrapper from "./Sidebar/SidebarWrapper"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -74,6 +75,7 @@ const Overview = () => {
     const { Features } = useFeatureContext()
     const revisionAndProjectData = useDataFetch()
     const [warnedProjects, setWarnedProjects] = useLocalStorage<WarnedProjectInterface | null>("pv", null)
+    const { isEditDisabled } = useEditDisabled()
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
@@ -99,7 +101,7 @@ const Overview = () => {
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
         const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
 
-        if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
+        if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isEditDisabled && !isRevision) {
             setShowRevisionReminder(true)
         }
     }
@@ -132,7 +134,7 @@ const Overview = () => {
         if (revisionAndProjectData) {
             checkIfNewRevisionIsRecommended()
         }
-    }, [revisionAndProjectData, editMode])
+    }, [revisionAndProjectData, editMode, isEditDisabled])
 
     useEffect(() => {
         if (revisionAndProjectData && currentUserId) {

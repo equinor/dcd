@@ -18,6 +18,7 @@ import {
 } from "../Shared/SharedWellStyles"
 import { Currency } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 type DevelopmentCostsState = Omit<
     Components.Schemas.DevelopmentOperationalWellCostsOverviewDto,
@@ -33,6 +34,7 @@ const DevelopmentCosts = () => {
     const { addDevelopmentWellCostEdit } = useTechnicalInputEdits()
     const { editMode } = useAppStore()
     const previousCostsRef = useRef<DevelopmentCostsState | null>(null)
+    const { isEditDisabled } = useEditDisabled()
 
     const [costs, setCosts] = useState<DevelopmentCostsState>({
         rigUpgrading: 0,
@@ -57,7 +59,7 @@ const DevelopmentCosts = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (developmentOperationalWellCostsId && projectId && debouncedCosts && editMode) {
+        if (developmentOperationalWellCostsId && projectId && debouncedCosts && editMode && !isEditDisabled) {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof DevelopmentCostsState] !== value,
             )
@@ -66,7 +68,7 @@ const DevelopmentCosts = () => {
                 addDevelopmentWellCostEdit(projectId, developmentOperationalWellCostsId, debouncedCosts)
             }
         }
-    }, [debouncedCosts, developmentOperationalWellCostsId, projectId, addDevelopmentWellCostEdit, editMode])
+    }, [debouncedCosts, developmentOperationalWellCostsId, projectId, addDevelopmentWellCostEdit, editMode, isEditDisabled])
 
     return (
         <FullwidthTable>

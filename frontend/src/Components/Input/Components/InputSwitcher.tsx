@@ -3,6 +3,7 @@ import styled from "styled-components"
 import React from "react"
 
 import { useAppStore } from "@/Store/AppStore"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const ViewValue = styled(Typography)`
     margin-top: 10px;
@@ -16,6 +17,7 @@ interface InputSwitcherProps {
 
 const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
     const { editMode, isSaving } = useAppStore()
+    const { isEditDisabled } = useEditDisabled()
 
     return (
         <InputWrapper
@@ -23,7 +25,7 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
                 label,
             }}
         >
-            {editMode ? (
+            {editMode && !isEditDisabled ? (
                 <div key="input">
                     {React.cloneElement(children, { disabled: isSaving })}
                 </div>

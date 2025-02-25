@@ -43,6 +43,7 @@ import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGri
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 import useEditCase from "@/Hooks/useEditCase"
 import { useTableQueue } from "@/Hooks/useTableQueue"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 // Styled Components
 const CenterGridIcons = styled.div`
@@ -90,6 +91,7 @@ const CaseTabTable = memo(({
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
+    const { isEditDisabled } = useEditDisabled()
 
     // State Management
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
@@ -112,9 +114,9 @@ const CaseTabTable = memo(({
     const gridRowData = useMemo(
         () => {
             if (!presentedTableData?.length) { return [] }
-            return profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
+            return profilesToRowData(presentedTableData, dg4Year, tableName, editMode && !isEditDisabled)
         },
-        [presentedTableData, editMode, dg4Year, tableName],
+        [presentedTableData, editMode, dg4Year, tableName, isEditDisabled],
     )
 
     // Cell Renderers
@@ -131,7 +133,7 @@ const CaseTabTable = memo(({
             <CenterGridIcons>
                 <CalculationSourceToggle
                     addEdit={addEdit}
-                    editMode={editMode}
+                    editAllowed={editMode && !isEditDisabled}
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
@@ -183,24 +185,24 @@ const CaseTabTable = memo(({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, editMode),
+                editable: (params: any) => tableCellisEditable(params, editMode, isEditDisabled),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: !params.node.footer && validateInput(params, editMode),
+                    errorMsg: !params.node.footer && validateInput(params, editMode, isEditDisabled),
                 }),
                 cellStyle: {
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
+                cellClass: (params: any) => (tableCellisEditable(params, editMode, isEditDisabled) ? "editableCell" : undefined),
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
-    }, [tableYears, editMode, gridRowData, tableName, totalRowName])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled])
 
     // Event Handlers
     const handleCellValueChange = useCallback((event: any) => {
@@ -232,7 +234,7 @@ const CaseTabTable = memo(({
     }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage, addToQueue])
 
     const handleCellClicked = (event: CellClickedEvent) => {
-        if (!event.data || editMode) { return }
+        if (!event.data || (editMode && !isEditDisabled)) { return }
 
         const clickedYear = event.column.getColId()
         setSelectedRow({
@@ -255,10 +257,10 @@ const CaseTabTable = memo(({
             sortable: true,
             filter: true,
             resizable: true,
-            editable: (params: any) => tableCellisEditable(params, editMode),
+            editable: (params: any) => tableCellisEditable(params, editMode, isEditDisabled),
             onCellValueChanged: handleCellValueChange,
             suppressHeaderMenuButton: true,
-            enableCellChangeFlash: editMode,
+            enableCellChangeFlash: editMode && !isEditDisabled,
             suppressMovable: true,
         },
         rowData: gridRowData,
@@ -295,6 +297,7 @@ const CaseTabTable = memo(({
         tableYears,
         setSelectedRow,
         setIsSidesheetOpen,
+        isEditDisabled
     ])
 
     // Effects

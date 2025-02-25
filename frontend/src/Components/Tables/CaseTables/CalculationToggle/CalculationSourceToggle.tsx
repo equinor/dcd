@@ -14,11 +14,11 @@ interface CalculationSourceToggleProps {
     addEdit: any
     isProsp?: boolean
     sharepointFileId?: string
-    editMode: boolean
+    editAllowed: boolean
 }
 
 const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
-    editMode,
+    editAllowed,
     clickedElement,
     addEdit,
     isProsp,
@@ -30,7 +30,7 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     const { apiQueue } = useAppStore()
 
     const handleToggleClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!editMode) {
+        if (!editAllowed) {
             return
         }
 
@@ -85,9 +85,9 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     }
 
     return isProsp ? (
-        <ExcelToggle clickedElement={clickedElement} onClick={handleToggleClick} editMode={editMode} />
+        <ExcelToggle clickedElement={clickedElement} onClick={handleToggleClick} editAllowed={editAllowed} />
     ) : (
-        <CalculatorToggle clickedElement={clickedElement} onClick={handleToggleClick} editMode={editMode} />
+        <CalculatorToggle clickedElement={clickedElement} onClick={handleToggleClick} editAllowed={editAllowed} />
     )
 }
 

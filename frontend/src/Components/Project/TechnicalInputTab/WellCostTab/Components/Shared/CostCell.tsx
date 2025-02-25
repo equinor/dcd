@@ -5,6 +5,7 @@ import {
 import styled from "styled-components"
 
 import { useAppStore } from "@/Store/AppStore"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface Props {
     title: string
@@ -20,6 +21,7 @@ const CostCell = ({
     title, setValue, value,
 }: Props) => {
     const { editMode } = useAppStore()
+    const { isEditDisabled } = useEditDisabled()
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }
@@ -29,7 +31,7 @@ const CostCell = ({
                 {title}
             </Table.Cell>
             <Table.Cell>
-                {editMode
+                {editMode && !isEditDisabled
                     ? (
                         <Input
                             id="WellCost"
