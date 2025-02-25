@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 import { ProfileTypes } from "./enums"
+import { CampaignResourceNames } from "./Interfaces"
 
 export interface ITimeSeries {
     startYear: number
@@ -34,13 +35,17 @@ export interface ITimeSeriesTableData {
     overridable: boolean
     resourceId: string
     resourcePropertyKey: string
-    resourceName: ProfileTypes
+    resourceName: ProfileTypes | CampaignResourceNames
     editable: boolean
     total?: string
     hideIfEmpty?: boolean
 }
 
-export interface ITimeSeriesTableDataWithSet extends ITimeSeriesTableData {
+export interface ItimeSeriesTableDataWithWell extends ITimeSeriesTableData {
+    wellId?: string
+}
+
+export interface ITimeSeriesTableDataWithSet extends ItimeSeriesTableDataWithWell {
     set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
     group?: string

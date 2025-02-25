@@ -206,22 +206,20 @@ const CaseTabTableWithGrouping = ({
     }, [tableYears])
 
     const handleCellClicked = (event: CellClickedEvent) => {
-        if (!event.data || editMode) return // Don't open sidesheet in edit mode
-        
+        if (!event.data || editMode) { return } // Don't open sidesheet in edit mode
         // Get the clicked column's field (year)
         const clickedYear = event.column.getColId()
-        
         logger.info("Cell clicked", {
             isGroup: event.data.group,
             rowData: event.data,
             profileName: event.data.profileName,
             values: event.data.profile?.values,
-            clickedYear
+            clickedYear,
         })
 
         setSelectedRow({
             ...event.data,
-            clickedYear // Add the clicked year to the row data
+            clickedYear, // Add the clicked year to the row data
         })
         setIsSidesheetOpen(true)
     }

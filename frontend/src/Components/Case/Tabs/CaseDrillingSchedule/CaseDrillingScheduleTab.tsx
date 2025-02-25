@@ -1,30 +1,40 @@
 import {
     useState,
     useEffect,
-    useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
+import { useMediaQuery } from "@mui/material"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
+// import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
+import Campaign from "./Components/Campaign"
+import {
+    CampaignHeader,
+    CampaignHeaderTexts,
+    CampaignLink,
+    LinkText,
+} from "./Components/SharedCampaignStyles"
 import { WellCategory } from "@/Models/enums"
 
 const CaseDrillingScheduleTab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
+    const { navigateToProjectTab } = useAppNavigation()
     const { apiData } = useCaseApiData()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const isSmallScreen = useMediaQuery("(max-width: 768px)")
 
     // DevelopmentWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
@@ -37,8 +47,6 @@ const CaseDrillingScheduleTab = () => {
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
 
     const [, setSidetrackCount] = useState<number>(0)
-    const developmentWellsGridRef = useRef(null)
-    const explorationWellsGridRef = useRef(null)
 
     const wells = revisionAndProjectData?.commonProjectAndRevisionData.wells
 
@@ -103,11 +111,13 @@ const CaseDrillingScheduleTab = () => {
 
     if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
 
-    const caseData = apiData.case
-    const { explorationId } = apiData
-    const { wellProjectId } = apiData
-    const developmentWellsData = apiData.developmentWells
-    const explorationWellsData = apiData.explorationWells
+    const {
+        case: caseData,
+        explorationId,
+        wellProjectId,
+        developmentWells: developmentWellsData,
+        explorationWells: explorationWellsData,
+    } = apiData
 
     if (
         activeTabCase !== 3
@@ -197,15 +207,42 @@ const CaseDrillingScheduleTab = () => {
                     </Grid>
                 </Grid>
             </Grid>
-
-            <DateRangePicker
-                setStartYear={setStartYear}
-                setEndYear={setEndYear}
-                startYear={startYear}
-                endYear={endYear}
-                handleTableYearsClick={handleTableYearsClick}
-            />
-            <Grid size={12}>
+            <CampaignHeader $isSmallScreen={isSmallScreen}>
+                <CampaignHeaderTexts>
+                    <Typography variant="h2">Drilling Schedule</Typography>
+                    <LinkText>
+                        <Typography variant="ingress">
+                            To edit the well costs go to
+                            {" "}
+                        </Typography>
+                        <CampaignLink variant="body_short_link" onClick={() => navigateToProjectTab(2)}>Technical input</CampaignLink>
+                    </LinkText>
+                </CampaignHeaderTexts>
+                <DateRangePicker
+                    setStartYear={setStartYear}
+                    setEndYear={setEndYear}
+                    startYear={startYear}
+                    endYear={endYear}
+                    handleTableYearsClick={handleTableYearsClick}
+                />
+            </CampaignHeader>
+            {apiData?.explorationCampaigns?.map((campaign) => (
+                <Campaign
+                    key={campaign.campaignId}
+                    campaign={campaign}
+                    tableYears={tableYears}
+                    title="Exploration"
+                />
+            ))}
+            {apiData?.developmentCampaigns?.map((campaign) => (
+                <Campaign
+                    key={campaign.campaignId}
+                    campaign={campaign}
+                    tableYears={tableYears}
+                    title="Development"
+                />
+            ))}
+            {/* <Grid size={12}>
                 <CaseDrillingScheduleTable
                     assetWells={explorationWellsData}
                     dg4Year={getYearFromDateString(caseData.dG4Date)}
@@ -230,7 +267,7 @@ const CaseDrillingScheduleTab = () => {
                     gridRef={developmentWellsGridRef}
                     alignedGridsRef={[explorationWellsGridRef]}
                 />
-            </Grid>
+            </Grid> */}
         </Grid>
     )
 }
