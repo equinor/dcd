@@ -81,8 +81,8 @@ declare namespace Components {
             offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesOverrideDto;
             onshoreRelatedOPEXCostProfile: TimeSeriesDto;
             additionalOPEXCostProfile: TimeSeriesDto;
-            calculatedTotalIncomeCostProfile: TimeSeriesDto;
-            calculatedTotalCostCostProfile: TimeSeriesDto;
+            CalculatedTotalIncomeCostProfileUsd: TimeSeriesDto;
+            CalculatedTotalCostCostProfileUsd: TimeSeriesDto;
             topside: TopsideDto;
             topsideCostProfile: TimeSeriesDto;
             topsideCostProfileOverride: TimeSeriesOverrideDto;

@@ -15,7 +15,7 @@ public static class CalculateBreakEvenOilPriceService
         var oilPrice = caseItem.Project.OilPriceUSD;
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
-        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
+        var CalculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
@@ -61,9 +61,9 @@ public static class CalculateBreakEvenOilPriceService
         }
 
         var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
-            calculatedTotalCostCostProfile?.Values ?? [],
+            CalculatedTotalCostCostProfileUsd?.Values ?? [],
             discountRate,
-            calculatedTotalCostCostProfile?.StartYear ?? 0, // discount factor should be applied from the year after discount year
+            CalculatedTotalCostCostProfileUsd?.StartYear ?? 0, // discount factor should be applied from the year after discount year
             discountYearInRelationToDg4Year
         );
 

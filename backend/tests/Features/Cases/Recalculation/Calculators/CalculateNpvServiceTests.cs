@@ -32,14 +32,14 @@ public class CalculateNpvServiceTests
             [
                 new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfileUsd,
                     StartYear = -10,
                     Values = [200.0, 400.0, 100.0, 100.0]
                 },
 
                 new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,
+                    ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfileUsd,
                     StartYear = -7,
                     Values = [4717.5, 4717.5, 4717.5, 4717.5, 2358.75, 2358.75]
                 }

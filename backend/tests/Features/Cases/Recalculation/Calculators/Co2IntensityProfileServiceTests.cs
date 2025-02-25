@@ -32,7 +32,7 @@ public class Co2IntensityProfileServiceTests
             {
                 new()
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfileUsd,
                     StartYear = 2027,
                     Values = [2000.0, 4000.0, 1000.0, 1000.0]
                 },
