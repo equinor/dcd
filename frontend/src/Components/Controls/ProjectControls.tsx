@@ -16,7 +16,7 @@ import {
 } from "@equinor/eds-icons"
 import { useMediaQuery } from "@mui/material"
 import { useProjectContext } from "@/Store/ProjectContext"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 import RevisionsControl from "./Revision/RevisionsControl"
@@ -70,7 +70,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
         isRevision,
     } = useProjectContext()
     const { isSaving } = useAppStore()
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { canEdit, isEditDisabled, getEditDisabledText } = useCanUserEdit()
     const isSmallScreen = useMediaQuery("(max-width: 968px)")
 
     const { Features } = useFeatureContext()
@@ -131,13 +131,13 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             variant={editMode ? "outlined" : "contained"}
                             disabled={isEditDisabled}
                         >
-                            {editMode && !isEditDisabled && (
+                            {canEdit() && (
                                 <>
                                     <Icon data={visibility} />
                                     {!isSmallScreen && <span>View</span>}
                                 </>
                             )}
-                            {(!editMode || isEditDisabled) && (
+                            {(!canEdit()) && (
                                 <>
                                     <Icon data={edit} />
                                     {!isSmallScreen && <span>Edit</span>}

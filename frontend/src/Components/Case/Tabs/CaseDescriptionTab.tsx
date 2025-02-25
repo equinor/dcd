@@ -6,20 +6,18 @@ import { v4 as uuidv4 } from "uuid"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
-import { useAppStore } from "@/Store/AppStore"
 import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseApiData } from "@/Hooks"
 import useEditCase from "@/Hooks/useEditCase"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const CaseDescriptionTab = () => {
-    const { editMode } = useAppStore()
     const { apiData } = useCaseApiData()
     const { projectId } = useProjectContext()
 
     const [description, setDescription] = useState("")
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit } = useCanUserEdit()
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -71,9 +69,9 @@ const CaseDescriptionTab = () => {
             <Gallery />
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
-                    <Grid size={12} sx={{ marginBottom: editMode && !isEditDisabled ? "32px" : 0 }}>
+                    <Grid size={12} sx={{ marginBottom: canEdit() ? "32px" : 0 }}>
                         <Typography group="input" variant="label">Description</Typography>
-                        {editMode && !isEditDisabled? (
+                        {canEdit() ? (
                             <div
                                 key="input"
                                 id="Description"

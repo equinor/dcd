@@ -11,7 +11,7 @@ import { useModalContext } from "@/Store/ModalContext"
 import { useAppStore } from "@/Store/AppStore"
 import useEditProject from "@/Hooks/useEditProject"
 import { INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import CasesTable from "@/Components/Tables/ProjectTables/OverviewCasesTable/CasesTable"
@@ -22,7 +22,7 @@ const ProjectOverviewTab = () => {
     const { editMode } = useAppStore()
     const { addProjectEdit } = useEditProject()
     const { addNewCase } = useModalContext()
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { canEdit, isEditDisabled, getEditDisabledText } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
 
     const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
@@ -119,7 +119,7 @@ const ProjectOverviewTab = () => {
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={12} sx={{ marginBottom: (editMode && !isEditDisabled) ? "32px" : 0 }}>
                         <Typography group="input" variant="label">Description</Typography>
-                        {editMode && !isEditDisabled
+                        {canEdit()
                             ? (
                                 <MarkdownEditor
                                     menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}

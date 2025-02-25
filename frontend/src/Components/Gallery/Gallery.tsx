@@ -10,7 +10,7 @@ import GalleryImage from "./GalleryImage"
 import { useAppStore } from "@/Store/AppStore"
 import { getImageService } from "@/Services/ImageService"
 import { useProjectContext } from "@/Store/ProjectContext"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,7 +32,7 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
 `
 
 const Gallery = () => {
-    const { editMode, setSnackBarMessage } = useAppStore()
+    const { setSnackBarMessage } = useAppStore()
     const [gallery, setGallery] = useState<Components.Schemas.ImageDto[]>([])
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
@@ -40,7 +40,7 @@ const Gallery = () => {
     const { caseId } = useParams()
     const { revisionId } = useParams()
     const { projectId } = useProjectContext()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit } = useCanUserEdit()
 
     const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
 
@@ -101,7 +101,6 @@ const Gallery = () => {
                 const imageService = getImageService()
                 const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
-
                     if (caseId) {
                         await imageService.deleteCaseImage(projectId, caseId, image.imageId)
                     } else {
@@ -124,25 +123,25 @@ const Gallery = () => {
         setModalOpen(true)
     }
 
-    return gallery.length > 0 || (editMode && !isEditDisabled) ? (
+    return gallery.length > 0 || canEdit() ? (
         <Grid item xs={12}>
             <ImageModal image={expandedImage} modalOpen={modalOpen} setModalOpen={setModalOpen} />
             <GalleryLabel $warning={exeededLimit}>
-                {gallery.length > 0 && (!editMode || isEditDisabled) && "Gallery"}
-                {editMode && !isEditDisabled && `Gallery (${gallery.length} / 4)`}
+                {gallery.length > 0 && !canEdit() && "Gallery"}
+                {canEdit() && `Gallery (${gallery.length} / 4)`}
             </GalleryLabel>
             <Wrapper>
                 {gallery.map((image) => (
                     <GalleryImage
                         key={image.imageId}
                         image={image}
-                        editAllowed={editMode && !isEditDisabled}
+                        editAllowed={canEdit()}
                         onDelete={handleDelete}
                         onExpand={handleExpand}
                         onDescriptionChange={handleDescriptionChange}
                     />
                 ))}
-                {editMode && !isEditDisabled && gallery.length < 4 && (
+                {canEdit() && gallery.length < 4 && (
                     <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />
                 )}
             </Wrapper>

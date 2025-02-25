@@ -13,7 +13,7 @@ import { useAppStore } from "@/Store/AppStore"
 import CasesList from "./CasesList"
 import { sharedTimelineStyles } from "@/Components/Sidebar/sharedStyles"
 import { Header } from "@/Components/Sidebar/SidebarWrapper"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 export const CasesTimeline = styled(Stack)`
     height: 100%;
@@ -30,7 +30,7 @@ const GrowBox = styled.div`
 const CasesDetails: React.FC = () => {
     const { sidebarOpen } = useAppStore()
     const { addNewCase } = useModalContext()
-    const { isEditDisabled } = useEditDisabled()
+    const { isEditDisabled } = useCanUserEdit()
 
     return (
         <>

@@ -43,7 +43,7 @@ import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGri
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 import useEditCase from "@/Hooks/useEditCase"
 import { useTableQueue } from "@/Hooks/useTableQueue"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 // Styled Components
 const CenterGridIcons = styled.div`
@@ -91,7 +91,7 @@ const CaseTabTable = memo(({
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit, isEditDisabled } = useCanUserEdit()
 
     // State Management
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
@@ -114,7 +114,7 @@ const CaseTabTable = memo(({
     const gridRowData = useMemo(
         () => {
             if (!presentedTableData?.length) { return [] }
-            return profilesToRowData(presentedTableData, dg4Year, tableName, editMode && !isEditDisabled)
+            return profilesToRowData(presentedTableData, dg4Year, tableName, canEdit())
         },
         [presentedTableData, editMode, dg4Year, tableName, isEditDisabled],
     )
@@ -133,7 +133,7 @@ const CaseTabTable = memo(({
             <CenterGridIcons>
                 <CalculationSourceToggle
                     addEdit={addEdit}
-                    editAllowed={editMode && !isEditDisabled}
+                    editAllowed={canEdit()}
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
@@ -185,19 +185,19 @@ const CaseTabTable = memo(({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, editMode, isEditDisabled),
+                editable: (params: any) => tableCellisEditable(params, canEdit()),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: !params.node.footer && validateInput(params, editMode, isEditDisabled),
+                    errorMsg: !params.node.footer && validateInput(params, canEdit()),
                 }),
                 cellStyle: {
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (tableCellisEditable(params, editMode, isEditDisabled) ? "editableCell" : undefined),
+                cellClass: (params: any) => (tableCellisEditable(params, canEdit()) ? "editableCell" : undefined),
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
@@ -234,7 +234,7 @@ const CaseTabTable = memo(({
     }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage, addToQueue])
 
     const handleCellClicked = (event: CellClickedEvent) => {
-        if (!event.data || (editMode && !isEditDisabled)) { return }
+        if (!event.data || (canEdit())) { return }
 
         const clickedYear = event.column.getColId()
         setSelectedRow({
@@ -257,10 +257,10 @@ const CaseTabTable = memo(({
             sortable: true,
             filter: true,
             resizable: true,
-            editable: (params: any) => tableCellisEditable(params, editMode, isEditDisabled),
+            editable: (params: any) => tableCellisEditable(params, canEdit()),
             onCellValueChanged: handleCellValueChange,
             suppressHeaderMenuButton: true,
-            enableCellChangeFlash: editMode && !isEditDisabled,
+            enableCellChangeFlash: canEdit(),
             suppressMovable: true,
         },
         rowData: gridRowData,
@@ -297,7 +297,7 @@ const CaseTabTable = memo(({
         tableYears,
         setSelectedRow,
         setIsSidesheetOpen,
-        isEditDisabled
+        isEditDisabled,
     ])
 
     // Effects

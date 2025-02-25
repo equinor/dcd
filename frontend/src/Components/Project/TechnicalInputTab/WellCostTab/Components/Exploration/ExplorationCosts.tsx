@@ -14,7 +14,7 @@ import {
 } from "../Shared/SharedWellStyles"
 import { Currency } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 type ExplorationCostsState = Omit<
     Components.Schemas.ExplorationOperationalWellCostsOverviewDto,
@@ -29,7 +29,7 @@ const ExplorationCosts = () => {
     const { projectId } = revisionAndProjectData ?? {}
     const { editMode } = useAppStore()
     const { addExplorationWellCostEdit } = useTechnicalInputEdits()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit, isEditDisabled } = useCanUserEdit()
 
     const [costs, setCosts] = useState<ExplorationCostsState>({
         explorationRigUpgrading: 0,
@@ -58,7 +58,7 @@ const ExplorationCosts = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (explorationOperationalWellCostsId && projectId && debouncedCosts && editMode && !isEditDisabled) {
+        if (explorationOperationalWellCostsId && projectId && debouncedCosts && canEdit()) {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof ExplorationCostsState] !== value,
             )

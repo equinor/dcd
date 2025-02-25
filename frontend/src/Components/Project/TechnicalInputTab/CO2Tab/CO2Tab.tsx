@@ -17,7 +17,7 @@ import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { cellStyleRightAlign } from "@/Utils/common"
 import useEditProject from "@/Hooks/useEditProject"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 
 const StyledContainer = styled.div`
@@ -41,7 +41,7 @@ const CO2Tab = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const { isRevision } = useProjectContext()
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { canEdit, isEditDisabled, getEditDisabledText } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
 
     const [check, setCheck] = useState(false)
@@ -76,8 +76,8 @@ const CO2Tab = () => {
             field: "value",
             headerName: "Value",
             flex: 1,
-            editable: editMode && !isEditDisabled,
-            cellClass: editMode && !isEditDisabled ? "editableCell" : undefined,
+            editable: canEdit(),
+            cellClass: canEdit() ? "editableCell" : undefined,
             cellStyle: cellStyleRightAlign,
         },
     ] as ColDef[], [editMode, isEditDisabled])
@@ -209,8 +209,7 @@ const CO2Tab = () => {
 
     useEffect(() => {
         if (revisionAndProjectData
-            && editMode
-            && !isEditDisabled
+            && canEdit()
             && cO2RemovedFromGas !== undefined
             && cO2EmissionsFromFlaredGas !== undefined
             && cO2EmissionsFromFuelGas !== undefined
@@ -250,7 +249,7 @@ const CO2Tab = () => {
                 </Typography>
                 <Tooltip title={getEditDisabledText()}>
                     <Switch
-                        disabled={isEditDisabled || !editMode}
+                        disabled={!canEdit()}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => {
                             setCheck(e.target.checked)
                         }}
@@ -276,7 +275,7 @@ const CO2Tab = () => {
                         onGridReady={onGridReady}
                         isExternalFilterPresent={isExternalFilterPresent}
                         doesExternalFilterPass={doesExternalFilterPass}
-                        singleClickEdit={editMode && !isEditDisabled}
+                        singleClickEdit={canEdit()}
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>

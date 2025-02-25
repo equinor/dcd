@@ -16,7 +16,7 @@ import Grid from "@mui/material/Grid2"
 
 import { GetProspService } from "@/Services/ProspService"
 import useEditProject from "@/Hooks/useEditProject"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
 
@@ -44,7 +44,7 @@ const PROSPCaseList = ({
     const styles = useStyles()
     const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit, isEditDisabled } = useCanUserEdit()
     const { editMode } = useAppStore()
 
     const [rowData, setRowData] = useState<RowData[]>()
@@ -165,7 +165,7 @@ const PROSPCaseList = ({
                 label=""
                 value={fileId}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFileChange(e, p)}
-                disabled={isEditDisabled || !editMode}
+                disabled={!canEdit()}
             >
                 {sharePointFileDropdownOptions(items)}
                 <option aria-label="empty value" key="" value="" />
@@ -285,7 +285,7 @@ const PROSPCaseList = ({
                             enableClickSelection: false,
                             headerCheckbox: true,
                             checkboxes: true,
-                            isRowSelectable: () => editMode && !isEditDisabled,
+                            isRowSelectable: () => canEdit(),
                         }}
                         animateRows
                         domLayout="autoHeight"
@@ -299,7 +299,7 @@ const PROSPCaseList = ({
                     <Button
                         onClick={() => save(revisionAndProjectData)}
                         color="secondary"
-                        disabled={isEditDisabled || !editMode}
+                        disabled={!canEdit()}
                     >
                         Apply changes
                     </Button>

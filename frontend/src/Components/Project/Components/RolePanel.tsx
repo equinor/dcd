@@ -8,9 +8,8 @@ import {
 import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion-react-person"
 
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
-import { useAppStore } from "@/Store/AppStore"
 import { ProjectMemberRole } from "@/Models/enums"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 interface RolePanelProps {
     isSmallScreen: boolean;
@@ -24,8 +23,7 @@ interface RolePanelProps {
 const RolePanel = ({
     isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson,
 }: RolePanelProps) => {
-    const { editMode } = useAppStore()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit } = useCanUserEdit()
     const orgChartPeople = useMemo(() => people?.filter((person) => person.isPmt === true), [people])
     const manuallyAddedPeople = useMemo(() => people?.filter((person) => person.isPmt === false), [people])
 
@@ -36,7 +34,7 @@ const RolePanel = ({
                     <Icon data={isViewers ? visibility : edit} />
                     <Typography variant="h6">{isViewers ? "Project viewers" : "Project editors"}</Typography>
                 </EditorViewerHeading>
-                {editMode && !isEditDisabled && (
+                {canEdit() && (
                     <PersonSelect
                         placeholder={`Add new ${isViewers ? "viewer" : "editor"}`}
                         selectedPerson={null}
@@ -47,7 +45,7 @@ const RolePanel = ({
                     <PeopleContainer>
                         {manuallyAddedPeople.filter((p) => !p.isPmt).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && !isEditDisabled && (
+                                {canEdit() && (
                                     <>
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
                                             <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}>
@@ -64,7 +62,7 @@ const RolePanel = ({
                             </PersonListItem>
                         ))}
                     </PeopleContainer>
-                ) : (<Typography style={{ marginBottom: "150px" }} variant="body_short">{(!editMode || isEditDisabled)&& `No project ${isViewers ? "viewers" : "editors"} found`}</Typography>)}
+                ) : (<Typography style={{ marginBottom: "150px" }} variant="body_short">{!canEdit() && `No project ${isViewers ? "viewers" : "editors"} found`}</Typography>)}
             </div>
             <PeopleContainer $orgChart>
                 {orgChartPeople && orgChartPeople.length > 0 ? (
