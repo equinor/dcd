@@ -3,30 +3,18 @@ import { useParams } from "react-router-dom"
 import { EditInstance, ResourceObject } from "@/Models/Interfaces"
 import { useSubmitToApi } from "./UseSubmitToApi"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { ITimeSeries, TimeSeriesEntry } from "@/Models/ITimeSeries"
 
-// Types and Interfaces
 interface TableQueueProps {
     setIsSaving: (isSaving: boolean) => void
     isSaving: boolean
     gridRef: React.RefObject<any>
 }
 
-interface TimeSeriesData {
-    startYear: number
-    values: number[]
-}
-
 interface QueueStats {
     profileEdits: EditInstance[]
     wellEdits: EditInstance[]
     caseEdits: EditInstance[]
-}
-
-interface TimeSeriesEntry {
-    profileType: string
-    startYear: number
-    values: number[]
-    override?: boolean
 }
 
 // Queue processing utilities
@@ -52,7 +40,7 @@ const categorizeTimeSeriesEntries = (queue: EditInstance[]): { timeseriesEntries
 }, { timeseriesEntries: [] as EditInstance[], overrideEntries: [] as EditInstance[] })
 
 // API submission handlers
-const submitProfileUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
+const submitCampaignUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
     const rigUpgradingEdits = getLatestEdits(
         editQueue.filter((edit) => edit.resourcePropertyKey === "rigUpgradingProfile"),
         (edit) => edit.resourceName,
@@ -64,7 +52,7 @@ const submitProfileUpdates = async (editQueue: EditInstance[], submitToApi: any)
 
     const allEdits = [...rigUpgradingEdits, ...rigMobDemobEdits]
     await Promise.all(allEdits.map(async (edit) => {
-        const timeSeriesData = edit.resourceObject as TimeSeriesData
+        const timeSeriesData = edit.resourceObject as ITimeSeries
         const resourceName = edit.resourcePropertyKey === "rigUpgradingProfile" ? "rigUpgrading" : "rigMobDemob"
 
         try {
@@ -89,7 +77,7 @@ const submitWellUpdates = async (editQueue: EditInstance[], submitToApi: any) =>
     const uniqueWellEdits = getLatestEdits(editQueue, (edit) => edit.wellId!)
 
     await Promise.all(uniqueWellEdits.map(async (edit) => {
-        const timeSeriesData = edit.resourceObject as TimeSeriesData
+        const timeSeriesData = edit.resourceObject as ITimeSeries
         try {
             await submitToApi({
                 projectId: edit.projectId,
@@ -160,7 +148,7 @@ export const useTableQueue = ({
             const { profileEdits, wellEdits, caseEdits } = categorizeEdits(editQueue)
 
             await Promise.all([
-                profileEdits.length > 0 && submitProfileUpdates(profileEdits, submitToApi),
+                profileEdits.length > 0 && submitCampaignUpdates(profileEdits, submitToApi),
                 wellEdits.length > 0 && submitWellUpdates(wellEdits, submitToApi),
                 caseEdits.length > 0 && submitCaseUpdates(caseEdits, submitToApi, projectId, caseId),
             ].filter(Boolean))

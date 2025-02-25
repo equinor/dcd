@@ -1,4 +1,5 @@
 import { ProfileTypes } from "@/Models/enums"
+import { UpdateRigCostDto } from "./ICampaigns"
 
 export type ResourceName =
     "case" |
@@ -11,22 +12,11 @@ export type ResourceName =
     "fuelFlaringAndLossesOverride" |
     "wellProject" |
     "exploration" |
-    "rigCost" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" |
     "rigUpgradingCost" |
     "rigMobDemobCost" |
     `${ProfileTypes}`
-
-export type CampaignResourcePropertyKey =
-    "rigUpgradingProfile" |
-    "rigMobDemobProfile" |
-    "campaignWells"
-
-export type CampaignResourceNames =
-    "rigUpgrading" |
-    "rigMobDemob" |
-    "campaignWells"
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
@@ -47,8 +37,6 @@ export type ResourceObject =
 export type ProfileObject =
     Components.Schemas.TimeSeriesOverrideDto |
     Components.Schemas.TimeSeriesDto |
-    Components.Schemas.TimeSeriesOverrideDto |
-    Components.Schemas.TimeSeriesDto |
     Components.Schemas.SaveTimeSeriesDto |
     Components.Schemas.SaveTimeSeriesOverrideDto
 
@@ -66,8 +54,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.CampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
-    keyof Components.Schemas.TimeSeriesDto |
-    keyof Components.Schemas.CampaignDto
+    keyof Components.Schemas.TimeSeriesDto
 
 export interface EditInstance {
     uuid: string;
@@ -110,7 +97,3 @@ export type WhatsNewUpdates = {
         [categoryKey in Category]?: UpdateEntry[]
     }
 };
-
-export interface UpdateRigCostDto {
-    cost: number;
-}

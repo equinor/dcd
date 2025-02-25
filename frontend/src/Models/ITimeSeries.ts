@@ -1,12 +1,19 @@
 import { Dispatch, SetStateAction } from "react"
 import { ProfileTypes } from "./enums"
-import { CampaignResourceNames } from "./Interfaces"
+import { CampaignResourceNames } from "./ICampaigns"
 
 export interface ITimeSeries {
     startYear: number
     name?: string
     values?: number[] | null
     sum?: number | undefined
+}
+
+export interface TimeSeriesEntry {
+    profileType: string
+    startYear: number
+    values: number[]
+    override?: boolean
 }
 
 export interface ITimeSeriesOverride extends ITimeSeries {

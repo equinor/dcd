@@ -4,6 +4,15 @@ export interface CampaignProps {
     tableYears: [number, number]
 }
 
+export type CampaignResourceNames =
+    "rigUpgrading" |
+    "rigMobDemob" |
+    "campaignWells"
+
+export interface UpdateRigCostDto {
+    cost: number;
+}
+
 export interface TableRow {
     name: string
     subheader: string
