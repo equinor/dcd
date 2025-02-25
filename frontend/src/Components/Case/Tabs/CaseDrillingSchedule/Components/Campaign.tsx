@@ -1,5 +1,4 @@
 import { useMemo, useRef } from "react"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import Grid from "@mui/material/Grid2"
 
 import {
@@ -12,16 +11,15 @@ import { getYearFromDateString } from "@/Utils/DateUtils"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableContainer } from "./SharedCampaignStyles"
 
 const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
-    const styles = useStyles()
     const { apiData } = useCaseApiData()
     const campaignGridRef = useRef<any>(null)
 
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
 
-        // Add rig mob/demob profile row
         if (campaign.rigMobDemobProfile) {
             const mobDemobRow: ITimeSeriesTableData = {
                 profileName: "Rig mob/demob",
@@ -39,7 +37,6 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             rows.push(mobDemobRow)
         }
 
-        // Add rig upgrading profile row
         if (campaign.rigUpgradingProfile) {
             const upgradingRow: ITimeSeriesTableData = {
                 profileName: "Rig upgrading",
@@ -57,7 +54,6 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             rows.push(upgradingRow)
         }
 
-        // Add wells from campaignWells
         campaign.campaignWells?.forEach((well: Well) => {
             const wellRow: ItimeSeriesTableDataWithWell = {
                 profileName: well.wellName,
@@ -86,8 +82,8 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     }
 
     return (
-        <Grid container spacing={2} style={{ width: "100%" }}>
-            <Grid container size={12} spacing={2} style={{ maxWidth: "600px" }}>
+        <CampaignFullWidthContainer container spacing={2}>
+            <CampaignInputsContainer container size={12} spacing={2}>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
                         resourceName="rigUpgradingCost"
@@ -112,29 +108,21 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                         integer
                     />
                 </Grid>
+            </CampaignInputsContainer>
+            <Grid size={12}>
+                <CampaignTableContainer>
+                    <CaseTabTable
+                        timeSeriesData={rowData}
+                        dg4Year={getYearFromDateString(apiData?.case.dG4Date ?? "")}
+                        tableYears={tableYears}
+                        tableName={`${title} campaign`}
+                        totalRowName="Total"
+                        gridRef={campaignGridRef}
+                        includeFooter={false}
+                    />
+                </CampaignTableContainer>
             </Grid>
-            <Grid size={12} style={{ width: "100%" }}>
-                <div className={styles.root} style={{ width: "100%" }}>
-                    <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        width: "100%",
-                        height: "400px",
-                    }}
-                    >
-                        <CaseTabTable
-                            timeSeriesData={rowData}
-                            dg4Year={getYearFromDateString(apiData?.case.dG4Date ?? "")}
-                            tableYears={tableYears}
-                            tableName={`${title} campaign`}
-                            totalRowName="Total"
-                            gridRef={campaignGridRef}
-                            includeFooter={false}
-                        />
-                    </div>
-                </div>
-            </Grid>
-        </Grid>
+        </CampaignFullWidthContainer>
     )
 }
 

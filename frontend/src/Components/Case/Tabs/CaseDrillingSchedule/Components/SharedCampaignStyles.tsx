@@ -1,4 +1,5 @@
 import { Typography } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
 import { styled } from "styled-components"
 
 export const CampaignHeader = styled.div <{ $isSmallScreen: boolean }>`
@@ -38,14 +39,18 @@ export const NameCell = styled.div`
     justify-content: center;
 `
 
-export const MainText = styled.div`
-    font-weight: 500;
-    line-height: 1.2;
+export const CampaignTableContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 75px;
 `
 
-export const SubText = styled.div`
-    font-size: 12px;
-    color: #6F6F6F;
-    font-weight: 400;
-    line-height: 1.2;
+export const CampaignFullWidthContainer = styled(Grid)`
+    width: 100%;
+`
+
+export const CampaignInputsContainer = styled(Grid)`
+    width: 100%;
+    max-width: 600px;
 `
