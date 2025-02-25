@@ -5,7 +5,6 @@ using api.AppInfrastructure.Authorization.Extensions;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
 using api.Context.Extensions;
-using api.Exceptions;
 using api.Features.ProjectAccess;
 using api.Models.Enums;
 
@@ -72,10 +71,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
             return [];
         }
 
-        if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))
-        {
-            throw new InvalidInputException($"Invalid project id: {projectId}");
-        }
+        var projectIdGuid = Guid.Parse(projectId.ToString()!);
 
         await using var dbContext = await contextFactory.CreateDbContextAsync();
 

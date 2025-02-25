@@ -9,7 +9,6 @@ using api.Features.BackgroundServices.ProjectRecalculation;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.IdentityModel.Logging;
 
 var cultureInfo = new CultureInfo("en-US");
 
@@ -66,7 +65,6 @@ app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 
 if (DcdEnvironments.EnableSwagger)
 {
-    IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Concept App"));
 }
