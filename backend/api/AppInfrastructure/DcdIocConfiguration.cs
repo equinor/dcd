@@ -3,7 +3,6 @@ using api.Features.Assets.CaseAssets.Campaigns.Create;
 using api.Features.Assets.CaseAssets.Campaigns.Delete;
 using api.Features.Assets.CaseAssets.Campaigns.Get;
 using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaign;
-using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaignCost;
 using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaignWells;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
@@ -48,6 +47,8 @@ using api.Features.Stea;
 using api.Features.Videos.Get;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigUpgradingCost;
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigMobDemobCost;
 
 using Microsoft.AspNetCore.Authorization;
 
@@ -138,7 +139,8 @@ public static class DcdIocConfiguration
 
         /* Drilling campaigns */
         services.AddScoped<UpdateCampaignService>();
-        services.AddScoped<UpdateCampaignCostService>();
+        services.AddScoped<UpdateRigMobDemobCostService>();
+        services.AddScoped<UpdateRigUpgradingCostService>();
         services.AddScoped<UpdateCampaignWellsService>();
         services.AddScoped<CreateCampaignService>();
         services.AddScoped<GetCampaignService>();

@@ -316,14 +316,14 @@ export const useSubmitToApi = () => {
                         projectId,
                         caseId,
                         resourceId: resourceId!,
-                        resourceObject: { cost: (resourceObject as any).rigUpgradingCost },
+                        resourceObject: (resourceObject as any).rigUpgradingCost,
                     })
                 case "rigMobDemobCost":
                     return updateRigMobDemobCost({
                         projectId,
                         caseId,
                         resourceId: resourceId!,
-                        resourceObject: { cost: (resourceObject as any).rigMobDemobCost },
+                        resourceObject: (resourceObject as any).rigMobDemobCost,
                     })
                 case "campaignWells":
                     return updateCampaignWells({
