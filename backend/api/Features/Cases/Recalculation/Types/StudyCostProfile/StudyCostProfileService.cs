@@ -1,5 +1,3 @@
-using System.Globalization;
-
 using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Models;
@@ -39,7 +37,7 @@ public static class StudyCostProfileService
 
         var totalDays = (dg2 - dg0).Days + 1;
 
-        var firstYearDays = (new DateTimeOffset(dg0.Year, 12, 31, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero) - dg0).Days + 1;
+        var firstYearDays = DateTime.IsLeapYear(dg0.Year) ? 366 : 365;
         var firstYearPercentage = firstYearDays / (double)totalDays;
 
         var lastYearDays = dg2.DayOfYear;
@@ -92,7 +90,7 @@ public static class StudyCostProfileService
             totalDays = 1;
         }
 
-        var firstYearDays = (new DateTimeOffset(dg2.Year, 12, 31, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero) - dg2).Days + 1;
+        var firstYearDays = DateTime.IsLeapYear(dg2.Year) ? 366 : 365;
         var firstYearPercentage = firstYearDays / (double)totalDays;
 
         var lastYearDays = dg3.DayOfYear;
