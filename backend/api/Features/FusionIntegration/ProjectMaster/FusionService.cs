@@ -6,19 +6,14 @@ using Newtonsoft.Json;
 
 namespace api.Features.FusionIntegration.ProjectMaster;
 
-public class FusionService(
-    IFusionContextResolver fusionContextResolver,
-    ILogger<FusionService> logger) : IFusionService
+public class FusionService(IFusionContextResolver fusionContextResolver, ILogger<FusionService> logger) : IFusionService
 {
     public async Task<FusionProjectMaster?> GetProjectMasterFromFusionContextId(Guid contextId)
     {
         var projectMasterContext = await ResolveProjectMasterContext(contextId);
 
-        // ?: Did we obtain a ProjectMaster context?
         if (projectMasterContext == null)
         {
-            // -> No, still not found. Then we log this and fail hard, as the callee should have provided with a
-            // valid ProjectMaster (context) ID.
             logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{contextId}'");
             return null;
         }
