@@ -1,4 +1,6 @@
-export interface DrillingCampaignProps {
+export interface CampaignProps {
+    campaign: Components.Schemas.CampaignDto
+    title: string
     tableYears: [number, number]
 }
 

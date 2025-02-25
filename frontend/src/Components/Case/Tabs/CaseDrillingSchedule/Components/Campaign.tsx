@@ -3,7 +3,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import Grid from "@mui/material/Grid2"
 
 import {
-    DrillingCampaignProps,
+    CampaignProps,
     Well,
 } from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
@@ -13,14 +13,10 @@ import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 
-interface ExplorationCampaignProps extends DrillingCampaignProps {
-    campaign: Components.Schemas.CampaignDto
-}
-
-const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps) => {
+const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const styles = useStyles()
     const { apiData } = useCaseApiData()
-    const ExplorationCampaignGridRef = useRef<any>(null)
+    const campaignGridRef = useRef<any>(null)
 
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
@@ -96,7 +92,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     <SwitchableNumberInput
                         resourceName="rigUpgradingCost"
                         resourcePropertyKey="rigUpgradingCost"
-                        label="Rig upgrading cost - Exploration"
+                        label={`Rig upgrading cost - ${title}`}
                         resourceId={campaign.campaignId}
                         previousResourceObject={campaign}
                         value={campaign.rigUpgradingCost}
@@ -108,7 +104,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                     <SwitchableNumberInput
                         resourceName="rigMobDemobCost"
                         resourcePropertyKey="rigMobDemobCost"
-                        label="Rig mob/demob cost - Exploration"
+                        label={`Rig mob/demob cost - ${title}`}
                         resourceId={campaign.campaignId}
                         previousResourceObject={campaign}
                         value={campaign.rigMobDemobCost}
@@ -130,9 +126,9 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                             timeSeriesData={rowData}
                             dg4Year={getYearFromDateString(apiData?.case.dG4Date ?? "")}
                             tableYears={tableYears}
-                            tableName="Exploration campaign"
+                            tableName={`${title} campaign`}
                             totalRowName="Total"
-                            gridRef={ExplorationCampaignGridRef}
+                            gridRef={campaignGridRef}
                             includeFooter={false}
                         />
                     </div>
@@ -142,4 +138,4 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     )
 }
 
-export default ExplorationCampaign
+export default Campaign

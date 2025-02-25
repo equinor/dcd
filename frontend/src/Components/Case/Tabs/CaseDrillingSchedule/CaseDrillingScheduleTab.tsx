@@ -15,7 +15,7 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 // import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
-import ExplorationCampaign from "./Components/ExplorationCampaign"
+import Campaign from "./Components/Campaign"
 import {
     CampaignHeader,
     CampaignHeaderTexts,
@@ -227,10 +227,19 @@ const CaseDrillingScheduleTab = () => {
                 />
             </CampaignHeader>
             {apiData?.explorationCampaigns?.map((campaign) => (
-                <ExplorationCampaign
+                <Campaign
                     key={campaign.campaignId}
-                    tableYears={tableYears}
                     campaign={campaign}
+                    tableYears={tableYears}
+                    title="Exploration"
+                />
+            ))}
+            {apiData?.developmentCampaigns?.map((campaign) => (
+                <Campaign
+                    key={campaign.campaignId}
+                    campaign={campaign}
+                    tableYears={tableYears}
+                    title="Development"
                 />
             ))}
             {/* <Grid size={12}>
