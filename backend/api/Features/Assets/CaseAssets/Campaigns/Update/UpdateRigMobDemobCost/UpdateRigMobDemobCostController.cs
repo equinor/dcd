@@ -1,4 +1,5 @@
 using api.AppInfrastructure.ControllerAttributes;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigMobDemobCost;
@@ -7,13 +8,9 @@ public class UpdateRigMobDemobCostController(UpdateRigMobDemobCostService update
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/campaigns/{campaignId:guid}/rig-mobdemob-cost")]
-    public async Task<NoContentResult> UpdateRigMobDemobCost(
-        Guid projectId, 
-        Guid caseId, 
-        Guid campaignId, 
-        [FromBody] UpdateRigMobDemobCostDto updateRigMobDemobCostDto)
+    public async Task<NoContentResult> UpdateRigMobDemobCost(Guid projectId, Guid caseId, Guid campaignId, [FromBody] UpdateRigMobDemobCostDto dto)
     {
-        await updateRigMobDemobCostService.UpdateRigMobDemobCost(projectId, caseId, campaignId, updateRigMobDemobCostDto);
+        await updateRigMobDemobCostService.UpdateRigMobDemobCost(projectId, caseId, campaignId, dto);
         return NoContent();
     }
-} 
+}
