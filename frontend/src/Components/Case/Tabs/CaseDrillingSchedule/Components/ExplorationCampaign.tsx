@@ -11,6 +11,7 @@ import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITi
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 
 interface ExplorationCampaignProps extends DrillingCampaignProps {
     campaign: Components.Schemas.CampaignDto
@@ -91,9 +92,9 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
             <Grid container size={12} spacing={2} style={{ maxWidth: "600px" }}>
-                {/* <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
-                        resourceName="campaign"
+                        resourceName="rigUpgradingCost"
                         resourcePropertyKey="rigUpgradingCost"
                         label="Rig upgrading cost - Exploration"
                         resourceId={campaign.campaignId}
@@ -105,7 +106,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
-                        resourceName="campaign"
+                        resourceName="rigMobDemobCost"
                         resourcePropertyKey="rigMobDemobCost"
                         label="Rig mob/demob cost - Exploration"
                         resourceId={campaign.campaignId}
@@ -114,7 +115,7 @@ const ExplorationCampaign = ({ tableYears, campaign }: ExplorationCampaignProps)
                         unit="MUSD"
                         integer
                     />
-                </Grid> */}
+                </Grid>
             </Grid>
             <Grid size={12} style={{ width: "100%" }}>
                 <div className={styles.root} style={{ width: "100%" }}>

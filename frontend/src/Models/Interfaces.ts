@@ -11,14 +11,21 @@ export type ResourceName =
     "fuelFlaringAndLossesOverride" |
     "wellProject" |
     "exploration" |
-    "campaign" |
+    "rigCost" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" |
+    "rigUpgradingCost" |
+    "rigMobDemobCost" |
     `${ProfileTypes}`
 
 export type CampaignResourcePropertyKey =
     "rigUpgradingProfile" |
     "rigMobDemobProfile" |
+    "campaignWells"
+
+export type CampaignResourceNames =
+    "rigUpgrading" |
+    "rigMobDemob" |
     "campaignWells"
 
 export type ResourceObject =
@@ -32,7 +39,10 @@ export type ResourceObject =
     Components.Schemas.OnshorePowerSupplyDto |
     Components.Schemas.UpdateCampaignDto |
     Components.Schemas.CampaignDto |
-    ProfileObject
+    Components.Schemas.UpdateRigMobDemobCostDto |
+    Components.Schemas.UpdateRigUpgradingCostDto |
+    ProfileObject |
+    UpdateRigCostDto
 
 export type ProfileObject =
     Components.Schemas.TimeSeriesOverrideDto |
@@ -100,3 +110,7 @@ export type WhatsNewUpdates = {
         [categoryKey in Category]?: UpdateEntry[]
     }
 };
+
+export interface UpdateRigCostDto {
+    cost: number;
+}

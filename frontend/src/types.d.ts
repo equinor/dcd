@@ -587,6 +587,12 @@ declare namespace Components {
             arena: boolean;
             mdqc: boolean;
         }
+        export interface UpdateRigMobDemobCostDto {
+            cost: number; // double
+        }
+        export interface UpdateRigUpgradingCostDto {
+            cost: number; // double
+        }
         export interface UpdateSubstructureDto {
             dryWeight: number; // double
             costYear: number; // int32
@@ -855,6 +861,44 @@ declare namespace Paths {
                 campaignId: Parameters.CampaignId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateCampaignCostDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdRigMobdemobCost {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateRigMobDemobCostDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdRigUpgradingCost {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateRigUpgradingCostDto;
             namespace Responses {
                 export interface $200 {
                 }

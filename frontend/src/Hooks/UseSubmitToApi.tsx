@@ -22,6 +22,7 @@ import { ordinaryTimeSeriesTypes, overrideTimeSeriesTypes } from "@/Utils/Timese
 interface UpdateResourceParams {
     projectId: string;
     caseId: string;
+    resourceId?: string;
     resourceObject: ResourceObject;
 }
 
@@ -66,18 +67,23 @@ export const useSubmitToApi = () => {
     const updateResource = async (
         getService: () => any,
         updateMethodName: string,
-        {
-            projectId,
-            caseId,
-            resourceObject,
-        }: UpdateResourceParams,
+        params: UpdateResourceParams,
     ) => {
-        const service = await getService()
+        const service = getService()
 
-        const serviceMethod = service[updateMethodName](projectId, caseId, resourceObject)
+        const serviceMethod = params.resourceId
+            ? service[updateMethodName](params.projectId, params.caseId, params.resourceId, params.resourceObject)
+            : service[updateMethodName](params.projectId, params.caseId, params.resourceObject)
 
         try {
-            const payload: any = { projectId, caseId, serviceMethod }
+            const payload: any = {
+                projectId: params.projectId,
+                caseId: params.caseId,
+                serviceMethod,
+            }
+            if (params.resourceId) {
+                payload.resourceId = params.resourceId
+            }
 
             const result = await mutation.mutateAsync(payload)
             return { success: true, data: result }
@@ -86,9 +92,13 @@ export const useSubmitToApi = () => {
         }
     }
 
-    const updateCampaign = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateCampaign", { ...params })
+    const updateCampaign = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateCampaign", params)
 
-    const updateCampaignWells = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateCampaignWells", { ...params })
+    const updateCampaignWells = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateCampaignWells", params)
+
+    const updateRigUpgradingCost = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateRigUpgradingCost", params)
+
+    const updateRigMobDemobCost = (params: UpdateResourceParams) => updateResource(GetDrillingCampaignsService, "updateRigMobDemobCost", params)
 
     const updateTopside = (params: UpdateResourceParams) => updateResource(GetTopsideService, "updateTopside", { ...params })
 
@@ -286,11 +296,11 @@ export const useSubmitToApi = () => {
                                     resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
                                 ),
                     )
-
                 case "rigUpgrading":
                     return updateCampaign({
                         projectId,
                         caseId,
+                        resourceId: resourceId!,
                         resourceObject: { ...resourceObject, campaignCostType: 0 as Components.Schemas.CampaignCostType },
                     })
 
@@ -298,9 +308,23 @@ export const useSubmitToApi = () => {
                     return updateCampaign({
                         projectId,
                         caseId,
+                        resourceId: resourceId!,
                         resourceObject: { ...resourceObject, campaignCostType: 1 as Components.Schemas.CampaignCostType },
                     })
-
+                case "rigUpgradingCost":
+                    return updateRigUpgradingCost({
+                        projectId,
+                        caseId,
+                        resourceId: resourceId!,
+                        resourceObject: { cost: (resourceObject as any).rigUpgradingCost },
+                    })
+                case "rigMobDemobCost":
+                    return updateRigMobDemobCost({
+                        projectId,
+                        caseId,
+                        resourceId: resourceId!,
+                        resourceObject: { cost: (resourceObject as any).rigMobDemobCost },
+                    })
                 case "campaignWells":
                     return updateCampaignWells({
                         projectId, caseId, resourceObject,

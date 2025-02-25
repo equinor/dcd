@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 import { ProfileTypes } from "./enums"
+import { CampaignResourceNames } from "./Interfaces"
 
 export interface ITimeSeries {
     startYear: number
@@ -34,7 +35,7 @@ export interface ITimeSeriesTableData {
     overridable: boolean
     resourceId: string
     resourcePropertyKey: string
-    resourceName: ProfileTypes | "rigUpgrading" | "rigMobDemob" | "campaignWells" // todo: generate these from backend
+    resourceName: ProfileTypes | CampaignResourceNames
     editable: boolean
     total?: string
     hideIfEmpty?: boolean
