@@ -7,7 +7,6 @@ using api.Features.BackgroundServices.LogCleanup;
 using api.Features.BackgroundServices.ProjectMaster;
 using api.Features.BackgroundServices.ProjectRecalculation;
 
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var cultureInfo = new CultureInfo("en-US");
@@ -29,8 +28,8 @@ builder.ConfigureDcdLogging();
 builder.AddDcdBlobStorage();
 
 builder.Services.AddDcdCorsPolicy();
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new DcdApiEndpointTransformer())));
+builder.Services.AddRouting();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureDcdSwagger();
 
