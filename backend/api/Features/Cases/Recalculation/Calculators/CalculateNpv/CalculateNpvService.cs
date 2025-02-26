@@ -40,15 +40,15 @@ public static class CalculateNpvService
 
     private static TimeSeries? GetCashflowProfile(Case caseItem)
     {
-        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile) == null ||
-            caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile) == null)
+        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd) == null ||
+            caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd) == null)
         {
             return null;
         }
 
-        var calculatedTotalIncomeCostProfile = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
-        var calculatedTotalCostCostProfile = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
+        var CalculatedTotalIncomeCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfileUsd));
+        var CalculatedTotalCostCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfileUsd));
 
-        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfile, calculatedTotalCostCostProfile);
+        return EconomicsHelper.CalculateCashFlow(CalculatedTotalIncomeCostProfileUsd, CalculatedTotalCostCostProfileUsd);
     }
 }

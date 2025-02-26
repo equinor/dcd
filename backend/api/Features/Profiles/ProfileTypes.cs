@@ -31,9 +31,9 @@ public static class ProfileTypes
 
     public const string TotalOtherStudiesCostProfile = "TotalOtherStudiesCostProfile";
 
-    public const string CalculatedTotalIncomeCostProfile = "CalculatedTotalIncomeCostProfile";
+    public const string CalculatedTotalIncomeCostProfileUsd = "CalculatedTotalIncomeCostProfileUsd";
 
-    public const string CalculatedTotalCostCostProfile = "CalculatedTotalCostCostProfile";
+    public const string CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd";
 
     /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";
