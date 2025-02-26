@@ -1,4 +1,5 @@
 using api.Context;
+using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -18,15 +19,20 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.OnshorePowerSupply)
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
-            .SingleAsync();
+            .SingleOrDefaultAsync();
+
+        if (caseItem == null)
+        {
+            throw new NotFoundInDbException($"Case with id {caseId} not found.");
+        }
+
+        await context.TimeSeriesProfiles
+            .Where(x => x.CaseId == caseId)
+            .LoadAsync();
 
         await context.Campaigns
             .Include(c => c.CampaignWells)
             .Where(x => x.CaseId == caseItem.Id)
-            .LoadAsync();
-
-        await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
             .LoadAsync();
 
         return caseItem;

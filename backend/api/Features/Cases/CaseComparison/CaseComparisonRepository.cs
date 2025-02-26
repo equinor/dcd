@@ -20,12 +20,12 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var cases = await context.Cases
             .Include(x => x.DrainageStrategy)
+            .Include(x => x.OnshorePowerSupply)
             .Include(x => x.Substructure)
             .Include(x => x.Surf)
             .Include(x => x.Topside)
             .Include(x => x.Transport)
-            .Include(x => x.OnshorePowerSupply)
-            .Where(x => x.ProjectId == project.Id)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => !x.Archived)
             .ToListAsync();
 
@@ -36,15 +36,15 @@ public class CaseComparisonRepository(DcdDbContext context)
             .LoadAsync();
 
         await context.Wells
-            .Where(x => x.ProjectId == project.Id)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
 
         await context.ExplorationOperationalWellCosts
-            .Where(x => x.ProjectId == project.Id)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
 
         await context.DevelopmentOperationalWellCosts
-            .Where(x => x.ProjectId == project.Id)
+            .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
 
         return project;

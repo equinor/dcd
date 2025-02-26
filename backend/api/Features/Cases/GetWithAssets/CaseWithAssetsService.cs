@@ -18,7 +18,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         var physicalUnit = await context.Projects.Where(x => x.Id == projectPk).Select(x => x.PhysicalUnit).SingleAsync();
 
-        var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(caseId);
+        var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(projectPk, caseId);
 
         return new CaseWithAssetsDto
         {

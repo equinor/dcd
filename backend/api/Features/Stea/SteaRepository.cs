@@ -19,6 +19,7 @@ public class SteaRepository(DcdDbContext context)
 
         await context.TimeSeriesProfiles
             .Where(x => x.Case.ProjectId == projectPk)
+            .Where(x => !x.Case.Archived)
             .LoadAsync();
 
         project.Cases = project.Cases.OrderBy(c => c.CreatedUtc).ToList();

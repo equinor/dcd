@@ -10,8 +10,8 @@ public class CreateRevisionRepository(DcdDbContext context)
     public async Task<Project> GetFullProjectGraph(Guid projectPk)
     {
         var project = await context.Projects
-            .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
+            .Include(p => p.ExplorationOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
         await context.ProjectMembers
@@ -20,11 +20,11 @@ public class CreateRevisionRepository(DcdDbContext context)
 
         var caseItems = await context.Cases
             .Include(x => x.DrainageStrategy)
-            .Include(x => x.Transport)
-            .Include(x => x.Topside)
-            .Include(x => x.Surf)
-            .Include(x => x.Substructure)
             .Include(x => x.OnshorePowerSupply)
+            .Include(x => x.Substructure)
+            .Include(x => x.Surf)
+            .Include(x => x.Topside)
+            .Include(x => x.Transport)
             .Where(x => x.ProjectId == projectPk)
             .ToListAsync();
 
