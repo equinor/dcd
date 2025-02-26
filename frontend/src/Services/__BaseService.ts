@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios"
 import { config } from "./config"
-import { getToken, loginAccessTokenKey } from "@/Utils/common"
+import { getToken, loginAccessTokenKey, getLastForcedReloadDate, setLastForcedReloadDate} from "@/Utils/common"
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -20,8 +20,6 @@ type RequestOptions = {
 
 export class __BaseService {
     private client: AxiosInstance
-    private last403: Date | null = null
-
     constructor() {
         this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
         this.client.interceptors.response.use(
@@ -29,10 +27,12 @@ export class __BaseService {
             (error: any) => {
                 if (error.response.status === 403) {
                     console.error("Error: You don't have permission to access this resource. Please contact support.")
+                    const lastForcedReloadDate = getLastForcedReloadDate()
                     const reloadTimeoutMs = 5 * 60 * 1000;
-                    const isPastReloadTimeout = !this.last403 || new Date().valueOf() - this.last403.valueOf() > reloadTimeoutMs;
+                    const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - new Date(lastForcedReloadDate).valueOf() > reloadTimeoutMs;
                     const expectedAuth403Data = "";
                     if(error.response.data === expectedAuth403Data && isPastReloadTimeout) {
+                        setLastForcedReloadDate(new Date().toISOString())
                         window.location.reload()
                     }
                 } else if (error.response.status === 500) {
