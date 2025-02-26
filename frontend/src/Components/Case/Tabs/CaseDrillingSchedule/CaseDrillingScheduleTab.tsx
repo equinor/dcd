@@ -14,9 +14,9 @@ import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-// import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 import Campaign from "./Components/Campaign"
 import {
+    CampaignFieldsContainer,
     CampaignHeader,
     CampaignHeaderTexts,
     CampaignLink,
@@ -113,8 +113,6 @@ const CaseDrillingScheduleTab = () => {
 
     const {
         case: caseData,
-        explorationId,
-        wellProjectId,
         developmentWells: developmentWellsData,
         explorationWells: explorationWellsData,
     } = apiData
@@ -124,8 +122,6 @@ const CaseDrillingScheduleTab = () => {
         || !explorationWellsData
         || !caseData
         || !developmentWellsData
-        || !explorationId
-        || !wellProjectId
     ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
@@ -134,79 +130,6 @@ const CaseDrillingScheduleTab = () => {
 
     return (
         <Grid container spacing={2}>
-            <Grid size={12}>
-                <Typography>Create wells in technical input in order to see them in the list below.</Typography>
-            </Grid>
-            <Grid container size={12} justifyContent="flex-start">
-                <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
-                            label="Exploration wells"
-                            previousResourceObject={caseData}
-                            value={explorationWellCount}
-                            integer
-                            disabled
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
-                            label="Oil producer wells"
-                            previousResourceObject={caseData}
-                            value={oilProducerCount}
-                            integer
-                            disabled
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
-                            label="Water injector wells"
-                            previousResourceObject={caseData}
-                            value={waterInjectorCount}
-                            integer
-                            disabled
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
-                            label="Appraisal wells"
-                            previousResourceObject={caseData}
-                            value={appraisalWellCount}
-                            integer
-                            disabled
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
-                            label="Gas producer wells"
-                            previousResourceObject={caseData}
-                            value={gasProducerCount}
-                            integer
-                            disabled
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
-                            label="Gas injector wells"
-                            previousResourceObject={caseData}
-                            value={gasInjectorCount}
-                            integer
-                            disabled
-                        />
-                    </Grid>
-                </Grid>
-            </Grid>
             <CampaignHeader $isSmallScreen={isSmallScreen}>
                 <CampaignHeaderTexts>
                     <Typography variant="h2">Drilling Schedule</Typography>
@@ -217,14 +140,86 @@ const CaseDrillingScheduleTab = () => {
                         </Typography>
                         <CampaignLink variant="body_short_link" onClick={() => navigateToProjectTab(2)}>Technical input</CampaignLink>
                     </LinkText>
+                    <CampaignFieldsContainer>
+                        <Grid container size={12} justifyContent="flex-start">
+                            <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <SwitchableNumberInput
+                                        resourceName="case"
+                                        resourcePropertyKey="producerCount"
+                                        label="Exploration wells"
+                                        previousResourceObject={caseData}
+                                        value={explorationWellCount}
+                                        integer
+                                        disabled
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <SwitchableNumberInput
+                                        resourceName="case"
+                                        resourcePropertyKey="producerCount"
+                                        label="Oil producer wells"
+                                        previousResourceObject={caseData}
+                                        value={oilProducerCount}
+                                        integer
+                                        disabled
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <SwitchableNumberInput
+                                        resourceName="case"
+                                        resourcePropertyKey="producerCount"
+                                        label="Water injector wells"
+                                        previousResourceObject={caseData}
+                                        value={waterInjectorCount}
+                                        integer
+                                        disabled
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <SwitchableNumberInput
+                                        resourceName="case"
+                                        resourcePropertyKey="producerCount"
+                                        label="Appraisal wells"
+                                        previousResourceObject={caseData}
+                                        value={appraisalWellCount}
+                                        integer
+                                        disabled
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <SwitchableNumberInput
+                                        resourceName="case"
+                                        resourcePropertyKey="producerCount"
+                                        label="Gas producer wells"
+                                        previousResourceObject={caseData}
+                                        value={gasProducerCount}
+                                        integer
+                                        disabled
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <SwitchableNumberInput
+                                        resourceName="case"
+                                        resourcePropertyKey="producerCount"
+                                        label="Gas injector wells"
+                                        previousResourceObject={caseData}
+                                        value={gasInjectorCount}
+                                        integer
+                                        disabled
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <DateRangePicker
+                            setStartYear={setStartYear}
+                            setEndYear={setEndYear}
+                            startYear={startYear}
+                            endYear={endYear}
+                            handleTableYearsClick={handleTableYearsClick}
+                        />
+                    </CampaignFieldsContainer>
                 </CampaignHeaderTexts>
-                <DateRangePicker
-                    setStartYear={setStartYear}
-                    setEndYear={setEndYear}
-                    startYear={startYear}
-                    endYear={endYear}
-                    handleTableYearsClick={handleTableYearsClick}
-                />
             </CampaignHeader>
             {apiData?.explorationCampaigns?.map((campaign) => (
                 <Campaign
@@ -242,32 +237,6 @@ const CaseDrillingScheduleTab = () => {
                     title="Development"
                 />
             ))}
-            {/* <Grid size={12}>
-                <CaseDrillingScheduleTable
-                    assetWells={explorationWellsData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
-                    tableName="Exploration wells"
-                    tableYears={tableYears}
-                    resourceId={explorationId}
-                    wells={wells}
-                    isExplorationTable
-                    gridRef={explorationWellsGridRef}
-                    alignedGridsRef={[developmentWellsGridRef]}
-                />
-            </Grid>
-            <Grid size={12}>
-                <CaseDrillingScheduleTable
-                    assetWells={developmentWellsData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
-                    tableName="Development wells"
-                    tableYears={tableYears}
-                    resourceId={wellProjectId}
-                    wells={wells}
-                    isExplorationTable={false}
-                    gridRef={developmentWellsGridRef}
-                    alignedGridsRef={[explorationWellsGridRef]}
-                />
-            </Grid> */}
         </Grid>
     )
 }

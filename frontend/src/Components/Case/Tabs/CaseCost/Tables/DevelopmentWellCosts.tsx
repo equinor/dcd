@@ -24,7 +24,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     const [developmentTimeSeriesData, setDevelopmentTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
-        const wellProjectId = apiData?.wellProjectId
+        const caseId = apiData?.case.caseId
         const wellProjectOilProducerCostData = apiData.oilProducerCostProfile
         const wellProjectOilProducerCostOverrideData = apiData.oilProducerCostProfileOverride
         const wellProjectGasProducerCostData = apiData.gasProducerCostProfile
@@ -34,7 +34,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         const wellProjectGasInjectorCostData = apiData.gasInjectorCostProfile
         const wellProjectGasInjectorCostOverrideData = apiData.gasInjectorCostProfileOverride
 
-        if (!wellProjectId) {
+        if (!caseId) {
             console.error("No well project data")
             return
         }
@@ -45,7 +45,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectOilProducerCostData,
                 resourceName: ProfileTypes.OilProducerCostProfileOverride,
-                resourceId: wellProjectId,
+                resourceId: caseId,
                 resourcePropertyKey: ProfileTypes.OilProducerCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellProjectOilProducerCostOverrideData,
@@ -56,7 +56,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasProducerCostData,
                 resourceName: ProfileTypes.GasProducerCostProfileOverride,
-                resourceId: wellProjectId,
+                resourceId: caseId,
                 resourcePropertyKey: ProfileTypes.GasProducerCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellProjectGasProducerCostOverrideData,
@@ -67,7 +67,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
                 resourceName: ProfileTypes.WaterInjectorCostProfileOverride,
-                resourceId: wellProjectId,
+                resourceId: caseId,
                 resourcePropertyKey: ProfileTypes.WaterInjectorCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellProjectWaterInjectorCostOverrideData,
@@ -78,7 +78,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
                 resourceName: ProfileTypes.GasInjectorCostProfileOverride,
-                resourceId: wellProjectId,
+                resourceId: caseId,
                 resourcePropertyKey: ProfileTypes.GasInjectorCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellProjectGasInjectorCostOverrideData,

@@ -92,8 +92,13 @@ export type UpdateEntry = {
     description: string;
 };
 
+export type VersionUpdates = {
+    date: string;
+    updates: {
+        [key in Category]?: UpdateEntry[];
+    };
+};
+
 export type WhatsNewUpdates = {
-    [versionKey in Version]: {
-        [categoryKey in Category]?: UpdateEntry[]
-    }
+    [key in Version]: VersionUpdates;
 };
