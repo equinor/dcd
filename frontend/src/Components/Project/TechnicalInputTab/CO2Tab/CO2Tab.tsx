@@ -217,6 +217,15 @@ const CO2Tab = () => {
             && averageDevelopmentWellDrillingDays !== undefined
             && dailyEmissionsFromDrillingRig !== undefined
             && flaredGasPerProducedVolume !== undefined
+            && (
+                cO2RemovedFromGas !== revisionAndProjectData.commonProjectAndRevisionData.cO2RemovedFromGas
+                || cO2EmissionsFromFlaredGas !== revisionAndProjectData.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas
+                || cO2EmissionsFromFuelGas !== revisionAndProjectData.commonProjectAndRevisionData.cO2EmissionFromFuelGas
+                || cO2Vented !== revisionAndProjectData.commonProjectAndRevisionData.cO2Vented
+                || averageDevelopmentWellDrillingDays !== revisionAndProjectData.commonProjectAndRevisionData.averageDevelopmentDrillingDays
+                || dailyEmissionsFromDrillingRig !== revisionAndProjectData.commonProjectAndRevisionData.dailyEmissionFromDrillingRig
+                || flaredGasPerProducedVolume !== revisionAndProjectData.commonProjectAndRevisionData.flaredGasPerProducedVolume
+            )
         ) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
