@@ -20,8 +20,7 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     public double RigUpgradingCost { get; set; }
     public double RigMobDemobCost { get; set; }
 
-    public List<DevelopmentWell> DevelopmentWells { get; set; } = [];
-    public List<ExplorationWell> ExplorationWells { get; set; } = [];
+    public List<CampaignWell> CampaignWells { get; set; } = [];
 
     [NotMapped]
     public required double[] RigUpgradingCostValues

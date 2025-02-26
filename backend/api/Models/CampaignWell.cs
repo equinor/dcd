@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class ExplorationWell : IDateTrackedEntity
+public class CampaignWell : IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

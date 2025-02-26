@@ -6,7 +6,7 @@ namespace api.Features.Cases.GetWithAssets.AssetMappers;
 
 public static class ExplorationWellsMapper
 {
-    public static List<ExplorationWellDto> MapToDtos(IEnumerable<ExplorationWell> entities)
+    public static List<ExplorationWellDto> MapToDtos(IEnumerable<CampaignWell> entities)
     {
         return entities
             .Select(x => new ExplorationWellDto

@@ -12,8 +12,7 @@ public class GetIsWellInUseService(DcdDbContext context)
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
         var well = await context.Wells
-            .Include(w => w.DevelopmentWells)
-            .Include(w => w.ExplorationWells)
+            .Include(w => w.CampaignWells)
             .SingleOrDefaultAsync(w => w.ProjectId == projectPk && w.Id == wellId);
 
         if (well == null)
@@ -21,6 +20,6 @@ public class GetIsWellInUseService(DcdDbContext context)
             return false;
         }
 
-        return well.DevelopmentWells.Any() || well.ExplorationWells.Any();
+        return well.CampaignWells.Any();
     }
 }

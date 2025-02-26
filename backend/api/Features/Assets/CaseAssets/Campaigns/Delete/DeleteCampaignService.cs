@@ -16,16 +16,11 @@ public class DeleteCampaignService(DcdDbContext context, RecalculationService re
             .Where(x => x.Id == campaignId)
             .SingleAsync();
 
-        await context.DevelopmentWells
+        await context.CampaignWells
             .Where(x => x.CampaignId == campaignId)
             .LoadAsync();
 
-        await context.ExplorationWell
-            .Where(x => x.CampaignId == campaignId)
-            .LoadAsync();
-
-        context.ExplorationWell.RemoveRange(campaign.ExplorationWells);
-        context.DevelopmentWells.RemoveRange(campaign.DevelopmentWells);
+        context.CampaignWells.RemoveRange(campaign.CampaignWells);
         context.Campaigns.RemoveRange(campaign);
 
         await context.UpdateCaseUpdatedUtc(caseId);

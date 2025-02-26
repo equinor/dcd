@@ -21,12 +21,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .SingleAsync();
 
         await context.Campaigns
-            .Include(c => c.ExplorationWells)
-            .Where(x => x.CaseId == caseItem.Id)
-            .LoadAsync();
-
-        await context.Campaigns
-            .Include(c => c.DevelopmentWells)
+            .Include(c => c.CampaignWells)
             .Where(x => x.CaseId == caseItem.Id)
             .LoadAsync();
 

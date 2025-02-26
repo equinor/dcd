@@ -6,7 +6,7 @@ namespace api.Features.Cases.Recalculation.Types.CessationCostProfile;
 
 public static class CessationCostProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DevelopmentWell> developmentWells)
+    public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)
     {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
 
@@ -14,7 +14,7 @@ public static class CessationCostProfileService
         GetCessationOffshoreFacilitiesCost(caseItem, lastYearOfProduction);
     }
 
-    private static void CalculateCessationWellsCost(Case caseItem, List<DevelopmentWell> developmentWells, int? lastYear)
+    private static void CalculateCessationWellsCost(Case caseItem, List<CampaignWell> developmentWells, int? lastYear)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true)
         {
@@ -50,7 +50,7 @@ public static class CessationCostProfileService
         GenerateCessationOffshoreFacilitiesCost(caseItem.Surf, lastYear.Value, profile);
     }
 
-    private static void GenerateCessationWellsCost(Project project, List<DevelopmentWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)
+    private static void GenerateCessationWellsCost(Project project, List<CampaignWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)
     {
         var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts.PluggingAndAbandonment;
 

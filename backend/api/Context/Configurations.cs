@@ -70,30 +70,18 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
     }
 }
 
-public class DevelopmentWellConfiguration : IEntityTypeConfiguration<DevelopmentWell>
+public class CampaignWellConfiguration : IEntityTypeConfiguration<CampaignWell>
 {
-    public void Configure(EntityTypeBuilder<DevelopmentWell> builder)
+    public void Configure(EntityTypeBuilder<CampaignWell> builder)
     {
+        builder.HasIndex(x => new { x.WellId, x.CampaignId }).IsUnique();
+
         builder.HasOne(w => w.Well)
-            .WithMany(w => w.DevelopmentWells)
+            .WithMany(w => w.CampaignWells)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(w => w.Campaign)
-            .WithMany(w => w.DevelopmentWells)
-            .OnDelete(DeleteBehavior.NoAction);
-    }
-}
-
-public class ExplorationWellConfiguration : IEntityTypeConfiguration<ExplorationWell>
-{
-    public void Configure(EntityTypeBuilder<ExplorationWell> builder)
-    {
-        builder.HasOne(w => w.Well)
-            .WithMany(w => w.ExplorationWells)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne(w => w.Campaign)
-            .WithMany(w => w.ExplorationWells)
+            .WithMany(w => w.CampaignWells)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -20,11 +20,11 @@ public static class DevelopmentWellCostProfileService
 
         foreach (var profileType in profileTypes)
         {
-            List<DevelopmentWell> wells = [];
+            List<CampaignWell> wells = [];
 
-            foreach (var campaign in caseItem.Campaigns)
+            foreach (var campaign in caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.DevelopmentCampaign))
             {
-                foreach (var developmentWell in campaign.DevelopmentWells)
+                foreach (var developmentWell in campaign.CampaignWells)
                 {
                     if (developmentWell.Well.WellCategory == profileType.Value)
                     {

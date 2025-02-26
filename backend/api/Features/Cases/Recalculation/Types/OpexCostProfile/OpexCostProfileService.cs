@@ -8,7 +8,7 @@ namespace api.Features.Cases.Recalculation.Types.OpexCostProfile;
 
 public static class OpexCostProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DevelopmentWell> developmentWells)
+    public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)
     {
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
@@ -17,7 +17,7 @@ public static class OpexCostProfileService
         CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
     }
 
-    private static void CalculateWellInterventionCostProfile(Case caseItem, List<DevelopmentWell> developmentWells, int? lastYearOfProduction)
+    private static void CalculateWellInterventionCostProfile(Case caseItem, List<CampaignWell> developmentWells, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {

@@ -6,6 +6,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +44,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 
         var developmentWells = await context.Campaigns
             .Where(x => x.CaseId == caseId)
-            .SelectMany(x => x.DevelopmentWells)
+            .Where(x => x.CampaignType == CampaignType.DevelopmentCampaign)
+            .SelectMany(x => x.CampaignWells)
             .ToListAsync();
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
@@ -84,7 +86,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private static double CalculateDrillingEmissionsTotal(Project project, List<DevelopmentWell> developmentWells)
+    private static double CalculateDrillingEmissionsTotal(Project project, List<CampaignWell> developmentWells)
     {
         var wellDrillingSchedules = new TimeSeries();
 

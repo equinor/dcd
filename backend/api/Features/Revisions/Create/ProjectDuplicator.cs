@@ -298,15 +298,7 @@ public static class ProjectDuplicator
                     CampaignType = x.CampaignType,
                     RigUpgradingCost = x.RigUpgradingCost,
                     RigMobDemobCost = x.RigMobDemobCost,
-                    DevelopmentWells = x.DevelopmentWells.Select(y => new DevelopmentWell
-                    {
-                        Id = Guid.NewGuid(),
-                        WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
-                        StartYear = y.StartYear,
-                        Values = y.Values
-                    })
-                        .ToList(),
-                    ExplorationWells = x.ExplorationWells.Select(y => new ExplorationWell
+                    CampaignWells = x.CampaignWells.Select(y => new CampaignWell
                     {
                         Id = Guid.NewGuid(),
                         WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],

@@ -1,5 +1,6 @@
 using api.Context;
 using api.Models;
+using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -29,19 +30,15 @@ public class RecalculationRepository(DcdDbContext context)
             .LoadAsync();
 
         await context.Campaigns
-            .Include(x => x.DevelopmentWells).ThenInclude(x => x.Well)
-            .Where(x => caseIds.Contains(x.CaseId))
-            .LoadAsync();
-
-        await context.Campaigns
-            .Include(x => x.ExplorationWells).ThenInclude(x => x.Well)
+            .Include(x => x.CampaignWells).ThenInclude(x => x.Well)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
         var drillingSchedulesForDevelopmentWell = await (
                 from campaign in context.Campaigns
-                join dw in context.DevelopmentWells on campaign.Id equals dw.CampaignId
+                join dw in context.CampaignWells on campaign.Id equals dw.CampaignId
                 where caseIds.Contains(campaign.CaseId)
+                where campaign.CampaignType == CampaignType.DevelopmentCampaign
                 select new
                 {
                     campaign.CaseId,
@@ -52,8 +49,9 @@ public class RecalculationRepository(DcdDbContext context)
 
         var drillingSchedulesForExplorationWell = await (
                 from campaign in context.Campaigns
-                join ew in context.ExplorationWell on campaign.Id equals ew.CampaignId
+                join ew in context.CampaignWells on campaign.Id equals ew.CampaignId
                 where caseIds.Contains(campaign.CaseId)
+                where campaign.CampaignType == CampaignType.ExplorationCampaign
                 select new
                 {
                     campaign.CaseId,
@@ -74,6 +72,6 @@ public class RecalculationRepository(DcdDbContext context)
 public class CaseWithDrillingSchedules
 {
     public required Case CaseItem { get; set; }
-    public required List<DevelopmentWell> DevelopmentWells { get; set; }
-    public required List<ExplorationWell> ExplorationWells { get; set; }
+    public required List<CampaignWell> DevelopmentWells { get; set; }
+    public required List<CampaignWell> ExplorationWells { get; set; }
 }
