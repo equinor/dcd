@@ -14,15 +14,13 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
     {
         var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
 
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
-
         switch (existingCampaign.CampaignType)
         {
             case CampaignType.ExplorationCampaign:
-                await SaveHandleExplorationCampaignWell(existingCampaign, campaignId, caseItem.ExplorationId, campaignWellDtos);
+                await SaveHandleExplorationCampaignWell(existingCampaign, campaignId, campaignWellDtos);
                 break;
             default:
-                await SaveHandleDevelopmentCampaignWell(existingCampaign, campaignId, caseItem.WellProjectId, campaignWellDtos);
+                await SaveHandleDevelopmentCampaignWell(existingCampaign, campaignId, campaignWellDtos);
                 break;
         }
 
@@ -30,7 +28,7 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    private async Task SaveHandleExplorationCampaignWell(Campaign existingCampaign, Guid campaignId, Guid explorationId, List<SaveCampaignWellDto> campaignWellDtos)
+    private async Task SaveHandleExplorationCampaignWell(Campaign existingCampaign, Guid campaignId, List<SaveCampaignWellDto> campaignWellDtos)
     {
         var wellIds = campaignWellDtos.Select(x => x.WellId).ToList();
 
@@ -48,7 +46,6 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
                 existingCampaign.ExplorationWells.Add(new ExplorationWell
                 {
                     WellId = campaignWellDto.WellId,
-                    ExplorationId = explorationId,
                     CampaignId = campaignId,
                     StartYear = campaignWellDto.StartYear,
                     Values = campaignWellDto.Values
@@ -63,7 +60,7 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
         //todo deal with deletes
     }
 
-    private async Task SaveHandleDevelopmentCampaignWell(Campaign existingCampaign, Guid campaignId, Guid wellProjectId, List<SaveCampaignWellDto> campaignWellDtos)
+    private async Task SaveHandleDevelopmentCampaignWell(Campaign existingCampaign, Guid campaignId, List<SaveCampaignWellDto> campaignWellDtos)
     {
         var wellIds = campaignWellDtos.Select(x => x.WellId).ToList();
 
@@ -81,7 +78,6 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
                 existingCampaign.DevelopmentWells.Add(new DevelopmentWell
                 {
                     WellId = campaignWellDto.WellId,
-                    WellProjectId = wellProjectId,
                     CampaignId = campaignId,
                     StartYear = campaignWellDto.StartYear,
                     Values = campaignWellDto.Values

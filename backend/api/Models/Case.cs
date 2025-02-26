@@ -47,9 +47,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public Guid DrainageStrategyId { get; set; }
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 
-    public Guid WellProjectId { get; set; }
-    public WellProject WellProject { get; set; } = null!;
-
     public Guid SurfId { get; set; }
     public Surf Surf { get; set; } = null!;
 
@@ -64,9 +61,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
     public Guid OnshorePowerSupplyId { get; set; }
     public OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
-
-    public Guid ExplorationId { get; set; }
-    public Exploration Exploration { get; set; } = null!;
 
     public Guid? OriginalCaseId { get; set; }
     public Case? OriginalCase { get; set; }

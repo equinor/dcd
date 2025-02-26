@@ -11,9 +11,6 @@ public class ExplorationWell : IDateTrackedEntity
     public Guid WellId { get; set; }
     public Well Well { get; set; } = null!;
 
-    public Guid ExplorationId { get; set; }
-    public Exploration Exploration { get; set; } = null!;
-
     public Guid CampaignId { get; set; }
     public Campaign Campaign { get; set; } = null!;
 

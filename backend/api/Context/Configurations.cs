@@ -38,16 +38,6 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
             .HasForeignKey<DrainageStrategy>(c => c.CaseId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(c => c.WellProject)
-            .WithOne(c => c.Case)
-            .HasForeignKey<WellProject>(c => c.CaseId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(c => c.Exploration)
-            .WithOne(c => c.Case)
-            .HasForeignKey<Exploration>(c => c.CaseId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(c => c.Transport)
             .WithOne(c => c.Case)
             .HasForeignKey<Transport>(c => c.CaseId)
@@ -84,8 +74,6 @@ public class DevelopmentWellConfiguration : IEntityTypeConfiguration<Development
 {
     public void Configure(EntityTypeBuilder<DevelopmentWell> builder)
     {
-        builder.HasIndex(wc => new { wc.WellProjectId, wc.WellId }).IsUnique();
-
         builder.HasOne(w => w.Well)
             .WithMany(w => w.DevelopmentWells)
             .OnDelete(DeleteBehavior.NoAction);
@@ -100,8 +88,6 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
 {
     public void Configure(EntityTypeBuilder<ExplorationWell> builder)
     {
-        builder.HasIndex(ew => new { ew.ExplorationId, ew.WellId }).IsUnique();
-
         builder.HasOne(w => w.Well)
             .WithMany(w => w.ExplorationWells)
             .OnDelete(DeleteBehavior.NoAction);

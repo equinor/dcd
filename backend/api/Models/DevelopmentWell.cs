@@ -8,9 +8,6 @@ public class DevelopmentWell : IDateTrackedEntity
 {
     public Guid Id { get; set; }
 
-    public Guid WellProjectId { get; set; }
-    public WellProject WellProject { get; set; } = null!;
-
     public Guid WellId { get; set; }
     public Well Well { get; set; } = null!;
 
