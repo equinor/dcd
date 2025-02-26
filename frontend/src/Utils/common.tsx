@@ -378,6 +378,7 @@ export interface ITableCellChangeParams {
     profileName: string
     profile?: any
     resourceId?: string
+    wellId?: string
 }
 
 export interface ITableCellChangeConfig {
@@ -443,6 +444,7 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
         resourceName: profileInTimeSeriesData?.resourceName,
         resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
         resourceId: profileInTimeSeriesData?.resourceId,
+        wellId: params.data.wellId,
         resourceObject: newProfile,
     }
 

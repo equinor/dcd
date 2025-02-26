@@ -88,7 +88,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OnshorePowerSupplyCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)),
             ExplorationId = caseItem.ExplorationId,
 
-            ExplorationWells = ExplorationWellsMapper.MapToDtos(caseItem.Exploration.ExplorationWells),
+            ExplorationWells = ExplorationWellsMapper.MapToDtos(caseItem.Campaigns.SelectMany(x => x.ExplorationWells)),
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
             SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
@@ -103,7 +103,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             ExplorationRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride)),
             WellProjectId = caseItem.WellProjectId,
 
-            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.WellProject.DevelopmentWells),
+            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.Campaigns.SelectMany(x => x.DevelopmentWells)),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),

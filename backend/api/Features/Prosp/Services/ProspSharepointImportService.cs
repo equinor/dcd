@@ -16,7 +16,12 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 {
     public async Task<List<SharePointFileDto>> GetFilesFromSharePoint(string url)
     {
-        var (siteId, driveId, itemPath) = await GetSharepointInfo(url);
+        var (success, siteId, driveId, itemPath) = await GetSharepointInfo(url);
+
+        if (!success)
+        {
+            return [];
+        }
 
         var driveItemsDelta = string.IsNullOrWhiteSpace(itemPath)
             ? await graphServiceClient.Sites[siteId].Drives[driveId].Root.Delta().Request().GetAsync()
@@ -34,7 +39,12 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
     {
         await prospExcelImportService.ClearImportedProspData(projectId, dtos.Select(x => x.CaseId).ToList());
 
-        var (siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
+        var (success, siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
+
+        if (!success)
+        {
+            return;
+        }
 
         foreach (var dto in dtos)
         {
@@ -61,15 +71,16 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
         }
     }
 
-    private async Task<(string SiteId, string DriveId, string ItemPath)> GetSharepointInfo(string url)
+    private async Task<(bool Success, string SiteId, string DriveId, string ItemPath)> GetSharepointInfo(string url)
     {
         var validatedUri = new Uri(url);
 
-        var site = await graphServiceClient
-            .Sites
-            .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
-            .Request()
-            .GetAsync();
+        var site = await GetSite(validatedUri);
+
+        if (site == null)
+        {
+            return (false, "", "", "");
+        }
 
         var pathFromIdParameter = HttpUtility.ParseQueryString(validatedUri.Query).Get("id");
 
@@ -86,6 +97,22 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
 
         var itemPath = string.Join('/', path.Split('/').Skip(4));
 
-        return (site.Id, driveId, itemPath);
+        return (true, site.Id, driveId, itemPath);
+    }
+
+    private async Task<Site?> GetSite(Uri validatedUri)
+    {
+        try
+        {
+            return await graphServiceClient
+                .Sites
+                .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
+                .Request()
+                .GetAsync();
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }

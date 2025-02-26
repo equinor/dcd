@@ -21,18 +21,6 @@ public class GetIsWellInUseService(DcdDbContext context)
             return false;
         }
 
-        var wellProjectIds = context.DevelopmentWells
-            .Where(x => x.WellProject.Case.ProjectId == projectPk)
-            .Where(x => x.WellId == wellId)
-            .Select(x => x.WellProjectId)
-            .Distinct();
-
-        var explorationIds = context.ExplorationWell
-            .Where(x => x.Exploration.Case.ProjectId == projectPk)
-            .Where(x => x.WellId == wellId)
-            .Select(x => x.ExplorationId)
-            .Distinct();
-
-        return await context.Cases.AnyAsync(x => wellProjectIds.Contains(x.WellProjectId) || explorationIds.Contains(x.ExplorationId));
+        return well.DevelopmentWells.Any() || well.ExplorationWells.Any();
     }
 }

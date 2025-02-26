@@ -85,7 +85,9 @@ const CaseTabTable = memo(({
     sharepointFileId,
 }: Props) => {
     // Hooks and Context
-    const { editMode, setSnackBarMessage, isSaving } = useAppStore()
+    const {
+        setIsSaving, editMode, setSnackBarMessage, isSaving,
+    } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
@@ -100,8 +102,8 @@ const CaseTabTable = memo(({
     // Custom Hooks
     const { editQueue, addToQueue, submitEditQueue } = useTableQueue({
         isSaving,
-        addEdit,
         gridRef,
+        setIsSaving,
     })
 
     // Refs
@@ -211,6 +213,7 @@ const CaseTabTable = memo(({
             profileName: event.data.profileName,
             profile: event.data.profile,
             resourceId: event.data.resourceId,
+            wellId: event.data.wellId,
         }
 
         const config: ITableCellChangeConfig = {
@@ -278,7 +281,6 @@ const CaseTabTable = memo(({
         copyHeadersToClipboard: false,
         stopEditingWhenCellsLoseFocus: true,
         onCellClicked: handleCellClicked,
-        rowSelection: "single" as const,
         context: {
             setSelectedRow,
             setIsSidesheetOpen,
@@ -324,14 +326,6 @@ const CaseTabTable = memo(({
         const containerRef = document.getElementById(tableName)?.parentElement
 
         const handleClickOutside = (event: MouseEvent) => {
-            /*
-            if (gridRef.current?.api) {
-                gridRef.current.api.clearFocusedCell()
-                gridRef.current.api.stopEditing()
-                gridRef.current.api.deselectAll()
-            }
-                */
-
             if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
                 submitEditQueue()
             }

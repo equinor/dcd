@@ -1,6 +1,7 @@
 declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export type CampaignCostType = 0 | 1; // int32
         export interface CampaignDto {
             campaignId: string; // uuid
             campaignType: CampaignType /* int32 */;
@@ -50,8 +51,8 @@ declare namespace Components {
             dG2Date: string; // date-time
             dG3Date: string; // date-time
             dG4Date: string; // date-time
-            createTime: string; // date-time
-            modifyTime: string; // date-time
+            createdUtc: string; // date-time
+            updatedUtc: string; // date-time
             surfId: string; // uuid
             substructureId: string; // uuid
             topsideId: string; // uuid
@@ -157,7 +158,7 @@ declare namespace Components {
             co2Flaring: number; // double
         }
         export interface CommonProjectAndRevisionDto {
-            modifyTime: string; // date-time
+            updatedUtc: string; // date-time
             classification: ProjectClassification /* int32 */;
             name: string;
             fusionProjectId: string; // uuid
@@ -478,15 +479,10 @@ declare namespace Components {
             dG3Date: string | null; // date-time
             dG4Date: string | null; // date-time
         }
-        export interface UpdateCampaignCostDto {
-            rigUpgradingCost: number; // double
-            rigMobDemobCost: number; // double
-        }
         export interface UpdateCampaignDto {
-            rigUpgradingCostStartYear: number; // int32
-            rigUpgradingCostValues: number /* double */[];
-            rigMobDemobCostStartYear: number; // int32
-            rigMobDemobCostValues: number /* double */[];
+            campaignCostType: CampaignCostType /* int32 */;
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface UpdateCaseDto {
             name: string;
@@ -586,6 +582,12 @@ declare namespace Components {
             name: string;
             arena: boolean;
             mdqc: boolean;
+        }
+        export interface UpdateRigMobDemobCostDto {
+            cost: number; // double
+        }
+        export interface UpdateRigUpgradingCostDto {
+            cost: number; // double
         }
         export interface UpdateSubstructureDto {
             dryWeight: number; // double
@@ -842,7 +844,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdCost {
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdRigMobdemobCost {
         namespace Put {
             namespace Parameters {
                 export type CampaignId = string; // uuid
@@ -854,7 +856,26 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 campaignId: Parameters.CampaignId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateCampaignCostDto;
+            export type RequestBody = Components.Schemas.UpdateRigMobDemobCostDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdRigUpgradingCost {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateRigUpgradingCostDto;
             namespace Responses {
                 export interface $200 {
                 }
@@ -895,7 +916,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdCo2drillingflaringfueltotals {
+    namespace Projects$ProjectIdCases$CaseIdCo2DrillingFlaringFuelTotals {
         namespace Get {
             namespace Parameters {
                 export type CaseId = string; // uuid
@@ -1049,38 +1070,6 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdOverrideProfilesSave {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.SaveTimeSeriesOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdProfilesSave {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.SaveTimeSeriesDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesDto;
             }
         }
     }

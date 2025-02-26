@@ -1,6 +1,5 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Exceptions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +15,7 @@ public class DeleteProjectMemberService(DcdDbContext context)
 
         if (projectMember == null)
         {
-            throw new NotFoundInDbException("Project member not found");
+            return;
         }
 
         context.ProjectMembers.Remove(projectMember);

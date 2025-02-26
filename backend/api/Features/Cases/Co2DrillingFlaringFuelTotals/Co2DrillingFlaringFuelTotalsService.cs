@@ -2,13 +2,14 @@ using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
+namespace api.Features.Cases.Co2DrillingFlaringFuelTotals;
 
 public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
@@ -40,8 +41,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Where(y => profileTypes.Contains(y.ProfileType))
             .LoadAsync();
 
-        var developmentWells = await context.DevelopmentWells
-            .Where(w => w.WellProjectId == caseItem.WellProjectId)
+        var developmentWells = await context.Campaigns
+            .Where(x => x.CaseId == caseId)
+            .SelectMany(x => x.DevelopmentWells)
             .ToListAsync();
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
