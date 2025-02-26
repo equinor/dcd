@@ -9,7 +9,7 @@ namespace tests.Features.Cases.Recalculation.Calculators;
 public class CalculateTotalCostServiceTests
 {
     [Fact]
-    public void CalculateTotalCostAsync_AllProfilesProvided_ReturnsCorrectTotalCost()
+    public void CalculateTotalCostAsync_AllProfilesProvided_ReturnsCorrectTotalCostInUsd()
     {
         var caseId = Guid.NewGuid();
         var project = new Project
@@ -17,7 +17,8 @@ public class CalculateTotalCostServiceTests
             Id = Guid.NewGuid(),
             OilPriceUSD = 75,
             GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10
+            ExchangeRateUSDToNOK = 10,
+            Currency = api.Models.Enums.Currency.NOK,
         };
 
         var caseItem = new Case
@@ -178,15 +179,15 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.RunCalculation(caseItem);
 
         // Assert
-        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
-        Assert.NotNull(calculatedTotalCostCostProfile);
-        Assert.Equal(2020, calculatedTotalCostCostProfile.StartYear);
-        Assert.Equal(3, calculatedTotalCostCostProfile.Values.Length);
+        var CalculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        Assert.NotNull(CalculatedTotalCostCostProfileUsd);
+        Assert.Equal(2020, CalculatedTotalCostCostProfileUsd.StartYear);
+        Assert.Equal(3, CalculatedTotalCostCostProfileUsd.Values.Length);
 
-        var expectedValues = new[] { 2950.0, 4150.0, 4980.0 };
+        var expectedValues = new[] { 295, 415, 498 };
         for (int i = 0; i < expectedValues.Length; i++)
         {
-            Assert.Equal(expectedValues[i], calculatedTotalCostCostProfile.Values[i]);
+            Assert.Equal(expectedValues[i], CalculatedTotalCostCostProfileUsd.Values[i]);
         }
     }
 
