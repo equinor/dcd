@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: start;
     gap: 10px;
-    margin-bottom: 30px; 
+    margin-bottom: 30px;
     padding: 10px;
     width: 100%;
     overflow-x: auto;
@@ -60,7 +60,7 @@ const Gallery = () => {
         }
 
         loadImages()
-    }, [projectId, caseId, setSnackBarMessage])
+    }, [projectId, caseId, revisionId, setSnackBarMessage])
 
     const handleDescriptionChange = async (imageId: string, newDescription: string) => {
         if (debounceTimeout) {
@@ -99,13 +99,13 @@ const Gallery = () => {
                 const imageService = getImageService()
                 const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
-                    
+
                     if (caseId) {
                         await imageService.deleteCaseImage(projectId, caseId, image.imageId)
                     } else {
                         await imageService.deleteProjectImage(projectId, image.imageId)
                     }
-                    
+
                     setGallery(gallery.filter((img) => img.imageId !== imageId))
                     setExeededLimit(false)
                 } else {

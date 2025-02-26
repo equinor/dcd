@@ -54,8 +54,8 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         dto: Components.Schemas.SaveTimeSeriesDto,
-    ): Promise<Components.Schemas.TimeSeriesCostDto> {
-        const res: Components.Schemas.TimeSeriesCostDto = await this.post(
+    ): Promise<Components.Schemas.TimeSeriesDto> {
+        const res: Components.Schemas.TimeSeriesDto = await this.post(
             `projects/${projectId}/cases/${caseId}/profiles/save`,
             { body: dto },
         )
@@ -66,9 +66,21 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         dto: Components.Schemas.SaveTimeSeriesOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesCostOverrideDto> {
-        const res: Components.Schemas.TimeSeriesCostOverrideDto = await this.post(
+    ): Promise<Components.Schemas.TimeSeriesOverrideDto> {
+        const res: Components.Schemas.TimeSeriesOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/override-profiles/save`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async saveProfiles(
+        projectId: string,
+        caseId: string,
+        dto: Components.Schemas.SaveTimeSeriesListDto,
+    ): Promise<object> {
+        const res: object = await this.post(
+            `projects/${projectId}/cases/${caseId}/profiles/save-batch`,
             { body: dto },
         )
         return res

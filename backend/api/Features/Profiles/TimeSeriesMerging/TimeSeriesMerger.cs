@@ -4,27 +4,27 @@ namespace api.Features.Profiles.TimeSeriesMerging;
 
 public static class TimeSeriesMerger
 {
-    public static void AddValues(TimeSeries target, TimeSeries timeSeriesCost)
+    public static void AddValues(TimeSeries target, TimeSeries timeSeries)
     {
-        if (timeSeriesCost.Values.Length == 0)
+        if (timeSeries.Values.Length == 0)
         {
             return;
         }
 
         if (target.Values.Length == 0)
         {
-            target.Values = timeSeriesCost.Values;
-            target.StartYear = timeSeriesCost.StartYear;
+            target.Values = timeSeries.Values;
+            target.StartYear = timeSeries.StartYear;
             return;
         }
 
-        var newEndYear = target.StartYear + target.Values.Length > timeSeriesCost.StartYear + timeSeriesCost.Values.Length
+        var newEndYear = target.StartYear + target.Values.Length > timeSeries.StartYear + timeSeries.Values.Length
             ? target.StartYear + target.Values.Length
-            : timeSeriesCost.StartYear + timeSeriesCost.Values.Length;
+            : timeSeries.StartYear + timeSeries.Values.Length;
 
-        var newStartYear = target.StartYear < timeSeriesCost.StartYear
+        var newStartYear = target.StartYear < timeSeries.StartYear
             ? target.StartYear
-            : timeSeriesCost.StartYear;
+            : timeSeries.StartYear;
 
         var newLength = newEndYear - newStartYear;
         var values = new double[newLength];
@@ -34,9 +34,9 @@ public static class TimeSeriesMerger
             values[target.StartYear - newStartYear + i] += target.Values[i];
         }
 
-        for (var i = 0; i < timeSeriesCost.Values.Length; i++)
+        for (var i = 0; i < timeSeries.Values.Length; i++)
         {
-            values[timeSeriesCost.StartYear - newStartYear + i] += timeSeriesCost.Values[i];
+            values[timeSeries.StartYear - newStartYear + i] += timeSeries.Values[i];
         }
 
         target.Values = values;

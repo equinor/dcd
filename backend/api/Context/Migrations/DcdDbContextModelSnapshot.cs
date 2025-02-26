@@ -168,6 +168,9 @@ namespace api.Migrations
                     b.Property<Guid>("OnshorePowerSupplyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("OriginalCaseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ProducerCount")
                         .HasColumnType("int");
 
@@ -217,6 +220,8 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OriginalCaseId");
 
                     b.HasIndex("ProjectId");
 
@@ -369,6 +374,9 @@ namespace api.Migrations
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
+
+                    b.Property<double>("GasShrinkageFactor")
+                        .HasColumnType("float");
 
                     b.Property<int>("GasSolution")
                         .HasColumnType("int");
@@ -1473,11 +1481,18 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Case", b =>
                 {
+                    b.HasOne("api.Models.Case", "OriginalCase")
+                        .WithMany("RevisionCases")
+                        .HasForeignKey("OriginalCaseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("api.Models.Project", "Project")
                         .WithMany("Cases")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("OriginalCase");
 
                     b.Navigation("Project");
                 });
@@ -1743,6 +1758,8 @@ namespace api.Migrations
 
                     b.Navigation("OnshorePowerSupply")
                         .IsRequired();
+
+                    b.Navigation("RevisionCases");
 
                     b.Navigation("Substructure")
                         .IsRequired();

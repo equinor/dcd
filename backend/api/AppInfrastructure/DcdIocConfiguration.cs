@@ -2,9 +2,10 @@ using api.AppInfrastructure.Authorization;
 using api.Features.Assets.CaseAssets.Campaigns.Create;
 using api.Features.Assets.CaseAssets.Campaigns.Delete;
 using api.Features.Assets.CaseAssets.Campaigns.Get;
-using api.Features.Assets.CaseAssets.Campaigns.Update;
-using api.Features.Assets.CaseAssets.CampaignWells.Get;
-using api.Features.Assets.CaseAssets.CampaignWells.Save;
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaign;
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaignWells;
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigMobDemobCost;
+using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigUpgradingCost;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
@@ -17,6 +18,7 @@ using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.BackgroundServices.ProjectRecalculation.Services;
 using api.Features.Cases.CaseComparison;
+using api.Features.Cases.Co2DrillingFlaringFuelTotals;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
 using api.Features.Cases.Duplicate;
@@ -29,7 +31,6 @@ using api.Features.Images.Delete;
 using api.Features.Images.Get;
 using api.Features.Images.Update;
 using api.Features.Images.Upload;
-using api.Features.Profiles.Cases.GeneratedProfiles.GenerateCo2DrillingFlaringFuelTotals;
 using api.Features.Profiles.Save;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData;
@@ -45,6 +46,7 @@ using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
+using api.Features.Videos.Get;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
 
@@ -137,9 +139,10 @@ public static class DcdIocConfiguration
 
         /* Drilling campaigns */
         services.AddScoped<UpdateCampaignService>();
+        services.AddScoped<UpdateRigMobDemobCostService>();
+        services.AddScoped<UpdateRigUpgradingCostService>();
+        services.AddScoped<UpdateCampaignWellsService>();
         services.AddScoped<CreateCampaignService>();
-        services.AddScoped<SaveCampaignWellService>();
-        services.AddScoped<GetCampaignWellService>();
         services.AddScoped<GetCampaignService>();
         services.AddScoped<DeleteCampaignService>();
 
@@ -158,5 +161,8 @@ public static class DcdIocConfiguration
         services.AddScoped<SaveProfileService>();
 
         services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
+
+        /* Videos */
+        services.AddScoped<GetVideoService>();
     }
 }

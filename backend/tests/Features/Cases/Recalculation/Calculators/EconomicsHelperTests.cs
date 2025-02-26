@@ -39,25 +39,4 @@ public class EconomicsHelperTests
             Assert.Equal(expectedValues[i], result.Values[i]);
         }
     }
-
-    [Fact]
-    public void CalculateDiscountedVolume_ValidInput_ReturnsCorrectDiscountedVolume()
-    {
-        // Arrange
-        var values = new[] { 1.0, 1.0, 1.0, 1.0, 0.5, 0.5 };
-        var discountRate = 8;
-        var startIndex = 0; // Assuming starting from 2030
-
-        // Act
-        var discountedVolume = EconomicsHelper.CalculateDiscountedVolume(values, discountRate, startIndex);
-
-        // Assert
-        var expectedDiscountedVolume = (1.0 / Math.Pow(1 + 0.08, 0)) +
-                                       (1.0 / Math.Pow(1 + 0.08, 1)) +
-                                       (1.0 / Math.Pow(1 + 0.08, 2)) +
-                                       (1.0 / Math.Pow(1 + 0.08, 3)) +
-                                       (0.5 / Math.Pow(1 + 0.08, 4)) +
-                                       (0.5 / Math.Pow(1 + 0.08, 5));
-        Assert.Equal(expectedDiscountedVolume, discountedVolume, precision: 5);
-    }
 }

@@ -87,19 +87,8 @@ public static class Co2IntensityProfileService
         var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
         var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
 
-        if (co2EmissionsOverrideProfile?.Override == true)
-        {
-            return new TimeSeries
-            {
-                StartYear = co2EmissionsOverrideProfile.StartYear,
-                Values = co2EmissionsOverrideProfile.Values.Select(v => v).ToArray()
-            };
-        }
-
-        return new TimeSeries
-        {
-            StartYear = co2EmissionsProfile?.StartYear ?? 0,
-            Values = co2EmissionsProfile?.Values ?? []
-        };
+        return co2EmissionsOverrideProfile?.Override == true
+            ? new TimeSeries(co2EmissionsOverrideProfile)
+            : new TimeSeries(co2EmissionsProfile);
     }
 }

@@ -77,7 +77,7 @@ const Controls = () => {
                 </ProjectHeader>
                 {revisionAndProjectData && !caseId && (
                     <ProjectControls
-                        projectLastUpdated={revisionAndProjectData.commonProjectAndRevisionData.modifyTime}
+                        projectLastUpdated={revisionAndProjectData.commonProjectAndRevisionData.updatedUtc}
                         handleEdit={handleEdit}
                     />
                 )}

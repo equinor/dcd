@@ -1,7 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
-using api.Features.Profiles.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,112 +9,75 @@ namespace api.Features.Profiles.Save;
 
 public class SaveProfileService(DcdDbContext context, RecalculationService recalculationService)
 {
-    public async Task<TimeSeriesCostDto> SaveTimeSeriesProfile(Guid projectId, Guid caseId, SaveTimeSeriesDto dto)
+    public async Task SaveTimeSeriesList(Guid projectId, Guid caseId, SaveTimeSeriesListDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var existingEntity = await context.TimeSeriesProfiles
+        var profileTypes = dto.TimeSeries.Select(x => x.ProfileType)
+            .Union(dto.OverrideTimeSeries.Select(x => x.ProfileType))
+            .ToList();
+
+        var existingEntities = await context.TimeSeriesProfiles
             .Where(x => x.CaseId == caseId)
             .Where(x => x.Case.ProjectId == projectPk)
-            .Where(x => x.ProfileType == dto.ProfileType)
-            .SingleOrDefaultAsync();
+            .Where(x => profileTypes.Contains(x.ProfileType))
+            .ToListAsync();
 
-        if (existingEntity != null)
-        {
-            existingEntity.StartYear = dto.StartYear;
-            existingEntity.Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk);
-
-            await context.UpdateCaseUpdatedUtc(caseId);
-            await recalculationService.SaveChangesAndRecalculateCase(caseId);
-
-            return new TimeSeriesCostDto
-            {
-                Id = existingEntity.Id,
-                StartYear = existingEntity.StartYear,
-                Values = dto.Values
-            };
-        }
-
-        var caseItem = await context.Cases
-            .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.Id == caseId)
-            .SingleAsync();
-
-        var newEntity = new TimeSeriesProfile
-        {
-            ProfileType = dto.ProfileType,
-            CaseId = caseItem.Id,
-            StartYear = dto.StartYear,
-            Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk)
-        };
-
-        context.TimeSeriesProfiles.Add(newEntity);
+        await HandleOrdinaryProfiles(caseId, dto, existingEntities, projectPk);
+        await HandleOverrideProfiles(caseId, dto, existingEntities, projectPk);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
-
-        return new TimeSeriesCostDto
-        {
-            Id = newEntity.Id,
-            StartYear = newEntity.StartYear,
-            Values = dto.Values
-        };
     }
 
-    public async Task<TimeSeriesCostOverrideDto> SaveTimeSeriesOverrideProfile(Guid projectId, Guid caseId, SaveTimeSeriesOverrideDto dto)
+    private async Task HandleOrdinaryProfiles(Guid caseId, SaveTimeSeriesListDto dto, List<TimeSeriesProfile> existingEntities, Guid projectPk)
     {
-        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
-
-        var existingEntity = await context.TimeSeriesProfiles
-            .Where(x => x.CaseId == caseId)
-            .Where(x => x.Case.ProjectId == projectPk)
-            .Where(x => x.ProfileType == dto.ProfileType)
-            .SingleOrDefaultAsync();
-
-        if (existingEntity != null)
+        foreach (var timeSeriesDto in dto.TimeSeries)
         {
-            existingEntity.StartYear = dto.StartYear;
-            existingEntity.Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk);
-            existingEntity.Override = dto.Override;
+            var existingEntity = existingEntities.SingleOrDefault(x => x.ProfileType == timeSeriesDto.ProfileType);
 
-            await context.UpdateCaseUpdatedUtc(caseId);
-            await recalculationService.SaveChangesAndRecalculateCase(caseId);
-
-            return new TimeSeriesCostOverrideDto
+            if (existingEntity != null)
             {
-                Id = existingEntity.Id,
-                StartYear = existingEntity.StartYear,
-                Values = dto.Values,
-                Override = existingEntity.Override
-            };
+                existingEntity.StartYear = timeSeriesDto.StartYear;
+                existingEntity.Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk);
+
+                continue;
+            }
+
+            context.TimeSeriesProfiles.Add(new TimeSeriesProfile
+            {
+                ProfileType = timeSeriesDto.ProfileType,
+                CaseId = caseId,
+                StartYear = timeSeriesDto.StartYear,
+                Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk)
+            });
         }
+    }
 
-        var caseItem = await context.Cases
-            .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.Id == caseId)
-            .SingleAsync();
-
-        var newEntity = new TimeSeriesProfile
+    private async Task HandleOverrideProfiles(Guid caseId, SaveTimeSeriesListDto dto, List<TimeSeriesProfile> existingEntities, Guid projectPk)
+    {
+        foreach (var timeSeriesDto in dto.OverrideTimeSeries)
         {
-            ProfileType = dto.ProfileType,
-            CaseId = caseItem.Id,
-            StartYear = dto.StartYear,
-            Values = await ConvertFromDto(dto.Values, dto.ProfileType, projectPk),
-            Override = dto.Override
-        };
+            var existingEntity = existingEntities.SingleOrDefault(x => x.ProfileType == timeSeriesDto.ProfileType);
 
-        context.TimeSeriesProfiles.Add(newEntity);
+            if (existingEntity != null)
+            {
+                existingEntity.StartYear = timeSeriesDto.StartYear;
+                existingEntity.Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk);
+                existingEntity.Override = timeSeriesDto.Override;
 
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateCase(caseId);
+                continue;
+            }
 
-        return new TimeSeriesCostOverrideDto
-        {
-            Id = newEntity.Id,
-            StartYear = newEntity.StartYear,
-            Values = dto.Values,
-            Override = newEntity.Override
-        };
+            context.TimeSeriesProfiles.Add(new TimeSeriesProfile
+            {
+                ProfileType = timeSeriesDto.ProfileType,
+                CaseId = caseId,
+                StartYear = timeSeriesDto.StartYear,
+                Values = await ConvertFromDto(timeSeriesDto.Values, timeSeriesDto.ProfileType, projectPk),
+                Override = timeSeriesDto.Override
+            });
+        }
     }
 
     private async Task<double[]> ConvertFromDto(double[] dtoValues, string profileType, Guid projectPk)

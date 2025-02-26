@@ -1,4 +1,5 @@
-import { ProfileTypes } from "./enums";
+import { ProfileTypes } from "@/Models/enums"
+import { UpdateRigCostDto } from "./ICampaigns"
 
 export type ResourceName =
     "case" |
@@ -13,6 +14,8 @@ export type ResourceName =
     "exploration" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" |
+    "rigUpgradingCost" |
+    "rigMobDemobCost" |
     `${ProfileTypes}`
 
 export type ResourceObject =
@@ -24,8 +27,18 @@ export type ResourceObject =
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.OnshorePowerSupplyDto |
-    Components.Schemas.TimeSeriesCostOverrideDto |
-    Components.Schemas.TimeSeriesCostDto
+    Components.Schemas.UpdateCampaignDto |
+    Components.Schemas.CampaignDto |
+    Components.Schemas.UpdateRigMobDemobCostDto |
+    Components.Schemas.UpdateRigUpgradingCostDto |
+    ProfileObject |
+    UpdateRigCostDto
+
+export type ProfileObject =
+    Components.Schemas.TimeSeriesOverrideDto |
+    Components.Schemas.TimeSeriesDto |
+    Components.Schemas.SaveTimeSeriesDto |
+    Components.Schemas.SaveTimeSeriesOverrideDto
 
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
@@ -37,28 +50,23 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
+    keyof Components.Schemas.UpdateCampaignDto |
+    keyof Components.Schemas.CampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
-    keyof Components.Schemas.TimeSeriesCostOverrideDto |
-    keyof Components.Schemas.TimeSeriesCostDto;
+    keyof Components.Schemas.TimeSeriesOverrideDto |
+    keyof Components.Schemas.TimeSeriesDto
 
 export interface EditInstance {
-    uuid: string; // unique identifier for the edit
-    newResourceObject: ResourceObject; // this is used to replace the whole asset object. used if the edit should change multiple values in the same assets
-    previousResourceObject: ResourceObject; // used to revert the asset object to its previous state during undo
-    timeStamp: number; // the time the edit was made
-    inputLabel: string; // the label of the input field being edited
-    projectId: string; // the project id
-    resourceName: ResourceName; // the asset being edited
-    resourcePropertyKey: ResourcePropertyKey; // the key of the asset being edited
-    resourceId?: string; // the id of the asset being edited
-    wellId?: string // the id of the asset well
-    drillingScheduleId?: string // the id of the drilling schedule
-    caseId?: string; // the case id
-    newDisplayValue?: string | number | undefined; // the displayed new value in case of when the value submitted is not what the user should see
-    previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see
-    tabName?: string; // used to go to the given tab where undo/redo happened
-    tableName?: string; // used to highlight undone field
-    inputFieldId?: string;
+    uuid: string;
+    projectId: string;
+    resourceName: ResourceName;
+    resourcePropertyKey: ResourcePropertyKey;
+    resourceId?: string;
+    wellId?: string;
+    drillingScheduleId?: string;
+    caseId?: string;
+    resourceObject: ResourceObject;
+    campaignId?: string;
 }
 
 export interface EditEntry {

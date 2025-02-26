@@ -9,16 +9,17 @@ namespace tests.Features.Cases.Recalculation.Calculators;
 public class CalculateBreakEvenOilPriceServiceTests
 {
     [Fact]
-    public void CalculateBreakEvenOilPrice_ValidCaseId_ReturnsCorrectBreakEvenPrice()
+    public void CalculateBreakEvenOilPrice_ReturnsCorrectBreakEvenPrice()
     {
         // Arrange
         var caseId = Guid.NewGuid();
         var project = new Project
         {
             DiscountRate = 8,
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10
+            OilPriceUSD = 70,
+            GasPriceNOK = 3.59,
+            ExchangeRateUSDToNOK = 10,
+            NpvYear = 2024
         };
 
         var caseItem = new Case
@@ -27,34 +28,36 @@ public class CalculateBreakEvenOilPriceServiceTests
             Project = project,
             DG4Date = new DateTime(2030, 1, 1),
             DrainageStrategyId = Guid.NewGuid(),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
-                    StartYear = 2027,
-                    Values = [200.0, 400.0, 100.0, 100.0]
+                    StartYear = -3,
+                    Values = [63.112300000000005, 2.4, 68.1772, 112.5595, 181.9396, 15.2671, 3, 4, 4, 4, 4, 4, 3, 3, 3, 7, 9, 2]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileOil,
-                    StartYear = 2030,
-                    Values = [1000000.0, 1000000.0, 1000000.0, 1000000.0, 500000.0, 500000.0]
+                    StartYear = 1,
+                    Values = [203120, 240400, 203500, 166700, 156000, 121600, 90100, 66500, 34100, 24300, 2500]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.ProductionProfileGas,
-                    StartYear = 2030,
-                    Values = [500000000.0, 500000000.0, 500000000.0, 500000000.0, 200000000.0, 200000000.0]
-                },
-            }
+                    ProfileType = ProfileTypes.NetSalesGas,
+                    StartYear = 1,
+                    Values = [343400000, 406700000, 344100000, 291200000, 312200000, 277100000, 234500000, 198400000, 140300000, 118700000, 12600000]
+                }
+            ]
         };
 
         // Act
         CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
 
         // Assert
-        var expectedBreakEvenPrice = 26.29;
+        var expectedBreakEvenPrice = 29.82;
         Assert.Equal(expectedBreakEvenPrice, caseItem.BreakEven, precision: 1);
     }
 }

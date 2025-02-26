@@ -22,9 +22,13 @@ export const useAppNavigation = () => {
         const revisionMatch = location.pathname.match(/\/revision\/([^/]+)/)
         const revisionId = revisionMatch ? revisionMatch[1] : null
 
+        // Only keep the tab if navigating from another case
+        const shouldKeepTab = location.pathname.includes("/case/")
+        const finalTabName = shouldKeepTab ? tabName : undefined
+
         const path = revisionId
-            ? `${projectPath()}/revision/${revisionId}/case/${caseId}${tabName ? `/${tabName}` : ""}`
-            : `${projectPath()}/case/${caseId}${tabName ? `/${tabName}` : ""}`
+            ? `${projectPath()}/revision/${revisionId}/case/${caseId}${finalTabName ? `/${finalTabName}` : ""}`
+            : `${projectPath()}/case/${caseId}${finalTabName ? `/${finalTabName}` : ""}`
 
         navigate(path, { replace: options?.replace })
     }
@@ -39,7 +43,11 @@ export const useAppNavigation = () => {
 
     const navigateToRevisionCase = (revisionId: string, caseId: string, tabName?: string, options?: { replace?: boolean }) => {
         if (!currentContext?.id) { return }
-        const path = `${projectPath()}/revision/${revisionId}/case/${caseId}${tabName ? `/${tabName}` : ""}`
+        // Only keep the tab if navigating from another case
+        const shouldKeepTab = location.pathname.includes("/case/")
+        const finalTabName = shouldKeepTab ? tabName : undefined
+
+        const path = `${projectPath()}/revision/${revisionId}/case/${caseId}${finalTabName ? `/${finalTabName}` : ""}`
         navigate(path, { replace: options?.replace })
     }
 

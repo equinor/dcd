@@ -39,7 +39,7 @@ const CasesTable = () => {
                 producerCount: c.producerCount ?? 0,
                 waterInjectorCount: c.waterInjectorCount ?? 0,
                 gasInjectorCount: c.gasInjectorCount ?? 0,
-                createdAt: c.createTime?.substring(0, 10),
+                createdAt: c.createdUtc.substring(0, 10),
                 referenceCaseId: revisionAndProjectData.commonProjectAndRevisionData.referenceCaseId,
             }))
     }

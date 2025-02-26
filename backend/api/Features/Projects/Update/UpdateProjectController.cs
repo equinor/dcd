@@ -10,7 +10,7 @@ public class UpdateProjectController(UpdateProjectService updateProjectService, 
 {
     [HttpPut("projects/{projectId:guid}")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ProjectDataDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto updateProjectDto)
+    public async Task<ProjectDataDto> UpdateProject(Guid projectId, [FromBody] UpdateProjectDto updateProjectDto)
     {
         UpdateProjectDtoValidator.Validate(updateProjectDto);
 

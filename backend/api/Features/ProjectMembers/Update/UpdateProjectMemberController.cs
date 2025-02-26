@@ -9,7 +9,7 @@ public class UpdateProjectMemberController(UpdateProjectMemberService updateProj
 {
     [HttpPut("projects/{projectId:guid}/members")]
     [AuthorizeActionType(ActionType.EditProjectMembers)]
-    public async Task<ProjectMemberDto> UpdateProjectMember([FromRoute] Guid projectId, [FromBody] UpdateProjectMemberDto updateProjectMemberDto)
+    public async Task<ProjectMemberDto> UpdateProjectMember(Guid projectId, [FromBody] UpdateProjectMemberDto updateProjectMemberDto)
     {
         await updateProjectMemberService.UpdateProjectMember(projectId, updateProjectMemberDto);
 

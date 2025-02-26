@@ -8,10 +8,7 @@ public class UpdateTransportController(UpdateTransportService updateTransportSer
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/transport")]
-    public async Task<NoContentResult> UpdateTransport(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] UpdateTransportDto dto)
+    public async Task<NoContentResult> UpdateTransport(Guid projectId, Guid caseId, [FromBody] UpdateTransportDto dto)
     {
         await updateTransportService.UpdateTransport(projectId, caseId, dto);
         return NoContent();

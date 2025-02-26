@@ -8,10 +8,7 @@ public class UpdateSubstructureController(UpdateSubstructureService updateSubstr
 {
     [AuthorizeActionType(ActionType.Edit)]
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}/substructure")]
-    public async Task<NoContentResult> UpdateSubstructure(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] UpdateSubstructureDto dto)
+    public async Task<NoContentResult> UpdateSubstructure(Guid projectId, Guid caseId, [FromBody] UpdateSubstructureDto dto)
     {
         await updateSubstructureService.UpdateSubstructure(projectId, caseId, dto);
         return NoContent();

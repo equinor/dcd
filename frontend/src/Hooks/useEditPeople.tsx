@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { GetProjectMembersService } from "../Services/ProjectMembersService"
 import { GetOrgChartMembersService } from "../Services/OrgChartMembersService"
 import { useAppStore } from "../Store/AppStore"
-import { ProjectMemberRole } from "@/Models/enums";
+import { ProjectMemberRole } from "@/Models/enums"
 
 type AddPersonVariables = {
     projectId: string;

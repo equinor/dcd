@@ -30,38 +30,35 @@ public class RecalculationRepository(DcdDbContext context)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
-        var wellProjectIds = caseItems.Select(x => x.WellProjectId).ToList();
-
-        await context.DevelopmentWells
-            .Include(x => x.Well)
-            .Where(x => wellProjectIds.Contains(x.WellProjectId))
+        await context.Campaigns
+            .Include(x => x.DevelopmentWells).ThenInclude(x => x.Well)
+            .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
-        var explorationIds = caseItems.Select(x => x.ExplorationId).ToList();
-
-        await context.ExplorationWell
-            .Include(x => x.Well)
-            .Where(x => explorationIds.Contains(x.ExplorationId))
+        await context.Campaigns
+            .Include(x => x.ExplorationWells).ThenInclude(x => x.Well)
+            .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
         var drillingSchedulesForDevelopmentWell = await (
-                from caseItem in context.Cases
-                join wp in context.WellProjects on caseItem.WellProjectId equals wp.Id
-                join dw in context.DevelopmentWells on wp.Id equals dw.WellProjectId
+                from campaign in context.Campaigns
+                join dw in context.DevelopmentWells on campaign.Id equals dw.CampaignId
+                where caseIds.Contains(campaign.CaseId)
                 select new
                 {
-                    CaseId = caseItem.Id,
+                    campaign.CaseId,
                     DevelopmentWell = dw
                 })
             .GroupBy(x => x.CaseId, x => x.DevelopmentWell)
             .ToDictionaryAsync(x => x.Key, x => x.ToList());
 
         var drillingSchedulesForExplorationWell = await (
-                from caseItem in context.Cases
-                join ew in context.ExplorationWell on caseItem.ExplorationId equals ew.ExplorationId
+                from campaign in context.Campaigns
+                join ew in context.ExplorationWell on campaign.Id equals ew.CampaignId
+                where caseIds.Contains(campaign.CaseId)
                 select new
                 {
-                    CaseId = caseItem.Id,
+                    campaign.CaseId,
                     ExplorationWell = ew
                 })
             .GroupBy(x => x.CaseId, x => x.ExplorationWell)

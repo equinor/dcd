@@ -33,127 +33,145 @@ public class CalculateTotalCostServiceTests
             TransportId = Guid.NewGuid(),
             OnshorePowerSupplyId = Guid.NewGuid(),
             ExplorationId = Guid.NewGuid(),
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.TotalOtherStudiesCostProfile,
                     StartYear = 2020,
                     Values = [1000.0, 1500.0, 2000.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.OnshoreRelatedOPEXCostProfile,
                     StartYear = 2020,
                     Values = [500.0, 600.0, 700.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CessationWellsCost,
                     StartYear = 2020,
                     Values = [300.0, 400.0, 500.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.TopsideCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 80.0, 120.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.TransportCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 70.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SurfCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [30.0, 60.0, 90.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SubstructureCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [70.0, 110.0, 150.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.OnshorePowerSupplyCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 70.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.GAndGAdminCostOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [100.0, 200.0, 300.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ExplorationWellCostProfile,
                     StartYear = 2020,
                     Values = [100.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.AppraisalWellCostProfile,
                     StartYear = 2020,
                     Values = [100.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SidetrackCostProfile,
                     StartYear = 2020,
                     Values = [100.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SeismicAcquisitionAndProcessing,
                     StartYear = 2020,
                     Values = [150.0, 250.0, 350.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CountryOfficeCost,
                     StartYear = 2020,
                     Values = [50.0, 100.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.OilProducerCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [100.0, 150.0, 200.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.GasProducerCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 80.0, 120.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.WaterInjectorCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [100.0, 100.0, 130.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.GasInjectorCostProfileOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [50.0, 80.0, 120.0]
-                },
-            }
+                }
+
+            ]
         };
 
         // Act
@@ -178,46 +196,51 @@ public class CalculateTotalCostServiceTests
         // Arrange
         var caseItem = new Case
         {
-            TimeSeriesProfiles = new List<TimeSeriesProfile>
-            {
-                new()
+            TimeSeriesProfiles =
+            [
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.GAndGAdminCostOverride,
                     Override = true,
                     StartYear = 2020,
                     Values = [10.0, 20.0, 30.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ExplorationWellCostProfile,
                     StartYear = 2021,
                     Values = [50.0, 80.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.AppraisalWellCostProfile,
                     StartYear = 2020,
                     Values = [40.0, 60.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SidetrackCostProfile,
                     StartYear = 2021,
                     Values = [20.0, 30.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.SeismicAcquisitionAndProcessing,
                     StartYear = 2021,
                     Values = [15.0, 25.0, 35.0]
                 },
-                new()
+
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.CountryOfficeCost,
                     StartYear = 2020,
                     Values = [5.0, 10.0]
                 }
-            }
+            ]
         };
 
         // Act

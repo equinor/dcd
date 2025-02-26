@@ -1,10 +1,11 @@
 import { AxiosError } from "axios"
 import { Dispatch, SetStateAction } from "react"
 import isEqual from "lodash/isEqual"
+import { v4 as uuidv4 } from "uuid"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
-import { EditEntry } from "@/Models/Interfaces"
+import { EditEntry, EditInstance } from "@/Models/Interfaces"
 import { dateFromTimestamp } from "@/Utils/DateUtils"
 
 export const loginAccessTokenKey = "loginAccessToken"
@@ -125,7 +126,7 @@ const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): numbe
 }
 
 export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    if (!t1) { return t2 || { id: "", startYear: 0, values: [] } }
+    if (!t1) { return t2 || { startYear: 0, values: [] } }
     if (!t2) { return t1 }
 
     const startYears = [t1, t2].map((t: ITimeSeries | undefined) => t?.startYear ?? 0)
@@ -137,14 +138,13 @@ export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     const mergedValues = mergeTimeSeriesValues(arrays, offsets)
 
     return {
-        id: t1.id || t2.id || "",
         startYear: minYear,
         values: mergedValues,
     }
 }
 
 export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
-    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 0, values: [] }
+    let mergedTimeSeries: ITimeSeries = { startYear: 0, values: [] }
 
     timeSeriesList.forEach((currentSeries, index) => {
         if (index === 0) {
@@ -378,6 +378,7 @@ export interface ITableCellChangeParams {
     profileName: string
     profile?: any
     resourceId?: string
+    wellId?: string
 }
 
 export interface ITableCellChangeConfig {
@@ -391,7 +392,7 @@ export interface ITableCellChangeConfig {
 }
 
 export const validateTableCellChange = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
-    const { data, newValue, profileName } = params
+    const { newValue, profileName } = params
     const { setSnackBarMessage } = config
 
     const rule = TABLE_VALIDATION_RULES[profileName]
@@ -403,13 +404,13 @@ export const validateTableCellChange = (params: ITableCellChangeParams, config: 
     return true
 }
 
-export const generateTableCellEdit = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
+export const generateTableCellEdit = (params: ITableCellChangeParams, config: ITableCellChangeConfig): EditInstance | null => {
     const { data, profileName } = params
     const {
-        dg4Year, caseId, projectId, tab, tableName, timeSeriesData,
+        dg4Year, caseId, projectId, timeSeriesData,
     } = config
 
-    if (!caseId) { return null }
+    if (!caseId || !projectId) { return null }
 
     const rowValues = getValuesFromEntireRow(data)
     const existingProfile = data.profile ? structuredClone(data.profile) : {
@@ -436,10 +437,19 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
     const profileInTimeSeriesData = timeSeriesData.find(
         (v) => v.profileName === profileName,
     )
+    const editInstance: EditInstance = {
+        uuid: uuidv4(),
+        projectId,
+        caseId,
+        resourceName: profileInTimeSeriesData?.resourceName,
+        resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
+        resourceId: profileInTimeSeriesData?.resourceId,
+        wellId: params.data.wellId,
+        resourceObject: newProfile,
+    }
 
+    /*
     return {
-        newDisplayValue: roundToFourDecimalsAndJoin(newProfile.values),
-        previousDisplayValue: roundToFourDecimalsAndJoin(existingProfile.values),
         inputLabel: profileName,
         projectId,
         resourceName: profileInTimeSeriesData?.resourceName,
@@ -451,6 +461,9 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
         tabName: tab,
         tableName,
     }
+        */
+
+    return editInstance
 }
 
 export const sortVersions = (versions: string[]): string[] => versions.sort((a, b) => {

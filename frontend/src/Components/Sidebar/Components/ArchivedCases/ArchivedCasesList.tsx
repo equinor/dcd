@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 import { useMemo } from "react"
 
-import { EMPTY_GUID } from "@/Utils/constants"
+import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
 import { productionStrategyOverviewToString, truncateText } from "@/Utils/common"
 import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import { useDataFetch } from "@/Hooks"
@@ -12,6 +12,7 @@ import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
 import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
+import { useCaseStore } from "@/Store/CaseStore"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -19,7 +20,7 @@ const SideBarRefCaseWrapper = styled.div`
 
 interface ArchivedCase extends Components.Schemas.CaseOverviewDto { isReferenceCase: boolean}
 
-const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => sortUtcDateStrings(a.createTime, b.createTime)
+const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => sortUtcDateStrings(a.createdUtc, b.createdUtc)
 
 const getTooltipText = (
     caseName: string | undefined,
@@ -37,6 +38,7 @@ const ArchivedCasesList = (): JSX.Element | null => {
     const location = useLocation()
     const revisionAndProjectData = useDataFetch()
     const { navigateToCase, navigateToRevisionCase } = useAppNavigation()
+    const { activeTabCase } = useCaseStore()
 
     const archivedCases = useMemo(
         () => {
@@ -55,8 +57,12 @@ const ArchivedCasesList = (): JSX.Element | null => {
     )
 
     const handleCaseClick = (caseId: string) => {
-        const navigate = revisionId ? navigateToRevisionCase : navigateToCase
-        navigate(revisionId ?? "", caseId)
+        const currentTab = caseTabNames[activeTabCase]
+        if (revisionId) {
+            navigateToRevisionCase(revisionId, caseId, currentTab)
+        } else {
+            navigateToCase(caseId, currentTab)
+        }
     }
 
     const renderCaseContent = (projectCase: ArchivedCase, index: number) => (

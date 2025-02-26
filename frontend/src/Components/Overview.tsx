@@ -68,15 +68,6 @@ const Overview = () => {
         setIsCreateRevisionModalOpen,
     } = useProjectContext()
 
-    const {
-        apiQueue,
-        setIsSaving,
-    } = useAppStore()
-
-    const {
-        processQueue,
-    } = useEditCase()
-
     const { featuresModalIsOpen } = useModalContext()
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -90,29 +81,6 @@ const Overview = () => {
         enabled: !!projectId,
     })
 
-    useEffect(() => {
-        let timer: NodeJS.Timeout | undefined
-        if (apiQueue.length > 0) {
-            setIsSaving(true)
-
-            if (timer) {
-                clearTimeout(timer)
-            }
-
-            timer = setTimeout(() => {
-                processQueue()
-            }, 3000)
-        } else {
-            setIsSaving(false)
-        }
-
-        return () => {
-            if (timer) {
-                clearTimeout(timer)
-            }
-        }
-    }, [apiQueue])
-
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)
         setShowRevisionReminder(false)
@@ -125,11 +93,11 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!projectData) { return }
 
-        const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
+        const updatedUtc = dateStringToDateUtc(projectData.commonProjectAndRevisionData.updatedUtc)
         const currentTime = new Date()
 
-        const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
+        const timeDifferenceInDays = (currentTime.getTime() - updatedUtc.getTime()) / (1000 * 60 * 60 * 24)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < updatedUtc)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)

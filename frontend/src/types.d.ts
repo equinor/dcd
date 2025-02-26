@@ -1,6 +1,7 @@
 declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export type CampaignCostType = 0 | 1; // int32
         export interface CampaignDto {
             campaignId: string; // uuid
             campaignType: CampaignType /* int32 */;
@@ -50,8 +51,8 @@ declare namespace Components {
             dG2Date: string; // date-time
             dG3Date: string; // date-time
             dG4Date: string; // date-time
-            createTime: string; // date-time
-            modifyTime: string; // date-time
+            createdUtc: string; // date-time
+            updatedUtc: string; // date-time
             surfId: string; // uuid
             substructureId: string; // uuid
             topsideId: string; // uuid
@@ -63,93 +64,93 @@ declare namespace Components {
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
-            cessationWellsCost: TimeSeriesCostDto;
-            cessationWellsCostOverride: TimeSeriesCostOverrideDto;
-            cessationOffshoreFacilitiesCost: TimeSeriesCostDto;
-            cessationOffshoreFacilitiesCostOverride: TimeSeriesCostOverrideDto;
-            cessationOnshoreFacilitiesCostProfile: TimeSeriesCostDto;
-            totalFeasibilityAndConceptStudies: TimeSeriesCostDto;
-            totalFeasibilityAndConceptStudiesOverride: TimeSeriesCostOverrideDto;
-            totalFEEDStudies: TimeSeriesCostDto;
-            totalFEEDStudiesOverride: TimeSeriesCostOverrideDto;
-            totalOtherStudiesCostProfile: TimeSeriesCostDto;
-            historicCostCostProfile: TimeSeriesCostDto;
-            wellInterventionCostProfile: TimeSeriesCostDto;
-            wellInterventionCostProfileOverride: TimeSeriesCostOverrideDto;
-            offshoreFacilitiesOperationsCostProfile: TimeSeriesCostDto;
-            offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesCostOverrideDto;
-            onshoreRelatedOPEXCostProfile: TimeSeriesCostDto;
-            additionalOPEXCostProfile: TimeSeriesCostDto;
-            calculatedTotalIncomeCostProfile: TimeSeriesCostDto;
-            calculatedTotalCostCostProfile: TimeSeriesCostDto;
+            cessationWellsCost: TimeSeriesDto;
+            cessationWellsCostOverride: TimeSeriesOverrideDto;
+            cessationOffshoreFacilitiesCost: TimeSeriesDto;
+            cessationOffshoreFacilitiesCostOverride: TimeSeriesOverrideDto;
+            cessationOnshoreFacilitiesCostProfile: TimeSeriesDto;
+            totalFeasibilityAndConceptStudies: TimeSeriesDto;
+            totalFeasibilityAndConceptStudiesOverride: TimeSeriesOverrideDto;
+            totalFEEDStudies: TimeSeriesDto;
+            totalFEEDStudiesOverride: TimeSeriesOverrideDto;
+            totalOtherStudiesCostProfile: TimeSeriesDto;
+            historicCostCostProfile: TimeSeriesDto;
+            wellInterventionCostProfile: TimeSeriesDto;
+            wellInterventionCostProfileOverride: TimeSeriesOverrideDto;
+            offshoreFacilitiesOperationsCostProfile: TimeSeriesDto;
+            offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesOverrideDto;
+            onshoreRelatedOPEXCostProfile: TimeSeriesDto;
+            additionalOPEXCostProfile: TimeSeriesDto;
+            calculatedTotalIncomeCostProfile: TimeSeriesDto;
+            calculatedTotalCostCostProfile: TimeSeriesDto;
             topside: TopsideDto;
-            topsideCostProfile: TimeSeriesCostDto;
-            topsideCostProfileOverride: TimeSeriesCostOverrideDto;
-            topsideCessationCostProfile: TimeSeriesCostDto;
+            topsideCostProfile: TimeSeriesDto;
+            topsideCostProfileOverride: TimeSeriesOverrideDto;
+            topsideCessationCostProfile: TimeSeriesDto;
             drainageStrategy: DrainageStrategyDto;
-            productionProfileOil: TimeSeriesCostDto;
-            additionalProductionProfileOil: TimeSeriesCostDto;
-            productionProfileGas: TimeSeriesCostDto;
-            additionalProductionProfileGas: TimeSeriesCostDto;
-            productionProfileWater: TimeSeriesCostDto;
-            productionProfileWaterInjection: TimeSeriesCostDto;
-            fuelFlaringAndLosses: TimeSeriesCostDto;
-            fuelFlaringAndLossesOverride: TimeSeriesCostOverrideDto;
-            netSalesGas: TimeSeriesCostDto;
-            netSalesGasOverride: TimeSeriesCostOverrideDto;
-            co2Emissions: TimeSeriesCostDto;
-            co2EmissionsOverride: TimeSeriesCostOverrideDto;
-            productionProfileNgl: TimeSeriesCostDto;
-            importedElectricity: TimeSeriesCostDto;
-            importedElectricityOverride: TimeSeriesCostOverrideDto;
-            co2Intensity: TimeSeriesCostDto;
-            deferredOilProduction: TimeSeriesCostDto;
-            deferredGasProduction: TimeSeriesCostDto;
+            productionProfileOil: TimeSeriesDto;
+            additionalProductionProfileOil: TimeSeriesDto;
+            productionProfileGas: TimeSeriesDto;
+            additionalProductionProfileGas: TimeSeriesDto;
+            productionProfileWater: TimeSeriesDto;
+            productionProfileWaterInjection: TimeSeriesDto;
+            fuelFlaringAndLosses: TimeSeriesDto;
+            fuelFlaringAndLossesOverride: TimeSeriesOverrideDto;
+            netSalesGas: TimeSeriesDto;
+            netSalesGasOverride: TimeSeriesOverrideDto;
+            co2Emissions: TimeSeriesDto;
+            co2EmissionsOverride: TimeSeriesOverrideDto;
+            productionProfileNgl: TimeSeriesDto;
+            importedElectricity: TimeSeriesDto;
+            importedElectricityOverride: TimeSeriesOverrideDto;
+            co2Intensity: TimeSeriesDto;
+            deferredOilProduction: TimeSeriesDto;
+            deferredGasProduction: TimeSeriesDto;
             substructure: SubstructureDto;
-            substructureCostProfile: TimeSeriesCostDto;
-            substructureCostProfileOverride: TimeSeriesCostOverrideDto;
-            substructureCessationCostProfile: TimeSeriesCostDto;
+            substructureCostProfile: TimeSeriesDto;
+            substructureCostProfileOverride: TimeSeriesOverrideDto;
+            substructureCessationCostProfile: TimeSeriesDto;
             surf: SurfDto;
-            surfCostProfile: TimeSeriesCostDto;
-            surfCostProfileOverride: TimeSeriesCostOverrideDto;
-            surfCessationCostProfile: TimeSeriesCostDto;
+            surfCostProfile: TimeSeriesDto;
+            surfCostProfileOverride: TimeSeriesOverrideDto;
+            surfCessationCostProfile: TimeSeriesDto;
             transport: TransportDto;
-            transportCostProfile: TimeSeriesCostDto;
-            transportCostProfileOverride: TimeSeriesCostOverrideDto;
-            transportCessationCostProfile: TimeSeriesCostDto;
+            transportCostProfile: TimeSeriesDto;
+            transportCostProfileOverride: TimeSeriesOverrideDto;
+            transportCessationCostProfile: TimeSeriesDto;
             onshorePowerSupply: OnshorePowerSupplyDto;
-            onshorePowerSupplyCostProfile: TimeSeriesCostDto;
-            onshorePowerSupplyCostProfileOverride: TimeSeriesCostOverrideDto;
+            onshorePowerSupplyCostProfile: TimeSeriesDto;
+            onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
             explorationId: string; // uuid
             explorationWells: ExplorationWellDto[];
             explorationCampaigns: CampaignDto[];
-            explorationWellCostProfile: TimeSeriesCostDto;
-            appraisalWellCostProfile: TimeSeriesCostDto;
-            sidetrackCostProfile: TimeSeriesCostDto;
-            gAndGAdminCost: TimeSeriesCostDto;
-            gAndGAdminCostOverride: TimeSeriesCostOverrideDto;
-            seismicAcquisitionAndProcessing: TimeSeriesCostDto;
-            countryOfficeCost: TimeSeriesCostDto;
-            projectSpecificDrillingCostProfile: TimeSeriesCostDto;
-            explorationRigUpgradingCostProfile: TimeSeriesCostDto;
-            explorationRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
-            explorationRigMobDemob: TimeSeriesCostDto;
-            explorationRigMobDemobOverride: TimeSeriesCostOverrideDto;
+            explorationWellCostProfile: TimeSeriesDto;
+            appraisalWellCostProfile: TimeSeriesDto;
+            sidetrackCostProfile: TimeSeriesDto;
+            gAndGAdminCost: TimeSeriesDto;
+            gAndGAdminCostOverride: TimeSeriesOverrideDto;
+            seismicAcquisitionAndProcessing: TimeSeriesDto;
+            countryOfficeCost: TimeSeriesDto;
+            projectSpecificDrillingCostProfile: TimeSeriesDto;
+            explorationRigUpgradingCostProfile: TimeSeriesDto;
+            explorationRigUpgradingCostProfileOverride: TimeSeriesOverrideDto;
+            explorationRigMobDemob: TimeSeriesDto;
+            explorationRigMobDemobOverride: TimeSeriesOverrideDto;
             wellProjectId: string; // uuid
             developmentWells: DevelopmentWellDto[];
             developmentCampaigns: CampaignDto[];
-            oilProducerCostProfile: TimeSeriesCostDto;
-            oilProducerCostProfileOverride: TimeSeriesCostOverrideDto;
-            gasProducerCostProfile: TimeSeriesCostDto;
-            gasProducerCostProfileOverride: TimeSeriesCostOverrideDto;
-            waterInjectorCostProfile: TimeSeriesCostDto;
-            waterInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
-            gasInjectorCostProfile: TimeSeriesCostDto;
-            gasInjectorCostProfileOverride: TimeSeriesCostOverrideDto;
-            developmentRigUpgradingCostProfile: TimeSeriesCostDto;
-            developmentRigUpgradingCostProfileOverride: TimeSeriesCostOverrideDto;
-            developmentRigMobDemob: TimeSeriesCostDto;
-            developmentRigMobDemobOverride: TimeSeriesCostOverrideDto;
+            oilProducerCostProfile: TimeSeriesDto;
+            oilProducerCostProfileOverride: TimeSeriesOverrideDto;
+            gasProducerCostProfile: TimeSeriesDto;
+            gasProducerCostProfileOverride: TimeSeriesOverrideDto;
+            waterInjectorCostProfile: TimeSeriesDto;
+            waterInjectorCostProfileOverride: TimeSeriesOverrideDto;
+            gasInjectorCostProfile: TimeSeriesDto;
+            gasInjectorCostProfileOverride: TimeSeriesOverrideDto;
+            developmentRigUpgradingCostProfile: TimeSeriesDto;
+            developmentRigUpgradingCostProfileOverride: TimeSeriesOverrideDto;
+            developmentRigMobDemob: TimeSeriesDto;
+            developmentRigMobDemobOverride: TimeSeriesOverrideDto;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
@@ -157,7 +158,7 @@ declare namespace Components {
             co2Flaring: number; // double
         }
         export interface CommonProjectAndRevisionDto {
-            modifyTime: string; // date-time
+            updatedUtc: string; // date-time
             classification: ProjectClassification /* int32 */;
             name: string;
             fusionProjectId: string; // uuid
@@ -260,6 +261,7 @@ declare namespace Components {
             id: string; // uuid
             description: string;
             nglYield: number; // double
+            gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
@@ -353,6 +355,7 @@ declare namespace Components {
             values: number /* double */[];
         }
         export interface SaveCampaignWellDto {
+            wellId: string; // uuid
             startYear: number; // int32
             values: number /* int32 */[];
         }
@@ -360,6 +363,10 @@ declare namespace Components {
             profileType: string;
             startYear: number; // int32
             values: number /* double */[];
+        }
+        export interface SaveTimeSeriesListDto {
+            timeSeries: SaveTimeSeriesDto[];
+            overrideTimeSeries: SaveTimeSeriesOverrideDto[];
         }
         export interface SaveTimeSeriesOverrideDto {
             profileType: string;
@@ -415,14 +422,12 @@ declare namespace Components {
             dG3Date: string | null; // date-time
             dG4Date: string | null; // date-time
         }
-        export interface TimeSeriesCostDto {
-            id: string; // uuid
+        export interface TimeSeriesDto {
             startYear: number; // int32
             values: number /* double */[];
             updatedUtc: string; // date-time
         }
-        export interface TimeSeriesCostOverrideDto {
-            id: string; // uuid
+        export interface TimeSeriesOverrideDto {
             startYear: number; // int32
             values: number /* double */[];
             override: boolean;
@@ -475,12 +480,9 @@ declare namespace Components {
             dG4Date: string | null; // date-time
         }
         export interface UpdateCampaignDto {
-            rigUpgradingCost: number; // double
-            rigUpgradingCostStartYear: number; // int32
-            rigUpgradingCostValues: number /* double */[];
-            rigMobDemobCost: number; // double
-            rigMobDemobCostStartYear: number; // int32
-            rigMobDemobCostValues: number /* double */[];
+            campaignCostType: CampaignCostType /* int32 */;
+            startYear: number; // int32
+            values: number /* double */[];
         }
         export interface UpdateCaseDto {
             name: string;
@@ -524,6 +526,7 @@ declare namespace Components {
         }
         export interface UpdateDrainageStrategyDto {
             nglYield: number; // double
+            gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
@@ -579,6 +582,12 @@ declare namespace Components {
             name: string;
             arena: boolean;
             mdqc: boolean;
+        }
+        export interface UpdateRigMobDemobCostDto {
+            cost: number; // double
+        }
+        export interface UpdateRigUpgradingCostDto {
+            cost: number; // double
         }
         export interface UpdateSubstructureDto {
             dryWeight: number; // double
@@ -666,6 +675,10 @@ declare namespace Components {
             canCreateRevision: boolean;
             canEditProjectData: boolean;
             canEditProjectMembers: boolean;
+        }
+        export interface VideoDto {
+            videoName: string;
+            base64EncodedData: string;
         }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellOverviewDto {
@@ -831,23 +844,60 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdWells$WellIdSave {
-        namespace Post {
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdRigMobdemobCost {
+        namespace Put {
             namespace Parameters {
                 export type CampaignId = string; // uuid
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
                 campaignId: Parameters.CampaignId /* uuid */;
-                wellId: Parameters.WellId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.SaveCampaignWellDto;
+            export type RequestBody = Components.Schemas.UpdateRigMobDemobCostDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CampaignWellDto;
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdRigUpgradingCost {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateRigUpgradingCostDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCampaigns$CampaignIdWells {
+        namespace Put {
+            namespace Parameters {
+                export type CampaignId = string; // uuid
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                campaignId: Parameters.CampaignId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SaveCampaignWellDto[];
+            namespace Responses {
+                export interface $200 {
+                }
             }
         }
     }
@@ -866,7 +916,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdCo2drillingflaringfueltotals {
+    namespace Projects$ProjectIdCases$CaseIdCo2DrillingFlaringFuelTotals {
         namespace Get {
             namespace Parameters {
                 export type CaseId = string; // uuid
@@ -1023,7 +1073,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdOverrideProfilesSave {
+    namespace Projects$ProjectIdCases$CaseIdProfilesSaveBatch {
         namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
@@ -1033,25 +1083,10 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.SaveTimeSeriesOverrideDto;
+            export type RequestBody = Components.Schemas.SaveTimeSeriesListDto;
             namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesCostOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdProfilesSave {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.SaveTimeSeriesDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.TimeSeriesCostDto;
+                export interface $200 {
+                }
             }
         }
     }
@@ -1464,6 +1499,26 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Version {
+        namespace Get {
+            namespace Responses {
+                export type $200 = string;
+            }
+        }
+    }
+    namespace Videos$VideoName {
+        namespace Get {
+            namespace Parameters {
+                export type VideoName = string;
+            }
+            export interface PathParameters {
+                videoName: Parameters.VideoName;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.VideoDto;
             }
         }
     }

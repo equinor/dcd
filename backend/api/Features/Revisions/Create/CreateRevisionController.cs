@@ -10,7 +10,7 @@ public class CreateRevisionController(CreateRevisionService createRevisionServic
 {
     [HttpPost("projects/{projectId:guid}/revisions")]
     [AuthorizeActionType(ActionType.CreateRevision)]
-    public async Task<RevisionDataDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
+    public async Task<RevisionDataDto> CreateRevision(Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
     {
         CreateRevisionDtoValidator.Validate(createRevisionDto);
 

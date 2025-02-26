@@ -10,7 +10,7 @@ public class DuplicateCaseController(DuplicateCaseService duplicateCaseService, 
 {
     [HttpPost("projects/{projectId:guid}/cases/copy")]
     [AuthorizeActionType(ActionType.Edit)]
-    public async Task<ProjectDataDto> DuplicateCase([FromRoute] Guid projectId, [FromQuery] Guid copyCaseId)
+    public async Task<ProjectDataDto> DuplicateCase(Guid projectId, [FromQuery] Guid copyCaseId)
     {
         await duplicateCaseService.DuplicateCase(projectId, copyCaseId);
 

@@ -1,5 +1,6 @@
 using api.Features.Cases.Recalculation.Calculators.Helpers;
 using api.Features.Profiles;
+using api.Features.Profiles.Dtos;
 using api.Models;
 
 using static api.Features.Profiles.VolumeConstants;
@@ -11,9 +12,10 @@ public static class CalculateBreakEvenOilPriceService
     public static void RunCalculation(Case caseItem)
     {
         var discountRate = caseItem.Project.DiscountRate;
-        var defaultOilPrice = caseItem.Project.OilPriceUSD;
+        var oilPrice = caseItem.Project.OilPriceUSD;
         var gasPriceNok = caseItem.Project.GasPriceNOK;
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
+        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
@@ -27,49 +29,49 @@ public static class CalculateBreakEvenOilPriceService
 
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
-        var gasVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas),
-            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
-        );
+        var netSalesGasProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
+        var netSalesGasOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
 
-        gasVolume.Values = gasVolume.Values.Length != 0 ? gasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : [];
+        var netSalesGasVolume = netSalesGasOverrideProfile?.Override == true
+            ? new TimeSeries(netSalesGasOverrideProfile)
+            : new TimeSeries(netSalesGasProfile);
 
-        var currentYear = DateTime.Now.Year;
-        var nextYear = currentYear + 1;
+        netSalesGasVolume.Values = netSalesGasVolume.Values.Select(v => v / 1_000_000_000).ToArray();
+
         var dg4Year = caseItem.DG4Date.Year;
-        var nextYearInRelationToDg4Year = nextYear - dg4Year;
-
-        var discountedGasVolume = EconomicsHelper.CalculateDiscountedVolume(
-            gasVolume.Values,
-            discountRate,
-            gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year)
-        );
+        var discountYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
         var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(
             oilVolume.Values,
             discountRate,
-            oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year)
+            oilVolume.StartYear,
+            discountYearInRelationToDg4Year
         );
 
-        if (discountedOilVolume == 0 || discountedGasVolume == 0)
+        var discountedNetSalesGasVolumeVolume = EconomicsHelper.CalculateDiscountedVolume(
+            netSalesGasVolume.Values,
+            discountRate,
+            netSalesGasVolume.StartYear,
+            discountYearInRelationToDg4Year
+        );
+
+        if (discountedOilVolume == 0 || discountedNetSalesGasVolumeVolume == 0)
         {
             return;
         }
 
-        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
-
         var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
             calculatedTotalCostCostProfile?.Values ?? [],
             discountRate,
-            (calculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year)
+            calculatedTotalCostCostProfile?.StartYear ?? 0, // discount factor should be applied from the year after discount year
+            discountYearInRelationToDg4Year
         );
 
-        var gor = discountedGasVolume / discountedOilVolume;
+        var gor = discountedNetSalesGasVolumeVolume / discountedOilVolume;
 
-        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * BarrelsPerCubicMeter * defaultOilPrice) : 0;
+        var pa = gasPriceNok > 0 ? gasPriceNok * 1000 / (exchangeRateUsdToNok * BarrelsPerCubicMeter * oilPrice) : 0;
 
         var breakEvenPrice = discountedTotalCost / ((gor * pa) + 1) / discountedOilVolume / BarrelsPerCubicMeter;
-
         caseItem.BreakEven = breakEvenPrice;
     }
 }

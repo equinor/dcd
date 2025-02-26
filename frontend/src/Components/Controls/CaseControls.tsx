@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react"
-import { useQuery } from "@tanstack/react-query"
 import {
     Icon, Button, Input, Typography,
     Tooltip,
@@ -10,12 +9,11 @@ import {
     visibility,
     edit,
 } from "@equinor/eds-icons"
-import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
+import { v4 as uuidv4 } from "uuid"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import CaseDropMenu from "./CaseDropMenu"
-import { caseQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/DateUtils"
@@ -102,16 +100,12 @@ const CaseControls: React.FC<props> = ({
     const caseData = apiData.case
 
     const handleCaseNameChange = (name: string) => {
-        const previousResourceObject = structuredClone(caseData)
-        const newResourceObject = structuredClone(caseData)
-        newResourceObject.name = name
+        const resourceObject = structuredClone(caseData)
+        resourceObject.name = name
         if (caseData) {
             addEdit({
-                previousDisplayValue: previousResourceObject.name,
-                newDisplayValue: name,
-                newResourceObject,
-                previousResourceObject,
-                inputLabel: "caseName",
+                uuid: uuidv4(),
+                resourceObject,
                 projectId,
                 resourceName: "case",
                 resourcePropertyKey: "name",
@@ -178,7 +172,7 @@ const CaseControls: React.FC<props> = ({
                             <Typography variant="caption">
                                 Case last updated
                                 {" "}
-                                {formatDateAndTime(caseData.modifyTime)}
+                                {formatDateAndTime(caseData.updatedUtc)}
                             </Typography>
                         )
                         : <UndoControls />}

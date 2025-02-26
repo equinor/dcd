@@ -5,7 +5,6 @@ export enum ProfileTypes {
     AdditionalProductionProfileGas = "AdditionalProductionProfileGas",
     AdditionalProductionProfileOil = "AdditionalProductionProfileOil",
     AppraisalWellCostProfile = "AppraisalWellCostProfile",
-    AverageCo2Intensity = "AverageCo2Intensity",
     CalculatedTotalCostCostProfile = "CalculatedTotalCostCostProfile",
     CalculatedTotalIncomeCostProfile = "CalculatedTotalIncomeCostProfile",
     CessationOffshoreFacilitiesCost = "CessationOffshoreFacilitiesCost",
@@ -84,6 +83,11 @@ export enum ArtificialLift {
     GasLift = 1,
     ElectricalSubmergedPumps = 2,
     SubseaBoosterPumps = 3,
+}
+
+export enum CampaignCostType {
+    RigUpgrading = 0,
+    RigMobDemob = 1,
 }
 
 export enum CampaignType {

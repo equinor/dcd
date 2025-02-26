@@ -52,7 +52,7 @@ public static class CessationCostProfileService
 
     private static void GenerateCessationWellsCost(Project project, List<DevelopmentWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)
     {
-        var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
+        var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts.PluggingAndAbandonment;
 
         var sumDrilledWells = developmentWells
             .Select(x => x.Values.Sum())

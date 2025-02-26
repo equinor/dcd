@@ -51,7 +51,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         })
 
         return {
-            id: "",
             startYear: Math.min(...Object.keys(totals).map(Number)) - dg4Year,
             values: Object.values(totals),
         }

@@ -11,10 +11,11 @@ import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCas
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
-import { EMPTY_GUID } from "@/Utils/constants"
+import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
 import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
+import { useCaseStore } from "@/Store/CaseStore"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -28,16 +29,18 @@ const CasesList: React.FC = () => {
     const { revisionId } = useParams()
     const revisionAndProjectData = useDataFetch()
     const { navigateToCase, navigateToRevisionCase } = useAppNavigation()
+    const { activeTabCase } = useCaseStore()
 
     const location = useLocation()
 
     const selectCase = (caseId: string) => {
         if (!caseId) { return null }
         setEditMode(false)
+        const currentTab = caseTabNames[activeTabCase]
         if (isRevision && revisionId) {
-            navigateToRevisionCase(revisionId, caseId)
+            navigateToRevisionCase(revisionId, caseId, currentTab)
         } else {
-            navigateToCase(caseId)
+            navigateToCase(caseId, currentTab)
         }
         return null
     }
@@ -56,7 +59,7 @@ const CasesList: React.FC = () => {
 
     return (
         <>
-            {cases.sort((a, b) => sortUtcDateStrings(a.createTime, b.createTime)).map((projectCase, index) => (
+            {cases.sort((a, b) => sortUtcDateStrings(a.createdUtc, b.createdUtc)).map((projectCase, index) => (
                 <Grid
                     container
                     justifyContent="space-between"

@@ -31,10 +31,11 @@ public static class CalculateNpvService
         var npvValue = EconomicsHelper.CalculateDiscountedVolume(
                 cashflowProfile.Values,
                 discountRate,
-                cashflowProfile.StartYear - npvYearInRelationToDg4Year
+                cashflowProfile.StartYear,
+                npvYearInRelationToDg4Year
             );
 
-        caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;
+        caseItem.NPV = npvValue;
     }
 
     private static TimeSeries? GetCashflowProfile(Case caseItem)

@@ -160,7 +160,7 @@ const CreateCaseModal = () => {
         }
     }
 
-    const disableCreateButton = () => caseName && caseName !== ""
+    const disableCreateButton = () => caseName && caseName.trim() !== ""
 
     return (
         <Modal
