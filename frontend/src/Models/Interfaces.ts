@@ -63,7 +63,6 @@ export interface EditInstance {
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
     wellId?: string;
-    drillingScheduleId?: string;
     caseId?: string;
     resourceObject: ResourceObject;
     campaignId?: string;

@@ -20,8 +20,6 @@ const useEditCase = () => {
             caseId,
             resourceName,
             resourceId,
-            wellId,
-            drillingScheduleId,
             resourceObject,
         } = editInstance
 
@@ -35,8 +33,6 @@ const useEditCase = () => {
         editLogger.info("caseId:", caseId)
         editLogger.info("resourceName:", resourceName)
         editLogger.info("resourceId:", resourceId)
-        editLogger.info("wellId:", wellId)
-        editLogger.info("drillingScheduleId:", drillingScheduleId)
         editLogger.info("resourceObject:", resourceObject)
 
         try {
@@ -45,16 +41,11 @@ const useEditCase = () => {
                 caseId,
                 resourceName,
                 resourceId,
-                wellId,
-                drillingScheduleId,
                 resourceObject,
             })
 
             if (result.success) {
                 const editWithProfileId = { ...editInstance }
-                if (result.data?.id) {
-                    editWithProfileId.drillingScheduleId = result.data.id
-                }
                 return editWithProfileId
             }
             return null
