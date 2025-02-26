@@ -76,8 +76,6 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? OnshorePowerSupplyCostProfile { get; set; }
     public required TimeSeriesOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
-    [Required] public required List<ExplorationWellDto> ExplorationWells { get; set; }
-
     [Required] public required List<CampaignDto> ExplorationCampaigns { get; set; }
 
     public required TimeSeriesDto? ExplorationWellCostProfile { get; set; }
@@ -95,8 +93,6 @@ public class CaseWithAssetsDto
 
     public required TimeSeriesDto? ExplorationRigMobDemob { get; set; }
     public required TimeSeriesOverrideDto? ExplorationRigMobDemobOverride { get; set; }
-
-    [Required] public required List<DevelopmentWellDto> DevelopmentWells { get; set; }
 
     [Required] public required List<CampaignDto> DevelopmentCampaigns { get; set; }
 
