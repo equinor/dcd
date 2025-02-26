@@ -18,7 +18,7 @@ import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseContr
 import { ResourceObject } from "@/Models/Interfaces"
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { useDataFetch } from "@/Hooks"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "@/Components/Modal/Modal"
 import { useAppNavigation } from "@/Hooks/useNavigate"
@@ -44,7 +44,7 @@ const CasesDropMenu = ({
     const { addProjectEdit } = useEditProject()
     const { navigateToCase } = useAppNavigation()
     const { updateCase } = useSubmitToApi()
-    const { isEditDisabled } = useEditDisabled()
+    const { isEditDisabled } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
     const { activeTabCase } = useCaseStore()
 

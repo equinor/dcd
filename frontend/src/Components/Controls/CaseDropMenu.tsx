@@ -21,7 +21,7 @@ import { useModalContext } from "@/Store/ModalContext"
 import { ResourceObject } from "@/Models/Interfaces"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "@/Components/Modal/Modal"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -43,7 +43,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addNewCase } = useModalContext()
     const { addProjectEdit } = useEditProject()
     const { updateCase } = useSubmitToApi()
-    const { isEditDisabled } = useEditDisabled()
+    const { isEditDisabled } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
 
     const [confirmDelete, setConfirmDelete] = useState(false)

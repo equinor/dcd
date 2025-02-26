@@ -184,10 +184,10 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
  * Determines if a table cell is editable based on the provided parameters and edit mode.
  *
  * @param params The parameters of the table cell.
- * @param editMode A boolean indicating if the table is in edit mode.
+ * @param editAllowed A boolean indicating if the table can be eddited by user.
  * @returns A boolean indicating if the cell is editable.
  * */
-export const tableCellisEditable = (params: any, editMode: boolean): boolean => {
+export const tableCellisEditable = (params: any, editAllowed: boolean): boolean => {
     if (!params || !params.node || !params.data) {
         return false
     }
@@ -197,15 +197,15 @@ export const tableCellisEditable = (params: any, editMode: boolean): boolean => 
     }
 
     if (params.data.overridable) {
-        return editMode && params.data.override
+        return editAllowed && params.data.override
     }
 
-    return editMode && params.data.editable
+    return editAllowed && params.data.editable
 }
 
-export const validateInput = (params: any, editMode: boolean) => {
+export const validateInput = (params: any, editAllowed: boolean) => {
     const { value, data } = params
-    if (tableCellisEditable(params, editMode) && editMode && value) {
+    if (tableCellisEditable(params, editAllowed) && value) {
         const rule = TABLE_VALIDATION_RULES[data.profileName]
         if (rule && (value < rule.min || value > rule.max)) {
             return `Value must be between ${rule.min} and ${rule.max}.`

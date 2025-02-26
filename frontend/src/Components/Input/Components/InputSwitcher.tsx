@@ -3,6 +3,7 @@ import styled from "styled-components"
 import React from "react"
 
 import { useAppStore } from "@/Store/AppStore"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const ViewValue = styled(Typography)`
     margin-top: 10px;
@@ -15,7 +16,8 @@ interface InputSwitcherProps {
 }
 
 const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
-    const { editMode, isSaving } = useAppStore()
+    const { isSaving } = useAppStore()
+    const { canEdit } = useCanUserEdit()
 
     return (
         <InputWrapper
@@ -23,7 +25,7 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
                 label,
             }}
         >
-            {editMode ? (
+            {canEdit() ? (
                 <div key="input">
                     {React.cloneElement(children, { disabled: isSaving })}
                 </div>

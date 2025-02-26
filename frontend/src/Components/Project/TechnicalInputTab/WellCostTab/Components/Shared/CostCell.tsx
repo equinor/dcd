@@ -3,8 +3,7 @@ import {
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
-
-import { useAppStore } from "@/Store/AppStore"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 interface Props {
     title: string
@@ -19,7 +18,7 @@ const StyledTypography = styled(Typography)`
 const CostCell = ({
     title, setValue, value,
 }: Props) => {
-    const { editMode } = useAppStore()
+    const { canEdit } = useCanUserEdit()
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }
@@ -29,7 +28,7 @@ const CostCell = ({
                 {title}
             </Table.Cell>
             <Table.Cell>
-                {editMode
+                {canEdit()
                     ? (
                         <Input
                             id="WellCost"

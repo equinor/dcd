@@ -18,7 +18,7 @@ import { GetProjectService } from "@/Services/ProjectService"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 import { useAppStore } from "@/Store/AppStore"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import {
     useDataFetch, useEditProject, useEditCase, useCaseApiData,
 } from "@/Hooks"
@@ -82,7 +82,7 @@ const CaseControls: React.FC<props> = ({
     const { addProjectEdit } = useEditProject()
     const { editMode } = useAppStore()
     const { addEdit } = useEditCase()
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { isEditDisabled, getEditDisabledText } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
 
