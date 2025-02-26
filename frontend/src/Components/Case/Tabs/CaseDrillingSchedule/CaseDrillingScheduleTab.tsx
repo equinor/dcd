@@ -16,10 +16,10 @@ import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import Campaign from "./Components/Campaign"
 import {
-    CampaignFieldsContainer,
     CampaignHeader,
     CampaignHeaderTexts,
     CampaignLink,
+    FieldsAndDatePickerContainer,
     LinkText,
 } from "./Components/SharedCampaignStyles"
 import { WellCategory } from "@/Models/enums"
@@ -141,7 +141,7 @@ const CaseDrillingScheduleTab = () => {
                         </Typography>
                         <CampaignLink variant="body_short_link" onClick={() => navigateToProjectTab(2)}>Technical input</CampaignLink>
                     </LinkText>
-                    <CampaignFieldsContainer>
+                    <FieldsAndDatePickerContainer>
                         <Grid container size={12} justifyContent="flex-start">
                             <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -219,7 +219,7 @@ const CaseDrillingScheduleTab = () => {
                             endYear={endYear}
                             handleTableYearsClick={handleTableYearsClick}
                         />
-                    </CampaignFieldsContainer>
+                    </FieldsAndDatePickerContainer>
                 </CampaignHeaderTexts>
             </CampaignHeader>
             {apiData?.explorationCampaigns?.map((campaign) => (

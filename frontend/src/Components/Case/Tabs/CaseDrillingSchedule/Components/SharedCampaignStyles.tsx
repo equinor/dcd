@@ -31,9 +31,10 @@ export const CampaignHeaderTexts = styled.div`
     gap: 20px;
 `
 
-export const CampaignFieldsContainer = styled.div`
+export const FieldsAndDatePickerContainer = styled.div`
     display: flex;
     flex-direction: row;
+    gap: 30px;
 `
 
 export const NameCell = styled.div`

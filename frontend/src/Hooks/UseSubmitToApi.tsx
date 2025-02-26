@@ -37,8 +37,6 @@ export const useSubmitToApi = () => {
         projectId: string,
         caseId: string,
         resourceId?: string,
-        wellId?: string,
-        drillingScheduleId?: string,
         serviceMethod: object,
     }) => serviceMethod
 
@@ -137,39 +135,12 @@ export const useSubmitToApi = () => {
         }
     }
 
-    const createOrUpdateDrillingSchedule = async (
-        projectId: string,
-        caseId: string,
-        assetId: string,
-        wellId: string,
-        drillingScheduleId: string,
-        createOrUpdateFunction: any,
-
-    ) => {
-        try {
-            const result = await mutation.mutateAsync({
-                projectId,
-                caseId,
-                resourceId: assetId,
-                wellId,
-                drillingScheduleId,
-                serviceMethod: createOrUpdateFunction,
-            })
-            const returnValue = { ...result }
-            return { success: true, data: returnValue }
-        } catch (error) {
-            return { success: false, error }
-        }
-    }
-
     type SubmitToApiParams = {
         projectId: string,
         caseId: string,
         resourceName: string,
         resourceId?: string,
         resourceObject: ResourceObject,
-        wellId?: string,
-        drillingScheduleId?: string,
     }
 
     const submitToApi = async ({
@@ -178,8 +149,6 @@ export const useSubmitToApi = () => {
         resourceName,
         resourceId,
         resourceObject,
-        wellId,
-        drillingScheduleId,
     }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
         submitApiLogger.log("Submitting to API:", {
             resourceName,
@@ -244,7 +213,7 @@ export const useSubmitToApi = () => {
                     return updateDrainageStrategy({
                         projectId, caseId, resourceObject,
                     })
-                    
+
                 case "rigUpgrading":
                     return updateCampaign({
                         projectId,
@@ -276,7 +245,10 @@ export const useSubmitToApi = () => {
                     })
                 case "campaignWells":
                     return updateCampaignWells({
-                        projectId, caseId, resourceObject,
+                        projectId,
+                        caseId,
+                        resourceId: resourceId!,
+                        resourceObject,
                     })
 
                 default:

@@ -30,7 +30,7 @@ export default createGlobalStyle`
     .jss1,
     .jss8,
     .jss9 {
-        z-index: 10!important;
+        z-index: 5!important;
     }
 
     div[class*="TabList"][role="tablist"] {
