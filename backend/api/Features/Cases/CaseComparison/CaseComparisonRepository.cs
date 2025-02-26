@@ -20,8 +20,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var cases = await context.Cases
             .Include(x => x.DrainageStrategy)
-            .Include(x => x.Exploration)
-            .Include(x => x.WellProject)
             .Include(x => x.Substructure)
             .Include(x => x.Surf)
             .Include(x => x.Topside)
