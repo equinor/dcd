@@ -59,7 +59,7 @@ const CasesList: React.FC = () => {
 
     return (
         <>
-            {cases.sort((a, b) => sortUtcDateStrings(a.createTime, b.createTime)).map((projectCase, index) => (
+            {cases.sort((a, b) => sortUtcDateStrings(a.createdUtc, b.createdUtc)).map((projectCase, index) => (
                 <Grid
                     container
                     justifyContent="space-between"

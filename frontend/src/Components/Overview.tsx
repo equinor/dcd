@@ -95,11 +95,11 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!projectData) { return }
 
-        const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
+        const updatedUtc = dateStringToDateUtc(projectData.commonProjectAndRevisionData.updatedUtc)
         const currentTime = new Date()
 
-        const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
+        const timeDifferenceInDays = (currentTime.getTime() - updatedUtc.getTime()) / (1000 * 60 * 60 * 24)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < updatedUtc)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && canEdit() && !isRevision) {
             setShowRevisionReminder(true)

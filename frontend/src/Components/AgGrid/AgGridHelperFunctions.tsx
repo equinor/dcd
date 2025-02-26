@@ -171,6 +171,7 @@ export const profilesToRowData = (
             hideIfEmpty: ts.hideIfEmpty,
             overrideProfileSet: ts.overrideProfileSet,
             overrideProfile: ts.overrideProfile ?? { startYear: 0, values: [], override: false },
+            wellId: ts.wellId,
         }
 
         if (profile && profile.values && profile.values.length > 0) {

@@ -4,7 +4,6 @@ import {
     useEffect,
     useCallback,
 } from "react"
-
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
@@ -16,9 +15,9 @@ import {
     getValuesFromEntireRow,
     generateProfile,
     numberValueParser,
-} from "../../../../Utils/common"
-import { useAppStore } from "../../../../Store/AppStore"
-import { useProjectContext } from "../../../../Store/ProjectContext"
+} from "@/Utils/common"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { useAppStore } from "@/Store/AppStore"
 import { gridRefArrayToAlignedGrid, wellsToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import useEditCase from "@/Hooks/useEditCase"
 import { EditInstance } from "@/Models/Interfaces"

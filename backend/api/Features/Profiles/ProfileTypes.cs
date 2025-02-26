@@ -131,7 +131,6 @@ public static class ProfileTypes
     public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
 
     public const string Co2Intensity = "Co2Intensity";
-    public const string AverageCo2Intensity = "AverageCo2Intensity";
 
     public const string ProductionProfileNgl = "ProductionProfileNgl";
 

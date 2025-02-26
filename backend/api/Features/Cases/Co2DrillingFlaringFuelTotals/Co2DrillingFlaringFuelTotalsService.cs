@@ -41,8 +41,9 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .Where(y => profileTypes.Contains(y.ProfileType))
             .LoadAsync();
 
-        var developmentWells = await context.DevelopmentWells
-            .Where(w => w.WellProjectId == caseItem.WellProjectId)
+        var developmentWells = await context.Campaigns
+            .Where(x => x.CaseId == caseId)
+            .SelectMany(x => x.DevelopmentWells)
             .ToListAsync();
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);

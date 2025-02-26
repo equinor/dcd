@@ -74,7 +74,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.Id == projectId)
             .Select(x => new CommonProjectAndRevisionDto
             {
-                ModifyTime = x.UpdatedUtc,
+                UpdatedUtc = x.UpdatedUtc,
                 Classification = x.Classification,
                 Name = x.Name,
                 FusionProjectId = x.FusionProjectId,
@@ -161,8 +161,8 @@ public class GetProjectDataRepository(DcdDbContext context)
                 DG2Date = x.DG2Date,
                 DG3Date = x.DG3Date,
                 DG4Date = x.DG4Date,
-                CreateTime = x.CreatedUtc,
-                ModifyTime = x.UpdatedUtc,
+                CreatedUtc = x.CreatedUtc,
+                UpdatedUtc = x.UpdatedUtc,
                 SurfId = x.SurfId,
                 SubstructureId = x.SubstructureId,
                 TopsideId = x.TopsideId,

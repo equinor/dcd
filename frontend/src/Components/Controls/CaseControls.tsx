@@ -172,7 +172,7 @@ const CaseControls: React.FC<props> = ({
                             <Typography variant="caption">
                                 Case last updated
                                 {" "}
-                                {formatDateAndTime(caseData.modifyTime)}
+                                {formatDateAndTime(caseData.updatedUtc)}
                             </Typography>
                         )
                         : <UndoControls />}

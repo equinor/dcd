@@ -20,7 +20,7 @@ const SideBarRefCaseWrapper = styled.div`
 
 interface ArchivedCase extends Components.Schemas.CaseOverviewDto { isReferenceCase: boolean}
 
-const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => sortUtcDateStrings(a.createTime, b.createTime)
+const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => sortUtcDateStrings(a.createdUtc, b.createdUtc)
 
 const getTooltipText = (
     caseName: string | undefined,
