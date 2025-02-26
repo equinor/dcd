@@ -128,7 +128,7 @@ const CaseFacilitiesTab = () => {
                     integer
                     unit="tonnes"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -156,7 +156,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit="MW"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -170,7 +170,7 @@ const CaseFacilitiesTab = () => {
                     integer
                     unit="Sm³/sd"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -184,7 +184,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit="MSm³/sd"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -212,7 +212,7 @@ const CaseFacilitiesTab = () => {
                     value={topsideData.producerCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -225,7 +225,7 @@ const CaseFacilitiesTab = () => {
                     value={topsideData.gasInjectorCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -238,7 +238,7 @@ const CaseFacilitiesTab = () => {
                     value={topsideData.waterInjectorCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={12}>
@@ -254,7 +254,7 @@ const CaseFacilitiesTab = () => {
                     value={surfData.templateCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -267,7 +267,7 @@ const CaseFacilitiesTab = () => {
                     value={surfData.riserCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -281,7 +281,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit="km"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -295,7 +295,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit="km"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -333,7 +333,7 @@ const CaseFacilitiesTab = () => {
                     value={surfData.gasInjectorCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -346,7 +346,7 @@ const CaseFacilitiesTab = () => {
                     value={surfData.waterInjectorCount}
                     integer
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={12}>
@@ -363,7 +363,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit="km"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -377,7 +377,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit="km"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
             <Grid size={12}>
@@ -394,7 +394,7 @@ const CaseFacilitiesTab = () => {
                     integer
                     unit="tonnes"
                     min={0}
-                    max={1000000}
+                    max={1_000_000}
                 />
             </Grid>
         </TabContainer>

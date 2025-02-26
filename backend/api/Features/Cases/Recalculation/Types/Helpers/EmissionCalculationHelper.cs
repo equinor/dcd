@@ -12,7 +12,7 @@ public static class EmissionCalculationHelper
 
     public static TimeSeries CalculateTotalFuelConsumptions(Case caseItem)
     {
-        var factor = caseItem.Topside.FuelConsumption * Cd * caseItem.FacilitiesAvailability / 100 * 1000000;
+        var factor = caseItem.Topside.FuelConsumption * Cd * caseItem.FacilitiesAvailability / 100 * 1_000_000;
         var totalUseOfPower = CalculateTotalUseOfPower(caseItem, caseItem.FacilitiesAvailability);
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
 
@@ -87,7 +87,7 @@ public static class EmissionCalculationHelper
         }
 
         var step1 = gsp * gom;
-        var grp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / gc / 1000000);
+        var grp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / gc / 1_000_000);
         var grpGspGom = grp.Select(v => step1 + (v * gsp * (1 - gom)));
 
         return new TimeSeries

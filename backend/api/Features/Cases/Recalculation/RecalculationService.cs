@@ -6,11 +6,13 @@ using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Types.CessationCostProfile;
 using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
+using api.Features.Cases.Recalculation.Types.CondensateProduction;
 using api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
 using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
 using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.ProductionProfileNglProfileService;
 using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
@@ -68,5 +70,7 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         CalculateTotalCostService.RunCalculation(caseItem);
         CalculateNpvService.RunCalculation(caseItem);
         CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
+        ProductionProfileNglProfileService.RunCalculation(caseItem);
+        CondensateProductionProfileService.RunCalculation(caseItem);
     }
 }

@@ -65,7 +65,20 @@ public static class NetSaleGasProfileService
         var productionProfileGasTimeSeries = new TimeSeries(productionProfileGasProfile);
 
         var gasProduction = TimeSeriesMerger.MergeTimeSeries(productionProfileGasTimeSeries, additionalProductionProfileGas);
+        var nglYield = caseItem.DrainageStrategy.NGLYield;
+        var condensateYield = caseItem.DrainageStrategy.CondensateYield;
+        var gasShrinkageFactor = caseItem.DrainageStrategy.GasShrinkageFactor;
 
+        if (nglYield + condensateYield > 0)
+        {
+            var gasAdjustedForShrinkageFactor = new TimeSeries
+            {
+                StartYear = gasProduction.StartYear,
+                Values = gasProduction.Values.Select(value => value * gasShrinkageFactor).ToArray()
+            };
+            return TimeSeriesMerger.MergeTimeSeries(gasAdjustedForShrinkageFactor, negativeFuelFlaringLosses);
+
+        }
         return TimeSeriesMerger.MergeTimeSeries(gasProduction, negativeFuelFlaringLosses);
     }
 }
