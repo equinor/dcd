@@ -7,7 +7,6 @@ using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaignWells;
 using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigMobDemobCost;
 using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigUpgradingCost;
 using api.Features.Assets.CaseAssets.DrainageStrategies;
-using api.Features.Assets.CaseAssets.DrillingSchedules;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Assets.CaseAssets.Surfs;
@@ -153,9 +152,6 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateSurfService>();
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
-
-        /* Drilling schedules */
-        services.AddScoped<DrillingScheduleService>();
 
         /* Time series profiles */
         services.AddScoped<SaveProfileService>();

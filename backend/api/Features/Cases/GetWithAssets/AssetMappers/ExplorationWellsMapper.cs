@@ -11,7 +11,6 @@ public static class ExplorationWellsMapper
         return entities
             .Select(x => new ExplorationWellDto
             {
-                ExplorationId = x.ExplorationId,
                 WellId = x.WellId,
                 DrillingSchedule = new TimeSeriesScheduleDto
                 {

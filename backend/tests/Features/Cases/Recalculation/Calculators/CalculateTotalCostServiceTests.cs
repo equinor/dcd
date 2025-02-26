@@ -27,13 +27,11 @@ public class CalculateTotalCostServiceTests
             Project = project,
             ProjectId = project.Id,
             DrainageStrategyId = Guid.NewGuid(),
-            WellProjectId = Guid.NewGuid(),
             SubstructureId = Guid.NewGuid(),
             SurfId = Guid.NewGuid(),
             TopsideId = Guid.NewGuid(),
             TransportId = Guid.NewGuid(),
             OnshorePowerSupplyId = Guid.NewGuid(),
-            ExplorationId = Guid.NewGuid(),
             TimeSeriesProfiles =
             [
                 new TimeSeriesProfile

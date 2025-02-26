@@ -14,7 +14,6 @@ import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-// import CaseDrillingScheduleTable from "./CaseDrillingScheduleTable"
 import Campaign from "./Components/Campaign"
 import {
     CampaignFieldsContainer,
@@ -114,8 +113,6 @@ const CaseDrillingScheduleTab = () => {
 
     const {
         case: caseData,
-        explorationId,
-        wellProjectId,
         developmentWells: developmentWellsData,
         explorationWells: explorationWellsData,
     } = apiData
@@ -125,8 +122,6 @@ const CaseDrillingScheduleTab = () => {
         || !explorationWellsData
         || !caseData
         || !developmentWellsData
-        || !explorationId
-        || !wellProjectId
     ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
@@ -242,32 +237,6 @@ const CaseDrillingScheduleTab = () => {
                     title="Development"
                 />
             ))}
-            {/* <Grid size={12}>
-                <CaseDrillingScheduleTable
-                    assetWells={explorationWellsData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
-                    tableName="Exploration wells"
-                    tableYears={tableYears}
-                    resourceId={explorationId}
-                    wells={wells}
-                    isExplorationTable
-                    gridRef={explorationWellsGridRef}
-                    alignedGridsRef={[developmentWellsGridRef]}
-                />
-            </Grid>
-            <Grid size={12}>
-                <CaseDrillingScheduleTable
-                    assetWells={developmentWellsData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
-                    tableName="Development wells"
-                    tableYears={tableYears}
-                    resourceId={wellProjectId}
-                    wells={wells}
-                    isExplorationTable={false}
-                    gridRef={developmentWellsGridRef}
-                    alignedGridsRef={[explorationWellsGridRef]}
-                />
-            </Grid> */}
         </Grid>
     )
 }
