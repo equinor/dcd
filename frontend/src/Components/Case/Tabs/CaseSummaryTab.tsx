@@ -285,7 +285,7 @@ const CaseSummaryTab = () => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput                            
+                        <SwitchableNumberInput
                             resourceName="case"
                             resourcePropertyKey="npv"
                             label="NPV before tax (MUSD)"
@@ -297,7 +297,7 @@ const CaseSummaryTab = () => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput                            
+                        <SwitchableNumberInput
                             resourceName="case"
                             resourcePropertyKey="npvOverride"
                             label="STEA NPV after tax(MUSD)"
@@ -316,7 +316,7 @@ const CaseSummaryTab = () => {
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput                            
+                        <SwitchableNumberInput
                             resourceName="case"
                             resourcePropertyKey="breakEven"
                             previousResourceObject={caseData}
@@ -329,7 +329,7 @@ const CaseSummaryTab = () => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <SwitchableNumberInput                            
+                        <SwitchableNumberInput
                             resourceName="case"
                             resourcePropertyKey="breakEvenOverride"
                             label="STEA B/E after tax(MUSD)"
