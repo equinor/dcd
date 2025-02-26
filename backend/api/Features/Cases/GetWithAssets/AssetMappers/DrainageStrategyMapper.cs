@@ -11,6 +11,7 @@ public static class DrainageStrategyMapper
         {
             Id = entity.Id,
             NGLYield = entity.NGLYield,
+            CondensateYield = entity.CondensateYield,
             GasShrinkageFactor = entity.GasShrinkageFactor,
             ProducerCount = entity.ProducerCount,
             GasInjectorCount = entity.GasInjectorCount,

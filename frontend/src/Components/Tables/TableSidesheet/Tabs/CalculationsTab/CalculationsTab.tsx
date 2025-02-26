@@ -26,6 +26,8 @@ import {
     SpecialNote,
 } from "../../shared.styles"
 import { ProfileTypes } from "@/Models/enums"
+import ProductionProfileNgl from "./Calculations/ProductionProfileNgl"
+import CondensateProduction from "./Calculations/CondensateProduction"
 
 interface Props {
     profileType: ProfileTypes
@@ -86,6 +88,12 @@ const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) 
         if (rowData?.resourceName === ProfileTypes.ImportedElectricityOverride) {
             return "importedElectricity"
         }
+        if (rowData?.resourceName === ProfileTypes.ProductionProfileNglOverride) {
+            return "productionProfileNgl"
+        }
+        if (rowData?.resourceName === ProfileTypes.CondensateProductionOverride) {
+            return "condensateProduction"
+        }
 
         // Fallback to profile name checks
         switch (profileType) {
@@ -119,6 +127,10 @@ const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) 
             return "gasInjectorWell"
         case ProfileTypes.ImportedElectricityOverride:
             return "importedElectricity"
+        case ProfileTypes.ProductionProfileNglOverride:
+            return "productionProfileNgl"
+        case ProfileTypes.CondensateProductionOverride:
+            return "condensateProduction"
         default:
             return "unknown"
         }
@@ -164,6 +176,10 @@ const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) 
                     return <GasInjectorWell developerMode={developerMode} hasOverride={!!rowData?.overrideProfile?.override} />
                 case "importedElectricity":
                     return <ImportedElectricity developerMode={developerMode} hasOverride={!!rowData?.overrideProfile?.override} />
+                case "productionProfileNgl":
+                    return <ProductionProfileNgl developerMode={developerMode} hasOverride={!!rowData?.overrideProfile?.override} />
+                case "condensateProduction":
+                    return <CondensateProduction developerMode={developerMode} hasOverride={!!rowData?.overrideProfile?.override} />
                 default:
                     return (
                         <Container>

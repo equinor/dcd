@@ -47,6 +47,9 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? Co2Emissions { get; set; }
     public required TimeSeriesOverrideDto? Co2EmissionsOverride { get; set; }
     public required TimeSeriesDto? ProductionProfileNgl { get; set; }
+    public required TimeSeriesOverrideDto? ProductionProfileNglOverride { get; set; }
+    public required TimeSeriesDto? CondensateProduction { get; set; }
+    public required TimeSeriesOverrideDto? CondensateProductionOverride { get; set; }
     public required TimeSeriesDto? ImportedElectricity { get; set; }
     public required TimeSeriesOverrideDto? ImportedElectricityOverride { get; set; }
     public required TimeSeriesDto? Co2Intensity { get; set; }
