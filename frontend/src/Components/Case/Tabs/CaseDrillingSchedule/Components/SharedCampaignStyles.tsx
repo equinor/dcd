@@ -7,7 +7,7 @@ export const CampaignHeader = styled.div <{ $isSmallScreen: boolean }>`
     flex-direction: ${({ $isSmallScreen }) => ($isSmallScreen ? "column" : "row")};
     justify-content: space-between;
     align-items: center;
-    margin: 20px 0;
+    margin: 10px;
     width: 100%;
 `
 
@@ -15,6 +15,7 @@ export const LinkText = styled.div`
     display: flex;
     flex-direction: row;
     gap: 10px;
+    margin-bottom: 10px;
 `
 
 export const CampaignLink = styled(Typography)`
@@ -28,6 +29,11 @@ export const CampaignHeaderTexts = styled.div`
     flex-direction: column;
     width: 100%;
     gap: 20px;
+`
+
+export const CampaignFieldsContainer = styled.div`
+    display: flex;
+    flex-direction: row;
 `
 
 export const NameCell = styled.div`
