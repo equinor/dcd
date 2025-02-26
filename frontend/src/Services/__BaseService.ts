@@ -20,6 +20,7 @@ type RequestOptions = {
 
 export class __BaseService {
     private client: AxiosInstance
+    private last403: Date | null = null
 
     constructor() {
         this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
@@ -28,8 +29,11 @@ export class __BaseService {
             (error: any) => {
                 if (error.response.status === 403) {
                     console.error("Error: You don't have permission to access this resource. Please contact support.")
-                    if(error.response.data === "" ) {
-                        //window.location.reload()
+                    const reloadTimeoutMs = 5 * 60 * 1000;
+                    const isPastReloadTimeout = !this.last403 || new Date().valueOf() - this.last403.valueOf() > reloadTimeoutMs;
+                    const expectedAuth403Data = "";
+                    if(error.response.data === expectedAuth403Data && isPastReloadTimeout) {
+                        window.location.reload()
                     }
                 } else if (error.response.status === 500) {
                     console.error("Error: An internal server error occurred. Please try again later.")
