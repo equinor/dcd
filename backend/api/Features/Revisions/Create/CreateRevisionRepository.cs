@@ -25,8 +25,6 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(x => x.Surf)
             .Include(x => x.Substructure)
             .Include(x => x.OnshorePowerSupply)
-            .Include(x => x.Exploration)
-            .Include(x => x.WellProject)
             .Where(x => x.ProjectId == projectPk)
             .ToListAsync();
 

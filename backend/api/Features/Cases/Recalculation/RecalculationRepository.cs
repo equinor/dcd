@@ -21,8 +21,6 @@ public class RecalculationRepository(DcdDbContext context)
             .Include(x => x.Surf)
             .Include(x => x.Topside)
             .Include(x => x.DrainageStrategy)
-            .Include(x => x.WellProject)
-            .Include(x => x.Exploration)
             .Where(x => caseIds.Contains(x.Id))
             .ToListAsync();
 

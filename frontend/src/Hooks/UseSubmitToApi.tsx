@@ -4,8 +4,6 @@ import { GetOnshorePowerSupplyService } from "@/Services/OnshorePowerSupplyServi
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
 import { GetSubstructureService } from "@/Services/SubstructureService"
-import { GetExplorationService } from "@/Services/ExplorationService"
-import { GetWellProjectService } from "@/Services/WellProjectService"
 import { GetTransportService } from "@/Services/TransportService"
 import { GetTopsideService } from "@/Services/TopsideService"
 import { GetSurfService } from "@/Services/SurfService"
@@ -246,56 +244,7 @@ export const useSubmitToApi = () => {
                     return updateDrainageStrategy({
                         projectId, caseId, resourceObject,
                     })
-
-                case "explorationWellDrillingSchedule":
-                    return createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
-                            resourceId!,
-                            wellId!,
-                            drillingScheduleId!,
-                            !drillingScheduleId
-                                ? await GetExplorationService().createExplorationWellDrillingSchedule(
-                                    projectId,
-                                    caseId,
-                                    resourceId!,
-                                    wellId!,
-                                    resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                                )
-                                : await GetExplorationService().updateExplorationWellDrillingSchedule(
-                                    projectId,
-                                    caseId,
-                                    resourceId!,
-                                    wellId!,
-                                    drillingScheduleId!,
-                                    resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
-                                ),
-                    )
-
-                case "developmentWellDrillingSchedule":
-                    return createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
-                            resourceId!,
-                            wellId!,
-                            drillingScheduleId!,
-                            !drillingScheduleId
-                                ? await GetWellProjectService().createWellProjectWellDrillingSchedule(
-                                    projectId,
-                                    caseId,
-                                    resourceId!,
-                                    wellId!,
-                                    resourceObject as Components.Schemas.CreateTimeSeriesScheduleDto,
-                                )
-                                : await GetWellProjectService().updateWellProjectWellDrillingSchedule(
-                                    projectId,
-                                    caseId,
-                                    resourceId!,
-                                    wellId!,
-                                    drillingScheduleId!,
-                                    resourceObject as Components.Schemas.UpdateTimeSeriesScheduleDto,
-                                ),
-                    )
+                    
                 case "rigUpgrading":
                     return updateCampaign({
                         projectId,
