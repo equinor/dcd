@@ -4,12 +4,9 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DevelopmentWell : IDateTrackedEntity
+public class CampaignWell : IDateTrackedEntity
 {
     public Guid Id { get; set; }
-
-    public Guid WellProjectId { get; set; }
-    public WellProject WellProject { get; set; } = null!;
 
     public Guid WellId { get; set; }
     public Well Well { get; set; } = null!;

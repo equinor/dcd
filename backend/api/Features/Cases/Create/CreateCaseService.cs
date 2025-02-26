@@ -17,8 +17,6 @@ public class CreateCaseService(DcdDbContext context)
         var surfId = Guid.NewGuid();
         var substructureId = Guid.NewGuid();
         var transportId = Guid.NewGuid();
-        var explorationId = Guid.NewGuid();
-        var wellProjectId = Guid.NewGuid();
         var onshorePowerSupplyId = Guid.NewGuid();
 
         var createdCase = new Case
@@ -48,12 +46,6 @@ public class CreateCaseService(DcdDbContext context)
 
             TransportId = transportId,
             Transport = CreateTransport(transportId),
-
-            ExplorationId = explorationId,
-            Exploration = CreateExploration(explorationId),
-
-            WellProjectId = wellProjectId,
-            WellProject = CreateWellProject(wellProjectId),
 
             OnshorePowerSupplyId = onshorePowerSupplyId,
             OnshorePowerSupply = CreateOnshorePowerSupply(onshorePowerSupplyId),
@@ -236,24 +228,6 @@ public class CreateCaseService(DcdDbContext context)
             ProspVersion = null,
             DG3Date = null,
             DG4Date = null
-        };
-    }
-
-    private static Exploration CreateExploration(Guid id)
-    {
-        return new Exploration
-        {
-            Id = id,
-            ExplorationWells = []
-        };
-    }
-
-    private static WellProject CreateWellProject(Guid id)
-    {
-        return new WellProject
-        {
-            Id = id,
-            DevelopmentWells = []
         };
     }
 }

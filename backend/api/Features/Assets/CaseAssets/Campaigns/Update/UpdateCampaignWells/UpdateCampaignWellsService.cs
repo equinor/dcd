@@ -2,7 +2,6 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Models;
-using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -14,41 +13,30 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
     {
         var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
 
-        var caseItem = await context.Cases.SingleAsync(x => x.Id == caseId);
-
-        switch (existingCampaign.CampaignType)
-        {
-            case CampaignType.ExplorationCampaign:
-                await SaveHandleExplorationCampaignWell(existingCampaign, campaignId, caseItem.ExplorationId, campaignWellDtos);
-                break;
-            default:
-                await SaveHandleDevelopmentCampaignWell(existingCampaign, campaignId, caseItem.WellProjectId, campaignWellDtos);
-                break;
-        }
+        await SaveCampaignWell(existingCampaign, campaignId, campaignWellDtos);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 
-    private async Task SaveHandleExplorationCampaignWell(Campaign existingCampaign, Guid campaignId, Guid explorationId, List<SaveCampaignWellDto> campaignWellDtos)
+    private async Task SaveCampaignWell(Campaign existingCampaign, Guid campaignId, List<SaveCampaignWellDto> campaignWellDtos)
     {
         var wellIds = campaignWellDtos.Select(x => x.WellId).ToList();
 
-        var existingExplorationWells = await context.ExplorationWell
+        var existingCampaignWells = await context.CampaignWells
             .Where(x => x.CampaignId == campaignId)
             .Where(x => wellIds.Contains(x.WellId))
             .ToListAsync();
 
         foreach (var campaignWellDto in campaignWellDtos)
         {
-            var existingExplorationWell = existingExplorationWells.SingleOrDefault(x => x.WellId == campaignWellDto.WellId);
+            var existingCampaignWell = existingCampaignWells.SingleOrDefault(x => x.WellId == campaignWellDto.WellId);
 
-            if (existingExplorationWell == null)
+            if (existingCampaignWell == null)
             {
-                existingCampaign.ExplorationWells.Add(new ExplorationWell
+                existingCampaign.CampaignWells.Add(new CampaignWell
                 {
                     WellId = campaignWellDto.WellId,
-                    ExplorationId = explorationId,
                     CampaignId = campaignId,
                     StartYear = campaignWellDto.StartYear,
                     Values = campaignWellDto.Values
@@ -57,42 +45,10 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
                 continue;
             }
 
-            existingExplorationWell.StartYear = campaignWellDto.StartYear;
-            existingExplorationWell.Values = campaignWellDto.Values;
+            existingCampaignWell.StartYear = campaignWellDto.StartYear;
+            existingCampaignWell.Values = campaignWellDto.Values;
         }
-        //todo deal with deletes
-    }
 
-    private async Task SaveHandleDevelopmentCampaignWell(Campaign existingCampaign, Guid campaignId, Guid wellProjectId, List<SaveCampaignWellDto> campaignWellDtos)
-    {
-        var wellIds = campaignWellDtos.Select(x => x.WellId).ToList();
-
-        var existingDevelopmentWells = await context.DevelopmentWells
-            .Where(x => x.CampaignId == campaignId)
-            .Where(x => wellIds.Contains(x.WellId))
-            .ToListAsync();
-
-        foreach (var campaignWellDto in campaignWellDtos)
-        {
-            var existingDevelopmentWell = existingDevelopmentWells.SingleOrDefault(x => x.WellId == campaignWellDto.WellId);
-
-            if (existingDevelopmentWell == null)
-            {
-                existingCampaign.DevelopmentWells.Add(new DevelopmentWell
-                {
-                    WellId = campaignWellDto.WellId,
-                    WellProjectId = wellProjectId,
-                    CampaignId = campaignId,
-                    StartYear = campaignWellDto.StartYear,
-                    Values = campaignWellDto.Values
-                });
-
-                return;
-            }
-
-            existingDevelopmentWell.StartYear = campaignWellDto.StartYear;
-            existingDevelopmentWell.Values = campaignWellDto.Values;
-        }
         //todo deal with deletes
     }
 }

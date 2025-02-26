@@ -117,8 +117,6 @@ public static class ProjectDuplicator
         var topsideId = Guid.NewGuid();
         var transportId = Guid.NewGuid();
         var onshorePowerSupplyId = Guid.NewGuid();
-        var wellProjectId = Guid.NewGuid();
-        var explorationId = Guid.NewGuid();
 
         var newCase = new Case
         {
@@ -288,22 +286,6 @@ public static class ProjectDuplicator
                 })
                 .ToList(),
 
-            WellProjectId = wellProjectId,
-            WellProject = new WellProject
-            {
-                Id = wellProjectId,
-                CaseId = caseId,
-                DevelopmentWells = [] // Added via campaigns
-            },
-
-            ExplorationId = explorationId,
-            Exploration = new Exploration
-            {
-                Id = explorationId,
-                CaseId = caseId,
-                ExplorationWells = [] // Added via campaigns
-            },
-
             Campaigns = existingCaseItem.Campaigns
                 .Select(x => new Campaign
                 {
@@ -316,19 +298,9 @@ public static class ProjectDuplicator
                     CampaignType = x.CampaignType,
                     RigUpgradingCost = x.RigUpgradingCost,
                     RigMobDemobCost = x.RigMobDemobCost,
-                    DevelopmentWells = x.DevelopmentWells.Select(y => new DevelopmentWell
+                    CampaignWells = x.CampaignWells.Select(y => new CampaignWell
                     {
                         Id = Guid.NewGuid(),
-                        WellProjectId = wellProjectId,
-                        WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
-                        StartYear = y.StartYear,
-                        Values = y.Values
-                    })
-                        .ToList(),
-                    ExplorationWells = x.ExplorationWells.Select(y => new ExplorationWell
-                    {
-                        Id = Guid.NewGuid(),
-                        ExplorationId = explorationId,
                         WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
                         StartYear = y.StartYear,
                         Values = y.Values

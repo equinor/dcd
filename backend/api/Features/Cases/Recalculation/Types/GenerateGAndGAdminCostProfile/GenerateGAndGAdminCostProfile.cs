@@ -5,7 +5,7 @@ namespace api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 
 public static class GenerateGAndGAdminCostProfile
 {
-    public static void RunCalculation(Case caseItem, List<ExplorationWell> explorationWells)
+    public static void RunCalculation(Case caseItem, List<CampaignWell> explorationWells)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {

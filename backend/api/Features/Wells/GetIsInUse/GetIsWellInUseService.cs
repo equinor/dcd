@@ -11,16 +11,9 @@ public class GetIsWellInUseService(DcdDbContext context)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var well = await context.Wells
-            .Include(w => w.DevelopmentWells)
-            .Include(w => w.ExplorationWells)
-            .SingleOrDefaultAsync(w => w.ProjectId == projectPk && w.Id == wellId);
-
-        if (well == null)
-        {
-            return false;
-        }
-
-        return well.DevelopmentWells.Any() || well.ExplorationWells.Any();
+        return await context.CampaignWells
+            .Where(x => x.WellId == wellId)
+            .Where(x => x.Well.ProjectId == projectPk)
+            .AnyAsync();
     }
 }

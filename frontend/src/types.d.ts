@@ -121,7 +121,6 @@ declare namespace Components {
             onshorePowerSupply: OnshorePowerSupplyDto;
             onshorePowerSupplyCostProfile: TimeSeriesDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
-            explorationWells: ExplorationWellDto[];
             explorationCampaigns: CampaignDto[];
             explorationWellCostProfile: TimeSeriesDto;
             appraisalWellCostProfile: TimeSeriesDto;
@@ -135,7 +134,6 @@ declare namespace Components {
             explorationRigUpgradingCostProfileOverride: TimeSeriesOverrideDto;
             explorationRigMobDemob: TimeSeriesDto;
             explorationRigMobDemobOverride: TimeSeriesOverrideDto;
-            developmentWells: DevelopmentWellDto[];
             developmentCampaigns: CampaignDto[];
             oilProducerCostProfile: TimeSeriesDto;
             oilProducerCostProfileOverride: TimeSeriesOverrideDto;
@@ -245,11 +243,6 @@ declare namespace Components {
             annualWellInterventionCostPerWell: number; // double
             pluggingAndAbandonment: number; // double
         }
-        export interface DevelopmentWellDto {
-            drillingSchedule: TimeSeriesScheduleDto;
-            wellId: string; // uuid
-            updatedUtc: string; // date-time
-        }
         export interface DrainageStrategyDto {
             id: string; // uuid
             description: string;
@@ -269,11 +262,6 @@ declare namespace Components {
             explorationProjectDrillingCosts: number; // double
             appraisalRigMobDemob: number; // double
             appraisalProjectDrillingCosts: number; // double
-        }
-        export interface ExplorationWellDto {
-            drillingSchedule: TimeSeriesScheduleDto;
-            wellId: string; // uuid
-            updatedUtc: string; // date-time
         }
         export interface FeatureToggleDto {
             revisionEnabled?: boolean;
@@ -424,11 +412,6 @@ declare namespace Components {
             values: number /* double */[];
             override: boolean;
             updatedUtc: string; // date-time
-        }
-        export interface TimeSeriesScheduleDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* int32 */[];
         }
         export interface TopsideDto {
             id: string; // uuid
