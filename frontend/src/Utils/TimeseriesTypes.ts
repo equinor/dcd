@@ -29,6 +29,7 @@ export const overrideTimeSeriesTypes = [
     ProfileTypes.FuelFlaringAndLossesOverride,
     ProfileTypes.ImportedElectricityOverride,
     ProfileTypes.NetSalesGasOverride,
+    ProfileTypes.TotalExportedVolumesOverride,
     ProfileTypes.SubstructureCostProfileOverride,
     ProfileTypes.SurfCostProfileOverride,
     ProfileTypes.TopsideCostProfileOverride,

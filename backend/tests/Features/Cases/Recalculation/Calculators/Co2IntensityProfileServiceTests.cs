@@ -33,21 +33,21 @@ public class Co2IntensityProfileServiceTests
             {
                 new()
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfileUsd,
-                    StartYear = 2027,
-                    Values = [2000.0, 4000.0, 1000.0, 1000.0]
+                    ProfileType = ProfileTypes.TotalExportedVolumes,
+                    StartYear = -7,
+                    Values = [3.23/6.29]
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.Co2Emissions,
-                    StartYear = 2023,
-                    Values = [29400000 / 1000]
+                    StartYear = -7,
+                    Values = [0.0249]
                 },
                 new()
                 {
                     ProfileType = ProfileTypes.ProductionProfileOil,
-                    StartYear = 2023,
-                    Values = [1421000]
+                    StartYear = -7,
+                    Values = [0.20306]
                 }
             }
         };
@@ -56,7 +56,7 @@ public class Co2IntensityProfileServiceTests
         Co2IntensityProfileService.RunCalculation(caseItem);
 
         // Assert
-        var expectedCo2Intensity = 3.2899;
-        Assert.Equal(expectedCo2Intensity, caseItem.GetProfile(ProfileTypes.Co2Intensity).Values[0], precision: 1);
+        var expectedCo2Intensity = 7.72;
+        Assert.Equal(expectedCo2Intensity, caseItem.GetProfile(ProfileTypes.Co2Intensity).Values[0] * 1_000_000, precision: 1);
     }
 }
