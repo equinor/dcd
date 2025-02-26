@@ -19,9 +19,9 @@ public class RecalculationRepository(DcdDbContext context)
     {
         var caseItems = await context.Cases
             .Include(x => x.Project).ThenInclude(x => x.DevelopmentOperationalWellCosts)
+            .Include(x => x.DrainageStrategy)
             .Include(x => x.Surf)
             .Include(x => x.Topside)
-            .Include(x => x.DrainageStrategy)
             .Where(x => caseIds.Contains(x.Id))
             .ToListAsync();
 

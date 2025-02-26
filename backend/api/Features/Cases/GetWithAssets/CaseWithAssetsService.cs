@@ -18,7 +18,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         var physicalUnit = await context.Projects.Where(x => x.Id == projectPk).Select(x => x.PhysicalUnit).SingleAsync();
 
-        var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(caseId);
+        var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(projectPk, caseId);
 
         return new CaseWithAssetsDto
         {
@@ -87,7 +87,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OnshorePowerSupplyCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile)),
             OnshorePowerSupplyCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)),
 
-            ExplorationWells = ExplorationWellsMapper.MapToDtos(caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.ExplorationCampaign).SelectMany(x => x.CampaignWells)),
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
             SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
@@ -101,7 +100,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             ExplorationRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemob)),
             ExplorationRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride)),
 
-            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.DevelopmentCampaign).SelectMany(x => x.CampaignWells)),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),
