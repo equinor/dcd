@@ -110,6 +110,8 @@ public static class ProfileTypes
 
     public const string NetSalesGas = "NetSalesGas";
     public const string NetSalesGasOverride = "NetSalesGasOverride";
+    public const string TotalExportedVolumes = "TotalExportedVolumes";
+    public const string TotalExportedVolumesOverride = "TotalExportedVolumesOverride";
 
     public const string Co2Emissions = "Co2Emissions";
     public const string Co2EmissionsOverride = "Co2EmissionsOverride";
@@ -133,7 +135,6 @@ public static class ProfileTypes
 
     public const string ProductionProfileNgl = "ProductionProfileNgl";
     public const string ProductionProfileNglOverride = "ProductionProfileNglOverride";
-
     public const string CondensateProduction = "CondensateProduction";
     public const string CondensateProductionOverride = "CondensateProductionOverride";
 

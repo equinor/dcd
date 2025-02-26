@@ -67,6 +67,8 @@ export enum ProfileTypes {
     TopsideCessationCostProfile = "TopsideCessationCostProfile",
     TopsideCostProfile = "TopsideCostProfile",
     TopsideCostProfileOverride = "TopsideCostProfileOverride",
+    TotalExportedVolumes = "TotalExportedVolumes",
+    TotalExportedVolumesOverride = "TotalExportedVolumesOverride",
     TotalFeasibilityAndConceptStudies = "TotalFeasibilityAndConceptStudies",
     TotalFeasibilityAndConceptStudiesOverride = "TotalFeasibilityAndConceptStudiesOverride",
     TotalFEEDStudies = "TotalFEEDStudies",

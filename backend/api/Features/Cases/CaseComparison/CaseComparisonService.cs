@@ -1,3 +1,4 @@
+using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
@@ -34,7 +35,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
             var additionalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
-            var totalExportedVolumes = CalculateTotalExportedVolumes(project, caseItem, false);
+            var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem)?.Values.Sum() ?? 0;
 
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
@@ -118,16 +119,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         }
 
         return sumGasProduction / billion;
-    }
-
-    private static double CalculateTotalExportedVolumes(Project project, Case caseItem, bool excludeOilFieldConversion)
-    {
-        if (project.PhysicalUnit != PhysUnit.SI && !excludeOilFieldConversion)
-        {
-            return CalculateTotalOilProduction(project, caseItem, false) + CalculateTotalGasProduction(project, caseItem, false) / CubicFeetPerBarrel;
-        }
-
-        return CalculateTotalOilProduction(project, caseItem, true) + CalculateTotalGasProduction(project, caseItem, true);
     }
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)

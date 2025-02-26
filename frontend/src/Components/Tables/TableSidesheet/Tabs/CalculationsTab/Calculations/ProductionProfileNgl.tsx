@@ -16,7 +16,7 @@ interface Props {
     hasOverride: boolean;
 }
 
-const ProductionProfileNgl: React.FC<Props> = ({ developerMode, hasOverride }) => (
+const NglProduction: React.FC<Props> = ({ developerMode, hasOverride }) => (
     <Container>
         <Section>
             <Typography variant="h6">NGL Production Calculation</Typography>
@@ -79,4 +79,4 @@ const ProductionProfileNgl: React.FC<Props> = ({ developerMode, hasOverride }) =
     </Container>
 )
 
-export default ProductionProfileNgl
+export default NglProduction

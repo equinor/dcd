@@ -102,6 +102,8 @@ declare namespace Components {
             co2EmissionsOverride: TimeSeriesOverrideDto;
             productionProfileNgl: TimeSeriesDto;
             productionProfileNglOverride: TimeSeriesOverrideDto;
+            totalExportedVolumes: TimeSeriesDto;
+            totalExportedVolumesOverride: TimeSeriesOverrideDto;
             condensateProduction: TimeSeriesDto;
             condensateProductionOverride: TimeSeriesOverrideDto;
             importedElectricity: TimeSeriesDto;

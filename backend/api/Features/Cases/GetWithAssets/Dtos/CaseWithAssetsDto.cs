@@ -44,6 +44,8 @@ public class CaseWithAssetsDto
     public required TimeSeriesOverrideDto? FuelFlaringAndLossesOverride { get; set; }
     public required TimeSeriesDto? NetSalesGas { get; set; }
     public required TimeSeriesOverrideDto? NetSalesGasOverride { get; set; }
+    public required TimeSeriesDto? TotalExportedVolumes { get; set; }
+    public required TimeSeriesOverrideDto? TotalExportedVolumesOverride { get; set; }
     public required TimeSeriesDto? Co2Emissions { get; set; }
     public required TimeSeriesOverrideDto? Co2EmissionsOverride { get; set; }
     public required TimeSeriesDto? ProductionProfileNgl { get; set; }

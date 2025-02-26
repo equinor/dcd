@@ -54,6 +54,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             FuelFlaringAndLossesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), ProfileTypes.FuelFlaringAndLossesOverride, physicalUnit),
             NetSalesGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas), ProfileTypes.NetSalesGas, physicalUnit),
             NetSalesGasOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride), ProfileTypes.NetSalesGasOverride, physicalUnit),
+            TotalExportedVolumes = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumes), ProfileTypes.TotalExportedVolumes, physicalUnit),
+            TotalExportedVolumesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumesOverride), ProfileTypes.TotalExportedVolumesOverride, physicalUnit),
             Co2Emissions = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), ProfileTypes.Co2Emissions, physicalUnit),
             Co2EmissionsOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), ProfileTypes.Co2EmissionsOverride, physicalUnit),
             Co2Intensity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), ProfileTypes.Co2Intensity, physicalUnit),

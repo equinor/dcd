@@ -72,5 +72,6 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
         ProductionProfileNglProfileService.RunCalculation(caseItem);
         CondensateProductionProfileService.RunCalculation(caseItem);
+        TotalExportedVolumesProfileService.RunCalculation(caseItem);
     }
 }
