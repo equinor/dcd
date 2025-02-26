@@ -11,13 +11,9 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DevelopmentWells_WellProjects_WellProjectId",
-                table: "DevelopmentWells");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ExplorationWell_Explorations_ExplorationId",
-                table: "ExplorationWell");
+            migrationBuilder.Sql("ALTER TABLE DevelopmentWells DROP CONSTRAINT FK_DevelopmentWells_WellProjects_WellProjectId;");
+            migrationBuilder.Sql("ALTER TABLE DevelopmentWells DROP CONSTRAINT FK_WellProjectWell_WellProjects_WellProjectId;");
+            migrationBuilder.Sql("ALTER TABLE ExplorationWell DROP CONSTRAINT FK_ExplorationWell_Explorations_ExplorationId;");
 
             migrationBuilder.DropTable(
                 name: "Explorations");

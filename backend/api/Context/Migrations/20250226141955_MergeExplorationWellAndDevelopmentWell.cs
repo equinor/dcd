@@ -53,12 +53,12 @@ namespace api.Migrations
 
             migrationBuilder.Sql($"""
                                   insert into CampaignWells (Id, WellId, CampaignId, StartYear, InternalData, CreatedUtc, CreatedBy, UpdatedUtc, UpdatedBy)
-                                  select Id, WellId, StartYear, InternalData, CreatedUtc, CreatedBy, UpdatedUtc, UpdatedBy from DevelopmentWells;
+                                  select Id, WellId, CampaignId, StartYear, InternalData, CreatedUtc, CreatedBy, UpdatedUtc, UpdatedBy from DevelopmentWells;
                                   """);
 
             migrationBuilder.Sql("""
                                  insert into CampaignWells (Id, WellId, CampaignId, StartYear, InternalData, CreatedUtc, CreatedBy, UpdatedUtc, UpdatedBy)
-                                 select Id, WellId, StartYear, InternalData, CreatedUtc, CreatedBy, UpdatedUtc, UpdatedBy from ExplorationWell;
+                                 select Id, WellId, CampaignId, StartYear, InternalData, CreatedUtc, CreatedBy, UpdatedUtc, UpdatedBy from ExplorationWell;
                                  """);
 
             migrationBuilder.DropTable(
