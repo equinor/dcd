@@ -1,5 +1,3 @@
-using System.Globalization;
-
 using api.Features.Profiles;
 using api.Models;
 
@@ -25,7 +23,7 @@ public static class GenerateGAndGAdminCostProfile
         if (dG1Date.Year >= earliestYear)
         {
             var countryCost = MapCountry(caseItem.Project.Country);
-            var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
+            var lastYear = new DateTime(dG1Date.Year, 1, 1);
             var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
 
             var totalMinutesLastYear = new TimeSpan(DateTime.IsLeapYear(lastYear.Year) ? 366 : 365, 0, 0, 0).TotalMinutes;

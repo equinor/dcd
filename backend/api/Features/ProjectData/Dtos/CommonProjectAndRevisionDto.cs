@@ -7,7 +7,7 @@ namespace api.Features.ProjectData.Dtos;
 
 public class CommonProjectAndRevisionDto
 {
-    [Required] public required DateTime ModifyTime { get; set; }
+    [Required] public required DateTime UpdatedUtc { get; set; }
     [Required] public required ProjectClassification Classification { get; set; }
     [Required] public required string Name { get; set; }
     [Required] public required Guid FusionProjectId { get; set; }

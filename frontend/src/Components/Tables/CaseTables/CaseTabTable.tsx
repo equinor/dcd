@@ -43,6 +43,7 @@ import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGri
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 import useEditCase from "@/Hooks/useEditCase"
 import { useTableQueue } from "@/Hooks/useTableQueue"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 // Styled Components
 const CenterGridIcons = styled.div`
@@ -85,11 +86,14 @@ const CaseTabTable = memo(({
     sharepointFileId,
 }: Props) => {
     // Hooks and Context
-    const { editMode, setSnackBarMessage, isSaving } = useAppStore()
+    const {
+        setIsSaving, editMode, setSnackBarMessage, isSaving,
+    } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
+    const { canEdit, isEditDisabled } = useCanUserEdit()
 
     // State Management
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
@@ -100,8 +104,8 @@ const CaseTabTable = memo(({
     // Custom Hooks
     const { editQueue, addToQueue, submitEditQueue } = useTableQueue({
         isSaving,
-        addEdit,
         gridRef,
+        setIsSaving,
     })
 
     // Refs
@@ -112,9 +116,9 @@ const CaseTabTable = memo(({
     const gridRowData = useMemo(
         () => {
             if (!presentedTableData?.length) { return [] }
-            return profilesToRowData(presentedTableData, dg4Year, tableName, editMode)
+            return profilesToRowData(presentedTableData, dg4Year, tableName, canEdit())
         },
-        [presentedTableData, editMode, dg4Year, tableName],
+        [presentedTableData, editMode, dg4Year, tableName, isEditDisabled],
     )
 
     // Cell Renderers
@@ -131,7 +135,7 @@ const CaseTabTable = memo(({
             <CenterGridIcons>
                 <CalculationSourceToggle
                     addEdit={addEdit}
-                    editMode={editMode}
+                    editAllowed={canEdit()}
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
@@ -183,24 +187,24 @@ const CaseTabTable = memo(({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, editMode),
+                editable: (params: any) => tableCellisEditable(params, canEdit()),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: !params.node.footer && validateInput(params, editMode),
+                    errorMsg: !params.node.footer && validateInput(params, canEdit()),
                 }),
                 cellStyle: {
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
+                cellClass: (params: any) => (tableCellisEditable(params, canEdit()) ? "editableCell" : undefined),
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
-    }, [tableYears, editMode, gridRowData, tableName, totalRowName])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled])
 
     // Event Handlers
     const handleCellValueChange = useCallback((event: any) => {
@@ -211,6 +215,7 @@ const CaseTabTable = memo(({
             profileName: event.data.profileName,
             profile: event.data.profile,
             resourceId: event.data.resourceId,
+            wellId: event.data.wellId,
         }
 
         const config: ITableCellChangeConfig = {
@@ -232,7 +237,7 @@ const CaseTabTable = memo(({
     }, [presentedTableData, dg4Year, caseId, projectId, tab, tableName, setSnackBarMessage, addToQueue])
 
     const handleCellClicked = (event: CellClickedEvent) => {
-        if (!event.data || editMode) { return }
+        if (!event.data || (canEdit())) { return }
 
         const clickedYear = event.column.getColId()
         setSelectedRow({
@@ -255,10 +260,10 @@ const CaseTabTable = memo(({
             sortable: true,
             filter: true,
             resizable: true,
-            editable: (params: any) => tableCellisEditable(params, editMode),
+            editable: (params: any) => tableCellisEditable(params, canEdit()),
             onCellValueChanged: handleCellValueChange,
             suppressHeaderMenuButton: true,
-            enableCellChangeFlash: editMode,
+            enableCellChangeFlash: canEdit(),
             suppressMovable: true,
         },
         rowData: gridRowData,
@@ -278,7 +283,6 @@ const CaseTabTable = memo(({
         copyHeadersToClipboard: false,
         stopEditingWhenCellsLoseFocus: true,
         onCellClicked: handleCellClicked,
-        rowSelection: "single" as const,
         context: {
             setSelectedRow,
             setIsSidesheetOpen,
@@ -295,6 +299,7 @@ const CaseTabTable = memo(({
         tableYears,
         setSelectedRow,
         setIsSidesheetOpen,
+        isEditDisabled,
     ])
 
     // Effects
@@ -324,14 +329,6 @@ const CaseTabTable = memo(({
         const containerRef = document.getElementById(tableName)?.parentElement
 
         const handleClickOutside = (event: MouseEvent) => {
-            /*
-            if (gridRef.current?.api) {
-                gridRef.current.api.clearFocusedCell()
-                gridRef.current.api.stopEditing()
-                gridRef.current.api.deselectAll()
-            }
-                */
-
             if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
                 submitEditQueue()
             }

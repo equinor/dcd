@@ -25,8 +25,8 @@ public class CaseWithAssetsDto
     public required TimeSeriesOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public required TimeSeriesDto? OnshoreRelatedOPEXCostProfile { get; set; }
     public required TimeSeriesDto? AdditionalOPEXCostProfile { get; set; }
-    public required TimeSeriesDto? CalculatedTotalIncomeCostProfile { get; set; }
-    public required TimeSeriesDto? CalculatedTotalCostCostProfile { get; set; }
+    public required TimeSeriesDto? CalculatedTotalIncomeCostProfileUsd { get; set; }
+    public required TimeSeriesDto? CalculatedTotalCostCostProfileUsd { get; set; }
 
     [Required] public required TopsideDto Topside { get; set; }
     public required TimeSeriesDto? TopsideCostProfile { get; set; }
@@ -76,7 +76,6 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? OnshorePowerSupplyCostProfile { get; set; }
     public required TimeSeriesOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
-    [Required] public required Guid ExplorationId { get; set; }
     [Required] public required List<ExplorationWellDto> ExplorationWells { get; set; }
 
     [Required] public required List<CampaignDto> ExplorationCampaigns { get; set; }
@@ -97,7 +96,6 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? ExplorationRigMobDemob { get; set; }
     public required TimeSeriesOverrideDto? ExplorationRigMobDemobOverride { get; set; }
 
-    [Required] public required Guid WellProjectId { get; set; }
     [Required] public required List<DevelopmentWellDto> DevelopmentWells { get; set; }
 
     [Required] public required List<CampaignDto> DevelopmentCampaigns { get; set; }

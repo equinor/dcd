@@ -1,4 +1,5 @@
-import { ProfileTypes } from "./enums"
+import { ProfileTypes } from "@/Models/enums"
+import { UpdateRigCostDto } from "./ICampaigns"
 
 export type ResourceName =
     "case" |
@@ -13,6 +14,8 @@ export type ResourceName =
     "exploration" |
     "explorationWellDrillingSchedule" |
     "developmentWellDrillingSchedule" |
+    "rigUpgradingCost" |
+    "rigMobDemobCost" |
     `${ProfileTypes}`
 
 export type ResourceObject =
@@ -24,6 +27,14 @@ export type ResourceObject =
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.OnshorePowerSupplyDto |
+    Components.Schemas.UpdateCampaignDto |
+    Components.Schemas.CampaignDto |
+    Components.Schemas.UpdateRigMobDemobCostDto |
+    Components.Schemas.UpdateRigUpgradingCostDto |
+    ProfileObject |
+    UpdateRigCostDto
+
+export type ProfileObject =
     Components.Schemas.TimeSeriesOverrideDto |
     Components.Schemas.TimeSeriesDto |
     Components.Schemas.SaveTimeSeriesDto |
@@ -39,9 +50,11 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.DevelopmentWellDto |
     keyof Components.Schemas.ExplorationWellDto |
+    keyof Components.Schemas.UpdateCampaignDto |
+    keyof Components.Schemas.CampaignDto |
     keyof Components.Schemas.TimeSeriesScheduleDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
-    keyof Components.Schemas.TimeSeriesDto;
+    keyof Components.Schemas.TimeSeriesDto
 
 export interface EditInstance {
     uuid: string;
@@ -53,6 +66,7 @@ export interface EditInstance {
     drillingScheduleId?: string;
     caseId?: string;
     resourceObject: ResourceObject;
+    campaignId?: string;
 }
 
 export interface EditEntry {
@@ -78,8 +92,13 @@ export type UpdateEntry = {
     description: string;
 };
 
+export type VersionUpdates = {
+    date: string;
+    updates: {
+        [key in Category]?: UpdateEntry[];
+    };
+};
+
 export type WhatsNewUpdates = {
-    [key in Version]: {
-        [category in Category]?: UpdateEntry[]
-    }
+    [key in Version]: VersionUpdates;
 };

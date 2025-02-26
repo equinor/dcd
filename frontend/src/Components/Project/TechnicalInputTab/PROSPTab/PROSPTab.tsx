@@ -11,7 +11,7 @@ import Grid from "@mui/material/Grid2"
 
 import { GetProspService } from "@/Services/ProspService"
 import { GetProjectService } from "@/Services/ProjectService"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 import useEditProject from "@/Hooks/useEditProject"
 import { useAppStore } from "@/Store/AppStore"
@@ -20,7 +20,7 @@ import PROSPCaseTable from "@/Components/Tables/ProjectTables/PROSPCaseTable"
 const PROSPTab = () => {
     const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit } = useCanUserEdit()
     const { editMode } = useAppStore()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
@@ -90,7 +90,7 @@ const PROSPTab = () => {
                             placeholder="Paste Uri here"
                             onChange={handleSharePointUrl}
                             value={sharepointUrl || ""}
-                            disabled={isEditDisabled || !editMode}
+                            disabled={!canEdit()}
                         />
                     </InputWrapper>
                 </Grid>
@@ -100,7 +100,7 @@ const PROSPTab = () => {
                             <Button
                                 variant="outlined"
                                 onClick={saveUrl}
-                                disabled={isEditDisabled || !editMode}
+                                disabled={!canEdit()}
                             >
                                 Refresh
                             </Button>

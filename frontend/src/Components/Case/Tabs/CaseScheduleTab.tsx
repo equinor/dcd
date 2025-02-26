@@ -14,9 +14,9 @@ import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleT
 import { ResourceName, ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppStore } from "@/Store/AppStore"
 import { useCaseApiData } from "@/Hooks"
 import useEditCase from "@/Hooks/useEditCase"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -80,10 +80,10 @@ const DECISION_GATES: DecisionGate[] = [
 ]
 
 const CaseScheduleTab = () => {
-    const { editMode } = useAppStore()
     const { projectId } = useProjectContext()
     const { addEdit } = useEditCase()
     const { apiData } = useCaseApiData()
+    const { canEdit } = useCanUserEdit()
 
     if (!apiData || !projectId) {
         return (<CaseScheduleTabSkeleton />)
@@ -215,7 +215,7 @@ const CaseScheduleTab = () => {
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
                 .map((caseDate) => (
                     (caseDate.visible
-                        || editMode
+                        || canEdit()
                         || toScheduleValue(caseData[caseDate.key as keyof typeof caseData])
                     )
                         ? (

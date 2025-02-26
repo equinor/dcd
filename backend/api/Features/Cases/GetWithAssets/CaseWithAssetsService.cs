@@ -40,8 +40,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OffshoreFacilitiesOperationsCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)),
             OnshoreRelatedOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile)),
             AdditionalOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
-            CalculatedTotalIncomeCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile)),
-            CalculatedTotalCostCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile)),
+            CalculatedTotalIncomeCostProfileUsd = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd)),
+            CalculatedTotalCostCostProfileUsd = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd)),
 
             DrainageStrategy = DrainageStrategyMapper.MapToDto(caseItem.DrainageStrategy),
             ProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), ProfileTypes.ProductionProfileOil, physicalUnit),
@@ -86,9 +86,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OnshorePowerSupply = OnshorePowerSupplyMapper.MapToDto(caseItem.OnshorePowerSupply),
             OnshorePowerSupplyCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile)),
             OnshorePowerSupplyCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)),
-            ExplorationId = caseItem.ExplorationId,
 
-            ExplorationWells = ExplorationWellsMapper.MapToDtos(caseItem.Exploration.ExplorationWells),
+            ExplorationWells = ExplorationWellsMapper.MapToDtos(caseItem.Campaigns.SelectMany(x => x.ExplorationWells)),
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
             SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
@@ -101,9 +100,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             ExplorationRigUpgradingCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigUpgradingCostProfileOverride)),
             ExplorationRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemob)),
             ExplorationRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride)),
-            WellProjectId = caseItem.WellProjectId,
 
-            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.WellProject.DevelopmentWells),
+            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.Campaigns.SelectMany(x => x.DevelopmentWells)),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),

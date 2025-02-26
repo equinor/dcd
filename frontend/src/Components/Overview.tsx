@@ -24,6 +24,7 @@ import SidebarWrapper from "./Sidebar/SidebarWrapper"
 import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -74,6 +75,7 @@ const Overview = () => {
     const { Features } = useFeatureContext()
     const revisionAndProjectData = useDataFetch()
     const [warnedProjects, setWarnedProjects] = useLocalStorage<WarnedProjectInterface | null>("pv", null)
+    const { canEdit, isEditDisabled } = useCanUserEdit()
 
     const { data: peopleApiData } = useQuery({
         queryKey: ["peopleApiData", projectId],
@@ -93,13 +95,13 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!projectData) { return }
 
-        const lastModified = dateStringToDateUtc(projectData.commonProjectAndRevisionData.modifyTime)
+        const updatedUtc = dateStringToDateUtc(projectData.commonProjectAndRevisionData.updatedUtc)
         const currentTime = new Date()
 
-        const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < lastModified)
+        const timeDifferenceInDays = (currentTime.getTime() - updatedUtc.getTime()) / (1000 * 60 * 60 * 24)
+        const hasChangesSinceLastRevision = projectData.revisionDetailsList.some((r) => dateStringToDateUtc(r.revisionDate) < updatedUtc)
 
-        if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
+        if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && canEdit() && !isRevision) {
             setShowRevisionReminder(true)
         }
     }
@@ -132,7 +134,7 @@ const Overview = () => {
         if (revisionAndProjectData) {
             checkIfNewRevisionIsRecommended()
         }
-    }, [revisionAndProjectData, editMode])
+    }, [revisionAndProjectData, editMode, isEditDisabled])
 
     useEffect(() => {
         if (revisionAndProjectData && currentUserId) {

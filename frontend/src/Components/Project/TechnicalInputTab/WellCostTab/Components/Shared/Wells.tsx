@@ -6,7 +6,7 @@ import { useStyles } from "@equinor/fusion-react-ag-grid-styles"
 
 import WellsTable from "@/Components/Tables/ProjectTables/WellsTable"
 import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import useEditDisabled from "@/Hooks/useEditDisabled"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 import { useAppStore } from "@/Store/AppStore"
 import { TableWell } from "@/Models/Wells"
@@ -31,7 +31,7 @@ const Wells: React.FC<WellsProps> = ({
     const revisionAndProjectData = useDataFetch()
     const { addWellsEdit } = useTechnicalInputEdits()
     const { editMode } = useAppStore()
-    const { isEditDisabled } = useEditDisabled()
+    const { canEdit, isEditDisabled } = useCanUserEdit()
     const styles = useStyles()
 
     const [rowData, setRowData] = useState<TableWell[]>([])
@@ -92,7 +92,7 @@ const Wells: React.FC<WellsProps> = ({
         <>
             <SectionHeader>
                 <Typography variant="h2">{title}</Typography>
-                {editMode && (
+                {canEdit() && (
                     <Button onClick={() => createWell(defaultWellCategory)} variant="outlined">
                         <Icon data={add} size={24} />
                         {addButtonText}

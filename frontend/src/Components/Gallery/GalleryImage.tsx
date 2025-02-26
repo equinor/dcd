@@ -55,7 +55,7 @@ const GalleryControls = styled.div`
 
 interface GalleryImageProps {
     image: Components.Schemas.ImageDto;
-    editMode: boolean;
+    editAllowed: boolean;
     onDelete: (imageId: string) => void;
     onExpand: (imageData: string) => void;
     onDescriptionChange: (imageId: string, description: string) => void;
@@ -63,7 +63,7 @@ interface GalleryImageProps {
 
 const GalleryImage = ({
     image,
-    editMode,
+    editAllowed,
     onDelete,
     onExpand,
     onDescriptionChange,
@@ -98,7 +98,7 @@ const GalleryImage = ({
                     alt={image.description || "Gallery image"}
                 />
                 <GalleryControls>
-                    {editMode && (
+                    {editAllowed && (
                         <Button variant="contained_icon" color="danger" onClick={() => onDelete(image.imageId)}>
                             <Icon size={18} data={delete_to_trash} />
                         </Button>

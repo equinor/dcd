@@ -31,9 +31,9 @@ public static class ProfileTypes
 
     public const string TotalOtherStudiesCostProfile = "TotalOtherStudiesCostProfile";
 
-    public const string CalculatedTotalIncomeCostProfile = "CalculatedTotalIncomeCostProfile";
+    public const string CalculatedTotalIncomeCostProfileUsd = "CalculatedTotalIncomeCostProfileUsd";
 
-    public const string CalculatedTotalCostCostProfile = "CalculatedTotalCostCostProfile";
+    public const string CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd";
 
     /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";
@@ -131,7 +131,6 @@ public static class ProfileTypes
     public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
 
     public const string Co2Intensity = "Co2Intensity";
-    public const string AverageCo2Intensity = "AverageCo2Intensity";
 
     public const string ProductionProfileNgl = "ProductionProfileNgl";
 

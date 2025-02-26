@@ -19,14 +19,14 @@ const IconButton = styled(Button)`
 interface ToggleIconProps {
     clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>
     onClick: (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => void
-    editMode: boolean
+    editAllowed: boolean
 }
 
-export const CalculatorToggle: React.FC<ToggleIconProps> = ({ clickedElement, onClick, editMode }) => {
+export const CalculatorToggle: React.FC<ToggleIconProps> = ({ clickedElement, onClick, editAllowed }) => {
     const isOverride = clickedElement.data?.overrideProfile?.override
 
     let tooltipText = ""
-    if (editMode) {
+    if (editAllowed) {
         tooltipText = isOverride ? "Show calculated numbers" : "Hide calculated numbers"
     } else {
         tooltipText = isOverride ? "Currently using manual input values" : "Currently using calculated values"
@@ -41,11 +41,11 @@ export const CalculatorToggle: React.FC<ToggleIconProps> = ({ clickedElement, on
     )
 }
 
-export const ExcelToggle: React.FC<ToggleIconProps> = ({ clickedElement, onClick, editMode }) => {
+export const ExcelToggle: React.FC<ToggleIconProps> = ({ clickedElement, onClick, editAllowed }) => {
     const isOverride = clickedElement.data?.overrideProfile?.override
 
     let tooltipText = ""
-    if (editMode) {
+    if (editAllowed) {
         tooltipText = isOverride ? "Show numbers from PROSP file" : "Hide numbers from PROSP file"
     } else {
         tooltipText = isOverride ? "Currently using manual input values" : "Currently using PROSP file values"

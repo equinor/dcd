@@ -16,8 +16,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.Surf)
             .Include(c => c.Substructure)
             .Include(c => c.OnshorePowerSupply)
-            .Include(c => c.Exploration)
-            .Include(c => c.WellProject)
             .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
             .SingleAsync();

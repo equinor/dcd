@@ -115,7 +115,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             {
                 field: "name",
                 flex: 2,
-                editable: editMode,
+                editable: editMode && !isEditDisabled,
                 singleClickEdit: true,
             },
             {
@@ -136,7 +136,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 headerName: "Drilling days",
                 flex: 1,
                 cellStyle: cellStyleRightAlign,
-                editable: editMode,
+                editable: editMode && !isEditDisabled,
                 singleClickEdit: true,
             },
             {
@@ -156,7 +156,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                   : "mill USD",
                 },
                 cellStyle: cellStyleRightAlign,
-                editable: editMode,
+                editable: editMode && !isEditDisabled,
                 singleClickEdit: true,
             },
             {
@@ -178,9 +178,9 @@ const WellsTable: React.FC<WellsTableProps> = ({
             resizable: true,
             editable: true,
             suppressHeaderMenuButton: true,
-            cellClass: editMode ? "editableCell" : undefined,
+            cellClass: editMode && !isEditDisabled ? "editableCell" : undefined,
         }),
-        [editMode],
+        [editMode, isEditDisabled],
     )
 
     return (

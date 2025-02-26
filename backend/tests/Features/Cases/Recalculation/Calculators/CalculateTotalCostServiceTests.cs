@@ -9,7 +9,7 @@ namespace tests.Features.Cases.Recalculation.Calculators;
 public class CalculateTotalCostServiceTests
 {
     [Fact]
-    public void CalculateTotalCostAsync_AllProfilesProvided_ReturnsCorrectTotalCost()
+    public void CalculateTotalCostAsync_AllProfilesProvided_ReturnsCorrectTotalCostInUsd()
     {
         var caseId = Guid.NewGuid();
         var project = new Project
@@ -17,7 +17,8 @@ public class CalculateTotalCostServiceTests
             Id = Guid.NewGuid(),
             OilPriceUSD = 75,
             GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10
+            ExchangeRateUSDToNOK = 10,
+            Currency = api.Models.Enums.Currency.NOK,
         };
 
         var caseItem = new Case
@@ -26,13 +27,11 @@ public class CalculateTotalCostServiceTests
             Project = project,
             ProjectId = project.Id,
             DrainageStrategyId = Guid.NewGuid(),
-            WellProjectId = Guid.NewGuid(),
             SubstructureId = Guid.NewGuid(),
             SurfId = Guid.NewGuid(),
             TopsideId = Guid.NewGuid(),
             TransportId = Guid.NewGuid(),
             OnshorePowerSupplyId = Guid.NewGuid(),
-            ExplorationId = Guid.NewGuid(),
             TimeSeriesProfiles =
             [
                 new TimeSeriesProfile
@@ -178,15 +177,15 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.RunCalculation(caseItem);
 
         // Assert
-        var calculatedTotalCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
-        Assert.NotNull(calculatedTotalCostCostProfile);
-        Assert.Equal(2020, calculatedTotalCostCostProfile.StartYear);
-        Assert.Equal(3, calculatedTotalCostCostProfile.Values.Length);
+        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        Assert.NotNull(calculatedTotalCostCostProfileUsd);
+        Assert.Equal(2020, calculatedTotalCostCostProfileUsd.StartYear);
+        Assert.Equal(3, calculatedTotalCostCostProfileUsd.Values.Length);
 
-        var expectedValues = new[] { 2950.0, 4150.0, 4980.0 };
+        var expectedValues = new[] { 295, 415, 498 };
         for (int i = 0; i < expectedValues.Length; i++)
         {
-            Assert.Equal(expectedValues[i], calculatedTotalCostCostProfile.Values[i]);
+            Assert.Equal(expectedValues[i], calculatedTotalCostCostProfileUsd.Values[i]);
         }
     }
 
