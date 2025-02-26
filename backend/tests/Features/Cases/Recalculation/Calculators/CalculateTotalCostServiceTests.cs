@@ -179,15 +179,15 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.RunCalculation(caseItem);
 
         // Assert
-        var CalculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
-        Assert.NotNull(CalculatedTotalCostCostProfileUsd);
-        Assert.Equal(2020, CalculatedTotalCostCostProfileUsd.StartYear);
-        Assert.Equal(3, CalculatedTotalCostCostProfileUsd.Values.Length);
+        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        Assert.NotNull(calculatedTotalCostCostProfileUsd);
+        Assert.Equal(2020, calculatedTotalCostCostProfileUsd.StartYear);
+        Assert.Equal(3, calculatedTotalCostCostProfileUsd.Values.Length);
 
         var expectedValues = new[] { 295, 415, 498 };
         for (int i = 0; i < expectedValues.Length; i++)
         {
-            Assert.Equal(expectedValues[i], CalculatedTotalCostCostProfileUsd.Values[i]);
+            Assert.Equal(expectedValues[i], calculatedTotalCostCostProfileUsd.Values[i]);
         }
     }
 
