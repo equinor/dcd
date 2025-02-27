@@ -3,6 +3,7 @@ export * from "./useDataFetch"
 export * from "./useLocalStorage"
 export * from "./useNavigate"
 export * from "./useRevision"
+export * from "./UseSubmitToApi"
 
 export { default as useEditCase } from "./useEditCase"
 export { default as useEditPeople } from "./useEditPeople"

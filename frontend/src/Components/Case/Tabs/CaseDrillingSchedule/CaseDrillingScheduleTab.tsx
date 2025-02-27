@@ -73,7 +73,7 @@ const CaseDrillingScheduleTab = () => {
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
-                    apiData.explorationCampaigns.flatMap(x => x.campaignWells).filter((few) => few.wellId === fw.id).forEach((ew) => {
+                    apiData.explorationCampaigns.flatMap((x) => x.campaignWells).filter((few) => few.wellId === fw.id).forEach((ew) => {
                         if (ew.values && ew.values.length > 0) {
                             sum += ew.values.reduce((a, b) => a + b, 0)
                         }
@@ -84,7 +84,7 @@ const CaseDrillingScheduleTab = () => {
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
-                apiData.developmentCampaigns.flatMap(x => x.campaignWells).filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                apiData.developmentCampaigns.flatMap((x) => x.campaignWells).filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
                     if (ew.values && ew.values.length > 0) {
                         sum += ew.values.reduce((a, b) => a + b, 0)
                     }
@@ -115,8 +115,8 @@ const CaseDrillingScheduleTab = () => {
         explorationCampaigns,
     } = apiData
 
-    const developmentWellsData = developmentCampaigns.flatMap(x => x.campaignWells)
-    const explorationWellsData = explorationCampaigns.flatMap(x => x.campaignWells)
+    const developmentWellsData = developmentCampaigns.flatMap((x) => x.campaignWells)
+    const explorationWellsData = explorationCampaigns.flatMap((x) => x.campaignWells)
 
     if (
         activeTabCase !== 3

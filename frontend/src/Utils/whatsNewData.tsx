@@ -145,6 +145,28 @@ export const whatsNewUpdates: WhatsNewUpdates = {
             ],
         },
     },
+    "2.4.0": {
+        date: "2025-03-15",
+        updates: {
+            "New Functionalities": [
+                {
+                    description: "When a user clicks on a case table row in view mode, a side sheet with detailed information appears. "
+                    + "(e.g. last updated time, source of data, calculation explanations, data visualization)",
+                },
+                { description: "When changing classification to restricted/confidential, users are set to being project members to not be locked out of the project" },
+                { description: "Landing page for Concept app with basic information & release notes" },
+                { description: "Performance improvements" },
+            ],
+            "UI Improvements": [
+                { description: "When switching between cases inside a project, the active tab is preserved" },
+            ],
+            Bugfixes: [
+                { description: "The start & end year hides some data in the tables by default" },
+                { description: "Fuel flaring & losses and CO2 emissions adjusted according to BCCST formulas" },
+                { description: "Misc minor bugfixes" },
+            ],
+        },
+    },
 }
 
 export const versions = sortVersions(Object.keys(whatsNewUpdates)) as Version[]
