@@ -26,15 +26,7 @@ export class __BaseService {
             (response: any) => response,
             (error: any) => {
                 if (error.response.status === 403) {
-                    console.error("Error: You don't have permission to access this resource. Please contact support.")
-                    const lastForcedReloadDate = getLastForcedReloadDate()
-                    const reloadTimeoutMs = 5 * 60 * 1000;
-                    const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - new Date(lastForcedReloadDate).valueOf() > reloadTimeoutMs;
-                    const expectedAuth403Data = "";
-                    if(error.response.data === expectedAuth403Data && isPastReloadTimeout) {
-                        setLastForcedReloadDate(new Date().toISOString())
-                        window.location.reload()
-                    }
+                    this.handle403Error(error)
                 } else if (error.response.status === 500) {
                     console.error("Error: An internal server error occurred. Please try again later.")
                 }
@@ -143,5 +135,17 @@ export class __BaseService {
 
     protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: "PUT" })
+    }
+
+    private handle403Error = (error : any) => {
+        console.error("Error: You don't have permission to access this resource. Please contact support.")
+        const lastForcedReloadDate = getLastForcedReloadDate()
+        const reloadTimeoutMs = 5 * 60 * 1000;
+        const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - new Date(lastForcedReloadDate).valueOf() > reloadTimeoutMs;
+        const expectedAuth403Data = "";
+        if(error.response.data === expectedAuth403Data && isPastReloadTimeout) {
+            setLastForcedReloadDate(new Date().toISOString())
+            window.location.reload()
+        }
     }
 }
