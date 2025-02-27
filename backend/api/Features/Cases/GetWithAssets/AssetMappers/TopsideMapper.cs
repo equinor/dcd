@@ -29,7 +29,7 @@ public static class TopsideMapper
             CO2OnMaxWaterInjectionProfile = entity.CO2OnMaxWaterInjectionProfile,
             CostYear = entity.CostYear,
             ProspVersion = entity.ProspVersion,
-            LastChangedDate = entity.LastChangedDate,
+            LastChangedDate = entity.UpdatedUtc,
             Source = entity.Source,
             ApprovedBy = entity.ApprovedBy,
             DG3Date = entity.DG3Date,

@@ -36,7 +36,6 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         existingTopside.Source = updatedTopsideDto.Source;
         existingTopside.Maturity = updatedTopsideDto.Maturity;
         existingTopside.ApprovedBy = updatedTopsideDto.ApprovedBy;
-        existingTopside.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

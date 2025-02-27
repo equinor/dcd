@@ -13,7 +13,6 @@ public static class TransportProspService
         var asset = caseItem.Transport;
 
         asset.Source = Source.ConceptApp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.ProspVersion = null;
         asset.GasExportPipelineLength = 0;
         asset.OilExportPipelineLength = 0;
@@ -42,7 +41,6 @@ public static class TransportProspService
         var asset = caseItem.Transport;
 
         asset.Source = Source.Prosp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.ProspVersion = versionDate;
         asset.GasExportPipelineLength = gasExportPipelineLength;
         asset.OilExportPipelineLength = oilExportPipelineLength;

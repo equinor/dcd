@@ -21,7 +21,7 @@ public static class SurfMapper
             GasInjectorCount = entity.GasInjectorCount,
             WaterInjectorCount = entity.WaterInjectorCount,
             ProductionFlowline = entity.ProductionFlowline,
-            LastChangedDate = entity.LastChangedDate ?? default,
+            LastChangedDate = entity.UpdatedUtc,
             CostYear = entity.CostYear,
             Source = entity.Source,
             ProspVersion = entity.ProspVersion,

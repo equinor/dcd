@@ -13,7 +13,6 @@ public static class TopsideProspService
         var asset = caseItem.Topside;
 
         asset.Source = Source.ConceptApp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.DryWeight = 0;
         asset.OilCapacity = 0;
         asset.GasCapacity = 0;
@@ -75,7 +74,6 @@ public static class TopsideProspService
         var asset = caseItem.Topside;
 
         asset.Source = Source.Prosp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.DryWeight = dryWeight;
         asset.OilCapacity = oilCapacity;
         asset.GasCapacity = gasCapacity;

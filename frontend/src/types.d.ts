@@ -121,7 +121,6 @@ declare namespace Components {
             onshorePowerSupply: OnshorePowerSupplyDto;
             onshorePowerSupplyCostProfile: TimeSeriesDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
-            explorationCampaigns: CampaignDto[];
             explorationWellCostProfile: TimeSeriesDto;
             appraisalWellCostProfile: TimeSeriesDto;
             sidetrackCostProfile: TimeSeriesDto;
@@ -135,6 +134,7 @@ declare namespace Components {
             explorationRigMobDemob: TimeSeriesDto;
             explorationRigMobDemobOverride: TimeSeriesOverrideDto;
             developmentCampaigns: CampaignDto[];
+            explorationCampaigns: CampaignDto[];
             oilProducerCostProfile: TimeSeriesDto;
             oilProducerCostProfileOverride: TimeSeriesOverrideDto;
             gasProducerCostProfile: TimeSeriesDto;
@@ -245,7 +245,6 @@ declare namespace Components {
         }
         export interface DrainageStrategyDto {
             id: string; // uuid
-            description: string;
             nglYield: number; // double
             gasShrinkageFactor: number; // double
             producerCount: number; // int32

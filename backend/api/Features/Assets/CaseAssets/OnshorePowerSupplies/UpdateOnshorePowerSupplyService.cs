@@ -16,7 +16,6 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, Recalculation
         existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
         existing.DG4Date = updatedOnshorePowerSupplyDto.DG4Date;
         existing.Source = updatedOnshorePowerSupplyDto.Source;
-        existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

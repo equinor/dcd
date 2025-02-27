@@ -16,7 +16,7 @@ public static class SubstructureMapper
             CostYear = entity.CostYear,
             ProspVersion = entity.ProspVersion,
             Source = entity.Source,
-            LastChangedDate = entity.LastChangedDate,
+            LastChangedDate = entity.UpdatedUtc,
             Concept = entity.Concept,
             DG3Date = entity.DG3Date,
             DG4Date = entity.DG4Date

@@ -21,8 +21,6 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         existingSubstructure.Maturity = updatedSubstructureDto.Maturity;
         existingSubstructure.ApprovedBy = updatedSubstructureDto.ApprovedBy;
 
-        existingSubstructure.LastChangedDate = DateTime.UtcNow;
-
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }

@@ -10,7 +10,6 @@ public class OnshorePowerSupply : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required DateTime? LastChangedDate { get; set; }
     public required int CostYear { get; set; }
     public required Source Source { get; set; }
     public required DateTime? ProspVersion { get; set; }

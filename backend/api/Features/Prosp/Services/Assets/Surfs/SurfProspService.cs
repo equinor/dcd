@@ -13,7 +13,6 @@ public static class SurfProspService
         var asset = caseItem.Surf;
 
         asset.Source = Source.ConceptApp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.CessationCost = 0;
         asset.InfieldPipelineSystemLength = 0;
         asset.UmbilicalSystemLength = 0;
@@ -59,7 +58,6 @@ public static class SurfProspService
         var asset = caseItem.Surf;
 
         asset.Source = Source.Prosp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.CessationCost = cessationCost;
         asset.InfieldPipelineSystemLength = lengthProductionLine;
         asset.UmbilicalSystemLength = lengthUmbilicalSystem;

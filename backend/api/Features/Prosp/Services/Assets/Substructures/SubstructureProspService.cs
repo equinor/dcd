@@ -13,7 +13,6 @@ public static class SubstructureProspService
         var asset = caseItem.Substructure;
 
         asset.Source = Source.ConceptApp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.DryWeight = 0;
         asset.CostYear = 0;
         asset.Concept = Concept.NO_CONCEPT;
@@ -42,7 +41,6 @@ public static class SubstructureProspService
         var asset = caseItem.Substructure;
 
         asset.Source = Source.Prosp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.DryWeight = dryWeight;
         asset.CostYear = costYear;
         asset.Concept = concept;

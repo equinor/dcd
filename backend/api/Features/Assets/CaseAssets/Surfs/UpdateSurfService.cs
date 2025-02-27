@@ -28,7 +28,6 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
         existingSurf.DG3Date = updatedSurfDto.DG3Date;
         existingSurf.DG4Date = updatedSurfDto.DG4Date;
         existingSurf.Maturity = updatedSurfDto.Maturity;
-        existingSurf.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

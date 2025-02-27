@@ -19,7 +19,6 @@ public class UpdateTransportService(DcdDbContext context, RecalculationService r
         existing.DG4Date = updatedTransportDto.DG4Date;
         existing.Source = updatedTransportDto.Source;
         existing.Maturity = updatedTransportDto.Maturity;
-        existing.LastChangedDate = DateTime.UtcNow;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

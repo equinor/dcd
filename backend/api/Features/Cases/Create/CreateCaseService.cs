@@ -110,8 +110,6 @@ public class CreateCaseService(DcdDbContext context)
         return new DrainageStrategy
         {
             Id = id,
-            Description = "Drainage Strategy",
-
             NGLYield = 0,
             GasShrinkageFactor = 0,
             ProducerCount = 0,
@@ -146,7 +144,6 @@ public class CreateCaseService(DcdDbContext context)
             CO2OnMaxWaterInjectionProfile = 0,
             CostYear = 0,
             ProspVersion = null,
-            LastChangedDate = null,
             Source = Source.ConceptApp,
             ApprovedBy = "",
             DG3Date = null,
@@ -172,7 +169,6 @@ public class CreateCaseService(DcdDbContext context)
             GasInjectorCount = 0,
             WaterInjectorCount = 0,
             ProductionFlowline = ProductionFlowline.No_production_flowline,
-            LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
             ProspVersion = null,
@@ -193,7 +189,6 @@ public class CreateCaseService(DcdDbContext context)
             CostYear = 0,
             ProspVersion = null,
             Source = Source.ConceptApp,
-            LastChangedDate = null,
             Concept = Concept.NO_CONCEPT,
             DG3Date = null,
             DG4Date = null
@@ -208,7 +203,6 @@ public class CreateCaseService(DcdDbContext context)
             GasExportPipelineLength = 0,
             OilExportPipelineLength = 0,
             Maturity = Maturity.A,
-            LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
             ProspVersion = null,
@@ -222,7 +216,6 @@ public class CreateCaseService(DcdDbContext context)
         return new OnshorePowerSupply
         {
             Id = id,
-            LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
             ProspVersion = null,

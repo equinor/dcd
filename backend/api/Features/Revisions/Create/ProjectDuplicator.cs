@@ -93,7 +93,7 @@ public static class ProjectDuplicator
             Wells = wells,
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping, true)).ToList(),
 
-            // Mapped as a separate step later
+            // Mapped in a separate step later
             Images = [],
 
             // Intentionally not mapped for revisions
@@ -160,7 +160,6 @@ public static class ProjectDuplicator
             {
                 Id = drainageStrategyId,
                 CaseId = caseId,
-                Description = existingCaseItem.DrainageStrategy.Description,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
                 GasShrinkageFactor = existingCaseItem.DrainageStrategy.GasShrinkageFactor,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
@@ -186,7 +185,6 @@ public static class ProjectDuplicator
                 GasInjectorCount = existingCaseItem.Surf.GasInjectorCount,
                 WaterInjectorCount = existingCaseItem.Surf.WaterInjectorCount,
                 ProductionFlowline = existingCaseItem.Surf.ProductionFlowline,
-                LastChangedDate = existingCaseItem.Surf.LastChangedDate,
                 CostYear = existingCaseItem.Surf.CostYear,
                 Source = existingCaseItem.Surf.Source,
                 ProspVersion = existingCaseItem.Surf.ProspVersion,
@@ -206,7 +204,6 @@ public static class ProjectDuplicator
                 CostYear = existingCaseItem.Substructure.CostYear,
                 ProspVersion = existingCaseItem.Substructure.ProspVersion,
                 Source = existingCaseItem.Substructure.Source,
-                LastChangedDate = existingCaseItem.Substructure.LastChangedDate,
                 Concept = existingCaseItem.Substructure.Concept,
                 DG3Date = existingCaseItem.Substructure.DG3Date,
                 DG4Date = existingCaseItem.Substructure.DG4Date
@@ -236,7 +233,6 @@ public static class ProjectDuplicator
                 CO2OnMaxWaterInjectionProfile = existingCaseItem.Topside.CO2OnMaxWaterInjectionProfile,
                 CostYear = existingCaseItem.Topside.CostYear,
                 ProspVersion = existingCaseItem.Topside.ProspVersion,
-                LastChangedDate = existingCaseItem.Topside.LastChangedDate,
                 Source = existingCaseItem.Topside.Source,
                 ApprovedBy = existingCaseItem.Topside.ApprovedBy,
                 DG3Date = existingCaseItem.Topside.DG3Date,
@@ -253,7 +249,6 @@ public static class ProjectDuplicator
                 GasExportPipelineLength = existingCaseItem.Transport.GasExportPipelineLength,
                 OilExportPipelineLength = existingCaseItem.Transport.OilExportPipelineLength,
                 Maturity = existingCaseItem.Transport.Maturity,
-                LastChangedDate = existingCaseItem.Transport.LastChangedDate,
                 CostYear = existingCaseItem.Transport.CostYear,
                 Source = existingCaseItem.Transport.Source,
                 ProspVersion = existingCaseItem.Transport.ProspVersion,
@@ -266,7 +261,6 @@ public static class ProjectDuplicator
             {
                 Id = onshorePowerSupplyId,
                 CaseId = caseId,
-                LastChangedDate = existingCaseItem.OnshorePowerSupply.LastChangedDate,
                 CostYear = existingCaseItem.OnshorePowerSupply.CostYear,
                 Source = existingCaseItem.OnshorePowerSupply.Source,
                 ProspVersion = existingCaseItem.OnshorePowerSupply.ProspVersion,
