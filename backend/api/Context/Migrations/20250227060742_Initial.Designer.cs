@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250214134406_Initial")]
+    [Migration("20250227060742_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -74,6 +74,47 @@ namespace api.Migrations
                     b.HasIndex("CaseId");
 
                     b.ToTable("Campaigns");
+                });
+
+            modelBuilder.Entity("api.Models.CampaignWell", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CampaignId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WellId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampaignId");
+
+                    b.HasIndex("WellId", "CampaignId")
+                        .IsUnique();
+
+                    b.ToTable("CampaignWells");
                 });
 
             modelBuilder.Entity("api.Models.Case", b =>
@@ -146,9 +187,6 @@ namespace api.Migrations
                     b.Property<Guid>("DrainageStrategyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ExplorationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<double>("FacilitiesAvailability")
                         .HasColumnType("float");
 
@@ -169,6 +207,9 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OnshorePowerSupplyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OriginalCaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ProducerCount")
@@ -216,10 +257,9 @@ namespace api.Migrations
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("WellProjectId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("OriginalCaseId");
 
                     b.HasIndex("ProjectId");
 
@@ -302,52 +342,6 @@ namespace api.Migrations
                     b.ToTable("DevelopmentOperationalWellCosts");
                 });
 
-            modelBuilder.Entity("api.Models.DevelopmentWell", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CampaignId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("WellId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("WellProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
-
-                    b.HasIndex("WellId");
-
-                    b.HasIndex("WellProjectId", "WellId")
-                        .IsUnique();
-
-                    b.ToTable("DevelopmentWells");
-                });
-
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>
                 {
                     b.Property<Guid>("Id")
@@ -373,6 +367,9 @@ namespace api.Migrations
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
+                    b.Property<double>("GasShrinkageFactor")
+                        .HasColumnType("float");
+
                     b.Property<int>("GasSolution")
                         .HasColumnType("int");
 
@@ -397,35 +394,6 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("DrainageStrategies");
-                });
-
-            modelBuilder.Entity("api.Models.Exploration", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CaseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseId")
-                        .IsUnique();
-
-                    b.ToTable("Explorations");
                 });
 
             modelBuilder.Entity("api.Models.ExplorationOperationalWellCosts", b =>
@@ -470,52 +438,6 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("ExplorationOperationalWellCosts");
-                });
-
-            modelBuilder.Entity("api.Models.ExplorationWell", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CampaignId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ExplorationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("WellId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
-
-                    b.HasIndex("WellId");
-
-                    b.HasIndex("ExplorationId", "WellId")
-                        .IsUnique();
-
-                    b.ToTable("ExplorationWell");
                 });
 
             modelBuilder.Entity("api.Models.Infrastructure.BackgroundJobs.BackgroundJobLog", b =>
@@ -669,12 +591,12 @@ namespace api.Migrations
                     b.Property<string>("StackTrace")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UtcTimestamp")
+                    b.Property<DateTime>("TimestampUtc")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UtcTimestamp");
+                    b.HasIndex("TimestampUtc");
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -1434,35 +1356,6 @@ namespace api.Migrations
                     b.ToTable("Wells");
                 });
 
-            modelBuilder.Entity("api.Models.WellProject", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CaseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseId")
-                        .IsUnique();
-
-                    b.ToTable("WellProjects");
-                });
-
             modelBuilder.Entity("api.Models.Campaign", b =>
                 {
                     b.HasOne("api.Models.Case", "Case")
@@ -1474,13 +1367,39 @@ namespace api.Migrations
                     b.Navigation("Case");
                 });
 
+            modelBuilder.Entity("api.Models.CampaignWell", b =>
+                {
+                    b.HasOne("api.Models.Campaign", "Campaign")
+                        .WithMany("CampaignWells")
+                        .HasForeignKey("CampaignId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Well", "Well")
+                        .WithMany("CampaignWells")
+                        .HasForeignKey("WellId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Campaign");
+
+                    b.Navigation("Well");
+                });
+
             modelBuilder.Entity("api.Models.Case", b =>
                 {
+                    b.HasOne("api.Models.Case", "OriginalCase")
+                        .WithMany("RevisionCases")
+                        .HasForeignKey("OriginalCaseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("api.Models.Project", "Project")
                         .WithMany("Cases")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("OriginalCase");
 
                     b.Navigation("Project");
                 });
@@ -1507,49 +1426,11 @@ namespace api.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("api.Models.DevelopmentWell", b =>
-                {
-                    b.HasOne("api.Models.Campaign", "Campaign")
-                        .WithMany("DevelopmentWells")
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Well", "Well")
-                        .WithMany("DevelopmentWells")
-                        .HasForeignKey("WellId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.WellProject", "WellProject")
-                        .WithMany("DevelopmentWells")
-                        .HasForeignKey("WellProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("Well");
-
-                    b.Navigation("WellProject");
-                });
-
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>
                 {
                     b.HasOne("api.Models.Case", "Case")
                         .WithOne("DrainageStrategy")
                         .HasForeignKey("api.Models.DrainageStrategy", "CaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-                });
-
-            modelBuilder.Entity("api.Models.Exploration", b =>
-                {
-                    b.HasOne("api.Models.Case", "Case")
-                        .WithOne("Exploration")
-                        .HasForeignKey("api.Models.Exploration", "CaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1565,33 +1446,6 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("api.Models.ExplorationWell", b =>
-                {
-                    b.HasOne("api.Models.Campaign", "Campaign")
-                        .WithMany("ExplorationWells")
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Exploration", "Exploration")
-                        .WithMany("ExplorationWells")
-                        .HasForeignKey("ExplorationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Well", "Well")
-                        .WithMany("ExplorationWells")
-                        .HasForeignKey("WellId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("Exploration");
-
-                    b.Navigation("Well");
                 });
 
             modelBuilder.Entity("api.Models.OnshorePowerSupply", b =>
@@ -1714,22 +1568,9 @@ namespace api.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("api.Models.WellProject", b =>
-                {
-                    b.HasOne("api.Models.Case", "Case")
-                        .WithOne("WellProject")
-                        .HasForeignKey("api.Models.WellProject", "CaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-                });
-
             modelBuilder.Entity("api.Models.Campaign", b =>
                 {
-                    b.Navigation("DevelopmentWells");
-
-                    b.Navigation("ExplorationWells");
+                    b.Navigation("CampaignWells");
                 });
 
             modelBuilder.Entity("api.Models.Case", b =>
@@ -1739,13 +1580,12 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy")
                         .IsRequired();
 
-                    b.Navigation("Exploration")
-                        .IsRequired();
-
                     b.Navigation("Images");
 
                     b.Navigation("OnshorePowerSupply")
                         .IsRequired();
+
+                    b.Navigation("RevisionCases");
 
                     b.Navigation("Substructure")
                         .IsRequired();
@@ -1760,14 +1600,6 @@ namespace api.Migrations
 
                     b.Navigation("Transport")
                         .IsRequired();
-
-                    b.Navigation("WellProject")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("api.Models.Exploration", b =>
-                {
-                    b.Navigation("ExplorationWells");
                 });
 
             modelBuilder.Entity("api.Models.Project", b =>
@@ -1793,14 +1625,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Well", b =>
                 {
-                    b.Navigation("DevelopmentWells");
-
-                    b.Navigation("ExplorationWells");
-                });
-
-            modelBuilder.Entity("api.Models.WellProject", b =>
-                {
-                    b.Navigation("DevelopmentWells");
+                    b.Navigation("CampaignWells");
                 });
 #pragma warning restore 612, 618
         }
