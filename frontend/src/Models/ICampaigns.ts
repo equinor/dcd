@@ -25,7 +25,7 @@ export interface Profile {
     values: number[]
 }
 
-export interface Well {
+export interface CampaignWell {
     wellName: string
     startYear: number
     values: number[]
@@ -36,5 +36,5 @@ export interface Well {
 export interface Campaign {
     rigMobDemobProfile: Profile
     rigUpgradingProfile: Profile
-    campaignWells: Well[]
+    campaignWells: CampaignWell[]
 }
