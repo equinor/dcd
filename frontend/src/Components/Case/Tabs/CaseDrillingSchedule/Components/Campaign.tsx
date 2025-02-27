@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid2"
 
 import {
     CampaignProps,
-    Well,
+    CampaignWell,
 } from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
@@ -15,12 +15,14 @@ import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableConta
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { filterWells } from "@/Utils/common"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useAppStore } from "@/Store/AppStore"
 
 const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { apiData } = useCaseApiData()
     const campaignGridRef = useRef<any>(null)
     const revisionAndProjectData = useDataFetch()
     const { canEdit } = useCanUserEdit()
+    const { editMode } = useAppStore()
 
     const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
 
@@ -61,7 +63,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             rows.push(mobDemobRow)
         }
 
-        campaign.campaignWells?.forEach((well: Well) => {
+        campaign.campaignWells?.forEach((well: CampaignWell) => {
             const wellRow: ItimeSeriesTableDataWithWell = {
                 profileName: well.wellName,
                 unit: "Well",
@@ -80,30 +82,49 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
         })
 
         if (canEdit() && title === "Exploration") {
-            console.log(allWells.explorationWells)
-            // allWells.explorationWells.forEach((well: Well) => {
-            //     const wellRow: ItimeSeriesTableDataWithWell = {
-            //         profileName: well.wellName,
-            //         unit: "Well",
-            //         profile: {
-            //             startYear: well.startYear,
-            //             values: well.values || [],
-            //         },
-            //         resourceName: "campaignWells",
-            //         resourceId: campaign.campaignId,
-            //         wellId: well.wellId,
-            //         resourcePropertyKey: "campaignWells",
-            //         overridable: false,
-            //         editable: true,
-            //     }
-            //     rows.push(wellRow)
-            // })
+            allWells.explorationWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+                const wellRow: ItimeSeriesTableDataWithWell = {
+                    profileName: well.name,
+                    unit: "Well",
+                    profile: {
+                        startYear: 0,
+                        values: [],
+                    },
+                    resourceName: "campaignWells",
+                    resourceId: campaign.campaignId,
+                    wellId: well.id,
+                    resourcePropertyKey: "campaignWells",
+                    overridable: false,
+                    editable: true,
+                }
+                rows.push(wellRow)
+            })
+        }
+
+        if (canEdit() && title === "Development") {
+            allWells.developmentWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+                const wellRow: ItimeSeriesTableDataWithWell = {
+                    profileName: well.name,
+                    unit: "Well",
+                    profile: {
+                        startYear: 0,
+                        values: [],
+                    },
+                    resourceName: "campaignWells",
+                    resourceId: campaign.campaignId,
+                    wellId: well.id,
+                    resourcePropertyKey: "campaignWells",
+                    overridable: false,
+                    editable: true,
+                }
+                rows.push(wellRow)
+            })
         }
 
         return rows
     }
 
-    const rowData = useMemo(() => generateRowData(), [campaign, tableYears])
+    const rowData = useMemo(() => generateRowData(), [campaign, tableYears, editMode])
 
     if (!apiData) {
         return <ProjectSkeleton />
