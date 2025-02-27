@@ -120,7 +120,7 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("APBODate")
+                    b.Property<DateTime?>("APBODate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Archived")
@@ -132,7 +132,7 @@ namespace api.Migrations
                     b.Property<double>("AverageCo2Intensity")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("BORDate")
+                    b.Property<DateTime?>("BORDate")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("BreakEven")
@@ -153,28 +153,28 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DG0Date")
+                    b.Property<DateTime?>("DG0Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DG1Date")
+                    b.Property<DateTime?>("DG1Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DG2Date")
+                    b.Property<DateTime?>("DG2Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DG3Date")
+                    b.Property<DateTime?>("DG3Date")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DG4Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DGADate")
+                    b.Property<DateTime?>("DGADate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DGBDate")
+                    b.Property<DateTime?>("DGBDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DGCDate")
+                    b.Property<DateTime?>("DGCDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -248,7 +248,7 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("VPBODate")
+                    b.Property<DateTime?>("VPBODate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("WaterInjectorCount")
@@ -356,10 +356,6 @@ namespace api.Migrations
 
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
@@ -696,15 +692,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DG3Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG4Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("ProspVersion")
                         .HasColumnType("datetime2");
 
@@ -981,17 +968,8 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DG3Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG4Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -1044,20 +1022,11 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DG3Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG4Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
                     b.Property<double>("InfieldPipelineSystemLength")
                         .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -1186,12 +1155,6 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DG3Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG4Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
 
@@ -1209,9 +1172,6 @@ namespace api.Migrations
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -1269,17 +1229,8 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DG3Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG4Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("GasExportPipelineLength")
                         .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");

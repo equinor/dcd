@@ -3,9 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
 
 import {
-    isDefaultDateString,
     defaultDate,
-    isDefaultDate,
     toMonthDate,
     dateStringToDateUtc,
     dateFromTimestamp,
@@ -97,9 +95,9 @@ const CaseScheduleTab = () => {
         return nextDate
     }
 
-    const updateCascadingDates = (startGate: DecisionGate, newDate: Date, currentData: any): ResourceObject => {
+    const updateCascadingDates = (startGate: DecisionGate, newDate: Date | undefined, currentData: any): ResourceObject => {
         const updatedData = { ...currentData }
-        updatedData[startGate.key] = newDate.toISOString()
+        updatedData[startGate.key] = newDate?.toISOString()
         let currentDate = newDate
 
         // Find the sequence of DG dates (DG0 through DG4)
@@ -111,17 +109,21 @@ const CaseScheduleTab = () => {
             return updatedData
         }
 
+        if (!newDate) {
+            return updatedData
+        }
+
         // Update all subsequent DG dates to maintain the required intervals
         dgSequence
             .slice(startIndex + 1)
             .filter((gate) => gate.monthsAfterPrevious)
             .forEach((gate) => {
                 // Calculate the next date based on the previous date
-                currentDate = calculateNextDate(currentDate, gate.monthsAfterPrevious!)
+                currentDate = calculateNextDate(currentDate!, gate.monthsAfterPrevious!)
 
                 // Only update if the new date is later than the existing date
                 const existingDate = dateStringToDateUtc(updatedData[gate.key])
-                if (isDefaultDate(existingDate) || currentDate.getTime() > existingDate.getTime()) {
+                if (!existingDate || currentDate.getTime() > existingDate.getTime()) {
                     updatedData[gate.key] = currentDate.toISOString()
                 }
             })
@@ -129,7 +131,7 @@ const CaseScheduleTab = () => {
         return updatedData
     }
 
-    const createDateChangeEdit = (dateKey: string, newDate: Date, currentCaseData: any) => {
+    const createDateChangeEdit = (dateKey: string, newDate: Date | undefined, currentCaseData: any) => {
         const gate = DECISION_GATES.find((g) => g.key === dateKey)
 
         if (!gate) { return null }
@@ -137,7 +139,7 @@ const CaseScheduleTab = () => {
         // Always update cascading dates for DG dates
         const resourceObject = gate.key.startsWith("dG")
             ? updateCascadingDates(gate, newDate, currentCaseData)
-            : { ...currentCaseData, [dateKey]: newDate.toISOString() }
+            : { ...currentCaseData, [dateKey]: newDate?.toISOString() }
 
         return {
             uuid: uuidv4(),
@@ -154,7 +156,7 @@ const CaseScheduleTab = () => {
 
         if ((dateValueYear >= 2010 && dateValueYear <= 2110) || dateValue === "") {
             const newDate = Number.isNaN(dateStringToDateUtc(dateValue).getTime())
-                ? defaultDate()
+                ? undefined
                 : dateStringToDateUtc(dateValue)
 
             const editData = createDateChangeEdit(dateKey, newDate, caseData)
@@ -163,7 +165,7 @@ const CaseScheduleTab = () => {
     }
 
     const findMinDate = (dates: Date[]) => {
-        const filteredDates = dates.filter((d) => !isDefaultDate(d))
+        const filteredDates = dates.filter((d) => d)
         if (filteredDates.length === 0) { return undefined }
 
         const minDateValue = Math.max(
@@ -174,7 +176,7 @@ const CaseScheduleTab = () => {
     }
 
     const findMaxDate = (dates: Date[]) => {
-        const filteredDates = dates.filter((d) => !isDefaultDate(d))
+        const filteredDates = dates.filter((d) => d)
         if (filteredDates.length === 0) { return undefined }
 
         const maxDateValue = Math.min(
@@ -192,20 +194,21 @@ const CaseScheduleTab = () => {
     const toScheduleValue = (date: string | number | boolean | null | undefined) => {
         const paramString = String(date)
         const dateString = dateStringToDateUtc(paramString)
-        if (isDefaultDate(dateString)) {
+        if (!dateString) {
             return undefined
         }
         return toMonthDate(dateString)
     }
 
-    const getDateValue = (dateKey: string) => {
-        if (!caseData) { return defaultDate() }
+    const getDateValue = (dateKey: string): Date | undefined => {
+        if (!caseData) { return undefined }
         const caseDataObject = caseData as any
 
-        if (!isDefaultDateString(String(caseDataObject[dateKey as keyof typeof caseDataObject]))) {
+        if (caseDataObject[dateKey as keyof typeof caseDataObject]) {
             return dateStringToDateUtc(String(caseDataObject[dateKey as keyof typeof caseDataObject]))
         }
-        return defaultDate()
+
+        return undefined
     }
 
     return (

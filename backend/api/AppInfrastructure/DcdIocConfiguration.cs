@@ -69,8 +69,6 @@ public static class DcdIocConfiguration
         services.AddScoped<CreateRevisionRepository>();
         services.AddScoped<UpdateRevisionService>();
 
-        services.AddScoped<UpdateWellsService>();
-
         /* Project members */
         services.AddScoped<GetProjectMemberService>();
         services.AddScoped<DeleteProjectMemberService>();
@@ -79,6 +77,7 @@ public static class DcdIocConfiguration
 
         /* Wells */
         services.AddScoped<GetIsWellInUseService>();
+        services.AddScoped<UpdateWellsService>();
 
         /* Cases */
         services.AddScoped<CreateCaseService>();
@@ -94,6 +93,8 @@ public static class DcdIocConfiguration
         services.AddScoped<CaseWithAssetsService>();
         services.AddScoped<CaseWithAssetsRepository>();
 
+        services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
+
         /* Case images */
         services.AddScoped<GetCaseImageService>();
         services.AddScoped<DeleteCaseImageService>();
@@ -105,7 +106,6 @@ public static class DcdIocConfiguration
         services.AddScoped<DeleteProjectImageService>();
         services.AddScoped<UploadProjectImageService>();
         services.AddScoped<UpdateProjectImageService>();
-
         services.AddScoped<CopyImageService>();
 
         /* Background jobs */
@@ -155,8 +155,6 @@ public static class DcdIocConfiguration
 
         /* Time series profiles */
         services.AddScoped<SaveProfileService>();
-
-        services.AddScoped<Co2DrillingFlaringFuelTotalsService>();
 
         /* Videos */
         services.AddScoped<GetVideoService>();

@@ -24,14 +24,15 @@ public static class StudyCostProfileService
 
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
-        var dg0 = caseItem.DG0Date;
-        var dg2 = caseItem.DG2Date;
 
-        if (dg0.Year == 1 || dg2.Year == 1)
+        if (caseItem.DG0Date == null || caseItem.DG2Date == null)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies));
             return;
         }
+
+        var dg0 = caseItem.DG0Date.Value;
+        var dg2 = caseItem.DG2Date.Value;
 
         if (dg2.DayOfYear == 1) { dg2 = dg2.AddDays(-1); } // Treat the 1st of January as the 31st of December
 
@@ -72,14 +73,15 @@ public static class StudyCostProfileService
 
         var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
 
-        var dg2 = caseItem.DG2Date;
-        var dg3 = caseItem.DG3Date;
 
-        if (dg2.Year == 1 || dg3.Year == 1)
+        if (caseItem.DG2Date == null || caseItem.DG3Date == null)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies));
             return;
         }
+
+        var dg2 = caseItem.DG2Date.Value;
+        var dg3 = caseItem.DG3Date.Value;
 
         if (!DateIsEqual(dg2, dg3) && dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December, only if dates are not equal
 

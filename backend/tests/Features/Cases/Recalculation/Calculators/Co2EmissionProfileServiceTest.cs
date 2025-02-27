@@ -76,11 +76,8 @@ public class Co2EmissionProfileServiceTests
                 WaterInjectorCount = 0,
                 CostYear = 0,
                 ProspVersion = null,
-                LastChangedDate = null,
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
-                DG3Date = null,
-                DG4Date = null,
                 FacilityOpex = 0,
                 PeakElectricityImported = 0
             }
@@ -173,11 +170,8 @@ public class Co2EmissionProfileServiceTests
                 WaterInjectorCount = 0,
                 CostYear = 0,
                 ProspVersion = null,
-                LastChangedDate = null,
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
-                DG3Date = null,
-                DG4Date = null,
                 FacilityOpex = 0,
                 PeakElectricityImported = 0,
             }

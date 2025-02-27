@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250226141955_MergeExplorationWellAndDevelopmentWell")]
-    partial class MergeExplorationWellAndDevelopmentWell
+    [Migration("20250227071421_RemoveLastUpdatedDate")]
+    partial class RemoveLastUpdatedDate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -705,9 +705,6 @@ namespace api.Migrations
                     b.Property<DateTime?>("DG4Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("ProspVersion")
                         .HasColumnType("datetime2");
 
@@ -993,9 +990,6 @@ namespace api.Migrations
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
 
@@ -1058,9 +1052,6 @@ namespace api.Migrations
 
                     b.Property<double>("InfieldPipelineSystemLength")
                         .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -1213,9 +1204,6 @@ namespace api.Migrations
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
 
@@ -1280,9 +1268,6 @@ namespace api.Migrations
 
                     b.Property<double>("GasExportPipelineLength")
                         .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastChangedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");

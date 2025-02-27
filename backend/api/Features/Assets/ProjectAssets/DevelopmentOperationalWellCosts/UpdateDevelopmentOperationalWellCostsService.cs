@@ -23,9 +23,7 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
         existingDevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell = dto.AnnualWellInterventionCostPerWell;
         existingDevelopmentOperationalWellCosts.PluggingAndAbandonment = dto.PluggingAndAbandonment;
 
-        var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
-        project.UpdatedUtc = DateTime.UtcNow;
-
+        await context.UpdateProjectUpdatedUtc(projectPk);
         await context.SaveChangesAsync();
 
         return new DevelopmentOperationalWellCostsOverviewDto

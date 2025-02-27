@@ -65,4 +65,11 @@ public static class DcdDbContextExtensions
 
         caseItem.UpdatedUtc = DateTime.UtcNow;
     }
+
+    public static async Task UpdateProjectUpdatedUtc(this DcdDbContext context, Guid projectPk)
+    {
+        var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
+
+        project.UpdatedUtc = DateTime.UtcNow;
+    }
 }

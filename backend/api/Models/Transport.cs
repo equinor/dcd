@@ -12,12 +12,9 @@ public class Transport : IChangeTrackable, IDateTrackedEntity
     public required double GasExportPipelineLength { get; set; }
     public required double OilExportPipelineLength { get; set; }
     public required Maturity Maturity { get; set; }
-    public required DateTime? LastChangedDate { get; set; }
     public required int CostYear { get; set; }
     public required Source Source { get; set; }
     public required DateTime? ProspVersion { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    public required DateTime? DG4Date { get; set; }
 
     #region Change tracking
     public DateTime CreatedUtc { get; set; }

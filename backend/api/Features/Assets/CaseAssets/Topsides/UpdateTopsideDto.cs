@@ -23,8 +23,6 @@ public class UpdateTopsideDto
     [Required] public required double CO2OnMaxGasProfile { get; set; }
     [Required] public required double CO2OnMaxWaterInjectionProfile { get; set; }
     [Required] public required int CostYear { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    public required DateTime? DG4Date { get; set; }
     [Required] public required double FacilityOpex { get; set; }
     [Required] public required double PeakElectricityImported { get; set; }
     [Required] public required Source Source { get; set; }

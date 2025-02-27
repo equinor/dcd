@@ -13,14 +13,6 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
     {
         var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
 
-        await SaveCampaignWell(existingCampaign, campaignId, campaignWellDtos);
-
-        await context.UpdateCaseUpdatedUtc(caseId);
-        await recalculationService.SaveChangesAndRecalculateCase(caseId);
-    }
-
-    private async Task SaveCampaignWell(Campaign existingCampaign, Guid campaignId, List<SaveCampaignWellDto> campaignWellDtos)
-    {
         var wellIds = campaignWellDtos.Select(x => x.WellId).ToList();
 
         var existingCampaignWells = await context.CampaignWells
@@ -49,6 +41,7 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
             existingCampaignWell.Values = campaignWellDto.Values;
         }
 
-        //todo deal with deletes
+        await context.UpdateCaseUpdatedUtc(caseId);
+        await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }
