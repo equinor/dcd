@@ -50,30 +50,6 @@ class CaseService extends __BaseService {
         return res
     }
 
-    public async saveProfile(
-        projectId: string,
-        caseId: string,
-        dto: Components.Schemas.SaveTimeSeriesDto,
-    ): Promise<Components.Schemas.TimeSeriesDto> {
-        const res: Components.Schemas.TimeSeriesDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/profiles/save`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async saveOverrideProfile(
-        projectId: string,
-        caseId: string,
-        dto: Components.Schemas.SaveTimeSeriesOverrideDto,
-    ): Promise<Components.Schemas.TimeSeriesOverrideDto> {
-        const res: Components.Schemas.TimeSeriesOverrideDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/override-profiles/save`,
-            { body: dto },
-        )
-        return res
-    }
-
     public async saveProfiles(
         projectId: string,
         caseId: string,

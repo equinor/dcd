@@ -15,7 +15,6 @@ import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
-import { ordinaryTimeSeriesTypes, overrideTimeSeriesTypes } from "@/Utils/TimeseriesTypes"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -111,29 +110,6 @@ export const useSubmitToApi = () => {
     const updateCaseProfiles = (params: UpdateResourceParams) => updateResource(GetCaseService, "saveProfiles", { ...params })
 
     const updateCase = (params: UpdateResourceParams) => updateResource(GetCaseService, "updateCase", { ...params })
-
-    interface SaveTimeSeriesProfileParams {
-        projectId: string;
-        caseId: string;
-        saveFunction: any;
-    }
-    const saveTimeSeriesProfile = async ({
-        projectId,
-        caseId,
-        saveFunction,
-    }: SaveTimeSeriesProfileParams) => {
-        try {
-            const result = await mutation.mutateAsync({
-                projectId,
-                caseId,
-                serviceMethod: saveFunction,
-            })
-            const returnValue = { ...result }
-            return { success: true, data: returnValue }
-        } catch (error) {
-            return { success: false, error }
-        }
-    }
 
     type SubmitToApiParams = {
         projectId: string,
@@ -253,30 +229,6 @@ export const useSubmitToApi = () => {
 
                 default:
                     console.log("Resource name not found", resourceName)
-                }
-
-                if (ordinaryTimeSeriesTypes.find((x) => x === resourceName)) {
-                    return saveTimeSeriesProfile({
-                        projectId,
-                        caseId,
-                        saveFunction: await GetCaseService().saveProfile(
-                            projectId,
-                            caseId,
-                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesDto,
-                        ),
-                    })
-                }
-
-                if (overrideTimeSeriesTypes.find((x) => x === resourceName)) {
-                    return saveTimeSeriesProfile({
-                        projectId,
-                        caseId,
-                        saveFunction: await GetCaseService().saveOverrideProfile(
-                            projectId,
-                            caseId,
-                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                        ),
-                    })
                 }
 
                 return { success: false, error: new Error("Service not found") }
