@@ -1,6 +1,12 @@
 import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios"
 import { config } from "./config"
-import { getToken, loginAccessTokenKey, getLastForcedReloadDate, setLastForcedReloadDate} from "@/Utils/common"
+import {
+    getToken,
+    loginAccessTokenKey,
+    getLastForcedReloadDate,
+    setLastForcedReloadDate,
+} from "@/Utils/common"
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -26,7 +32,7 @@ export class __BaseService {
             (response: any) => response,
             (error: any) => {
                 if (error.response.status === 403) {
-                    this.handle403Error(error)
+                    __BaseService.handle403Error(error)
                 } else if (error.response.status === 500) {
                     console.error("Error: An internal server error occurred. Please try again later.")
                 }
@@ -137,13 +143,13 @@ export class __BaseService {
         return this.request(path, { ...options, method: "PUT" })
     }
 
-    private handle403Error = (error : any) => {
+    private static handle403Error = (error : any) => {
         console.error("Error: You don't have permission to access this resource. Please contact support.")
         const lastForcedReloadDate = getLastForcedReloadDate()
-        const reloadTimeoutMs = 5 * 60 * 1000;
-        const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - new Date(lastForcedReloadDate).valueOf() > reloadTimeoutMs;
-        const expectedAuth403Data = "";
-        if(error.response.data === expectedAuth403Data && isPastReloadTimeout) {
+        const reloadTimeoutMs = 5 * 60 * 1000
+        const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - dateStringToDateUtc(lastForcedReloadDate).valueOf() > reloadTimeoutMs
+        const expectedAuth403Data = ""
+        if (error.response.data === expectedAuth403Data && isPastReloadTimeout) {
             setLastForcedReloadDate(new Date().toISOString())
             window.location.reload()
         }
