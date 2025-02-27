@@ -25,6 +25,7 @@ import { Currency, WellCategory } from "@/Models/enums"
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
       projectId: string,
+      fusionProjectId: string,
       updatePayload: Components.Schemas.UpdateWellsDto,
     ) => void
     defaultWellCategory: WellCategory
@@ -73,7 +74,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             deleteWellDtos: [],
         }
 
-        addWellsEdit(revisionAndProjectData.projectId, updatePayload)
+        addWellsEdit(revisionAndProjectData.projectId, revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId, updatePayload)
     }
 
     const handleDeleteWell = async (params: any) => {
@@ -86,7 +87,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             deleteWellDtos: [{ id: wellToDelete.id }],
         }
 
-        addWellsEdit(revisionAndProjectData.projectId, deleteWells)
+        addWellsEdit(revisionAndProjectData.projectId, revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId, deleteWells)
 
         setWellStagedForDeletion(undefined)
     }
