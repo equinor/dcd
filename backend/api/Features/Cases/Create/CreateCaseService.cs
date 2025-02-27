@@ -146,8 +146,6 @@ public class CreateCaseService(DcdDbContext context)
             ProspVersion = null,
             Source = Source.ConceptApp,
             ApprovedBy = "",
-            DG3Date = null,
-            DG4Date = null,
             FacilityOpex = 0,
             PeakElectricityImported = 0
         };
@@ -172,9 +170,7 @@ public class CreateCaseService(DcdDbContext context)
             CostYear = 0,
             Source = Source.ConceptApp,
             ProspVersion = null,
-            ApprovedBy = "",
-            DG3Date = null,
-            DG4Date = null
+            ApprovedBy = ""
         };
     }
 
@@ -189,9 +185,7 @@ public class CreateCaseService(DcdDbContext context)
             CostYear = 0,
             ProspVersion = null,
             Source = Source.ConceptApp,
-            Concept = Concept.NO_CONCEPT,
-            DG3Date = null,
-            DG4Date = null
+            Concept = Concept.NO_CONCEPT
         };
     }
 
@@ -205,9 +199,7 @@ public class CreateCaseService(DcdDbContext context)
             Maturity = Maturity.A,
             CostYear = 0,
             Source = Source.ConceptApp,
-            ProspVersion = null,
-            DG3Date = null,
-            DG4Date = null
+            ProspVersion = null
         };
     }
 
@@ -218,9 +210,7 @@ public class CreateCaseService(DcdDbContext context)
             Id = id,
             CostYear = 0,
             Source = Source.ConceptApp,
-            ProspVersion = null,
-            DG3Date = null,
-            DG4Date = null
+            ProspVersion = null
         };
     }
 }

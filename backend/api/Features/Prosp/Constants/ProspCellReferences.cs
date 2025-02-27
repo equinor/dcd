@@ -5,7 +5,6 @@ public static class ProspCellReferences
     public static class Surf
     {
         public const string CostProfileStartYear = "J103";
-        public const string Dg3Date = "F112";
         public const string Dg4Date = "G112";
         public const string LengthProductionLine = "K35";
         public const string LengthUmbilicalSystem = "K37";
@@ -25,7 +24,6 @@ public static class ProspCellReferences
     public static class TopSide
     {
         public const string CostProfileStartYear = "J103";
-        public const string Dg3Date = "F104";
         public const string Dg4Date = "G104";
         public const string ArtificialLiftInt = "E42";
         public const string DryWeight = "J10";
@@ -53,7 +51,6 @@ public static class ProspCellReferences
     public static class Substructure
     {
         public const string CostProfileStartYear = "J103";
-        public const string Dg3Date = "F105";
         public const string Dg4Date = "G105";
         public const string DryWeight = "J19";
         public const string ConceptInt = "E62";
@@ -65,7 +62,6 @@ public static class ProspCellReferences
     public static class Transport
     {
         public const string CostProfileStartYear = "J103";
-        public const string Dg3Date = "F105";
         public const string Dg4Date = "G105";
         public const string VersionDate = "I4";
         public const string CostYear = "K4";

@@ -78,8 +78,6 @@ public class Co2EmissionProfileServiceTests
                 ProspVersion = null,
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
-                DG3Date = null,
-                DG4Date = null,
                 FacilityOpex = 0,
                 PeakElectricityImported = 0
             }
@@ -174,8 +172,6 @@ public class Co2EmissionProfileServiceTests
                 ProspVersion = null,
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
-                DG3Date = null,
-                DG4Date = null,
                 FacilityOpex = 0,
                 PeakElectricityImported = 0,
             }

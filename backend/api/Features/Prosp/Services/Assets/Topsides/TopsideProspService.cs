@@ -30,8 +30,6 @@ public static class TopsideProspService
         asset.CO2OnMaxGasProfile = 0;
         asset.CO2OnMaxWaterInjectionProfile = 0;
         asset.CostYear = 0;
-        asset.DG3Date = null;
-        asset.DG4Date = null;
         asset.FacilityOpex = 0;
         asset.PeakElectricityImported = 0;
         asset.ProspVersion = null;
@@ -43,7 +41,6 @@ public static class TopsideProspService
     {
         List<string> costProfileCoords = ["J104", "K104", "L104", "M104", "N104", "O104", "P104"];
 
-        var dG3Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.Dg3Date);
         var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.Dg4Date);
         var artificialLiftInt = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.ArtificialLiftInt);
         var artificialLift = ParseHelpers.MapArtificialLift(artificialLiftInt);
@@ -91,8 +88,6 @@ public static class TopsideProspService
         asset.CO2OnMaxGasProfile = cO2OnMaxGasProfile;
         asset.CO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile;
         asset.CostYear = costYear;
-        asset.DG3Date = dG3Date;
-        asset.DG4Date = dG4Date;
         asset.FacilityOpex = facilityOpex;
         asset.PeakElectricityImported = peakElectricityImported;
         asset.ProspVersion = versionDate;

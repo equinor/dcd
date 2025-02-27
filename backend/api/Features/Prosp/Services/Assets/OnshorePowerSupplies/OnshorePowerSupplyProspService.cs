@@ -14,8 +14,6 @@ public static class OnshorePowerSupplyProspService
 
         asset.Source = Source.ConceptApp;
         asset.CostYear = 0;
-        asset.DG3Date = null;
-        asset.DG4Date = null;
         asset.ProspVersion = null;
 
         OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, []);

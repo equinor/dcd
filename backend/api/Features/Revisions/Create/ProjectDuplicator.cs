@@ -188,9 +188,7 @@ public static class ProjectDuplicator
                 CostYear = existingCaseItem.Surf.CostYear,
                 Source = existingCaseItem.Surf.Source,
                 ProspVersion = existingCaseItem.Surf.ProspVersion,
-                ApprovedBy = existingCaseItem.Surf.ApprovedBy,
-                DG3Date = existingCaseItem.Surf.DG3Date,
-                DG4Date = existingCaseItem.Surf.DG4Date
+                ApprovedBy = existingCaseItem.Surf.ApprovedBy
             },
 
             SubstructureId = substructureId,
@@ -204,9 +202,7 @@ public static class ProjectDuplicator
                 CostYear = existingCaseItem.Substructure.CostYear,
                 ProspVersion = existingCaseItem.Substructure.ProspVersion,
                 Source = existingCaseItem.Substructure.Source,
-                Concept = existingCaseItem.Substructure.Concept,
-                DG3Date = existingCaseItem.Substructure.DG3Date,
-                DG4Date = existingCaseItem.Substructure.DG4Date
+                Concept = existingCaseItem.Substructure.Concept
             },
 
             TopsideId = topsideId,
@@ -235,8 +231,6 @@ public static class ProjectDuplicator
                 ProspVersion = existingCaseItem.Topside.ProspVersion,
                 Source = existingCaseItem.Topside.Source,
                 ApprovedBy = existingCaseItem.Topside.ApprovedBy,
-                DG3Date = existingCaseItem.Topside.DG3Date,
-                DG4Date = existingCaseItem.Topside.DG4Date,
                 FacilityOpex = existingCaseItem.Topside.FacilityOpex,
                 PeakElectricityImported = existingCaseItem.Topside.PeakElectricityImported
             },
@@ -251,9 +245,7 @@ public static class ProjectDuplicator
                 Maturity = existingCaseItem.Transport.Maturity,
                 CostYear = existingCaseItem.Transport.CostYear,
                 Source = existingCaseItem.Transport.Source,
-                ProspVersion = existingCaseItem.Transport.ProspVersion,
-                DG3Date = existingCaseItem.Transport.DG3Date,
-                DG4Date = existingCaseItem.Transport.DG4Date
+                ProspVersion = existingCaseItem.Transport.ProspVersion
             },
 
             OnshorePowerSupplyId = onshorePowerSupplyId,
@@ -263,9 +255,7 @@ public static class ProjectDuplicator
                 CaseId = caseId,
                 CostYear = existingCaseItem.OnshorePowerSupply.CostYear,
                 Source = existingCaseItem.OnshorePowerSupply.Source,
-                ProspVersion = existingCaseItem.OnshorePowerSupply.ProspVersion,
-                DG3Date = existingCaseItem.OnshorePowerSupply.DG3Date,
-                DG4Date = existingCaseItem.OnshorePowerSupply.DG4Date
+                ProspVersion = existingCaseItem.OnshorePowerSupply.ProspVersion
             },
 
             TimeSeriesProfiles = existingCaseItem.TimeSeriesProfiles
