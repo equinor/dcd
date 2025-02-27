@@ -5,66 +5,54 @@ import {
     Formula,
     MainFormula,
     FormulaSection,
+    SubFormula,
     FormulaList,
     Note,
     SpecialNote,
 } from "../../../shared.styles"
 
 interface Props {
-    developerMode: boolean
-    hasOverride: boolean
+    developerMode: boolean;
+    hasOverride: boolean;
 }
 
 const NglProduction: React.FC<Props> = ({ developerMode, hasOverride }) => (
     <Container>
         <Section>
-            <Typography variant="h6">Imported Electricity Calculation</Typography>
+            <Typography variant="h6">NGL Production Calculation</Typography>
             <Typography variant="body1" style={{ marginTop: 12, marginBottom: 24 }}>
-                The imported electricity (in GWh) is calculated based on power demand and facility availability:
+                The total NGL production (in MBOE) is calculated as follows:
             </Typography>
 
             <Formula>
                 <MainFormula>
-                    Imported Electricity = Total Power Demand × (FacilitiesAvailability / 100) × 8.76
+                    Total NGL Production = Gas Production × NGL Yield Factor
                 </MainFormula>
 
                 <FormulaSection>
-                    <h4>Total Power Demand Components:</h4>
+                    <h4>Input Components:</h4>
                     <FormulaList>
-                        <li>
-                            Base Power Demand:
-                            <ul>
-                                <li>Oil: CO2ShareOilProfile × CO2OnMaxOilProfile × OilCapacity</li>
-                                <li>Gas: CO2ShareGasProfile × CO2OnMaxGasProfile × GasCapacity</li>
-                                <li>Water Injection: CO2ShareWaterInjectionProfile × CO2OnMaxWaterInjectionProfile × WaterInjectionCapacity</li>
-                            </ul>
-                        </li>
-                        <li>
-                            Variable Power Demand:
-                            <ul>
-                                <li>Oil: CO2ShareOilProfile × (1 - CO2OnMaxOilProfile) × OilRate</li>
-                                <li>Gas: CO2ShareGasProfile × (1 - CO2OnMaxGasProfile) × GasRate</li>
-                                <li>Water Injection: CO2ShareWaterInjectionProfile × (1 - CO2OnMaxWaterInjectionProfile) × WaterRate</li>
-                            </ul>
-                        </li>
+                        <li>Gas Production</li>
+                        <li>NGL Yield Factor</li>
                     </FormulaList>
                 </FormulaSection>
 
                 <FormulaSection>
-                    <h4>Conversion Factors:</h4>
+                    <h4>Time Distribution:</h4>
+                    <SubFormula>
+                        Yearly NGL Production[i] = Total NGL Production × (Gas Production[i] / Total Gas Production)
+                    </SubFormula>
                     <FormulaList>
-                        <li>8.76 = Conversion factor from MW to GWh per year (24 hours × 365 days / 1000)</li>
-                        <li>FacilitiesAvailability is applied as a percentage (divided by 100)</li>
+                        <li>Production is distributed proportionally based on yearly gas production</li>
+                        <li>If total gas production is zero, NGL production is set to zero</li>
                     </FormulaList>
                 </FormulaSection>
 
                 <FormulaSection>
                     <h4>Special Cases:</h4>
                     <FormulaList>
-                        <li>If DrainageStrategy.ArtificialLift is not set to ElectricSubmergedPumps, power demand is zero</li>
-                        <li>If DrainageStrategy.GasInjection is false, gas injection power demand is zero</li>
-                        <li>If DrainageStrategy.WaterInjection is false, water injection power demand is zero</li>
-                        <li>If FacilitiesAvailability is not set, defaults to 100%</li>
+                        <li>If NGL Yield Factor is zero, the production is set to zero</li>
+                        <li>If gas production is missing for any year, that year&apos;s NGL production is also set to zero</li>
                     </FormulaList>
                 </FormulaSection>
             </Formula>
@@ -82,9 +70,9 @@ const NglProduction: React.FC<Props> = ({ developerMode, hasOverride }) => (
                 {" "}
                 This calculation is implemented in:
                 <ul>
-                    <li>backend/api/Features/Cases/Recalculation/Types/ImportedElectricityProfile/ImportedElectricityProfileService.cs</li>
-                    <li>Method: CalculateImportedElectricity()</li>
-                    <li>Uses EmissionCalculationHelper.cs for power demand calculations</li>
+                    <li>backend/api/Features/Cases/Recalculation/Types/NglProductionProfile/NglProductionService.cs</li>
+                    <li>Method: CalculateTotalNglProduction()</li>
+                    <li>Uses SumGasProduction() to determine total gas available</li>
                 </ul>
             </Note>
         )}
