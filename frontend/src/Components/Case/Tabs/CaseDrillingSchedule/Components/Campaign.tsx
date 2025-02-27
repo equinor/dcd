@@ -12,10 +12,17 @@ import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableContainer } from "./SharedCampaignStyles"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import { filterWells } from "@/Utils/common"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { apiData } = useCaseApiData()
     const campaignGridRef = useRef<any>(null)
+    const revisionAndProjectData = useDataFetch()
+    const { canEdit } = useCanUserEdit()
+
+    const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
 
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
@@ -71,6 +78,27 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             }
             rows.push(wellRow)
         })
+
+        if (canEdit() && title === "Exploration") {
+            console.log(allWells.explorationWells)
+            // allWells.explorationWells.forEach((well: Well) => {
+            //     const wellRow: ItimeSeriesTableDataWithWell = {
+            //         profileName: well.wellName,
+            //         unit: "Well",
+            //         profile: {
+            //             startYear: well.startYear,
+            //             values: well.values || [],
+            //         },
+            //         resourceName: "campaignWells",
+            //         resourceId: campaign.campaignId,
+            //         wellId: well.wellId,
+            //         resourcePropertyKey: "campaignWells",
+            //         overridable: false,
+            //         editable: true,
+            //     }
+            //     rows.push(wellRow)
+            // })
+        }
 
         return rows
     }
