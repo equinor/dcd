@@ -34,71 +34,59 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     const { apiData } = useCaseApiData()
 
     const handleToggleClick = async (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!editAllowed) {
+        if (!editAllowed || params?.data?.override === undefined || !caseId) {
             return
         }
 
-        if (params?.data?.override !== undefined && caseId) {
-            const profile = {
-                ...params.data.overrideProfile,
-                resourceId: params.data.resourceId,
-                resourceName: params.data.resourceName,
-                overridable: params.data.overridable,
-                editable: params.data.editable,
-            }
-
-            const resourceObject = structuredClone(profile)
-            resourceObject.override = !profile.override
-            console.log("profile:", profile)
-
-            // addEdit({
-            //     uuid: uuidv4(),
-            //     projectId,
-            //     resourceName: profile.resourceName,
-            //     resourcePropertyKey: "override",
-            //     caseId,
-            //     resourceId: profile.resourceId,
-            //     resourceObject,
-            // })
-
-            const resourceKey = profile.resourceName.charAt(0).toLowerCase() + profile.resourceName.slice(1)
-            const nonOverrideResourceKey = resourceKey.replace("Override", "")
-            const overrideData = apiData![resourceKey as keyof typeof apiData] as { override?: boolean }
-            const nonOverrideData = apiData![nonOverrideResourceKey as keyof typeof apiData] as Record<string, any>
-
-            // Remove updatedUtc key from nonOverrideData
-            const cleanedNonOverrideData = nonOverrideData ? { ...nonOverrideData } : {}
-            if (cleanedNonOverrideData && "updatedUtc" in cleanedNonOverrideData) {
-                delete cleanedNonOverrideData.updatedUtc
-            }
-
-            // Add profileType to cleanedNonOverrideData
-            cleanedNonOverrideData.profileType = profile.resourceName
-
-            console.log("overrideData;", overrideData)
-            console.log("nonoverrideData;", cleanedNonOverrideData)
-
-            /*
-            await submitToApi({
-                projectId,
-                caseId,
-                resourceName: "caseProfiles",
-                resourceObject: {
-                    timeSeries: [cleanedNonOverrideData],
-                    overrideTimeSeries: [
-                        {
-                            profileType: profile.resourceName,
-                            startYear: 12,
-                            values: [],
-                            override: !profile.override,
-                        },
-                    ],
-                } as unknown as ResourceObject,
-            }) */
-
-            params.api.redrawRows()
-            params.api.refreshCells()
+        const profile = {
+            ...params.data.overrideProfile,
+            resourceId: params.data.resourceId,
+            resourceName: params.data.resourceName,
+            overridable: params.data.overridable,
+            editable: params.data.editable,
         }
+
+        const resourceKey = profile.resourceName.charAt(0).toLowerCase() + profile.resourceName.slice(1)
+        const nonOverrideResourceKey = resourceKey.replace("Override", "")
+
+        const overrideData = apiData![resourceKey as keyof typeof apiData] as Record<string, any>
+        const nonOverrideData = apiData![nonOverrideResourceKey as keyof typeof apiData] as Record<string, any>
+
+        // cleans data by removing updatedUtc
+        const cleanData = (data: Record<string, any> | undefined): Record<string, any> => {
+            if (!data) { return {} }
+            const cleaned = { ...data }
+            if ("updatedUtc" in cleaned) {
+                delete cleaned.updatedUtc
+            }
+            return cleaned
+        }
+
+        const cleanedNonOverrideData = cleanData(nonOverrideData)
+        const cleanedOverrideData = cleanData(overrideData)
+
+        cleanedNonOverrideData.profileType = profile.resourceName
+
+        const newOverrideValue = !profile.override
+
+        await submitToApi({
+            projectId,
+            caseId,
+            resourceName: "caseProfiles",
+            resourceObject: {
+                timeSeries: [cleanedNonOverrideData],
+                overrideTimeSeries: [
+                    {
+                        ...cleanedOverrideData,
+                        profileType: profile.resourceName,
+                        override: newOverrideValue,
+                    },
+                ],
+            } as unknown as ResourceObject,
+        })
+
+        params.api.redrawRows()
+        params.api.refreshCells()
     }
 
     if (apiQueue.find((item) => item.resourceName === clickedElement.data?.resourceName as ProfileTypes)) {
