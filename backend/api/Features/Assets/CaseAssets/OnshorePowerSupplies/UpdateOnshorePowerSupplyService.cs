@@ -13,8 +13,6 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, Recalculation
         var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
 
         existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
-        existing.DG3Date = updatedOnshorePowerSupplyDto.DG3Date;
-        existing.DG4Date = updatedOnshorePowerSupplyDto.DG4Date;
         existing.Source = updatedOnshorePowerSupplyDto.Source;
 
         await context.UpdateCaseUpdatedUtc(caseId);

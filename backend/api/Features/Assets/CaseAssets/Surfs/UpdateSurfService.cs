@@ -25,8 +25,6 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
         existingSurf.CostYear = updatedSurfDto.CostYear;
         existingSurf.Source = updatedSurfDto.Source;
         existingSurf.ApprovedBy = updatedSurfDto.ApprovedBy;
-        existingSurf.DG3Date = updatedSurfDto.DG3Date;
-        existingSurf.DG4Date = updatedSurfDto.DG4Date;
         existingSurf.Maturity = updatedSurfDto.Maturity;
 
         await context.UpdateCaseUpdatedUtc(caseId);

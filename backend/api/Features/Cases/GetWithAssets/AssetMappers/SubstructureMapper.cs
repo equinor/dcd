@@ -17,9 +17,7 @@ public static class SubstructureMapper
             ProspVersion = entity.ProspVersion,
             Source = entity.Source,
             LastChangedDate = entity.UpdatedUtc,
-            Concept = entity.Concept,
-            DG3Date = entity.DG3Date,
-            DG4Date = entity.DG4Date
+            Concept = entity.Concept
         };
     }
 }

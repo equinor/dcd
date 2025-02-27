@@ -13,9 +13,7 @@ public static class OnshorePowerSupplyMapper
             LastChangedDate = entity.UpdatedUtc,
             CostYear = entity.CostYear,
             Source = entity.Source,
-            ProspVersion = entity.ProspVersion,
-            DG3Date = entity.DG3Date,
-            DG4Date = entity.DG4Date
+            ProspVersion = entity.ProspVersion
         };
     }
 }

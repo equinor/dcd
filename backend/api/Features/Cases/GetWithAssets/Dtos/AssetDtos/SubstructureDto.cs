@@ -15,6 +15,4 @@ public class SubstructureDto
     [Required] public required Source Source { get; set; }
     public required DateTime? LastChangedDate { get; set; }
     [Required] public required Concept Concept { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    public required DateTime? DG4Date { get; set; }
 }

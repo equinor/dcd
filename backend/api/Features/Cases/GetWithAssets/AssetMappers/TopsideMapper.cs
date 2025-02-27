@@ -32,8 +32,6 @@ public static class TopsideMapper
             LastChangedDate = entity.UpdatedUtc,
             Source = entity.Source,
             ApprovedBy = entity.ApprovedBy,
-            DG3Date = entity.DG3Date,
-            DG4Date = entity.DG4Date,
             FacilityOpex = entity.FacilityOpex,
             PeakElectricityImported = entity.PeakElectricityImported
         };

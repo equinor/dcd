@@ -29,8 +29,6 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
         existingTopside.CO2OnMaxGasProfile = updatedTopsideDto.CO2OnMaxGasProfile;
         existingTopside.CO2OnMaxWaterInjectionProfile = updatedTopsideDto.CO2OnMaxWaterInjectionProfile;
         existingTopside.CostYear = updatedTopsideDto.CostYear;
-        existingTopside.DG3Date = updatedTopsideDto.DG3Date;
-        existingTopside.DG4Date = updatedTopsideDto.DG4Date;
         existingTopside.FacilityOpex = updatedTopsideDto.FacilityOpex;
         existingTopside.PeakElectricityImported = updatedTopsideDto.PeakElectricityImported;
         existingTopside.Source = updatedTopsideDto.Source;

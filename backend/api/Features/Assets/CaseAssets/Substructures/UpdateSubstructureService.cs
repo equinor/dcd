@@ -16,8 +16,6 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
         existingSubstructure.CostYear = updatedSubstructureDto.CostYear;
         existingSubstructure.Source = updatedSubstructureDto.Source;
         existingSubstructure.Concept = updatedSubstructureDto.Concept;
-        existingSubstructure.DG3Date = updatedSubstructureDto.DG3Date;
-        existingSubstructure.DG4Date = updatedSubstructureDto.DG4Date;
         existingSubstructure.Maturity = updatedSubstructureDto.Maturity;
         existingSubstructure.ApprovedBy = updatedSubstructureDto.ApprovedBy;
 
