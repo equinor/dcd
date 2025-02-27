@@ -27,17 +27,16 @@ public class CaseOverviewDto
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
 
-    [Required] public required DateTime DGADate { get; set; }
-    [Required] public required DateTime DGBDate { get; set; }
-    [Required] public required DateTime DGCDate { get; set; }
-    [Required] public required DateTime APBODate { get; set; }
-    [Required] public required DateTime BORDate { get; set; }
-    [Required] public required DateTime VPBODate { get; set; }
-
-    [Required] public required DateTime DG0Date { get; set; }
-    [Required] public required DateTime DG1Date { get; set; }
-    [Required] public required DateTime DG2Date { get; set; }
-    [Required] public required DateTime DG3Date { get; set; }
+    [Required] public required DateTime? DGADate { get; set; }
+    [Required] public required DateTime? DGBDate { get; set; }
+    [Required] public required DateTime? DGCDate { get; set; }
+    [Required] public required DateTime? APBODate { get; set; }
+    [Required] public required DateTime? BORDate { get; set; }
+    [Required] public required DateTime? VPBODate { get; set; }
+    [Required] public required DateTime? DG0Date { get; set; }
+    [Required] public required DateTime? DG1Date { get; set; }
+    [Required] public required DateTime? DG2Date { get; set; }
+    [Required] public required DateTime? DG3Date { get; set; }
     [Required] public required DateTime DG4Date { get; set; }
     [Required] public required DateTime CreatedUtc { get; set; }
     [Required] public required DateTime UpdatedUtc { get; set; }

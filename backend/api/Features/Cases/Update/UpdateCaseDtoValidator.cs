@@ -13,7 +13,7 @@ public static class UpdateCaseDtoValidator
 
         var earliestAllowedDgDate = new DateTime(2000, 1, 1);
 
-        var dgDates = new List<DateTime>
+        var dgDates = new List<DateTime?>
         {
             dto.DG0Date,
             dto.DG1Date,
@@ -24,6 +24,7 @@ public static class UpdateCaseDtoValidator
             dto.DGBDate,
             dto.DGCDate
         }
+        .Where(x => x != null)
         .Where(x => x != DateTime.MinValue)
         .ToList();
 

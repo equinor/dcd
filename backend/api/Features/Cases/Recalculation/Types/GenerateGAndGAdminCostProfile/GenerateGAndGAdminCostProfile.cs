@@ -18,7 +18,7 @@ public static class GenerateGAndGAdminCostProfile
         }
 
         var earliestYear = explorationWells.Select(ds => ds.StartYear).Min() + caseItem.DG4Date.Year;
-        var dG1Date = caseItem.DG1Date;
+        var dG1Date = caseItem.DG1Date ?? default(DateTime);
 
         if (dG1Date.Year >= earliestYear)
         {

@@ -17,16 +17,16 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-    public DateTime DGADate { get; set; }
-    public DateTime DGBDate { get; set; }
-    public DateTime DGCDate { get; set; }
-    public DateTime APBODate { get; set; }
-    public DateTime BORDate { get; set; }
-    public DateTime VPBODate { get; set; }
-    public DateTime DG0Date { get; set; }
-    public DateTime DG1Date { get; set; }
-    public DateTime DG2Date { get; set; }
-    public DateTime DG3Date { get; set; }
+    public DateTime? DGADate { get; set; }
+    public DateTime? DGBDate { get; set; }
+    public DateTime? DGCDate { get; set; }
+    public DateTime? APBODate { get; set; }
+    public DateTime? BORDate { get; set; }
+    public DateTime? VPBODate { get; set; }
+    public DateTime? DG0Date { get; set; }
+    public DateTime? DG1Date { get; set; }
+    public DateTime? DG2Date { get; set; }
+    public DateTime? DG3Date { get; set; }
     public DateTime DG4Date { get; set; }
 
     public ArtificialLift ArtificialLift { get; set; }
