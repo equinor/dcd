@@ -13,7 +13,6 @@ import { ResourceObject } from "@/Models/Interfaces"
 
 interface CalculationSourceToggleProps {
     clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>
-    addEdit: any
     isProsp?: boolean
     sharepointFileId?: string
     editAllowed: boolean
@@ -49,14 +48,12 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
 
         const overrideData = apiData![resourceKey as keyof typeof apiData] as Record<string, any>
 
-        const createOverrideDto = (data: Record<string, any> | undefined, profileType: string, override: boolean) => {
-            return {
-                values: data?.values ?? [],
-                startYear: data?.startYear ?? 0,
-                profileType: profileType,
-                override: override
-            }
-        }
+        const createOverrideDto = (data: Record<string, any> | undefined, profileType: string, override: boolean) => ({
+            values: data?.values ?? [],
+            startYear: data?.startYear ?? 0,
+            profileType,
+            override,
+        })
 
         await submitToApi({
             projectId,
@@ -65,7 +62,7 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
             resourceObject: {
                 timeSeries: [],
                 overrideTimeSeries: [
-                    createOverrideDto(overrideData, profile.resourceName, !profile.override)
+                    createOverrideDto(overrideData, profile.resourceName, !profile.override),
                 ],
             } as unknown as ResourceObject,
         })
