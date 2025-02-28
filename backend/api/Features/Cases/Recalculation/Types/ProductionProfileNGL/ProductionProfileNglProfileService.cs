@@ -4,8 +4,7 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
-namespace api.Features.Cases.Recalculation.Types.ProductionProfileNglProfileService;
-
+namespace api.Features.Cases.Recalculation.Types.ProductionProfileNGL;
 public static class ProductionProfileNglProfileService
 {
     public static void RunCalculation(Case caseItem)
@@ -19,13 +18,12 @@ public static class ProductionProfileNglProfileService
 
         var gasProduction = GetGasProduction(caseItem);
 
-        if (gasProduction != null)
-        {
-            profile.StartYear = gasProduction.StartYear;
-            profile.Values = gasProduction.Values
-                    .Select(value => value * nglYield / 1_000_000)
-                    .ToArray();
-        }
+
+        profile.StartYear = gasProduction.StartYear;
+        profile.Values = gasProduction.Values
+                .Select(value => value * nglYield / 1_000_000)
+                .ToArray();
+
     }
 
     private static TimeSeries GetGasProduction(Case caseItem)
