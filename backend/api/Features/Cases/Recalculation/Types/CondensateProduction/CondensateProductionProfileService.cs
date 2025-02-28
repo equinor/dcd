@@ -15,13 +15,12 @@ public static class CondensateProductionProfileService
 
         var gasProduction = GetGasProduction(caseItem);
 
-        if (gasProduction.Values != null)
-        {
-            profile.StartYear = gasProduction.StartYear;
-            profile.Values = gasProduction.Values
-                    .Select(value => value * condensateYield / 1_000_000)
-                    .ToArray();
-        }
+
+        profile.StartYear = gasProduction.StartYear;
+        profile.Values = gasProduction.Values
+                .Select(value => value * condensateYield / 1_000_000)
+                .ToArray();
+
     }
 
     private static TimeSeries GetGasProduction(Case caseItem)
