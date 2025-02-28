@@ -161,6 +161,7 @@ public static class ProjectDuplicator
                 Id = drainageStrategyId,
                 CaseId = caseId,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
+                CondensateYield = existingCaseItem.DrainageStrategy.CondensateYield,
                 GasShrinkageFactor = existingCaseItem.DrainageStrategy.GasShrinkageFactor,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
                 GasInjectorCount = existingCaseItem.DrainageStrategy.GasInjectorCount,

@@ -306,7 +306,7 @@ const CaseSummaryTab = () => {
                             integer={false}
                             allowNegative
                             min={0}
-                            max={1000000}
+                            max={1_000_000}
                             resourceId={caseData.caseId}
                         />
                     </Grid>
@@ -324,7 +324,7 @@ const CaseSummaryTab = () => {
                             value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
                             integer={false}
                             min={0}
-                            max={1000000}
+                            max={1_000_000}
                             disabled
                         />
                     </Grid>
@@ -338,7 +338,7 @@ const CaseSummaryTab = () => {
                             integer={false}
                             allowNegative
                             min={0}
-                            max={1000000}
+                            max={1_000_000}
                             resourceId={caseData.caseId}
                         />
                     </Grid>

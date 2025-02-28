@@ -101,6 +101,9 @@ declare namespace Components {
             co2Emissions: TimeSeriesDto;
             co2EmissionsOverride: TimeSeriesOverrideDto;
             productionProfileNgl: TimeSeriesDto;
+            productionProfileNglOverride: TimeSeriesOverrideDto;
+            condensateProduction: TimeSeriesDto;
+            condensateProductionOverride: TimeSeriesOverrideDto;
             importedElectricity: TimeSeriesDto;
             importedElectricityOverride: TimeSeriesOverrideDto;
             co2Intensity: TimeSeriesDto;
@@ -246,6 +249,7 @@ declare namespace Components {
         export interface DrainageStrategyDto {
             id: string; // uuid
             nglYield: number; // double
+            condensateYield: number; // double
             gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
@@ -490,6 +494,7 @@ declare namespace Components {
         }
         export interface UpdateDrainageStrategyDto {
             nglYield: number; // double
+            condensateYield: number; // double
             gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
