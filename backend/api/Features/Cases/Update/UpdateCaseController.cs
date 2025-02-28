@@ -1,4 +1,3 @@
-using api.AppInfrastructure;
 using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +10,7 @@ public class UpdateCaseController(UpdateCaseService updateCaseService) : Control
     [AuthorizeActionType(ActionType.Edit)]
     public async Task UpdateCase(Guid projectId, Guid caseId, [FromBody] UpdateCaseDto caseDto)
     {
-        if (DcdEnvironments.FeatureToggles.RevisionEnabled)
-        {
-            UpdateCaseDtoValidator.Validate(caseDto);
-        }
+        UpdateCaseDtoValidator.Validate(caseDto);
 
         await updateCaseService.UpdateCase(projectId, caseId, caseDto);
     }
