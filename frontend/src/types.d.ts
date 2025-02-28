@@ -40,16 +40,16 @@ declare namespace Components {
             capexFactorFEEDStudies: number; // double
             host: string | null;
             averageCo2Intensity: number; // double
-            dgaDate: string; // date-time
-            dgbDate: string; // date-time
-            dgcDate: string; // date-time
-            apboDate: string; // date-time
-            borDate: string; // date-time
-            vpboDate: string; // date-time
-            dG0Date: string; // date-time
-            dG1Date: string; // date-time
-            dG2Date: string; // date-time
-            dG3Date: string; // date-time
+            dgaDate: string | null; // date-time
+            dgbDate: string | null; // date-time
+            dgcDate: string | null; // date-time
+            apboDate: string | null; // date-time
+            borDate: string | null; // date-time
+            vpboDate: string | null; // date-time
+            dG0Date: string | null; // date-time
+            dG1Date: string | null; // date-time
+            dG2Date: string | null; // date-time
+            dG3Date: string | null; // date-time
             dG4Date: string; // date-time
             createdUtc: string; // date-time
             updatedUtc: string; // date-time
@@ -467,16 +467,16 @@ declare namespace Components {
             breakEvenOverride: number | null; // double
             host: string | null;
             averageCo2Intensity: number; // double
-            dgaDate?: string | null; // date-time
-            dgbDate?: string | null; // date-time
-            dgcDate?: string | null; // date-time
-            apboDate?: string | null; // date-time
-            borDate?: string | null; // date-time
-            vpboDate?: string | null; // date-time
-            dG0Date?: string | null; // date-time
-            dG1Date?: string | null; // date-time
-            dG2Date?: string | null; // date-time
-            dG3Date?: string | null; // date-time
+            dgaDate: string | null; // date-time
+            dgbDate: string | null; // date-time
+            dgcDate: string | null; // date-time
+            apboDate: string | null; // date-time
+            borDate: string | null; // date-time
+            vpboDate: string | null; // date-time
+            dG0Date: string | null; // date-time
+            dG1Date: string | null; // date-time
+            dG2Date: string | null; // date-time
+            dG3Date: string | null; // date-time
             dG4Date: string; // date-time
             sharepointFileId: string | null;
             sharepointFileName: string | null;

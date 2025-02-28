@@ -24,16 +24,16 @@ public class UpdateCaseDto
     public required double? BreakEvenOverride { get; set; }
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
-    public DateTime? DGADate { get; set; }
-    public DateTime? DGBDate { get; set; }
-    public DateTime? DGCDate { get; set; }
-    public DateTime? APBODate { get; set; }
-    public DateTime? BORDate { get; set; }
-    public DateTime? VPBODate { get; set; }
-    public DateTime? DG0Date { get; set; }
-    public DateTime? DG1Date { get; set; }
-    public DateTime? DG2Date { get; set; }
-    public DateTime? DG3Date { get; set; }
+    public required DateTime? DGADate { get; set; }
+    public required DateTime? DGBDate { get; set; }
+    public required DateTime? DGCDate { get; set; }
+    public required DateTime? APBODate { get; set; }
+    public required DateTime? BORDate { get; set; }
+    public required DateTime? VPBODate { get; set; }
+    public required DateTime? DG0Date { get; set; }
+    public required DateTime? DG1Date { get; set; }
+    public required DateTime? DG2Date { get; set; }
+    public required DateTime? DG3Date { get; set; }
     [Required] public required DateTime DG4Date { get; set; }
     public required string? SharepointFileId { get; set; }
     public required string? SharepointFileName { get; set; }
