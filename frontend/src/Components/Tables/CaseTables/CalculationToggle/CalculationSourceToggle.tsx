@@ -22,7 +22,6 @@ interface CalculationSourceToggleProps {
 const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     editAllowed,
     clickedElement,
-    addEdit,
     isProsp,
     sharepointFileId,
 }) => {
@@ -47,40 +46,26 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
         }
 
         const resourceKey = profile.resourceName.charAt(0).toLowerCase() + profile.resourceName.slice(1)
-        const nonOverrideResourceKey = resourceKey.replace("Override", "")
 
         const overrideData = apiData![resourceKey as keyof typeof apiData] as Record<string, any>
-        const nonOverrideData = apiData![nonOverrideResourceKey as keyof typeof apiData] as Record<string, any>
 
-        // cleans data by removing updatedUtc
-        const cleanData = (data: Record<string, any> | undefined): Record<string, any> => {
-            if (!data) { return {} }
-            const cleaned = { ...data }
-            if ("updatedUtc" in cleaned) {
-                delete cleaned.updatedUtc
+        const createOverrideDto = (data: Record<string, any> | undefined, profileType: string, override: boolean) => {
+            return {
+                values: data?.values ?? [],
+                startYear: data?.startYear ?? 0,
+                profileType: profileType,
+                override: override
             }
-            return cleaned
         }
-
-        const cleanedNonOverrideData = cleanData(nonOverrideData)
-        const cleanedOverrideData = cleanData(overrideData)
-
-        cleanedNonOverrideData.profileType = profile.resourceName
-
-        const newOverrideValue = !profile.override
 
         await submitToApi({
             projectId,
             caseId,
             resourceName: "caseProfiles",
             resourceObject: {
-                timeSeries: [cleanedNonOverrideData],
+                timeSeries: [],
                 overrideTimeSeries: [
-                    {
-                        ...cleanedOverrideData,
-                        profileType: profile.resourceName,
-                        override: newOverrideValue,
-                    },
+                    createOverrideDto(overrideData, profile.resourceName, !profile.override)
                 ],
             } as unknown as ResourceObject,
         })

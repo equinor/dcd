@@ -7,6 +7,7 @@ import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry, EditInstance } from "@/Models/Interfaces"
 import { dateFromTimestamp } from "@/Utils/DateUtils"
+import { WellCategory } from "@/Models/enums"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -39,6 +40,38 @@ export const unwrapProjectId = (projectId?: string | undefined | null): string =
         throw new Error("Attempted to use a Project ID which does not exist")
     }
     return projectId
+}
+
+export const isExplorationWell = (well: Components.Schemas.WellOverviewDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+
+export const developmentWellOptions = [
+    { key: "0", value: WellCategory.Oil_Producer, label: "Oil producer" },
+    { key: "1", value: WellCategory.Gas_Producer, label: "Gas producer" },
+    { key: "2", value: WellCategory.Water_Injector, label: "Water injector" },
+    { key: "3", value: WellCategory.Gas_Injector, label: "Gas injector" },
+]
+
+export const explorationWellOptions = [
+    { key: "4", value: WellCategory.Exploration_Well, label: "Exploration well" },
+    { key: "5", value: WellCategory.Appraisal_Well, label: "Appraisal well" },
+    { key: "6", value: WellCategory.Sidetrack, label: "Sidetrack" },
+]
+
+export const filterWells = (wells: Components.Schemas.WellOverviewDto[]) => {
+    if (!wells) {
+        return {
+            explorationWells: [],
+            developmentWells: [],
+            developmentWellOptions,
+            explorationWellOptions,
+        }
+    }
+    return {
+        explorationWells: wells.filter((well) => isExplorationWell(well)),
+        developmentWells: wells.filter((well) => !isExplorationWell(well)),
+        developmentWellOptions,
+        explorationWellOptions,
+    }
 }
 
 export const getProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
@@ -101,8 +134,6 @@ export const productionStrategyOverviewToString = (value?: Components.Schemas.Pr
         4: "Mixed",
     }[value]
 }
-
-export const isExplorationWell = (well: Components.Schemas.WellOverviewDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): number[] => {
     if (dataArrays.length !== offsets.length) {
