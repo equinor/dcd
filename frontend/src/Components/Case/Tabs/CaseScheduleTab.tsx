@@ -96,7 +96,7 @@ const CaseScheduleTab = () => {
 
     const updateCascadingDates = (startGate: DecisionGate, newDate: Date | undefined, currentData: any): ResourceObject => {
         const updatedData = { ...currentData }
-        updatedData[startGate.key] = newDate?.toISOString()
+        updatedData[startGate.key] = newDate?.toISOString() ?? null
         let currentDate = newDate
 
         // Find the sequence of DG dates (DG0 through DG4)
@@ -138,7 +138,7 @@ const CaseScheduleTab = () => {
         // Always update cascading dates for DG dates
         const resourceObject = gate.key.startsWith("dG")
             ? updateCascadingDates(gate, newDate, currentCaseData)
-            : { ...currentCaseData, [dateKey]: newDate?.toISOString() }
+            : { ...currentCaseData, [dateKey]: newDate?.toISOString() ?? null }
 
         return {
             uuid: uuidv4(),
