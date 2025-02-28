@@ -57,7 +57,7 @@ public static class GenerateGAndGAdminCostProfile
             "BRAZIL" => 3,
             "CANADA" => 3,
             "UNITED STATES" => 3,
-            _ => 7.0,
+            _ => 7.0
         };
     }
 }

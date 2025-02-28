@@ -97,7 +97,7 @@ public class CreateCaseService(DcdDbContext context)
                     RigUpgradingCostValues = [],
                     RigMobDemobCostValues = []
                 }
-            ],
+            ]
         };
 
         context.Cases.Add(createdCase);

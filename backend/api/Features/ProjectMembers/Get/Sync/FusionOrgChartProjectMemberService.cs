@@ -91,7 +91,7 @@ public class FusionOrgChartProjectMemberService(
         {
             Filter = $"positions/any(p: p/isActive eq true and p/isProjectManagementTeam eq true and p/project/id eq '{orgChartId}' and p/contract eq null) and accountClassification ne 'External'",
             Top = 100,
-            Skip = 0,
+            Skip = 0
         };
 
         var fusionPeople = await GetFusionPeople(fusionSearchObject);

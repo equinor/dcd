@@ -62,7 +62,7 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             OilPriceUSD = 75.0,
             GasPriceNOK = 3.0,
             ExchangeRateUSDToNOK = 10.0,
-            NpvYear = DateTime.Now.Year,
+            NpvYear = DateTime.Now.Year
         };
 
         context.Projects.Add(project);

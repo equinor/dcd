@@ -18,7 +18,7 @@ public class Co2IntensityProfileServiceTests
             DiscountRate = 8,
             OilPriceUSD = 75,
             GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10,
+            ExchangeRateUSDToNOK = 10
         };
 
         var caseItem = new Case
@@ -47,7 +47,7 @@ public class Co2IntensityProfileServiceTests
                     ProfileType = ProfileTypes.ProductionProfileOil,
                     StartYear = 2023,
                     Values = [1421000]
-                },
+                }
             }
         };
 

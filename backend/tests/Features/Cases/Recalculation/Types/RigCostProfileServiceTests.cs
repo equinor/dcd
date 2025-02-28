@@ -48,7 +48,7 @@ public class RigCostProfileServiceTests
 
         var caseItem = new Case
         {
-            Campaigns = [explorationCampaign1, developmentCampaign, explorationCampaign2],
+            Campaigns = [explorationCampaign1, developmentCampaign, explorationCampaign2]
         };
 
         var expectedExplorationRigUpgradingProfile = new TimeSeriesProfile

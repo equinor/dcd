@@ -36,7 +36,7 @@ public static class ImportedElectricityProfileService
             StartYear = totalUseOfPower.StartYear,
             Values = totalUseOfPower.Values
                     .Select(value => peakElectricityImportedFromGrid * facilityAvailability / 100 * hoursInOneYear * value / 1000)
-                    .ToArray(),
+                    .ToArray()
         };
     }
 }

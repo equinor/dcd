@@ -9,5 +9,5 @@ public enum WellCategory
     Exploration_Well,
     Appraisal_Well,
     Sidetrack,
-    RigMobDemob,
+    RigMobDemob
 }

@@ -107,7 +107,7 @@ public class Co2EmissionProfileServiceTests
             Project = new Project
             {
                 FlaredGasPerProducedVolume = 1.122765,
-                CO2RemovedFromGas = 0.0,
+                CO2RemovedFromGas = 0.0
             },
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles =
@@ -173,7 +173,7 @@ public class Co2EmissionProfileServiceTests
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
                 FacilityOpex = 0,
-                PeakElectricityImported = 0,
+                PeakElectricityImported = 0
             }
         };
 

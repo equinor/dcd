@@ -11,5 +11,5 @@ public enum ProjectPhase
     Definition,
     Execution,
     Operation,
-    ScreeningBusinessOpportunities,
+    ScreeningBusinessOpportunities
 }
