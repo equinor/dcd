@@ -12,6 +12,6 @@ public class GetRevisionController(GetProjectDataService getProjectDataService) 
     [AuthorizeActionType(ActionType.Read)]
     public async Task<RevisionDataDto> Get(Guid projectId, Guid revisionId)
     {
-        return await getProjectDataService.GetRevisionData(projectId, revisionId);
+        return await getProjectDataService.GetRevisionData(revisionId);
     }
 }

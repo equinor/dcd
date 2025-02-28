@@ -14,6 +14,6 @@ public class UpdateRevisionController(GetProjectDataService getProjectDataServic
     {
         await updateRevisionService.UpdateRevision(revisionId, updateRevisionDto);
 
-        return await getProjectDataService.GetRevisionData(projectId, revisionId);
+        return await getProjectDataService.GetRevisionData(revisionId);
     }
 }

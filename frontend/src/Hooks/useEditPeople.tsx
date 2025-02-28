@@ -6,6 +6,7 @@ import { ProjectMemberRole } from "@/Models/enums"
 
 type AddPersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: {
         userId: string;
         role: ProjectMemberRole;
@@ -14,6 +15,7 @@ type AddPersonVariables = {
 
 type UpdatePersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: {
         userId: string;
         role: ProjectMemberRole;
@@ -22,6 +24,7 @@ type UpdatePersonVariables = {
 
 type DeletePersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     userId: string;
 };
 
@@ -29,12 +32,12 @@ export const useEditPeople = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsSaving } = useAppStore()
 
-    const syncPmtMembers = async (projectId: string, contextId: string) => {
+    const syncPmtMembers = async (projectId: string, fusionProjectId: string, contextId: string) => {
         try {
             const syncPmt = await GetOrgChartMembersService().getOrgChartPeople(projectId, contextId)
             if (syncPmt) {
                 queryClient.invalidateQueries(
-                    { queryKey: ["projectApiData", projectId] },
+                    { queryKey: ["projectApiData", fusionProjectId] },
                 )
             }
         } catch (error) {
@@ -43,23 +46,19 @@ export const useEditPeople = () => {
         }
     }
 
-    const addPersonMutationFn = async ({ projectId, body }: AddPersonVariables) => {
-        return GetProjectMembersService().addPerson(projectId, body)
-    }
+    const addPersonMutationFn = async ({ projectId, body }: AddPersonVariables) => GetProjectMembersService().addPerson(projectId, body)
 
-    const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => {
-        return GetProjectMembersService().updatePerson(projectId, body)
-    }
+    const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => GetProjectMembersService().updatePerson(projectId, body)
 
-    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => {
-        return GetProjectMembersService().deletePerson(projectId, userId)
-    }
+    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, userId)
 
     const addPersonMutation = useMutation({
         mutationFn: addPersonMutationFn,
         onSuccess: (_, variables) => {
+            // print all key and values in the queryClient
+            console.log("Query Client Keys and Values:", queryClient.getQueryCache().getAll())
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -74,7 +73,7 @@ export const useEditPeople = () => {
         mutationFn: updatePersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -89,7 +88,7 @@ export const useEditPeople = () => {
         mutationFn: deletePersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -102,28 +101,31 @@ export const useEditPeople = () => {
 
     const addPerson = (
         projectId: string,
+        fusionProjectId: string,
         userId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        addPersonMutation.mutate({ projectId, body: { userId, role } })
+        addPersonMutation.mutate({ projectId, fusionProjectId, body: { userId, role } })
     }
 
     const updatePerson = (
         projectId: string,
+        fusionProjectId: string,
         userId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        updatePersonMutation.mutate({ projectId, body: { userId, role } })
+        updatePersonMutation.mutate({ projectId, fusionProjectId, body: { userId, role } })
     }
 
     const deletePerson = (
         projectId: string,
+        fusionProjectId: string,
         userId: string,
     ) => {
         setIsSaving(true)
-        deletePersonMutation.mutate({ projectId, userId })
+        deletePersonMutation.mutate({ projectId, fusionProjectId, userId })
     }
 
     return {

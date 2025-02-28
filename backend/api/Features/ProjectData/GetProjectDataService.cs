@@ -26,7 +26,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         };
     }
 
-    public async Task<RevisionDataDto> GetRevisionData(Guid projectId, Guid revisionId)
+    public async Task<RevisionDataDto> GetRevisionData(Guid revisionId)
     {
         var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(originalProjectId);
@@ -38,7 +38,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
         return new RevisionDataDto
         {
-            ProjectId = projectId,
+            ProjectId = originalProjectId,
             RevisionId = revisionId,
             DataType = "revision",
             UserActions = userActions,
