@@ -39,8 +39,8 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         const waterInjectionData = apiData.productionProfileWaterInjection
         const productionProfileNglData = apiData.productionProfileNgl
         const productionProfileNglOverrideData = apiData.productionProfileNglOverride
-        const CondensateProductionData = apiData.condensateProduction
-        const CondensateProductionOverrideData = apiData.condensateProductionOverride
+        const condensateProductionData = apiData.condensateProduction
+        const condensateProductionOverrideData = apiData.condensateProductionOverride
         const fuelFlaringAndLossesData = apiData.fuelFlaringAndLosses
         const fuelFlaringAndLossesOverrideData = apiData.fuelFlaringAndLossesOverride
         const netSalesGasData = apiData.netSalesGas
@@ -127,11 +127,11 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             {
                 profileName: "Condensate production",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
-                profile: CondensateProductionData,
+                profile: condensateProductionData,
                 resourceName: ProfileTypes.CondensateProductionOverride,
                 resourceId: drainageStrategyData?.id,
                 resourcePropertyKey: ProfileTypes.CondensateProductionOverride,
-                overrideProfile: CondensateProductionOverrideData,
+                overrideProfile: condensateProductionOverrideData,
                 editable: true,
                 overridable: true,
             },
