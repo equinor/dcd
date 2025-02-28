@@ -51,4 +51,3 @@ public static class CalculateTotalIncomeService
         profile.StartYear = totalIncome.StartYear;
     }
 }
-

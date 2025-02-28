@@ -17,6 +17,7 @@ public class GetCaseImageService(DcdDbContext context, BlobServiceClient blobSer
         var image = await context.CaseImages.Include(x => x.Case).SingleAsync(img => img.Id == imageId);
 
         var imageContent = await GetImageContent(image);
+
         return MapToDto(image, imageContent);
     }
 

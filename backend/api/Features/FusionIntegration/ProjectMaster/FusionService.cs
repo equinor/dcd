@@ -15,6 +15,7 @@ public class FusionService(IFusionContextResolver fusionContextResolver, ILogger
         if (projectMasterContext == null)
         {
             logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{contextId}'");
+
             return null;
         }
 
@@ -24,6 +25,7 @@ public class FusionService(IFusionContextResolver fusionContextResolver, ILogger
         if (fusionProjectMaster == null)
         {
             logger.LogError("Project Master with ID '{contextId}' was obtained from Fusion, but conversion to explicit type failed", contextId);
+
             return null;
         }
 
@@ -42,6 +44,7 @@ public class FusionService(IFusionContextResolver fusionContextResolver, ILogger
                 query => query
                     .WhereTypeIn(FusionContextType.ProjectMaster)
                     .WhereExternalId(contextId.ToString(), QueryOperator.Equals));
+
             projectMasterContext = queryContextsAsync.FirstOrDefault();
         }
 

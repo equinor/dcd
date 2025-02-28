@@ -99,6 +99,7 @@ public class RigCostProfileServiceTests
     private static void AssertEqualWithTolerance(double[] expected, double[] actual, double tolerance = 1e-9)
     {
         Assert.Equal(expected.Length, actual.Length);
+
         for (var i = 0; i < expected.Length; i++)
         {
             Assert.True(Math.Abs(expected[i] - actual[i]) < tolerance, $"Expected: {expected[i]}, Actual: {actual[i]}");

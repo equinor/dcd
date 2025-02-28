@@ -26,6 +26,7 @@ public static class UnitConversionHelpers
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)
     {
         var conversionFactor = GetConversionFactor(type, unit, toDto: true);
+
         return Array.ConvertAll(values, x => Math.Round(x * conversionFactor, 10));
     }
 

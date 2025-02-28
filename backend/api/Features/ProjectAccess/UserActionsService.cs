@@ -60,4 +60,3 @@ public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
         };
     }
 }
-

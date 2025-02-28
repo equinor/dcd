@@ -127,6 +127,7 @@ public class FusionOrgChartProjectMemberService(
         catch (Exception e)
         {
             logger.LogInformation($"Exception while getting fusion people: {e.Message}");
+
             return [];
         }
     }

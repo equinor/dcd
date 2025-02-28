@@ -29,6 +29,7 @@ public static class OpexCostProfileService
         if (developmentWells.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
+
             return;
         }
 
@@ -65,6 +66,7 @@ public static class OpexCostProfileService
         var additionalValuesCount = totalValuesCount - wellInterventionCostsFromDrillingSchedule.Values.Length;
 
         var additionalValues = new List<double>();
+
         for (int i = 0; i < additionalValuesCount; i++)
         {
             if (wellInterventionCostsFromDrillingSchedule.Values.Length > 0)
@@ -94,6 +96,7 @@ public static class OpexCostProfileService
         if (!firstYearOfProduction.HasValue || !lastYearOfProduction.HasValue)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile));
+
             return;
         }
 

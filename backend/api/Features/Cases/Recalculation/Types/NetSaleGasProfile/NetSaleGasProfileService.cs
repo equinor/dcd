@@ -65,6 +65,7 @@ public static class NetSaleGasProfileService
         var productionProfileGasTimeSeries = new TimeSeries(productionProfileGasProfile);
 
         var gasProduction = TimeSeriesMerger.MergeTimeSeries(productionProfileGasTimeSeries, additionalProductionProfileGas);
+
         return TimeSeriesMerger.MergeTimeSeries(gasProduction, negativeFuelFlaringLosses);
     }
 }

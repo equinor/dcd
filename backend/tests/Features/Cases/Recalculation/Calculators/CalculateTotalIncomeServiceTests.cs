@@ -15,6 +15,7 @@ public class CalculateTotalIncomeServiceTests
     {
         // Arrange
         var caseId = Guid.NewGuid();
+
         var project = new Project
         {
             Id = Guid.NewGuid(),

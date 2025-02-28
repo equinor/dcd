@@ -10,6 +10,7 @@ public static class SubstructureCostProfileService
         if (caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile) != null)
         {
             UpdateSubstructureTimeSeries(caseItem, startYear, values);
+
             return;
         }
 

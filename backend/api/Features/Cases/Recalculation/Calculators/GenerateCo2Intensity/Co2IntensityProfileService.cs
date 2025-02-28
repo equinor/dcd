@@ -49,6 +49,7 @@ public static class Co2IntensityProfileService
         var netSalesGas = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas)?.Values ?? [];
         var netSalesGasValues = new TimeSeries { StartYear = oilProfile.StartYear, Values = netSalesGas.Select(v => v / 1E9).ToArray() };
         var totalExportedVolumes = TimeSeriesMerger.MergeTimeSeries(oilProfile, netSalesGasValues);
+
         return totalExportedVolumes;
     }
 

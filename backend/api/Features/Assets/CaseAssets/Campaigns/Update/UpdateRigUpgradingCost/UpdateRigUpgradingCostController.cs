@@ -11,6 +11,7 @@ public class UpdateRigUpgradingCostController(UpdateRigUpgradingCostService upda
     public async Task<NoContentResult> UpdateRigUpgradingCost(Guid projectId, Guid caseId, Guid campaignId, [FromBody] UpdateRigUpgradingCostDto dto)
     {
         await updateRigUpgradingCostService.UpdateRigUpgradingCost(projectId, caseId, campaignId, dto);
+
         return NoContent();
     }
 }

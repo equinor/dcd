@@ -17,6 +17,7 @@ public class GetProjectImageService(DcdDbContext context, BlobServiceClient blob
         var image = await context.ProjectImages.SingleAsync(img => img.Id == imageId);
 
         var imageContent = await GetImageContent(image);
+
         return MapToDto(image, imageContent);
     }
 

@@ -10,7 +10,8 @@ namespace api.AppInfrastructure;
 
 public static class DcdTypescriptGenerator
 {
-    private static readonly List<Type> EnumTypes = [
+    private static readonly List<Type> EnumTypes =
+    [
         typeof(ArtificialLift),
         typeof(CampaignCostType),
         typeof(CampaignType),

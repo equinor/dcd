@@ -10,6 +10,7 @@ public static class TransportCostProfileService
         if (caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile) != null)
         {
             UpdateTransportCostProfile(caseItem, startYear, values);
+
             return;
         }
 

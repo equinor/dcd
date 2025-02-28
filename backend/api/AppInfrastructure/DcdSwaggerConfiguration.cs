@@ -13,6 +13,7 @@ public static class DcdSwaggerConfiguration
                 Title = "Concept App",
                 Version = "v1"
             });
+
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -22,6 +23,7 @@ public static class DcdSwaggerConfiguration
                 In = ParameterLocation.Header,
                 Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\""
             });
+
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {

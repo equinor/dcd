@@ -13,6 +13,7 @@ public class CreateCampaignController(CreateCampaignService createCampaignServic
     public async Task<CampaignDto> CreateCampaign(Guid projectId, Guid caseId, [FromBody] CreateCampaignDto dto)
     {
         var campaignId = await createCampaignService.CreateCampaign(projectId, caseId, dto);
+
         return await getCampaignService.Get(projectId, caseId, campaignId);
     }
 }

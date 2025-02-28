@@ -13,6 +13,7 @@ public class DeleteImageController(
     public async Task<ActionResult> DeleteImage(Guid projectId, Guid caseId, Guid imageId)
     {
         await deleteCaseImageService.DeleteImage(projectId, caseId, imageId);
+
         return NoContent();
     }
 
@@ -21,6 +22,7 @@ public class DeleteImageController(
     public async Task<ActionResult> DeleteImage(Guid projectId, Guid imageId)
     {
         await deleteProjectImageService.DeleteImage(projectId, imageId);
+
         return NoContent();
     }
 }

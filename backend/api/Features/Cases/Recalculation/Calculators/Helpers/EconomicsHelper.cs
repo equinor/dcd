@@ -23,7 +23,6 @@ public static class EconomicsHelper
 
             var discountedValue = values[i] * discountFactors[discountFactorIndex];
             accumulatedVolume += discountedValue;
-
         }
 
         return accumulatedVolume;

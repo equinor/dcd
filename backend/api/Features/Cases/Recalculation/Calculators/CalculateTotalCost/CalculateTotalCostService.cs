@@ -18,6 +18,7 @@ public static class CalculateTotalCostService
         };
 
         var totalOpexCost = CalculateOpexCost(caseItem);
+
         var opexProfile = new TimeSeries
         {
             StartYear = totalOpexCost.StartYear,
@@ -25,6 +26,7 @@ public static class CalculateTotalCostService
         };
 
         var totalCessationCost = CalculateCessationCost(caseItem);
+
         var cessationProfile = new TimeSeries
         {
             StartYear = totalCessationCost.StartYear,
@@ -32,6 +34,7 @@ public static class CalculateTotalCostService
         };
 
         var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem);
+
         var totalOffshoreFacilityProfile = new TimeSeries
         {
             StartYear = totalOffshoreFacilityCost.StartYear,
@@ -39,6 +42,7 @@ public static class CalculateTotalCostService
         };
 
         var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);
+
         var developmentProfile = new TimeSeries
         {
             StartYear = totalDevelopmentCost.StartYear,
@@ -46,6 +50,7 @@ public static class CalculateTotalCostService
         };
 
         var explorationCost = CalculateTotalExplorationCost(caseItem);
+
         var explorationProfile = new TimeSeries
         {
             StartYear = explorationCost.StartYear,
@@ -90,6 +95,7 @@ public static class CalculateTotalCostService
         var otherStudies = new TimeSeries(totalOtherStudiesCostProfile);
 
         var totalStudyCost = TimeSeriesMerger.MergeTimeSeries(feasibilityProfile, feedProfile, otherStudies);
+
         return totalStudyCost;
     }
 
@@ -99,6 +105,7 @@ public static class CalculateTotalCostService
             caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)
         );
+
         var offshoreFacilitiesProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)
@@ -120,6 +127,7 @@ public static class CalculateTotalCostService
             onshoreRelatedOpex,
             additionalOpex
         );
+
         return totalOpexCost;
     }
 
@@ -129,6 +137,7 @@ public static class CalculateTotalCostService
             caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost),
             caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)
         );
+
         var cessationOffshoreFacilitiesProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost),
             caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)
@@ -142,6 +151,7 @@ public static class CalculateTotalCostService
             cessationOffshoreFacilitiesProfile,
             cessationOnshoreFacilitiesCost
         );
+
         return totalCessationCost;
     }
 
@@ -151,18 +161,22 @@ public static class CalculateTotalCostService
             caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride)
         );
+
         var surfProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride)
         );
+
         var topsideProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride)
         );
+
         var transportProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride)
         );
+
         var onshorePowerSupplyProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)
@@ -185,14 +199,17 @@ public static class CalculateTotalCostService
             caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)
         );
+
         var gasProducerProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride)
         );
+
         var waterInjectorProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride)
         );
+
         var gasInjectorProfile = UseOverrideOrProfile(
             caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile),
             caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride)

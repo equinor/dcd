@@ -11,6 +11,7 @@ public class UpdateCampaignController(UpdateCampaignService updateCampaignServic
     public async Task<NoContentResult> UpdateCampaign(Guid projectId, Guid caseId, Guid campaignId, [FromBody] UpdateCampaignDto dto)
     {
         await updateCampaignService.UpdateCampaign(projectId, caseId, campaignId, dto);
+
         return NoContent();
     }
 }

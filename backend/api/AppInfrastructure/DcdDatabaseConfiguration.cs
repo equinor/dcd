@@ -24,11 +24,11 @@ public static class DcdDatabaseConfiguration
         var dbContextOptionsBuilder = new DbContextOptionsBuilder<DcdDbContext>();
 
         var sqliteConnectionString = new SqliteConnectionStringBuilder
-        {
-            DataSource = "file::memory:",
-            Mode = SqliteOpenMode.ReadWriteCreate,
-            Cache = SqliteCacheMode.Shared
-        }
+            {
+                DataSource = "file::memory:",
+                Mode = SqliteOpenMode.ReadWriteCreate,
+                Cache = SqliteCacheMode.Shared
+            }
             .ToString();
 
         var sqliteConnection = new SqliteConnection(sqliteConnectionString);

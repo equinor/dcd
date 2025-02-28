@@ -85,7 +85,6 @@ public static class ProfileTypes
     public const string ExplorationRigMobDemob = "ExplorationRigMobDemob";
     public const string ExplorationRigMobDemobOverride = "ExplorationRigMobDemobOverride";
 
-
     /* Well project profiles */
     public const string OilProducerCostProfile = "OilProducerCostProfile";
     public const string OilProducerCostProfileOverride = "OilProducerCostProfileOverride";

@@ -59,6 +59,7 @@ public static class ExportToExcelService
             businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", project.StartYear, c.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
 
             rowCount += 2;
+
             var allRows = new List<int>
             {
                 c.Exploration.Values.Length + c.Exploration.StartYear,
@@ -160,51 +161,64 @@ public static class ExportToExcelService
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.Exploration)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.Capex)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.Drilling)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.OffshoreFacilities)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.StudyCost)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.Opex)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.OnshorePowerSupply)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.Cessation)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             ws.Cell(businessCase.ProductionAndSalesVolumes.CellNo).Value = businessCase.ProductionAndSalesVolumes.Value;
+
             foreach (var etc in businessCase.TotalAndAnnualOil)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.NetSalesGas)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.Co2Emissions)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+
             foreach (var etc in businessCase.ImportedElectricity)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
@@ -213,6 +227,7 @@ public static class ExportToExcelService
 
         using var stream = new MemoryStream();
         wb.SaveAs(stream);
+
         return stream.ToArray();
     }
 }

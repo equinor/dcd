@@ -11,6 +11,7 @@ public class UpdateDrainageStrategyController(UpdateDrainageStrategyService upda
     public async Task<NoContentResult> UpdateDrainageStrategy(Guid projectId, Guid caseId, [FromBody] UpdateDrainageStrategyDto dto)
     {
         await updateDrainageStrategyService.UpdateDrainageStrategy(projectId, caseId, dto);
+
         return NoContent();
     }
 }
