@@ -10,6 +10,7 @@ public static class SurfCostProfileService
         if (caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile) != null)
         {
             UpdateSurfTimeSeries(caseItem, startYear, values);
+
             return;
         }
 

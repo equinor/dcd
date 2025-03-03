@@ -11,6 +11,7 @@ public class UpdateSubstructureController(UpdateSubstructureService updateSubstr
     public async Task<NoContentResult> UpdateSubstructure(Guid projectId, Guid caseId, [FromBody] UpdateSubstructureDto dto)
     {
         await updateSubstructureService.UpdateSubstructure(projectId, caseId, dto);
+
         return NoContent();
     }
 }

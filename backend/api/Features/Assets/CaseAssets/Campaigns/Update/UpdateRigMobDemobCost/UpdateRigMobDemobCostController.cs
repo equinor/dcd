@@ -11,6 +11,7 @@ public class UpdateRigMobDemobCostController(UpdateRigMobDemobCostService update
     public async Task<NoContentResult> UpdateRigMobDemobCost(Guid projectId, Guid caseId, Guid campaignId, [FromBody] UpdateRigMobDemobCostDto dto)
     {
         await updateRigMobDemobCostService.UpdateRigMobDemobCost(projectId, caseId, campaignId, dto);
+
         return NoContent();
     }
 }

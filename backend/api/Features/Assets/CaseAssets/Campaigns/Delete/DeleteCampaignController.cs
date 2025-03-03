@@ -11,6 +11,7 @@ public class DeleteCampaignController(DeleteCampaignService deleteCampaignServic
     public async Task<NoContentResult> DeleteCampaign(Guid projectId, Guid caseId, Guid campaignId)
     {
         await deleteCampaignService.DeleteCampaign(projectId, caseId, campaignId);
+
         return NoContent();
     }
 }

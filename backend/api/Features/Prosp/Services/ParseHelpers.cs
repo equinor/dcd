@@ -30,6 +30,7 @@ public static class ParseHelpers
     public static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
     {
         var values = new List<double>();
+
         foreach (var cell in cellData.Where(c => c.CellReference != null && coordinates.Contains(c.CellReference!)))
         {
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))

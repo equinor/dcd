@@ -13,6 +13,7 @@ public class UpdateImageController(
     public async Task<ActionResult> UpdateCaseImage(Guid projectId, Guid caseId, Guid imageId, [FromBody] UpdateImageDto dto)
     {
         await updateCaseImageService.UpdateImage(projectId, caseId, imageId, dto);
+
         return NoContent();
     }
 
@@ -21,6 +22,7 @@ public class UpdateImageController(
     public async Task<ActionResult> UpdateProjectImage(Guid projectId, Guid imageId, [FromBody] UpdateImageDto dto)
     {
         await updateProjectImageService.UpdateImage(projectId, imageId, dto);
+
         return NoContent();
     }
 }

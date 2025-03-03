@@ -13,11 +13,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     {
         builder.HasIndex(p => p.FusionProjectId);
 
-        // Configure self-referencing relationship for Project for revisions
         builder.HasOne(p => p.OriginalProject)
             .WithMany(p => p.Revisions)
             .HasForeignKey(p => p.OriginalProjectId)
-            .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

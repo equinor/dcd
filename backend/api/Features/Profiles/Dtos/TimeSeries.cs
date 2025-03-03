@@ -12,6 +12,7 @@ public class TimeSeries
         {
             StartYear = 0;
             Values = [];
+
             return;
         }
 

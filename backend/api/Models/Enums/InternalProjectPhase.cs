@@ -4,5 +4,5 @@ public enum InternalProjectPhase
 {
     APbo, // Approval Point Business Opportunity
     BOR, // Business Opportunity Reconfirmation
-    VPbo, // Valid Point Business Opportunity
+    VPbo // Valid Point Business Opportunity
 }

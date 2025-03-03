@@ -1,4 +1,3 @@
-using api.AppInfrastructure;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.ProjectData;
 using api.Features.ProjectData.Dtos;
@@ -13,10 +12,7 @@ public class CreateCaseController(CreateCaseService createCaseService, GetProjec
     [AuthorizeActionType(ActionType.Edit)]
     public async Task<ProjectDataDto> CreateCase(Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
-        if (DcdEnvironments.FeatureToggles.RevisionEnabled)
-        {
-            CreateCaseDtoValidator.Validate(caseDto);
-        }
+        CreateCaseDtoValidator.Validate(caseDto);
 
         await createCaseService.CreateCase(projectId, caseDto);
 

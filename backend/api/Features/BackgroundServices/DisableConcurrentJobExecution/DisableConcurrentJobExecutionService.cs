@@ -40,8 +40,8 @@ public class DisableConcurrentJobExecutionService(IServiceScopeFactory scopeFact
         var threshold = DateTime.UtcNow.Subtract(Frequency * 3);
 
         var allInstances = await context.BackgroundJobMachineInstanceLogs
-                                        .Where(x => x.IsJobRunner || x.LastSeenUtc < threshold)
-                                        .ToListAsync();
+            .Where(x => x.IsJobRunner || x.LastSeenUtc < threshold)
+            .ToListAsync();
 
         if (allInstances.Count(x => x.IsJobRunner) > 1)
         {

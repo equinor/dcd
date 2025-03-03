@@ -17,6 +17,7 @@ public static class RigCostProfileService
             c => c.RigUpgradingCost,
             c => c.RigUpgradingCostStartYear
         );
+
         var explorationRigMobDemobList = CreateTimeSeriesList(
             caseItem,
             CampaignType.ExplorationCampaign,
@@ -32,6 +33,7 @@ public static class RigCostProfileService
             c => c.RigUpgradingCost,
             c => c.RigUpgradingCostStartYear
         );
+
         var developmentRigMobDemobList = CreateTimeSeriesList(
             caseItem,
             CampaignType.DevelopmentCampaign,

@@ -10,6 +10,7 @@ public static class OnshorePowerSupplyCostProfileService
         if (caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile) != null)
         {
             UpdateOnshorePowerSupplyTimeSeries(caseItem, startYear, values);
+
             return;
         }
 

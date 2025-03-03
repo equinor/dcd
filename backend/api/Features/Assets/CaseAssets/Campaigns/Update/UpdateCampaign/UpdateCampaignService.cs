@@ -17,10 +17,12 @@ public class UpdateCampaignService(DcdDbContext context, RecalculationService re
             case CampaignCostType.RigUpgrading:
                 existingCampaign.RigUpgradingCostStartYear = updateCampaignDto.StartYear;
                 existingCampaign.RigUpgradingCostValues = updateCampaignDto.Values;
+
                 break;
             case CampaignCostType.RigMobDemob:
                 existingCampaign.RigMobDemobCostStartYear = updateCampaignDto.StartYear;
                 existingCampaign.RigMobDemobCostValues = updateCampaignDto.Values;
+
                 break;
         }
 

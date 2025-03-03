@@ -15,6 +15,7 @@ public static class TimeSeriesMerger
         {
             target.Values = timeSeries.Values;
             target.StartYear = timeSeries.StartYear;
+
             return;
         }
 
@@ -108,6 +109,7 @@ public static class TimeSeriesMerger
             var zeroList = Enumerable.Repeat(0.0, zeros);
             doubleList.AddRange(zeroList);
             doubleList.AddRange(t2);
+
             return doubleList;
         }
 
@@ -116,6 +118,7 @@ public static class TimeSeriesMerger
         if (t1.Count - offset == t2.Count)
         {
             doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+
             return doubleList;
         }
 
@@ -123,11 +126,13 @@ public static class TimeSeriesMerger
         {
             doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
             doubleList.AddRange(t1.TakeLast(t1.Count - offset - t2.Count));
+
             return doubleList;
         }
 
         doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
         doubleList.AddRange(t2.TakeLast(t2.Count - (t1.Count - offset)));
+
         return doubleList;
     }
 }

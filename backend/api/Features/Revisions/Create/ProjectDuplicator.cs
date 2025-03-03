@@ -161,6 +161,7 @@ public static class ProjectDuplicator
                 Id = drainageStrategyId,
                 CaseId = caseId,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
+                CondensateYield = existingCaseItem.DrainageStrategy.CondensateYield,
                 GasShrinkageFactor = existingCaseItem.DrainageStrategy.GasShrinkageFactor,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
                 GasInjectorCount = existingCaseItem.DrainageStrategy.GasInjectorCount,
@@ -283,12 +284,12 @@ public static class ProjectDuplicator
                     RigUpgradingCost = x.RigUpgradingCost,
                     RigMobDemobCost = x.RigMobDemobCost,
                     CampaignWells = x.CampaignWells.Select(y => new CampaignWell
-                    {
-                        Id = Guid.NewGuid(),
-                        WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
-                        StartYear = y.StartYear,
-                        Values = y.Values
-                    })
+                        {
+                            Id = Guid.NewGuid(),
+                            WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
+                            StartYear = y.StartYear,
+                            Values = y.Values
+                        })
                         .ToList()
                 })
                 .ToList()

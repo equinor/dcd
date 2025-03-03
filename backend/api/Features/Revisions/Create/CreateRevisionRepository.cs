@@ -18,7 +18,7 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Where(p => p.ProjectId == projectPk)
             .LoadAsync();
 
-        var caseItems = await context.Cases
+        await context.Cases
             .Include(x => x.DrainageStrategy)
             .Include(x => x.OnshorePowerSupply)
             .Include(x => x.Substructure)
@@ -26,12 +26,10 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(x => x.Topside)
             .Include(x => x.Transport)
             .Where(x => x.ProjectId == projectPk)
-            .ToListAsync();
-
-        var caseIds = caseItems.Select(x => x.Id).ToList();
+            .LoadAsync();
 
         await context.TimeSeriesProfiles
-            .Where(x => caseIds.Contains(x.Id))
+            .Where(x => x.Case.ProjectId == projectPk)
             .LoadAsync();
 
         await context.Campaigns

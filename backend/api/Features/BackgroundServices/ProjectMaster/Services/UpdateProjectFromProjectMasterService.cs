@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.BackgroundServices.ProjectMaster.Services;
 
-public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContext> contextFactory,
+public class UpdateProjectFromProjectMasterService(
+    IDbContextFactory<DcdDbContext> contextFactory,
     IFusionService fusionService,
     BlobServiceClient blobServiceClient)
 {

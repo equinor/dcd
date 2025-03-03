@@ -13,6 +13,7 @@ namespace api.Features.Projects.Exists;
 public class ProjectExistsService(DcdDbContext context, IFusionService fusionService, CurrentUser currentUser)
 {
     private readonly List<ApplicationRole> _rolesPermittedToCreateProject = [ApplicationRole.Admin, ApplicationRole.User];
+
     public async Task<ProjectExistsDto> ProjectExists(Guid contextId)
     {
         var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(contextId);

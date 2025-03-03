@@ -74,7 +74,7 @@ public static class ChangeLogService
     private static List<ChangeLog> BuildChangeLog<T>(EntityEntry<T> entity,
         string? username,
         DateTime utcNow)
-    where T : class, IChangeTrackable
+        where T : class, IChangeTrackable
     {
         var entityId = entity.Property(x => x.Id).CurrentValue;
 

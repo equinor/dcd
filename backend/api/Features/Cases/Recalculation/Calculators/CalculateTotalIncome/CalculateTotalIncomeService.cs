@@ -26,7 +26,7 @@ public static class CalculateTotalIncomeService
         var oilIncome = new TimeSeries
         {
             StartYear = totalOilProductionInMegaCubics.StartYear,
-            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray(),
+            Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray()
         };
 
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
@@ -51,4 +51,3 @@ public static class CalculateTotalIncomeService
         profile.StartYear = totalIncome.StartYear;
     }
 }
-

@@ -29,6 +29,7 @@ public static class OpexCostProfileService
         if (developmentWells.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
+
             return;
         }
 
@@ -65,7 +66,8 @@ public static class OpexCostProfileService
         var additionalValuesCount = totalValuesCount - wellInterventionCostsFromDrillingSchedule.Values.Length;
 
         var additionalValues = new List<double>();
-        for (int i = 0; i < additionalValuesCount; i++)
+
+        for (var i = 0; i < additionalValuesCount; i++)
         {
             if (wellInterventionCostsFromDrillingSchedule.Values.Length > 0)
             {
@@ -94,31 +96,18 @@ public static class OpexCostProfileService
         if (!firstYearOfProduction.HasValue || !lastYearOfProduction.HasValue)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile));
+
             return;
         }
 
-        int firstYear = firstYearOfProduction.Value;
-        int lastYear = lastYearOfProduction.Value;
+        var firstYear = firstYearOfProduction.Value;
+        var lastYear = lastYearOfProduction.Value;
 
         var facilityOpex = caseItem.Topside.FacilityOpex;
 
         var values = new List<double>();
 
-        if (facilityOpex > 0)
-        {
-            values.Add((facilityOpex - 1) / 8);
-            values.Add((facilityOpex - 1) / 4);
-            values.Add((facilityOpex - 1) / 2);
-
-            for (int i = firstYear; i < lastYear; i++)
-            {
-                values.Add(facilityOpex);
-            }
-        }
-        else
-        {
-            values.AddRange(Enumerable.Repeat(0.0, lastYear - firstYear + 3));
-        }
+        values.AddRange(CalculateAnnualOpex(facilityOpex, firstYear, lastYear));
 
         const int preOpexCostYearOffset = 3;
 
@@ -126,6 +115,28 @@ public static class OpexCostProfileService
 
         profile.Values = values.ToArray();
         profile.StartYear = firstYear - preOpexCostYearOffset;
+    }
+
+    private static List<double> CalculateAnnualOpex(double facilityOpex, int firstYear, int lastYear)
+    {
+        if (facilityOpex <= 0)
+        {
+            return Enumerable.Repeat(0.0, lastYear - firstYear + 3).ToList();
+        }
+
+        var values = new List<double>
+        {
+            (facilityOpex - 1) / 8,
+            (facilityOpex - 1) / 4,
+            (facilityOpex - 1) / 2
+        };
+
+        for (var i = firstYear; i < lastYear; i++)
+        {
+            values.Add(facilityOpex);
+        }
+
+        return values;
     }
 
     /*

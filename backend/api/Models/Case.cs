@@ -71,14 +71,18 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public List<Case> RevisionCases { get; set; } = [];
 
     #region Change tracking
+
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
+
     #endregion
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
+
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);
+
     public TimeSeriesProfile CreateProfileIfNotExists(string profileType)
     {
         var profile = TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);

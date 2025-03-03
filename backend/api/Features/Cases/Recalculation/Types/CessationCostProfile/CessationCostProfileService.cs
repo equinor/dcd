@@ -24,6 +24,7 @@ public static class CessationCostProfileService
         if (!lastYear.HasValue)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost));
+
             return;
         }
 
@@ -42,6 +43,7 @@ public static class CessationCostProfileService
         if (!lastYear.HasValue)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost));
+
             return;
         }
 

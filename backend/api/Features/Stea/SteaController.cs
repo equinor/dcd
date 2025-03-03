@@ -11,6 +11,7 @@ public class SteaController(SteaService steaService) : ControllerBase
     public async Task<FileResult> ExportSteaToExcel(Guid projectId)
     {
         var (bytes, filename) = await steaService.GetExcelFile(projectId);
+
         return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
     }
 }

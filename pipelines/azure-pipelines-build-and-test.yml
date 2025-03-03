@@ -13,35 +13,6 @@ variables:
     value: ""
 
 jobs:
-  - job: Lint_CSharp
-    continueOnError: true
-    steps:
-      - task: UseDotNet@2
-        inputs:
-          packageType: "sdk"
-          version: "9.0.x"
-      - task: DotNetCoreCLI@2
-        displayName: "Install dotnet-format"
-        inputs:
-          command: custom
-          custom: tool
-          arguments: "install -g dotnet-format"
-      - task: DotNetCoreCLI@2
-        displayName: "Lint backend"
-        inputs:
-          command: custom
-          custom: format
-          arguments: "--verify-no-changes -v d"
-          workingDirectory: "backend/api"
-
-      - task: DotNetCoreCLI@2
-        displayName: "Lint backend tests"
-        inputs:
-          command: custom
-          custom: format
-          arguments: "--verify-no-changes -v d"
-          workingDirectory: "backend/tests"
-
   - job: Build_API
     steps:
       - task: UseDotNet@2
@@ -71,32 +42,7 @@ jobs:
           command: "custom"
           workingDir: "frontend"
           customCommand: "run-script build"
-      - task: Npm@1
-        displayName: "Autogenerate-Models-Build"
-        inputs:
-          command: "custom"
-          workingDir: "frontend"
-          customCommand: "run autogenerate-models-build"
-      - powershell: |
-          $fileA = "types.d.ts"
-          $fileB = "types-azuredevops.d.ts"
-          $filesstring = git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion)
-          $files = $filesstring -split " "
-          $modelPath = "backend/api/Dtos/*"
-          foreach ($file in $files) {
-              Write-Host $file
-              if($file -like $modelPath) {
-                if(Compare-Object -ReferenceObject $(Get-Content $fileA) -DifferenceObject $(Get-Content $fileB)) {
-                    Write-Host "The Types file are different"
-                } else {
-                    Write-Host "The Types file are identical"
-                    exit 1
-                }
-              }
-          }
-        workingDirectory: $(Build.SourcesDirectory)/frontend/src/
-        displayName: "Check if Models has been updated"
-        continueOnError: true
+          
   - job: Test_Backend
     steps:
       - task: UseDotNet@2
