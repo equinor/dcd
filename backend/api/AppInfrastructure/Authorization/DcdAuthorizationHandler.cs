@@ -99,7 +99,9 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
                 .SingleAsync();
 
             if (revisionData.OriginalProjectId == null || (projectId != null && projectId != revisionData.OriginalProjectId))
+            {
                 return (null, null);
+            }
 
             return (revisionData.Classification, revisionData.OriginalProjectId.Value);
     }
@@ -135,11 +137,17 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
         if (revisionId != null)
         {
             (revisionClassification, projectPk) = await GetDataFromRevision(dbContext, revisionId.Value, projectPk);
+
             if (revisionClassification == null || projectPk == null)
+            {
                 return [];
+            }
+
         }
         else if (projectPk == null)
+        {
             return [];
+        }
 
         var (projectMemberRole, projectClassification, projectIsRevision) = await GetDataFromProject(dbContext, projectPk.Value, userId);
 
@@ -151,8 +159,11 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
     private async Task<Guid?> ResolveProjectPkFromRoute(DcdDbContext dbContext)
     {
         var projectIdGuid = GetIdFromRoute("projectId");
+
         if (projectIdGuid != null)
+        {
             return await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid.Value);
+        }
         return null;
     }
 
