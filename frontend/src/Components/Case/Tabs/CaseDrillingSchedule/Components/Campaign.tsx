@@ -16,6 +16,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { filterWells } from "@/Utils/common"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
+import { useCaseStore } from "@/Store/CaseStore"
 
 const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { apiData } = useCaseApiData()
@@ -23,8 +24,10 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const revisionAndProjectData = useDataFetch()
     const { canEdit } = useCanUserEdit()
     const { editMode } = useAppStore()
+    const { activeTabCase } = useCaseStore()
 
     const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
+    const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
 
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
@@ -81,7 +84,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             rows.push(wellRow)
         })
 
-        if (canEdit() && title === "Exploration") {
+        if (canUserEdit && title === "Exploration") {
             allWells.explorationWells.forEach((well: Components.Schemas.WellOverviewDto) => {
                 const wellRow: ItimeSeriesTableDataWithWell = {
                     profileName: well.name,
@@ -101,7 +104,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             })
         }
 
-        if (canEdit() && title === "Development") {
+        if (canUserEdit && title === "Development") {
             allWells.developmentWells.forEach((well: Components.Schemas.WellOverviewDto) => {
                 const wellRow: ItimeSeriesTableDataWithWell = {
                     profileName: well.name,
@@ -124,7 +127,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
         return rows
     }
 
-    const rowData = useMemo(() => generateRowData(), [campaign, tableYears, editMode])
+    const rowData = useMemo(() => generateRowData(), [campaign, tableYears, canUserEdit])
 
     if (!apiData) {
         return <ProjectSkeleton />
