@@ -11,6 +11,7 @@ public class UpdateCampaignWellsController(UpdateCampaignWellsService updateCamp
     public async Task<NoContentResult> UpdateCampaignWells(Guid projectId, Guid caseId, Guid campaignId, [FromBody] List<SaveCampaignWellDto> campaignWellDtos)
     {
         await updateCampaignWellsService.UpdateCampaignWells(projectId, caseId, campaignId, campaignWellDtos);
+
         return NoContent();
     }
 }

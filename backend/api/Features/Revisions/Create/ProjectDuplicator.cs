@@ -93,7 +93,7 @@ public static class ProjectDuplicator
             Wells = wells,
             Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping, true)).ToList(),
 
-            // Mapped as a separate step later
+            // Mapped in a separate step later
             Images = [],
 
             // Intentionally not mapped for revisions
@@ -117,8 +117,6 @@ public static class ProjectDuplicator
         var topsideId = Guid.NewGuid();
         var transportId = Guid.NewGuid();
         var onshorePowerSupplyId = Guid.NewGuid();
-        var wellProjectId = Guid.NewGuid();
-        var explorationId = Guid.NewGuid();
 
         var newCase = new Case
         {
@@ -162,8 +160,8 @@ public static class ProjectDuplicator
             {
                 Id = drainageStrategyId,
                 CaseId = caseId,
-                Description = existingCaseItem.DrainageStrategy.Description,
                 NGLYield = existingCaseItem.DrainageStrategy.NGLYield,
+                CondensateYield = existingCaseItem.DrainageStrategy.CondensateYield,
                 GasShrinkageFactor = existingCaseItem.DrainageStrategy.GasShrinkageFactor,
                 ProducerCount = existingCaseItem.DrainageStrategy.ProducerCount,
                 GasInjectorCount = existingCaseItem.DrainageStrategy.GasInjectorCount,
@@ -188,13 +186,10 @@ public static class ProjectDuplicator
                 GasInjectorCount = existingCaseItem.Surf.GasInjectorCount,
                 WaterInjectorCount = existingCaseItem.Surf.WaterInjectorCount,
                 ProductionFlowline = existingCaseItem.Surf.ProductionFlowline,
-                LastChangedDate = existingCaseItem.Surf.LastChangedDate,
                 CostYear = existingCaseItem.Surf.CostYear,
                 Source = existingCaseItem.Surf.Source,
                 ProspVersion = existingCaseItem.Surf.ProspVersion,
-                ApprovedBy = existingCaseItem.Surf.ApprovedBy,
-                DG3Date = existingCaseItem.Surf.DG3Date,
-                DG4Date = existingCaseItem.Surf.DG4Date
+                ApprovedBy = existingCaseItem.Surf.ApprovedBy
             },
 
             SubstructureId = substructureId,
@@ -208,10 +203,7 @@ public static class ProjectDuplicator
                 CostYear = existingCaseItem.Substructure.CostYear,
                 ProspVersion = existingCaseItem.Substructure.ProspVersion,
                 Source = existingCaseItem.Substructure.Source,
-                LastChangedDate = existingCaseItem.Substructure.LastChangedDate,
-                Concept = existingCaseItem.Substructure.Concept,
-                DG3Date = existingCaseItem.Substructure.DG3Date,
-                DG4Date = existingCaseItem.Substructure.DG4Date
+                Concept = existingCaseItem.Substructure.Concept
             },
 
             TopsideId = topsideId,
@@ -238,11 +230,8 @@ public static class ProjectDuplicator
                 CO2OnMaxWaterInjectionProfile = existingCaseItem.Topside.CO2OnMaxWaterInjectionProfile,
                 CostYear = existingCaseItem.Topside.CostYear,
                 ProspVersion = existingCaseItem.Topside.ProspVersion,
-                LastChangedDate = existingCaseItem.Topside.LastChangedDate,
                 Source = existingCaseItem.Topside.Source,
                 ApprovedBy = existingCaseItem.Topside.ApprovedBy,
-                DG3Date = existingCaseItem.Topside.DG3Date,
-                DG4Date = existingCaseItem.Topside.DG4Date,
                 FacilityOpex = existingCaseItem.Topside.FacilityOpex,
                 PeakElectricityImported = existingCaseItem.Topside.PeakElectricityImported
             },
@@ -255,12 +244,9 @@ public static class ProjectDuplicator
                 GasExportPipelineLength = existingCaseItem.Transport.GasExportPipelineLength,
                 OilExportPipelineLength = existingCaseItem.Transport.OilExportPipelineLength,
                 Maturity = existingCaseItem.Transport.Maturity,
-                LastChangedDate = existingCaseItem.Transport.LastChangedDate,
                 CostYear = existingCaseItem.Transport.CostYear,
                 Source = existingCaseItem.Transport.Source,
-                ProspVersion = existingCaseItem.Transport.ProspVersion,
-                DG3Date = existingCaseItem.Transport.DG3Date,
-                DG4Date = existingCaseItem.Transport.DG4Date
+                ProspVersion = existingCaseItem.Transport.ProspVersion
             },
 
             OnshorePowerSupplyId = onshorePowerSupplyId,
@@ -268,12 +254,9 @@ public static class ProjectDuplicator
             {
                 Id = onshorePowerSupplyId,
                 CaseId = caseId,
-                LastChangedDate = existingCaseItem.OnshorePowerSupply.LastChangedDate,
                 CostYear = existingCaseItem.OnshorePowerSupply.CostYear,
                 Source = existingCaseItem.OnshorePowerSupply.Source,
-                ProspVersion = existingCaseItem.OnshorePowerSupply.ProspVersion,
-                DG3Date = existingCaseItem.OnshorePowerSupply.DG3Date,
-                DG4Date = existingCaseItem.OnshorePowerSupply.DG4Date
+                ProspVersion = existingCaseItem.OnshorePowerSupply.ProspVersion
             },
 
             TimeSeriesProfiles = existingCaseItem.TimeSeriesProfiles
@@ -288,22 +271,6 @@ public static class ProjectDuplicator
                 })
                 .ToList(),
 
-            WellProjectId = wellProjectId,
-            WellProject = new WellProject
-            {
-                Id = wellProjectId,
-                CaseId = caseId,
-                DevelopmentWells = [] // Added via campaigns
-            },
-
-            ExplorationId = explorationId,
-            Exploration = new Exploration
-            {
-                Id = explorationId,
-                CaseId = caseId,
-                ExplorationWells = [] // Added via campaigns
-            },
-
             Campaigns = existingCaseItem.Campaigns
                 .Select(x => new Campaign
                 {
@@ -316,23 +283,13 @@ public static class ProjectDuplicator
                     CampaignType = x.CampaignType,
                     RigUpgradingCost = x.RigUpgradingCost,
                     RigMobDemobCost = x.RigMobDemobCost,
-                    DevelopmentWells = x.DevelopmentWells.Select(y => new DevelopmentWell
-                    {
-                        Id = Guid.NewGuid(),
-                        WellProjectId = wellProjectId,
-                        WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
-                        StartYear = y.StartYear,
-                        Values = y.Values
-                    })
-                        .ToList(),
-                    ExplorationWells = x.ExplorationWells.Select(y => new ExplorationWell
-                    {
-                        Id = Guid.NewGuid(),
-                        ExplorationId = explorationId,
-                        WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
-                        StartYear = y.StartYear,
-                        Values = y.Values
-                    })
+                    CampaignWells = x.CampaignWells.Select(y => new CampaignWell
+                        {
+                            Id = Guid.NewGuid(),
+                            WellId = wellIdMapping == null ? y.WellId : wellIdMapping[y.WellId],
+                            StartYear = y.StartYear,
+                            Values = y.Values
+                        })
                         .ToList()
                 })
                 .ToList()

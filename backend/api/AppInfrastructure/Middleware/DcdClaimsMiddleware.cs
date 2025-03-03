@@ -16,6 +16,7 @@ public class DcdClaimsMiddleware(RequestDelegate nextMiddleware)
         if (httpContext.User.GetAzureUniqueId() == null || httpContext.User.GetAzureUniqueId() == null || httpContext.User.Identity is not ClaimsIdentity claimsIdentity)
         {
             await nextMiddleware(httpContext);
+
             return;
         }
 

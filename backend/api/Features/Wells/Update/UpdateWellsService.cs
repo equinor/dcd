@@ -39,22 +39,15 @@ public class UpdateWellsService(DcdDbContext context)
 
         foreach (var wellDto in deleteWellDtos)
         {
-            var well = await context.Wells.FindAsync(wellDto.Id);
+            var well = await context.Wells.SingleOrDefaultAsync(x => x.Id == wellDto.Id);
 
             if (well != null)
             {
-                var explorationWells = context.ExplorationWell.Where(ew => ew.WellId == well.Id);
+                var campaignWells = await context.CampaignWells.Where(ew => ew.WellId == well.Id).ToListAsync();
 
-                foreach (var explorationWell in explorationWells)
+                foreach (var campaignWell in campaignWells)
                 {
-                    context.ExplorationWell.Remove(explorationWell);
-                }
-
-                var developmentWells = context.DevelopmentWells.Where(ew => ew.WellId == well.Id);
-
-                foreach (var developmentWell in developmentWells)
-                {
-                    context.DevelopmentWells.Remove(developmentWell);
+                    context.CampaignWells.Remove(campaignWell);
                 }
 
                 context.Wells.Remove(well);
@@ -97,10 +90,7 @@ public class UpdateWellsService(DcdDbContext context)
 
         foreach (var wellDto in updateWellDtos)
         {
-            var existing = await context.Wells
-                .Include(e => e.DevelopmentWells)
-                .Include(e => e.ExplorationWells)
-                .SingleAsync(w => w.Id == wellDto.Id);
+            var existing = await context.Wells.SingleAsync(w => w.Id == wellDto.Id);
 
             existing.Name = wellDto.Name;
             existing.WellInterventionCost = wellDto.WellInterventionCost;

@@ -48,11 +48,9 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.OnshorePowerSupplyDto |
     keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
-    keyof Components.Schemas.DevelopmentWellDto |
-    keyof Components.Schemas.ExplorationWellDto |
     keyof Components.Schemas.UpdateCampaignDto |
     keyof Components.Schemas.CampaignDto |
-    keyof Components.Schemas.TimeSeriesScheduleDto |
+    keyof Components.Schemas.CampaignWellDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
     keyof Components.Schemas.TimeSeriesDto
 
@@ -63,7 +61,6 @@ export interface EditInstance {
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
     wellId?: string;
-    drillingScheduleId?: string;
     caseId?: string;
     resourceObject: ResourceObject;
     campaignId?: string;

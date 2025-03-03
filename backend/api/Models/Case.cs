@@ -17,16 +17,16 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-    public DateTime DGADate { get; set; }
-    public DateTime DGBDate { get; set; }
-    public DateTime DGCDate { get; set; }
-    public DateTime APBODate { get; set; }
-    public DateTime BORDate { get; set; }
-    public DateTime VPBODate { get; set; }
-    public DateTime DG0Date { get; set; }
-    public DateTime DG1Date { get; set; }
-    public DateTime DG2Date { get; set; }
-    public DateTime DG3Date { get; set; }
+    public DateTime? DGADate { get; set; }
+    public DateTime? DGBDate { get; set; }
+    public DateTime? DGCDate { get; set; }
+    public DateTime? APBODate { get; set; }
+    public DateTime? BORDate { get; set; }
+    public DateTime? VPBODate { get; set; }
+    public DateTime? DG0Date { get; set; }
+    public DateTime? DG1Date { get; set; }
+    public DateTime? DG2Date { get; set; }
+    public DateTime? DG3Date { get; set; }
     public DateTime DG4Date { get; set; }
 
     public ArtificialLift ArtificialLift { get; set; }
@@ -47,9 +47,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public Guid DrainageStrategyId { get; set; }
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 
-    public Guid WellProjectId { get; set; }
-    public WellProject WellProject { get; set; } = null!;
-
     public Guid SurfId { get; set; }
     public Surf Surf { get; set; } = null!;
 
@@ -65,9 +62,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public Guid OnshorePowerSupplyId { get; set; }
     public OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
 
-    public Guid ExplorationId { get; set; }
-    public Exploration Exploration { get; set; } = null!;
-
     public Guid? OriginalCaseId { get; set; }
     public Case? OriginalCase { get; set; }
 
@@ -77,14 +71,18 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public List<Case> RevisionCases { get; set; } = [];
 
     #region Change tracking
+
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
+
     #endregion
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
+
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);
+
     public TimeSeriesProfile CreateProfileIfNotExists(string profileType)
     {
         var profile = TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);

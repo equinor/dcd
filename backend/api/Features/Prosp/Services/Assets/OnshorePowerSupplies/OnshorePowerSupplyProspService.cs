@@ -13,10 +13,7 @@ public static class OnshorePowerSupplyProspService
         var asset = caseItem.OnshorePowerSupply;
 
         asset.Source = Source.ConceptApp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.CostYear = 0;
-        asset.DG3Date = null;
-        asset.DG4Date = null;
         asset.ProspVersion = null;
 
         OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, []);

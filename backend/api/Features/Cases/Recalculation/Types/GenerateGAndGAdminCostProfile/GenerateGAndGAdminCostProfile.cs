@@ -5,7 +5,7 @@ namespace api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 
 public static class GenerateGAndGAdminCostProfile
 {
-    public static void RunCalculation(Case caseItem, List<ExplorationWell> explorationWells)
+    public static void RunCalculation(Case caseItem, List<CampaignWell> explorationWells)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {
@@ -18,7 +18,7 @@ public static class GenerateGAndGAdminCostProfile
         }
 
         var earliestYear = explorationWells.Select(ds => ds.StartYear).Min() + caseItem.DG4Date.Year;
-        var dG1Date = caseItem.DG1Date;
+        var dG1Date = caseItem.DG1Date ?? default(DateTime);
 
         if (dG1Date.Year >= earliestYear)
         {
@@ -57,7 +57,7 @@ public static class GenerateGAndGAdminCostProfile
             "BRAZIL" => 3,
             "CANADA" => 3,
             "UNITED STATES" => 3,
-            _ => 7.0,
+            _ => 7.0
         };
     }
 }

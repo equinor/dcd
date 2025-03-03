@@ -60,6 +60,10 @@ const CaseProductionProfilesTab = () => {
                     apiData.additionalProductionProfileGas,
                     apiData.productionProfileWater,
                     apiData.productionProfileWaterInjection,
+                    apiData.productionProfileNgl,
+                    apiData.productionProfileNglOverride,
+                    apiData.condensateProduction,
+                    apiData.condensateProductionOverride,
                     apiData.fuelFlaringAndLosses,
                     apiData.fuelFlaringAndLossesOverride,
                     apiData.netSalesGas,
@@ -168,7 +172,7 @@ const CaseProductionProfilesTab = () => {
                                 label=""
                                 disabled
                                 value={caseData.productionStrategyOverview}
-                                onChange={() => {}}
+                                onChange={() => { }}
                             >
                                 {Object.entries(productionStrategyOptions).map(([value, label]) => (
                                     <option key={value} value={value}>{label}</option>
@@ -186,7 +190,7 @@ const CaseProductionProfilesTab = () => {
                                 label=""
                                 disabled
                                 value={caseData.artificialLift}
-                                onChange={() => {}}
+                                onChange={() => { }}
                             >
                                 {Object.entries(artificialLiftOptions).map(([value, label]) => (
                                     <option key={value} value={value}>{label}</option>
@@ -242,14 +246,27 @@ const CaseProductionProfilesTab = () => {
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
                             resourceName="drainageStrategy"
-                            resourcePropertyKey="gasShrinkageFactor"
-                            label="Gas shrinkage factor"
-                            value={drainageStrategyData.gasShrinkageFactor}
+                            resourcePropertyKey="condensateYield"
+                            label="Condensate yield"
+                            value={drainageStrategyData.condensateYield}
                             previousResourceObject={drainageStrategyData}
                             resourceId={drainageStrategyData.id}
                             integer
                         />
                     </Grid>
+                    {(drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <SwitchableNumberInput
+                                resourceName="drainageStrategy"
+                                resourcePropertyKey="gasShrinkageFactor"
+                                label="Gas shrinkage factor"
+                                value={drainageStrategyData.gasShrinkageFactor}
+                                previousResourceObject={drainageStrategyData}
+                                resourceId={drainageStrategyData.id}
+                                integer
+                            />
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
 

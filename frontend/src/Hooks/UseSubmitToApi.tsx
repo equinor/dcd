@@ -15,7 +15,6 @@ import {
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "@/Utils/constants"
-import { ordinaryTimeSeriesTypes, overrideTimeSeriesTypes } from "@/Utils/TimeseriesTypes"
 
 interface UpdateResourceParams {
     projectId: string;
@@ -37,8 +36,6 @@ export const useSubmitToApi = () => {
         projectId: string,
         caseId: string,
         resourceId?: string,
-        wellId?: string,
-        drillingScheduleId?: string,
         serviceMethod: object,
     }) => serviceMethod
 
@@ -114,62 +111,12 @@ export const useSubmitToApi = () => {
 
     const updateCase = (params: UpdateResourceParams) => updateResource(GetCaseService, "updateCase", { ...params })
 
-    interface SaveTimeSeriesProfileParams {
-        projectId: string;
-        caseId: string;
-        saveFunction: any;
-    }
-    const saveTimeSeriesProfile = async ({
-        projectId,
-        caseId,
-        saveFunction,
-    }: SaveTimeSeriesProfileParams) => {
-        try {
-            const result = await mutation.mutateAsync({
-                projectId,
-                caseId,
-                serviceMethod: saveFunction,
-            })
-            const returnValue = { ...result }
-            return { success: true, data: returnValue }
-        } catch (error) {
-            return { success: false, error }
-        }
-    }
-
-    const createOrUpdateDrillingSchedule = async (
-        projectId: string,
-        caseId: string,
-        assetId: string,
-        wellId: string,
-        drillingScheduleId: string,
-        createOrUpdateFunction: any,
-
-    ) => {
-        try {
-            const result = await mutation.mutateAsync({
-                projectId,
-                caseId,
-                resourceId: assetId,
-                wellId,
-                drillingScheduleId,
-                serviceMethod: createOrUpdateFunction,
-            })
-            const returnValue = { ...result }
-            return { success: true, data: returnValue }
-        } catch (error) {
-            return { success: false, error }
-        }
-    }
-
     type SubmitToApiParams = {
         projectId: string,
         caseId: string,
         resourceName: string,
         resourceId?: string,
         resourceObject: ResourceObject,
-        wellId?: string,
-        drillingScheduleId?: string,
     }
 
     const submitToApi = async ({
@@ -178,8 +125,6 @@ export const useSubmitToApi = () => {
         resourceName,
         resourceId,
         resourceObject,
-        wellId,
-        drillingScheduleId,
     }: SubmitToApiParams): Promise<{ success: boolean; data?: any; error?: any }> => {
         submitApiLogger.log("Submitting to API:", {
             resourceName,
@@ -205,46 +150,46 @@ export const useSubmitToApi = () => {
         try {
             const result = await (async () => {
                 switch (resourceName) {
-                case "case":
-                    return updateCase({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "case":
+                        return updateCase({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "caseProfiles":
-                    return updateCaseProfiles({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "caseProfiles":
+                        return updateCaseProfiles({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "topside":
-                    return updateTopside({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "topside":
+                        return updateTopside({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "surf":
-                    return updateSurf({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "surf":
+                        return updateSurf({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "substructure":
-                    return updateSubstructure({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "substructure":
+                        return updateSubstructure({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "transport":
-                    return updateTransport({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "transport":
+                        return updateTransport({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "onshorePowerSupply":
-                    return updateOnshorePowerSupply({
-                        projectId, caseId, resourceObject,
-                    })
+                    case "onshorePowerSupply":
+                        return updateOnshorePowerSupply({
+                            projectId, caseId, resourceObject,
+                        })
 
-                case "drainageStrategy":
-                    return updateDrainageStrategy({
-                        projectId, caseId, resourceObject,
-                    })
-                    
+                    case "drainageStrategy":
+                        return updateDrainageStrategy({
+                            projectId, caseId, resourceObject,
+                        })
+
                 case "rigUpgrading":
                     return updateCampaign({
                         projectId,
@@ -276,35 +221,14 @@ export const useSubmitToApi = () => {
                     })
                 case "campaignWells":
                     return updateCampaignWells({
-                        projectId, caseId, resourceObject,
-                    })
-
-                default:
-                    console.log("Resource name not found", resourceName)
-                }
-
-                if (ordinaryTimeSeriesTypes.find((x) => x === resourceName)) {
-                    return saveTimeSeriesProfile({
                         projectId,
                         caseId,
-                        saveFunction: await GetCaseService().saveProfile(
-                            projectId,
-                            caseId,
-                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesDto,
-                        ),
+                        resourceId: resourceId!,
+                        resourceObject,
                     })
-                }
 
-                if (overrideTimeSeriesTypes.find((x) => x === resourceName)) {
-                    return saveTimeSeriesProfile({
-                        projectId,
-                        caseId,
-                        saveFunction: await GetCaseService().saveOverrideProfile(
-                            projectId,
-                            caseId,
-                            { ...resourceObject, profileType: resourceName } as Components.Schemas.SaveTimeSeriesOverrideDto,
-                        ),
-                    })
+                    default:
+                        console.log("Resource name not found", resourceName)
                 }
 
                 return { success: false, error: new Error("Service not found") }

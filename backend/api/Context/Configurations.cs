@@ -13,11 +13,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     {
         builder.HasIndex(p => p.FusionProjectId);
 
-        // Configure self-referencing relationship for Project for revisions
         builder.HasOne(p => p.OriginalProject)
             .WithMany(p => p.Revisions)
             .HasForeignKey(p => p.OriginalProjectId)
-            .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 
@@ -36,16 +35,6 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
         builder.HasOne(c => c.DrainageStrategy)
             .WithOne(c => c.Case)
             .HasForeignKey<DrainageStrategy>(c => c.CaseId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(c => c.WellProject)
-            .WithOne(c => c.Case)
-            .HasForeignKey<WellProject>(c => c.CaseId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(c => c.Exploration)
-            .WithOne(c => c.Case)
-            .HasForeignKey<Exploration>(c => c.CaseId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.Transport)
@@ -80,34 +69,18 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
     }
 }
 
-public class DevelopmentWellConfiguration : IEntityTypeConfiguration<DevelopmentWell>
+public class CampaignWellConfiguration : IEntityTypeConfiguration<CampaignWell>
 {
-    public void Configure(EntityTypeBuilder<DevelopmentWell> builder)
+    public void Configure(EntityTypeBuilder<CampaignWell> builder)
     {
-        builder.HasIndex(wc => new { wc.WellProjectId, wc.WellId }).IsUnique();
+        builder.HasIndex(x => new { x.WellId, x.CampaignId }).IsUnique();
 
         builder.HasOne(w => w.Well)
-            .WithMany(w => w.DevelopmentWells)
+            .WithMany(w => w.CampaignWells)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(w => w.Campaign)
-            .WithMany(w => w.DevelopmentWells)
-            .OnDelete(DeleteBehavior.NoAction);
-    }
-}
-
-public class ExplorationWellConfiguration : IEntityTypeConfiguration<ExplorationWell>
-{
-    public void Configure(EntityTypeBuilder<ExplorationWell> builder)
-    {
-        builder.HasIndex(ew => new { ew.ExplorationId, ew.WellId }).IsUnique();
-
-        builder.HasOne(w => w.Well)
-            .WithMany(w => w.ExplorationWells)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne(w => w.Campaign)
-            .WithMany(w => w.ExplorationWells)
+            .WithMany(w => w.CampaignWells)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

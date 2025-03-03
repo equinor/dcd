@@ -16,15 +16,10 @@ public class GetCampaignService(DcdDbContext context)
             .Where(x => x.Id == campaignId)
             .SingleAsync();
 
-        await context.DevelopmentWells
-                .Include(x => x.Well)
-                .Where(x => x.CampaignId == campaignId)
-                .LoadAsync();
-
-        await context.ExplorationWell
-                .Include(x => x.Well)
-                .Where(x => x.CampaignId == campaignId)
-                .LoadAsync();
+        await context.CampaignWells
+            .Include(x => x.Well)
+            .Where(x => x.CampaignId == campaignId)
+            .LoadAsync();
 
         return CampaignMapper.MapToDto(campaign);
     }

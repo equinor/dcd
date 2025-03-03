@@ -17,8 +17,6 @@ public class CreateCaseService(DcdDbContext context)
         var surfId = Guid.NewGuid();
         var substructureId = Guid.NewGuid();
         var transportId = Guid.NewGuid();
-        var explorationId = Guid.NewGuid();
-        var wellProjectId = Guid.NewGuid();
         var onshorePowerSupplyId = Guid.NewGuid();
 
         var createdCase = new Case
@@ -48,12 +46,6 @@ public class CreateCaseService(DcdDbContext context)
 
             TransportId = transportId,
             Transport = CreateTransport(transportId),
-
-            ExplorationId = explorationId,
-            Exploration = CreateExploration(explorationId),
-
-            WellProjectId = wellProjectId,
-            WellProject = CreateWellProject(wellProjectId),
 
             OnshorePowerSupplyId = onshorePowerSupplyId,
             OnshorePowerSupply = CreateOnshorePowerSupply(onshorePowerSupplyId),
@@ -105,7 +97,7 @@ public class CreateCaseService(DcdDbContext context)
                     RigUpgradingCostValues = [],
                     RigMobDemobCostValues = []
                 }
-            ],
+            ]
         };
 
         context.Cases.Add(createdCase);
@@ -118,9 +110,8 @@ public class CreateCaseService(DcdDbContext context)
         return new DrainageStrategy
         {
             Id = id,
-            Description = "Drainage Strategy",
-
             NGLYield = 0,
+            CondensateYield = 0,
             GasShrinkageFactor = 0,
             ProducerCount = 0,
             GasInjectorCount = 0,
@@ -154,11 +145,8 @@ public class CreateCaseService(DcdDbContext context)
             CO2OnMaxWaterInjectionProfile = 0,
             CostYear = 0,
             ProspVersion = null,
-            LastChangedDate = null,
             Source = Source.ConceptApp,
             ApprovedBy = "",
-            DG3Date = null,
-            DG4Date = null,
             FacilityOpex = 0,
             PeakElectricityImported = 0
         };
@@ -180,13 +168,10 @@ public class CreateCaseService(DcdDbContext context)
             GasInjectorCount = 0,
             WaterInjectorCount = 0,
             ProductionFlowline = ProductionFlowline.No_production_flowline,
-            LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
             ProspVersion = null,
-            ApprovedBy = "",
-            DG3Date = null,
-            DG4Date = null
+            ApprovedBy = ""
         };
     }
 
@@ -201,10 +186,7 @@ public class CreateCaseService(DcdDbContext context)
             CostYear = 0,
             ProspVersion = null,
             Source = Source.ConceptApp,
-            LastChangedDate = null,
-            Concept = Concept.NO_CONCEPT,
-            DG3Date = null,
-            DG4Date = null
+            Concept = Concept.NO_CONCEPT
         };
     }
 
@@ -216,12 +198,9 @@ public class CreateCaseService(DcdDbContext context)
             GasExportPipelineLength = 0,
             OilExportPipelineLength = 0,
             Maturity = Maturity.A,
-            LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
-            ProspVersion = null,
-            DG3Date = null,
-            DG4Date = null
+            ProspVersion = null
         };
     }
 
@@ -230,30 +209,9 @@ public class CreateCaseService(DcdDbContext context)
         return new OnshorePowerSupply
         {
             Id = id,
-            LastChangedDate = null,
             CostYear = 0,
             Source = Source.ConceptApp,
-            ProspVersion = null,
-            DG3Date = null,
-            DG4Date = null
-        };
-    }
-
-    private static Exploration CreateExploration(Guid id)
-    {
-        return new Exploration
-        {
-            Id = id,
-            ExplorationWells = []
-        };
-    }
-
-    private static WellProject CreateWellProject(Guid id)
-    {
-        return new WellProject
-        {
-            Id = id,
-            DevelopmentWells = []
+            ProspVersion = null
         };
     }
 }

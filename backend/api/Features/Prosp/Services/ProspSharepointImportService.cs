@@ -9,7 +9,8 @@ using Microsoft.Graph;
 
 namespace api.Features.Prosp.Services;
 
-public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
+public class ProspSharepointImportService(
+    GraphServiceClient graphServiceClient,
     ProspExcelImportService prospExcelImportService,
     RecalculationService recalculationService,
     DcdDbContext context)
@@ -28,10 +29,10 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
             : await graphServiceClient.Sites[siteId].Drives[driveId].Root.ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
 
         return driveItemsDelta.Select(x => new SharePointFileDto
-        {
-            Name = x.Name,
-            Id = x.Id
-        })
+            {
+                Name = x.Name,
+                Id = x.Id
+            })
             .ToList();
     }
 
@@ -89,6 +90,7 @@ public class ProspSharepointImportService(GraphServiceClient graphServiceClient,
             : $"/drive/root:/{validatedUri.AbsolutePath.Split('/')[3]}";
 
         var getDrivesInSite = await graphServiceClient.Sites[site.Id].Drives.Request().GetAsync();
+
         var decodedDocumentLibraryName = HttpUtility.UrlDecode(path.Split('/')[3]) == "Shared Documents"
             ? "Documents"
             : HttpUtility.UrlDecode(path.Split('/')[3]);

@@ -13,7 +13,6 @@ public static class SurfProspService
         var asset = caseItem.Surf;
 
         asset.Source = Source.ConceptApp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.CessationCost = 0;
         asset.InfieldPipelineSystemLength = 0;
         asset.UmbilicalSystemLength = 0;
@@ -26,8 +25,6 @@ public static class SurfProspService
         asset.ProductionFlowline = ProductionFlowline.No_production_flowline;
         asset.CostYear = 0;
         asset.ApprovedBy = "";
-        asset.DG3Date = null;
-        asset.DG4Date = null;
         asset.ProspVersion = null;
 
         SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, 0, []);
@@ -37,7 +34,6 @@ public static class SurfProspService
     {
         List<string> costProfileCoords = ["J112", "K112", "L112", "M112", "N112", "O112", "P112"];
 
-        var dG3Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Surf.Dg3Date);
         var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Surf.Dg4Date);
         var lengthProductionLine = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Surf.LengthProductionLine);
         var lengthUmbilicalSystem = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Surf.LengthUmbilicalSystem);
@@ -59,7 +55,6 @@ public static class SurfProspService
         var asset = caseItem.Surf;
 
         asset.Source = Source.Prosp;
-        asset.LastChangedDate = DateTime.UtcNow;
         asset.CessationCost = cessationCost;
         asset.InfieldPipelineSystemLength = lengthProductionLine;
         asset.UmbilicalSystemLength = lengthUmbilicalSystem;
@@ -72,8 +67,6 @@ public static class SurfProspService
         asset.ProductionFlowline = productionFlowLine;
         asset.CostYear = costYear;
         asset.ApprovedBy = "";
-        asset.DG3Date = dG3Date;
-        asset.DG4Date = dG4Date;
         asset.ProspVersion = versionDate;
 
         SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, startYear, costProfileValues);

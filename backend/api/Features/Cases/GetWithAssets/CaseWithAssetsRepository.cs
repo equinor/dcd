@@ -8,16 +8,16 @@ namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsRepository(DcdDbContext context)
 {
-    public async Task<Case> GetCaseWithAssets(Guid caseId)
+    public async Task<Case> GetCaseWithAssets(Guid projectPk, Guid caseId)
     {
         var caseItem = await context.Cases
             .Include(x => x.DrainageStrategy)
-            .Include(x => x.Topside)
+            .Include(x => x.OnshorePowerSupply)
             .Include(x => x.Substructure)
             .Include(x => x.Surf)
+            .Include(x => x.Topside)
             .Include(x => x.Transport)
-            .Include(x => x.OnshorePowerSupply)
-            .SingleOrDefaultAsync(c => c.Id == caseId);
+            .SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.Id == caseId);
 
         if (caseItem == null)
         {
@@ -29,22 +29,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .LoadAsync();
 
         await context.Campaigns
-            .Include(c => c.ExplorationWells)
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        await context.Campaigns
-            .Include(c => c.DevelopmentWells)
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        await context.Campaigns
-            .Include(x => x.DevelopmentWells).ThenInclude(x => x.Well)
-            .Where(x => x.CaseId == caseId)
-            .LoadAsync();
-
-        await context.Campaigns
-            .Include(x => x.ExplorationWells).ThenInclude(x => x.Well)
+            .Include(x => x.CampaignWells).ThenInclude(x => x.Well)
             .Where(x => x.CaseId == caseId)
             .LoadAsync();
 

@@ -13,6 +13,7 @@ public class CalculateNpvServiceTests
     {
         // Arrange
         var caseId = Guid.NewGuid();
+
         var project = new Project
         {
             DiscountRate = 8,

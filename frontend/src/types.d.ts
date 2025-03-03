@@ -40,16 +40,16 @@ declare namespace Components {
             capexFactorFEEDStudies: number; // double
             host: string | null;
             averageCo2Intensity: number; // double
-            dgaDate: string; // date-time
-            dgbDate: string; // date-time
-            dgcDate: string; // date-time
-            apboDate: string; // date-time
-            borDate: string; // date-time
-            vpboDate: string; // date-time
-            dG0Date: string; // date-time
-            dG1Date: string; // date-time
-            dG2Date: string; // date-time
-            dG3Date: string; // date-time
+            dgaDate: string | null; // date-time
+            dgbDate: string | null; // date-time
+            dgcDate: string | null; // date-time
+            apboDate: string | null; // date-time
+            borDate: string | null; // date-time
+            vpboDate: string | null; // date-time
+            dG0Date: string | null; // date-time
+            dG1Date: string | null; // date-time
+            dG2Date: string | null; // date-time
+            dG3Date: string | null; // date-time
             dG4Date: string; // date-time
             createdUtc: string; // date-time
             updatedUtc: string; // date-time
@@ -101,6 +101,9 @@ declare namespace Components {
             co2Emissions: TimeSeriesDto;
             co2EmissionsOverride: TimeSeriesOverrideDto;
             productionProfileNgl: TimeSeriesDto;
+            productionProfileNglOverride: TimeSeriesOverrideDto;
+            condensateProduction: TimeSeriesDto;
+            condensateProductionOverride: TimeSeriesOverrideDto;
             importedElectricity: TimeSeriesDto;
             importedElectricityOverride: TimeSeriesOverrideDto;
             co2Intensity: TimeSeriesDto;
@@ -121,8 +124,6 @@ declare namespace Components {
             onshorePowerSupply: OnshorePowerSupplyDto;
             onshorePowerSupplyCostProfile: TimeSeriesDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
-            explorationWells: ExplorationWellDto[];
-            explorationCampaigns: CampaignDto[];
             explorationWellCostProfile: TimeSeriesDto;
             appraisalWellCostProfile: TimeSeriesDto;
             sidetrackCostProfile: TimeSeriesDto;
@@ -135,8 +136,8 @@ declare namespace Components {
             explorationRigUpgradingCostProfileOverride: TimeSeriesOverrideDto;
             explorationRigMobDemob: TimeSeriesDto;
             explorationRigMobDemobOverride: TimeSeriesOverrideDto;
-            developmentWells: DevelopmentWellDto[];
             developmentCampaigns: CampaignDto[];
+            explorationCampaigns: CampaignDto[];
             oilProducerCostProfile: TimeSeriesDto;
             oilProducerCostProfileOverride: TimeSeriesOverrideDto;
             gasProducerCostProfile: TimeSeriesDto;
@@ -245,15 +246,10 @@ declare namespace Components {
             annualWellInterventionCostPerWell: number; // double
             pluggingAndAbandonment: number; // double
         }
-        export interface DevelopmentWellDto {
-            drillingSchedule: TimeSeriesScheduleDto;
-            wellId: string; // uuid
-            updatedUtc: string; // date-time
-        }
         export interface DrainageStrategyDto {
             id: string; // uuid
-            description: string;
             nglYield: number; // double
+            condensateYield: number; // double
             gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
@@ -269,11 +265,6 @@ declare namespace Components {
             explorationProjectDrillingCosts: number; // double
             appraisalRigMobDemob: number; // double
             appraisalProjectDrillingCosts: number; // double
-        }
-        export interface ExplorationWellDto {
-            drillingSchedule: TimeSeriesScheduleDto;
-            wellId: string; // uuid
-            updatedUtc: string; // date-time
         }
         export interface FeatureToggleDto {
             revisionEnabled?: boolean;
@@ -297,8 +288,6 @@ declare namespace Components {
             costYear: number; // int32
             source: Source /* int32 */;
             prospVersion: string | null; // date-time
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
         }
         export type PhysUnit = 0 | 1; // int32
         export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
@@ -390,8 +379,6 @@ declare namespace Components {
             source: Source /* int32 */;
             lastChangedDate: string | null; // date-time
             concept: Concept /* int32 */;
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
         }
         export interface SurfDto {
             id: string; // uuid
@@ -411,8 +398,6 @@ declare namespace Components {
             source: Source /* int32 */;
             prospVersion: string | null; // date-time
             approvedBy: string;
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
         }
         export interface TimeSeriesDto {
             startYear: number; // int32
@@ -424,11 +409,6 @@ declare namespace Components {
             values: number /* double */[];
             override: boolean;
             updatedUtc: string; // date-time
-        }
-        export interface TimeSeriesScheduleDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values: number /* int32 */[];
         }
         export interface TopsideDto {
             id: string; // uuid
@@ -454,8 +434,6 @@ declare namespace Components {
             lastChangedDate: string | null; // date-time
             source: Source /* int32 */;
             approvedBy: string;
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
             facilityOpex: number; // double
             peakElectricityImported: number; // double
         }
@@ -468,8 +446,6 @@ declare namespace Components {
             costYear: number; // int32
             source: Source /* int32 */;
             prospVersion: string | null; // date-time
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
         }
         export interface UpdateCampaignDto {
             campaignCostType: CampaignCostType /* int32 */;
@@ -495,16 +471,16 @@ declare namespace Components {
             breakEvenOverride: number | null; // double
             host: string | null;
             averageCo2Intensity: number; // double
-            dgaDate: string; // date-time
-            dgbDate: string; // date-time
-            dgcDate: string; // date-time
-            apboDate: string; // date-time
-            borDate: string; // date-time
-            vpboDate: string; // date-time
-            dG0Date: string; // date-time
-            dG1Date: string; // date-time
-            dG2Date: string; // date-time
-            dG3Date: string; // date-time
+            dgaDate: string | null; // date-time
+            dgbDate: string | null; // date-time
+            dgcDate: string | null; // date-time
+            apboDate: string | null; // date-time
+            borDate: string | null; // date-time
+            vpboDate: string | null; // date-time
+            dG0Date: string | null; // date-time
+            dG1Date: string | null; // date-time
+            dG2Date: string | null; // date-time
+            dG3Date: string | null; // date-time
             dG4Date: string; // date-time
             sharepointFileId: string | null;
             sharepointFileName: string | null;
@@ -518,6 +494,7 @@ declare namespace Components {
         }
         export interface UpdateDrainageStrategyDto {
             nglYield: number; // double
+            condensateYield: number; // double
             gasShrinkageFactor: number; // double
             producerCount: number; // int32
             gasInjectorCount: number; // int32
@@ -537,8 +514,6 @@ declare namespace Components {
         }
         export interface UpdateOnshorePowerSupplyDto {
             costYear: number; // int32
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
             source: Source /* int32 */;
         }
         export interface UpdateProjectDto {
@@ -586,8 +561,6 @@ declare namespace Components {
             costYear: number; // int32
             source: Source /* int32 */;
             concept: Concept /* int32 */;
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
             maturity: Maturity /* int32 */;
             approvedBy: string;
         }
@@ -605,8 +578,6 @@ declare namespace Components {
             costYear: number; // int32
             source: Source /* int32 */;
             approvedBy: string;
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
             maturity: Maturity /* int32 */;
         }
         export interface UpdateTopsideDto {
@@ -627,8 +598,6 @@ declare namespace Components {
             cO2OnMaxGasProfile: number; // double
             cO2OnMaxWaterInjectionProfile: number; // double
             costYear: number; // int32
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
             facilityOpex: number; // double
             peakElectricityImported: number; // double
             source: Source /* int32 */;
@@ -639,8 +608,6 @@ declare namespace Components {
             gasExportPipelineLength: number; // double
             oilExportPipelineLength: number; // double
             costYear: number; // int32
-            dG3Date: string | null; // date-time
-            dG4Date: string | null; // date-time
             source: Source /* int32 */;
             maturity: Maturity /* int32 */;
         }

@@ -11,6 +11,9 @@ public static class UnitConversionHelpers
         { ProfileTypes.Co2Emissions, 1_000_000 },
         { ProfileTypes.Co2EmissionsOverride, 1_000_000 },
         { ProfileTypes.ProductionProfileNgl, 1_000_000 },
+        { ProfileTypes.ProductionProfileNglOverride, 1_000_000 },
+        { ProfileTypes.CondensateProduction, 1_000_000 },
+        { ProfileTypes.CondensateProductionOverride, 1_000_000 },
         { ProfileTypes.ProductionProfileOil, 1_000_000 },
         { ProfileTypes.AdditionalProductionProfileOil, 1_000_000 },
         { ProfileTypes.ProductionProfileWater, 1_000_000 },
@@ -26,6 +29,7 @@ public static class UnitConversionHelpers
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)
     {
         var conversionFactor = GetConversionFactor(type, unit, toDto: true);
+
         return Array.ConvertAll(values, x => Math.Round(x * conversionFactor, 10));
     }
 
@@ -92,6 +96,9 @@ public static class UnitConversionHelpers
         ProfileTypes.NetSalesGasOverride,
         ProfileTypes.ProductionProfileGas,
         ProfileTypes.ProductionProfileNgl,
+        ProfileTypes.ProductionProfileNglOverride,
+        ProfileTypes.CondensateProduction,
+        ProfileTypes.CondensateProductionOverride,
         ProfileTypes.ProductionProfileOil,
         ProfileTypes.ProductionProfileWater,
         ProfileTypes.ProductionProfileWaterInjection

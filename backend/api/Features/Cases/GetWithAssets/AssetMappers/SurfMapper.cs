@@ -21,13 +21,11 @@ public static class SurfMapper
             GasInjectorCount = entity.GasInjectorCount,
             WaterInjectorCount = entity.WaterInjectorCount,
             ProductionFlowline = entity.ProductionFlowline,
-            LastChangedDate = entity.LastChangedDate ?? default,
+            LastChangedDate = entity.UpdatedUtc,
             CostYear = entity.CostYear,
             Source = entity.Source,
             ProspVersion = entity.ProspVersion,
-            ApprovedBy = entity.ApprovedBy,
-            DG3Date = entity.DG3Date,
-            DG4Date = entity.DG4Date
+            ApprovedBy = entity.ApprovedBy
         };
     }
 }

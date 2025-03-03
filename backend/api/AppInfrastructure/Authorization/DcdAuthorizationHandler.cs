@@ -31,6 +31,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
         if (context.User.Identity?.IsAuthenticated != true)
         {
             context.Fail();
+
             return;
         }
 

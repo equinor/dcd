@@ -19,7 +19,5 @@ public class UpdateSurfDto
     [Required] public required int CostYear { get; set; }
     [Required] public required Source Source { get; set; }
     [Required] public required string ApprovedBy { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    public required DateTime? DG4Date { get; set; }
     [Required] public required Maturity Maturity { get; set; }
 }

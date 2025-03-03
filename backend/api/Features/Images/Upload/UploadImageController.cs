@@ -18,6 +18,7 @@ public class UploadImageController(
         UploadImageValidator.EnsureIsValid(image);
 
         var imageId = await uploadCaseImageService.SaveImage(image, projectId, caseId);
+
         return await getCaseImageService.GetImage(imageId);
     }
 
@@ -28,6 +29,7 @@ public class UploadImageController(
         UploadImageValidator.EnsureIsValid(image);
 
         var imageId = await uploadProjectImageService.SaveImage(image, projectId);
+
         return await getProjectImageService.GetImage(imageId);
     }
 }

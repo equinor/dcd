@@ -29,8 +29,6 @@ public class TopsideDto
     public required DateTime? LastChangedDate { get; set; }
     [Required] public required Source Source { get; set; }
     [Required] public required string ApprovedBy { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    public required DateTime? DG4Date { get; set; }
     [Required] public required double FacilityOpex { get; set; }
     [Required] public required double PeakElectricityImported { get; set; }
 }

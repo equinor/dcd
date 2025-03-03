@@ -1,6 +1,5 @@
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 using api.Models;
-using api.Models.Enums;
 
 namespace api.Features.Cases.GetWithAssets.AssetMappers;
 
@@ -8,9 +7,7 @@ public static class CampaignMapper
 {
     public static CampaignDto MapToDto(Campaign campaign)
     {
-        var wells = campaign.CampaignType == CampaignType.ExplorationCampaign
-            ? MapExplorationWells(campaign.ExplorationWells)
-            : MapDevelopmentWells(campaign.DevelopmentWells);
+        var wells = MapCampaignWells(campaign.CampaignWells);
 
         return new CampaignDto
         {
@@ -32,23 +29,9 @@ public static class CampaignMapper
         };
     }
 
-    private static List<CampaignWellDto> MapExplorationWells(List<ExplorationWell> explorationWells)
+    private static List<CampaignWellDto> MapCampaignWells(List<CampaignWell> campaignWells)
     {
-        return explorationWells
-            .Select(x => new CampaignWellDto
-            {
-                WellId = x.WellId,
-                WellName = x.Well.Name ?? "",
-                WellCategory = x.Well.WellCategory,
-                StartYear = x.StartYear,
-                Values = x.Values
-            })
-            .ToList();
-    }
-
-    private static List<CampaignWellDto> MapDevelopmentWells(List<DevelopmentWell> developmentWells)
-    {
-        return developmentWells
+        return campaignWells
             .Select(x => new CampaignWellDto
             {
                 WellId = x.WellId,

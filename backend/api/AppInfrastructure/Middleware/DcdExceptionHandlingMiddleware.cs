@@ -133,6 +133,7 @@ public class DcdExceptionHandlingMiddleware(
     {
         requestStream.Position = 0;
         using var reader = new StreamReader(requestStream, Encoding.UTF8);
+
         return await reader.ReadToEndAsync();
     }
 }

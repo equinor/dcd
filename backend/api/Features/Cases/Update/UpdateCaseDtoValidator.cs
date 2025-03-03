@@ -11,25 +11,32 @@ public static class UpdateCaseDtoValidator
             throw new UnprocessableContentException($"{nameof(UpdateCaseDto)}.{nameof(dto.Name)} is required and cannot be white space only.");
         }
 
-        var earliestAllowedDgDate = new DateTime(2000, 1, 1);
+        var minAllowedDgDate = new DateTime(2000, 1, 1);
+        var maxAllowedDbDate = new DateTime(2150, 1, 1);
 
-        var dgDates = new List<DateTime>
+        var dgDates = new List<DateTime?>
+            {
+                dto.DG0Date,
+                dto.DG1Date,
+                dto.DG2Date,
+                dto.DG3Date,
+                dto.DG4Date,
+                dto.DGADate,
+                dto.DGBDate,
+                dto.DGCDate
+            }
+            .Where(x => x != null)
+            .Where(x => x != DateTime.MinValue)
+            .ToList();
+
+        if (dgDates.Any(x => x < minAllowedDgDate))
         {
-            dto.DG0Date,
-            dto.DG1Date,
-            dto.DG2Date,
-            dto.DG3Date,
-            dto.DG4Date,
-            dto.DGADate,
-            dto.DGBDate,
-            dto.DGCDate
+            throw new UnprocessableContentException($"One of the provided DG dates is before {minAllowedDgDate}.");
         }
-        .Where(x => x != DateTime.MinValue)
-        .ToList();
 
-        if (dgDates.Any(x => x < earliestAllowedDgDate))
+        if (dgDates.Any(x => x > maxAllowedDbDate))
         {
-            throw new UnprocessableContentException($"One of the provided DG dates is before {earliestAllowedDgDate}.");
+            throw new UnprocessableContentException($"One of the provided DG dates is after {maxAllowedDbDate}.");
         }
     }
 }

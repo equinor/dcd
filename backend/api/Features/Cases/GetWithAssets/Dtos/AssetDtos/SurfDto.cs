@@ -23,6 +23,4 @@ public class SurfDto
     [Required] public required Source Source { get; set; }
     public required DateTime? ProspVersion { get; set; }
     [Required] public required string ApprovedBy { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    public required DateTime? DG4Date { get; set; }
 }

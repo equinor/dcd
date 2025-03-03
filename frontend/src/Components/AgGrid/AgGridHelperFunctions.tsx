@@ -108,7 +108,7 @@ const createYearlyValues = (
 }
 
 export const wellsToRowData = (
-    assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.DevelopmentWellDto[],
+    assetWells: Components.Schemas.CampaignWellDto[],
     wells: Components.Schemas.WellOverviewDto[] | undefined,
     dg4Year: number,
     editAllowed: boolean,

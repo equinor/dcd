@@ -12,13 +12,14 @@ public class CalculateTotalCostServiceTests
     public void CalculateTotalCostAsync_AllProfilesProvided_ReturnsCorrectTotalCostInUsd()
     {
         var caseId = Guid.NewGuid();
+
         var project = new Project
         {
             Id = Guid.NewGuid(),
             OilPriceUSD = 75,
             GasPriceNOK = 3,
             ExchangeRateUSDToNOK = 10,
-            Currency = api.Models.Enums.Currency.NOK,
+            Currency = api.Models.Enums.Currency.NOK
         };
 
         var caseItem = new Case
@@ -169,7 +170,6 @@ public class CalculateTotalCostServiceTests
                     StartYear = 2020,
                     Values = [50.0, 80.0, 120.0]
                 }
-
             ]
         };
 
@@ -183,6 +183,7 @@ public class CalculateTotalCostServiceTests
         Assert.Equal(3, calculatedTotalCostCostProfileUsd.Values.Length);
 
         var expectedValues = new[] { 295, 415, 498 };
+
         for (int i = 0; i < expectedValues.Length; i++)
         {
             Assert.Equal(expectedValues[i], calculatedTotalCostCostProfileUsd.Values[i]);

@@ -14,6 +14,7 @@ public class UpdateWellsController(UpdateWellsService updateWellsService, GetPro
     public async Task<ProjectDataDto> UpdateWells(Guid projectId, [FromBody] UpdateWellsDto dto)
     {
         await updateWellsService.UpdateWells(projectId, dto);
+
         return await getProjectDataService.GetProjectData(projectId);
     }
 }

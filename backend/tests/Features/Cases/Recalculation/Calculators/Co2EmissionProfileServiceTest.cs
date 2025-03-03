@@ -10,7 +10,6 @@ namespace tests.Features.Cases.Recalculation.Calculators;
 
 public class Co2EmissionProfileServiceTests
 {
-
     [Fact]
     public void CalculateFuelFlaringAndLosses_ReturnsCorrectValue()
     {
@@ -76,11 +75,8 @@ public class Co2EmissionProfileServiceTests
                 WaterInjectorCount = 0,
                 CostYear = 0,
                 ProspVersion = null,
-                LastChangedDate = null,
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
-                DG3Date = null,
-                DG4Date = null,
                 FacilityOpex = 0,
                 PeakElectricityImported = 0
             }
@@ -95,6 +91,7 @@ public class Co2EmissionProfileServiceTests
 
         // Assert
         var expectedTotalFuelConsumptions = new List<double> { 6102721.5 };
+
         for (int i = 0; i < expectedTotalFuelConsumptions.Count; i++)
         {
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);
@@ -110,7 +107,7 @@ public class Co2EmissionProfileServiceTests
             Project = new Project
             {
                 FlaredGasPerProducedVolume = 1.122765,
-                CO2RemovedFromGas = 0.0,
+                CO2RemovedFromGas = 0.0
             },
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles =
@@ -143,7 +140,6 @@ public class Co2EmissionProfileServiceTests
                     Values = [80000000]
                 },
 
-
                 new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.ProductionProfileWaterInjection,
@@ -173,13 +169,10 @@ public class Co2EmissionProfileServiceTests
                 WaterInjectorCount = 0,
                 CostYear = 0,
                 ProspVersion = null,
-                LastChangedDate = null,
                 Source = Source.ConceptApp,
                 ApprovedBy = "",
-                DG3Date = null,
-                DG4Date = null,
                 FacilityOpex = 0,
-                PeakElectricityImported = 0,
+                PeakElectricityImported = 0
             }
         };
 
@@ -192,6 +185,7 @@ public class Co2EmissionProfileServiceTests
 
         // Assert
         var expectedTotalFuelConsumptions = new List<double> { 6102721.5 };
+
         for (int i = 0; i < expectedTotalFuelConsumptions.Count; i++)
         {
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);

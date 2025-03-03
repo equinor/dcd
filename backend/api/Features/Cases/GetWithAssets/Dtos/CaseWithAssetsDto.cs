@@ -33,7 +33,6 @@ public class CaseWithAssetsDto
     public required TimeSeriesOverrideDto? TopsideCostProfileOverride { get; set; }
     public required TimeSeriesDto? TopsideCessationCostProfile { get; set; }
 
-
     [Required] public required DrainageStrategyDto DrainageStrategy { get; set; }
     public required TimeSeriesDto? ProductionProfileOil { get; set; }
     public required TimeSeriesDto? AdditionalProductionProfileOil { get; set; }
@@ -48,24 +47,24 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? Co2Emissions { get; set; }
     public required TimeSeriesOverrideDto? Co2EmissionsOverride { get; set; }
     public required TimeSeriesDto? ProductionProfileNgl { get; set; }
+    public required TimeSeriesOverrideDto? ProductionProfileNglOverride { get; set; }
+    public required TimeSeriesDto? CondensateProduction { get; set; }
+    public required TimeSeriesOverrideDto? CondensateProductionOverride { get; set; }
     public required TimeSeriesDto? ImportedElectricity { get; set; }
     public required TimeSeriesOverrideDto? ImportedElectricityOverride { get; set; }
     public required TimeSeriesDto? Co2Intensity { get; set; }
     public required TimeSeriesDto? DeferredOilProduction { get; set; }
     public required TimeSeriesDto? DeferredGasProduction { get; set; }
 
-
     [Required] public required SubstructureDto Substructure { get; set; }
     public required TimeSeriesDto? SubstructureCostProfile { get; set; }
     public required TimeSeriesOverrideDto? SubstructureCostProfileOverride { get; set; }
     public required TimeSeriesDto? SubstructureCessationCostProfile { get; set; }
 
-
     [Required] public required SurfDto Surf { get; set; }
     public required TimeSeriesDto? SurfCostProfile { get; set; }
     public required TimeSeriesOverrideDto? SurfCostProfileOverride { get; set; }
     public required TimeSeriesDto? SurfCessationCostProfile { get; set; }
-
 
     [Required] public required TransportDto Transport { get; set; }
     public required TimeSeriesDto? TransportCostProfile { get; set; }
@@ -76,10 +75,6 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? OnshorePowerSupplyCostProfile { get; set; }
     public required TimeSeriesOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
-    [Required] public required List<ExplorationWellDto> ExplorationWells { get; set; }
-
-    [Required] public required List<CampaignDto> ExplorationCampaigns { get; set; }
-
     public required TimeSeriesDto? ExplorationWellCostProfile { get; set; }
     public required TimeSeriesDto? AppraisalWellCostProfile { get; set; }
     public required TimeSeriesDto? SidetrackCostProfile { get; set; }
@@ -87,7 +82,6 @@ public class CaseWithAssetsDto
     public required TimeSeriesOverrideDto? GAndGAdminCostOverride { get; set; }
     public required TimeSeriesDto? SeismicAcquisitionAndProcessing { get; set; }
     public required TimeSeriesDto? CountryOfficeCost { get; set; }
-
     public required TimeSeriesDto? ProjectSpecificDrillingCostProfile { get; set; }
 
     public required TimeSeriesDto? ExplorationRigUpgradingCostProfile { get; set; }
@@ -96,9 +90,8 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? ExplorationRigMobDemob { get; set; }
     public required TimeSeriesOverrideDto? ExplorationRigMobDemobOverride { get; set; }
 
-    [Required] public required List<DevelopmentWellDto> DevelopmentWells { get; set; }
-
     [Required] public required List<CampaignDto> DevelopmentCampaigns { get; set; }
+    [Required] public required List<CampaignDto> ExplorationCampaigns { get; set; }
 
     public required TimeSeriesDto? OilProducerCostProfile { get; set; }
     public required TimeSeriesOverrideDto? OilProducerCostProfileOverride { get; set; }

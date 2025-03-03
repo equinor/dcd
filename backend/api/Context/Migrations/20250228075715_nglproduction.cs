@@ -5,13 +5,13 @@
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class shrinkagefactor : Migration
+    public partial class nglproduction : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
-                name: "GasShrinkageFactor",
+                name: "CondensateYield",
                 table: "DrainageStrategies",
                 type: "float",
                 nullable: false,
@@ -22,7 +22,7 @@ namespace api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "GasShrinkageFactor",
+                name: "CondensateYield",
                 table: "DrainageStrategies");
         }
     }

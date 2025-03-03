@@ -23,5 +23,5 @@ public enum ProjectCategory
     PowerFromShore,
     TieIn,
     RenewableOther,
-    Ccs,
+    Ccs
 }

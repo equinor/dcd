@@ -20,8 +20,7 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     public double RigUpgradingCost { get; set; }
     public double RigMobDemobCost { get; set; }
 
-    public List<DevelopmentWell> DevelopmentWells { get; set; } = [];
-    public List<ExplorationWell> ExplorationWells { get; set; } = [];
+    public List<CampaignWell> CampaignWells { get; set; } = [];
 
     [NotMapped]
     public required double[] RigUpgradingCostValues
@@ -38,9 +37,11 @@ public class Campaign : IChangeTrackable, IDateTrackedEntity
     }
 
     #region Change tracking
+
     public DateTime CreatedUtc { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime UpdatedUtc { get; set; }
     public string? UpdatedBy { get; set; }
+
     #endregion
 }

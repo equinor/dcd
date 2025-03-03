@@ -75,4 +75,3 @@ public static class CalculateBreakEvenOilPriceService
         caseItem.BreakEven = breakEvenPrice;
     }
 }
-

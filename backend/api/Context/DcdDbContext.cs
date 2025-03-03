@@ -13,27 +13,29 @@ namespace api.Context;
 
 public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser) : DbContext(options)
 {
+    // Project entities
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<RevisionDetails> RevisionDetails => Set<RevisionDetails>();
+    public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts => Set<ExplorationOperationalWellCosts>();
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts => Set<DevelopmentOperationalWellCosts>();
-    public DbSet<Case> Cases => Set<Case>();
-    public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
-    public DbSet<CaseImage> CaseImages => Set<CaseImage>();
     public DbSet<Well> Wells => Set<Well>();
-    public DbSet<DevelopmentWell> DevelopmentWells => Set<DevelopmentWell>();
-    public DbSet<ExplorationWell> ExplorationWell => Set<ExplorationWell>();
+
+    // Case entities
+    public DbSet<Case> Cases => Set<Case>();
+    public DbSet<CaseImage> CaseImages => Set<CaseImage>();
+    public DbSet<Campaign> Campaigns => Set<Campaign>();
+    public DbSet<CampaignWell> CampaignWells => Set<CampaignWell>();
+    public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
     public DbSet<Surf> Surfs => Set<Surf>();
     public DbSet<Substructure> Substructures => Set<Substructure>();
     public DbSet<Topside> Topsides => Set<Topside>();
     public DbSet<Transport> Transports => Set<Transport>();
     public DbSet<OnshorePowerSupply> OnshorePowerSupplies => Set<OnshorePowerSupply>();
     public DbSet<DrainageStrategy> DrainageStrategies => Set<DrainageStrategy>();
-    public DbSet<WellProject> WellProjects => Set<WellProject>();
-    public DbSet<Exploration> Explorations => Set<Exploration>();
-    public DbSet<Campaign> Campaigns => Set<Campaign>();
-    public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
+
+    // Infrastructure entities
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
@@ -49,8 +51,7 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
         modelBuilder.ApplyConfiguration(new ProjectMemberConfiguration());
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
-        modelBuilder.ApplyConfiguration(new DevelopmentWellConfiguration());
-        modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
+        modelBuilder.ApplyConfiguration(new CampaignWellConfiguration());
         modelBuilder.ApplyConfiguration(new TimeSeriesProfileConfiguration());
         modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
         modelBuilder.ApplyConfiguration(new RequestLogConfiguration());

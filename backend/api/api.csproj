@@ -10,7 +10,7 @@
     <PropertyGroup>
         <SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
@@ -27,16 +27,16 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.1.1" />
         <PackageReference Include="Microsoft.Graph" Version="4.36.0" />
         <PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
         <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="3.7.1" />
         <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.7.1" />
 
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
         <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />

@@ -18,7 +18,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
 
         var physicalUnit = await context.Projects.Where(x => x.Id == projectPk).Select(x => x.PhysicalUnit).SingleAsync();
 
-        var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(caseId);
+        var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(projectPk, caseId);
 
         return new CaseWithAssetsDto
         {
@@ -58,6 +58,9 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             Co2EmissionsOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), ProfileTypes.Co2EmissionsOverride, physicalUnit),
             Co2Intensity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), ProfileTypes.Co2Intensity, physicalUnit),
             ProductionProfileNgl = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), ProfileTypes.ProductionProfileNgl, physicalUnit),
+            ProductionProfileNglOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride), ProfileTypes.ProductionProfileNglOverride, physicalUnit),
+            CondensateProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction), ProfileTypes.CondensateProduction, physicalUnit),
+            CondensateProductionOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProductionOverride), ProfileTypes.CondensateProductionOverride, physicalUnit),
             ImportedElectricity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), ProfileTypes.ImportedElectricity, physicalUnit),
             ImportedElectricityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), ProfileTypes.ImportedElectricityOverride, physicalUnit),
             DeferredOilProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), ProfileTypes.DeferredOilProduction, physicalUnit),
@@ -87,7 +90,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OnshorePowerSupplyCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile)),
             OnshorePowerSupplyCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)),
 
-            ExplorationWells = ExplorationWellsMapper.MapToDtos(caseItem.Campaigns.SelectMany(x => x.ExplorationWells)),
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
             SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
@@ -101,7 +103,6 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             ExplorationRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemob)),
             ExplorationRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride)),
 
-            DevelopmentWells = DevelopmentWellsMapper.MapToDtos(caseItem.Campaigns.SelectMany(x => x.DevelopmentWells)),
             OilProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile)),
             OilProducerCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride)),
             GasProducerCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile)),

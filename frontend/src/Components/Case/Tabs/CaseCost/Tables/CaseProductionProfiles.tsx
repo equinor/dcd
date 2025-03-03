@@ -22,6 +22,8 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     const revisionAndProjectData = useDataFetch()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
     const calculatedFields = useMemo(() => [
+        ProfileTypes.ProductionProfileNglOverride,
+        ProfileTypes.CondensateProductionOverride,
         ProfileTypes.FuelFlaringAndLossesOverride,
         ProfileTypes.NetSalesGasOverride,
         ProfileTypes.ImportedElectricityOverride,
@@ -35,6 +37,10 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         const additionalGasProductionData = apiData.additionalProductionProfileGas
         const waterProductionData = apiData.productionProfileWater
         const waterInjectionData = apiData.productionProfileWaterInjection
+        const productionProfileNglData = apiData.productionProfileNgl
+        const productionProfileNglOverrideData = apiData.productionProfileNglOverride
+        const condensateProductionData = apiData.condensateProduction
+        const condensateProductionOverrideData = apiData.condensateProductionOverride
         const fuelFlaringAndLossesData = apiData.fuelFlaringAndLosses
         const fuelFlaringAndLossesOverrideData = apiData.fuelFlaringAndLossesOverride
         const netSalesGasData = apiData.netSalesGas
@@ -106,6 +112,28 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 resourcePropertyKey: ProfileTypes.ProductionProfileWaterInjection,
                 editable: true,
                 overridable: false,
+            },
+            {
+                profileName: "NGL Production",
+                unit: "MTPA",
+                profile: productionProfileNglData,
+                resourceName: ProfileTypes.ProductionProfileNglOverride,
+                resourceId: drainageStrategyData?.id,
+                resourcePropertyKey: ProfileTypes.ProductionProfileNglOverride,
+                overrideProfile: productionProfileNglOverrideData,
+                editable: true,
+                overridable: true,
+            },
+            {
+                profileName: "Condensate production",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "MSm³/yr" : "mill bbls/yr"}`,
+                profile: condensateProductionData,
+                resourceName: ProfileTypes.CondensateProductionOverride,
+                resourceId: drainageStrategyData?.id,
+                resourcePropertyKey: ProfileTypes.CondensateProductionOverride,
+                overrideProfile: condensateProductionOverrideData,
+                editable: true,
+                overridable: true,
             },
             {
                 profileName: "Fuel, flaring and losses",

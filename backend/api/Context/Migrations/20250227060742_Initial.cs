@@ -87,7 +87,7 @@ namespace api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UtcTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TimestampUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HttpStatusCode = table.Column<int>(type: "int", nullable: false),
                     Method = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RequestBody = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -224,13 +224,12 @@ namespace api.Migrations
                     Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AverageCo2Intensity = table.Column<double>(type: "float", nullable: false),
                     DrainageStrategyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    WellProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SurfId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SubstructureId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TopsideId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TransportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OnshorePowerSupplyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExplorationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OriginalCaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -239,6 +238,12 @@ namespace api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cases", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cases_Cases_OriginalCaseId",
+                        column: x => x.OriginalCaseId,
+                        principalTable: "Cases",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Cases_Projects_ProjectId",
                         column: x => x.ProjectId,
@@ -464,6 +469,7 @@ namespace api.Migrations
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NGLYield = table.Column<double>(type: "float", nullable: false),
+                    GasShrinkageFactor = table.Column<double>(type: "float", nullable: false),
                     ProducerCount = table.Column<int>(type: "int", nullable: false),
                     GasInjectorCount = table.Column<int>(type: "int", nullable: false),
                     WaterInjectorCount = table.Column<int>(type: "int", nullable: false),
@@ -479,28 +485,6 @@ namespace api.Migrations
                     table.PrimaryKey("PK_DrainageStrategies", x => x.Id);
                     table.ForeignKey(
                         name: "FK_DrainageStrategies_Cases_CaseId",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Explorations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Explorations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Explorations_Cases_CaseId",
                         column: x => x.CaseId,
                         principalTable: "Cases",
                         principalColumn: "Id",
@@ -713,69 +697,10 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WellProjects",
+                name: "CampaignWells",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WellProjects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WellProjects_Cases_CaseId",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExplorationWell",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    WellId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExplorationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CampaignId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StartYear = table.Column<int>(type: "int", nullable: false),
-                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExplorationWell", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ExplorationWell_Campaigns_CampaignId",
-                        column: x => x.CampaignId,
-                        principalTable: "Campaigns",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ExplorationWell_Explorations_ExplorationId",
-                        column: x => x.ExplorationId,
-                        principalTable: "Explorations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ExplorationWell_Wells_WellId",
-                        column: x => x.WellId,
-                        principalTable: "Wells",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DevelopmentWells",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    WellProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WellId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CampaignId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartYear = table.Column<int>(type: "int", nullable: false),
@@ -787,20 +712,14 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DevelopmentWells", x => x.Id);
+                    table.PrimaryKey("PK_CampaignWells", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DevelopmentWells_Campaigns_CampaignId",
+                        name: "FK_CampaignWells_Campaigns_CampaignId",
                         column: x => x.CampaignId,
                         principalTable: "Campaigns",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_DevelopmentWells_WellProjects_WellProjectId",
-                        column: x => x.WellProjectId,
-                        principalTable: "WellProjects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DevelopmentWells_Wells_WellId",
+                        name: "FK_CampaignWells_Wells_WellId",
                         column: x => x.WellId,
                         principalTable: "Wells",
                         principalColumn: "Id");
@@ -817,9 +736,25 @@ namespace api.Migrations
                 column: "CaseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CampaignWells_CampaignId",
+                table: "CampaignWells",
+                column: "CampaignId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CampaignWells_WellId_CampaignId",
+                table: "CampaignWells",
+                columns: new[] { "WellId", "CampaignId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CaseImages_CaseId",
                 table: "CaseImages",
                 column: "CaseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cases_OriginalCaseId",
+                table: "Cases",
+                column: "OriginalCaseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cases_ProjectId",
@@ -853,59 +788,21 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DevelopmentWells_CampaignId",
-                table: "DevelopmentWells",
-                column: "CampaignId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DevelopmentWells_WellId",
-                table: "DevelopmentWells",
-                column: "WellId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DevelopmentWells_WellProjectId_WellId",
-                table: "DevelopmentWells",
-                columns: new[] { "WellProjectId", "WellId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DrainageStrategies_CaseId",
                 table: "DrainageStrategies",
                 column: "CaseId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExceptionLogs_UtcTimestamp",
+                name: "IX_ExceptionLogs_TimestampUtc",
                 table: "ExceptionLogs",
-                column: "UtcTimestamp");
+                column: "TimestampUtc");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExplorationOperationalWellCosts_ProjectId",
                 table: "ExplorationOperationalWellCosts",
                 column: "ProjectId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Explorations_CaseId",
-                table: "Explorations",
-                column: "CaseId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExplorationWell_CampaignId",
-                table: "ExplorationWell",
-                column: "CampaignId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExplorationWell_ExplorationId_WellId",
-                table: "ExplorationWell",
-                columns: new[] { "ExplorationId", "WellId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExplorationWell_WellId",
-                table: "ExplorationWell",
-                column: "WellId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OnshorePowerSupplies_CaseId",
@@ -981,12 +878,6 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_WellProjects_CaseId",
-                table: "WellProjects",
-                column: "CaseId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Wells_ProjectId",
                 table: "Wells",
                 column: "ProjectId");
@@ -1002,6 +893,9 @@ namespace api.Migrations
                 name: "BackgroundJobMachineInstanceLogs");
 
             migrationBuilder.DropTable(
+                name: "CampaignWells");
+
+            migrationBuilder.DropTable(
                 name: "CaseImages");
 
             migrationBuilder.DropTable(
@@ -1014,9 +908,6 @@ namespace api.Migrations
                 name: "DevelopmentOperationalWellCosts");
 
             migrationBuilder.DropTable(
-                name: "DevelopmentWells");
-
-            migrationBuilder.DropTable(
                 name: "DrainageStrategies");
 
             migrationBuilder.DropTable(
@@ -1024,9 +915,6 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExplorationOperationalWellCosts");
-
-            migrationBuilder.DropTable(
-                name: "ExplorationWell");
 
             migrationBuilder.DropTable(
                 name: "OnshorePowerSupplies");
@@ -1062,13 +950,7 @@ namespace api.Migrations
                 name: "Transports");
 
             migrationBuilder.DropTable(
-                name: "WellProjects");
-
-            migrationBuilder.DropTable(
                 name: "Campaigns");
-
-            migrationBuilder.DropTable(
-                name: "Explorations");
 
             migrationBuilder.DropTable(
                 name: "Wells");

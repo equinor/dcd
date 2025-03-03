@@ -10,11 +10,13 @@ public static class DcdFusionConfiguration
 
             options.UseMsalTokenProvider();
             options.UseDefaultEndpointResolver(DcdEnvironments.FusionEnvironment);
+
             options.UseDefaultTokenProvider(opts =>
             {
                 opts.ClientId = builder.Configuration["AzureAd:ClientId"]!;
                 opts.ClientSecret = builder.Configuration["AzureAd:ClientSecret"];
             });
+
             options.AddFusionRoles();
             options.ApplicationMode = true;
         });

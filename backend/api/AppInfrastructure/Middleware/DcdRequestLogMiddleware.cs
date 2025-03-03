@@ -30,6 +30,7 @@ public class DcdRequestLogMiddleware(RequestDelegate next)
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
             var requestEndUtc = DateTime.UtcNow;
+
             dbContext.RequestLogs.Add(new RequestLog
             {
                 UrlPattern = urlPattern,

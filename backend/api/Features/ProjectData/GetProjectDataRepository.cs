@@ -107,7 +107,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                     ExplorationRigMobDemob = x.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
                     ExplorationProjectDrillingCosts = x.ExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,
                     AppraisalRigMobDemob = x.ExplorationOperationalWellCosts.AppraisalRigMobDemob,
-                    AppraisalProjectDrillingCosts = x.ExplorationOperationalWellCosts.AppraisalProjectDrillingCosts,
+                    AppraisalProjectDrillingCosts = x.ExplorationOperationalWellCosts.AppraisalProjectDrillingCosts
                 },
                 DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCostsOverviewDto
                 {

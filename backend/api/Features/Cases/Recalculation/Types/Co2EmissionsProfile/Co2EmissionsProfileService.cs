@@ -8,7 +8,7 @@ namespace api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 
 public static class Co2EmissionsProfileService
 {
-    public static void RunCalculation(Case caseItem, List<DevelopmentWell> developmentWells)
+    public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)
         {
@@ -68,11 +68,11 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
-            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray(),
+            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray()
         };
     }
 
-    private static TimeSeries CalculateDrillingEmissions(Project project, List<DevelopmentWell> developmentWells)
+    private static TimeSeries CalculateDrillingEmissions(Project project, List<CampaignWell> developmentWells)
     {
         var wellDrillingSchedules = new TimeSeries();
 

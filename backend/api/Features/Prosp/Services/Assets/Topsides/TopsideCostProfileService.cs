@@ -10,6 +10,7 @@ public static class TopsideCostProfileService
         if (caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile) != null)
         {
             UpdateTopsideTimeSeries(caseItem, startYear, values);
+
             return;
         }
 
