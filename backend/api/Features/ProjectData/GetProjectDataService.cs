@@ -1,3 +1,4 @@
+using api.Exceptions;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData.Dtos;
 
@@ -29,6 +30,12 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
     public async Task<RevisionDataDto> GetRevisionData(Guid revisionId)
     {
         var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
+
+        if (originalProjectId != projectId)
+        {
+            throw new NotFoundInDbException($"Revision {revisionId} is not connected to project {projectId}.");
+        }
+
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(originalProjectId);
 
         var revisionDetails = await getProjectDataRepository.GetRevisionDetails(revisionId);
