@@ -26,6 +26,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         ProfileTypes.CondensateProductionOverride,
         ProfileTypes.FuelFlaringAndLossesOverride,
         ProfileTypes.NetSalesGasOverride,
+        ProfileTypes.TotalExportedVolumesOverride,
         ProfileTypes.ImportedElectricityOverride,
     ], [])
 
@@ -45,6 +46,8 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         const fuelFlaringAndLossesOverrideData = apiData.fuelFlaringAndLossesOverride
         const netSalesGasData = apiData.netSalesGas
         const netSalesGasOverrideData = apiData.netSalesGasOverride
+        const totalExportedVolumesData = apiData.totalExportedVolumes
+        const totalExportedVolumesOverrideData = apiData.totalExportedVolumesOverride
         const importedElectricityData = apiData.importedElectricity
         const importedElectricityOverrideData = apiData.importedElectricityOverride
         const deferredOilData = apiData.deferredOilProduction
@@ -189,6 +192,17 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 editable: true,
                 overridable: false,
                 hideIfEmpty: true,
+            },
+            {
+                profileName: "Total exported volumes",
+                unit: "MBoE/yr",
+                profile: totalExportedVolumesData,
+                resourceName: ProfileTypes.TotalExportedVolumesOverride,
+                resourceId: drainageStrategyData?.id,
+                resourcePropertyKey: ProfileTypes.TotalExportedVolumesOverride,
+                overrideProfile: totalExportedVolumesOverrideData,
+                editable: true,
+                overridable: true,
             },
         ]
 
