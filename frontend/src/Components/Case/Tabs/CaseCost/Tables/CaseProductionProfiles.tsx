@@ -161,17 +161,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 overridable: true,
             },
             {
-                profileName: "Total exported volumes",
-                unit: "MBoE/yr",
-                profile: totalExportedVolumesData,
-                resourceName: ProfileTypes.TotalExportedVolumesOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.TotalExportedVolumesOverride,
-                overrideProfile: totalExportedVolumesOverrideData,
-                editable: true,
-                overridable: true,
-            },
-            {
                 profileName: "Imported electricity",
                 unit: "GWh",
                 profile: importedElectricityData,
@@ -203,6 +192,17 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 editable: true,
                 overridable: false,
                 hideIfEmpty: true,
+            },
+            {
+                profileName: "Total exported volumes",
+                unit: "MBoE/yr",
+                profile: totalExportedVolumesData,
+                resourceName: ProfileTypes.TotalExportedVolumesOverride,
+                resourceId: drainageStrategyData?.id,
+                resourcePropertyKey: ProfileTypes.TotalExportedVolumesOverride,
+                overrideProfile: totalExportedVolumesOverrideData,
+                editable: true,
+                overridable: true,
             },
         ]
 
