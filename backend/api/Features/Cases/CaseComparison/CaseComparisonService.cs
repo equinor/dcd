@@ -35,7 +35,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
             var additionalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
-            var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem)?.Values.Sum() ?? 0;
+            var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem)?.Values.Sum() / 1_000_000 ?? 0;
 
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
