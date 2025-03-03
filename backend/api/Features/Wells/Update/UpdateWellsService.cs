@@ -43,7 +43,7 @@ public class UpdateWellsService(DcdDbContext context)
 
             if (well != null)
             {
-                var campaignWells = context.CampaignWells.Where(ew => ew.WellId == well.Id);
+                var campaignWells = await context.CampaignWells.Where(ew => ew.WellId == well.Id).ToListAsync();
 
                 foreach (var campaignWell in campaignWells)
                 {

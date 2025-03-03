@@ -13,24 +13,29 @@ namespace api.Context;
 
 public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? currentUser) : DbContext(options)
 {
+    // Project entities
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<RevisionDetails> RevisionDetails => Set<RevisionDetails>();
+    public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts => Set<ExplorationOperationalWellCosts>();
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts => Set<DevelopmentOperationalWellCosts>();
-    public DbSet<Case> Cases => Set<Case>();
-    public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
-    public DbSet<CaseImage> CaseImages => Set<CaseImage>();
     public DbSet<Well> Wells => Set<Well>();
+
+    // Case entities
+    public DbSet<Case> Cases => Set<Case>();
+    public DbSet<CaseImage> CaseImages => Set<CaseImage>();
+    public DbSet<Campaign> Campaigns => Set<Campaign>();
     public DbSet<CampaignWell> CampaignWells => Set<CampaignWell>();
+    public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
     public DbSet<Surf> Surfs => Set<Surf>();
     public DbSet<Substructure> Substructures => Set<Substructure>();
     public DbSet<Topside> Topsides => Set<Topside>();
     public DbSet<Transport> Transports => Set<Transport>();
     public DbSet<OnshorePowerSupply> OnshorePowerSupplies => Set<OnshorePowerSupply>();
     public DbSet<DrainageStrategy> DrainageStrategies => Set<DrainageStrategy>();
-    public DbSet<Campaign> Campaigns => Set<Campaign>();
-    public DbSet<TimeSeriesProfile> TimeSeriesProfiles => Set<TimeSeriesProfile>();
+
+    // Infrastructure entities
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
     public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     public DbSet<ExceptionLog> ExceptionLogs => Set<ExceptionLog>();
