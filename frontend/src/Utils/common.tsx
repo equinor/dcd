@@ -505,3 +505,7 @@ export const sortVersions = (versions: string[]): string[] => versions.sort((a, 
     if (aMinor !== bMinor) { return bMinor - aMinor }
     return bPatch - aPatch
 })
+
+export const getLastForcedReloadDate = () => window.localStorage.getItem("forcedReloadDate")
+
+export const setLastForcedReloadDate = (date: string) => window.localStorage.setItem("forcedReloadDate", date)

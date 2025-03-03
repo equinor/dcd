@@ -13,7 +13,7 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     : ControllerBase
 {
     [HttpPost("projects/{projectId:guid}/prosp/list")]
-    [AuthorizeActionType(ActionType.Edit)]
+    [AuthorizeActionType(ActionType.Read)]
     public async Task<List<SharePointFileDto>> GetFilesFromSharePoint(Guid projectId, [FromBody] SharePointSiteUrlDto sharePointSiteUrlDto)
     {
         if (string.IsNullOrWhiteSpace(sharePointSiteUrlDto.Url))
