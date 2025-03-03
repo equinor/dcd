@@ -6,8 +6,8 @@ export class __ProjectService extends __BaseService {
         return project
     }
 
-    async getRevision(projectId: string, revisionId: string) {
-        const revision: Components.Schemas.RevisionDataDto = await this.get<Components.Schemas.RevisionDataDto>(`projects/${projectId}/revisions/${revisionId}`)
+    async getRevision(revisionId: string) {
+        const revision: Components.Schemas.RevisionDataDto = await this.get<Components.Schemas.RevisionDataDto>(`projects/revisions/${revisionId}`)
         return revision
     }
 

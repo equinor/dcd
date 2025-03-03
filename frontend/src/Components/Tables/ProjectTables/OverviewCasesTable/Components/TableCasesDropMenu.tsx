@@ -81,7 +81,7 @@ const CasesDropMenu = ({
         const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
         if (result.success) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", revisionAndProjectData.projectId] },
+                { queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId] },
             )
         }
     }

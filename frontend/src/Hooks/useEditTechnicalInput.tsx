@@ -4,17 +4,20 @@ import { useAppStore } from "../Store/AppStore"
 
 type UpdateTechnicalInputVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: Components.Schemas.UpdateWellsDto;
 };
 
 type UpdateExplorationWellCostVariables = {
     projectId: string;
+    fusionProjectId: string;
     explorationOperationalWellCostsId: string;
     body: Components.Schemas.UpdateExplorationOperationalWellCostsDto;
 };
 
 type UpdateDevelopmentWellCostVariables = {
     projectId: string;
+    fusionProjectId: string;
     developmentOperationalWellCostsId: string;
     body: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
 };
@@ -58,7 +61,7 @@ export const useTechnicalInputEdits = () => {
         mutationFn: ExplorationWellCostMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -73,7 +76,7 @@ export const useTechnicalInputEdits = () => {
         mutationFn: DevelopmentWellCostMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -86,28 +89,41 @@ export const useTechnicalInputEdits = () => {
 
     const addWellsEdit = (
         projectId: string,
+        fusionProjectId: string,
         technicalInputEdit: Components.Schemas.UpdateWellsDto,
     ) => {
         setIsSaving(true)
-        wellsMutation.mutate({ projectId, body: technicalInputEdit })
+        wellsMutation.mutate({ projectId, fusionProjectId, body: technicalInputEdit })
     }
 
     const addExplorationWellCostEdit = (
         projectId: string,
+        fusionProjectId: string,
         explorationOperationalWellCostsId: string,
         explorationWellsCostEdit: Components.Schemas.UpdateExplorationOperationalWellCostsDto,
     ) => {
         setIsSaving(true)
-        ExplorationWellCostMutation.mutate({ projectId, explorationOperationalWellCostsId, body: explorationWellsCostEdit })
+        ExplorationWellCostMutation.mutate({
+            projectId,
+            fusionProjectId,
+            explorationOperationalWellCostsId,
+            body: explorationWellsCostEdit,
+        })
     }
 
     const addDevelopmentWellCostEdit = (
         projectId: string,
+        fusionProjectId: string,
         developmentOperationalWellCostsId: string,
         developmentWellsCostEdit: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto,
     ) => {
         setIsSaving(true)
-        DevelopmentWellCostMutation.mutate({ projectId, developmentOperationalWellCostsId, body: developmentWellsCostEdit })
+        DevelopmentWellCostMutation.mutate({
+            projectId,
+            fusionProjectId,
+            developmentOperationalWellCostsId,
+            body: developmentWellsCostEdit,
+        })
     }
 
     return {

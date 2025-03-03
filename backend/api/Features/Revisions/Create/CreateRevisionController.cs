@@ -16,6 +16,6 @@ public class CreateRevisionController(CreateRevisionService createRevisionServic
 
         var revisionId = await createRevisionService.CreateRevision(projectId, createRevisionDto);
 
-        return await getProjectDataService.GetRevisionData(projectId, revisionId);
+        return await getProjectDataService.GetRevisionData(revisionId);
     }
 }
