@@ -68,6 +68,8 @@ const CaseProductionProfilesTab = () => {
                     apiData.fuelFlaringAndLossesOverride,
                     apiData.netSalesGas,
                     apiData.netSalesGasOverride,
+                    apiData.totalExportedVolumes,
+                    apiData.totalExportedVolumesOverride,
                     apiData.importedElectricity,
                     apiData.importedElectricityOverride,
                     apiData.deferredOilProduction,

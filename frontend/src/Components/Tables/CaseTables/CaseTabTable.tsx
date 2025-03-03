@@ -41,7 +41,6 @@ import {
 } from "@/Models/ITimeSeries"
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
-import useEditCase from "@/Hooks/useEditCase"
 import { useTableQueue } from "@/Hooks/useTableQueue"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
@@ -92,7 +91,6 @@ const CaseTabTable = memo(({
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
-    const { addEdit } = useEditCase()
     const { canEdit, isEditDisabled } = useCanUserEdit()
 
     // State Management

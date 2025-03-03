@@ -76,25 +76,32 @@ const submitCampaignUpdates = async (editQueue: EditInstance[], submitToApi: any
 const submitWellUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
     const uniqueWellEdits = getLatestEdits(editQueue, (edit) => edit.wellId!)
 
-    await Promise.all(uniqueWellEdits.map(async (edit) => {
+    if (uniqueWellEdits.length === 0) {
+        return
+    }
+
+    const firstEdit = uniqueWellEdits[0]
+    const wellUpdates = uniqueWellEdits.map((edit) => {
         const timeSeriesData = edit.resourceObject as ITimeSeries
-        try {
-            await submitToApi({
-                projectId: edit.projectId,
-                caseId: edit.caseId,
-                resourceName: edit.resourceName,
-                resourceId: edit.resourceId,
-                resourceObject: [{
-                    wellId: edit.wellId,
-                    startYear: timeSeriesData.startYear,
-                    values: timeSeriesData.values,
-                }],
-            })
-        } catch (error) {
-            console.error("Campaign wells update failed", { error, wellId: edit.wellId })
-            throw error
+        return {
+            wellId: edit.wellId,
+            startYear: timeSeriesData.startYear,
+            values: timeSeriesData.values,
         }
-    }))
+    })
+
+    try {
+        await submitToApi({
+            projectId: firstEdit.projectId,
+            caseId: firstEdit.caseId,
+            resourceName: firstEdit.resourceName,
+            resourceId: firstEdit.resourceId,
+            resourceObject: wellUpdates,
+        })
+    } catch (error) {
+        console.error("Campaign wells update failed", { error, wells: wellUpdates.map((w) => w.wellId) })
+        throw error
+    }
 }
 
 const submitCaseUpdates = async (editQueue: EditInstance[], submitToApi: any, projectId: string, caseId: string) => {

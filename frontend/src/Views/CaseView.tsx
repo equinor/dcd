@@ -11,7 +11,7 @@ import CaseCostTab from "@/Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseScheduleTab from "@/Components/Case/Tabs/CaseScheduleTab"
 import CaseSummaryTab from "@/Components/Case/Tabs/CaseSummaryTab"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useDataFetch, useEditCase, useLocalStorage } from "@/Hooks"
+import { useDataFetch, useLocalStorage } from "@/Hooks"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
@@ -20,7 +20,6 @@ const Wrapper = styled(Grid2)`
 `
 const CaseView = () => {
     const { caseId, tab } = useParams()
-    const { addEdit } = useEditCase()
     const revisionAndProjectData = useDataFetch()
     const {
         activeTabCase,

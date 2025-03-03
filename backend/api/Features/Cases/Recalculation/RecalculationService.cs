@@ -15,6 +15,7 @@ using api.Features.Cases.Recalculation.Types.OpexCostProfile;
 using api.Features.Cases.Recalculation.Types.ProductionProfileNGL;
 using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
+using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
 using api.Features.Cases.Recalculation.Types.WellCostProfile;
 
 using Microsoft.EntityFrameworkCore;
@@ -72,5 +73,6 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
         ProductionProfileNglProfileService.RunCalculation(caseItem);
         CondensateProductionProfileService.RunCalculation(caseItem);
+        TotalExportedVolumesProfileService.RunCalculation(caseItem);
     }
 }

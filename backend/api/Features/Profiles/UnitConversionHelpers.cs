@@ -23,7 +23,9 @@ public static class UnitConversionHelpers
         { ProfileTypes.FuelFlaringAndLosses, 1_000_000_000 },
         { ProfileTypes.FuelFlaringAndLossesOverride, 1_000_000_000 },
         { ProfileTypes.NetSalesGas, 1_000_000_000 },
-        { ProfileTypes.NetSalesGasOverride, 1_000_000_000 }
+        { ProfileTypes.NetSalesGasOverride, 1_000_000_000 },
+        { ProfileTypes.TotalExportedVolumes, 1_000_000 },
+        { ProfileTypes.TotalExportedVolumesOverride, 1_000_000 }
     };
 
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)
@@ -94,6 +96,8 @@ public static class UnitConversionHelpers
         ProfileTypes.FuelFlaringAndLossesOverride,
         ProfileTypes.NetSalesGas,
         ProfileTypes.NetSalesGasOverride,
+        ProfileTypes.TotalExportedVolumes,
+        ProfileTypes.TotalExportedVolumesOverride,
         ProfileTypes.ProductionProfileGas,
         ProfileTypes.ProductionProfileNgl,
         ProfileTypes.ProductionProfileNglOverride,
