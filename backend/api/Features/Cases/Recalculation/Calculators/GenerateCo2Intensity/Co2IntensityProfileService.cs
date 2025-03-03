@@ -1,3 +1,4 @@
+using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
@@ -11,7 +12,7 @@ public static class Co2IntensityProfileService
 {
     public static void RunCalculation(Case caseItem)
     {
-        var totalExportedVolumes = GetTotalExportedVolumes(caseItem);
+        var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem);
         var co2EmissionsProfile = GetCo2EmissionsProfile(caseItem);
 
         var co2IntensityValues = new List<double>();
@@ -41,18 +42,6 @@ public static class Co2IntensityProfileService
 
         co2IntensityProfile.StartYear = co2EmissionsProfile.StartYear - co2YearOffset;
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
-    }
-
-    private static TimeSeries GetTotalExportedVolumes(Case caseItem)
-    {
-        var oilProfile = GetOilProfile(caseItem);
-        var nglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl)?.Values ?? [];
-        var nglProductionInSm3 = new TimeSeries { StartYear = oilProfile.StartYear, Values = nglProduction.Select(v => v * 1.9).ToArray() };
-        var netSalesGas = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas)?.Values ?? [];
-        var netSalesGasValues = new TimeSeries { StartYear = oilProfile.StartYear, Values = netSalesGas.Select(v => v / 1E9).ToArray() };
-        var totalExportedVolumes = TimeSeriesMerger.MergeTimeSeries(oilProfile, nglProductionInSm3, netSalesGasValues);
-
-        return totalExportedVolumes;
     }
 
     public static TimeSeries GetOilProfile(Case caseItem)
