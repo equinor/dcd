@@ -84,26 +84,21 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
     }
 
     /// <summary>
-    /// Checks if the revisionId is connected to the projectId and gets the classification and originalProjectId of the revision
+    /// Checks if the revisionId is connected to the projectId and gets the originalProjectId of the revision
     /// </summary>
-    /// <returns>Classification and originalProjectId of revision, or null if there is a mismatch</returns>
-    private static async Task<(ProjectClassification? Classification, Guid? OriginalProjectIdGuid)> GetDataFromRevision(DcdDbContext dbContext, Guid revisionId, Guid? projectId)
+    /// <returns>originalProjectId of revision, or null if there is a mismatch</returns>
+    private static async Task<Guid?> GetDataFromRevision(DcdDbContext dbContext, Guid revisionId, Guid? projectId)
     {
-            var revisionData = await dbContext.Projects
+            var originalProjectId = await dbContext.Projects
                 .Where(p => p.Id == revisionId && p.IsRevision)
-                .Select(x => new
-                {
-                    x.OriginalProjectId,
-                    x.Classification,
-                })
+                .Select(x => x.OriginalProjectId)
                 .SingleAsync();
 
-            if (revisionData.OriginalProjectId == null || (projectId != null && projectId != revisionData.OriginalProjectId))
+            if ((projectId != null && projectId != originalProjectId))
             {
-                return (null, null);
+                return null;
             }
-
-            return (revisionData.Classification, revisionData.OriginalProjectId.Value);
+            return originalProjectId;
     }
 
     private static async Task<(ProjectMemberRole? ProjectMemberAccess, ProjectClassification Classification, bool isRevision) > GetDataFromProject(DcdDbContext dbContext, Guid projectPk, Guid userId)
@@ -132,13 +127,12 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
         await using var dbContext = await contextFactory.CreateDbContextAsync();
         var projectPk = await ResolveProjectPkFromRoute(dbContext);
         var revisionId = GetIdFromRoute("revisionId");
-        ProjectClassification? revisionClassification = null;
 
         if (revisionId != null)
         {
-            (revisionClassification, projectPk) = await GetDataFromRevision(dbContext, revisionId.Value, projectPk);
+            projectPk = await GetDataFromRevision(dbContext, revisionId.Value, projectPk);
 
-            if (revisionClassification == null || projectPk == null)
+            if (projectPk == null)
             {
                 return [];
             }
@@ -152,8 +146,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
         var (projectMemberRole, projectClassification, projectIsRevision) = await GetDataFromProject(dbContext, projectPk.Value, userId);
 
         var isRevision = revisionId != null || projectIsRevision;
-        var classification = (revisionClassification != null && (int)revisionClassification >= (int)projectClassification) ? revisionClassification : projectClassification;
-        return AccessCalculator.CalculateAccess(userRoles, classification.Value, isRevision, projectMemberRole);
+        return AccessCalculator.CalculateAccess(userRoles, projectClassification, isRevision, projectMemberRole);
     }
 
     private async Task<Guid?> ResolveProjectPkFromRoute(DcdDbContext dbContext)
