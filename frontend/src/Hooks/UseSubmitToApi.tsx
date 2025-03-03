@@ -150,45 +150,45 @@ export const useSubmitToApi = () => {
         try {
             const result = await (async () => {
                 switch (resourceName) {
-                    case "case":
-                        return updateCase({
-                            projectId, caseId, resourceObject,
-                        })
+                case "case":
+                    return updateCase({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "caseProfiles":
-                        return updateCaseProfiles({
-                            projectId, caseId, resourceObject,
-                        })
+                case "caseProfiles":
+                    return updateCaseProfiles({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "topside":
-                        return updateTopside({
-                            projectId, caseId, resourceObject,
-                        })
+                case "topside":
+                    return updateTopside({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "surf":
-                        return updateSurf({
-                            projectId, caseId, resourceObject,
-                        })
+                case "surf":
+                    return updateSurf({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "substructure":
-                        return updateSubstructure({
-                            projectId, caseId, resourceObject,
-                        })
+                case "substructure":
+                    return updateSubstructure({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "transport":
-                        return updateTransport({
-                            projectId, caseId, resourceObject,
-                        })
+                case "transport":
+                    return updateTransport({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "onshorePowerSupply":
-                        return updateOnshorePowerSupply({
-                            projectId, caseId, resourceObject,
-                        })
+                case "onshorePowerSupply":
+                    return updateOnshorePowerSupply({
+                        projectId, caseId, resourceObject,
+                    })
 
-                    case "drainageStrategy":
-                        return updateDrainageStrategy({
-                            projectId, caseId, resourceObject,
-                        })
+                case "drainageStrategy":
+                    return updateDrainageStrategy({
+                        projectId, caseId, resourceObject,
+                    })
 
                 case "rigUpgrading":
                     return updateCampaign({
@@ -227,8 +227,8 @@ export const useSubmitToApi = () => {
                         resourceObject,
                     })
 
-                    default:
-                        console.log("Resource name not found", resourceName)
+                default:
+                    console.log("Resource name not found", resourceName)
                 }
 
                 return { success: false, error: new Error("Service not found") }

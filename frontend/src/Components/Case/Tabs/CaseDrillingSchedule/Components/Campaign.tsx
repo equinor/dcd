@@ -26,7 +26,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
 
-    const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData, activeTabCase])
+    const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
     const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
 
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
