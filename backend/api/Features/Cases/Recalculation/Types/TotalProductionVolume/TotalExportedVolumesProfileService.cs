@@ -1,4 +1,3 @@
-
 using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
@@ -32,6 +31,7 @@ public static class TotalExportedVolumesProfileService
     {
         var CondensateProduction = caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction);
         var CondensateProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.CondensateProductionOverride);
+
         return CondensateProductionOverride?.Override == true
             ? new TimeSeries(CondensateProductionOverride)
             : new TimeSeries(CondensateProduction);
@@ -41,6 +41,7 @@ public static class TotalExportedVolumesProfileService
     {
         var NglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
         var NglProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride);
+
         return NglProductionOverride?.Override == true
             ? new TimeSeries(NglProductionOverride)
             : new TimeSeries(NglProduction);
@@ -50,6 +51,7 @@ public static class TotalExportedVolumesProfileService
     {
         var NetSalesGas = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
         var NetSalesGasOverride = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
+
         return NetSalesGasOverride?.Override == true
             ? new TimeSeries(NetSalesGasOverride)
             : new TimeSeries(NetSalesGas);
@@ -59,6 +61,7 @@ public static class TotalExportedVolumesProfileService
     {
         var totalExportedVolumes = caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumes);
         var totalExportedVolumesOverride = caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumesOverride);
+
         return totalExportedVolumesOverride?.Override == true
             ? new TimeSeries(totalExportedVolumesOverride)
             : new TimeSeries(totalExportedVolumes);

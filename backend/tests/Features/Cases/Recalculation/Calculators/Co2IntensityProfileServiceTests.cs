@@ -35,7 +35,7 @@ public class Co2IntensityProfileServiceTests
                 {
                     ProfileType = ProfileTypes.TotalExportedVolumes,
                     StartYear = -7,
-                    Values = [3.23/6.29]
+                    Values = [3.23 / 6.29]
                 },
                 new()
                 {

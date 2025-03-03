@@ -43,7 +43,6 @@ public static class Co2IntensityProfileService
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
     }
 
-
     public static TimeSeries GetOilProfile(Case caseItem)
     {
         var million = 1E6;
