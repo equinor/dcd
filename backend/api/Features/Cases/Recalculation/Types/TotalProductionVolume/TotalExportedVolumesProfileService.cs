@@ -4,6 +4,8 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
+namespace api.Features.Cases.Recalculation.Types.TotalProductionVolume;
+
 public static class TotalExportedVolumesProfileService
 {
     public static void RunCalculation(Case caseItem)
@@ -16,7 +18,7 @@ public static class TotalExportedVolumesProfileService
         var condensateProduction = GetCondensateProduction(caseItem);
         condensateProduction.Values = condensateProduction.Values.Select(v => v / 1_000_000).ToArray();
 
-        var netSalesGas = getNetSalesGas(caseItem);
+        var netSalesGas = GetNetSalesGas(caseItem);
         netSalesGas.Values = netSalesGas.Values.Select(v => v / 1E9).ToArray();
 
         var totalExportedVolumes = TimeSeriesMerger.MergeTimeSeries(oilProductionProfile, nglProduction, condensateProduction, netSalesGas);
@@ -27,36 +29,6 @@ public static class TotalExportedVolumesProfileService
         profile.StartYear = totalExportedVolumes.StartYear;
     }
 
-    public static TimeSeries GetCondensateProduction(Case caseItem)
-    {
-        var CondensateProduction = caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction);
-        var CondensateProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.CondensateProductionOverride);
-
-        return CondensateProductionOverride?.Override == true
-            ? new TimeSeries(CondensateProductionOverride)
-            : new TimeSeries(CondensateProduction);
-    }
-
-    public static TimeSeries GetNglProduction(Case caseItem)
-    {
-        var NglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
-        var NglProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride);
-
-        return NglProductionOverride?.Override == true
-            ? new TimeSeries(NglProductionOverride)
-            : new TimeSeries(NglProduction);
-    }
-
-    public static TimeSeries getNetSalesGas(Case caseItem)
-    {
-        var NetSalesGas = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
-        var NetSalesGasOverride = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
-
-        return NetSalesGasOverride?.Override == true
-            ? new TimeSeries(NetSalesGasOverride)
-            : new TimeSeries(NetSalesGas);
-    }
-
     public static TimeSeries GetTotalExportedVolumes(Case caseItem)
     {
         var totalExportedVolumes = caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumes);
@@ -65,5 +37,35 @@ public static class TotalExportedVolumesProfileService
         return totalExportedVolumesOverride?.Override == true
             ? new TimeSeries(totalExportedVolumesOverride)
             : new TimeSeries(totalExportedVolumes);
+    }
+
+    private static TimeSeries GetCondensateProduction(Case caseItem)
+    {
+        var condensateProduction = caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction);
+        var condensateProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.CondensateProductionOverride);
+
+        return condensateProductionOverride?.Override == true
+            ? new TimeSeries(condensateProductionOverride)
+            : new TimeSeries(condensateProduction);
+    }
+
+    private static TimeSeries GetNglProduction(Case caseItem)
+    {
+        var nglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
+        var nglProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride);
+
+        return nglProductionOverride?.Override == true
+            ? new TimeSeries(nglProductionOverride)
+            : new TimeSeries(nglProduction);
+    }
+
+    private static TimeSeries GetNetSalesGas(Case caseItem)
+    {
+        var netSalesGas = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
+        var netSalesGasOverride = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
+
+        return netSalesGasOverride?.Override == true
+            ? new TimeSeries(netSalesGasOverride)
+            : new TimeSeries(netSalesGas);
     }
 }

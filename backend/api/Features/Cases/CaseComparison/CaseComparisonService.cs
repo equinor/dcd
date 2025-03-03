@@ -1,4 +1,5 @@
 using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
+using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
@@ -35,7 +36,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
             var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
             var additionalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
-            var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem)?.Values.Sum() ?? 0;
+            var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem).Values.Sum();
 
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
@@ -71,54 +72,6 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         }
 
         return caseList;
-    }
-
-    private static double CalculateTotalOilProduction(Project project, Case caseItem, bool excludeOilFieldConversion)
-    {
-        const double million = 1E6;
-
-        var sumOilProduction = 0.0;
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil) != null)
-        {
-            sumOilProduction += caseItem.GetProfile(ProfileTypes.ProductionProfileOil).Values.Sum();
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil) != null)
-        {
-            sumOilProduction += caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileOil).Values.Sum();
-        }
-
-        if (project.PhysicalUnit != PhysUnit.SI && !excludeOilFieldConversion)
-        {
-            return sumOilProduction * BarrelsPerCubicMeter / million;
-        }
-
-        return sumOilProduction / million;
-    }
-
-    private static double CalculateTotalGasProduction(Project project, Case caseItem, bool excludeOilFieldConversion)
-    {
-        const double billion = 1E9;
-
-        var sumGasProduction = 0.0;
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) != null)
-        {
-            sumGasProduction += caseItem.GetProfile(ProfileTypes.ProductionProfileGas).Values.Sum();
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas) != null)
-        {
-            sumGasProduction += caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileGas).Values.Sum();
-        }
-
-        if (project.PhysicalUnit != PhysUnit.SI && !excludeOilFieldConversion)
-        {
-            return sumGasProduction * CubicFeetPerCubicMeter / billion;
-        }
-
-        return sumGasProduction / billion;
     }
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)
