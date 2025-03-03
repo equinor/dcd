@@ -25,7 +25,7 @@ public static class UnitConversionHelpers
         { ProfileTypes.NetSalesGas, 1_000_000_000 },
         { ProfileTypes.NetSalesGasOverride, 1_000_000_000 },
         { ProfileTypes.TotalExportedVolumes, 1_000_000 },
-        { ProfileTypes.TotalExportedVolumesOverride, 1_000_000 },
+        { ProfileTypes.TotalExportedVolumesOverride, 1_000_000 }
     };
 
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)

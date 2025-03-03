@@ -7,75 +7,85 @@ namespace api.Features.Stea.ExcelExport;
 
 public static class ExportToExcelService
 {
-    public static List<BusinessCase> CreateExcelCells(SteaProjectDto project)
+    public static byte[] ExportToExcel(string projectName, List<SteaCaseDto> steaCaseDtos)
+    {
+        var startYears = steaCaseDtos.Where(x => x.StartYear > 0).Select(x => x.StartYear).ToList();
+        var startYear = startYears.Any() ? startYears.Min() : 0;
+
+        var businessCases = CreateExcelCells(projectName, steaCaseDtos, startYear);
+
+        return WriteExcelCellsToExcelDocument(businessCases, projectName);
+    }
+
+    private static List<BusinessCase> CreateExcelCells(string projectName, List<SteaCaseDto> steaCaseDtos, int startYear)
     {
         var wb = new XLWorkbook();
         var ws = wb.Worksheets.Add("Input to STEA");
-        ws.Cell("B2").Value = project.Name;
+        ws.Cell("B2").Value = projectName;
         var rowCount = 3;
         var businessCases = new List<BusinessCase>();
 
-        foreach (var c in project.SteaCases)
+        foreach (var steaCaseDto in steaCaseDtos)
         {
             var businessCase = new BusinessCase();
             var headerRowCount = rowCount;
             rowCount++;
-            businessCase.Exploration = CreateExcelRow("Exploration Cost", project.StartYear, c.Exploration, rowCount, 1);
+            businessCase.Exploration = CreateExcelRow("Exploration Cost", startYear, steaCaseDto.Exploration, rowCount, 1);
 
             rowCount++;
-            businessCase.Capex = CreateExcelRow("Capex", project.StartYear, c.Capex.Summary, rowCount, 1);
+            businessCase.Capex = CreateExcelRow("Capex", startYear, steaCaseDto.Capex.Summary, rowCount, 1);
 
             rowCount++;
-            businessCase.Drilling = CreateExcelRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
+            businessCase.Drilling = CreateExcelRow("Drilling", startYear, steaCaseDto.Capex.Drilling, rowCount, 1);
 
             rowCount++;
-            businessCase.OffshoreFacilities = CreateExcelRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
+            businessCase.OffshoreFacilities = CreateExcelRow("Offshore Facilities", startYear, steaCaseDto.Capex.OffshoreFacilities, rowCount, 1);
 
             rowCount++;
-            businessCase.OnshorePowerSupply = CreateExcelRow("Onshore (Power from shore)", project.StartYear, c.Capex.OnshorePowerSupplyCost, rowCount, 1);
+            businessCase.OnshorePowerSupply = CreateExcelRow("Onshore (Power from shore)", startYear, steaCaseDto.Capex.OnshorePowerSupplyCost, rowCount, 1);
 
             rowCount++;
-            businessCase.StudyCost = CreateExcelRow("Study cost", project.StartYear, c.StudyCostProfile, rowCount, 1);
+            businessCase.StudyCost = CreateExcelRow("Study cost", startYear, steaCaseDto.StudyCostProfile, rowCount, 1);
 
             rowCount++;
-            businessCase.Opex = CreateExcelRow("Opex", project.StartYear, c.OpexCostProfile, rowCount, 1);
+            businessCase.Opex = CreateExcelRow("Opex", startYear, steaCaseDto.OpexCostProfile, rowCount, 1);
 
             rowCount++;
-            businessCase.Cessation = CreateExcelRow("Cessation - Offshore Facilities", project.StartYear, c.Capex.CessationCost, rowCount, 1);
+            businessCase.Cessation = CreateExcelRow("Cessation - Offshore Facilities", startYear, steaCaseDto.Capex.CessationCost, rowCount, 1);
 
             rowCount++;
             businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount, "Production And Sales Volumes");
 
             rowCount++;
-            businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.TotalAndAnnualOil, 1_000_000), rowCount, 1);
+            businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil, 1_000_000), rowCount, 1);
 
             rowCount++;
-            businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, 1_000_000_000), rowCount, 1);
+            businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, 1_000_000_000), rowCount, 1);
 
             rowCount++;
-            businessCase.Co2Emissions = CreateExcelRow("Co2 Emissions [mill tonnes]", project.StartYear, DivideTimeSeriesValuesByFactor(c.ProductionAndSalesVolumes.Co2Emissions, 1_000_000), rowCount, 1);
+            businessCase.Co2Emissions = CreateExcelRow("Co2 Emissions [mill tonnes]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.Co2Emissions, 1_000_000), rowCount, 1);
 
             rowCount++;
-            businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", project.StartYear, c.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
+            businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", startYear, steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
 
             rowCount += 2;
 
             var allRows = new List<int>
             {
-                c.Exploration.Values.Length + c.Exploration.StartYear,
-                c.Capex.Summary.Values.Length + c.Capex.Summary.StartYear,
-                c.Capex.CessationCost.Values.Length + c.Capex.CessationCost.StartYear,
-                c.OpexCostProfile.Values.Length + c.OpexCostProfile.StartYear,
-                c.StudyCostProfile.Values.Length + c.StudyCostProfile.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear,
-                c.ProductionAndSalesVolumes.AdditionalGas.Values.Length + c.ProductionAndSalesVolumes.AdditionalGas.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear,
-                c.ProductionAndSalesVolumes.Co2Emissions.Values.Length + c.ProductionAndSalesVolumes.Co2Emissions.StartYear
+                steaCaseDto.Exploration.Values.Length + steaCaseDto.Exploration.StartYear,
+                steaCaseDto.Capex.Summary.Values.Length + steaCaseDto.Capex.Summary.StartYear,
+                steaCaseDto.Capex.CessationCost.Values.Length + steaCaseDto.Capex.CessationCost.StartYear,
+                steaCaseDto.OpexCostProfile.Values.Length + steaCaseDto.OpexCostProfile.StartYear,
+                steaCaseDto.StudyCostProfile.Values.Length + steaCaseDto.StudyCostProfile.StartYear,
+                steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Length + steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear,
+                steaCaseDto.ProductionAndSalesVolumes.AdditionalGas.Values.Length + steaCaseDto.ProductionAndSalesVolumes.AdditionalGas.StartYear,
+                steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values.Length + steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear,
+                steaCaseDto.ProductionAndSalesVolumes.Co2Emissions.Values.Length + steaCaseDto.ProductionAndSalesVolumes.Co2Emissions.StartYear
             };
 
-            var maxYear = allRows.Count > 0 ? allRows.Max() - project.StartYear : 0;
+            var maxYear = allRows.Count > 0 ? allRows.Max() - startYear : 0;
 
-            businessCase.Header = CreateTableHeader(project.StartYear, project.StartYear + maxYear - 1, c.Name, headerRowCount);
+            businessCase.Header = CreateTableHeader(startYear, startYear + maxYear - 1, steaCaseDto.Name, headerRowCount);
             businessCases.Add(businessCase);
         }
 
@@ -149,7 +159,7 @@ public static class ExportToExcelService
         };
     }
 
-    public static byte[] WriteExcelCellsToExcelDocument(List<BusinessCase> businessCases, string projectName)
+    private static byte[] WriteExcelCellsToExcelDocument(List<BusinessCase> businessCases, string projectName)
     {
         var wb = new XLWorkbook();
         var ws = wb.Worksheets.Add("Input to STEA");
