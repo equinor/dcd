@@ -117,8 +117,6 @@ const GridWrapper = styled.div`
     margin-bottom: 96px;
 `
 
-//const
-
 const Feature = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
     <Box mb={4}>
         <FeatureIcon>

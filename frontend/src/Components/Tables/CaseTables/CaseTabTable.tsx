@@ -134,7 +134,6 @@ const CaseTabTable = memo(({
         return (
             <CenterGridIcons>
                 <CalculationSourceToggle
-                    addEdit={addEdit}
                     editAllowed={canEdit()}
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
