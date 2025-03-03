@@ -76,9 +76,10 @@ public static class NetSaleGasProfileService
                 StartYear = gasProduction.StartYear,
                 Values = gasProduction.Values.Select(value => value * gasShrinkageFactor).ToArray()
             };
-            return TimeSeriesMerger.MergeTimeSeries(gasAdjustedForShrinkageFactor, negativeFuelFlaringLosses);
 
+            return TimeSeriesMerger.MergeTimeSeries(gasAdjustedForShrinkageFactor, negativeFuelFlaringLosses);
         }
+
         return TimeSeriesMerger.MergeTimeSeries(gasProduction, negativeFuelFlaringLosses);
     }
 }
