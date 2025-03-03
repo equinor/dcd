@@ -31,11 +31,6 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
     {
         var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
 
-        if (originalProjectId != projectId)
-        {
-            throw new NotFoundInDbException($"Revision {revisionId} is not connected to project {projectId}.");
-        }
-
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(originalProjectId);
 
         var revisionDetails = await getProjectDataRepository.GetRevisionDetails(revisionId);
