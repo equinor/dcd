@@ -22,8 +22,8 @@ export const useDataFetch = () => {
 
     const { data: apiRevisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(externalId, revisionId),
-        enabled: !!revisionId && !!externalId && isRevision,
+        queryFn: () => revisionQueryFn(revisionId),
+        enabled: !!revisionId && isRevision,
     })
 
     useEffect(() => {
