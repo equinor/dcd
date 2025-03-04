@@ -22,7 +22,6 @@ export class ImageService extends __BaseService {
         }
     }
 
-
     public async deleteCaseImage(projectId: string, caseId: string, imageId: string): Promise<void> {
         try {
             await this.delete(`projects/${projectId}/cases/${caseId}/images/${imageId}`)

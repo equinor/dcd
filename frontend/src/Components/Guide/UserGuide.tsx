@@ -156,7 +156,7 @@ const UserGuideView: React.FC = () => {
                 {articles.map((article, index) => (
                     <Link to={`/guide#${article.title}`} key={article.title}>
                         <Button
-                            className={`${index === activeArticleIndex ? 'active' : ''} ${article.type === "header" ? 'header' : ''}`}
+                            className={`${index === activeArticleIndex ? "active" : ""} ${article.type === "header" ? "header" : ""}`}
                             onClick={() => scrollToArticle(articleRefs.current[index], index)}
                         >
                             {article.title}

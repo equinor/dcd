@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { error_outlined } from "@equinor/eds-icons"

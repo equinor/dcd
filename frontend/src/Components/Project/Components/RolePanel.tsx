@@ -48,7 +48,10 @@ const RolePanel = ({
                                 {canEdit() && (
                                     <>
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
-                                            <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}>
+                                            <Button
+                                                variant="ghost_icon"
+                                                onClick={() => handleSwitchPerson(person.userId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
+                                            >
                                                 <Icon data={swap_horizontal} />
                                             </Button>
                                         </Tooltip>

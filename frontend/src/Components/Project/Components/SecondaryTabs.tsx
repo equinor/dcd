@@ -66,7 +66,9 @@ interface TabPanelProps {
 }
 
 const CustomTabPanel = (props: TabPanelProps) => {
-    const { children, value, index, ...other } = props
+    const {
+        children, value, index, ...other
+    } = props
 
     return (
         <TabPanel
@@ -93,21 +95,22 @@ interface SecondaryTabsProps {
     onChange: (event: React.SyntheticEvent, newValue: number) => void;
 }
 
-export const SecondaryTabs = ({ tabs, value, onChange }: SecondaryTabsProps) => {
-    return (
-        <TabWrapper>
-            <Box>
-                <StyledTabs value={value} onChange={onChange}>
-                    {tabs.map((tab, index) => (
-                        <StyledTab key={index} label={tab.label} />
-                    ))}
-                </StyledTabs>
+export const SecondaryTabs = ({ tabs, value, onChange }: SecondaryTabsProps) => (
+    <TabWrapper>
+        <Box>
+            <StyledTabs value={value} onChange={onChange}>
                 {tabs.map((tab, index) => (
-                    <CustomTabPanel key={index} value={value} index={index}>
-                        {tab.content}
-                    </CustomTabPanel>
+                    // eslint-disable-next-line react/no-array-index-key
+                    <StyledTab key={index} label={tab.label} />
                 ))}
-            </Box>
-        </TabWrapper>
-    )
-}
+            </StyledTabs>
+
+            {tabs.map((tab, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <CustomTabPanel key={index} value={value} index={index}>
+                    {tab.content}
+                </CustomTabPanel>
+            ))}
+        </Box>
+    </TabWrapper>
+)

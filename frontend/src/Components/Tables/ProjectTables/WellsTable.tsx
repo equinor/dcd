@@ -142,8 +142,8 @@ const WellsTable: React.FC<WellsTableProps> = ({
             {
                 field: "wellCost",
                 headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                        ? "mill NOK"
-                        : "mill USD"
+                    ? "mill NOK"
+                    : "mill USD"
                     })`,
                 flex: 1,
                 headerComponent: SecondaryTableHeader,

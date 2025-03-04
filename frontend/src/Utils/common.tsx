@@ -30,7 +30,7 @@ export const storeAppScope = (appScope: string) => {
     window.sessionStorage.setItem("appScope", appScope)
 }
 
-export const getToken = (keyName: string) => {
+export const getToken = () => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }

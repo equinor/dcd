@@ -43,17 +43,11 @@ export const useEditPeople = () => {
         }
     }
 
-    const addPersonMutationFn = async ({ projectId, body }: AddPersonVariables) => {
-        return GetProjectMembersService().addPerson(projectId, body)
-    }
+    const addPersonMutationFn = async ({ projectId, body }: AddPersonVariables) => GetProjectMembersService().addPerson(projectId, body)
 
-    const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => {
-        return GetProjectMembersService().updatePerson(projectId, body)
-    }
+    const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => GetProjectMembersService().updatePerson(projectId, body)
 
-    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => {
-        return GetProjectMembersService().deletePerson(projectId, userId)
-    }
+    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, userId)
 
     const addPersonMutation = useMutation({
         mutationFn: addPersonMutationFn,

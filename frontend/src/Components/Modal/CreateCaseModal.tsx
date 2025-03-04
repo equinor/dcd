@@ -189,6 +189,7 @@ const CreateCaseModal = () => {
                                 value={description}
                                 menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                                 onInput={(e: any) => {
+                                    // eslint-disable-next-line no-underscore-dangle
                                     setDescription(e.target._value)
                                 }}
                             />

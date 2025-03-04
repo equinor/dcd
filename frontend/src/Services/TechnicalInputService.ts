@@ -1,6 +1,6 @@
 import { __BaseService } from "./__BaseService"
 
-class __TechnicalInputService extends __BaseService {
+class TechnicalInputService extends __BaseService {
     public async updateWells(projectId: string, body: Components.Schemas.UpdateWellsDto): Promise<Components.Schemas.ProjectDataDto> {
         const res: Components.Schemas.ProjectDataDto = await this.put(`projects/${projectId}/wells`, { body })
         return res
@@ -31,4 +31,4 @@ class __TechnicalInputService extends __BaseService {
     }
 }
 
-export const GetTechnicalInputService = () => new __TechnicalInputService()
+export const GetTechnicalInputService = () => new TechnicalInputService()

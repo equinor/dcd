@@ -138,13 +138,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             values: (totalIncomeData?.values || []).map((v) => v) ?? [],
         }
 
-        let cumulativeSum = 0
         years.forEach((year) => {
             const yearData: any = { year }
             aggregatedTimeSeriesData.forEach((series) => {
                 const value = setValueToCorrespondingYear(series.profile, year, dg4Year)
                 yearData[series.profileName] = value
-                cumulativeSum += value
             })
             yearData.cumulativeSum = (income.values || []).reduce((acc, value, index) => {
                 if (income.startYear + index === year) {
@@ -197,7 +195,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile", // (${project?.currency === Currency.NOK ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
+            text: "Annual Cost Profile",
+            // (${project?.currency === Currency.NOK ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
         subtitle: { text: "(MNOK)" },
