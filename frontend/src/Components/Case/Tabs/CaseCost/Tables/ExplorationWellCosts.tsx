@@ -23,6 +23,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
     const [explorationTimeSeriesData, setExplorationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
+    console.log("apiData: ", apiData)
     useEffect(() => {
         const caseId = apiData?.case.caseId
         const gAndGAdminCostData = apiData.gAndGAdminCost
@@ -73,6 +74,16 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 overridable: true,
                 overrideProfile: explorationGAndGAdminCostOverrideData,
             },
+            // {
+            //     profileName: "Rig upgrade",
+            //     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+            //     profile: rigUpgradeCostData,
+            //     resourceName: ProfileTypes.RigUpgradeCost,
+            //     resourceId: caseId,
+            //     resourcePropertyKey: ProfileTypes.RigUpgradeCost,
+            //     editable: true,
+            //     overridable: false,
+            // },
             {
                 profileName: "Project specific drilling cost",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
