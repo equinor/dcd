@@ -43,6 +43,7 @@ using api.Features.Projects.Exists;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
+using api.Features.Revisions.Delete;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
 using api.Features.Videos.Get;
@@ -68,6 +69,7 @@ public static class DcdIocConfiguration
         services.AddScoped<CreateRevisionService>();
         services.AddScoped<CreateRevisionRepository>();
         services.AddScoped<UpdateRevisionService>();
+        services.AddScoped<DeleteRevisionService>();
 
         /* Project members */
         services.AddScoped<GetProjectMemberService>();
