@@ -1,12 +1,8 @@
-using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
-using api.Models.Enums;
-
-using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.CaseComparison;
 

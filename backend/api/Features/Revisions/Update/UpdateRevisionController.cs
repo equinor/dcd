@@ -12,7 +12,7 @@ public class UpdateRevisionController(GetProjectDataService getProjectDataServic
     [AuthorizeActionType(ActionType.Edit)]
     public async Task<RevisionDataDto> UpdateRevision(Guid projectId, Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
     {
-        await updateRevisionService.UpdateRevision(revisionId, updateRevisionDto);
+        await updateRevisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
 
         return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }

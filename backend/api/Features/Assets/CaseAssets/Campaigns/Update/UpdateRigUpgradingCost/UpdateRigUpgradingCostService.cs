@@ -10,7 +10,9 @@ public class UpdateRigUpgradingCostService(DcdDbContext context, RecalculationSe
 {
     public async Task UpdateRigUpgradingCost(Guid projectId, Guid caseId, Guid campaignId, UpdateRigUpgradingCostDto dto)
     {
-        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId && x.Id == campaignId);
 
         existingCampaign.RigUpgradingCost = dto.Cost;
 

@@ -14,9 +14,9 @@ public class UpdateWellsService(DcdDbContext context)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        await DeleteWells(updateWellsDto.DeleteWellDtos);
+        await DeleteWells(updateWellsDto.DeleteWellDtos, projectPk);
         await CreateWells(updateWellsDto.CreateWellDtos, projectPk);
-        await UpdateWells(updateWellsDto.UpdateWellDtos);
+        await UpdateWells(updateWellsDto.UpdateWellDtos, projectPk);
 
         if (updateWellsDto.CreateWellDtos.Any() || updateWellsDto.UpdateWellDtos.Any() || updateWellsDto.DeleteWellDtos.Any())
         {
@@ -30,7 +30,7 @@ public class UpdateWellsService(DcdDbContext context)
         }
     }
 
-    private async Task DeleteWells(List<DeleteWellDto> deleteWellDtos)
+    private async Task DeleteWells(List<DeleteWellDto> deleteWellDtos, Guid projectPk)
     {
         if (!deleteWellDtos.Any())
         {
@@ -39,7 +39,7 @@ public class UpdateWellsService(DcdDbContext context)
 
         foreach (var wellDto in deleteWellDtos)
         {
-            var well = await context.Wells.SingleOrDefaultAsync(x => x.Id == wellDto.Id);
+            var well = await context.Wells.SingleOrDefaultAsync(x => x.Id == wellDto.Id && x.ProjectId == projectPk);
 
             if (well != null)
             {
@@ -81,7 +81,7 @@ public class UpdateWellsService(DcdDbContext context)
         await context.SaveChangesAsync();
     }
 
-    private async Task UpdateWells(List<UpdateWellDto> updateWellDtos)
+    private async Task UpdateWells(List<UpdateWellDto> updateWellDtos, Guid projectPk)
     {
         if (!updateWellDtos.Any())
         {
@@ -90,7 +90,7 @@ public class UpdateWellsService(DcdDbContext context)
 
         foreach (var wellDto in updateWellDtos)
         {
-            var existing = await context.Wells.SingleAsync(w => w.Id == wellDto.Id);
+            var existing = await context.Wells.SingleAsync(w => w.Id == wellDto.Id && w.ProjectId == projectPk);
 
             existing.Name = wellDto.Name;
             existing.WellInterventionCost = wellDto.WellInterventionCost;

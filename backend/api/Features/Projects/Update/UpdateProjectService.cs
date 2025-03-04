@@ -1,5 +1,6 @@
 using api.AppInfrastructure.Authorization;
 using api.Context;
+using api.Context.Extensions;
 using api.Models;
 using api.Models.Infrastructure.ProjectRecalculation;
 
@@ -11,9 +12,11 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
 {
     public async Task UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var existingProject = await context.Projects
             .Include(x => x.ProjectMembers)
-            .SingleAsync(p => p.Id == projectId);
+            .SingleAsync(p => p.Id == projectPk);
 
         var shouldTriggerRecalculation = ShouldTriggerRecalculation(existingProject, projectDto);
 

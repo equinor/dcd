@@ -1,5 +1,4 @@
 using api.Context;
-using api.Context.Extensions;
 using api.Features.ProjectData.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.ProjectMembers.Get;
@@ -10,11 +9,6 @@ namespace api.Features.ProjectData;
 
 public class GetProjectDataRepository(DcdDbContext context)
 {
-    public async Task<Guid> GetPrimaryKeyForProjectId(Guid projectId)
-    {
-        return await context.GetPrimaryKeyForProjectId(projectId);
-    }
-
     public async Task<Guid> GetOriginalProjectIdForRevision(Guid revisionId)
     {
         return await context.Projects

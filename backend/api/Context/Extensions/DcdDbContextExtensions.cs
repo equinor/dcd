@@ -27,6 +27,24 @@ public static class DcdDbContextExtensions
         throw new NotFoundInDbException($"Could not find project with id {projectId}.");
     }
 
+    public static async Task EnsureRevisionIsConnectedToProject(this DcdDbContext context, Guid projectId, Guid revisionId)
+    {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var originalProjectIdForRevision = await context.Projects
+            .Where(x => x.IsRevision)
+            .Where(x => x.Id == revisionId)
+            .Select(x => x.OriginalProjectId!.Value)
+            .SingleOrDefaultAsync();
+
+        if (originalProjectIdForRevision == projectPk)
+        {
+            return;
+        }
+
+        throw new NotFoundInDbException($"RevisionId {revisionId} is not connected to ProjectId {projectId}.");
+    }
+
     public static async Task<Guid> GetPrimaryKeyForProjectIdOrRevisionId(this DcdDbContext context, Guid projectId)
     {
         var matchingPrimaryKeys = await context.Projects
