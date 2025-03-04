@@ -24,7 +24,7 @@ const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfi
                 "Development well costs",
                 "Exploration well costs",
             ]}
-            unit={`${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "mill NOK" : "mill USD"}`}
+            unit={`${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "mill NOK" : "mill USD"}`}
         />
     )
 }

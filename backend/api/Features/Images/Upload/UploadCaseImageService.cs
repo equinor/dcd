@@ -7,6 +7,8 @@ using api.Models;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Images.Upload;
 
 public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blobServiceClient)
@@ -24,6 +26,13 @@ public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blob
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
 
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var caseItem = await context.Cases
+            .Where(x => x.Id == caseId)
+            .Where(x => x.ProjectId == projectPk)
+            .SingleAsync();
+
         var imageEntity = new CaseImage
         {
             Id = imageId,
@@ -32,7 +41,7 @@ public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blob
             Description = null
         };
 
-        context.CaseImages.Add(imageEntity);
+        caseItem.Images.Add(imageEntity);
 
         await context.UpdateCaseUpdatedUtc(imageEntity.CaseId);
         await context.SaveChangesAsync();

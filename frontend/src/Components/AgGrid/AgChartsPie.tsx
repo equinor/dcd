@@ -1,5 +1,4 @@
 import { AgCharts } from "ag-charts-react"
-import { size } from "lodash"
 
 interface Props {
     data: any

@@ -1,14 +1,15 @@
-using api.Exceptions;
+using api.Context;
+using api.Context.Extensions;
 using api.Features.ProjectAccess;
 using api.Features.ProjectData.Dtos;
 
 namespace api.Features.ProjectData;
 
-public class GetProjectDataService(GetProjectDataRepository getProjectDataRepository, UserActionsService userActionsService)
+public class GetProjectDataService(DcdDbContext context, GetProjectDataRepository getProjectDataRepository, UserActionsService userActionsService)
 {
     public async Task<ProjectDataDto> GetProjectData(Guid projectId)
     {
-        var projectPk = await getProjectDataRepository.GetPrimaryKeyForProjectId(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var projectMembers = await getProjectDataRepository.GetProjectMembers(projectPk);
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(projectPk);
@@ -29,12 +30,9 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
     public async Task<RevisionDataDto> GetRevisionData(Guid projectId, Guid revisionId)
     {
-        var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
+        await context.EnsureRevisionIsConnectedToProject(projectId, revisionId);
 
-        if (originalProjectId != projectId)
-        {
-            throw new NotFoundInDbException($"Revision {revisionId} is not connected to project {projectId}.");
-        }
+        var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
 
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(originalProjectId);
 

@@ -16,7 +16,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid projectId, Guid caseId)
     {
-        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
         var profileTypes = new List<string>
         {

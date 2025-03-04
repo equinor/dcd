@@ -1,5 +1,5 @@
-import { ProfileTypes } from "@/Models/enums"
 import { visibility, lock, type IconData } from "@equinor/eds-icons"
+import { ProfileTypes } from "@/Models/enums"
 
 export const EMPTY_GUID = "00000000-0000-0000-0000-000000000000"
 

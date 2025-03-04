@@ -15,7 +15,9 @@ public class CreateCampaignService(DcdDbContext context, RecalculationService re
     {
         ValidateDto(createCampaignDto);
 
-        var caseItem = await context.Cases.SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var caseItem = await context.Cases.SingleAsync(x => x.ProjectId == projectPk && x.Id == caseId);
 
         var campaignId = Guid.NewGuid();
 

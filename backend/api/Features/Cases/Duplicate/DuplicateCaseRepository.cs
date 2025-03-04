@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Models;
 
@@ -10,6 +11,8 @@ public class DuplicateCaseRepository(DcdDbContext context)
 {
     public async Task<Case> GetFullCaseGraph(Guid projectId, Guid caseId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var caseItem = await context.Cases
             .Include(c => c.DrainageStrategy)
             .Include(c => c.Transport)
@@ -17,7 +20,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.Surf)
             .Include(c => c.Substructure)
             .Include(c => c.OnshorePowerSupply)
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleOrDefaultAsync();
 

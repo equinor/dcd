@@ -12,8 +12,8 @@ public static class ExplorationWellCostProfileService
     {
         var profileTypes = new Dictionary<string, WellCategory>
         {
-            { ProfileTypes.ExplorationWellCostProfile, WellCategory.Exploration_Well },
-            { ProfileTypes.AppraisalWellCostProfile, WellCategory.Appraisal_Well },
+            { ProfileTypes.ExplorationWellCostProfile, WellCategory.ExplorationWell },
+            { ProfileTypes.AppraisalWellCostProfile, WellCategory.AppraisalWell },
             { ProfileTypes.SidetrackCostProfile, WellCategory.Sidetrack }
         };
 

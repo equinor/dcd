@@ -97,8 +97,8 @@ const ProjectSettingsTab = () => {
         }
     }
 
-    const getPhysicalUnit = () => (revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.SI ? "SI" : "Oil field")
-    const getCurrency = () => (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "NOK" : "USD")
+    const getPhysicalUnit = () => (revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "SI" : "Oil field")
+    const getCurrency = () => (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "NOK" : "USD")
 
     if (!revisionAndProjectData) {
         return <ProjectSkeleton />

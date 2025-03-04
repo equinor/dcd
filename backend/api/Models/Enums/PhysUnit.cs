@@ -2,6 +2,6 @@ namespace api.Models.Enums;
 
 public enum PhysUnit
 {
-    SI,
+    Si,
     OilField
 }

@@ -10,16 +10,18 @@ public class UpdateDrainageStrategyService(DcdDbContext context, RecalculationSe
 {
     public async Task UpdateDrainageStrategy(Guid projectId, Guid caseId, UpdateDrainageStrategyDto updatedDrainageStrategyDto)
     {
-        var existingDrainageStrategy = await context.DrainageStrategies.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        existingDrainageStrategy.NGLYield = updatedDrainageStrategyDto.NGLYield;
-        existingDrainageStrategy.CondensateYield = updatedDrainageStrategyDto.CondensateYield;
-        existingDrainageStrategy.GasShrinkageFactor = updatedDrainageStrategyDto.GasShrinkageFactor;
-        existingDrainageStrategy.ProducerCount = updatedDrainageStrategyDto.ProducerCount;
-        existingDrainageStrategy.GasInjectorCount = updatedDrainageStrategyDto.GasInjectorCount;
-        existingDrainageStrategy.WaterInjectorCount = updatedDrainageStrategyDto.WaterInjectorCount;
-        existingDrainageStrategy.ArtificialLift = updatedDrainageStrategyDto.ArtificialLift;
-        existingDrainageStrategy.GasSolution = updatedDrainageStrategyDto.GasSolution;
+        var existing = await context.DrainageStrategies.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId);
+
+        existing.NGLYield = updatedDrainageStrategyDto.NGLYield;
+        existing.CondensateYield = updatedDrainageStrategyDto.CondensateYield;
+        existing.GasShrinkageFactor = updatedDrainageStrategyDto.GasShrinkageFactor;
+        existing.ProducerCount = updatedDrainageStrategyDto.ProducerCount;
+        existing.GasInjectorCount = updatedDrainageStrategyDto.GasInjectorCount;
+        existing.WaterInjectorCount = updatedDrainageStrategyDto.WaterInjectorCount;
+        existing.ArtificialLift = updatedDrainageStrategyDto.ArtificialLift;
+        existing.GasSolution = updatedDrainageStrategyDto.GasSolution;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

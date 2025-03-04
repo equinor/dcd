@@ -10,8 +10,10 @@ public class DeleteCampaignService(DcdDbContext context, RecalculationService re
 {
     public async Task DeleteCampaign(Guid projectId, Guid caseId, Guid campaignId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var campaign = await context.Campaigns
-            .Where(x => x.Case.ProjectId == projectId)
+            .Where(x => x.Case.ProjectId == projectPk)
             .Where(x => x.CaseId == caseId)
             .Where(x => x.Id == campaignId)
             .SingleAsync();

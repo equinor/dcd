@@ -32,7 +32,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Historic cost",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
                 resourceName: ProfileTypes.HistoricCostCostProfile,
                 resourceId: caseData.caseId,
@@ -42,7 +42,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Well intervention",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
                 resourceName: ProfileTypes.WellInterventionCostProfileOverride,
                 resourceId: caseData.caseId,
@@ -53,7 +53,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Offshore facilities operations",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
                 resourceName: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
                 resourceId: caseData.caseId,
@@ -64,7 +64,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Onshore related OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOPEXCostProfileData,
                 resourceName: ProfileTypes.OnshoreRelatedOPEXCostProfile,
                 resourceId: caseData.caseId,
@@ -74,7 +74,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             },
             {
                 profileName: "Additional OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: additionalOPEXCostProfileData,
                 resourceName: ProfileTypes.AdditionalOPEXCostProfile,
                 resourceId: caseData.caseId,

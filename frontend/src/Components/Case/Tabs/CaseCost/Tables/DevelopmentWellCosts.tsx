@@ -42,7 +42,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         const newDevelopmentTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Oil producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectOilProducerCostData,
                 resourceName: ProfileTypes.OilProducerCostProfileOverride,
                 resourceId: caseId,
@@ -53,7 +53,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Water injector",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
                 resourceName: ProfileTypes.WaterInjectorCostProfileOverride,
                 resourceId: caseId,
@@ -64,7 +64,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasProducerCostData,
                 resourceName: ProfileTypes.GasProducerCostProfileOverride,
                 resourceId: caseId,
@@ -75,7 +75,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas injector",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
                 resourceName: ProfileTypes.GasInjectorCostProfileOverride,
                 resourceId: caseId,

@@ -23,7 +23,7 @@ public class EconomicsHelperTests
             Values = [200.0, 300.0, 400.0, 500.0]
         };
 
-        var expectedStartYear = 2020;
+        const int expectedStartYear = 2020;
 
         var expectedValues = new[] { 300.0, 400.0, 500.0, -500.0 };
 
@@ -34,7 +34,7 @@ public class EconomicsHelperTests
         Assert.Equal(expectedStartYear, result.StartYear);
         Assert.Equal(expectedValues.Length, result.Values.Length);
 
-        for (int i = 0; i < expectedValues.Length; i++)
+        for (var i = 0; i < expectedValues.Length; i++)
         {
             Assert.Equal(expectedValues[i], result.Values[i]);
         }

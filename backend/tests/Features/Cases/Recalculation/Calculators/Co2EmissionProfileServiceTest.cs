@@ -92,7 +92,7 @@ public class Co2EmissionProfileServiceTests
         // Assert
         var expectedTotalFuelConsumptions = new List<double> { 6102721.5 };
 
-        for (int i = 0; i < expectedTotalFuelConsumptions.Count; i++)
+        for (var i = 0; i < expectedTotalFuelConsumptions.Count; i++)
         {
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);
         }
@@ -186,7 +186,7 @@ public class Co2EmissionProfileServiceTests
         // Assert
         var expectedTotalFuelConsumptions = new List<double> { 6102721.5 };
 
-        for (int i = 0; i < expectedTotalFuelConsumptions.Count; i++)
+        for (var i = 0; i < expectedTotalFuelConsumptions.Count; i++)
         {
             Assert.Equal(expectedTotalFuelConsumptions[i], total.Values[i], precision: 1);
         }
