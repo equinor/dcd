@@ -29,9 +29,9 @@ public static class NetSaleGasProfileService
     }
 
     private static TimeSeries CalculateNetSaleGas(Case caseItem,
-        TimeSeries fuelConsumption,
-        TimeSeries flarings,
-        TimeSeries losses)
+                                                  TimeSeries fuelConsumption,
+                                                  TimeSeries flarings,
+                                                  TimeSeries losses)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) == null)
         {
