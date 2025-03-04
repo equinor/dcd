@@ -41,17 +41,19 @@ public class UpdateWellsService(DcdDbContext context)
         {
             var well = await context.Wells.SingleOrDefaultAsync(x => x.Id == wellDto.Id && x.ProjectId == projectPk);
 
-            if (well != null)
+            if (well == null)
             {
-                var campaignWells = await context.CampaignWells.Where(ew => ew.WellId == well.Id).ToListAsync();
-
-                foreach (var campaignWell in campaignWells)
-                {
-                    context.CampaignWells.Remove(campaignWell);
-                }
-
-                context.Wells.Remove(well);
+                continue;
             }
+
+            var campaignWells = await context.CampaignWells.Where(ew => ew.WellId == well.Id).ToListAsync();
+
+            foreach (var campaignWell in campaignWells)
+            {
+                context.CampaignWells.Remove(campaignWell);
+            }
+
+            context.Wells.Remove(well);
         }
 
         await context.SaveChangesAsync();

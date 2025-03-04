@@ -48,9 +48,9 @@ public static class CalculateNpvService
             return null;
         }
 
-        var CalculatedTotalIncomeCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfileUsd));
-        var CalculatedTotalCostCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfileUsd));
+        var calculatedTotalIncomeCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfileUsd));
+        var calculatedTotalCostCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfileUsd));
 
-        return EconomicsHelper.CalculateCashFlow(CalculatedTotalIncomeCostProfileUsd, CalculatedTotalCostCostProfileUsd);
+        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfileUsd, calculatedTotalCostCostProfileUsd);
     }
 }

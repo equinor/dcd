@@ -65,17 +65,19 @@ public static class AccessCalculator
             return true;
         }
 
-        if (userRoles.Contains(ApplicationRole.User))
+        if (!userRoles.Contains(ApplicationRole.User))
         {
-            if (projectMemberRole == ProjectMemberRole.Editor)
-            {
-                return true;
-            }
+            return false;
+        }
 
-            if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
-            {
-                return true;
-            }
+        if (projectMemberRole == ProjectMemberRole.Editor)
+        {
+            return true;
+        }
+
+        if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
+        {
+            return true;
         }
 
         return false;
@@ -93,17 +95,19 @@ public static class AccessCalculator
             return true;
         }
 
-        if (userRoles.Contains(ApplicationRole.User))
+        if (!userRoles.Contains(ApplicationRole.User))
         {
-            if (projectMemberRole == ProjectMemberRole.Editor)
-            {
-                return true;
-            }
+            return false;
+        }
 
-            if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
-            {
-                return true;
-            }
+        if (projectMemberRole == ProjectMemberRole.Editor)
+        {
+            return true;
+        }
+
+        if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
+        {
+            return true;
         }
 
         return false;
@@ -121,17 +125,19 @@ public static class AccessCalculator
             return true;
         }
 
-        if (userRoles.Contains(ApplicationRole.User))
+        if (!userRoles.Contains(ApplicationRole.User))
         {
-            if (projectMemberRole == ProjectMemberRole.Editor)
-            {
-                return true;
-            }
+            return false;
+        }
 
-            if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
-            {
-                return true;
-            }
+        if (projectMemberRole == ProjectMemberRole.Editor)
+        {
+            return true;
+        }
+
+        if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
+        {
+            return true;
         }
 
         return false;

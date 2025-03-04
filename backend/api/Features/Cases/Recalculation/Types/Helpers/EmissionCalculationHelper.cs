@@ -49,7 +49,7 @@ public static class EmissionCalculationHelper
 
         var step1 = wsp * wom;
         var wrp = wr.Select(v => v / (Cd * (facilitiesAvailability / 100)) / wic);
-        var wrpWspWom = wrp.Select(v => step1 + (v * 100 * wsp * (1 - wom)));
+        var wrpWspWom = wrp.Select(v => step1 + v * 100 * wsp * (1 - wom));
 
         return new TimeSeries
         {
@@ -88,7 +88,7 @@ public static class EmissionCalculationHelper
 
         var step1 = gsp * gom;
         var grp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / gc / 1_000_000);
-        var grpGspGom = grp.Select(v => step1 + (v * gsp * (1 - gom)));
+        var grpGspGom = grp.Select(v => step1 + v * gsp * (1 - gom));
 
         return new TimeSeries
         {
@@ -131,7 +131,7 @@ public static class EmissionCalculationHelper
 
         var step1 = osp * oom;
         var orp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / oc);
-        var orpOspOom = orp.Select(v => step1 + (v * osp * (1 - oom))).ToArray();
+        var orpOspOom = orp.Select(v => step1 + v * osp * (1 - oom)).ToArray();
 
         return new TimeSeries
         {

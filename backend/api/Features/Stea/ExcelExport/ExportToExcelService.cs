@@ -143,7 +143,7 @@ public static class ExportToExcelService
         while (cellNumber > 0)
         {
             var rest = (cellNumber - 1) % 26;
-            rv = ((char)(rest + 65)) + rv;
+            rv = (char)(rest + 65) + rv;
             cellNumber = (cellNumber - rest - 1) / 26;
         }
 

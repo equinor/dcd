@@ -33,18 +33,15 @@ public static class OpexCostProfileService
             return;
         }
 
-        var wellInterventionCostsFromDrillingSchedule = new TimeSeries();
-
-        foreach (var developmentWell in developmentWells)
-        {
-            var timeSeries = new TimeSeries
+        var wellInterventionCostsFromDrillingSchedules = developmentWells
+            .Select(developmentWell => new TimeSeries
             {
                 StartYear = developmentWell.StartYear,
                 Values = developmentWell.Values.Select(v => (double)v).ToArray()
-            };
+            })
+            .ToList();
 
-            wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedule, timeSeries);
-        }
+        var wellInterventionCostsFromDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellInterventionCostsFromDrillingSchedules);
 
         var tempSeries = new TimeSeries
         {

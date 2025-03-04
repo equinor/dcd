@@ -28,12 +28,14 @@ public static class Co2IntensityProfileService
                 continue;
             }
 
-            if (totalExportedVolumes.Values[totalExportedVolumesIndex] != 0)
+            if (totalExportedVolumes.Values[totalExportedVolumesIndex] == 0)
             {
-                var totalExportedVolumesValue = totalExportedVolumes.Values[totalExportedVolumesIndex];
-                var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue * BarrelsPerCubicMeter);
-                co2IntensityValues.Add(co2Intensity);
+                continue;
             }
+
+            var totalExportedVolumesValue = totalExportedVolumes.Values[totalExportedVolumesIndex];
+            var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue * BarrelsPerCubicMeter);
+            co2IntensityValues.Add(co2Intensity);
         }
 
         var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
@@ -46,7 +48,7 @@ public static class Co2IntensityProfileService
 
     public static TimeSeries GetOilProfile(Case caseItem)
     {
-        var million = 1E6;
+        const double million = 1E6;
         var oilValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
         var additionalOilValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
 

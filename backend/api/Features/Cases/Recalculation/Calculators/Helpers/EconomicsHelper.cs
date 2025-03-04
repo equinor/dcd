@@ -12,7 +12,7 @@ public static class EconomicsHelper
 
         double accumulatedVolume = 0;
 
-        for (int i = 0; i < values.Length; i++)
+        for (var i = 0; i < values.Length; i++)
         {
             var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
 
@@ -31,7 +31,7 @@ public static class EconomicsHelper
     private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {
         var discountFactors = new List<double>();
-        var discountRate = 1 + (discountRatePercentage / 100);
+        var discountRate = 1 + discountRatePercentage / 100;
 
         for (var year = 0; year < numYears; year++)
         {
@@ -56,8 +56,8 @@ public static class EconomicsHelper
             var incomeIndex = currentYear - income.StartYear;
             var costIndex = currentYear - totalCost.StartYear;
 
-            var incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
-            var costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
+            var incomeValue = incomeIndex >= 0 && incomeIndex < income.Values.Length ? income.Values[incomeIndex] : 0;
+            var costValue = costIndex >= 0 && costIndex < totalCost.Values.Length ? totalCost.Values[costIndex] : 0;
 
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }
