@@ -81,6 +81,5 @@ public static class NetSaleGasProfileService
         };
 
         return TimeSeriesMerger.MergeTimeSeries(gasAdjustedForShrinkageFactor, negativeFuelFlaringLosses);
-
     }
 }
