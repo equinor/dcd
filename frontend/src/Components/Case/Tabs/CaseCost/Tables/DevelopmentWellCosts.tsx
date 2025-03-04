@@ -20,7 +20,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     apiData,
 }) => {
     const revisionAndProjectData = useDataFetch()
-
+    console.log("common: ", revisionAndProjectData?.commonProjectAndRevisionData)
     const [developmentTimeSeriesData, setDevelopmentTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
