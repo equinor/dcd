@@ -69,7 +69,7 @@ const CaseDrillingScheduleTab = () => {
         if (!apiData) { return 0 }
 
         if (wells && wells.length > 0) {
-            if ([WellCategory.Exploration_Well, WellCategory.Appraisal_Well, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
+            if ([WellCategory.ExplorationWell, WellCategory.AppraisalWell, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -97,12 +97,12 @@ const CaseDrillingScheduleTab = () => {
 
     useEffect(() => {
         if (activeTabCase === 3) {
-            setOilProducerCount(sumWellsForWellCategory(WellCategory.Oil_Producer))
-            setGasProducerCount(sumWellsForWellCategory(WellCategory.Gas_Producer))
-            setWaterInjectorCount(sumWellsForWellCategory(WellCategory.Water_Injector))
-            setGasInjectorCount(sumWellsForWellCategory(WellCategory.Gas_Injector))
-            setExplorationWellCount(sumWellsForWellCategory(WellCategory.Exploration_Well))
-            setAppraisalWellCount(sumWellsForWellCategory(WellCategory.Appraisal_Well))
+            setOilProducerCount(sumWellsForWellCategory(WellCategory.OilProducer))
+            setGasProducerCount(sumWellsForWellCategory(WellCategory.GasProducer))
+            setWaterInjectorCount(sumWellsForWellCategory(WellCategory.WaterInjector))
+            setGasInjectorCount(sumWellsForWellCategory(WellCategory.GasInjector))
+            setExplorationWellCount(sumWellsForWellCategory(WellCategory.ExplorationWell))
+            setAppraisalWellCount(sumWellsForWellCategory(WellCategory.AppraisalWell))
             setSidetrackCount(sumWellsForWellCategory(WellCategory.Sidetrack))
         }
     }, [apiData, wells, activeTabCase])

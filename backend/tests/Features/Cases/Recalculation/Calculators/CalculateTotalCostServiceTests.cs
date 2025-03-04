@@ -19,7 +19,7 @@ public class CalculateTotalCostServiceTests
             OilPriceUSD = 75,
             GasPriceNOK = 3,
             ExchangeRateUSDToNOK = 10,
-            Currency = api.Models.Enums.Currency.NOK
+            Currency = api.Models.Enums.Currency.Nok
         };
 
         var caseItem = new Case

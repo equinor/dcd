@@ -80,7 +80,7 @@ const ExplorationCosts = () => {
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${currency === Currency.NOK ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${currency === Currency.Nok ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>
