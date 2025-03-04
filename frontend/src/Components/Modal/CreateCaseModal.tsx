@@ -24,9 +24,6 @@ import {
 
 import {
     dateStringToDateUtc,
-    defaultDate,
-    defaultDg4Date,
-    isDefaultDate,
     toMonthDate,
 } from "@/Utils/DateUtils"
 import { GetCaseService } from "@/Services/CaseService"
@@ -46,7 +43,7 @@ const CreateCaseModal = () => {
     } = useModalContext()
 
     const [caseName, setCaseName] = useState<string>("")
-    const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
+    const [dG4Date, setDG4Date] = useState<Date | null>(null)
     const [description, setDescription] = useState<string>("")
     const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerWells] = useState<number>(0)
@@ -56,7 +53,7 @@ const CreateCaseModal = () => {
 
     const resetForm = () => {
         setCaseName("")
-        setDG4Date(defaultDate())
+        setDG4Date(null)
         setDescription("")
         setProductionStrategy(0)
         setProducerWells(0)
@@ -95,36 +92,31 @@ const CreateCaseModal = () => {
     }
 
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        let newDate = dateStringToDateUtc(e.target.value)
+        let newDate: Date | null = dateStringToDateUtc(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newDate = defaultDate()
+            newDate = null
         } else {
             newDate = dateStringToDateUtc(e.target.value)
         }
         setDG4Date(newDate)
     }
 
-    const getDG4Value = () => {
-        if (!isDefaultDate(dG4Date)) {
-            return toMonthDate(dG4Date)
-        }
-        return toMonthDate(dateStringToDateUtc(defaultDg4Date))
-    }
+    const getDG4Value = () => toMonthDate(dG4Date)
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
         try {
-            setIsLoading(true)
             if (!revisionAndProjectData) {
                 throw new Error("No project found")
             }
+            setIsLoading(true)
 
             if (caseModalEditMode && projectCase && projectCase.caseId) {
                 const newCase = { ...projectCase }
                 newCase.name = caseName
                 newCase.description = description
-                newCase.dG4Date = dG4Date.toISOString()
+                newCase.dG4Date = dG4Date!.toISOString()
                 newCase.producerCount = producerCount
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
@@ -142,7 +134,7 @@ const CreateCaseModal = () => {
                     {
                         name: caseName,
                         description,
-                        dG4Date: dG4Date.toJSON(),
+                        dG4Date: dG4Date!.toJSON(),
                         producerCount,
                         gasInjectorCount,
                         waterInjectorCount,
@@ -160,7 +152,7 @@ const CreateCaseModal = () => {
         }
     }
 
-    const disableCreateButton = () => caseName && caseName.trim() !== ""
+    const disableCreateButton = () => !dG4Date || !caseName || caseName.trim() === ""
 
     return (
         <Modal
@@ -282,7 +274,7 @@ const CreateCaseModal = () => {
                     </Grid>
                     <Grid>
                         <Button
-                            disabled={!disableCreateButton()}
+                            disabled={disableCreateButton()}
                             onClick={submitCaseForm}
                         >
                             {isLoading ? <Progress.Dots /> : caseModalEditMode ? "Save" : "Create case"}
