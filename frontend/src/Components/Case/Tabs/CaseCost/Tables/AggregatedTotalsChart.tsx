@@ -127,7 +127,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     overridable: false,
                     editable: false,
                 })
-                // console.log("newTimeSeriesData", newTimeSeriesData)
             })
 
             Object.entries(incomeProfiles).forEach(([profileName, profileData]) => {
@@ -149,7 +148,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
             setAggregatedTimeSeriesData(newTimeSeriesData)
         }
-        // console.log("new", aggregatedTimeSeriesData)
     }, [apiData, tableYears, revisionAndProjectData])
 
     const dg4Year = getYearFromDateString(apiData.case.dG4Date)
