@@ -8,14 +8,14 @@ namespace api.Features.Cases.Recalculation;
 
 public class RecalculationRepository(DcdDbContext context)
 {
-    public async Task<CaseWithDrillingSchedules> LoadCaseData(Guid caseId)
+    public async Task<CaseWithCampaignWells> LoadCaseData(Guid caseId)
     {
         var cases = await LoadCaseData([caseId]);
 
         return cases.Single();
     }
 
-    public async Task<List<CaseWithDrillingSchedules>> LoadCaseData(List<Guid> caseIds)
+    public async Task<List<CaseWithCampaignWells>> LoadCaseData(List<Guid> caseIds)
     {
         var caseItems = await context.Cases
             .Include(x => x.Project).ThenInclude(x => x.DevelopmentOperationalWellCosts)
@@ -34,42 +34,42 @@ public class RecalculationRepository(DcdDbContext context)
             .Where(x => caseIds.Contains(x.CaseId))
             .LoadAsync();
 
-        var drillingSchedulesForDevelopmentWell = await (
-                from campaign in context.Campaigns
-                join dw in context.CampaignWells on campaign.Id equals dw.CampaignId
-                where caseIds.Contains(campaign.CaseId)
-                where campaign.CampaignType == CampaignType.DevelopmentCampaign
-                select new
-                {
-                    campaign.CaseId,
-                    DevelopmentWell = dw
-                })
-            .GroupBy(x => x.CaseId, x => x.DevelopmentWell)
-            .ToDictionaryAsync(x => x.Key, x => x.ToList());
+        var result = new List<CaseWithCampaignWells>();
 
-        var drillingSchedulesForExplorationWell = await (
-                from campaign in context.Campaigns
-                join ew in context.CampaignWells on campaign.Id equals ew.CampaignId
-                where caseIds.Contains(campaign.CaseId)
-                where campaign.CampaignType == CampaignType.ExplorationCampaign
-                select new
-                {
-                    campaign.CaseId,
-                    ExplorationWell = ew
-                })
-            .GroupBy(x => x.CaseId, x => x.ExplorationWell)
-            .ToDictionaryAsync(x => x.Key, x => x.ToList());
-
-        return caseItems.Select(caseItem => new CaseWithDrillingSchedules
+        foreach (var caseItem in caseItems)
         {
-            CaseItem = caseItem,
-            ExplorationWells = drillingSchedulesForExplorationWell.TryGetValue(caseItem.Id, out var expSchedules) ? expSchedules : [],
-            DevelopmentWells = drillingSchedulesForDevelopmentWell.TryGetValue(caseItem.Id, out var wpwSchedules) ? wpwSchedules : []
-        }).ToList();
+            var developmentWells = new List<CampaignWell>();
+            var explorationWells = new List<CampaignWell>();
+
+            foreach (var campaign in caseItem.Campaigns)
+            {
+                foreach (var campaignWell in campaign.CampaignWells)
+                {
+                    if (campaign.CampaignType == CampaignType.DevelopmentCampaign)
+                    {
+                        developmentWells.Add(campaignWell);
+                    }
+
+                    if (campaign.CampaignType == CampaignType.ExplorationCampaign)
+                    {
+                        explorationWells.Add(campaignWell);
+                    }
+                }
+            }
+
+            result.Add(new CaseWithCampaignWells
+            {
+                CaseItem = caseItem,
+                ExplorationWells = explorationWells,
+                DevelopmentWells = developmentWells
+            });
+        }
+
+        return result;
     }
 }
 
-public class CaseWithDrillingSchedules
+public class CaseWithCampaignWells
 {
     public required Case CaseItem { get; set; }
     public required List<CampaignWell> DevelopmentWells { get; set; }

@@ -48,11 +48,11 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         await context.SaveChangesAsync();
     }
 
-    private static void RunRecalculations(CaseWithDrillingSchedules caseWithDrillingSchedules)
+    private static void RunRecalculations(CaseWithCampaignWells caseWithCampaignWells)
     {
-        var caseItem = caseWithDrillingSchedules.CaseItem;
-        var explorationWells = caseWithDrillingSchedules.ExplorationWells;
-        var developmentWell = caseWithDrillingSchedules.DevelopmentWells;
+        var caseItem = caseWithCampaignWells.CaseItem;
+        var explorationWells = caseWithCampaignWells.ExplorationWells;
+        var developmentWell = caseWithCampaignWells.DevelopmentWells;
 
         DevelopmentWellCostProfileService.RunCalculation(caseItem);
         ExplorationWellCostProfileService.RunCalculation(caseItem);
