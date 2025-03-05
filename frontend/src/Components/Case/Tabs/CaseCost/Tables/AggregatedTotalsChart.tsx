@@ -44,7 +44,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     (apiData.totalFEEDStudiesOverride?.override ? apiData.totalFEEDStudiesOverride : apiData.totalFEEDStudies),
                     apiData.totalOtherStudiesCostProfile,
                 ]),
-
                 opexProfiles: mergeTimeseriesList([
                     apiData.historicCostCostProfile,
                     (apiData.wellInterventionCostProfileOverride?.override ? apiData.wellInterventionCostProfileOverride : apiData.wellInterventionCostProfile),
@@ -52,13 +51,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     apiData.onshoreRelatedOPEXCostProfile,
                     apiData.additionalOPEXCostProfile,
                 ]),
-
                 cessationProfiles: mergeTimeseriesList([
                     (apiData.cessationWellsCostOverride?.override ? apiData.cessationWellsCostOverride : apiData.cessationWellsCost),
                     (apiData.cessationOffshoreFacilitiesCostOverride?.override ? apiData.cessationOffshoreFacilitiesCostOverride : apiData.cessationOffshoreFacilitiesCost),
                     apiData.cessationOnshoreFacilitiesCostProfile,
                 ]),
-
                 offshoreFacilityProfiles: mergeTimeseriesList([
                     (apiData.surfCostProfileOverride?.override ? apiData.surfCostProfileOverride : apiData.surfCostProfile),
                     (apiData.topsideCostProfileOverride?.override ? apiData.topsideCostProfileOverride : apiData.topsideCostProfile),
@@ -66,14 +63,12 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     (apiData.transportCostProfileOverride?.override ? apiData.transportCostProfileOverride : apiData.transportCostProfile),
                     (apiData.onshorePowerSupplyCostProfileOverride?.override ? apiData.onshorePowerSupplyCostProfileOverride : apiData.onshorePowerSupplyCostProfile),
                 ]),
-
                 developmentWellCostProfiles: mergeTimeseriesList([
                     (apiData.oilProducerCostProfileOverride?.override ? apiData.oilProducerCostProfileOverride : apiData.oilProducerCostProfile),
                     (apiData.gasProducerCostProfileOverride?.override ? apiData.gasProducerCostProfileOverride : apiData.gasProducerCostProfile),
                     (apiData.waterInjectorCostProfileOverride?.override ? apiData.waterInjectorCostProfileOverride : apiData.waterInjectorCostProfile),
                     (apiData.gasInjectorCostProfileOverride?.override ? apiData.gasInjectorCostProfileOverride : apiData.gasInjectorCostProfile),
                 ]),
-
                 explorationWellCostProfiles: mergeTimeseriesList([
                     apiData.seismicAcquisitionAndProcessing,
                     apiData.countryOfficeCost,
@@ -83,7 +78,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     apiData.appraisalWellCostProfile,
                     apiData.sidetrackCostProfile,
                 ]),
-
             }
             setMergedCostProfiles(costProfiles)
             const incomeProfiles = {
@@ -133,7 +127,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     overridable: false,
                     editable: false,
                 })
-                // console.log("newTimeSeriesData", newTimeSeriesData)
             })
 
             Object.entries(incomeProfiles).forEach(([profileName, profileData]) => {
@@ -155,7 +148,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
             setAggregatedTimeSeriesData(newTimeSeriesData)
         }
-        // console.log("new", aggregatedTimeSeriesData)
     }, [apiData, tableYears, revisionAndProjectData])
 
     const dg4Year = getYearFromDateString(apiData.case.dG4Date)
