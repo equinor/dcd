@@ -268,6 +268,9 @@ const CaseProductionProfilesTab = () => {
                                 previousResourceObject={drainageStrategyData}
                                 resourceId={drainageStrategyData.id}
                                 integer
+                                min={0}
+                                max={100}
+                                unit="%"
                             />
                         </Grid>
                     )}
