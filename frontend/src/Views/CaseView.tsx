@@ -11,7 +11,7 @@ import CaseCostTab from "@/Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseScheduleTab from "@/Components/Case/Tabs/CaseScheduleTab"
 import CaseSummaryTab from "@/Components/Case/Tabs/CaseSummaryTab"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useDataFetch, useLocalStorage } from "@/Hooks"
+import { useDataFetch } from "@/Hooks"
 import { caseTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
@@ -28,7 +28,6 @@ const CaseView = () => {
         setCaseEditsBelongingToCurrentCase,
     } = useCaseStore()
     const { navigateToCase, navigateToProject } = useAppNavigation()
-    const [, setCaseEditsStorage] = useLocalStorage("caseEdits", caseEdits)
 
     // syncs the active tab with the url
     useEffect(() => {
@@ -51,10 +50,6 @@ const CaseView = () => {
             navigateToProject()
         }
     }, [revisionAndProjectData])
-
-    useEffect(() => {
-        setCaseEditsStorage(caseEdits)
-    }, [caseEdits])
 
     useEffect(() => {
         if (caseId) {
