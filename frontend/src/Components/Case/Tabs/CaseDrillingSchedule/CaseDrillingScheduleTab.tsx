@@ -44,6 +44,7 @@ const CaseDrillingScheduleTab = () => {
     const { navigateToProjectTab } = useAppNavigation()
     const { apiData } = useCaseApiData()
     const queryClient = useQueryClient()
+    const { setSnackBarMessage, isSaving, setIsSaving } = useAppStore()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -146,11 +147,18 @@ const CaseDrillingScheduleTab = () => {
         setTableYears([startYear, endYear])
     }
 
-    const createCampaign = (campaignType: CampaignType) => GetDrillingCampaignsService().createCampaign(
-        caseData.projectId,
-        caseData.caseId,
-        { campaignType },
-    ).then(() => queryClient.invalidateQueries({ queryKey: ["caseApiData", caseData.projectId, caseData.caseId] }))
+    const createCampaign = async (campaignType: CampaignType) => {
+        setIsSaving(true)
+
+        await GetDrillingCampaignsService().createCampaign(
+            caseData.projectId,
+            caseData.caseId,
+            { campaignType },
+        ).then(() => queryClient.invalidateQueries({ queryKey: ["caseApiData", caseData.projectId, caseData.caseId] }))
+            .catch(() => { setSnackBarMessage("Unable to create campaign") })
+
+        setIsSaving(false)
+    }
 
     return (
         <Grid container spacing={2}>
@@ -247,8 +255,12 @@ const CaseDrillingScheduleTab = () => {
                         <Grid>
                             <Grid>
                                 <InputGroup>
-                                    <Button onClick={() => createCampaign(CampaignType.ExplorationCampaign)} variant="contained">Create exploration campaign</Button>
-                                    <Button onClick={() => createCampaign(CampaignType.DevelopmentCampaign)} variant="contained">Create development campaign</Button>
+                                    <Button onClick={() => createCampaign(CampaignType.ExplorationCampaign)} variant="contained" disabled={isSaving}>
+                                        Create exploration campaign
+                                    </Button>
+                                    <Button onClick={() => createCampaign(CampaignType.DevelopmentCampaign)} variant="contained" disabled={isSaving}>
+                                        Create development campaign
+                                    </Button>
                                 </InputGroup>
                             </Grid>
                         </Grid>
