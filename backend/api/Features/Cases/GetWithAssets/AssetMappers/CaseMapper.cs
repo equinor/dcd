@@ -24,6 +24,7 @@ public static class CaseMapper
             NPVOverride = caseItem.NPVOverride,
             BreakEven = caseItem.BreakEven,
             BreakEvenOverride = caseItem.BreakEvenOverride,
+            DiscountedCashflow = caseItem.DiscountedCashflow,
             FacilitiesAvailability = caseItem.FacilitiesAvailability,
             CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies,
             CapexFactorFEEDStudies = caseItem.CapexFactorFEEDStudies,

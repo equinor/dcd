@@ -65,6 +65,7 @@ public static class ProjectDuplicator
             AverageDevelopmentDrillingDays = existingProject.AverageDevelopmentDrillingDays,
             OilPriceUSD = existingProject.OilPriceUSD,
             GasPriceNOK = existingProject.GasPriceNOK,
+            NglPriceUsd = existingProject.NglPriceUsd,
             DiscountRate = existingProject.DiscountRate,
             ExchangeRateUSDToNOK = existingProject.ExchangeRateUSDToNOK,
             NpvYear = existingProject.NpvYear,

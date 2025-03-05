@@ -27,6 +27,7 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? AdditionalOPEXCostProfile { get; set; }
     public required TimeSeriesDto? CalculatedTotalIncomeCostProfileUsd { get; set; }
     public required TimeSeriesDto? CalculatedTotalCostCostProfileUsd { get; set; }
+    public required TimeSeriesDto? CalculatedDiscountedCashflowService { get; set; }
 
     [Required] public required TopsideDto Topside { get; set; }
     public required TimeSeriesDto? TopsideCostProfile { get; set; }

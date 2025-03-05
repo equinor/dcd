@@ -30,7 +30,7 @@ public static class CalculateNpvService
         var dg4Year = caseItem.DG4Date.Year;
         var npvYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
-        var npvValue = EconomicsHelper.CalculateDiscountedVolume(
+        var npvValue = EconomicsHelper.CalculateSumOfDiscountedVolume(
             cashflowProfile.Values,
             discountRate,
             cashflowProfile.StartYear,

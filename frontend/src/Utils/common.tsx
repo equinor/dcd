@@ -345,7 +345,7 @@ export const generateProfile = (
     lastYear: number,
 ) => {
     const values: number[] = []
-
+    console.log("tableTimeSeriesValues", tableTimeSeriesValues)
     if (tableTimeSeriesValues.length === 0) {
         return {
             ...profile,
