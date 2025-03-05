@@ -1,9 +1,10 @@
-import { useState, useCallback, useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { EditInstance, ResourceObject } from "@/Models/Interfaces"
 import { useSubmitToApi } from "./UseSubmitToApi"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { ITimeSeries, TimeSeriesEntry } from "@/Models/ITimeSeries"
+import { useEditQueue } from "@/Store/EditQueueContext"
 
 interface TableQueueProps {
     setIsSaving: (isSaving: boolean) => void
@@ -136,8 +137,13 @@ const submitCaseUpdates = async (editQueue: EditInstance[], submitToApi: any, pr
 export const useTableQueue = ({
     isSaving, setIsSaving, gridRef,
 }: TableQueueProps) => {
-    const [editQueue, setEditQueue] = useState<EditInstance[]>([])
-    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
+    const {
+        editQueue,
+        lastEditTime,
+        addToQueue,
+        clearQueue,
+        updateLastEditTime,
+    } = useEditQueue()
     const { submitToApi } = useSubmitToApi()
     const { projectId } = useProjectContext()
     const { caseId } = useParams()
@@ -164,31 +170,21 @@ export const useTableQueue = ({
             throw error
         } finally {
             setIsSaving(false)
-            setEditQueue([])
+            clearQueue()
         }
     }, [editQueue, isSaving, submitToApi, setIsSaving, projectId, caseId])
-
-    const addToQueue = useCallback((edit: EditInstance) => {
-        setLastEditTime(Date.now())
-        setEditQueue((prev) => {
-            const newQueue = [...prev, edit]
-            return newQueue
-        })
-    }, [])
 
     useEffect(() => {
         if (editQueue.length === 0) { return }
 
         const timer = setTimeout(() => {
-            const timeSinceLastEdit = Date.now() - lastEditTime
+            if (!gridRef.current) { return }
             const hasEditingCells = gridRef.current?.api?.getEditingCells().length > 0
-
-            if (timeSinceLastEdit >= 3000) {
-                if (hasEditingCells) {
-                    gridRef.current.api.stopEditing()
-                } else {
-                    submitEditQueue()
-                }
+            if (hasEditingCells) {
+                gridRef.current.api.stopEditing()
+            } else {
+                console.log("edit queue b4 submit", editQueue)
+                submitEditQueue()
             }
         }, 3000)
 
@@ -198,6 +194,10 @@ export const useTableQueue = ({
         // eslint-disable-next-line consistent-return
         return cleanup
     }, [editQueue, lastEditTime, submitEditQueue, gridRef])
+
+    useEffect(() => {
+        updateLastEditTime()
+    }, [gridRef])
 
     return { editQueue, addToQueue, submitEditQueue }
 }
