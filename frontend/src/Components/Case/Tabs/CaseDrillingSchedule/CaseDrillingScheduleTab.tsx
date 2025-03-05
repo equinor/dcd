@@ -255,7 +255,7 @@ const CaseDrillingScheduleTab = () => {
                     )}
                 </CampaignHeaderTexts>
             </CampaignHeader>
-            {apiData?.explorationCampaigns?.map((campaign) => (
+            {apiData.explorationCampaigns.map((campaign) => (
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
@@ -263,7 +263,7 @@ const CaseDrillingScheduleTab = () => {
                     title="Exploration"
                 />
             ))}
-            {apiData?.developmentCampaigns?.map((campaign) => (
+            {apiData.developmentCampaigns.map((campaign) => (
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
