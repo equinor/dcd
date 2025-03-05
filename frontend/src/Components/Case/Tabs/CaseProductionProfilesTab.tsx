@@ -243,6 +243,7 @@ const CaseProductionProfilesTab = () => {
                             previousResourceObject={drainageStrategyData}
                             resourceId={drainageStrategyData.id}
                             integer
+                            unit="tonnes/MSm³"
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -254,6 +255,7 @@ const CaseProductionProfilesTab = () => {
                             previousResourceObject={drainageStrategyData}
                             resourceId={drainageStrategyData.id}
                             integer
+                            unit="Sm³/MSm³"
                         />
                     </Grid>
                     {(drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
