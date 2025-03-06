@@ -46,19 +46,19 @@ public static class ParseHelpers
     {
         return importValue switch
         {
-            0 => Concept.TIE_BACK,
-            1 => Concept.JACKET,
-            2 => Concept.GBS,
-            3 => Concept.TLP,
-            4 => Concept.SPAR,
-            5 => Concept.SEMI,
-            6 => Concept.CIRCULAR_BARGE,
-            7 => Concept.BARGE,
-            8 => Concept.FPSO,
-            9 => Concept.TANKER,
-            10 => Concept.JACK_UP,
-            11 => Concept.SUBSEA_TO_SHORE,
-            _ => Concept.NO_CONCEPT
+            0 => Concept.TieBack,
+            1 => Concept.Jacket,
+            2 => Concept.Gbs,
+            3 => Concept.Tlp,
+            4 => Concept.Spar,
+            5 => Concept.Semi,
+            6 => Concept.CircularBarge,
+            7 => Concept.Barge,
+            8 => Concept.Fpso,
+            9 => Concept.Tanker,
+            10 => Concept.JackUp,
+            11 => Concept.SubseaToShore,
+            _ => Concept.NoConcept
         };
     }
 
@@ -79,19 +79,19 @@ public static class ParseHelpers
         return importValue switch
         {
             1 => ProductionFlowline.Carbon,
-            2 => ProductionFlowline.SSClad,
+            2 => ProductionFlowline.SsClad,
             3 => ProductionFlowline.Cr13,
-            11 => ProductionFlowline.Carbon_Insulation,
-            12 => ProductionFlowline.SSClad_Insulation,
-            13 => ProductionFlowline.Cr13_Insulation,
-            21 => ProductionFlowline.Carbon_Insulation_DEH,
-            22 => ProductionFlowline.SSClad_Insulation_DEH,
-            23 => ProductionFlowline.Cr13_Insulation_DEH,
-            31 => ProductionFlowline.Carbon_PIP,
-            32 => ProductionFlowline.SSClad_PIP,
-            33 => ProductionFlowline.Cr13_PIP,
-            41 => ProductionFlowline.HDPELinedCS,
-            _ => ProductionFlowline.No_production_flowline
+            11 => ProductionFlowline.CarbonInsulation,
+            12 => ProductionFlowline.SsCladInsulation,
+            13 => ProductionFlowline.Cr13Insulation,
+            21 => ProductionFlowline.CarbonInsulationDeh,
+            22 => ProductionFlowline.SsCladInsulationDeh,
+            23 => ProductionFlowline.Cr13InsulationDeh,
+            31 => ProductionFlowline.CarbonPip,
+            32 => ProductionFlowline.SsCladPip,
+            33 => ProductionFlowline.Cr13Pip,
+            41 => ProductionFlowline.HdpeLinedCs,
+            _ => ProductionFlowline.NoProductionFlowline
         };
     }
 }

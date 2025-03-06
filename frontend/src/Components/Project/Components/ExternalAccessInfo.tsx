@@ -1,6 +1,6 @@
 import { useState } from "react"
 import {
-    chevron_down, chevron_up, edit, external_link, visibility, badge,
+    chevron_down, chevron_up, edit, external_link, visibility,
 } from "@equinor/eds-icons"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
@@ -26,7 +26,7 @@ const ExternalAccessInfo = () => {
                     <Grid container>
                         <AccessDescription variant="body_short">
                             In order to access all internal projects in Concept App, you need to apply for access in one of the AccessIT groups listed below.
-                            Keep in mind that "Restricted" or "Confidential" projects are only accesible to project members.
+                            Keep in mind that &quot;Restricted&quot; or &quot;Confidential&quot; projects are only accesible to project members.
                         </AccessDescription>
                         <OptionsContainer container justifyContent="space-around">
                             <Grid size={{ xs: 12, md: 3 }}>

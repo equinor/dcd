@@ -20,32 +20,34 @@ public static class GenerateGAndGAdminCostProfile
         var earliestYear = explorationWells.Select(ds => ds.StartYear).Min() + caseItem.DG4Date.Year;
         var dG1Date = caseItem.DG1Date ?? default(DateTime);
 
-        if (dG1Date.Year >= earliestYear)
+        if (dG1Date.Year < earliestYear)
         {
-            var countryCost = MapCountry(caseItem.Project.Country);
-            var lastYear = new DateTime(dG1Date.Year, 1, 1);
-            var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
-
-            var totalMinutesLastYear = new TimeSpan(DateTime.IsLeapYear(lastYear.Year) ? 366 : 365, 0, 0, 0).TotalMinutes;
-            var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
-
-            var gAndGAdminCost = caseItem.CreateProfileIfNotExists(ProfileTypes.GAndGAdminCost);
-
-            gAndGAdminCost.StartYear = earliestYear - caseItem.DG4Date.Year;
-
-            var years = lastYear.Year - earliestYear;
-            var values = new List<double>();
-
-            for (var i = 0; i < years; i++)
-            {
-                values.Add(countryCost);
-            }
-
-            values.Add(countryCost * percentageOfLastYear);
-
-            gAndGAdminCost.Values = values.ToArray();
-            gAndGAdminCost.StartYear = gAndGAdminCost.StartYear;
+            return;
         }
+
+        var countryCost = MapCountry(caseItem.Project.Country);
+        var lastYear = new DateTime(dG1Date.Year, 1, 1);
+        var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
+
+        var totalMinutesLastYear = new TimeSpan(DateTime.IsLeapYear(lastYear.Year) ? 366 : 365, 0, 0, 0).TotalMinutes;
+        var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
+
+        var gAndGAdminCost = caseItem.CreateProfileIfNotExists(ProfileTypes.GAndGAdminCost);
+
+        gAndGAdminCost.StartYear = earliestYear - caseItem.DG4Date.Year;
+
+        var years = lastYear.Year - earliestYear;
+        var values = new List<double>();
+
+        for (var i = 0; i < years; i++)
+        {
+            values.Add(countryCost);
+        }
+
+        values.Add(countryCost * percentageOfLastYear);
+
+        gAndGAdminCost.Values = values.ToArray();
+        gAndGAdminCost.StartYear = gAndGAdminCost.StartYear;
     }
 
     private static double MapCountry(string country)

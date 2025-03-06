@@ -1,7 +1,6 @@
-import VideoPlayer from "../VideoPlayer"
+import { useEffect, useState } from "react"
 import Article from "../Components/Article"
 import { getVideoService } from "@/Services/VideoService"
-import { useEffect, useState } from "react"
 
 const CreateCase = () => {
     const [videoUrl, setVideoUrl] = useState<string>("")
@@ -22,14 +21,13 @@ const CreateCase = () => {
         <Article>
             <Article.Header>How to create a case</Article.Header>
             <Article.Body>
-                {videoUrl && 
-                <video controls>
-                <source src={videoUrl} type="video/mp4" />
-             
-               Your browser does not support HTML video.
-             </video>
-                
-                }
+                {videoUrl
+                    && (
+                        <video controls>
+                            <source src={videoUrl} type="video/mp4" />
+                            Your browser does not support HTML video.
+                        </video>
+                    )}
                 <ol>
                     <li>
                         <p><strong>Go to the Project Overview Page:</strong></p>

@@ -1,33 +1,37 @@
 import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios"
 import { config } from "./config"
-import { getToken, loginAccessTokenKey } from "@/Utils/common"
+import {
+    getToken,
+    getLastForcedReloadDate,
+    setLastForcedReloadDate,
+} from "@/Utils/common"
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
 
 type RequestOptions = {
     credentials?: RequestCredentials
     headers?: Record<string, string>
     method?: "GET"
-        | "DELETE"
-        | "HEAD"
-        | "OPTIONS"
-        | "POST"
-        | "PUT"
-        | "PATCH"
-        | "PURGE"
-        | "LINK"
-        | "UNLINK"
+    | "DELETE"
+    | "HEAD"
+    | "OPTIONS"
+    | "POST"
+    | "PUT"
+    | "PATCH"
+    | "PURGE"
+    | "LINK"
+    | "UNLINK"
     body?: Record<string, any>
 }
 
 export class __BaseService {
     private client: AxiosInstance
-
     constructor() {
         this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
         this.client.interceptors.response.use(
             (response: any) => response,
             (error: any) => {
                 if (error.response.status === 403) {
-                    console.error("Error: You don't have permission to access this resource. Please contact support.")
+                    __BaseService.handle403Error(error)
                 } else if (error.response.status === 500) {
                     console.error("Error: An internal server error occurred. Please try again later.")
                 }
@@ -37,7 +41,7 @@ export class __BaseService {
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
-        const token = await getToken(loginAccessTokenKey)!
+        const token = await getToken()!
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -54,7 +58,7 @@ export class __BaseService {
     }
 
     private async requestExcel(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
-        const token = await getToken(loginAccessTokenKey)!
+        const token = await getToken()!
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -76,7 +80,7 @@ export class __BaseService {
         options?: RequestOptions,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
-        const token = await getToken(loginAccessTokenKey)!
+        const token = await getToken()!
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -92,7 +96,7 @@ export class __BaseService {
         options?: RequestOptions,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
-        const token = await getToken(loginAccessTokenKey)!
+        const token = await getToken()!
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -107,7 +111,7 @@ export class __BaseService {
         path: string,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
-        const token = await getToken(loginAccessTokenKey)!
+        const token = await getToken()!
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -136,5 +140,17 @@ export class __BaseService {
 
     protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: "PUT" })
+    }
+
+    private static handle403Error = (error: any) => {
+        console.error("Error: You don't have permission to access this resource. Please contact support.")
+        const lastForcedReloadDate = getLastForcedReloadDate()
+        const reloadTimeoutMs = 5 * 60 * 1000
+        const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - dateStringToDateUtc(lastForcedReloadDate).valueOf() > reloadTimeoutMs
+        const expectedAuth403Data = ""
+        if (error.response.data === expectedAuth403Data && isPastReloadTimeout) {
+            setLastForcedReloadDate(new Date().toISOString())
+            window.location.reload()
+        }
     }
 }

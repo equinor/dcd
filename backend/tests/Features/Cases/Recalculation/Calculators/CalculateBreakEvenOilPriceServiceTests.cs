@@ -58,7 +58,7 @@ public class CalculateBreakEvenOilPriceServiceTests
         CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
 
         // Assert
-        var expectedBreakEvenPrice = 29.82;
+        const double expectedBreakEvenPrice = 29.82;
         Assert.Equal(expectedBreakEvenPrice, caseItem.BreakEven, precision: 1);
     }
 }

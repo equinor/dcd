@@ -13,6 +13,7 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var imageIds = await context.CaseImages
+            .Where(x => x.Case.ProjectId == projectPk)
             .Where(x => x.CaseId == caseId)
             .Select(x => x.Id)
             .ToListAsync();
@@ -32,6 +33,7 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
         }
 
         var caseItem = await context.Cases
+            .Include(x => x.Campaigns).ThenInclude(x => x.CampaignWells)
             .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
@@ -40,12 +42,6 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
             .Where(x => x.Case.ProjectId == projectPk)
             .Where(x => x.CaseId == caseId)
             .ToListAsync();
-
-        await context.Cases
-            .Include(x => x.Campaigns).ThenInclude(x => x.CampaignWells)
-            .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.Id == caseId)
-            .LoadAsync();
 
         context.CampaignWells.RemoveRange(caseItem.Campaigns.SelectMany(x => x.CampaignWells));
         context.Campaigns.RemoveRange(campaigns);

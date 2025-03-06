@@ -33,9 +33,9 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     const datePickerValue = (() => {
-        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK) {
+        if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok) {
             return "MNOK"
-        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.USD) {
+        } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Usd) {
             return "MUSD"
         }
         return ""

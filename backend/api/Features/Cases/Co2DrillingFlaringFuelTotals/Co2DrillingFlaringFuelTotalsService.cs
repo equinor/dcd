@@ -16,7 +16,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid projectId, Guid caseId)
     {
-        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
         var profileTypes = new List<string>
         {
@@ -88,20 +88,15 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 
     private static double CalculateDrillingEmissionsTotal(Project project, List<CampaignWell> developmentWells)
     {
-        var wellDrillingSchedules = new TimeSeries();
-
-        foreach (var developmentWell in developmentWells)
+        var wellDrillingSchedules = developmentWells.Select(developmentWell => new TimeSeries
         {
-            var timeSeries = new TimeSeries
-            {
-                StartYear = developmentWell.StartYear,
-                Values = developmentWell.Values.Select(v => (double)v).ToArray()
-            };
+            StartYear = developmentWell.StartYear,
+            Values = developmentWell.Values.Select(v => (double)v).ToArray()
+        }).ToList();
 
-            wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
-        }
+        var merged = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules);
 
-        return wellDrillingSchedules.Values
+        return merged.Values
             .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
             .Sum();
     }

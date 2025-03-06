@@ -98,6 +98,8 @@ declare namespace Components {
             fuelFlaringAndLossesOverride: TimeSeriesOverrideDto;
             netSalesGas: TimeSeriesDto;
             netSalesGasOverride: TimeSeriesOverrideDto;
+            totalExportedVolumes: TimeSeriesDto;
+            totalExportedVolumesOverride: TimeSeriesOverrideDto;
             co2Emissions: TimeSeriesDto;
             co2EmissionsOverride: TimeSeriesOverrideDto;
             productionProfileNgl: TimeSeriesDto;
@@ -1289,6 +1291,20 @@ declare namespace Paths {
         }
     }
     namespace Projects$ProjectIdRevisions$RevisionId {
+        namespace Delete {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
         namespace Get {
             namespace Parameters {
                 export type ProjectId = string; // uuid

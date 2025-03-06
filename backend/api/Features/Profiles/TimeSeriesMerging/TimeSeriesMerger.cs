@@ -51,14 +51,7 @@ public static class TimeSeriesMerger
             return new TimeSeries();
         }
 
-        var mergedTimeSeries = new TimeSeries();
-
-        foreach (var ts in timeSeriesItems)
-        {
-            mergedTimeSeries = MergeTwoTimeSeries(mergedTimeSeries, ts);
-        }
-
-        return mergedTimeSeries;
+        return timeSeriesItems.Aggregate(new TimeSeries(), MergeTwoTimeSeries);
     }
 
     private static TimeSeries MergeTwoTimeSeries(TimeSeries t1, TimeSeries t2)

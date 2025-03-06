@@ -43,10 +43,12 @@ public static class CalculationHelper
 
     public static void ResetTimeSeries(TimeSeriesProfile? timeSeries)
     {
-        if (timeSeries != null)
+        if (timeSeries == null)
         {
-            timeSeries.Values = [];
-            timeSeries.StartYear = 0;
+            return;
         }
+
+        timeSeries.Values = [];
+        timeSeries.StartYear = 0;
     }
 }

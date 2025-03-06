@@ -38,28 +38,20 @@ public static class DcdDatabaseConfiguration
         using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null);
         context.Database.EnsureCreated();
 
-        builder.Services.AddDbContext<DcdDbContext>(
-            options => options
-                .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+        builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlite(sqliteConnectionString));
 
-        builder.Services.AddDbContextFactory<DcdDbContext>(
-            options => options
-                .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
-            lifetime: ServiceLifetime.Scoped);
+        builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseSqlite(sqliteConnectionString),
+                                                           lifetime: ServiceLifetime.Scoped);
     }
 
     private static void SetupAzureDatabase(WebApplicationBuilder builder)
     {
         var sqlServerConnectionString = builder.Configuration["Db:ConnectionString"]!;
 
-        builder.Services.AddDbContext<DcdDbContext>(
-            options => options
-                .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+        builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlServerConnectionString));
 
-        builder.Services.AddDbContextFactory<DcdDbContext>(
-            options => options
-                .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
-            lifetime: ServiceLifetime.Scoped);
+        builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseSqlServer(sqlServerConnectionString),
+                                                           lifetime: ServiceLifetime.Scoped);
 
         if (!DcdEnvironments.AllowMigrationsToBeApplied)
         {

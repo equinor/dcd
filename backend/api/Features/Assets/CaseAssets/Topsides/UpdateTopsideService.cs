@@ -10,30 +10,32 @@ public class UpdateTopsideService(DcdDbContext context, RecalculationService rec
 {
     public async Task UpdateTopside(Guid projectId, Guid caseId, UpdateTopsideDto updatedTopsideDto)
     {
-        var existingTopside = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        existingTopside.DryWeight = updatedTopsideDto.DryWeight;
-        existingTopside.OilCapacity = updatedTopsideDto.OilCapacity;
-        existingTopside.GasCapacity = updatedTopsideDto.GasCapacity;
-        existingTopside.WaterInjectionCapacity = updatedTopsideDto.WaterInjectionCapacity;
-        existingTopside.ArtificialLift = updatedTopsideDto.ArtificialLift;
-        existingTopside.FuelConsumption = updatedTopsideDto.FuelConsumption;
-        existingTopside.FlaredGas = updatedTopsideDto.FlaredGas;
-        existingTopside.ProducerCount = updatedTopsideDto.ProducerCount;
-        existingTopside.GasInjectorCount = updatedTopsideDto.GasInjectorCount;
-        existingTopside.WaterInjectorCount = updatedTopsideDto.WaterInjectorCount;
-        existingTopside.CO2ShareOilProfile = updatedTopsideDto.CO2ShareOilProfile;
-        existingTopside.CO2ShareGasProfile = updatedTopsideDto.CO2ShareGasProfile;
-        existingTopside.CO2ShareWaterInjectionProfile = updatedTopsideDto.CO2ShareWaterInjectionProfile;
-        existingTopside.CO2OnMaxOilProfile = updatedTopsideDto.CO2OnMaxOilProfile;
-        existingTopside.CO2OnMaxGasProfile = updatedTopsideDto.CO2OnMaxGasProfile;
-        existingTopside.CO2OnMaxWaterInjectionProfile = updatedTopsideDto.CO2OnMaxWaterInjectionProfile;
-        existingTopside.CostYear = updatedTopsideDto.CostYear;
-        existingTopside.FacilityOpex = updatedTopsideDto.FacilityOpex;
-        existingTopside.PeakElectricityImported = updatedTopsideDto.PeakElectricityImported;
-        existingTopside.Source = updatedTopsideDto.Source;
-        existingTopside.Maturity = updatedTopsideDto.Maturity;
-        existingTopside.ApprovedBy = updatedTopsideDto.ApprovedBy;
+        var existing = await context.Topsides.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId);
+
+        existing.DryWeight = updatedTopsideDto.DryWeight;
+        existing.OilCapacity = updatedTopsideDto.OilCapacity;
+        existing.GasCapacity = updatedTopsideDto.GasCapacity;
+        existing.WaterInjectionCapacity = updatedTopsideDto.WaterInjectionCapacity;
+        existing.ArtificialLift = updatedTopsideDto.ArtificialLift;
+        existing.FuelConsumption = updatedTopsideDto.FuelConsumption;
+        existing.FlaredGas = updatedTopsideDto.FlaredGas;
+        existing.ProducerCount = updatedTopsideDto.ProducerCount;
+        existing.GasInjectorCount = updatedTopsideDto.GasInjectorCount;
+        existing.WaterInjectorCount = updatedTopsideDto.WaterInjectorCount;
+        existing.CO2ShareOilProfile = updatedTopsideDto.CO2ShareOilProfile;
+        existing.CO2ShareGasProfile = updatedTopsideDto.CO2ShareGasProfile;
+        existing.CO2ShareWaterInjectionProfile = updatedTopsideDto.CO2ShareWaterInjectionProfile;
+        existing.CO2OnMaxOilProfile = updatedTopsideDto.CO2OnMaxOilProfile;
+        existing.CO2OnMaxGasProfile = updatedTopsideDto.CO2OnMaxGasProfile;
+        existing.CO2OnMaxWaterInjectionProfile = updatedTopsideDto.CO2OnMaxWaterInjectionProfile;
+        existing.CostYear = updatedTopsideDto.CostYear;
+        existing.FacilityOpex = updatedTopsideDto.FacilityOpex;
+        existing.PeakElectricityImported = updatedTopsideDto.PeakElectricityImported;
+        existing.Source = updatedTopsideDto.Source;
+        existing.Maturity = updatedTopsideDto.Maturity;
+        existing.ApprovedBy = updatedTopsideDto.ApprovedBy;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

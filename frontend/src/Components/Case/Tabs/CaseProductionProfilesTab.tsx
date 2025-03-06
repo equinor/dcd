@@ -5,6 +5,7 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
+import { PhysUnit } from "@/Models/enums"
 
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
@@ -17,7 +18,7 @@ import { defaultAxesData } from "@/Utils/common"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { useCaseApiData } from "@/Hooks"
+import { useCaseApiData, useDataFetch } from "@/Hooks"
 
 const CaseProductionProfilesTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -25,6 +26,8 @@ const CaseProductionProfilesTab = () => {
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const revisionAndProjectData = useDataFetch()
+
     const productionStrategyOptions = {
         0: "Depletion",
         1: "Water injection",
@@ -68,6 +71,8 @@ const CaseProductionProfilesTab = () => {
                     apiData.fuelFlaringAndLossesOverride,
                     apiData.netSalesGas,
                     apiData.netSalesGasOverride,
+                    apiData.totalExportedVolumes,
+                    apiData.totalExportedVolumesOverride,
                     apiData.importedElectricity,
                     apiData.importedElectricityOverride,
                     apiData.deferredOilProduction,
@@ -130,9 +135,12 @@ const CaseProductionProfilesTab = () => {
         return dataArray
     }
 
-    if (!drainageStrategyData || !caseData || !apiData) {
+    if (!drainageStrategyData || !caseData || !apiData || !revisionAndProjectData) {
         return (<CaseProductionProfilesTabSkeleton />)
     }
+
+    const getPhysicalUnit = () => (revisionAndProjectData.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "SI" : "Oil field")
+
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
             <Grid container size={12} justifyContent="flex-start">
@@ -241,6 +249,7 @@ const CaseProductionProfilesTab = () => {
                             previousResourceObject={drainageStrategyData}
                             resourceId={drainageStrategyData.id}
                             integer
+                            unit={getPhysicalUnit() === "SI" ? "tonnes/MSm³" : "tonnes/mmscf"}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -252,6 +261,7 @@ const CaseProductionProfilesTab = () => {
                             previousResourceObject={drainageStrategyData}
                             resourceId={drainageStrategyData.id}
                             integer
+                            unit={getPhysicalUnit() === "SI" ? "Sm³/MSm³" : "bbls/mmscf"}
                         />
                     </Grid>
                     {(drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
@@ -264,6 +274,9 @@ const CaseProductionProfilesTab = () => {
                                 previousResourceObject={drainageStrategyData}
                                 resourceId={drainageStrategyData.id}
                                 integer
+                                min={0}
+                                max={100}
+                                unit="%"
                             />
                         </Grid>
                     )}

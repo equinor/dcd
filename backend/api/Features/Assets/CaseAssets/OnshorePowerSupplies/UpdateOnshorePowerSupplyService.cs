@@ -10,7 +10,9 @@ public class UpdateOnshorePowerSupplyService(DcdDbContext context, Recalculation
 {
     public async Task UpdateOnshorePowerSupply(Guid projectId, Guid caseId, UpdateOnshorePowerSupplyDto updatedOnshorePowerSupplyDto)
     {
-        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var existing = await context.OnshorePowerSupplies.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId);
 
         existing.CostYear = updatedOnshorePowerSupplyDto.CostYear;
         existing.Source = updatedOnshorePowerSupplyDto.Source;
