@@ -183,12 +183,13 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             return income * exchangeRateUSDToNOK - cost
         }),
     }
+    console.log("income", incomeProfile)
+    console.log("cost", costProfile)
 
     const cashFlow = {
         startYear: minYear,
         values: (cashFlowData?.values || []).map((v) => v) ?? [],
     }
-
     const totalIncomeData = apiData.calculatedTotalIncomeCostProfileUsd
 
     const cashflow = {
@@ -308,6 +309,21 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 lineDash: [4, 4],
                 marker: {
                     enabled: false,
+                },
+            },
+            {
+                type: "line", // Ensure this is "line" for dotted line
+                xKey: "year",
+                yKey: "discountedCashflow",
+                yName: "Discounted cashflow",
+                stroke: "red",
+                strokeWidth: 2,
+                lineDash: [4, 4], // Add lineDash for dotted line
+                marker: {
+                    enabled: true,
+                    shape: "circle",
+                    size: 5,
+                    fill: "red",
                 },
             },
         ],
