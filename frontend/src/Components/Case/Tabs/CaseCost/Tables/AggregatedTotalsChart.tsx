@@ -312,18 +312,15 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 },
             },
             {
-                type: "line", // Ensure this is "line" for dotted line
+                type: "line",
                 xKey: "year",
                 yKey: "discountedCashflow",
                 yName: "Discounted cashflow",
                 stroke: "red",
                 strokeWidth: 2,
-                lineDash: [4, 4], // Add lineDash for dotted line
+                lineDash: [4, 4],
                 marker: {
-                    enabled: true,
-                    shape: "circle",
-                    size: 5,
-                    fill: "red",
+                    enabled: false,
                 },
             },
         ],
