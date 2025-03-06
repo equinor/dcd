@@ -19,6 +19,8 @@ public class CreateCaseService(DcdDbContext context)
         var transportId = Guid.NewGuid();
         var onshorePowerSupplyId = Guid.NewGuid();
 
+        var dgDates = CalculateDgDates(createCaseDto.DG4Date);
+
         var createdCase = new Case
         {
             ProjectId = projectPk,
@@ -28,7 +30,11 @@ public class CreateCaseService(DcdDbContext context)
             ProducerCount = createCaseDto.ProducerCount,
             GasInjectorCount = createCaseDto.GasInjectorCount,
             WaterInjectorCount = createCaseDto.WaterInjectorCount,
-            DG4Date = createCaseDto.DG4Date == DateTime.MinValue ? new DateTime(2030, 1, 1) : createCaseDto.DG4Date,
+            DG4Date = dgDates.dg4,
+            DG3Date = dgDates.dg3,
+            DG2Date = dgDates.dg2,
+            DG1Date = dgDates.dg1,
+            DG0Date = dgDates.dg0,
             CapexFactorFeasibilityStudies = 0.015,
             CapexFactorFEEDStudies = 0.015,
 
@@ -213,5 +219,17 @@ public class CreateCaseService(DcdDbContext context)
             Source = Source.ConceptApp,
             ProspVersion = null
         };
+    }
+
+    public static (DateTime dg4, DateTime dg3, DateTime dg2, DateTime dg1, DateTime dg0) CalculateDgDates(DateTime dg4DateFromDto)
+    {
+        var dg4date = dg4DateFromDto == DateTime.MinValue ? new DateTime(2030, 1, 1) : new DateTime(dg4DateFromDto.Year, dg4DateFromDto.Month, 1);
+
+        var dg3Date = dg4date.AddMonths(-36);
+        var dg2Date = dg3Date.AddMonths(-12);
+        var dg1Date = dg2Date.AddMonths(-12);
+        var dg0Date = dg1Date.AddMonths(-12);
+
+        return (dg4date, dg3Date, dg2Date, dg1Date, dg0Date);
     }
 }
