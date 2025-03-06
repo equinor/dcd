@@ -183,8 +183,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             return income * exchangeRateUSDToNOK - cost
         }),
     }
-    console.log("income", incomeProfile)
-    console.log("cost", costProfile)
 
     const cashFlow = {
         startYear: minYear,
