@@ -146,7 +146,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
         },
     },
     "2.4.0": {
-        date: "2025-03-15",
+        date: "2025-02-28",
         updates: {
             "New Functionalities": [
                 {
