@@ -1,18 +1,21 @@
 import {
     useState,
     useEffect,
+    useMemo,
 } from "react"
-import { Typography } from "@equinor/eds-core-react"
+import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useMediaQuery } from "@mui/material"
 
+import { styled } from "styled-components"
+import { useQueryClient } from "@tanstack/react-query"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useDataFetch, useCaseApiData } from "@/Hooks"
+import { useDataFetch, useCaseApiData, useCanUserEdit } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import Campaign from "./Components/Campaign"
 import {
@@ -22,19 +25,34 @@ import {
     FieldsAndDatePickerContainer,
     LinkText,
 } from "./Components/SharedCampaignStyles"
-import { WellCategory } from "@/Models/enums"
+import { CampaignType, WellCategory } from "@/Models/enums"
+import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
+import { useAppStore } from "@/Store/AppStore"
+
+const InputGroup = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 10px;
+`
 
 const CaseDrillingScheduleTab = () => {
+    const { canEdit } = useCanUserEdit()
+    const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { navigateToProjectTab } = useAppNavigation()
     const { apiData } = useCaseApiData()
+    const queryClient = useQueryClient()
+    const { setSnackBarMessage, isSaving, setIsSaving } = useAppStore()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
     const isSmallScreen = useMediaQuery("(max-width: 768px)")
+
+    const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
 
     // DevelopmentWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
@@ -129,6 +147,19 @@ const CaseDrillingScheduleTab = () => {
         setTableYears([startYear, endYear])
     }
 
+    const createCampaign = async (campaignType: CampaignType) => {
+        setIsSaving(true)
+
+        await GetDrillingCampaignsService().createCampaign(
+            caseData.projectId,
+            caseData.caseId,
+            { campaignType },
+        ).then(() => queryClient.invalidateQueries({ queryKey: ["caseApiData", caseData.projectId, caseData.caseId] }))
+            .catch(() => { setSnackBarMessage("Unable to create campaign") })
+
+        setIsSaving(false)
+    }
+
     return (
         <Grid container spacing={2}>
             <CampaignHeader $isSmallScreen={isSmallScreen}>
@@ -220,9 +251,23 @@ const CaseDrillingScheduleTab = () => {
                             handleTableYearsClick={handleTableYearsClick}
                         />
                     </FieldsAndDatePickerContainer>
+                    {canUserEdit && (
+                        <Grid>
+                            <Grid>
+                                <InputGroup>
+                                    <Button onClick={() => createCampaign(CampaignType.ExplorationCampaign)} variant="contained" disabled={isSaving}>
+                                        Create exploration campaign
+                                    </Button>
+                                    <Button onClick={() => createCampaign(CampaignType.DevelopmentCampaign)} variant="contained" disabled={isSaving}>
+                                        Create development campaign
+                                    </Button>
+                                </InputGroup>
+                            </Grid>
+                        </Grid>
+                    )}
                 </CampaignHeaderTexts>
             </CampaignHeader>
-            {apiData?.explorationCampaigns?.map((campaign) => (
+            {apiData.explorationCampaigns.map((campaign) => (
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
@@ -230,7 +275,7 @@ const CaseDrillingScheduleTab = () => {
                     title="Exploration"
                 />
             ))}
-            {apiData?.developmentCampaigns?.map((campaign) => (
+            {apiData.developmentCampaigns.map((campaign) => (
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
