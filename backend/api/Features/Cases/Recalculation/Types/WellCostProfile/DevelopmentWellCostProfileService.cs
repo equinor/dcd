@@ -12,10 +12,10 @@ public static class DevelopmentWellCostProfileService
     {
         var profileTypes = new Dictionary<string, WellCategory>
         {
-            { ProfileTypes.OilProducerCostProfile, WellCategory.Oil_Producer },
-            { ProfileTypes.GasProducerCostProfile, WellCategory.Gas_Producer },
-            { ProfileTypes.WaterInjectorCostProfile, WellCategory.Water_Injector },
-            { ProfileTypes.GasInjectorCostProfile, WellCategory.Gas_Injector }
+            { ProfileTypes.OilProducerCostProfile, WellCategory.OilProducer },
+            { ProfileTypes.GasProducerCostProfile, WellCategory.GasProducer },
+            { ProfileTypes.WaterInjectorCostProfile, WellCategory.WaterInjector },
+            { ProfileTypes.GasInjectorCostProfile, WellCategory.GasInjector }
         };
 
         foreach (var profileType in profileTypes)

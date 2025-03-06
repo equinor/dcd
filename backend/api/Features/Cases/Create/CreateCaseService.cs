@@ -167,7 +167,7 @@ public class CreateCaseService(DcdDbContext context)
             ProducerCount = 0,
             GasInjectorCount = 0,
             WaterInjectorCount = 0,
-            ProductionFlowline = ProductionFlowline.No_production_flowline,
+            ProductionFlowline = ProductionFlowline.NoProductionFlowline,
             CostYear = 0,
             Source = Source.ConceptApp,
             ProspVersion = null,
@@ -186,7 +186,7 @@ public class CreateCaseService(DcdDbContext context)
             CostYear = 0,
             ProspVersion = null,
             Source = Source.ConceptApp,
-            Concept = Concept.NO_CONCEPT
+            Concept = Concept.NoConcept
         };
     }
 

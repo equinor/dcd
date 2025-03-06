@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { Typography, Icon } from "@equinor/eds-core-react"
 import { add, exit_to_app, gear } from "@equinor/eds-icons"
 import MenuItem from "@mui/material/MenuItem"

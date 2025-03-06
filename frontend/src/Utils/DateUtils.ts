@@ -44,24 +44,6 @@ export const toMonthDate = (date?: Date | null): string | undefined => {
     return date?.toISOString().substring(0, 7)
 }
 
-export const isDefaultDate = (date?: Date | null): boolean => {
-    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
-        return true
-    }
-    return false
-}
-
-export const isDefaultDateString = (dateString?: string | null): boolean => {
-    // eslint-disable-next-line no-restricted-syntax
-    const date = new Date(dateString ?? "")
-    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
-        return true
-    }
-    return false
-}
-
-export const defaultDate = () => dateStringToDateUtc("0001-01-01T00:00:00+00:00")
-
 export function formatDate(isoDateString: string): string {
     if (!isoDateString || isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
         return "_"

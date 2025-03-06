@@ -1,20 +1,16 @@
 using api.Context;
-using api.Exceptions;
+using api.Context.Extensions;
 using api.Features.Images.Delete;
-using api.Features.ProjectData;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Revisions.Delete;
 
-public class DeleteRevisionService(DcdDbContext context,
-    GetProjectDataRepository getProjectDataRepository, DeleteCaseImageService deleteCaseImageService,
-    DeleteProjectImageService deleteProjectImageService)
+public class DeleteRevisionService(DcdDbContext context, DeleteCaseImageService deleteCaseImageService, DeleteProjectImageService deleteProjectImageService)
 {
     public async Task DeleteRevision(Guid projectId, Guid revisionId)
     {
-        var originalProjectId = await getProjectDataRepository.GetOriginalProjectIdForRevision(revisionId);
-
+        await context.EnsureRevisionIsConnectedToProject(projectId, revisionId);
 
         var caseImages = await context.CaseImages.Where(x => x.Case.ProjectId == revisionId).ToListAsync();
         var projectImages = await context.ProjectImages.Where(x => x.ProjectId == revisionId).ToListAsync();

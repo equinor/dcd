@@ -22,7 +22,7 @@ public static class SurfProspService
         asset.ProducerCount = 0;
         asset.GasInjectorCount = 0;
         asset.WaterInjectorCount = 0;
-        asset.ProductionFlowline = ProductionFlowline.No_production_flowline;
+        asset.ProductionFlowline = ProductionFlowline.NoProductionFlowline;
         asset.CostYear = 0;
         asset.ApprovedBy = "";
         asset.ProspVersion = null;

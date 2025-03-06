@@ -3,6 +3,6 @@ namespace api.Models.Enums;
 public enum InternalProjectPhase
 {
     APbo, // Approval Point Business Opportunity
-    BOR, // Business Opportunity Reconfirmation
+    Bor, // Business Opportunity Reconfirmation
     VPbo // Valid Point Business Opportunity
 }

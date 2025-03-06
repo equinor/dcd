@@ -38,7 +38,9 @@ public class ProspSharepointImportService(
 
     public async Task ImportFilesFromSharePoint(Guid projectId, SharePointImportDto[] dtos)
     {
-        await prospExcelImportService.ClearImportedProspData(projectId, dtos.Select(x => x.CaseId).ToList());
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        await prospExcelImportService.ClearImportedProspData(projectPk, dtos.Select(x => x.CaseId).ToList());
 
         var (success, siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
 
@@ -60,7 +62,7 @@ public class ProspSharepointImportService(
                 .Content.Request()
                 .GetAsync();
 
-            await prospExcelImportService.ImportProsp(driveItemStream, projectId, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
+            await prospExcelImportService.ImportProsp(driveItemStream, projectPk, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
         }
 
         await context.SaveChangesAsync();

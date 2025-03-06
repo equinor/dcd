@@ -16,7 +16,7 @@ public class UpdateExplorationOperationalWellCostsService(DcdDbContext context)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var existingExplorationOperationalWellCosts = await context.ExplorationOperationalWellCosts.SingleAsync(x => x.Id == explorationOperationalWellCostsId);
+        var existingExplorationOperationalWellCosts = await context.ExplorationOperationalWellCosts.SingleAsync(x => x.ProjectId == projectPk && x.Id == explorationOperationalWellCostsId);
 
         existingExplorationOperationalWellCosts.ExplorationRigUpgrading = dto.ExplorationRigUpgrading;
         existingExplorationOperationalWellCosts.ExplorationRigMobDemob = dto.ExplorationRigMobDemob;

@@ -1,6 +1,18 @@
 import { __BaseService } from "./__BaseService"
 
 class DrillingCampaignsService extends __BaseService {
+    public async createCampaign(
+        projectId: string,
+        caseId: string,
+        body: Components.Schemas.CreateCampaignDto,
+    ): Promise<Components.Schemas.CampaignDto> {
+        const dto = await this.post(
+            `projects/${projectId}/cases/${caseId}/campaigns`,
+            { body },
+        )
+        return dto
+    }
+
     public async updateCampaign(
         projectId: string,
         caseId: string,

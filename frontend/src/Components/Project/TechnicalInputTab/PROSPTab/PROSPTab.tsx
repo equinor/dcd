@@ -14,14 +14,12 @@ import { GetProjectService } from "@/Services/ProjectService"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 import useEditProject from "@/Hooks/useEditProject"
-import { useAppStore } from "@/Store/AppStore"
 import PROSPCaseTable from "@/Components/Tables/ProjectTables/PROSPCaseTable"
 
 const PROSPTab = () => {
     const revisionAndProjectData = useDataFetch()
     const { addProjectEdit } = useEditProject()
     const { canEdit } = useCanUserEdit()
-    const { editMode } = useAppStore()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [sharePointFiles, setSharePointFiles] = useState<Components.Schemas.SharePointFileDto[]>([])

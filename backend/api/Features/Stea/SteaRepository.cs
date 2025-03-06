@@ -22,6 +22,11 @@ public class SteaRepository(DcdDbContext context)
             .Where(x => !x.Case.Archived)
             .LoadAsync();
 
+        await context.Campaigns
+            .Where(x => x.Case.ProjectId == projectPk)
+            .Where(x => !x.Case.Archived)
+            .LoadAsync();
+
         project.Cases = project.Cases.OrderBy(c => c.CreatedUtc).ToList();
 
         return project;

@@ -74,23 +74,19 @@ public static class Co2EmissionsProfileService
 
     private static TimeSeries CalculateDrillingEmissions(Project project, List<CampaignWell> developmentWells)
     {
-        var wellDrillingSchedules = new TimeSeries();
-
-        foreach (var developmentWell in developmentWells)
-        {
-            var timeSeries = new TimeSeries
+        var wellDrillingSchedules = developmentWells.Select(developmentWell => new TimeSeries
             {
                 StartYear = developmentWell.StartYear,
                 Values = developmentWell.Values.Select(v => (double)v).ToArray()
-            };
+            })
+            .ToList();
 
-            wellDrillingSchedules = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules, timeSeries);
-        }
+        var wellDrillingSchedule = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules);
 
         return new TimeSeries
         {
-            StartYear = wellDrillingSchedules.StartYear,
-            Values = wellDrillingSchedules.Values
+            StartYear = wellDrillingSchedule.StartYear,
+            Values = wellDrillingSchedule.Values
                 .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
                 .ToArray()
         };

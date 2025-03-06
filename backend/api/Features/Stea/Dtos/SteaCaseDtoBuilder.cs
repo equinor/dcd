@@ -2,6 +2,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Stea.Dtos;
 
@@ -132,6 +133,22 @@ public static class SteaCaseDtoBuilder
                 ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemobOverride))
                 : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemob))
         };
+
+        costProfileDtos.AddRange(caseItem.Campaigns
+                                     .Where(x => x.CampaignType == CampaignType.DevelopmentCampaign)
+                                     .Select(campaign => new TimeSeries
+                                     {
+                                         StartYear = campaign.RigUpgradingCostStartYear,
+                                         Values = campaign.RigUpgradingCostValues.Select(x => x * campaign.RigUpgradingCost).ToArray()
+                                     }));
+
+        costProfileDtos.AddRange(caseItem.Campaigns
+                                     .Where(x => x.CampaignType == CampaignType.DevelopmentCampaign)
+                                     .Select(campaign => new TimeSeries
+                                     {
+                                         StartYear = campaign.RigMobDemobCostStartYear,
+                                         Values = campaign.RigMobDemobCostValues.Select(x => x * campaign.RigMobDemobCost).ToArray()
+                                     }));
 
         var costProfile = TimeSeriesMerger.MergeTimeSeries(costProfileDtos);
         costProfile.StartYear += caseItem.DG4Date.Year;
@@ -298,6 +315,22 @@ public static class SteaCaseDtoBuilder
                 ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemobOverride))
                 : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationRigMobDemob))
         };
+
+        costProfileDtos.AddRange(caseItem.Campaigns
+                                     .Where(x => x.CampaignType == CampaignType.ExplorationCampaign)
+                                     .Select(campaign => new TimeSeries
+                                     {
+                                         StartYear = campaign.RigUpgradingCostStartYear,
+                                         Values = campaign.RigUpgradingCostValues.Select(x => x * campaign.RigUpgradingCost).ToArray()
+                                     }));
+
+        costProfileDtos.AddRange(caseItem.Campaigns
+                                     .Where(x => x.CampaignType == CampaignType.ExplorationCampaign)
+                                     .Select(campaign => new TimeSeries
+                                     {
+                                         StartYear = campaign.RigMobDemobCostStartYear,
+                                         Values = campaign.RigMobDemobCostValues.Select(x => x * campaign.RigMobDemobCost).ToArray()
+                                     }));
 
         steaCaseDto.Exploration = TimeSeriesMerger.MergeTimeSeries(costProfileDtos);
         steaCaseDto.Exploration.StartYear += caseItem.DG4Date.Year;

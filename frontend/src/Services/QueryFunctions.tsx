@@ -16,7 +16,7 @@ export const projectQueryFn = async (projectId: string | undefined) => {
         console.error("projectId is undefined")
         return null
     }
-    
+
     return GetProjectService().getProject(projectId!)
 }
 
@@ -44,6 +44,4 @@ export const compareCasesQueryFn = async (projectId: string | undefined) => {
     return GetProjectService().compareCases(projectId!)
 }
 
-export const featureToggleQueryFn = async () => {
-    return GetFeatureToggleService().getFeatureToggles()
-}
+export const featureToggleQueryFn = async () => GetFeatureToggleService().getFeatureToggles()

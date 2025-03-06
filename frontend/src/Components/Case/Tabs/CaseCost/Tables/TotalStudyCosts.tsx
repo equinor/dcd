@@ -41,7 +41,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         const newStudyTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Feasibility & conceptual stud.",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalFeasibilityAndConceptStudiesData,
                 resourceName: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
                 resourceId: caseData.caseId,
@@ -52,7 +52,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             },
             {
                 profileName: "FEED studies (DG2-DG3)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalFEEDStudiesData,
                 resourceName: ProfileTypes.TotalFEEDStudiesOverride,
                 resourceId: caseData.caseId,
@@ -63,7 +63,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             },
             {
                 profileName: "Other studies",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`,
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalOtherStudiesCostProfileData,
                 resourceName: ProfileTypes.TotalOtherStudiesCostProfile,
                 resourceId: caseData.caseId,

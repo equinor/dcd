@@ -1,18 +1,21 @@
 import {
     useState,
     useEffect,
+    useMemo,
 } from "react"
-import { Typography } from "@equinor/eds-core-react"
+import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useMediaQuery } from "@mui/material"
 
+import { styled } from "styled-components"
+import { useQueryClient } from "@tanstack/react-query"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useDataFetch, useCaseApiData } from "@/Hooks"
+import { useDataFetch, useCaseApiData, useCanUserEdit } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import Campaign from "./Components/Campaign"
 import {
@@ -22,19 +25,34 @@ import {
     FieldsAndDatePickerContainer,
     LinkText,
 } from "./Components/SharedCampaignStyles"
-import { WellCategory } from "@/Models/enums"
+import { CampaignType, WellCategory } from "@/Models/enums"
+import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
+import { useAppStore } from "@/Store/AppStore"
+
+const InputGroup = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 10px;
+`
 
 const CaseDrillingScheduleTab = () => {
+    const { canEdit } = useCanUserEdit()
+    const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { navigateToProjectTab } = useAppNavigation()
     const { apiData } = useCaseApiData()
+    const queryClient = useQueryClient()
+    const { setSnackBarMessage, isSaving, setIsSaving } = useAppStore()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
     const isSmallScreen = useMediaQuery("(max-width: 768px)")
+
+    const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
 
     // DevelopmentWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
@@ -69,7 +87,7 @@ const CaseDrillingScheduleTab = () => {
         if (!apiData) { return 0 }
 
         if (wells && wells.length > 0) {
-            if ([WellCategory.Exploration_Well, WellCategory.Appraisal_Well, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
+            if ([WellCategory.ExplorationWell, WellCategory.AppraisalWell, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -97,12 +115,12 @@ const CaseDrillingScheduleTab = () => {
 
     useEffect(() => {
         if (activeTabCase === 3) {
-            setOilProducerCount(sumWellsForWellCategory(WellCategory.Oil_Producer))
-            setGasProducerCount(sumWellsForWellCategory(WellCategory.Gas_Producer))
-            setWaterInjectorCount(sumWellsForWellCategory(WellCategory.Water_Injector))
-            setGasInjectorCount(sumWellsForWellCategory(WellCategory.Gas_Injector))
-            setExplorationWellCount(sumWellsForWellCategory(WellCategory.Exploration_Well))
-            setAppraisalWellCount(sumWellsForWellCategory(WellCategory.Appraisal_Well))
+            setOilProducerCount(sumWellsForWellCategory(WellCategory.OilProducer))
+            setGasProducerCount(sumWellsForWellCategory(WellCategory.GasProducer))
+            setWaterInjectorCount(sumWellsForWellCategory(WellCategory.WaterInjector))
+            setGasInjectorCount(sumWellsForWellCategory(WellCategory.GasInjector))
+            setExplorationWellCount(sumWellsForWellCategory(WellCategory.ExplorationWell))
+            setAppraisalWellCount(sumWellsForWellCategory(WellCategory.AppraisalWell))
             setSidetrackCount(sumWellsForWellCategory(WellCategory.Sidetrack))
         }
     }, [apiData, wells, activeTabCase])
@@ -127,6 +145,19 @@ const CaseDrillingScheduleTab = () => {
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
+    }
+
+    const createCampaign = async (campaignType: CampaignType) => {
+        setIsSaving(true)
+
+        await GetDrillingCampaignsService().createCampaign(
+            caseData.projectId,
+            caseData.caseId,
+            { campaignType },
+        ).then(() => queryClient.invalidateQueries({ queryKey: ["caseApiData", caseData.projectId, caseData.caseId] }))
+            .catch(() => { setSnackBarMessage("Unable to create campaign") })
+
+        setIsSaving(false)
     }
 
     return (
@@ -220,9 +251,23 @@ const CaseDrillingScheduleTab = () => {
                             handleTableYearsClick={handleTableYearsClick}
                         />
                     </FieldsAndDatePickerContainer>
+                    {canUserEdit && (
+                        <Grid>
+                            <Grid>
+                                <InputGroup>
+                                    <Button onClick={() => createCampaign(CampaignType.ExplorationCampaign)} variant="contained" disabled={isSaving}>
+                                        Create exploration campaign
+                                    </Button>
+                                    <Button onClick={() => createCampaign(CampaignType.DevelopmentCampaign)} variant="contained" disabled={isSaving}>
+                                        Create development campaign
+                                    </Button>
+                                </InputGroup>
+                            </Grid>
+                        </Grid>
+                    )}
                 </CampaignHeaderTexts>
             </CampaignHeader>
-            {apiData?.explorationCampaigns?.map((campaign) => (
+            {apiData.explorationCampaigns.map((campaign) => (
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
@@ -230,7 +275,7 @@ const CaseDrillingScheduleTab = () => {
                     title="Exploration"
                 />
             ))}
-            {apiData?.developmentCampaigns?.map((campaign) => (
+            {apiData.developmentCampaigns.map((campaign) => (
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}

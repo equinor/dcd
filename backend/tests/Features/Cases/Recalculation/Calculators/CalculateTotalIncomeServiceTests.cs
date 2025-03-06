@@ -70,12 +70,12 @@ public class CalculateTotalIncomeServiceTests
         var expectedSecondYearIncome = (4 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 4 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUSDToNOK;
         var expectedThirdYearIncome = (3 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 3 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUSDToNOK;
 
-        var CalculatedTotalIncomeCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd);
-        Assert.NotNull(CalculatedTotalIncomeCostProfileUsd);
-        Assert.Equal(2020, CalculatedTotalIncomeCostProfileUsd.StartYear);
-        Assert.Equal(3, CalculatedTotalIncomeCostProfileUsd.Values.Length);
-        Assert.Equal(expectedFirstYearIncome, CalculatedTotalIncomeCostProfileUsd.Values[0], precision: 0);
-        Assert.Equal(expectedSecondYearIncome, CalculatedTotalIncomeCostProfileUsd.Values[1], precision: 0);
-        Assert.Equal(expectedThirdYearIncome, CalculatedTotalIncomeCostProfileUsd.Values[2], precision: 0);
+        var calculatedTotalIncomeCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd);
+        Assert.NotNull(calculatedTotalIncomeCostProfileUsd);
+        Assert.Equal(2020, calculatedTotalIncomeCostProfileUsd.StartYear);
+        Assert.Equal(3, calculatedTotalIncomeCostProfileUsd.Values.Length);
+        Assert.Equal(expectedFirstYearIncome, calculatedTotalIncomeCostProfileUsd.Values[0], precision: 0);
+        Assert.Equal(expectedSecondYearIncome, calculatedTotalIncomeCostProfileUsd.Values[1], precision: 0);
+        Assert.Equal(expectedThirdYearIncome, calculatedTotalIncomeCostProfileUsd.Values[2], precision: 0);
     }
 }

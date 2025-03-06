@@ -11,7 +11,9 @@ public class UpdateCampaignWellsService(DcdDbContext context, RecalculationServi
 {
     public async Task UpdateCampaignWells(Guid projectId, Guid caseId, Guid campaignId, List<SaveCampaignWellDto> campaignWellDtos)
     {
-        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId && x.Id == campaignId);
 
         var wellIds = campaignWellDtos.Select(x => x.WellId).ToList();
 

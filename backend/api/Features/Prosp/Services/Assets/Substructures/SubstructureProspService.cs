@@ -15,7 +15,7 @@ public static class SubstructureProspService
         asset.Source = Source.ConceptApp;
         asset.DryWeight = 0;
         asset.CostYear = 0;
-        asset.Concept = Concept.NO_CONCEPT;
+        asset.Concept = Concept.NoConcept;
         asset.ProspVersion = null;
 
         SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, 0, []);

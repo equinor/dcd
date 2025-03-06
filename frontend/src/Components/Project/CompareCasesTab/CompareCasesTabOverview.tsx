@@ -23,15 +23,15 @@ const ProjectCompareCasesTab = () => {
     const tabs = [
         {
             label: "KPIs",
-            content: <Kpis npvChartData={npvChartData} breakEvenChartData={breakEvenChartData} />
+            content: <Kpis npvChartData={npvChartData} breakEvenChartData={breakEvenChartData} />,
         },
         {
             label: "Production profiles",
-            content: <ProductionProfiles productionProfilesChartData={productionProfilesChartData} />
+            content: <ProductionProfiles productionProfilesChartData={productionProfilesChartData} />,
         },
         {
             label: "Investment profiles",
-            content: <InvestmentProfiles investmentProfilesChartData={investmentProfilesChartData} />
+            content: <InvestmentProfiles investmentProfilesChartData={investmentProfilesChartData} />,
         },
         {
             label: "CO2 emissions",
@@ -40,8 +40,8 @@ const ProjectCompareCasesTab = () => {
                     totalCo2EmissionsChartData={totalCo2EmissionsChartData}
                     co2IntensityChartData={co2IntensityChartData}
                 />
-            )
-        }
+            ),
+        },
     ]
 
     return (
