@@ -26,6 +26,9 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
 {
     public async Task SaveChangesAndRecalculateCase(Guid caseId)
     {
+        // Saving before RunCalculation ensures that LoadCaseData actually loads all relevant data.
+        await context.SaveChangesAsync();
+
         RunRecalculations(await recalculationRepository.LoadCaseData(caseId));
 
         await context.SaveChangesAsync();
