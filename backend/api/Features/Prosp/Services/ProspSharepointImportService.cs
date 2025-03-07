@@ -29,10 +29,10 @@ public class ProspSharepointImportService(
             : await graphServiceClient.Sites[siteId].Drives[driveId].Root.ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
 
         return driveItemsDelta.Select(x => new SharePointFileDto
-            {
-                Name = x.Name,
-                Id = x.Id
-            })
+        {
+            Name = x.Name,
+            Id = x.Id
+        })
             .ToList();
     }
 

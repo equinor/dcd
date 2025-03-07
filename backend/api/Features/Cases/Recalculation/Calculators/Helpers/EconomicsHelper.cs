@@ -29,30 +29,30 @@ public static class EconomicsHelper
     }
 
     public static TimeSeries CalculateDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
-{
-    var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
-    
-    var discountedValues = new double[values.Length];
-
-    for (var i = 0; i < values.Length; i++)
     {
-        var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
+        var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
 
-        if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
+        var discountedValues = new double[values.Length];
+
+        for (var i = 0; i < values.Length; i++)
         {
-            discountedValues[i] = 0;
-            continue;
-        }
-    
-        discountedValues[i] = values[i] * discountFactors[discountFactorIndex];
-    }
+            var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
 
-    return new TimeSeries
-    {
-        StartYear = valuesStartYear,
-        Values = discountedValues
-    };
-}
+            if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
+            {
+                discountedValues[i] = 0;
+                continue;
+            }
+
+            discountedValues[i] = values[i] * discountFactors[discountFactorIndex];
+        }
+
+        return new TimeSeries
+        {
+            StartYear = valuesStartYear,
+            Values = discountedValues
+        };
+    }
 
 
     private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
