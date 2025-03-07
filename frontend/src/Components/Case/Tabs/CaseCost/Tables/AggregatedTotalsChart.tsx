@@ -309,18 +309,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     enabled: false,
                 },
             },
-            {
-                type: "line",
-                xKey: "year",
-                yKey: "discountedCashflow",
-                yName: "Discounted cashflow",
-                stroke: "red",
-                strokeWidth: 2,
-                lineDash: [4, 4],
-                marker: {
-                    enabled: false,
-                },
-            },
         ],
         axes: [
             axesConfig,

@@ -15,6 +15,7 @@ const ProjectSettingsTab = () => {
 
     const [dummyRole] = useState(0) // TODO: Get role from user
     const [oilPriceUSD, setOilPriceUSD] = useState(revisionAndProjectData?.commonProjectAndRevisionData.oilPriceUSD || 0)
+    const [nglpriceUsd, setNglPriceUsd] = useState(revisionAndProjectData?.commonProjectAndRevisionData.nglPriceUsd || 0)
     const [gasPriceNOK, setGasPriceNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.gasPriceNOK || 0)
     const [discountRate, setDiscountRate] = useState(revisionAndProjectData?.commonProjectAndRevisionData.discountRate || 0)
     const [exchangeRateUSDToNOK, setExchangeRateUSDToNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.exchangeRateUSDToNOK || 0)
@@ -23,6 +24,7 @@ const ProjectSettingsTab = () => {
     useEffect(() => {
         if (revisionAndProjectData) {
             setOilPriceUSD(revisionAndProjectData.commonProjectAndRevisionData.oilPriceUSD)
+            setNglPriceUsd(revisionAndProjectData.commonProjectAndRevisionData.nglPriceUsd)
             setGasPriceNOK(revisionAndProjectData.commonProjectAndRevisionData.gasPriceNOK)
             setDiscountRate(revisionAndProjectData.commonProjectAndRevisionData.discountRate)
             setExchangeRateUSDToNOK(revisionAndProjectData.commonProjectAndRevisionData.exchangeRateUSDToNOK)
@@ -61,6 +63,14 @@ const ProjectSettingsTab = () => {
         const newOilPrice = oilPriceUSD
         if (!Number.isNaN(newOilPrice) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, oilPriceUSD: newOilPrice }
+            addProjectEdit(revisionAndProjectData.projectId, newProject)
+        }
+    }
+
+    const handleNglPriceChange = () => {
+        const newNglPrice = nglpriceUsd
+        if (!Number.isNaN(newNglPrice) && revisionAndProjectData) {
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, nglPriceUsd: newNglPrice }
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
@@ -162,7 +172,7 @@ const ProjectSettingsTab = () => {
                     <Grid size={12}>
                         <InputSwitcher
                             value={String(oilPriceUSD)}
-                            label="Oil Price (USD)"
+                            label="Oil Price (USD/bbl)"
                         >
                             <Input
                                 type="number"
@@ -175,8 +185,22 @@ const ProjectSettingsTab = () => {
                     </Grid>
                     <Grid size={12}>
                         <InputSwitcher
+                            value={String(nglpriceUsd)}
+                            label="NGL price (USD/tonn)"
+                        >
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={nglpriceUsd}
+                                onChange={(e: any) => setNglPriceUsd(Number(e.target.value))}
+                                onBlur={handleNglPriceChange}
+                            />
+                        </InputSwitcher>
+                    </Grid>
+                    <Grid size={12}>
+                        <InputSwitcher
                             value={String(gasPriceNOK)}
-                            label="Gas Price (NOK)"
+                            label="Gas Price (NOK/Sm3)"
                         >
                             <Input
                                 type="number"
