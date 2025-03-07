@@ -62,32 +62,27 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
         }
         rows.push(mobDemobRow)
 
-        campaign.campaignWells?.forEach((well: CampaignWell) => {
-            const wellRow: ItimeSeriesTableDataWithWell = {
-                profileName: well.wellName,
-                unit: "Well",
-                profile: {
-                    startYear: well.startYear,
-                    values: well.values || [],
-                },
-                resourceName: "campaignWells",
-                resourceId: campaign.campaignId,
-                wellId: well.wellId,
-                resourcePropertyKey: "campaignWells",
-                overridable: false,
-                editable: true,
-            }
-            rows.push(wellRow)
-        })
+        const campaignWellsMap = new Map(
+            campaign.campaignWells?.map((well) => [well.wellId, well]) || [],
+        )
 
-        if (canUserEdit && title === "Exploration") {
-            allWells.explorationWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+        if (canUserEdit) {
+            let availableWells: Components.Schemas.WellOverviewDto[] = []
+            if (title === "Exploration") {
+                availableWells = allWells.explorationWells
+            } else if (title === "Development") {
+                availableWells = allWells.developmentWells
+            }
+
+            // In edit mode, show all wells in their original order
+            availableWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+                const campaignWell = campaignWellsMap.get(well.id)
                 const wellRow: ItimeSeriesTableDataWithWell = {
                     profileName: well.name,
                     unit: "Well",
                     profile: {
-                        startYear: 0,
-                        values: [],
+                        startYear: campaignWell?.startYear || 0,
+                        values: campaignWell?.values || [],
                     },
                     resourceName: "campaignWells",
                     resourceId: campaign.campaignId,
@@ -98,20 +93,19 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                 }
                 rows.push(wellRow)
             })
-        }
-
-        if (canUserEdit && title === "Development") {
-            allWells.developmentWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+        } else {
+            // In view mode, only show campaign wells
+            campaign.campaignWells?.forEach((well: CampaignWell) => {
                 const wellRow: ItimeSeriesTableDataWithWell = {
-                    profileName: well.name,
+                    profileName: well.wellName,
                     unit: "Well",
                     profile: {
-                        startYear: 0,
-                        values: [],
+                        startYear: well.startYear,
+                        values: well.values || [],
                     },
                     resourceName: "campaignWells",
                     resourceId: campaign.campaignId,
-                    wellId: well.id,
+                    wellId: well.wellId,
                     resourcePropertyKey: "campaignWells",
                     overridable: false,
                     editable: true,

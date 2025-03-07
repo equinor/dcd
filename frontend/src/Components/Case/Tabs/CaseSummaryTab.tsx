@@ -162,6 +162,15 @@ const CaseSummaryTab = () => {
             const totalExplorationCostData = handleTotalExplorationCost()
             const totalDrillingCostData = handleDrilling()
             const offshoreFacilitiesCostData = handleOffshoreFacilitiesCost()
+            const projectSpecificDrillingCostData = apiData?.projectSpecificDrillingCostProfile
+            const explorationRigUpgradingCostData = apiData?.explorationRigUpgradingCostProfile
+            const explorationRigUpgradingCostDataOverride = apiData?.explorationRigUpgradingCostProfileOverride
+            const explorationRigMobDemobCostData = apiData?.explorationRigMobDemobOverride
+            const explorationRigMobDemobCostDataOverride = apiData?.explorationRigMobDemobOverride
+            const developmentRigUpgradingCostData = apiData?.developmentRigUpgradingCostProfileOverride
+            const developmentRigUpgradingCostDataOverride = apiData?.developmentRigUpgradingCostProfileOverride
+            const developmentRigMobDemobCostData = apiData?.developmentRigMobDemobOverride
+            const developmentRigMobDemobCostDataOverride = apiData?.developmentRigMobDemobOverride
             const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
             const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
             const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
@@ -182,6 +191,24 @@ const CaseSummaryTab = () => {
                     profile: totalExplorationCostData,
                     group: "Exploration",
                 },
+                {
+                    profileName: "project specific drilling cost",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: projectSpecificDrillingCostData,
+                    group: "Exploration",
+                },
+                {
+                    profileName: "rig upgrade",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: explorationRigUpgradingCostDataOverride?.override ? explorationRigUpgradingCostDataOverride : explorationRigUpgradingCostData,
+                    group: "Exploration",
+                },
+                {
+                    profileName: "rig mob/demob",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: explorationRigMobDemobCostDataOverride?.override ? explorationRigMobDemobCostDataOverride : explorationRigMobDemobCostData,
+                    group: "Exploration",
+                },
             ]
 
             const newCapexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
@@ -189,6 +216,18 @@ const CaseSummaryTab = () => {
                     profileName: "Drilling",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                     profile: totalDrillingCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Rig upgrade",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: developmentRigUpgradingCostDataOverride?.override ? developmentRigUpgradingCostDataOverride : developmentRigUpgradingCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Rig mob/demob",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: developmentRigMobDemobCostDataOverride?.override ? developmentRigMobDemobCostDataOverride : developmentRigMobDemobCostData,
                     group: "CAPEX",
                 },
                 {
