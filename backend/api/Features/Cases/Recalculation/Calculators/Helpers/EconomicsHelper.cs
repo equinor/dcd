@@ -41,6 +41,7 @@ public static class EconomicsHelper
             if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
             {
                 discountedValues[i] = 0;
+
                 continue;
             }
 
@@ -53,7 +54,6 @@ public static class EconomicsHelper
             Values = discountedValues
         };
     }
-
 
     private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {

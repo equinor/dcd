@@ -5,6 +5,7 @@ using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.CalculateDiscountedCashflowProfile;
+
 public static class CalculatedDiscountedCashflowService
 {
     public static void RunCalculation(Case caseItem)
@@ -12,11 +13,12 @@ public static class CalculatedDiscountedCashflowService
         var discountRate = caseItem.Project.DiscountRate;
 
         var totalCost = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+
         if (caseItem.Project.Currency == Models.Enums.Currency.Nok && totalCost != null)
         {
             totalCost.Values = totalCost.Values
-            .Select(v => v * caseItem.Project.ExchangeRateUSDToNOK)
-            .ToArray();
+                .Select(v => v * caseItem.Project.ExchangeRateUSDToNOK)
+                .ToArray();
         }
 
         if (totalCost == null)
@@ -68,10 +70,10 @@ public static class CalculatedDiscountedCashflowService
         var nglProductionRevenue = nglProduction.Values.Select(v => v / 1_000_000 * caseItem.Project.NglPriceUsd * convertCurrency).ToArray();
 
         var liquidsRevenue = TimeSeriesMerger.MergeTimeSeries(new List<TimeSeries>
-    {
-        new TimeSeries { StartYear = oilProduction.StartYear, Values = oilProductionRevenue },
-        new TimeSeries { StartYear = nglProduction.StartYear, Values = nglProductionRevenue }
-    });
+        {
+            new TimeSeries { StartYear = oilProduction.StartYear, Values = oilProductionRevenue },
+            new TimeSeries { StartYear = nglProduction.StartYear, Values = nglProductionRevenue }
+        });
 
         return EconomicsHelper.CalculateDiscountedVolume(
             liquidsRevenue.Values,
@@ -87,6 +89,7 @@ public static class CalculatedDiscountedCashflowService
             new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)),
             new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas))
         );
+
         var convertCurrency = caseItem.Project.Currency == Models.Enums.Currency.Nok
             ? 1
             : caseItem.Project.ExchangeRateUSDToNOK;

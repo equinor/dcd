@@ -83,6 +83,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         {
             return true;
         }
+
         if (existingProject.NglPriceUsd != projectDto.NglPriceUsd)
         {
             return true;
