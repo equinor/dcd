@@ -17,7 +17,7 @@ public class UpdateCaseDto
     [Required] public required int WaterInjectorCount { get; set; }
     [Required] public required double FacilitiesAvailability { get; set; }
     [Required] public required double CapexFactorFeasibilityStudies { get; set; }
-    [Required] public required double CapexFactorFEEDStudies { get; set; }
+    [Required] public required double CapexFactorFeedStudies { get; set; }
     [Required] public required double Npv { get; set; }
     public required double? NpvOverride { get; set; }
     [Required] public required double BreakEven { get; set; }

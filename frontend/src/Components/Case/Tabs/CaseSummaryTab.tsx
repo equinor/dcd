@@ -139,13 +139,13 @@ const CaseSummaryTab = () => {
                     apiData.cessationOnshoreFacilitiesCostProfile,
                     apiData.totalFeasibilityAndConceptStudiesOverride,
                     apiData.totalFeasibilityAndConceptStudies,
-                    apiData.totalFEEDStudiesOverride,
-                    apiData.totalFEEDStudies,
+                    apiData.totalFeedStudiesOverride,
+                    apiData.totalFeedStudies,
                     apiData.totalOtherStudiesCostProfile,
                     apiData.historicCostCostProfile,
                     handleOffshoreOpexPlussWellIntervention(),
-                    apiData.onshoreRelatedOPEXCostProfile,
-                    apiData.additionalOPEXCostProfile,
+                    apiData.onshoreRelatedOpexCostProfile,
+                    apiData.additionalOpexCostProfile,
                     apiData.onshorePowerSupplyCostProfile,
                 ],
                 getYearFromDateString(caseData.dG4Date),
@@ -176,13 +176,13 @@ const CaseSummaryTab = () => {
             const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
             const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
             const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
-            const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
-            const totalFEEDStudiesData = apiData?.totalFEEDStudies
+            const totalFeedStudiesOverrideData = apiData?.totalFeedStudiesOverride
+            const totalFeedStudiesData = apiData?.totalFeedStudies
             const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
             const historicCostCostProfileData = apiData?.historicCostCostProfile
             const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
-            const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
-            const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
+            const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOpexCostProfile
+            const additionalOPEXCostProfileData = apiData?.additionalOpexCostProfile
             const onshorePowerSupplyCostProfileData = apiData?.onshorePowerSupplyCostProfile
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
@@ -266,7 +266,7 @@ const CaseSummaryTab = () => {
                 {
                     profileName: "FEED studies (DG2-DG3)",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                    profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
+                    profile: totalFeedStudiesOverrideData?.override ? totalFeedStudiesOverrideData : totalFeedStudiesData,
                     group: "Study cost",
                 },
                 {

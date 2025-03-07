@@ -23,7 +23,7 @@ public class CaseOverviewDto
     public required double? BreakEvenOverride { get; set; }
     [Required] public required double FacilitiesAvailability { get; set; }
     [Required] public required double CapexFactorFeasibilityStudies { get; set; }
-    [Required] public required double CapexFactorFEEDStudies { get; set; }
+    [Required] public required double CapexFactorFeedStudies { get; set; }
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
     [Required] public required double DiscountedCashflow { get; set; }
