@@ -65,44 +65,19 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
             return [];
         }
 
-        return await GetUserAccessFromProjectOrRevision(userId.Value, userRoles);
-    }
+        var projectId = httpContextAccessor.HttpContext?.Request.RouteValues["projectId"];
 
-    private ActionType? GetActionTypeFromEndpoint()
-    {
-        var controllerActionDescriptor = httpContextAccessor.HttpContext?.GetEndpoint()?.Metadata.GetMetadata<ControllerActionDescriptor>();
-
-        if (controllerActionDescriptor == null)
+        if (projectId == null)
         {
-            return null;
+            return [];
         }
 
-        var attribute = controllerActionDescriptor.MethodInfo.GetCustomAttribute<AuthorizeActionTypeAttribute>()
-                        ?? controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<AuthorizeActionTypeAttribute>();
+        var projectIdGuid = Guid.Parse(projectId.ToString()!);
 
-        return attribute?.ActionType;
-    }
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
-    /// <summary>
-    /// Checks if the revisionId is connected to the projectId and gets the originalProjectId of the revision
-    /// </summary>
-    /// <returns>originalProjectId of revision, or null if there is a mismatch</returns>
-    private static async Task<Guid?> GetDataFromRevision(DcdDbContext dbContext, Guid revisionId, Guid? projectId)
-    {
-            var originalProjectId = await dbContext.Projects
-                .Where(p => p.Id == revisionId && p.IsRevision)
-                .Select(x => x.OriginalProjectId)
-                .SingleAsync();
+        var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 
-            if ((projectId != null && projectId != originalProjectId))
-            {
-                return null;
-            }
-            return originalProjectId;
-    }
-
-    private static async Task<(ProjectMemberRole? ProjectMemberAccess, ProjectClassification Classification, bool isRevision) > GetDataFromProject(DcdDbContext dbContext, Guid projectPk, Guid userId)
-    {
         var data = await dbContext.Projects
             .Where(p => p.Id == projectPk)
             .Select(x => new
@@ -119,50 +94,21 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 
-        return (projectMemberAccess, data.Classification, data.IsRevision);
+        return AccessCalculator.CalculateAccess(userRoles, data.Classification, data.IsRevision, projectMemberAccess);
     }
 
-    private async Task<HashSet<ActionType>> GetUserAccessFromProjectOrRevision(Guid userId, HashSet<ApplicationRole> userRoles)
+    private ActionType? GetActionTypeFromEndpoint()
     {
-        await using var dbContext = await contextFactory.CreateDbContextAsync();
-        var projectPk = await ResolveProjectPkFromRoute(dbContext);
-        var revisionId = GetIdFromRoute("revisionId");
+        var controllerActionDescriptor = httpContextAccessor.HttpContext?.GetEndpoint()?.Metadata.GetMetadata<ControllerActionDescriptor>();
 
-        if (revisionId != null)
+        if (controllerActionDescriptor == null)
         {
-            projectPk = await GetDataFromRevision(dbContext, revisionId.Value, projectPk);
-
-            if (projectPk == null)
-            {
-                return [];
-            }
-
-        }
-        else if (projectPk == null)
-        {
-            return [];
+            return null;
         }
 
-        var (projectMemberRole, projectClassification, projectIsRevision) = await GetDataFromProject(dbContext, projectPk.Value, userId);
+        var attribute = controllerActionDescriptor.MethodInfo.GetCustomAttribute<AuthorizeActionTypeAttribute>()
+                        ?? controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<AuthorizeActionTypeAttribute>();
 
-        var isRevision = revisionId != null || projectIsRevision;
-        return AccessCalculator.CalculateAccess(userRoles, projectClassification, isRevision, projectMemberRole);
-    }
-
-    private async Task<Guid?> ResolveProjectPkFromRoute(DcdDbContext dbContext)
-    {
-        var projectIdGuid = GetIdFromRoute("projectId");
-
-        if (projectIdGuid != null)
-        {
-            return await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid.Value);
-        }
-        return null;
-    }
-
-    private Guid? GetIdFromRoute(string routeId)
-    {
-        var revisionId = httpContextAccessor.HttpContext?.Request.RouteValues[routeId];
-        return revisionId != null ? Guid.Parse(revisionId.ToString()!) : null;
+        return attribute?.ActionType;
     }
 }

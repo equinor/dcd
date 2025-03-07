@@ -28,12 +28,12 @@ export const peopleQueryFn = async (projectId: string | undefined) => {
     return GetProjectMembersService().getPeople(projectId)
 }
 
-export const revisionQueryFn = async (revisionId: string | undefined) => {
-    if (!revisionId) {
-        console.error("revisionId is undefined")
+export const revisionQueryFn = async (projectId: string | undefined, revisionId: string | undefined) => {
+    if (!projectId || !revisionId) {
+        console.error("projectId or revisionId is undefined")
         return null
     }
-    return GetProjectService().getRevision(revisionId)
+    return GetProjectService().getRevision(projectId, revisionId)
 }
 
 export const compareCasesQueryFn = async (projectId: string | undefined) => {

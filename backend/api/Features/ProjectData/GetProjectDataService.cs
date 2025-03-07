@@ -28,7 +28,7 @@ public class GetProjectDataService(DcdDbContext context, GetProjectDataRepositor
         };
     }
 
-    public async Task<RevisionDataDto> GetRevisionData(Guid projectId,Guid revisionId)
+    public async Task<RevisionDataDto> GetRevisionData(Guid projectId, Guid revisionId)
     {
         await context.EnsureRevisionIsConnectedToProject(projectId, revisionId);
 

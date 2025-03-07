@@ -8,10 +8,10 @@ namespace api.Features.Revisions.Get;
 
 public class GetRevisionController(GetProjectDataService getProjectDataService) : ControllerBase
 {
-    [HttpGet("projects/revisions/{revisionId:guid}")]
+    [HttpGet("projects/{projectId:guid}/revisions/{revisionId:guid}")]
     [AuthorizeActionType(ActionType.Read)]
-    public async Task<RevisionDataDto> Get(Guid revisionId)
+    public async Task<RevisionDataDto> Get(Guid projectId,Guid revisionId)
     {
-        return await getProjectDataService.GetRevisionData(revisionId);
+        return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }
 }
