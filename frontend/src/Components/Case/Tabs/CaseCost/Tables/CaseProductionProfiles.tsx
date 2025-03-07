@@ -10,12 +10,14 @@ import { PhysUnit, ProfileTypes } from "@/Models/enums"
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
     tableYears: [number, number],
-    alignedGridsRef: any,
+    gridRef: any,
+    alignedGridsRef: any[],
 }
 
 const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     apiData,
     tableYears,
+    gridRef,
     alignedGridsRef,
 }) => {
     const { isCalculatingProductionOverrides } = useAppStore()
@@ -216,7 +218,8 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             tableYears={tableYears}
             tableName="Production profiles"
             includeFooter={false}
-            gridRef={alignedGridsRef}
+            gridRef={gridRef}
+            alignedGridsRef={alignedGridsRef}
             calculatedFields={calculatedFields}
             ongoingCalculation={isCalculatingProductionOverrides}
         />

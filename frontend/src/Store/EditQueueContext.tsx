@@ -8,39 +8,57 @@ import React, {
 import { EditInstance } from "@/Models/Interfaces"
 
 interface EditQueueContextProps {
-    editQueue: EditInstance[],
-    lastEditTime: number,
+    editQueue: EditInstance[]
     addToQueue: (edit: EditInstance) => void
     clearQueue: () => void
-    updateLastEditTime: () => void
+    timer: NodeJS.Timeout | null
+    setTimer: (timer: NodeJS.Timeout | null) => void
+    clearTimer: () => void
 }
 
 const EditQueueContext = createContext<EditQueueContextProps | undefined>(undefined)
 
+/**
+* Provider for the edit queue context for tables
+*/
 export const EditQueueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [editQueue, setEditQueue] = useState<EditInstance[]>([])
-    const [lastEditTime, setLastEditTime] = useState<number>(new Date().getTime())
+    const [timer, setTimerState] = useState<NodeJS.Timeout | null>(null)
 
     const addToQueue = useCallback((edit: EditInstance) => {
         setEditQueue((prev) => [...prev, edit])
-        setLastEditTime(new Date().getTime())
     }, [])
 
     const clearQueue = useCallback(() => {
         setEditQueue([])
     }, [])
 
-    const updateLastEditTime = useCallback(() => {
-        setLastEditTime(new Date().getTime())
+    const setTimer = useCallback((newTimer: NodeJS.Timeout | null) => {
+        setTimerState((prevTimer) => {
+            if (prevTimer) {
+                clearTimeout(prevTimer)
+            }
+            return newTimer
+        })
+    }, [])
+
+    const clearTimer = useCallback(() => {
+        setTimerState((prevTimer) => {
+            if (prevTimer) {
+                clearTimeout(prevTimer)
+            }
+            return null
+        })
     }, [])
 
     const value = useMemo(() => ({
         editQueue,
-        lastEditTime,
         addToQueue,
         clearQueue,
-        updateLastEditTime,
-    }), [editQueue, lastEditTime, addToQueue, clearQueue])
+        timer,
+        setTimer,
+        clearTimer,
+    }), [editQueue, addToQueue, clearQueue, timer, setTimer, clearTimer])
 
     return (
         <EditQueueContext.Provider value={value}>

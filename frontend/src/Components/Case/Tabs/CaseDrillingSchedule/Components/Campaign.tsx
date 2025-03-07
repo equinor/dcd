@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react"
+import { useMemo, useRef, useEffect } from "react"
 import Grid from "@mui/material/Grid2"
 
 import {
@@ -17,10 +17,16 @@ import { filterWells } from "@/Utils/common"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
+import { useGridRef } from "@/Store/GridRefContext"
 
-const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
+const Campaign = ({
+    tableYears,
+    campaign,
+    title,
+}: CampaignProps) => {
     const { apiData } = useCaseApiData()
     const campaignGridRef = useRef<any>(null)
+    const { addGridRef, gridRefs } = useGridRef()
     const revisionAndProjectData = useDataFetch()
     const { canEdit } = useCanUserEdit()
     const { editMode } = useAppStore()
@@ -28,6 +34,10 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
 
     const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
     const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
+
+    useEffect(() => {
+        addGridRef(campaignGridRef)
+    }, [])
 
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
@@ -166,6 +176,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                         tableName={`${title} campaign`}
                         totalRowName="Total"
                         gridRef={campaignGridRef}
+                        alignedGridsRef={gridRefs}
                         includeFooter={false}
                     />
                 </CampaignTableContainer>

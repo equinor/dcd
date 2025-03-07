@@ -10,6 +10,7 @@ interface TableQueueProps {
     setIsSaving: (isSaving: boolean) => void
     isSaving: boolean
     gridRef: React.RefObject<any>
+    alignedGridsRef?: React.RefObject<any>[]
 }
 
 interface QueueStats {
@@ -44,11 +45,11 @@ const categorizeTimeSeriesEntries = (queue: EditInstance[]): { timeseriesEntries
 const submitCampaignUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
     const rigUpgradingEdits = getLatestEdits(
         editQueue.filter((edit) => edit.resourcePropertyKey === "rigUpgradingProfile"),
-        (edit) => edit.resourceName,
+        (edit) => edit.resourceId + edit.resourceName,
     )
     const rigMobDemobEdits = getLatestEdits(
         editQueue.filter((edit) => edit.resourcePropertyKey === "rigMobDemobProfile"),
-        (edit) => edit.resourceName,
+        (edit) => edit.resourceId + edit.resourceName,
     )
 
     const allEdits = [...rigUpgradingEdits, ...rigMobDemobEdits]
@@ -135,18 +136,18 @@ const submitCaseUpdates = async (editQueue: EditInstance[], submitToApi: any, pr
 
 // Main hook
 export const useTableQueue = ({
-    isSaving, setIsSaving, gridRef,
+    isSaving, setIsSaving, gridRef, alignedGridsRef,
 }: TableQueueProps) => {
     const {
         editQueue,
-        lastEditTime,
         addToQueue,
         clearQueue,
-        updateLastEditTime,
+        setTimer,
+        clearTimer,
     } = useEditQueue()
     const { submitToApi } = useSubmitToApi()
     const { projectId } = useProjectContext()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const submitEditQueue = useCallback(async () => {
         if (isSaving || editQueue.length === 0 || !projectId || !caseId) {
@@ -177,27 +178,19 @@ export const useTableQueue = ({
     useEffect(() => {
         if (editQueue.length === 0) { return }
 
-        const timer = setTimeout(() => {
-            if (!gridRef.current) { return }
-            const hasEditingCells = gridRef.current?.api?.getEditingCells().length > 0
-            if (hasEditingCells) {
-                gridRef.current.api.stopEditing()
+        clearTimer()
+
+        const newTimer = setTimeout(() => {
+            const refsWithEditingCells = alignedGridsRef?.filter((ref) => ref.current?.api?.getEditingCells().length > 0)
+            if (refsWithEditingCells && refsWithEditingCells.length > 0) {
+                refsWithEditingCells.forEach((ref) => ref.current.api.stopEditing())
             } else {
-                console.log("edit queue b4 submit", editQueue)
                 submitEditQueue()
             }
         }, 3000)
 
-        const cleanup = () => {
-            clearTimeout(timer)
-        }
-        // eslint-disable-next-line consistent-return
-        return cleanup
-    }, [editQueue, lastEditTime, submitEditQueue, gridRef])
-
-    useEffect(() => {
-        updateLastEditTime()
-    }, [gridRef])
+        setTimer(newTimer)
+    }, [editQueue, gridRef, alignedGridsRef, clearTimer, setTimer])
 
     return { editQueue, addToQueue, submitEditQueue }
 }

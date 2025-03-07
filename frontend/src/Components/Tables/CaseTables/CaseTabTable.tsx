@@ -43,7 +43,6 @@ import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGri
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 import { useTableQueue } from "@/Hooks/useTableQueue"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
-
 // Styled Components
 const CenterGridIcons = styled.div`
     padding-top: 0px;
@@ -103,6 +102,7 @@ const CaseTabTable = memo(({
     const { editQueue, addToQueue, submitEditQueue } = useTableQueue({
         isSaving,
         gridRef,
+        alignedGridsRef,
         setIsSaving,
     })
 

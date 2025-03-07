@@ -19,6 +19,7 @@ import { EditQueueProvider } from "@/Store/EditQueueContext"
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
 `
+
 const CaseView = () => {
     const { caseId, tab } = useParams()
     const revisionAndProjectData = useDataFetch()
@@ -52,32 +53,38 @@ const CaseView = () => {
 
     return (
         <Wrapper size={{ xs: 12 }}>
-            <EditQueueProvider>
-                <div role="tabpanel" hidden={activeTabCase !== 0}>
-                    <CaseDescriptionTab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 1}>
+            <div role="tabpanel" hidden={activeTabCase !== 0}>
+                <CaseDescriptionTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 1}>
+                <EditQueueProvider>
                     <CaseProductionProfilesTab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 2}>
-                    <CaseScheduleTab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 3}>
+                </EditQueueProvider>
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 2}>
+                <CaseScheduleTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 3}>
+                <EditQueueProvider>
                     <CaseDrillingScheduleTab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 4}>
-                    <CaseFacilitiesTab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 5}>
+                </EditQueueProvider>
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 4}>
+                <CaseFacilitiesTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 5}>
+                <EditQueueProvider>
                     <CaseCostTab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 6}>
+                </EditQueueProvider>
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 6}>
+                <EditQueueProvider>
                     <CaseCO2Tab />
-                </div>
-                <div role="tabpanel" hidden={activeTabCase !== 7}>
-                    <CaseSummaryTab />
-                </div>
-            </EditQueueProvider>
+                </EditQueueProvider>
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 7}>
+                <CaseSummaryTab />
+            </div>
         </Wrapper>
     )
 }
