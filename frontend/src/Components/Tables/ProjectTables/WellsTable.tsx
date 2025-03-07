@@ -24,8 +24,9 @@ interface WellsTableProps {
     wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
-        projectId: string,
-        updatePayload: Components.Schemas.UpdateWellsDto,
+      projectId: string,
+      fusionProjectId: string,
+      updatePayload: Components.Schemas.UpdateWellsDto,
     ) => void
     defaultWellCategory: WellCategory
     wellStagedForDeletion: any
@@ -73,7 +74,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             deleteWellDtos: [],
         }
 
-        addWellsEdit(revisionAndProjectData.projectId, updatePayload)
+        addWellsEdit(revisionAndProjectData.projectId, revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId, updatePayload)
     }
 
     const handleDeleteWell = async (params: any) => {
@@ -86,7 +87,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             deleteWellDtos: [{ id: wellToDelete.id }],
         }
 
-        addWellsEdit(revisionAndProjectData.projectId, deleteWells)
+        addWellsEdit(revisionAndProjectData.projectId, revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId, deleteWells)
 
         setWellStagedForDeletion(undefined)
     }
@@ -144,7 +145,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                     ? "mill NOK"
                     : "mill USD"
-                    })`,
+                })`,
                 flex: 1,
                 headerComponent: SecondaryTableHeader,
                 headerComponentParams: {

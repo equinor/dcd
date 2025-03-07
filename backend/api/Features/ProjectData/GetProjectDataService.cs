@@ -43,7 +43,7 @@ public class GetProjectDataService(DcdDbContext context, GetProjectDataRepositor
 
         return new RevisionDataDto
         {
-            ProjectId = projectId,
+            ProjectId = originalProjectId,
             RevisionId = revisionId,
             DataType = "revision",
             UserActions = userActions,

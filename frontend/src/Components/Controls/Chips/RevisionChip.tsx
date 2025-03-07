@@ -9,7 +9,6 @@ import { close } from "@equinor/eds-icons"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import styled from "styled-components"
-
 import { useProjectContext } from "@/Store/ProjectContext"
 import { revisionQueryFn } from "@/Services/QueryFunctions"
 import { truncateText } from "@/Utils/common"
@@ -45,7 +44,7 @@ const RevisionChip = () => {
     const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId && !!projectId,
+        enabled: !!revisionId,
     })
 
     const revisionName = revisionApiData?.revisionDetails.revisionName
