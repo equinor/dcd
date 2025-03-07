@@ -42,6 +42,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             AdditionalOPEXCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
             CalculatedTotalIncomeCostProfileUsd = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd)),
             CalculatedTotalCostCostProfileUsd = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd)),
+            CalculatedDiscountedCashflowService = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedDiscountedCashflowService)),
 
             DrainageStrategy = DrainageStrategyMapper.MapToDto(caseItem.DrainageStrategy),
             ProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), ProfileTypes.ProductionProfileOil, physicalUnit),

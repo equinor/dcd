@@ -26,7 +26,7 @@ public class CaseOverviewDto
     [Required] public required double CapexFactorFEEDStudies { get; set; }
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
-
+    [Required] public required double DiscountedCashflow { get; set; }
     public required DateTime? DGADate { get; set; }
     public required DateTime? DGBDate { get; set; }
     public required DateTime? DGCDate { get; set; }

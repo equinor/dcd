@@ -34,6 +34,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
     public double OilPriceUSD { get; set; }
     public double GasPriceNOK { get; set; }
+    public double NglPriceUsd { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
     public int NpvYear { get; set; }

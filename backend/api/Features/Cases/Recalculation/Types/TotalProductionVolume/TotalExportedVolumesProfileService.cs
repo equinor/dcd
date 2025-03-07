@@ -22,7 +22,7 @@ public static class TotalExportedVolumesProfileService
         netSalesGas.Values = netSalesGas.Values.Select(v => v / 1E9).ToArray();
 
         var totalExportedVolumes = TimeSeriesMerger.MergeTimeSeries(oilProductionProfile, nglProduction, condensateProduction, netSalesGas);
-        totalExportedVolumes.Values = totalExportedVolumes.Values.Select(v => v * 1_000_000 * 6.29).ToArray();
+        totalExportedVolumes.Values = totalExportedVolumes.Values.Select(v => v * 1_000_000 * VolumeConstants.BarrelsPerCubicMeter).ToArray();
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalExportedVolumes);
         profile.Values = totalExportedVolumes.Values;
@@ -39,6 +39,16 @@ public static class TotalExportedVolumesProfileService
             : new TimeSeries(totalExportedVolumes);
     }
 
+    public static TimeSeries GetNglProduction(Case caseItem)
+    {
+        var nglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
+        var nglProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride);
+
+        return nglProductionOverride?.Override == true
+            ? new TimeSeries(nglProductionOverride)
+            : new TimeSeries(nglProduction);
+    }
+
     private static TimeSeries GetCondensateProduction(Case caseItem)
     {
         var condensateProduction = caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction);
@@ -47,16 +57,6 @@ public static class TotalExportedVolumesProfileService
         return condensateProductionOverride?.Override == true
             ? new TimeSeries(condensateProductionOverride)
             : new TimeSeries(condensateProduction);
-    }
-
-    private static TimeSeries GetNglProduction(Case caseItem)
-    {
-        var nglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
-        var nglProductionOverride = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride);
-
-        return nglProductionOverride?.Override == true
-            ? new TimeSeries(nglProductionOverride)
-            : new TimeSeries(nglProduction);
     }
 
     private static TimeSeries GetNetSalesGas(Case caseItem)

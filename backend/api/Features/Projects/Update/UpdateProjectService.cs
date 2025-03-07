@@ -45,6 +45,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         existingProject.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
         existingProject.OilPriceUSD = projectDto.OilPriceUSD;
         existingProject.GasPriceNOK = projectDto.GasPriceNOK;
+        existingProject.NglPriceUsd = projectDto.NglPriceUsd;
         existingProject.DiscountRate = projectDto.DiscountRate;
         existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
         existingProject.NpvYear = projectDto.NpvYear;
@@ -79,6 +80,11 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         }
 
         if (existingProject.GasPriceNOK != projectDto.GasPriceNOK)
+        {
+            return true;
+        }
+
+        if (existingProject.NglPriceUsd != projectDto.NglPriceUsd)
         {
             return true;
         }

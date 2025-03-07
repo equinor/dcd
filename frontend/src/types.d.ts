@@ -40,6 +40,7 @@ declare namespace Components {
             capexFactorFEEDStudies: number; // double
             host: string | null;
             averageCo2Intensity: number; // double
+            discountedCashflow: number; // double
             dgaDate: string | null; // date-time
             dgbDate: string | null; // date-time
             dgcDate: string | null; // date-time
@@ -83,6 +84,7 @@ declare namespace Components {
             additionalOPEXCostProfile: TimeSeriesDto;
             calculatedTotalIncomeCostProfileUsd: TimeSeriesDto;
             calculatedTotalCostCostProfileUsd: TimeSeriesDto;
+            calculatedDiscountedCashflowService: TimeSeriesDto;
             topside: TopsideDto;
             topsideCostProfile: TimeSeriesDto;
             topsideCostProfileOverride: TimeSeriesOverrideDto;
@@ -181,6 +183,7 @@ declare namespace Components {
             averageDevelopmentDrillingDays: number; // double
             oilPriceUSD: number; // double
             gasPriceNOK: number; // double
+            nglPriceUsd: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
             npvYear: number; // int32
@@ -473,6 +476,7 @@ declare namespace Components {
             breakEvenOverride: number | null; // double
             host: string | null;
             averageCo2Intensity: number; // double
+            discountedCashflow: number; // double
             dgaDate: string | null; // date-time
             dgbDate: string | null; // date-time
             dgcDate: string | null; // date-time
@@ -539,6 +543,7 @@ declare namespace Components {
             averageDevelopmentDrillingDays: number; // double
             oilPriceUSD: number; // double
             gasPriceNOK: number; // double
+            nglPriceUsd: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
             npvYear: number; // int32
