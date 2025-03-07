@@ -16,10 +16,10 @@ public class CalculateTotalCostServiceTests
         var project = new Project
         {
             Id = Guid.NewGuid(),
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10,
-            Currency = api.Models.Enums.Currency.NOK
+            OilPriceUsd = 75,
+            GasPriceNok = 3,
+            ExchangeRateUsdToNok = 10,
+            Currency = api.Models.Enums.Currency.Nok
         };
 
         var caseItem = new Case
@@ -184,7 +184,7 @@ public class CalculateTotalCostServiceTests
 
         var expectedValues = new[] { 295, 415, 498 };
 
-        for (int i = 0; i < expectedValues.Length; i++)
+        for (var i = 0; i < expectedValues.Length; i++)
         {
             Assert.Equal(expectedValues[i], calculatedTotalCostCostProfileUsd.Values[i]);
         }
@@ -247,13 +247,13 @@ public class CalculateTotalCostServiceTests
         var result = CalculateTotalCostService.CalculateTotalExplorationCost(caseItem);
 
         // Assert
-        var expectedStartYear = 2020;
+        const int expectedStartYear = 2020;
         var expectedValues = new[] { 55.0, 175.0, 165.0, 35.0 };
 
         Assert.Equal(expectedStartYear, result.StartYear);
         Assert.Equal(expectedValues.Length, result.Values.Length);
 
-        for (int i = 0; i < expectedValues.Length; i++)
+        for (var i = 0; i < expectedValues.Length; i++)
         {
             Assert.Equal(expectedValues[i], result.Values[i]);
         }

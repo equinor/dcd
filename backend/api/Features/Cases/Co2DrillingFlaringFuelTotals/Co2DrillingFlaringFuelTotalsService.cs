@@ -16,7 +16,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 {
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid projectId, Guid caseId)
     {
-        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
         var profileTypes = new List<string>
         {
@@ -67,7 +67,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var flaringsProfile = new TimeSeries
         {
             StartYear = flarings.StartYear,
-            Values = flarings.Values.Select(flare => flare * caseItem.Project.CO2EmissionsFromFlaredGas).ToArray()
+            Values = flarings.Values.Select(flare => flare * caseItem.Project.Co2EmissionsFromFlaredGas).ToArray()
         };
 
         return flaringsProfile.Values.Sum() / 1000;
@@ -80,7 +80,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var fuelConsumptionsProfile = new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
-            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray()
+            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.Co2EmissionFromFuelGas).ToArray()
         };
 
         return fuelConsumptionsProfile.Values.Sum() / 1000;

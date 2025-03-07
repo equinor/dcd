@@ -16,6 +16,7 @@ export const projectQueryFn = async (projectId: string | undefined) => {
         console.error("projectId is undefined")
         return null
     }
+
     return GetProjectService().getProject(projectId!)
 }
 

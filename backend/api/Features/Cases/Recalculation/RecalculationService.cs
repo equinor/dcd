@@ -4,6 +4,7 @@ using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
+using api.Features.Cases.Recalculation.Types.CalculateDiscountedCashflowProfile;
 using api.Features.Cases.Recalculation.Types.CessationCostProfile;
 using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 using api.Features.Cases.Recalculation.Types.CondensateProduction;
@@ -12,7 +13,7 @@ using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
 using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 using api.Features.Cases.Recalculation.Types.OpexCostProfile;
-using api.Features.Cases.Recalculation.Types.ProductionProfileNGL;
+using api.Features.Cases.Recalculation.Types.ProductionProfileNgl;
 using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
@@ -26,6 +27,9 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
 {
     public async Task SaveChangesAndRecalculateCase(Guid caseId)
     {
+        // Saving before RunCalculation ensures that LoadCaseData actually loads all relevant data.
+        await context.SaveChangesAsync();
+
         RunRecalculations(await recalculationRepository.LoadCaseData(caseId));
 
         await context.SaveChangesAsync();
@@ -48,11 +52,11 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         await context.SaveChangesAsync();
     }
 
-    private static void RunRecalculations(CaseWithDrillingSchedules caseWithDrillingSchedules)
+    private static void RunRecalculations(CaseWithCampaignWells caseWithCampaignWells)
     {
-        var caseItem = caseWithDrillingSchedules.CaseItem;
-        var explorationWells = caseWithDrillingSchedules.ExplorationWells;
-        var developmentWell = caseWithDrillingSchedules.DevelopmentWells;
+        var caseItem = caseWithCampaignWells.CaseItem;
+        var explorationWells = caseWithCampaignWells.ExplorationWells;
+        var developmentWell = caseWithCampaignWells.DevelopmentWells;
 
         DevelopmentWellCostProfileService.RunCalculation(caseItem);
         ExplorationWellCostProfileService.RunCalculation(caseItem);
@@ -74,5 +78,6 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         ProductionProfileNglProfileService.RunCalculation(caseItem);
         CondensateProductionProfileService.RunCalculation(caseItem);
         TotalExportedVolumesProfileService.RunCalculation(caseItem);
+        CalculatedDiscountedCashflowService.RunCalculation(caseItem);
     }
 }

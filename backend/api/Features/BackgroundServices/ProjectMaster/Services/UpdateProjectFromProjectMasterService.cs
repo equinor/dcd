@@ -80,9 +80,9 @@ public class UpdateProjectFromProjectMasterService(
         }
 
         var createRevisionService = new CreateRevisionService(new CreateRevisionRepository(context),
-            context,
-            new CopyImageService(blobServiceClient),
-            null);
+                                                              context,
+                                                              new CopyImageService(blobServiceClient),
+                                                              null);
 
         await createRevisionService.CreateRevision(project.Id, new CreateRevisionDto
         {

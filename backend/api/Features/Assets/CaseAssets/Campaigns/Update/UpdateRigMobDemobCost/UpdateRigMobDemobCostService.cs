@@ -10,7 +10,9 @@ public class UpdateRigMobDemobCostService(DcdDbContext context, RecalculationSer
 {
     public async Task UpdateRigMobDemobCost(Guid projectId, Guid caseId, Guid campaignId, UpdateRigMobDemobCostDto dto)
     {
-        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId && x.Id == campaignId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var existingCampaign = await context.Campaigns.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId && x.Id == campaignId);
 
         existingCampaign.RigMobDemobCost = dto.Cost;
 

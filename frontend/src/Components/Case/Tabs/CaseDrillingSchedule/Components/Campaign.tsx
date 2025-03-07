@@ -32,39 +32,35 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
 
-        if (campaign.rigUpgradingProfile) {
-            const upgradingRow: ITimeSeriesTableData = {
-                profileName: "Rig upgrading",
-                unit: "Percentage in decimals",
-                profile: {
-                    startYear: campaign.rigUpgradingProfile.startYear,
-                    values: campaign.rigUpgradingProfile.values || [],
-                },
-                resourceName: "rigUpgrading",
-                resourceId: campaign.campaignId,
-                resourcePropertyKey: "rigUpgradingProfile",
-                overridable: false,
-                editable: true,
-            }
-            rows.push(upgradingRow)
+        const upgradingRow: ITimeSeriesTableData = {
+            profileName: "Rig upgrading",
+            unit: "Percentage in decimals",
+            profile: {
+                startYear: campaign.rigUpgradingProfile.startYear,
+                values: campaign.rigUpgradingProfile.values || [],
+            },
+            resourceName: "rigUpgrading",
+            resourceId: campaign.campaignId,
+            resourcePropertyKey: "rigUpgradingProfile",
+            overridable: false,
+            editable: true,
         }
+        rows.push(upgradingRow)
 
-        if (campaign.rigMobDemobProfile) {
-            const mobDemobRow: ITimeSeriesTableData = {
-                profileName: "Rig mob/demob",
-                unit: "Percentage in decimals",
-                profile: {
-                    startYear: campaign.rigMobDemobProfile.startYear,
-                    values: campaign.rigMobDemobProfile.values || [],
-                },
-                resourceName: "rigMobDemob",
-                resourceId: campaign.campaignId,
-                resourcePropertyKey: "rigMobDemobProfile",
-                overridable: false,
-                editable: true,
-            }
-            rows.push(mobDemobRow)
+        const mobDemobRow: ITimeSeriesTableData = {
+            profileName: "Rig mob/demob",
+            unit: "Percentage in decimals",
+            profile: {
+                startYear: campaign.rigMobDemobProfile.startYear,
+                values: campaign.rigMobDemobProfile.values || [],
+            },
+            resourceName: "rigMobDemob",
+            resourceId: campaign.campaignId,
+            resourcePropertyKey: "rigMobDemobProfile",
+            overridable: false,
+            editable: true,
         }
+        rows.push(mobDemobRow)
 
         campaign.campaignWells?.forEach((well: CampaignWell) => {
             const wellRow: ItimeSeriesTableDataWithWell = {
@@ -165,7 +161,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                 <CampaignTableContainer>
                     <CaseTabTable
                         timeSeriesData={rowData}
-                        dg4Year={getYearFromDateString(apiData?.case.dG4Date ?? "")}
+                        dg4Year={getYearFromDateString(apiData.case.dG4Date ?? "")}
                         tableYears={tableYears}
                         tableName={`${title} campaign`}
                         totalRowName="Total"

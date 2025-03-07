@@ -6,13 +6,13 @@ namespace api.Features.Cases.Recalculation.Calculators.Helpers;
 
 public static class EconomicsHelper
 {
-    public static double CalculateDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
+    public static double CalculateSumOfDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
     {
         var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
 
         double accumulatedVolume = 0;
 
-        for (int i = 0; i < values.Length; i++)
+        for (var i = 0; i < values.Length; i++)
         {
             var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
 
@@ -28,10 +28,37 @@ public static class EconomicsHelper
         return accumulatedVolume;
     }
 
+    public static TimeSeries CalculateDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
+    {
+        var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
+
+        var discountedValues = new double[values.Length];
+
+        for (var i = 0; i < values.Length; i++)
+        {
+            var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
+
+            if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
+            {
+                discountedValues[i] = 0;
+
+                continue;
+            }
+
+            discountedValues[i] = values[i] * discountFactors[discountFactorIndex];
+        }
+
+        return new TimeSeries
+        {
+            StartYear = valuesStartYear,
+            Values = discountedValues
+        };
+    }
+
     private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {
         var discountFactors = new List<double>();
-        var discountRate = 1 + (discountRatePercentage / 100);
+        var discountRate = 1 + discountRatePercentage / 100;
 
         for (var year = 0; year < numYears; year++)
         {
@@ -56,8 +83,8 @@ public static class EconomicsHelper
             var incomeIndex = currentYear - income.StartYear;
             var costIndex = currentYear - totalCost.StartYear;
 
-            var incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
-            var costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
+            var incomeValue = incomeIndex >= 0 && incomeIndex < income.Values.Length ? income.Values[incomeIndex] : 0;
+            var costValue = costIndex >= 0 && costIndex < totalCost.Values.Length ? totalCost.Values[costIndex] : 0;
 
             cashFlowValues[yearIndex] = incomeValue - costValue;
         }

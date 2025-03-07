@@ -30,7 +30,7 @@ export const storeAppScope = (appScope: string) => {
     window.sessionStorage.setItem("appScope", appScope)
 }
 
-export const getToken = (keyName: string) => {
+export const getToken = () => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
@@ -45,15 +45,15 @@ export const unwrapProjectId = (projectId?: string | undefined | null): string =
 export const isExplorationWell = (well: Components.Schemas.WellOverviewDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 export const developmentWellOptions = [
-    { key: "0", value: WellCategory.Oil_Producer, label: "Oil producer" },
-    { key: "1", value: WellCategory.Gas_Producer, label: "Gas producer" },
-    { key: "2", value: WellCategory.Water_Injector, label: "Water injector" },
-    { key: "3", value: WellCategory.Gas_Injector, label: "Gas injector" },
+    { key: "0", value: WellCategory.OilProducer, label: "Oil producer" },
+    { key: "1", value: WellCategory.GasProducer, label: "Gas producer" },
+    { key: "2", value: WellCategory.WaterInjector, label: "Water injector" },
+    { key: "3", value: WellCategory.GasInjector, label: "Gas injector" },
 ]
 
 export const explorationWellOptions = [
-    { key: "4", value: WellCategory.Exploration_Well, label: "Exploration well" },
-    { key: "5", value: WellCategory.Appraisal_Well, label: "Appraisal well" },
+    { key: "4", value: WellCategory.ExplorationWell, label: "Exploration well" },
+    { key: "5", value: WellCategory.AppraisalWell, label: "Appraisal well" },
     { key: "6", value: WellCategory.Sidetrack, label: "Sidetrack" },
 ]
 
@@ -345,7 +345,6 @@ export const generateProfile = (
     lastYear: number,
 ) => {
     const values: number[] = []
-
     if (tableTimeSeriesValues.length === 0) {
         return {
             ...profile,

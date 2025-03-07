@@ -5,6 +5,6 @@ public enum ProductionStrategyOverview
     Depletion,
     WaterInjection,
     GasInjection,
-    WAG,
+    Wag,
     Mixed
 }

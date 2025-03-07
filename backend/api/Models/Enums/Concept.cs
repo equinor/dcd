@@ -2,17 +2,17 @@ namespace api.Models.Enums;
 
 public enum Concept
 {
-    NO_CONCEPT,
-    TIE_BACK,
-    JACKET,
-    GBS,
-    TLP,
-    SPAR,
-    SEMI,
-    CIRCULAR_BARGE,
-    BARGE,
-    FPSO,
-    TANKER,
-    JACK_UP,
-    SUBSEA_TO_SHORE
+    NoConcept,
+    TieBack,
+    Jacket,
+    Gbs,
+    Tlp,
+    Spar,
+    Semi,
+    CircularBarge,
+    Barge,
+    Fpso,
+    Tanker,
+    JackUp,
+    SubseaToShore
 }

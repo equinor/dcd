@@ -5,6 +5,7 @@ export enum ProfileTypes {
     AdditionalProductionProfileGas = "AdditionalProductionProfileGas",
     AdditionalProductionProfileOil = "AdditionalProductionProfileOil",
     AppraisalWellCostProfile = "AppraisalWellCostProfile",
+    CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService",
     CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd",
     CalculatedTotalIncomeCostProfileUsd = "CalculatedTotalIncomeCostProfileUsd",
     CessationOffshoreFacilitiesCost = "CessationOffshoreFacilitiesCost",
@@ -101,24 +102,24 @@ export enum CampaignType {
 }
 
 export enum Concept {
-    NO_CONCEPT = 0,
-    TIE_BACK = 1,
-    JACKET = 2,
-    GBS = 3,
-    TLP = 4,
-    SPAR = 5,
-    SEMI = 6,
-    CIRCULAR_BARGE = 7,
-    BARGE = 8,
-    FPSO = 9,
-    TANKER = 10,
-    JACK_UP = 11,
-    SUBSEA_TO_SHORE = 12,
+    NoConcept = 0,
+    TieBack = 1,
+    Jacket = 2,
+    Gbs = 3,
+    Tlp = 4,
+    Spar = 5,
+    Semi = 6,
+    CircularBarge = 7,
+    Barge = 8,
+    Fpso = 9,
+    Tanker = 10,
+    JackUp = 11,
+    SubseaToShore = 12,
 }
 
 export enum Currency {
-    NOK = 1,
-    USD = 2,
+    Nok = 1,
+    Usd = 2,
 }
 
 export enum GasSolution {
@@ -128,7 +129,7 @@ export enum GasSolution {
 
 export enum InternalProjectPhase {
     APbo = 0,
-    BOR = 1,
+    Bor = 1,
     VPbo = 2,
 }
 
@@ -147,32 +148,32 @@ export enum NoAccessReason {
 }
 
 export enum PhysUnit {
-    SI = 0,
+    Si = 0,
     OilField = 1,
 }
 
 export enum ProductionFlowline {
-    No_production_flowline = 0,
+    NoProductionFlowline = 0,
     Carbon = 1,
-    SSClad = 2,
+    SsClad = 2,
     Cr13 = 3,
-    Carbon_Insulation = 4,
-    SSClad_Insulation = 5,
-    Cr13_Insulation = 6,
-    Carbon_Insulation_DEH = 7,
-    SSClad_Insulation_DEH = 8,
-    Cr13_Insulation_DEH = 9,
-    Carbon_PIP = 10,
-    SSClad_PIP = 11,
-    Cr13_PIP = 12,
-    HDPELinedCS = 13,
+    CarbonInsulation = 4,
+    SsCladInsulation = 5,
+    Cr13Insulation = 6,
+    CarbonInsulationDeh = 7,
+    SsCladInsulationDeh = 8,
+    Cr13InsulationDeh = 9,
+    CarbonPip = 10,
+    SsCladPip = 11,
+    Cr13Pip = 12,
+    HdpeLinedCs = 13,
 }
 
 export enum ProductionStrategyOverview {
     Depletion = 0,
     WaterInjection = 1,
     GasInjection = 2,
-    WAG = 3,
+    Wag = 3,
     Mixed = 4,
 }
 
@@ -232,12 +233,12 @@ export enum Source {
 }
 
 export enum WellCategory {
-    Oil_Producer = 0,
-    Gas_Producer = 1,
-    Water_Injector = 2,
-    Gas_Injector = 3,
-    Exploration_Well = 4,
-    Appraisal_Well = 5,
+    OilProducer = 0,
+    GasProducer = 1,
+    WaterInjector = 2,
+    GasInjector = 3,
+    ExplorationWell = 4,
+    AppraisalWell = 5,
     Sidetrack = 6,
     RigMobDemob = 7,
 }

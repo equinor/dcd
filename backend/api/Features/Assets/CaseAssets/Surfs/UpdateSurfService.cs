@@ -10,22 +10,24 @@ public class UpdateSurfService(DcdDbContext context, RecalculationService recalc
 {
     public async Task UpdateSurf(Guid projectId, Guid caseId, UpdateSurfDto updatedSurfDto)
     {
-        var existingSurf = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        existingSurf.CessationCost = updatedSurfDto.CessationCost;
-        existingSurf.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
-        existingSurf.UmbilicalSystemLength = updatedSurfDto.UmbilicalSystemLength;
-        existingSurf.ArtificialLift = updatedSurfDto.ArtificialLift;
-        existingSurf.RiserCount = updatedSurfDto.RiserCount;
-        existingSurf.TemplateCount = updatedSurfDto.TemplateCount;
-        existingSurf.ProducerCount = updatedSurfDto.ProducerCount;
-        existingSurf.GasInjectorCount = updatedSurfDto.GasInjectorCount;
-        existingSurf.WaterInjectorCount = updatedSurfDto.WaterInjectorCount;
-        existingSurf.ProductionFlowline = updatedSurfDto.ProductionFlowline;
-        existingSurf.CostYear = updatedSurfDto.CostYear;
-        existingSurf.Source = updatedSurfDto.Source;
-        existingSurf.ApprovedBy = updatedSurfDto.ApprovedBy;
-        existingSurf.Maturity = updatedSurfDto.Maturity;
+        var existing = await context.Surfs.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId);
+
+        existing.CessationCost = updatedSurfDto.CessationCost;
+        existing.InfieldPipelineSystemLength = updatedSurfDto.InfieldPipelineSystemLength;
+        existing.UmbilicalSystemLength = updatedSurfDto.UmbilicalSystemLength;
+        existing.ArtificialLift = updatedSurfDto.ArtificialLift;
+        existing.RiserCount = updatedSurfDto.RiserCount;
+        existing.TemplateCount = updatedSurfDto.TemplateCount;
+        existing.ProducerCount = updatedSurfDto.ProducerCount;
+        existing.GasInjectorCount = updatedSurfDto.GasInjectorCount;
+        existing.WaterInjectorCount = updatedSurfDto.WaterInjectorCount;
+        existing.ProductionFlowline = updatedSurfDto.ProductionFlowline;
+        existing.CostYear = updatedSurfDto.CostYear;
+        existing.Source = updatedSurfDto.Source;
+        existing.ApprovedBy = updatedSurfDto.ApprovedBy;
+        existing.Maturity = updatedSurfDto.Maturity;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

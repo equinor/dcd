@@ -79,7 +79,7 @@ const CaseFacilitiesTab = () => {
                     label="Platform concept"
                 />
             </Grid>
-            {substructureData.concept === Concept.TIE_BACK && (
+            {substructureData.concept === Concept.TieBack && (
                 <Grid size={{ xs: 12, md: 4 }}>
                     <SwitchableStringInput
                         label="Host"
@@ -99,7 +99,7 @@ const CaseFacilitiesTab = () => {
                     label="Facility opex"
                     value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
-                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`}
+                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -111,7 +111,7 @@ const CaseFacilitiesTab = () => {
                     label="Cessation cost"
                     value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
-                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.NOK ? "MNOK" : "MUSD"}`}
+                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid size={12}>

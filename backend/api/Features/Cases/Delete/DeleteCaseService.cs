@@ -13,6 +13,7 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var imageIds = await context.CaseImages
+            .Where(x => x.Case.ProjectId == projectPk)
             .Where(x => x.CaseId == caseId)
             .Select(x => x.Id)
             .ToListAsync();

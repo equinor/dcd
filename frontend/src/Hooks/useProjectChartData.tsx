@@ -24,7 +24,7 @@ interface TableCompareCase {
     developmentCosts: number,
     explorationWellCosts: number,
     totalCO2Emissions: number,
-    cO2Intensity: number,
+    co2Intensity: number,
 }
 
 export const useProjectChartData = () => {
@@ -100,7 +100,7 @@ export const useProjectChartData = () => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
             return {
                 cases: caseItem.name,
-                cO2Intensity: compareCase?.co2Intensity,
+                co2Intensity: compareCase?.co2Intensity,
             }
         })
 
@@ -139,7 +139,7 @@ export const useProjectChartData = () => {
                             developmentCosts: Math.round(matchingCase.developmentWellCosts * 1) / 1,
                             explorationWellCosts: Math.round(matchingCase.explorationWellCosts * 1) / 1,
                             totalCO2Emissions: Math.round(matchingCase.totalCo2Emissions * 10) / 10,
-                            cO2Intensity: Math.round(matchingCase.co2Intensity * 10) / 10,
+                            co2Intensity: Math.round(matchingCase.co2Intensity * 10) / 10,
                         }
                         tableCompareCases.push(tableCase)
                     }

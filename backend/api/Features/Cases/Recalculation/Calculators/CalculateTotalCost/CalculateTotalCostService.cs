@@ -69,13 +69,13 @@ public static class CalculateTotalCostService
         var totalCostUsd = new TimeSeries
         {
             StartYear = totalCost.StartYear,
-            Values = totalCost.Values.Select(v => v / caseItem.Project.ExchangeRateUSDToNOK).ToArray()
+            Values = totalCost.Values.Select(v => v / caseItem.Project.ExchangeRateUsdToNok).ToArray()
         };
 
-        var CalculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        var calculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfileUsd);
 
-        CalculatedTotalCostCostProfileUsd.Values = totalCostUsd.Values;
-        CalculatedTotalCostCostProfileUsd.StartYear = totalCostUsd.StartYear;
+        calculatedTotalCostCostProfileUsd.Values = totalCostUsd.Values;
+        calculatedTotalCostCostProfileUsd.StartYear = totalCostUsd.StartYear;
     }
 
     private static TimeSeries CalculateStudyCost(Case caseItem)

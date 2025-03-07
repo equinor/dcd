@@ -17,9 +17,9 @@ public class CalculateBreakEvenOilPriceServiceTests
         var project = new Project
         {
             DiscountRate = 8,
-            OilPriceUSD = 70,
-            GasPriceNOK = 3.59,
-            ExchangeRateUSDToNOK = 10,
+            OilPriceUsd = 70,
+            GasPriceNok = 3.59,
+            ExchangeRateUsdToNok = 10,
             NpvYear = 2024
         };
 
@@ -58,7 +58,7 @@ public class CalculateBreakEvenOilPriceServiceTests
         CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
 
         // Assert
-        var expectedBreakEvenPrice = 29.82;
+        const double expectedBreakEvenPrice = 29.82;
         Assert.Equal(expectedBreakEvenPrice, caseItem.BreakEven, precision: 1);
     }
 }

@@ -21,12 +21,12 @@ public class Topside : IChangeTrackable, IDateTrackedEntity
     public required int ProducerCount { get; set; }
     public required int GasInjectorCount { get; set; }
     public required int WaterInjectorCount { get; set; }
-    public required double CO2ShareOilProfile { get; set; }
-    public required double CO2ShareGasProfile { get; set; }
-    public required double CO2ShareWaterInjectionProfile { get; set; }
-    public required double CO2OnMaxOilProfile { get; set; }
-    public required double CO2OnMaxGasProfile { get; set; }
-    public required double CO2OnMaxWaterInjectionProfile { get; set; }
+    public required double Co2ShareOilProfile { get; set; }
+    public required double Co2ShareGasProfile { get; set; }
+    public required double Co2ShareWaterInjectionProfile { get; set; }
+    public required double Co2OnMaxOilProfile { get; set; }
+    public required double Co2OnMaxGasProfile { get; set; }
+    public required double Co2OnMaxWaterInjectionProfile { get; set; }
     public required int CostYear { get; set; }
     public required DateTime? ProspVersion { get; set; }
     public required Source Source { get; set; }

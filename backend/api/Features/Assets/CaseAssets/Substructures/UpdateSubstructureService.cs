@@ -10,14 +10,16 @@ public class UpdateSubstructureService(DcdDbContext context, RecalculationServic
 {
     public async Task UpdateSubstructure(Guid projectId, Guid caseId, UpdateSubstructureDto updatedSubstructureDto)
     {
-        var existingSubstructure = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectId && x.CaseId == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        existingSubstructure.DryWeight = updatedSubstructureDto.DryWeight;
-        existingSubstructure.CostYear = updatedSubstructureDto.CostYear;
-        existingSubstructure.Source = updatedSubstructureDto.Source;
-        existingSubstructure.Concept = updatedSubstructureDto.Concept;
-        existingSubstructure.Maturity = updatedSubstructureDto.Maturity;
-        existingSubstructure.ApprovedBy = updatedSubstructureDto.ApprovedBy;
+        var existing = await context.Substructures.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId);
+
+        existing.DryWeight = updatedSubstructureDto.DryWeight;
+        existing.CostYear = updatedSubstructureDto.CostYear;
+        existing.Source = updatedSubstructureDto.Source;
+        existing.Concept = updatedSubstructureDto.Concept;
+        existing.Maturity = updatedSubstructureDto.Maturity;
+        existing.ApprovedBy = updatedSubstructureDto.ApprovedBy;
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);

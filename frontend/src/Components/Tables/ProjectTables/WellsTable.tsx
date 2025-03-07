@@ -17,7 +17,7 @@ import { TableWell } from "@/Models/Wells"
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
 import { Currency, WellCategory } from "@/Models/enums"
 
-  interface WellsTableProps {
+interface WellsTableProps {
     rowData: TableWell[]
     editMode: boolean
     isEditDisabled: boolean
@@ -31,7 +31,7 @@ import { Currency, WellCategory } from "@/Models/enums"
     defaultWellCategory: WellCategory
     wellStagedForDeletion: any
     setWellStagedForDeletion: Dispatch<SetStateAction<any>>
-  }
+}
 
 const WellsTable: React.FC<WellsTableProps> = ({
     rowData,
@@ -142,19 +142,18 @@ const WellsTable: React.FC<WellsTableProps> = ({
             },
             {
                 field: "wellCost",
-                headerName: `Cost (${
-                    revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK
-                        ? "mill NOK"
-                        : "mill USD"
+                headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                    ? "mill NOK"
+                    : "mill USD"
                 })`,
                 flex: 1,
                 headerComponent: SecondaryTableHeader,
                 headerComponentParams: {
                     columnHeader: "Cost",
                     unit:
-              revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.NOK
-                  ? "mill NOK"
-                  : "mill USD",
+                        revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                            ? "mill NOK"
+                            : "mill USD",
                 },
                 cellStyle: cellStyleRightAlign,
                 editable: editMode && !isEditDisabled,

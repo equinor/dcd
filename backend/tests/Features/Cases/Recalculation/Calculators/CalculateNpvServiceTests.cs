@@ -17,9 +17,9 @@ public class CalculateNpvServiceTests
         var project = new Project
         {
             DiscountRate = 8,
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10,
+            OilPriceUsd = 75,
+            GasPriceNok = 3,
+            ExchangeRateUsdToNok = 10,
             NpvYear = 2020
         };
 
@@ -49,7 +49,7 @@ public class CalculateNpvServiceTests
 
         CalculateNpvService.RunCalculation(caseItem);
 
-        var expectedNpvValue = 15311.106;
-        Assert.Equal(expectedNpvValue, caseItem.NPV, precision: 1);
+        const double expectedNpvValue = 15311.106;
+        Assert.Equal(expectedNpvValue, caseItem.Npv, precision: 1);
     }
 }

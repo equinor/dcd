@@ -22,21 +22,21 @@ public static class ChangeLogService
             .ToList();
 
         changes.AddRange(dbContext.ChangeTracker
-            .Entries()
-            .Where(x => x.Entity is IChangeTrackable)
-            .Where(x => x.State is EntityState.Added or EntityState.Deleted)
-            .Select(x => new ChangeLog
-            {
-                TimestampUtc = utcNow,
-                Username = currentUser?.Username,
-                EntityId = ((IChangeTrackable)x.Entity).Id,
-                EntityName = x.Entity.GetType().Name,
-                EntityState = x.State.ToString(),
-                Payload = GenerateInitialState(x.Properties),
-                NewValue = null,
-                OldValue = null,
-                PropertyName = null
-            }));
+                             .Entries()
+                             .Where(x => x.Entity is IChangeTrackable)
+                             .Where(x => x.State is EntityState.Added or EntityState.Deleted)
+                             .Select(x => new ChangeLog
+                             {
+                                 TimestampUtc = utcNow,
+                                 Username = currentUser?.Username,
+                                 EntityId = ((IChangeTrackable)x.Entity).Id,
+                                 EntityName = x.Entity.GetType().Name,
+                                 EntityState = x.State.ToString(),
+                                 Payload = GenerateInitialState(x.Properties),
+                                 NewValue = null,
+                                 OldValue = null,
+                                 PropertyName = null
+                             }));
 
         return changes;
     }
@@ -44,9 +44,9 @@ public static class ChangeLogService
     private static string GenerateInitialState(IEnumerable<PropertyEntry> properties)
     {
         return JsonSerializer.Serialize(properties.Where(x => IsSimpleType(x.Metadata.ClrType))
-            .Where(x => !x.IsTemporary)
-            .Where(x => !PropertyNamesToIgnore.Contains(x.Metadata.Name))
-            .ToDictionary(x => x.Metadata.Name, x => x.CurrentValue));
+                                            .Where(x => !x.IsTemporary)
+                                            .Where(x => !PropertyNamesToIgnore.Contains(x.Metadata.Name))
+                                            .ToDictionary(x => x.Metadata.Name, x => x.CurrentValue));
     }
 
     public static bool IsSimpleType(Type type)
@@ -72,8 +72,8 @@ public static class ChangeLogService
     }
 
     private static List<ChangeLog> BuildChangeLog<T>(EntityEntry<T> entity,
-        string? username,
-        DateTime utcNow)
+                                                     string? username,
+                                                     DateTime utcNow)
         where T : class, IChangeTrackable
     {
         var entityId = entity.Property(x => x.Id).CurrentValue;

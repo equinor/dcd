@@ -39,8 +39,8 @@ public static class EmissionCalculationHelper
         var wic = topside.WaterInjectionCapacity;
         var wr = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection)?.Values;
 
-        var wsp = topside.CO2ShareWaterInjectionProfile;
-        var wom = topside.CO2OnMaxWaterInjectionProfile;
+        var wsp = topside.Co2ShareWaterInjectionProfile;
+        var wom = topside.Co2OnMaxWaterInjectionProfile;
 
         if (wr == null || wr.Length == 0 || wic == 0 || facilitiesAvailability == 0)
         {
@@ -49,7 +49,7 @@ public static class EmissionCalculationHelper
 
         var step1 = wsp * wom;
         var wrp = wr.Select(v => v / (Cd * (facilitiesAvailability / 100)) / wic);
-        var wrpWspWom = wrp.Select(v => step1 + (v * 100 * wsp * (1 - wom)));
+        var wrpWspWom = wrp.Select(v => step1 + v * 100 * wsp * (1 - wom));
 
         return new TimeSeries
         {
@@ -78,8 +78,8 @@ public static class EmissionCalculationHelper
 
         var mergedProfile = TimeSeriesMerger.MergeTimeSeries(productionProfileGas, additionalProductionProfileGas);
 
-        var gsp = topside.CO2ShareGasProfile;
-        var gom = topside.CO2OnMaxGasProfile;
+        var gsp = topside.Co2ShareGasProfile;
+        var gom = topside.Co2OnMaxGasProfile;
 
         if (mergedProfile.Values.Length == 0 || gc == 0 || facilitiesAvailability == 0)
         {
@@ -88,7 +88,7 @@ public static class EmissionCalculationHelper
 
         var step1 = gsp * gom;
         var grp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / gc / 1_000_000);
-        var grpGspGom = grp.Select(v => step1 + (v * gsp * (1 - gom)));
+        var grpGspGom = grp.Select(v => step1 + v * gsp * (1 - gom));
 
         return new TimeSeries
         {
@@ -117,8 +117,8 @@ public static class EmissionCalculationHelper
 
         var mergedProfile = TimeSeriesMerger.MergeTimeSeries(productionProfileOil, additionalProductionProfileOil);
 
-        var osp = topside.CO2ShareOilProfile;
-        var oom = topside.CO2OnMaxOilProfile;
+        var osp = topside.Co2ShareOilProfile;
+        var oom = topside.Co2OnMaxOilProfile;
 
         if (mergedProfile.Values.Length == 0 || oc == 0 || facilitiesAvailability == 0)
         {
@@ -131,7 +131,7 @@ public static class EmissionCalculationHelper
 
         var step1 = osp * oom;
         var orp = mergedProfile.Values.Select(v => v / (Cd * (facilitiesAvailability / 100)) / oc);
-        var orpOspOom = orp.Select(v => step1 + (v * osp * (1 - oom))).ToArray();
+        var orpOspOom = orp.Select(v => step1 + v * osp * (1 - oom)).ToArray();
 
         return new TimeSeries
         {
@@ -172,8 +172,8 @@ public static class EmissionCalculationHelper
 
     public static TimeSeries CalculateLosses(Case caseItem)
     {
-        var lossesValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v * caseItem.Project.CO2RemovedFromGas).ToArray() ?? [];
-        var additionalGasLossesValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v * caseItem.Project.CO2RemovedFromGas).ToArray() ?? [];
+        var lossesValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v * caseItem.Project.Co2RemovedFromGas).ToArray() ?? [];
+        var additionalGasLossesValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v * caseItem.Project.Co2RemovedFromGas).ToArray() ?? [];
 
         var gasLossesTs = new TimeSeries
         {

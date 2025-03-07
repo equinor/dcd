@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid2"
 import styled from "styled-components"

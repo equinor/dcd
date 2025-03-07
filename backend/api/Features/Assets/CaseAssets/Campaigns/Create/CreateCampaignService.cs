@@ -15,22 +15,24 @@ public class CreateCampaignService(DcdDbContext context, RecalculationService re
     {
         ValidateDto(createCampaignDto);
 
-        var caseItem = await context.Cases.SingleAsync(x => x.ProjectId == projectId && x.Id == caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var campaignId = Guid.NewGuid();
+        var caseItem = await context.Cases.SingleAsync(x => x.ProjectId == projectPk && x.Id == caseId);
 
-        caseItem.Campaigns.Add(new Campaign
+        var campaign = new Campaign
         {
-            Id = campaignId,
+            CaseId = caseItem.Id,
             CampaignType = createCampaignDto.CampaignType,
             RigUpgradingCostValues = [],
             RigMobDemobCostValues = []
-        });
+        };
+
+        context.Campaigns.Add(campaign);
 
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
 
-        return campaignId;
+        return campaign.Id;
     }
 
     private static void ValidateDto(CreateCampaignDto createCampaignDto)

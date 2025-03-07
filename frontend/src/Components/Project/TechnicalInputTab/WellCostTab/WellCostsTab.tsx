@@ -16,7 +16,7 @@ const WellCostsTab = () => (
             <Wells
                 title="Exploration Well Costs"
                 addButtonText="Add new exploration well type"
-                defaultWellCategory={WellCategory.Exploration_Well}
+                defaultWellCategory={WellCategory.ExplorationWell}
                 wellOptions={explorationWellOptions}
                 filterWells={isExplorationWell}
             />
@@ -26,7 +26,7 @@ const WellCostsTab = () => (
             <Wells
                 title="Development Well Costs"
                 addButtonText="Add new development/drilling well type"
-                defaultWellCategory={WellCategory.Oil_Producer}
+                defaultWellCategory={WellCategory.OilProducer}
                 wellOptions={developmentWellOptions}
                 filterWells={(well) => !isExplorationWell(well)}
             />
