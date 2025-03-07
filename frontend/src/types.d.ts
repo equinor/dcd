@@ -174,11 +174,11 @@ declare namespace Components {
             internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl: string | null;
-            cO2RemovedFromGas: number; // double
-            cO2EmissionFromFuelGas: number; // double
+            co2RemovedFromGas: number; // double
+            co2EmissionFromFuelGas: number; // double
             flaredGasPerProducedVolume: number; // double
-            cO2EmissionsFromFlaredGas: number; // double
-            cO2Vented: number; // double
+            co2EmissionsFromFlaredGas: number; // double
+            co2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
             oilPriceUsd: number; // double
@@ -428,12 +428,12 @@ declare namespace Components {
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
-            cO2ShareOilProfile: number; // double
-            cO2ShareGasProfile: number; // double
-            cO2ShareWaterInjectionProfile: number; // double
-            cO2OnMaxOilProfile: number; // double
-            cO2OnMaxGasProfile: number; // double
-            cO2OnMaxWaterInjectionProfile: number; // double
+            co2ShareOilProfile: number; // double
+            co2ShareGasProfile: number; // double
+            co2ShareWaterInjectionProfile: number; // double
+            co2OnMaxOilProfile: number; // double
+            co2OnMaxGasProfile: number; // double
+            co2OnMaxWaterInjectionProfile: number; // double
             costYear: number; // int32
             prospVersion: string | null; // date-time
             lastChangedDate: string | null; // date-time
@@ -534,11 +534,11 @@ declare namespace Components {
             internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl: string | null;
-            cO2RemovedFromGas: number; // double
-            cO2EmissionFromFuelGas: number; // double
+            co2RemovedFromGas: number; // double
+            co2EmissionFromFuelGas: number; // double
             flaredGasPerProducedVolume: number; // double
-            cO2EmissionsFromFlaredGas: number; // double
-            cO2Vented: number; // double
+            co2EmissionsFromFlaredGas: number; // double
+            co2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
             oilPriceUsd: number; // double
@@ -598,12 +598,12 @@ declare namespace Components {
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
-            cO2ShareOilProfile: number; // double
-            cO2ShareGasProfile: number; // double
-            cO2ShareWaterInjectionProfile: number; // double
-            cO2OnMaxOilProfile: number; // double
-            cO2OnMaxGasProfile: number; // double
-            cO2OnMaxWaterInjectionProfile: number; // double
+            co2ShareOilProfile: number; // double
+            co2ShareGasProfile: number; // double
+            co2ShareWaterInjectionProfile: number; // double
+            co2OnMaxOilProfile: number; // double
+            co2OnMaxGasProfile: number; // double
+            co2OnMaxWaterInjectionProfile: number; // double
             costYear: number; // int32
             facilityOpex: number; // double
             peakElectricityImported: number; // double
