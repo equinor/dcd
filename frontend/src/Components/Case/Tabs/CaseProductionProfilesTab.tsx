@@ -326,7 +326,8 @@ const CaseProductionProfilesTab = () => {
                 <CaseProductionProfiles
                     apiData={apiData}
                     tableYears={tableYears}
-                    alignedGridsRef={gridRef}
+                    gridRef={gridRef}
+                    alignedGridsRef={[gridRef]}
                 />
             </Grid>
         </Grid>

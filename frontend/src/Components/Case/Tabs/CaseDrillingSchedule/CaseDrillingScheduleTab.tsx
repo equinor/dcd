@@ -28,6 +28,7 @@ import {
 import { CampaignType, WellCategory } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useAppStore } from "@/Store/AppStore"
+import { GridRefProvider } from "@/Store/GridRefContext"
 
 const InputGroup = styled.div`
     display: flex;
@@ -267,22 +268,24 @@ const CaseDrillingScheduleTab = () => {
                     )}
                 </CampaignHeaderTexts>
             </CampaignHeader>
-            {apiData.explorationCampaigns.map((campaign) => (
-                <Campaign
-                    key={campaign.campaignId}
-                    campaign={campaign}
-                    tableYears={tableYears}
-                    title="Exploration"
-                />
-            ))}
-            {apiData.developmentCampaigns.map((campaign) => (
-                <Campaign
-                    key={campaign.campaignId}
-                    campaign={campaign}
-                    tableYears={tableYears}
-                    title="Development"
-                />
-            ))}
+            <GridRefProvider>
+                {apiData.explorationCampaigns.map((campaign) => (
+                    <Campaign
+                        key={campaign.campaignId}
+                        campaign={campaign}
+                        tableYears={tableYears}
+                        title="Exploration"
+                    />
+                ))}
+                {apiData.developmentCampaigns.map((campaign) => (
+                    <Campaign
+                        key={campaign.campaignId}
+                        campaign={campaign}
+                        tableYears={tableYears}
+                        title="Development"
+                    />
+                ))}
+            </GridRefProvider>
         </Grid>
     )
 }
