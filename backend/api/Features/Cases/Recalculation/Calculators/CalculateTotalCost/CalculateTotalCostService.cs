@@ -69,7 +69,7 @@ public static class CalculateTotalCostService
         var totalCostUsd = new TimeSeries
         {
             StartYear = totalCost.StartYear,
-            Values = totalCost.Values.Select(v => v / caseItem.Project.ExchangeRateUSDToNOK).ToArray()
+            Values = totalCost.Values.Select(v => v / caseItem.Project.ExchangeRateUsdToNok).ToArray()
         };
 
         var calculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfileUsd);

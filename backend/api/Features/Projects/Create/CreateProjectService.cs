@@ -51,18 +51,20 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
                 AnnualWellInterventionCostPerWell = 0,
                 PluggingAndAbandonment = 0
             },
-            CO2EmissionFromFuelGas = 2.34,
+            Co2EmissionFromFuelGas = 2.34,
             FlaredGasPerProducedVolume = 1.122765,
-            CO2EmissionsFromFlaredGas = 3.73,
-            CO2Vented = 1.96,
+            Co2EmissionsFromFlaredGas = 3.73,
+            Co2Vented = 1.96,
             DailyEmissionFromDrillingRig = 100,
             AverageDevelopmentDrillingDays = 50,
             Classification = ProjectClassification.Internal,
             DiscountRate = 8.0,
-            OilPriceUSD = 75.0,
-            GasPriceNOK = 3.0,
-            ExchangeRateUSDToNOK = 10.0,
-            NpvYear = DateTime.Now.Year
+            OilPriceUsd = 75.0,
+            GasPriceNok = 3.0,
+            NglPriceUsd = 0.0,
+            ExchangeRateUsdToNok = 10.0,
+            NpvYear = DateTime.UtcNow.Year,
+            Currency = Currency.Nok
         };
 
         context.Projects.Add(project);

@@ -19,7 +19,7 @@ public class Co2EmissionProfileServiceTests
             Project = new Project
             {
                 FlaredGasPerProducedVolume = 1.122765,
-                CO2RemovedFromGas = 0.0,
+                Co2RemovedFromGas = 0.0,
                 DailyEmissionFromDrillingRig = 117
             },
             FacilitiesAvailability = 93, // 93%
@@ -57,14 +57,14 @@ public class Co2EmissionProfileServiceTests
             {
                 FuelConsumption = 0.019,
                 OilCapacity = 555,
-                CO2ShareOilProfile = 0.173,
-                CO2OnMaxOilProfile = 0.208,
+                Co2ShareOilProfile = 0.173,
+                Co2OnMaxOilProfile = 0.208,
                 GasCapacity = 0.96,
-                CO2ShareGasProfile = 0.827,
-                CO2OnMaxGasProfile = 0.057,
+                Co2ShareGasProfile = 0.827,
+                Co2OnMaxGasProfile = 0.057,
                 WaterInjectionCapacity = 0,
-                CO2ShareWaterInjectionProfile = 0,
-                CO2OnMaxWaterInjectionProfile = 0,
+                Co2ShareWaterInjectionProfile = 0,
+                Co2OnMaxWaterInjectionProfile = 0,
 
                 DryWeight = 0,
                 ArtificialLift = ArtificialLift.NoArtificialLift,
@@ -107,7 +107,7 @@ public class Co2EmissionProfileServiceTests
             Project = new Project
             {
                 FlaredGasPerProducedVolume = 1.122765,
-                CO2RemovedFromGas = 0.0
+                Co2RemovedFromGas = 0.0
             },
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles =
@@ -151,14 +151,14 @@ public class Co2EmissionProfileServiceTests
             {
                 FuelConsumption = 0.019,
                 OilCapacity = 555,
-                CO2ShareOilProfile = 0.173,
-                CO2OnMaxOilProfile = 0.208,
+                Co2ShareOilProfile = 0.173,
+                Co2OnMaxOilProfile = 0.208,
                 GasCapacity = 0.96,
-                CO2ShareGasProfile = 0.827,
-                CO2OnMaxGasProfile = 0.057,
+                Co2ShareGasProfile = 0.827,
+                Co2OnMaxGasProfile = 0.057,
                 WaterInjectionCapacity = 0,
-                CO2ShareWaterInjectionProfile = 0,
-                CO2OnMaxWaterInjectionProfile = 0,
+                Co2ShareWaterInjectionProfile = 0,
+                Co2OnMaxWaterInjectionProfile = 0,
 
                 DryWeight = 0,
                 ArtificialLift = ArtificialLift.NoArtificialLift,

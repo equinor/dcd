@@ -16,12 +16,12 @@ public class UpdateTopsideDto
     [Required] public required int ProducerCount { get; set; }
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }
-    [Required] public required double CO2ShareOilProfile { get; set; }
-    [Required] public required double CO2ShareGasProfile { get; set; }
-    [Required] public required double CO2ShareWaterInjectionProfile { get; set; }
-    [Required] public required double CO2OnMaxOilProfile { get; set; }
-    [Required] public required double CO2OnMaxGasProfile { get; set; }
-    [Required] public required double CO2OnMaxWaterInjectionProfile { get; set; }
+    [Required] public required double Co2ShareOilProfile { get; set; }
+    [Required] public required double Co2ShareGasProfile { get; set; }
+    [Required] public required double Co2ShareWaterInjectionProfile { get; set; }
+    [Required] public required double Co2OnMaxOilProfile { get; set; }
+    [Required] public required double Co2OnMaxGasProfile { get; set; }
+    [Required] public required double Co2OnMaxWaterInjectionProfile { get; set; }
     [Required] public required int CostYear { get; set; }
     [Required] public required double FacilityOpex { get; set; }
     [Required] public required double PeakElectricityImported { get; set; }

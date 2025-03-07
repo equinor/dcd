@@ -5,6 +5,7 @@ export enum ProfileTypes {
     AdditionalProductionProfileGas = "AdditionalProductionProfileGas",
     AdditionalProductionProfileOil = "AdditionalProductionProfileOil",
     AppraisalWellCostProfile = "AppraisalWellCostProfile",
+    CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService",
     CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd",
     CalculatedTotalIncomeCostProfileUsd = "CalculatedTotalIncomeCostProfileUsd",
     CessationOffshoreFacilitiesCost = "CessationOffshoreFacilitiesCost",

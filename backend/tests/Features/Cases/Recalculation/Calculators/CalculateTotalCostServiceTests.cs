@@ -16,9 +16,9 @@ public class CalculateTotalCostServiceTests
         var project = new Project
         {
             Id = Guid.NewGuid(),
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10,
+            OilPriceUsd = 75,
+            GasPriceNok = 3,
+            ExchangeRateUsdToNok = 10,
             Currency = api.Models.Enums.Currency.Nok
         };
 

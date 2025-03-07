@@ -6,6 +6,7 @@ import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency, ProfileTypes } from "@/Models/enums"
+import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/common"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -32,86 +33,111 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     tableYears,
 }) => {
     const revisionAndProjectData = useDataFetch()
-
     const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
-
-    const aggregateProfiles = (profiles: any[], dg4Year: number): ITimeSeries => {
-        const totals: { [key: number]: number } = {}
-        profiles.forEach((profile) => {
-            if (profile && Array.isArray(profile.values)) {
-                const profileStartYear = dg4Year + profile.startYear
-                for (let i = 0; i < profile.values.length; i += 1) {
-                    const year = profileStartYear + i
-                    if (!totals[year]) {
-                        totals[year] = 0
-                    }
-                    totals[year] += Number(profile.values[i])
-                }
-            }
-        })
-
-        return {
-            startYear: Math.min(...Object.keys(totals).map(Number)) - dg4Year,
-            values: Object.values(totals),
-        }
-    }
+    const [mergedCostProfiles, setMergedCostProfiles] = useState<any>({})
 
     useEffect(() => {
         if (apiData) {
-            const dg4Year = getYearFromDateString(apiData.case.dG4Date)
-
-            const profiles = {
-                studyProfiles: [
-                    apiData.totalFeasibilityAndConceptStudiesOverride || apiData.totalFeasibilityAndConceptStudies,
-                    apiData.totalFEEDStudiesOverride || apiData.totalFEEDStudies,
+            const costProfiles = {
+                studyProfiles: mergeTimeseriesList([
+                    (apiData.totalFeasibilityAndConceptStudiesOverride?.override ? apiData.totalFeasibilityAndConceptStudiesOverride : apiData.totalFeasibilityAndConceptStudies),
+                    (apiData.totalFEEDStudiesOverride?.override ? apiData.totalFEEDStudiesOverride : apiData.totalFEEDStudies),
                     apiData.totalOtherStudiesCostProfile,
-                ],
-                opexProfiles: [
-                    apiData.wellInterventionCostProfileOverride || apiData.wellInterventionCostProfile,
-                    apiData.offshoreFacilitiesOperationsCostProfileOverride || apiData.offshoreFacilitiesOperationsCostProfile,
+                ]),
+                opexProfiles: mergeTimeseriesList([
+                    apiData.historicCostCostProfile,
+                    (apiData.wellInterventionCostProfileOverride?.override ? apiData.wellInterventionCostProfileOverride : apiData.wellInterventionCostProfile),
+                    (apiData.offshoreFacilitiesOperationsCostProfileOverride?.override ? apiData.offshoreFacilitiesOperationsCostProfileOverride : apiData.offshoreFacilitiesOperationsCostProfile),
                     apiData.onshoreRelatedOPEXCostProfile,
                     apiData.additionalOPEXCostProfile,
-                    apiData.historicCostCostProfile,
-                ],
-                cessationProfiles: [
-                    apiData.cessationWellsCostOverride || apiData.cessationWellsCost,
-                    apiData.cessationOffshoreFacilitiesCostOverride || apiData.cessationOffshoreFacilitiesCost,
+                ]),
+                cessationProfiles: mergeTimeseriesList([
+                    (apiData.cessationWellsCostOverride?.override ? apiData.cessationWellsCostOverride : apiData.cessationWellsCost),
+                    (apiData.cessationOffshoreFacilitiesCostOverride?.override ? apiData.cessationOffshoreFacilitiesCostOverride : apiData.cessationOffshoreFacilitiesCost),
                     apiData.cessationOnshoreFacilitiesCostProfile,
-                ],
-                offshoreFacilityProfiles: [
+                ]),
+                offshoreFacilityProfiles: mergeTimeseriesList([
                     (apiData.surfCostProfileOverride?.override ? apiData.surfCostProfileOverride : apiData.surfCostProfile),
                     (apiData.topsideCostProfileOverride?.override ? apiData.topsideCostProfileOverride : apiData.topsideCostProfile),
                     (apiData.substructureCostProfileOverride?.override ? apiData.substructureCostProfileOverride : apiData.substructureCostProfile),
                     (apiData.transportCostProfileOverride?.override ? apiData.transportCostProfileOverride : apiData.transportCostProfile),
                     (apiData.onshorePowerSupplyCostProfileOverride?.override ? apiData.onshorePowerSupplyCostProfileOverride : apiData.onshorePowerSupplyCostProfile),
-
-                ],
-                developmentWellCostProfiles: [
-                    apiData.oilProducerCostProfileOverride || apiData.oilProducerCostProfile,
-                    apiData.gasProducerCostProfileOverride || apiData.gasProducerCostProfile,
-                    apiData.waterInjectorCostProfileOverride || apiData.waterInjectorCostProfile,
-                    apiData.gasInjectorCostProfileOverride || apiData.gasInjectorCostProfile,
-                ],
-                explorationWellCostProfiles: [
-                    apiData.gAndGAdminCostOverride || apiData.gAndGAdminCost,
+                ]),
+                developmentWellCostProfiles: mergeTimeseriesList([
+                    (apiData.oilProducerCostProfileOverride?.override ? apiData.oilProducerCostProfileOverride : apiData.oilProducerCostProfile),
+                    (apiData.gasProducerCostProfileOverride?.override ? apiData.gasProducerCostProfileOverride : apiData.gasProducerCostProfile),
+                    (apiData.waterInjectorCostProfileOverride?.override ? apiData.waterInjectorCostProfileOverride : apiData.waterInjectorCostProfile),
+                    (apiData.gasInjectorCostProfileOverride?.override ? apiData.gasInjectorCostProfileOverride : apiData.gasInjectorCostProfile),
+                ]),
+                explorationWellCostProfiles: mergeTimeseriesList([
                     apiData.seismicAcquisitionAndProcessing,
                     apiData.countryOfficeCost,
+                    (apiData.gAndGAdminCostOverride?.override ? apiData.gAndGAdminCostOverride : apiData.gAndGAdminCost),
+                    apiData.projectSpecificDrillingCostProfile,
                     apiData.explorationWellCostProfile,
                     apiData.appraisalWellCostProfile,
                     apiData.sidetrackCostProfile,
+                ]),
+            }
+            setMergedCostProfiles(costProfiles)
+            const incomeProfiles = {
+                liquidRevenue: [
+                    {
+                        startYear: apiData.productionProfileOil?.startYear,
+                        values: (() => {
+                            const mergedValues = mergeTimeseries(
+                                apiData.productionProfileOil,
+                                apiData.additionalProductionProfileOil,
+                            ).values
+                            if (!mergedValues) { return null }
+                            const oilPriceUsd = revisionAndProjectData?.commonProjectAndRevisionData?.oilPriceUsd ?? 0
+                            const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
+                            return mergedValues.map((v: number) => (v * 6.29 * oilPriceUsd) * exchangeRateUsdToNok)
+                        })(),
+                    },
+
+                ],
+                gasRevenue: [
+                    {
+                        startYear: apiData.productionProfileGas?.startYear,
+                        values: mergeTimeseries(
+                            apiData.productionProfileGas,
+                            apiData.additionalProductionProfileGas,
+                        ).values?.map((v: number) => v * 1000 * ((revisionAndProjectData?.commonProjectAndRevisionData?.gasPriceNok ?? 0)
+                        )) ?? null,
+                    },
                 ],
             }
 
             const newTimeSeriesData: ITimeSeriesTableData[] = []
-
-            Object.entries(profiles).forEach(([profileName, profileData]) => {
-                const aggregatedProfile = aggregateProfiles(profileData, dg4Year)
+            Object.entries(costProfiles).forEach(([profileName, profileData]) => {
+                const updatedProfile = {
+                    ...profileData,
+                    values: profileData.values?.map((value) => -Math.abs(value)) || [],
+                }
                 const resourceName: ProfileTypes = profileName as ProfileTypes
 
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
                     unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD",
-                    profile: aggregatedProfile,
+                    profile: updatedProfile,
+                    resourceName,
+                    resourceId: apiData.case.caseId,
+                    resourcePropertyKey: profileName,
+                    overridable: false,
+                    editable: false,
+                })
+            })
+
+            Object.entries(incomeProfiles).forEach(([profileName, profileData]) => {
+                const resourceName: ProfileTypes = profileName as ProfileTypes
+                newTimeSeriesData.push({
+                    profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
+                    unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD",
+                    profile: {
+                        startYear: profileData[0]?.startYear ?? 0,
+                        values: profileData.flatMap((p) => p.values ?? []),
+                    },
                     resourceName,
                     resourceId: apiData.case.caseId,
                     resourcePropertyKey: profileName,
@@ -124,37 +150,82 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         }
     }, [apiData, tableYears, revisionAndProjectData])
 
+    const dg4Year = getYearFromDateString(apiData.case.dG4Date)
+    const incomeProfile = apiData.calculatedTotalIncomeCostProfileUsd
+    const costProfile = apiData.calculatedTotalCostCostProfileUsd
+    const discountedCashflowData = apiData.calculatedDiscountedCashflowService
+    let minYear = dg4Year
+    let maxYear = dg4Year
+
+    if (incomeProfile && costProfile) {
+        minYear = Math.min(incomeProfile.startYear, costProfile.startYear)
+        maxYear = Math.max(
+            incomeProfile.startYear + incomeProfile.values.length,
+            costProfile.startYear + costProfile.values.length,
+        )
+    }
+
+    const yearRange = Array.from({ length: maxYear - minYear }, (_, i) => minYear + i)
+
+    const cashFlowData: ITimeSeries = {
+        startYear: minYear,
+        values: yearRange.map((year) => {
+            const incomeIndex = year - incomeProfile.startYear
+            const costIndex = year - costProfile.startYear
+            const income = incomeIndex >= 0 && incomeIndex < incomeProfile.values.length
+                ? incomeProfile.values[incomeIndex]
+                : 0
+            const cost = costIndex >= 0 && costIndex < costProfile.values.length
+                ? costProfile.values[costIndex]
+                : 0
+
+            const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
+            return income * exchangeRateUsdToNok - cost
+        }),
+    }
+
+    const cashFlow = {
+        startYear: minYear,
+        values: (cashFlowData?.values || []).map((v) => v) ?? [],
+    }
+    const totalIncomeData = apiData.calculatedTotalIncomeCostProfileUsd
+
+    const cashflow = {
+        startYear: Math.min(totalIncomeData?.startYear, costProfile?.startYear) + dg4Year,
+        values: (cashFlowData?.values || []).map((v) => v) ?? [],
+    }
+
+    const discountedCashflow = {
+        startYear: (discountedCashflowData?.startYear ?? 0) + dg4Year,
+        values: (discountedCashflowData?.values || []).map((v) => v) ?? [],
+    }
     const chartData = useMemo(() => {
-        const data: number[] = []
-        const dg4Year = getYearFromDateString(apiData.case.dG4Date)
+        const data: any[] = []
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
-
-        const totalIncomeData = apiData.calculatedTotalIncomeCostProfileUsd
-
-        const income = {
-            startYear: totalIncomeData?.startYear !== undefined
-                ? totalIncomeData.startYear + dg4Year
-                : 0,
-            values: (totalIncomeData?.values || []).map((v) => v) ?? [],
-        }
-
         years.forEach((year) => {
             const yearData: any = { year }
             aggregatedTimeSeriesData.forEach((series) => {
                 const value = setValueToCorrespondingYear(series.profile, year, dg4Year)
                 yearData[series.profileName] = value
             })
-            yearData.cumulativeSum = (income.values || []).reduce((acc, value, index) => {
-                if (income.startYear + index === year) {
+            yearData.cashflow = (cashflow.values || []).reduce((acc, value, index) => {
+                if (cashflow.startYear + index === year) {
                     return acc + value
                 }
                 return acc
             }, 0)
+            yearData.discountedCashflow = (discountedCashflow?.values || []).reduce((acc, value, index) => {
+                if (discountedCashflow.startYear + index === year) {
+                    return acc + value
+                }
+                return acc
+            }, 0)
+
             data.push(yearData)
         })
 
         return data
-    }, [aggregatedTimeSeriesData, tableYears, apiData])
+    }, [aggregatedTimeSeriesData, tableYears, apiData, cashFlow])
 
     const figmaTheme = {
         palette: {
@@ -195,11 +266,9 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile",
-            // (${project?.currency === Currency.NOK ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
+            text: "Cashflow",
             fontSize: 24,
         },
-        subtitle: { text: "(MNOK)" },
 
         padding: {
             top: 10,
@@ -209,7 +278,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         },
         theme: figmaTheme,
         series: [
-            ...Object.keys(chartData[0] || {}).filter((key) => key !== "year" && key !== "cumulativeSum").map((key, index) => ({
+            ...Object.keys(chartData[0] || {}).filter((key) => key !== "year" && key !== "cashflow" && key !== "discountedCashflow").map((key, index) => ({
                 type: "bar",
                 xKey: "year",
                 yKey: key,
@@ -220,15 +289,24 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "line",
                 xKey: "year",
-                yKey: "cumulativeSum",
-                yName: "Total Income",
+                yKey: "cashflow",
+                yName: "Cashflow",
                 stroke: "red",
                 strokeWidth: 2,
                 marker: {
-                    enabled: true,
-                    shape: "circle",
-                    size: 5,
-                    fill: "red",
+                    enabled: false,
+                },
+            },
+            {
+                type: "line",
+                xKey: "year",
+                yKey: "discountedCashflow",
+                yName: "Discounted cashflow",
+                stroke: "red",
+                strokeWidth: 2,
+                lineDash: [4, 4],
+                marker: {
+                    enabled: false,
                 },
             },
         ],
@@ -237,28 +315,20 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "number",
                 position: "left",
-                title: { text: "Cost" },
-            },
-            {
-                type: "number",
-                position: "right",
-                title: { text: "Total Income" },
-                keys: ["cumulativeSum"],
-                visibleRange: [0, 1],
+                title: { text: `${revisionAndProjectData?.commonProjectAndRevisionData?.currency === Currency.Nok ? "MNOK" : "MUSD"}` },
             },
         ],
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }
 
-    const pieChartData = useMemo(() => {
-        const pieData: any[] = aggregatedTimeSeriesData.map((series) => ({
-            profile: series.profileName,
-            value: series.profile?.values?.reduce((sum, value) => sum + value, 0) ?? 0, // Sum values for the pie chart
-        }))
-
-        return pieData
-    }, [aggregatedTimeSeriesData])
-
+    const pieChartData = [
+        { label: "Study Costs", value: mergedCostProfiles.studyProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        { label: "OPEX", value: mergedCostProfiles.opexProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        { label: "Cessation", value: mergedCostProfiles.cessationProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        { label: "Offshore Facilities", value: mergedCostProfiles.offshoreFacilityProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        { label: "Development Wells", value: mergedCostProfiles.developmentWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        { label: "Exploration Wells", value: mergedCostProfiles.explorationWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+    ]
     const totalValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0)
 
     const pieChartOptions: object = {
@@ -278,7 +348,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         series: [
             {
                 type: "donut",
-                calloutLabelKey: "profile",
+                calloutLabelKey: "label",
                 angleKey: "value",
                 calloutLabel: { enabled: false },
                 innerRadiusOffset: -25,

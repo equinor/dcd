@@ -6,7 +6,7 @@ namespace api.Features.Assets.CaseAssets.DrainageStrategies;
 
 public class UpdateDrainageStrategyDto
 {
-    [Required] public double NGLYield { get; set; }
+    [Required] public double NglYield { get; set; }
     [Required] public double CondensateYield { get; set; }
     [Required] public double GasShrinkageFactor { get; set; }
     [Required] public int ProducerCount { get; set; }

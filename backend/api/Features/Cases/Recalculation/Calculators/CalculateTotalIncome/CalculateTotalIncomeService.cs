@@ -12,8 +12,8 @@ public static class CalculateTotalIncomeService
 {
     public static void RunCalculation(Case caseItem)
     {
-        var gasPriceNok = caseItem.Project.GasPriceNOK;
-        var oilPrice = caseItem.Project.OilPriceUSD;
+        var gasPriceNok = caseItem.Project.GasPriceNok;
+        var oilPrice = caseItem.Project.OilPriceUsd;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
@@ -29,6 +29,15 @@ public static class CalculateTotalIncomeService
             Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray()
         };
 
+        var nglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
+        var nglIncome = new TimeSeries();
+
+        if (nglProduction != null && caseItem.Project.NglPriceUsd != 0)
+        {
+            nglIncome.StartYear = nglProduction.StartYear;
+            nglIncome.Values = nglProduction.Values.Select(v => v * caseItem.Project.NglPriceUsd).ToArray();
+        }
+
         var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas),
             caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
@@ -37,10 +46,10 @@ public static class CalculateTotalIncomeService
         var gasIncome = new TimeSeries
         {
             StartYear = totalGasProductionInGigaCubics.StartYear,
-            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUSDToNOK).ToArray()
+            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUsdToNok).ToArray()
         };
 
-        var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, gasIncome);
+        var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, nglIncome, gasIncome);
 
         // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfileUsd to get correct unit
         var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();

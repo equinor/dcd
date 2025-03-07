@@ -19,9 +19,9 @@ public class CalculateTotalIncomeServiceTests
         var project = new Project
         {
             Id = Guid.NewGuid(),
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10
+            OilPriceUsd = 75,
+            GasPriceNok = 3,
+            ExchangeRateUsdToNok = 10
         };
 
         var caseItem = new Case
@@ -66,9 +66,9 @@ public class CalculateTotalIncomeServiceTests
         CalculateTotalIncomeService.RunCalculation(caseItem);
 
         // Assert
-        var expectedFirstYearIncome = (2 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 2 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUSDToNOK;
-        var expectedSecondYearIncome = (4 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 4 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUSDToNOK;
-        var expectedThirdYearIncome = (3 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 3 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUSDToNOK;
+        var expectedFirstYearIncome = (2 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 2 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUsdToNok;
+        var expectedSecondYearIncome = (4 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 4 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUsdToNok;
+        var expectedThirdYearIncome = (3 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 3 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUsdToNok;
 
         var calculatedTotalIncomeCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd);
         Assert.NotNull(calculatedTotalIncomeCostProfileUsd);
