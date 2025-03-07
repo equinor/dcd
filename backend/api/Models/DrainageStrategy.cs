@@ -10,7 +10,7 @@ public class DrainageStrategy : IChangeTrackable, IDateTrackedEntity
     public Guid CaseId { get; set; }
     public Case Case { get; set; } = null!;
 
-    public required double NGLYield { get; set; }
+    public required double NglYield { get; set; }
     public required double CondensateYield { get; set; }
     public required double GasShrinkageFactor { get; set; }
     public required int ProducerCount { get; set; }

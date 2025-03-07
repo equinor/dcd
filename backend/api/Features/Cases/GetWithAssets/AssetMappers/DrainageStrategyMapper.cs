@@ -10,7 +10,7 @@ public static class DrainageStrategyMapper
         return new DrainageStrategyDto
         {
             Id = entity.Id,
-            NGLYield = entity.NGLYield,
+            NglYield = entity.NglYield,
             CondensateYield = entity.CondensateYield,
             GasShrinkageFactor = entity.GasShrinkageFactor,
             ProducerCount = entity.ProducerCount,

@@ -116,7 +116,7 @@ public class CreateCaseService(DcdDbContext context)
         return new DrainageStrategy
         {
             Id = id,
-            NGLYield = 0,
+            NglYield = 0,
             CondensateYield = 0,
             GasShrinkageFactor = 0,
             ProducerCount = 0,

@@ -13,7 +13,7 @@ public static class CalculateNpvService
 
         if (cashflowProfile == null)
         {
-            caseItem.NPV = 0;
+            caseItem.Npv = 0;
 
             return;
         }
@@ -22,7 +22,7 @@ public static class CalculateNpvService
 
         if (discountRate == 0)
         {
-            caseItem.NPV = 0;
+            caseItem.Npv = 0;
 
             return;
         }
@@ -37,7 +37,7 @@ public static class CalculateNpvService
             npvYearInRelationToDg4Year
         );
 
-        caseItem.NPV = npvValue;
+        caseItem.Npv = npvValue;
     }
 
     private static TimeSeries? GetCashflowProfile(Case caseItem)

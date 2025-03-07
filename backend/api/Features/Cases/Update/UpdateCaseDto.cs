@@ -18,8 +18,8 @@ public class UpdateCaseDto
     [Required] public required double FacilitiesAvailability { get; set; }
     [Required] public required double CapexFactorFeasibilityStudies { get; set; }
     [Required] public required double CapexFactorFEEDStudies { get; set; }
-    [Required] public required double NPV { get; set; }
-    public required double? NPVOverride { get; set; }
+    [Required] public required double Npv { get; set; }
+    public required double? NpvOverride { get; set; }
     [Required] public required double BreakEven { get; set; }
     public required double? BreakEvenOverride { get; set; }
     public required string? Host { get; set; }

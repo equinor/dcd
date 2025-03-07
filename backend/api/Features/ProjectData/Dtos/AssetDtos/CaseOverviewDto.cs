@@ -17,8 +17,8 @@ public class CaseOverviewDto
     [Required] public required int ProducerCount { get; set; }
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }
-    [Required] public required double NPV { get; set; }
-    public required double? NPVOverride { get; set; }
+    [Required] public required double Npv { get; set; }
+    public required double? NpvOverride { get; set; }
     [Required] public required double BreakEven { get; set; }
     public required double? BreakEvenOverride { get; set; }
     [Required] public required double FacilitiesAvailability { get; set; }
