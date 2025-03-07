@@ -181,11 +181,11 @@ declare namespace Components {
             cO2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
+            oilPriceUsd: number; // double
+            gasPriceNok: number; // double
             nglPriceUsd: number; // double
             discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
+            exchangeRateUsdToNok: number; // double
             npvYear: number; // int32
             explorationOperationalWellCosts: ExplorationOperationalWellCostsOverviewDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsOverviewDto;
@@ -541,11 +541,11 @@ declare namespace Components {
             cO2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
+            oilPriceUsd: number; // double
+            gasPriceNok: number; // double
             nglPriceUsd: number; // double
             discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
+            exchangeRateUsdToNok: number; // double
             npvYear: number; // int32
         }
         export interface UpdateProjectMemberDto {

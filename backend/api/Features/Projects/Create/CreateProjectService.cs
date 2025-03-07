@@ -59,10 +59,10 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             AverageDevelopmentDrillingDays = 50,
             Classification = ProjectClassification.Internal,
             DiscountRate = 8.0,
-            OilPriceUSD = 75.0,
-            GasPriceNOK = 3.0,
+            OilPriceUsd = 75.0,
+            GasPriceNok = 3.0,
             NglPriceUsd = 0.0,
-            ExchangeRateUSDToNOK = 10.0,
+            ExchangeRateUsdToNok = 10.0,
             NpvYear = DateTime.UtcNow.Year,
             Currency = Currency.Nok
         };

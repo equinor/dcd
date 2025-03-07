@@ -43,11 +43,11 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         existingProject.CO2Vented = projectDto.CO2Vented;
         existingProject.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
         existingProject.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
-        existingProject.OilPriceUSD = projectDto.OilPriceUSD;
-        existingProject.GasPriceNOK = projectDto.GasPriceNOK;
+        existingProject.OilPriceUsd = projectDto.OilPriceUsd;
+        existingProject.GasPriceNok = projectDto.GasPriceNok;
         existingProject.NglPriceUsd = projectDto.NglPriceUsd;
         existingProject.DiscountRate = projectDto.DiscountRate;
-        existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
+        existingProject.ExchangeRateUsdToNok = projectDto.ExchangeRateUsdToNok;
         existingProject.NpvYear = projectDto.NpvYear;
 
         if (shouldTriggerRecalculation)
@@ -64,7 +64,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
 
     private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
     {
-        if (existingProject.ExchangeRateUSDToNOK != projectDto.ExchangeRateUSDToNOK)
+        if (existingProject.ExchangeRateUsdToNok != projectDto.ExchangeRateUsdToNok)
         {
             return true;
         }
@@ -79,7 +79,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
             return true;
         }
 
-        if (existingProject.GasPriceNOK != projectDto.GasPriceNOK)
+        if (existingProject.GasPriceNok != projectDto.GasPriceNok)
         {
             return true;
         }
@@ -89,7 +89,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
             return true;
         }
 
-        if (existingProject.OilPriceUSD != projectDto.OilPriceUSD)
+        if (existingProject.OilPriceUsd != projectDto.OilPriceUsd)
         {
             return true;
         }

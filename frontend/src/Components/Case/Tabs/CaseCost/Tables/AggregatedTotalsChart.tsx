@@ -90,9 +90,9 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                                 apiData.additionalProductionProfileOil,
                             ).values
                             if (!mergedValues) { return null }
-                            const oilPriceUSD = revisionAndProjectData?.commonProjectAndRevisionData?.oilPriceUSD ?? 0
-                            const exchangeRateUSDToNOK = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUSDToNOK ?? 1
-                            return mergedValues.map((v: number) => (v * 6.29 * oilPriceUSD) * exchangeRateUSDToNOK)
+                            const oilPriceUsd = revisionAndProjectData?.commonProjectAndRevisionData?.oilPriceUsd ?? 0
+                            const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
+                            return mergedValues.map((v: number) => (v * 6.29 * oilPriceUsd) * exchangeRateUsdToNok)
                         })(),
                     },
 
@@ -103,7 +103,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                         values: mergeTimeseries(
                             apiData.productionProfileGas,
                             apiData.additionalProductionProfileGas,
-                        ).values?.map((v: number) => v * 1000 * ((revisionAndProjectData?.commonProjectAndRevisionData?.gasPriceNOK ?? 0)
+                        ).values?.map((v: number) => v * 1000 * ((revisionAndProjectData?.commonProjectAndRevisionData?.gasPriceNok ?? 0)
                         )) ?? null,
                     },
                 ],
@@ -179,8 +179,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 ? costProfile.values[costIndex]
                 : 0
 
-            const exchangeRateUSDToNOK = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUSDToNOK ?? 1
-            return income * exchangeRateUSDToNOK - cost
+            const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
+            return income * exchangeRateUsdToNok - cost
         }),
     }
 

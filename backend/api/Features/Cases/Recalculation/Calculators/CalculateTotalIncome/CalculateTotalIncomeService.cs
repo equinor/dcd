@@ -12,8 +12,8 @@ public static class CalculateTotalIncomeService
 {
     public static void RunCalculation(Case caseItem)
     {
-        var gasPriceNok = caseItem.Project.GasPriceNOK;
-        var oilPrice = caseItem.Project.OilPriceUSD;
+        var gasPriceNok = caseItem.Project.GasPriceNok;
+        var oilPrice = caseItem.Project.OilPriceUsd;
 
         var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
             caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
@@ -46,7 +46,7 @@ public static class CalculateTotalIncomeService
         var gasIncome = new TimeSeries
         {
             StartYear = totalGasProductionInGigaCubics.StartYear,
-            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUSDToNOK).ToArray()
+            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUsdToNok).ToArray()
         };
 
         var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, nglIncome, gasIncome);

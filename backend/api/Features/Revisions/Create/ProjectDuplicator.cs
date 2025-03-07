@@ -63,11 +63,11 @@ public static class ProjectDuplicator
             CO2Vented = existingProject.CO2Vented,
             DailyEmissionFromDrillingRig = existingProject.DailyEmissionFromDrillingRig,
             AverageDevelopmentDrillingDays = existingProject.AverageDevelopmentDrillingDays,
-            OilPriceUSD = existingProject.OilPriceUSD,
-            GasPriceNOK = existingProject.GasPriceNOK,
+            OilPriceUsd = existingProject.OilPriceUsd,
+            GasPriceNok = existingProject.GasPriceNok,
             NglPriceUsd = existingProject.NglPriceUsd,
             DiscountRate = existingProject.DiscountRate,
-            ExchangeRateUSDToNOK = existingProject.ExchangeRateUSDToNOK,
+            ExchangeRateUsdToNok = existingProject.ExchangeRateUsdToNok,
             NpvYear = existingProject.NpvYear,
 
             ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts

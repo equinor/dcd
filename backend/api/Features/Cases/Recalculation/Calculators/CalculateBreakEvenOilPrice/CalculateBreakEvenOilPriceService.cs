@@ -12,9 +12,9 @@ public static class CalculateBreakEvenOilPriceService
     public static void RunCalculation(Case caseItem)
     {
         var discountRate = caseItem.Project.DiscountRate;
-        var oilPrice = caseItem.Project.OilPriceUSD;
-        var gasPriceNok = caseItem.Project.GasPriceNOK;
-        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
+        var oilPrice = caseItem.Project.OilPriceUsd;
+        var gasPriceNok = caseItem.Project.GasPriceNok;
+        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUsdToNok;
         var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(

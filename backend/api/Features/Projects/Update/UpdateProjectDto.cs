@@ -24,10 +24,10 @@ public class UpdateProjectDto
     [Required] public required double CO2Vented { get; set; }
     [Required] public required double DailyEmissionFromDrillingRig { get; set; }
     [Required] public required double AverageDevelopmentDrillingDays { get; set; }
-    [Required] public required double OilPriceUSD { get; set; }
-    [Required] public required double GasPriceNOK { get; set; }
+    [Required] public required double OilPriceUsd { get; set; }
+    [Required] public required double GasPriceNok { get; set; }
     [Required] public required double NglPriceUsd { get; set; }
     [Required] public required double DiscountRate { get; set; }
-    [Required] public required double ExchangeRateUSDToNOK { get; set; }
+    [Required] public required double ExchangeRateUsdToNok { get; set; }
     [Required] public required int NpvYear { get; set; }
 }

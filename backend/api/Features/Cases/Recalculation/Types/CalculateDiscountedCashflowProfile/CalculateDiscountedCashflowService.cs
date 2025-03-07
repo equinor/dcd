@@ -17,7 +17,7 @@ public static class CalculatedDiscountedCashflowService
         if (caseItem.Project.Currency == Models.Enums.Currency.Nok && totalCost != null)
         {
             totalCost.Values = totalCost.Values
-                .Select(v => v * caseItem.Project.ExchangeRateUSDToNOK)
+                .Select(v => v * caseItem.Project.ExchangeRateUsdToNok)
                 .ToArray();
         }
 
@@ -63,10 +63,10 @@ public static class CalculatedDiscountedCashflowService
         var nglProduction = TotalProductionVolume.TotalExportedVolumesProfileService.GetNglProduction(caseItem);
 
         var convertCurrency = caseItem.Project.Currency == Models.Enums.Currency.Nok
-            ? caseItem.Project.ExchangeRateUSDToNOK
+            ? caseItem.Project.ExchangeRateUsdToNok
             : 1;
 
-        var oilProductionRevenue = oilProduction.Values.Select(v => v / 1_000_000 * caseItem.Project.OilPriceUSD * VolumeConstants.BarrelsPerCubicMeter * convertCurrency).ToArray();
+        var oilProductionRevenue = oilProduction.Values.Select(v => v / 1_000_000 * caseItem.Project.OilPriceUsd * VolumeConstants.BarrelsPerCubicMeter * convertCurrency).ToArray();
         var nglProductionRevenue = nglProduction.Values.Select(v => v / 1_000_000 * caseItem.Project.NglPriceUsd * convertCurrency).ToArray();
 
         var liquidsRevenue = TimeSeriesMerger.MergeTimeSeries(new List<TimeSeries>
@@ -92,10 +92,10 @@ public static class CalculatedDiscountedCashflowService
 
         var convertCurrency = caseItem.Project.Currency == Models.Enums.Currency.Nok
             ? 1
-            : caseItem.Project.ExchangeRateUSDToNOK;
+            : caseItem.Project.ExchangeRateUsdToNok;
 
         var gasRevenue = gasProduction.Values
-            .Select(v => v / 1_000_000_000 * 1000 * caseItem.Project.GasPriceNOK / convertCurrency)
+            .Select(v => v / 1_000_000_000 * 1000 * caseItem.Project.GasPriceNok / convertCurrency)
             .ToArray();
 
         return EconomicsHelper.CalculateDiscountedVolume(

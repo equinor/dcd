@@ -14,20 +14,20 @@ const ProjectSettingsTab = () => {
     const revisionAndProjectData = useDataFetch()
 
     const [dummyRole] = useState(0) // TODO: Get role from user
-    const [oilPriceUSD, setOilPriceUSD] = useState(revisionAndProjectData?.commonProjectAndRevisionData.oilPriceUSD || 0)
+    const [oilPriceUsd, setOilPriceUsd] = useState(revisionAndProjectData?.commonProjectAndRevisionData.oilPriceUsd || 0)
     const [nglpriceUsd, setNglPriceUsd] = useState(revisionAndProjectData?.commonProjectAndRevisionData.nglPriceUsd || 0)
-    const [gasPriceNOK, setGasPriceNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.gasPriceNOK || 0)
+    const [gasPriceNok, setGasPriceNok] = useState(revisionAndProjectData?.commonProjectAndRevisionData.gasPriceNok || 0)
     const [discountRate, setDiscountRate] = useState(revisionAndProjectData?.commonProjectAndRevisionData.discountRate || 0)
-    const [exchangeRateUSDToNOK, setExchangeRateUSDToNOK] = useState(revisionAndProjectData?.commonProjectAndRevisionData.exchangeRateUSDToNOK || 0)
+    const [exchangeRateUsdToNok, setExchangeRateUsdToNok] = useState(revisionAndProjectData?.commonProjectAndRevisionData.exchangeRateUsdToNok || 0)
     const [npvYear, setNpvYear] = useState(revisionAndProjectData?.commonProjectAndRevisionData.npvYear || 0)
 
     useEffect(() => {
         if (revisionAndProjectData) {
-            setOilPriceUSD(revisionAndProjectData.commonProjectAndRevisionData.oilPriceUSD)
+            setOilPriceUsd(revisionAndProjectData.commonProjectAndRevisionData.oilPriceUsd)
             setNglPriceUsd(revisionAndProjectData.commonProjectAndRevisionData.nglPriceUsd)
-            setGasPriceNOK(revisionAndProjectData.commonProjectAndRevisionData.gasPriceNOK)
+            setGasPriceNok(revisionAndProjectData.commonProjectAndRevisionData.gasPriceNok)
             setDiscountRate(revisionAndProjectData.commonProjectAndRevisionData.discountRate)
-            setExchangeRateUSDToNOK(revisionAndProjectData.commonProjectAndRevisionData.exchangeRateUSDToNOK)
+            setExchangeRateUsdToNok(revisionAndProjectData.commonProjectAndRevisionData.exchangeRateUsdToNok)
             setNpvYear(revisionAndProjectData.commonProjectAndRevisionData.npvYear)
         }
     }, [revisionAndProjectData])
@@ -60,9 +60,9 @@ const ProjectSettingsTab = () => {
     }
 
     const handleOilPriceChange = () => {
-        const newOilPrice = oilPriceUSD
+        const newOilPrice = oilPriceUsd
         if (!Number.isNaN(newOilPrice) && revisionAndProjectData) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, oilPriceUSD: newOilPrice }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, oilPriceUsd: newOilPrice }
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
@@ -76,9 +76,9 @@ const ProjectSettingsTab = () => {
     }
 
     const handleGasPriceChange = () => {
-        const newGasPrice = gasPriceNOK
+        const newGasPrice = gasPriceNok
         if (!Number.isNaN(newGasPrice) && revisionAndProjectData) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, gasPriceNOK: newGasPrice }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, gasPriceNok: newGasPrice }
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
@@ -92,9 +92,9 @@ const ProjectSettingsTab = () => {
     }
 
     const handleExchangeRateChange = () => {
-        const newExchangeRate = exchangeRateUSDToNOK
+        const newExchangeRate = exchangeRateUsdToNok
         if (!Number.isNaN(newExchangeRate) && revisionAndProjectData) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, exchangeRateUSDToNOK: newExchangeRate }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, exchangeRateUsdToNok: newExchangeRate }
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
@@ -171,14 +171,14 @@ const ProjectSettingsTab = () => {
                     </Grid>
                     <Grid size={12}>
                         <InputSwitcher
-                            value={String(oilPriceUSD)}
+                            value={String(oilPriceUsd)}
                             label="Oil Price (USD/bbl)"
                         >
                             <Input
                                 type="number"
                                 step="0.01"
-                                value={oilPriceUSD}
-                                onChange={(e: any) => setOilPriceUSD(Number(e.target.value))}
+                                value={oilPriceUsd}
+                                onChange={(e: any) => setOilPriceUsd(Number(e.target.value))}
                                 onBlur={handleOilPriceChange}
                             />
                         </InputSwitcher>
@@ -199,14 +199,14 @@ const ProjectSettingsTab = () => {
                     </Grid>
                     <Grid size={12}>
                         <InputSwitcher
-                            value={String(gasPriceNOK)}
+                            value={String(gasPriceNok)}
                             label="Gas Price (NOK/Sm3)"
                         >
                             <Input
                                 type="number"
                                 step="0.01"
-                                value={gasPriceNOK}
-                                onChange={(e: any) => setGasPriceNOK(Number(e.target.value))}
+                                value={gasPriceNok}
+                                onChange={(e: any) => setGasPriceNok(Number(e.target.value))}
                                 onBlur={handleGasPriceChange}
                             />
                         </InputSwitcher>
@@ -227,14 +227,14 @@ const ProjectSettingsTab = () => {
                     </Grid>
                     <Grid size={12}>
                         <InputSwitcher
-                            value={String(exchangeRateUSDToNOK)}
+                            value={String(exchangeRateUsdToNok)}
                             label="Exchange Rate (USD to NOK)"
                         >
                             <Input
                                 type="number"
                                 step="0.01"
-                                value={exchangeRateUSDToNOK}
-                                onChange={(e: any) => setExchangeRateUSDToNOK(Number(e.target.value))}
+                                value={exchangeRateUsdToNok}
+                                onChange={(e: any) => setExchangeRateUsdToNok(Number(e.target.value))}
                                 onBlur={handleExchangeRateChange}
                             />
                         </InputSwitcher>

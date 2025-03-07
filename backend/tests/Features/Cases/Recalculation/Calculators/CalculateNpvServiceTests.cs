@@ -17,9 +17,9 @@ public class CalculateNpvServiceTests
         var project = new Project
         {
             DiscountRate = 8,
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10,
+            OilPriceUsd = 75,
+            GasPriceNok = 3,
+            ExchangeRateUsdToNok = 10,
             NpvYear = 2020
         };
 
