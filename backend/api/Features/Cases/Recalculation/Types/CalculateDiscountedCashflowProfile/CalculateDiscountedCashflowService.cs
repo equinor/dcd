@@ -21,7 +21,7 @@ public static class CalculatedDiscountedCashflowService
 
         if (totalCost == null)
         {
-            return; //should be okay with no cost?
+            return;
         }
 
         var discountedTotalCost = CalculateDiscountedTotalCost(caseItem, totalCost, discountRate);
@@ -101,20 +101,5 @@ public static class CalculatedDiscountedCashflowService
             gasProduction.StartYear,
             caseItem.Project.NpvYear - caseItem.DG4Date.Year
         );
-    }
-
-
-    private static TimeSeries? GetCashflowProfile(Case caseItem)
-    {
-        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd) == null ||
-            caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd) == null)
-        {
-            return null;
-        }
-
-        var calculatedTotalIncomeCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfileUsd));
-        var calculatedTotalCostCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfileUsd));
-
-        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfileUsd, calculatedTotalCostCostProfileUsd);
     }
 }
