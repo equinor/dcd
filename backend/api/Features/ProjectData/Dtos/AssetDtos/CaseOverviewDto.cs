@@ -17,8 +17,8 @@ public class CaseOverviewDto
     [Required] public required int ProducerCount { get; set; }
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }
-    [Required] public required double NPV { get; set; }
-    public required double? NPVOverride { get; set; }
+    [Required] public required double Npv { get; set; }
+    public required double? NpvOverride { get; set; }
     [Required] public required double BreakEven { get; set; }
     public required double? BreakEvenOverride { get; set; }
     [Required] public required double FacilitiesAvailability { get; set; }
@@ -26,7 +26,7 @@ public class CaseOverviewDto
     [Required] public required double CapexFactorFEEDStudies { get; set; }
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
-
+    [Required] public required double DiscountedCashflow { get; set; }
     public required DateTime? DGADate { get; set; }
     public required DateTime? DGBDate { get; set; }
     public required DateTime? DGCDate { get; set; }

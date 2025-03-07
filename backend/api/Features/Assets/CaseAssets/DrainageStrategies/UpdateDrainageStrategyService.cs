@@ -14,7 +14,7 @@ public class UpdateDrainageStrategyService(DcdDbContext context, RecalculationSe
 
         var existing = await context.DrainageStrategies.SingleAsync(x => x.Case.ProjectId == projectPk && x.CaseId == caseId);
 
-        existing.NGLYield = updatedDrainageStrategyDto.NGLYield;
+        existing.NglYield = updatedDrainageStrategyDto.NglYield;
         existing.CondensateYield = updatedDrainageStrategyDto.CondensateYield;
         existing.GasShrinkageFactor = updatedDrainageStrategyDto.GasShrinkageFactor;
         existing.ProducerCount = updatedDrainageStrategyDto.ProducerCount;

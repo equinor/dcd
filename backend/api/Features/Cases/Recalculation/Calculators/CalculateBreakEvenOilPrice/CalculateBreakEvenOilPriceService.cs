@@ -12,9 +12,9 @@ public static class CalculateBreakEvenOilPriceService
     public static void RunCalculation(Case caseItem)
     {
         var discountRate = caseItem.Project.DiscountRate;
-        var oilPrice = caseItem.Project.OilPriceUSD;
-        var gasPriceNok = caseItem.Project.GasPriceNOK;
-        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUSDToNOK;
+        var oilPrice = caseItem.Project.OilPriceUsd;
+        var gasPriceNok = caseItem.Project.GasPriceNok;
+        var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUsdToNok;
         var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
 
         var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
@@ -41,14 +41,14 @@ public static class CalculateBreakEvenOilPriceService
         var dg4Year = caseItem.DG4Date.Year;
         var discountYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
-        var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(
+        var discountedOilVolume = EconomicsHelper.CalculateSumOfDiscountedVolume(
             oilVolume.Values,
             discountRate,
             oilVolume.StartYear,
             discountYearInRelationToDg4Year
         );
 
-        var discountedNetSalesGasVolumeVolume = EconomicsHelper.CalculateDiscountedVolume(
+        var discountedNetSalesGasVolumeVolume = EconomicsHelper.CalculateSumOfDiscountedVolume(
             netSalesGasVolume.Values,
             discountRate,
             netSalesGasVolume.StartYear,
@@ -60,7 +60,7 @@ public static class CalculateBreakEvenOilPriceService
             return;
         }
 
-        var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
+        var discountedTotalCost = EconomicsHelper.CalculateSumOfDiscountedVolume(
             calculatedTotalCostCostProfileUsd?.Values ?? [],
             discountRate,
             calculatedTotalCostCostProfileUsd?.StartYear ?? 0, // discount factor should be applied from the year after discount year

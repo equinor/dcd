@@ -3,7 +3,7 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
-namespace api.Features.Cases.Recalculation.Types.ProductionProfileNGL;
+namespace api.Features.Cases.Recalculation.Types.ProductionProfileNgl;
 
 public static class ProductionProfileNglProfileService
 {
@@ -14,7 +14,7 @@ public static class ProductionProfileNglProfileService
             return;
         }
 
-        var nglYield = caseItem.DrainageStrategy.NGLYield;
+        var nglYield = caseItem.DrainageStrategy.NglYield;
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.ProductionProfileNgl);
 
         var gasProduction = GetGasProduction(caseItem);

@@ -17,9 +17,9 @@ public class CalculateBreakEvenOilPriceServiceTests
         var project = new Project
         {
             DiscountRate = 8,
-            OilPriceUSD = 70,
-            GasPriceNOK = 3.59,
-            ExchangeRateUSDToNOK = 10,
+            OilPriceUsd = 70,
+            GasPriceNok = 3.59,
+            ExchangeRateUsdToNok = 10,
             NpvYear = 2024
         };
 

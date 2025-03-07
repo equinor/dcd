@@ -13,7 +13,7 @@ public static class CalculateNpvService
 
         if (cashflowProfile == null)
         {
-            caseItem.NPV = 0;
+            caseItem.Npv = 0;
 
             return;
         }
@@ -22,7 +22,7 @@ public static class CalculateNpvService
 
         if (discountRate == 0)
         {
-            caseItem.NPV = 0;
+            caseItem.Npv = 0;
 
             return;
         }
@@ -30,14 +30,14 @@ public static class CalculateNpvService
         var dg4Year = caseItem.DG4Date.Year;
         var npvYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
-        var npvValue = EconomicsHelper.CalculateDiscountedVolume(
+        var npvValue = EconomicsHelper.CalculateSumOfDiscountedVolume(
             cashflowProfile.Values,
             discountRate,
             cashflowProfile.StartYear,
             npvYearInRelationToDg4Year
         );
 
-        caseItem.NPV = npvValue;
+        caseItem.Npv = npvValue;
     }
 
     private static TimeSeries? GetCashflowProfile(Case caseItem)

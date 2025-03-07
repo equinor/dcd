@@ -6,9 +6,9 @@ public static class UpdateProjectDtoValidator
 {
     public static void Validate(UpdateProjectDto dto)
     {
-        if (dto.ExchangeRateUSDToNOK <= 0)
+        if (dto.ExchangeRateUsdToNok <= 0)
         {
-            throw new UnprocessableContentException($"{nameof(UpdateProjectDto)}.{nameof(dto.ExchangeRateUSDToNOK)} must be a positive number.");
+            throw new UnprocessableContentException($"{nameof(UpdateProjectDto)}.{nameof(dto.ExchangeRateUsdToNok)} must be a positive number.");
         }
     }
 }
