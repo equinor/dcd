@@ -11,28 +11,33 @@ import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseApiData } from "@/Hooks"
 import useEditCase from "@/Hooks/useEditCase"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useDebouncedCallback } from "@/Hooks/useDebounce"
 
 const CaseDescriptionTab = () => {
     const { apiData } = useCaseApiData()
     const { projectId } = useProjectContext()
-
+    const { addEdit } = useEditCase()
     const [description, setDescription] = useState("")
     const { canEdit } = useCanUserEdit()
 
-    const productionStrategyOptions = {
-        0: "Depletion",
-        1: "Water injection",
-        2: "Gas injection",
-        3: "WAG",
-        4: "Mixed",
-    }
+    const debouncedAddEdit = useDebouncedCallback((newValue: string) => {
+        if (!apiData || !projectId) {
+            return
+        }
 
-    const artificialLiftOptions = {
-        0: "No lift",
-        1: "Gas lift",
-        2: "Electrical submerged pumps",
-        3: "Subsea booster pumps",
-    }
+        const resourceObject = structuredClone(apiData.case)
+        resourceObject.description = newValue
+
+        addEdit({
+            uuid: uuidv4(),
+            resourceObject,
+            projectId,
+            resourceName: "case",
+            resourcePropertyKey: "description",
+            resourceId: "",
+            caseId: apiData.case.caseId,
+        })
+    }, 2000)
 
     useEffect(() => {
         if (apiData && apiData.case.description !== undefined) {
@@ -48,20 +53,23 @@ const CaseDescriptionTab = () => {
     const handleChange = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
-        const { addEdit } = useEditCase()
-        const resourceObject = structuredClone(caseData)
-        resourceObject.description = newValue
+        setDescription(newValue) // Update local state immediately
+        debouncedAddEdit(newValue)
+    }
 
-        addEdit({
-            uuid: uuidv4(),
-            resourceObject,
-            projectId,
-            resourceName: "case",
-            resourcePropertyKey: "description",
-            resourceId: "",
-            caseId: caseData.caseId,
-        })
-        setDescription(newValue)
+    const productionStrategyOptions = {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }
+
+    const artificialLiftOptions = {
+        0: "No lift",
+        1: "Gas lift",
+        2: "Electrical submerged pumps",
+        3: "Subsea booster pumps",
     }
 
     return (
