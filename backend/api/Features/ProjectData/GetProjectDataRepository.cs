@@ -130,7 +130,6 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Name = x.Name,
                 Description = x.Description,
                 Archived = x.Archived,
-                ReferenceCase = x.ReferenceCase,
                 ProductionStrategyOverview = x.ProductionStrategyOverview,
                 ArtificialLift = x.ArtificialLift,
                 ProducerCount = x.ProducerCount,

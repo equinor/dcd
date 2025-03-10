@@ -25,7 +25,6 @@ declare namespace Components {
             name: string;
             description: string;
             archived: boolean;
-            referenceCase: boolean;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             artificialLift: ArtificialLift /* int32 */;
             producerCount: number; // int32
@@ -460,7 +459,6 @@ declare namespace Components {
         export interface UpdateCaseDto {
             name: string;
             description: string;
-            referenceCase: boolean;
             archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
