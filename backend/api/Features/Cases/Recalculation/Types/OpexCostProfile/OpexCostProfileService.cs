@@ -54,6 +54,8 @@ public static class OpexCostProfileService
 
         var interventionCost = caseItem.Project.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell;
 
+        //var wellInterventionCostValues = new double[lastYear - firstYear + 1];
+
         var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
         // Compute the offset
@@ -69,18 +71,17 @@ public static class OpexCostProfileService
         //     wellInterventionCostValues = Array.Empty<double>(); // If offset is too large, return empty
         // }
 
-        for (int i = 0; i < cumulativeDrillingSchedule.Values.Length; i++)
+        for (int i = 0; i < wellInterventionCostValues.Length; i++)
         {
-            int currentYear = cumulativeDrillingSchedule.StartYear + i;
+            int currentYear = firstYear + i;
 
-            // Apply Excel condition: If year is within valid range, apply cost
-            if (currentYear >= firstYear  && currentYear <= lastYear )
+            if (i + offset < cumulativeDrillingSchedule.Values.Length)
             {
-                wellInterventionCostValues[i] = cumulativeDrillingSchedule.Values[i] * interventionCost;
+                wellInterventionCostValues[i] = cumulativeDrillingSchedule.Values[i + offset] * interventionCost;
             }
             else
             {
-                wellInterventionCostValues[i] = 0; // Skip cost outside range
+                wellInterventionCostValues[i] = 0;
             }
         }
 
