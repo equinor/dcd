@@ -1,13 +1,13 @@
 import Grid from "@mui/material/Grid2"
 import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
-import { useCallback, useMemo, useRef } from "react"
+import { useCallback, useMemo } from "react"
 
 import {
     dateStringToDateUtc,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
-import { ResourceName, ResourceObject, ResourcePropertyKey } from "@/Models/Interfaces"
+import { ResourceName, ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseApiData } from "@/Hooks"
@@ -19,7 +19,6 @@ const TabContainer = styled(Grid)`
     max-width: 800px;
 `
 
-// Types for Decision Gate structure
 interface DecisionGate {
     label: string
     key: string
@@ -27,7 +26,6 @@ interface DecisionGate {
     required?: boolean
 }
 
-// Define the Decision Gates
 const DECISION_GATES: DecisionGate[] = [
     { label: "DGA", key: "dgaDate" },
     { label: "DGB", key: "dgbDate" },
@@ -50,13 +48,12 @@ const CaseScheduleTab = () => {
     const { apiData } = useCaseApiData()
     const { canEdit } = useCanUserEdit()
     const { setSnackBarMessage } = useAppStore()
-    // Define all hooks before any conditional returns
+
     const createDateChangeEdit = useCallback((dateKey: string, newDate: Date | undefined, currentCaseData: any) => {
         const gate = DECISION_GATES.find((g) => g.key === dateKey)
 
         if (!gate) { return null }
 
-        // Simple update without cascading or validation
         const resourceObject = {
             ...currentCaseData,
             [dateKey]: newDate?.toISOString() ?? null,
@@ -75,14 +72,12 @@ const CaseScheduleTab = () => {
     const handleDateChange = useCallback((dateKey: string, dateValue: string) => {
         if (!apiData || !apiData.case) { return }
 
-        // Check if this is DG4 and the value is empty
         const gate = DECISION_GATES.find((g) => g.key === dateKey)
         if (gate?.required && dateValue === "") {
             setSnackBarMessage(`${gate.label} is required and cannot be empty.`)
             return
         }
 
-        // Accept any date without validation
         let newDate: Date | undefined
 
         if (dateValue !== "") {
@@ -96,7 +91,6 @@ const CaseScheduleTab = () => {
         if (editData) { addEdit(editData) }
     }, [addEdit, apiData, createDateChangeEdit, setSnackBarMessage])
 
-    // Create a handler for each date key and store it in the ref
     const getChangeHandler = useCallback(
         (dateKey: ResourcePropertyKey) => (e: React.ChangeEvent<HTMLInputElement>) => handleDateChange(dateKey, e.target.value),
         [handleDateChange],
@@ -119,7 +113,6 @@ const CaseScheduleTab = () => {
         return dateString ? true : undefined
     }, [])
 
-    // Memoize the filtered decision gates to prevent recalculation on every render
     const visibleDecisionGates = useMemo(() => {
         if (!apiData || !apiData.case) { return [] }
 

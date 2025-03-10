@@ -49,19 +49,16 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
     const [localValue, setLocalValue] = useState<string | undefined>(() => toScheduleValue(value))
     const { setSnackBarMessage } = useAppStore()
 
-    // Memoize the formatted value to prevent unnecessary re-renders
     const formattedValue = useMemo(
         () => (localValue ? formatDate(localValue) : ""),
         [localValue],
     )
 
-    // Memoize the date value for the DatePicker
     const datePickerValue = useMemo(
         () => (localValue ? dateStringToDateUtc(localValue) : undefined),
         [localValue],
     )
 
-    // Memoize min and max values
     const minValue = useMemo(
         () => (min ? dateStringToDateUtc(min) : undefined),
         [min],
@@ -72,7 +69,6 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
         [max],
     )
 
-    // Update local value when prop value changes
     useEffect(() => {
         const newValue = toScheduleValue(value)
         if (newValue !== localValue) {
