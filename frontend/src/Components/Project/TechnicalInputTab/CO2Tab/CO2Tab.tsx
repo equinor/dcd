@@ -26,8 +26,6 @@ const StyledContainer = styled.div`
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
-    padding: 0 10px;
 `
 
 interface CO2Data {
@@ -36,6 +34,14 @@ interface CO2Data {
     set: React.Dispatch<React.SetStateAction<number | undefined>>
     value: number | undefined
 }
+
+const Header = styled(Grid)`
+    margin-bottom: 44px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`
 
 const CO2Tab = () => {
     const gridRef = useRef<any>(null)
@@ -253,9 +259,12 @@ const CO2Tab = () => {
     return (
         <Grid container spacing={1} justifyContent="flex-end">
             <StyledContainer>
-                <Typography>
-                    You can override these default assumption to customize the calculation made in CO2 emissions.
-                </Typography>
+                <Header>
+                    <Typography variant="h3">CO2 emissions</Typography>
+                    <Typography>
+                        You can override these default assumption to customize the calculation made in CO2 emissions.
+                    </Typography>
+                </Header>
                 <Tooltip title={getEditDisabledText()}>
                     <Switch
                         disabled={!canEdit()}

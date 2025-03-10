@@ -19,7 +19,6 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
 
         existingCase.Name = updateCaseDto.Name;
         existingCase.Description = updateCaseDto.Description;
-        existingCase.ReferenceCase = updateCaseDto.ReferenceCase;
         existingCase.Archived = updateCaseDto.Archived;
         existingCase.ArtificialLift = updateCaseDto.ArtificialLift;
         existingCase.ProductionStrategyOverview = updateCaseDto.ProductionStrategyOverview;

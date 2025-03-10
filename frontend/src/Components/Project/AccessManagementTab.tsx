@@ -40,7 +40,7 @@ const AccessManagementTab = () => {
         [projectData],
     )
 
-    const handleRemovePerson = (userId: string) => {
+    const handleRemovePerson = (azureAdUserId: string) => {
         if (!projectId || !fusionProjectId) { return }
         deletePerson(projectId, fusionProjectId, userId)
     }
@@ -52,7 +52,7 @@ const AccessManagementTab = () => {
             !personToAdd
             || !projectId
             || !fusionProjectId
-            || projectData?.projectMembers.some((p) => p.userId === personToAdd)
+            || projectData?.projectMembers.some((p) => p.azureAdUserId === personToAdd)
         ) { return }
 
         addPerson(projectId, fusionProjectId, personToAdd, role)
@@ -65,7 +65,7 @@ const AccessManagementTab = () => {
             || !fusionProjectId
         ) { return }
 
-        updatePerson(projectId, fusionProjectId, personId, role)
+        updatePerson(projectId, fusionProjectId, azureAdUserId, role)
     }
 
     // This is used to synchronize PMT members to projects

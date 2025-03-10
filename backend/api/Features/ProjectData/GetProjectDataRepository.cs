@@ -24,7 +24,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Select(x => new ProjectMemberDto
             {
                 ProjectId = x.ProjectId,
-                UserId = x.UserId,
+                AzureAdUserId = x.AzureAdUserId,
                 Role = x.Role,
                 IsPmt = x.FromOrgChart
             })
@@ -130,7 +130,6 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Name = x.Name,
                 Description = x.Description,
                 Archived = x.Archived,
-                ReferenceCase = x.ReferenceCase,
                 ProductionStrategyOverview = x.ProductionStrategyOverview,
                 ArtificialLift = x.ArtificialLift,
                 ProducerCount = x.ProducerCount,

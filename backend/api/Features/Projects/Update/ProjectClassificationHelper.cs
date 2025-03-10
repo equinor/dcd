@@ -28,14 +28,14 @@ public static class ProjectClassificationHelper
             return;
         }
 
-        if (existingProject.ProjectMembers.Any(x => x.UserId == currentUser.UserId))
+        if (existingProject.ProjectMembers.Any(x => x.AzureAdUserId == currentUser.AzureAdUserId))
         {
             return;
         }
 
         existingProject.ProjectMembers.Add(new ProjectMember
         {
-            UserId = currentUser.UserId,
+            AzureAdUserId = currentUser.AzureAdUserId,
             ProjectId = existingProject.Id,
             Role = ProjectMemberRole.Editor,
             FromOrgChart = false

@@ -25,7 +25,6 @@ declare namespace Components {
             name: string;
             description: string;
             archived: boolean;
-            referenceCase: boolean;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             artificialLift: ArtificialLift /* int32 */;
             producerCount: number; // int32
@@ -222,7 +221,7 @@ declare namespace Components {
         }
         export interface CreateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
-            userId: string; // uuid
+            azureAdUserId: string; // uuid
         }
         export interface CreateRevisionDto {
             name: string;
@@ -314,7 +313,7 @@ declare namespace Components {
         }
         export interface ProjectMemberDto {
             projectId: string; // uuid
-            userId: string; // uuid
+            azureAdUserId: string; // uuid
             role: ProjectMemberRole /* int32 */;
             isPmt: boolean;
         }
@@ -460,7 +459,6 @@ declare namespace Components {
         export interface UpdateCaseDto {
             name: string;
             description: string;
-            referenceCase: boolean;
             archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
@@ -524,7 +522,7 @@ declare namespace Components {
         }
         export interface UpdateProjectDto {
             name: string;
-            referenceCaseId: string; // uuid
+            referenceCaseId: string | null; // uuid
             description: string;
             country: string;
             currency: Currency /* int32 */;
@@ -550,7 +548,7 @@ declare namespace Components {
         }
         export interface UpdateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
-            userId: string; // uuid
+            azureAdUserId: string; // uuid
         }
         export interface UpdateRevisionDto {
             name: string;

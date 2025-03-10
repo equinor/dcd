@@ -8,7 +8,7 @@ type AddPersonVariables = {
     projectId: string;
     fusionProjectId: string;
     body: {
-        userId: string;
+        azureAdUserId: string;
         role: ProjectMemberRole;
     };
 };
@@ -17,7 +17,7 @@ type UpdatePersonVariables = {
     projectId: string;
     fusionProjectId: string;
     body: {
-        userId: string;
+        azureAdUserId: string;
         role: ProjectMemberRole;
     };
 };
@@ -25,7 +25,7 @@ type UpdatePersonVariables = {
 type DeletePersonVariables = {
     projectId: string;
     fusionProjectId: string;
-    userId: string;
+    azureAdUserId: string;
 };
 
 export const useEditPeople = () => {
@@ -50,7 +50,7 @@ export const useEditPeople = () => {
 
     const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => GetProjectMembersService().updatePerson(projectId, body)
 
-    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, userId)
+    const deletePersonMutationFn = async ({ projectId, azureAdUserId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, azureAdUserId)
 
     const addPersonMutation = useMutation({
         mutationFn: addPersonMutationFn,
@@ -100,30 +100,30 @@ export const useEditPeople = () => {
     const addPerson = (
         projectId: string,
         fusionProjectId: string,
-        userId: string,
+        azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        addPersonMutation.mutate({ projectId, fusionProjectId, body: { userId, role } })
+        addPersonMutation.mutate({ projectId, fusionProjectId, body: { azureAdUserId, role } })
     }
 
     const updatePerson = (
         projectId: string,
         fusionProjectId: string,
-        userId: string,
+        azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        updatePersonMutation.mutate({ projectId, fusionProjectId, body: { userId, role } })
+        updatePersonMutation.mutate({ projectId, fusionProjectId, body: {azureAdUserId, role } })
     }
 
     const deletePerson = (
         projectId: string,
         fusionProjectId: string,
-        userId: string,
+        azureAdUserId: string,
     ) => {
         setIsSaving(true)
-        deletePersonMutation.mutate({ projectId, fusionProjectId, userId })
+        deletePersonMutation.mutate({ projectId, fusionProjectId, azureAdUserId })
     }
 
     return {

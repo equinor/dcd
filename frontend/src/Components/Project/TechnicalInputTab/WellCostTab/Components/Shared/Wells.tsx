@@ -4,14 +4,28 @@ import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { useStyles } from "@equinor/fusion-react-ag-grid-styles"
 
+import styled from "styled-components"
 import WellsTable from "@/Components/Tables/ProjectTables/WellsTable"
 import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 import { useAppStore } from "@/Store/AppStore"
 import { TableWell } from "@/Models/Wells"
-import { SectionHeader } from "./SharedWellStyles"
 import { WellCategory } from "@/Models/enums"
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+`
+
+const Header = styled(Grid)`
+    margin-bottom: 44px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`
 
 interface WellsProps {
     title: string
@@ -90,16 +104,20 @@ const Wells: React.FC<WellsProps> = ({
 
     return (
         <>
-            <SectionHeader>
-                <Typography variant="h2">{title}</Typography>
-                {canEdit() && (
+            <Header>
+                <Typography variant="h3">{title}</Typography>
+                <Typography variant="body_long">
+                    This input is used to calculate each case&apos;s well costs based on their drilling schedules.
+                </Typography>
+            </Header>
+            {canEdit() && (
+                <ButtonWrapper>
                     <Button onClick={() => createWell(defaultWellCategory)} variant="outlined">
                         <Icon data={add} size={24} />
                         {addButtonText}
                     </Button>
-                )}
-            </SectionHeader>
-
+                </ButtonWrapper>
+            )}
             <Grid container spacing={1}>
                 <Grid size={12} className={styles.root}>
                     <WellsTable

@@ -5,24 +5,25 @@
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class CasingOnFeedStudies : Migration
+    public partial class RemoveCaseReferenceCase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "CapexFactorFEEDStudies",
-                table: "Cases",
-                newName: "CapexFactorFeedStudies");
+            migrationBuilder.DropColumn(
+                name: "ReferenceCase",
+                table: "Cases");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "CapexFactorFeedStudies",
+            migrationBuilder.AddColumn<bool>(
+                name: "ReferenceCase",
                 table: "Cases",
-                newName: "CapexFactorFEEDStudies");
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
         }
     }
 }

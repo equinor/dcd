@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250307075424_cashflowGraph")]
-    partial class cashflowGraph
+    [Migration("20250310105033_RemoveCaseReferenceCase")]
+    partial class RemoveCaseReferenceCase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,10 +144,10 @@ namespace api.Migrations
                     b.Property<double?>("BreakEvenOverride")
                         .HasColumnType("float");
 
-                    b.Property<double>("CapexFactorFEEDStudies")
+                    b.Property<double>("CapexFactorFeasibilityStudies")
                         .HasColumnType("float");
 
-                    b.Property<double>("CapexFactorFeasibilityStudies")
+                    b.Property<double>("CapexFactorFeedStudies")
                         .HasColumnType("float");
 
                     b.Property<string>("CreatedBy")
@@ -199,15 +199,15 @@ namespace api.Migrations
                     b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("NPV")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("NPVOverride")
-                        .HasColumnType("float");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Npv")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("NpvOverride")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("OnshorePowerSupplyId")
                         .HasColumnType("uniqueidentifier");
@@ -223,9 +223,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("ReferenceCase")
-                        .HasColumnType("bit");
 
                     b.Property<string>("SharepointFileId")
                         .HasColumnType("nvarchar(max)");
@@ -375,7 +372,7 @@ namespace api.Migrations
                     b.Property<int>("GasSolution")
                         .HasColumnType("int");
 
-                    b.Property<double>("NGLYield")
+                    b.Property<double>("NglYield")
                         .HasColumnType("float");
 
                     b.Property<int>("ProducerCount")
@@ -730,23 +727,20 @@ namespace api.Migrations
                     b.Property<double>("AverageDevelopmentDrillingDays")
                         .HasColumnType("float");
 
-                    b.Property<double>("CO2EmissionFromFuelGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2EmissionsFromFlaredGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2RemovedFromGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2Vented")
-                        .HasColumnType("float");
-
                     b.Property<int>("Classification")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CommonLibraryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<double>("Co2EmissionFromFuelGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2EmissionsFromFlaredGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2RemovedFromGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2Vented")
+                        .HasColumnType("float");
 
                     b.Property<string>("CommonLibraryName")
                         .IsRequired()
@@ -775,7 +769,7 @@ namespace api.Migrations
                     b.Property<double>("DiscountRate")
                         .HasColumnType("float");
 
-                    b.Property<double>("ExchangeRateUSDToNOK")
+                    b.Property<double>("ExchangeRateUsdToNok")
                         .HasColumnType("float");
 
                     b.Property<double>("FlaredGasPerProducedVolume")
@@ -784,7 +778,7 @@ namespace api.Migrations
                     b.Property<Guid>("FusionProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("GasPriceNOK")
+                    b.Property<double>("GasPriceNok")
                         .HasColumnType("float");
 
                     b.Property<int>("InternalProjectPhase")
@@ -803,7 +797,7 @@ namespace api.Migrations
                     b.Property<int>("NpvYear")
                         .HasColumnType("int");
 
-                    b.Property<double>("OilPriceUSD")
+                    b.Property<double>("OilPriceUsd")
                         .HasColumnType("float");
 
                     b.Property<Guid?>("OriginalProjectId")
@@ -818,7 +812,7 @@ namespace api.Migrations
                     b.Property<int>("ProjectPhase")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ReferenceCaseId")
+                    b.Property<Guid?>("ReferenceCaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SharepointSiteUrl")
@@ -880,6 +874,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AzureAdUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -901,14 +898,11 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("UserId", "ProjectId")
+                    b.HasIndex("AzureAdUserId", "ProjectId")
                         .IsUnique();
 
                     b.ToTable("ProjectMembers");
@@ -1137,26 +1131,26 @@ namespace api.Migrations
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
 
-                    b.Property<double>("CO2OnMaxGasProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2OnMaxOilProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2OnMaxWaterInjectionProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2ShareGasProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2ShareOilProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2ShareWaterInjectionProfile")
-                        .HasColumnType("float");
-
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Co2OnMaxGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2OnMaxOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2OnMaxWaterInjectionProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2ShareGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2ShareOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2ShareWaterInjectionProfile")
+                        .HasColumnType("float");
 
                     b.Property<int>("CostYear")
                         .HasColumnType("int");

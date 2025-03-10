@@ -9,9 +9,7 @@ import { developmentWellOptions, explorationWellOptions, isExplorationWell } fro
 
 const WellCostsTab = () => (
     <div>
-        <Typography variant="body_long">
-            This input is used to calculate each case&apos;s well costs based on their drilling schedules.
-        </Typography>
+
         <Section>
             <Wells
                 title="Exploration Well Costs"

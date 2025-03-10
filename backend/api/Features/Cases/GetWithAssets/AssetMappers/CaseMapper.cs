@@ -14,7 +14,6 @@ public static class CaseMapper
             Name = caseItem.Name,
             Description = caseItem.Description,
             Archived = caseItem.Archived,
-            ReferenceCase = caseItem.ReferenceCase,
             ProductionStrategyOverview = caseItem.ProductionStrategyOverview,
             ArtificialLift = caseItem.ArtificialLift,
             ProducerCount = caseItem.ProducerCount,

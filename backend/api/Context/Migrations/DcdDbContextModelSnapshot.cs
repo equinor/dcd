@@ -221,9 +221,6 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("ReferenceCase")
-                        .HasColumnType("bit");
-
                     b.Property<string>("SharepointFileId")
                         .HasColumnType("nvarchar(max)");
 
@@ -742,9 +739,6 @@ namespace api.Migrations
                     b.Property<double>("Co2Vented")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("CommonLibraryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("CommonLibraryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -815,7 +809,7 @@ namespace api.Migrations
                     b.Property<int>("ProjectPhase")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ReferenceCaseId")
+                    b.Property<Guid?>("ReferenceCaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SharepointSiteUrl")
@@ -877,6 +871,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AzureAdUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -898,14 +895,11 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("UserId", "ProjectId")
+                    b.HasIndex("AzureAdUserId", "ProjectId")
                         .IsUnique();
 
                     b.ToTable("ProjectMembers");

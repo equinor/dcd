@@ -44,9 +44,8 @@ public static class ProjectDuplicator
             },
 
             Name = existingProject.Name,
-            CommonLibraryId = existingProject.CommonLibraryId,
             FusionProjectId = existingProject.FusionProjectId,
-            ReferenceCaseId = existingProject.ReferenceCaseId,
+            ReferenceCaseId = existingProject.ReferenceCaseId == null ? null : caseIdMapping[existingProject.ReferenceCaseId.Value],
             CommonLibraryName = existingProject.CommonLibraryName,
             Description = existingProject.Description,
             Country = existingProject.Country,
@@ -125,7 +124,6 @@ public static class ProjectDuplicator
             ProjectId = projectId,
             Name = existingCaseItem.Name,
             Description = existingCaseItem.Description,
-            ReferenceCase = existingCaseItem.ReferenceCase,
             Archived = existingCaseItem.Archived,
             SharepointFileId = existingCaseItem.SharepointFileId,
             SharepointFileName = existingCaseItem.SharepointFileName,
