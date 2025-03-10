@@ -13,7 +13,7 @@ public class UpdateProjectMemberService(DcdDbContext context)
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var existingProjectMember = await context.ProjectMembers
-            .SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == dto.UserId);
+            .SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.AzureAdUserId == dto.AzureAdUserId);
 
         if (existingProjectMember == null)
         {

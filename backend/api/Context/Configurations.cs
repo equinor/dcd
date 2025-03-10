@@ -24,7 +24,7 @@ public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember
 {
     public void Configure(EntityTypeBuilder<ProjectMember> builder)
     {
-        builder.HasIndex(ew => new { ew.UserId, ew.ProjectId }).IsUnique();
+        builder.HasIndex(ew => new { ew.AzureAdUserId, ew.ProjectId }).IsUnique();
     }
 }
 

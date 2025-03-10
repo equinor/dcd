@@ -40,9 +40,9 @@ const AccessManagementTab = () => {
         [projectData],
     )
 
-    const handleRemovePerson = (userId: string) => {
+    const handleRemovePerson = (azureAdUserId: string) => {
         if (!projectId) { return }
-        deletePerson(projectId, userId)
+        deletePerson(projectId, azureAdUserId)
     }
 
     const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
@@ -51,7 +51,7 @@ const AccessManagementTab = () => {
         if (
             !personToAdd
             || !projectId
-            || projectData?.projectMembers.some((p) => p.userId === personToAdd)
+            || projectData?.projectMembers.some((p) => p.azureAdUserId === personToAdd)
         ) {
             return
         }
@@ -59,9 +59,9 @@ const AccessManagementTab = () => {
         addPerson(projectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = (personId: string, role: ProjectMemberRole) => {
-        if (!personId || !projectId) { return }
-        updatePerson(projectId, personId, role)
+    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole) => {
+        if (!azureAdUserId || !projectId) { return }
+        updatePerson(projectId, azureAdUserId, role)
     }
 
     // This is used to synchronize PMT members to projects

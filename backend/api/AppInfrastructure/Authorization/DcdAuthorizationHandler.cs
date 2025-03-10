@@ -57,10 +57,10 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
 
     private async Task<HashSet<ActionType>> GetUserAccess(ClaimsPrincipal claimsPrincipal)
     {
-        var userId = claimsPrincipal.GetAzureUniqueId();
+        var azureAdUserId = claimsPrincipal.GetAzureUniqueId();
         var userRoles = claimsPrincipal.DcdParseApplicationRoles();
 
-        if (userId == null)
+        if (azureAdUserId == null)
         {
             return [];
         }
@@ -90,7 +90,7 @@ public class DcdAuthorizationHandler(IDbContextFactory<DcdDbContext> contextFact
 
         var projectMemberAccess = await dbContext.ProjectMembers
             .Where(x => x.ProjectId == data.ProjectIdWithProjectMembersConnected)
-            .Where(x => x.UserId == userId)
+            .Where(x => x.AzureAdUserId == azureAdUserId)
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 

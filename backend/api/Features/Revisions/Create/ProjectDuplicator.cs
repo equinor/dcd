@@ -44,7 +44,6 @@ public static class ProjectDuplicator
             },
 
             Name = existingProject.Name,
-            CommonLibraryId = existingProject.CommonLibraryId,
             FusionProjectId = existingProject.FusionProjectId,
             ReferenceCaseId = existingProject.ReferenceCaseId,
             CommonLibraryName = existingProject.CommonLibraryName,

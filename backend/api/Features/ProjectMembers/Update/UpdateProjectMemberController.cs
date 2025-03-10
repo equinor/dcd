@@ -13,6 +13,6 @@ public class UpdateProjectMemberController(UpdateProjectMemberService updateProj
     {
         await updateProjectMemberService.UpdateProjectMember(projectId, updateProjectMemberDto);
 
-        return await getProjectMemberService.GetProjectMember(projectId, updateProjectMemberDto.UserId);
+        return await getProjectMemberService.GetProjectMember(projectId, updateProjectMemberDto.AzureAdUserId);
     }
 }

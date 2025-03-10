@@ -12,23 +12,23 @@ public class CreateProjectMemberService(DcdDbContext context)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == dto.UserId);
+        var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.AzureAdUserId == dto.AzureAdUserId);
 
         if (existingProjectMember != null)
         {
-            return dto.UserId;
+            return dto.AzureAdUserId;
         }
 
         context.ProjectMembers.Add(new ProjectMember
         {
             ProjectId = projectPk,
-            UserId = dto.UserId,
+            AzureAdUserId = dto.AzureAdUserId,
             Role = dto.Role,
             FromOrgChart = false
         });
 
         await context.SaveChangesAsync();
 
-        return dto.UserId;
+        return dto.AzureAdUserId;
     }
 }

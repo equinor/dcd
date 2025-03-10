@@ -7,7 +7,7 @@ import { ProjectMemberRole } from "@/Models/enums"
 type AddPersonVariables = {
     projectId: string;
     body: {
-        userId: string;
+        azureAdUserId: string;
         role: ProjectMemberRole;
     };
 };
@@ -15,14 +15,14 @@ type AddPersonVariables = {
 type UpdatePersonVariables = {
     projectId: string;
     body: {
-        userId: string;
+        azureAdUserId: string;
         role: ProjectMemberRole;
     };
 };
 
 type DeletePersonVariables = {
     projectId: string;
-    userId: string;
+    azureAdUserId: string;
 };
 
 export const useEditPeople = () => {
@@ -47,7 +47,7 @@ export const useEditPeople = () => {
 
     const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => GetProjectMembersService().updatePerson(projectId, body)
 
-    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, userId)
+    const deletePersonMutationFn = async ({ projectId, azureAdUserId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, azureAdUserId)
 
     const addPersonMutation = useMutation({
         mutationFn: addPersonMutationFn,
@@ -96,28 +96,28 @@ export const useEditPeople = () => {
 
     const addPerson = (
         projectId: string,
-        userId: string,
+        azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        addPersonMutation.mutate({ projectId, body: { userId, role } })
+        addPersonMutation.mutate({ projectId, body: { azureAdUserId, role } })
     }
 
     const updatePerson = (
         projectId: string,
-        userId: string,
+        azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        updatePersonMutation.mutate({ projectId, body: { userId, role } })
+        updatePersonMutation.mutate({ projectId, body: { azureAdUserId, role } })
     }
 
     const deletePerson = (
         projectId: string,
-        userId: string,
+        azureAdUserId: string,
     ) => {
         setIsSaving(true)
-        deletePersonMutation.mutate({ projectId, userId })
+        deletePersonMutation.mutate({ projectId, azureAdUserId })
     }
 
     return {

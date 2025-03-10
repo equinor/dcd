@@ -7,7 +7,7 @@ namespace api.Features.Projects.Update;
 public class UpdateProjectDto
 {
     [Required] public required string Name { get; set; }
-    [Required] public required Guid ReferenceCaseId { get; set; }
+    public required Guid? ReferenceCaseId { get; set; }
     [Required] public required string Description { get; set; }
     [Required] public required string Country { get; set; }
     [Required] public required Currency Currency { get; set; }
