@@ -29,7 +29,7 @@ export const peopleQueryFn = async (projectId: string | undefined) => {
 }
 
 export const revisionQueryFn = async (projectId: string | undefined, revisionId: string | undefined) => {
-    if (!projectId || !revisionId) {
+    if (!revisionId || !projectId) {
         console.error("projectId or revisionId is undefined")
         return null
     }

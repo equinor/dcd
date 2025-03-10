@@ -44,7 +44,7 @@ const RevisionChip = () => {
     const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId,
+        enabled: !!revisionId && !!projectId,
     })
 
     const revisionName = revisionApiData?.revisionDetails.revisionName
