@@ -31,7 +31,6 @@ const useCanUserEdit = () => {
      * @returns {boolean} Returns a boolean indicating if the user can edit the project data.
      */
     const canEdit = (): boolean => editMode && !isEditDisabled
-    console.log("canEdit: ", canEdit)
 
     return { isEditDisabled, getEditDisabledText, canEdit }
 }
