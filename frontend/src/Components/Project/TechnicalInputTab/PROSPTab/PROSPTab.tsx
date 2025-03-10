@@ -117,14 +117,9 @@ const PROSPTab = () => {
     }, [projectId, currentSharePointSiteUrl])
 
     const refreshSharePointUrl = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!projectId) { return }
-
         e.preventDefault()
 
-        if (!sharepointUrl) {
-            return
-        }
-
+        if (!projectId || !sharepointUrl) { return }
         setIsSaving(true)
 
         try {

@@ -38,11 +38,6 @@ export const useFeedbackStatus = (resetDelay = 3000): UseFeedbackStatusResult =>
         setTimeout(resetStatus, resetDelay)
     }, [resetDelay, resetStatus])
 
-    /**
-     * Wraps a promise with loading state and feedback status management
-     * @param promise The promise to wrap
-     * @returns The result of the promise
-     */
     const withFeedback = useCallback(async <T, >(promise: Promise<T>): Promise<T> => {
         setIsLoading(true)
         try {
