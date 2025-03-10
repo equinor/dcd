@@ -190,8 +190,13 @@ const IndexView: React.FC = () => (
                 <StyledAccordion key={version}>
                     <StyledAccordionSummary expandIcon={<Icon data={chevron_down} />}>
                         <Typography variant="h4">
-                             Version {version}
-                            <span style={{ color: "#999" }}> - {formatFullDate(whatsNewUpdates[version].date)}
+                            Version
+                            {" "}
+                            {version}
+                            <span style={{ color: "#999" }}>
+                                {" "}
+                                -
+                                {formatFullDate(whatsNewUpdates[version].date)}
                             </span>
                         </Typography>
                     </StyledAccordionSummary>
