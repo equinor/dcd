@@ -1,5 +1,4 @@
 import { ProfileTypes } from "@/Models/enums"
-import { UpdateRigCostDto } from "./ICampaigns"
 
 export type ResourceName =
     "case" |
@@ -31,8 +30,7 @@ export type ResourceObject =
     Components.Schemas.CampaignDto |
     Components.Schemas.UpdateRigMobDemobCostDto |
     Components.Schemas.UpdateRigUpgradingCostDto |
-    ProfileObject |
-    UpdateRigCostDto
+    ProfileObject
 
 export type ProfileObject =
     Components.Schemas.TimeSeriesOverrideDto |
@@ -64,11 +62,6 @@ export interface EditInstance {
     caseId?: string;
     resourceObject: ResourceObject;
     campaignId?: string;
-}
-
-export interface EditEntry {
-    caseId: string;
-    currentEditId: string;
 }
 
 export interface TableCase {

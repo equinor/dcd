@@ -1,10 +1,6 @@
 import { useMemo, useRef } from "react"
 import Grid from "@mui/material/Grid2"
 
-import {
-    CampaignProps,
-    CampaignWell,
-} from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
@@ -17,6 +13,12 @@ import { filterWells } from "@/Utils/common"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
+
+export interface CampaignProps {
+    campaign: Components.Schemas.CampaignDto
+    title: string
+    tableYears: [number, number]
+}
 
 const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { apiData } = useCaseApiData()
@@ -95,7 +97,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             })
         } else {
             // In view mode, only show campaign wells
-            campaign.campaignWells?.forEach((well: CampaignWell) => {
+            campaign.campaignWells?.forEach((well: Components.Schemas.CampaignWellDto) => {
                 const wellRow: ItimeSeriesTableDataWithWell = {
                     profileName: well.wellName,
                     unit: "Well",

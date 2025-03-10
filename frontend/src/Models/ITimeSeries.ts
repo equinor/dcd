@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
 import { ProfileTypes } from "./enums"
-import { CampaignResourceNames } from "./ICampaigns"
 
 export interface ITimeSeries {
     startYear: number
@@ -33,6 +32,11 @@ export interface ITimeSeriesData {
 export interface ITimeSeriesDataWithGroup extends ITimeSeriesData {
     group?: string
 }
+
+export type CampaignResourceNames =
+    "rigUpgrading" |
+    "rigMobDemob" |
+    "campaignWells"
 
 export interface ITimeSeriesTableData {
     profileName: string
