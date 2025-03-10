@@ -16,14 +16,14 @@ public static class UpdateCaseDtoValidator
 
         var dgDates = new List<DateTime?>
             {
-                dto.DG0Date,
-                dto.DG1Date,
-                dto.DG2Date,
-                dto.DG3Date,
-                dto.DG4Date,
-                dto.DGADate,
-                dto.DGBDate,
-                dto.DGCDate
+                dto.Dg0Date,
+                dto.Dg1Date,
+                dto.Dg2Date,
+                dto.Dg3Date,
+                dto.Dg4Date,
+                dto.DgaDate,
+                dto.DgbDate,
+                dto.DgcDate
             }
             .Where(x => x != null)
             .Where(x => x != DateTime.MinValue)

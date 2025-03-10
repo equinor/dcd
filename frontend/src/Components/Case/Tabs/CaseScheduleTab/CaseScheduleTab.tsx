@@ -33,12 +33,12 @@ const CASE_MILESTONE_DATES: CaseMilestoneDate[] = [
     { label: "APbo", key: "apboDate" },
     { label: "BOR", key: "borDate" },
     { label: "VPbo", key: "vpboDate" },
-    { label: "DG0", key: "dG0Date", visible: true },
-    { label: "DG1", key: "dG1Date", visible: true },
-    { label: "DG2", key: "dG2Date", visible: true },
-    { label: "DG3", key: "dG3Date", visible: true },
+    { label: "DG0", key: "dg0Date", visible: true },
+    { label: "DG1", key: "dg1Date", visible: true },
+    { label: "DG2", key: "dg2Date", visible: true },
+    { label: "DG3", key: "dg3Date", visible: true },
     {
-        label: "DG4", key: "dG4Date", visible: true, required: true,
+        label: "DG4", key: "dg4Date", visible: true, required: true,
     },
 ]
 

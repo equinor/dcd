@@ -148,7 +148,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={explorationTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Exploration well cost"
             gridRef={explorationWellsGridRef}

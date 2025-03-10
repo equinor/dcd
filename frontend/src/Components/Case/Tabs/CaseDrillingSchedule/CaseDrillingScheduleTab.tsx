@@ -74,7 +74,7 @@ const CaseDrillingScheduleTab = () => {
             const developmentDrillingSchedule = apiData.developmentCampaigns.flatMap((ew) => ew.campaignWells) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...developmentDrillingSchedule],
-                getYearFromDateString(apiData.case.dG4Date),
+                getYearFromDateString(apiData.case.dg4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,

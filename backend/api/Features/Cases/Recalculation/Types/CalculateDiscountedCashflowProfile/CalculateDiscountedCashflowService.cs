@@ -49,7 +49,7 @@ public static class CalculatedDiscountedCashflowService
             totalCost.Values,
             discountRate,
             totalCost.StartYear,
-            caseItem.Project.NpvYear - caseItem.DG4Date.Year
+            caseItem.Project.NpvYear - caseItem.Dg4Date.Year
         );
     }
 
@@ -69,17 +69,24 @@ public static class CalculatedDiscountedCashflowService
         var oilProductionRevenue = oilProduction.Values.Select(v => v / 1_000_000 * caseItem.Project.OilPriceUsd * VolumeConstants.BarrelsPerCubicMeter * convertCurrency).ToArray();
         var nglProductionRevenue = nglProduction.Values.Select(v => v / 1_000_000 * caseItem.Project.NglPriceUsd * convertCurrency).ToArray();
 
-        var liquidsRevenue = TimeSeriesMerger.MergeTimeSeries(new List<TimeSeries>
-        {
-            new TimeSeries { StartYear = oilProduction.StartYear, Values = oilProductionRevenue },
-            new TimeSeries { StartYear = nglProduction.StartYear, Values = nglProductionRevenue }
-        });
+        var liquidsRevenue = TimeSeriesMerger.MergeTimeSeries(
+            new TimeSeries
+            {
+                StartYear = oilProduction.StartYear,
+                Values = oilProductionRevenue
+            },
+            new TimeSeries
+            {
+                StartYear = nglProduction.StartYear,
+                Values = nglProductionRevenue
+            }
+        );
 
         return EconomicsHelper.CalculateDiscountedVolume(
             liquidsRevenue.Values,
             discountRate,
             liquidsRevenue.StartYear,
-            caseItem.Project.NpvYear - caseItem.DG4Date.Year
+            caseItem.Project.NpvYear - caseItem.Dg4Date.Year
         );
     }
 
@@ -102,7 +109,7 @@ public static class CalculatedDiscountedCashflowService
             gasRevenue,
             discountRate,
             gasProduction.StartYear,
-            caseItem.Project.NpvYear - caseItem.DG4Date.Year
+            caseItem.Project.NpvYear - caseItem.Dg4Date.Year
         );
     }
 }

@@ -150,7 +150,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         }
     }, [apiData, tableYears, revisionAndProjectData])
 
-    const dg4Year = getYearFromDateString(apiData.case.dG4Date)
+    const dg4Year = getYearFromDateString(apiData.case.dg4Date)
     const incomeProfile = apiData.calculatedTotalIncomeCostProfileUsd
     const costProfile = apiData.calculatedTotalCostCostProfileUsd
     const discountedCashflowData = apiData.calculatedDiscountedCashflowService

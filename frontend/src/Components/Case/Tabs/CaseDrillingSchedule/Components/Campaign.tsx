@@ -157,7 +157,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                 <CampaignTableContainer>
                     <CaseTabTable
                         timeSeriesData={rowData}
-                        dg4Year={getYearFromDateString(apiData.case.dG4Date ?? "")}
+                        dg4Year={getYearFromDateString(apiData.case.dg4Date ?? "")}
                         tableYears={tableYears}
                         tableName={`${title} campaign`}
                         totalRowName="Total"

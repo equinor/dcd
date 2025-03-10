@@ -37,11 +37,11 @@ public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blob
         {
             Id = imageId,
             Url = blobClient.Uri.ToString().Split('?')[0],
-            CaseId = caseId,
+            CaseId = caseItem.Id,
             Description = null
         };
 
-        caseItem.Images.Add(imageEntity);
+        context.CaseImages.Add(imageEntity);
 
         await context.UpdateCaseUpdatedUtc(imageEntity.CaseId);
         await context.SaveChangesAsync();

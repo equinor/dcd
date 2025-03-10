@@ -103,7 +103,7 @@ const CaseCostTab = () => {
                     apiData.appraisalWellCostProfile,
                     apiData.sidetrackCostProfile,
                 ],
-                getYearFromDateString(caseData.dG4Date),
+                getYearFromDateString(caseData.dg4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,

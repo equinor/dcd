@@ -148,7 +148,7 @@ const CaseSummaryTab = () => {
                     apiData.additionalOpexCostProfile,
                     apiData.onshorePowerSupplyCostProfile,
                 ],
-                getYearFromDateString(caseData.dG4Date),
+                getYearFromDateString(caseData.dg4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -387,7 +387,7 @@ const CaseSummaryTab = () => {
             <Grid size={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
+                    dg4Year={getYearFromDateString(caseData.dg4Date)}
                     tableYears={tableYears}
                     includeFooter={false}
                 />

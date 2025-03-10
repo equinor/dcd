@@ -212,7 +212,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={CaseProductionProfilesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Production profiles"
             includeFooter={false}
