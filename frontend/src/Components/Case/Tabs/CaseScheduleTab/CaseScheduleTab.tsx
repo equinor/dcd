@@ -19,14 +19,14 @@ const TabContainer = styled(Grid)`
     max-width: 800px;
 `
 
-interface DecisionGate {
+interface CaseMilestoneDate {
     label: string
     key: string
     visible?: boolean
     required?: boolean
 }
 
-const DECISION_GATES: DecisionGate[] = [
+const CASE_MILESTONE_DATES: CaseMilestoneDate[] = [
     { label: "DGA", key: "dgaDate" },
     { label: "DGB", key: "dgbDate" },
     { label: "DGC", key: "dgcDate" },
@@ -38,7 +38,7 @@ const DECISION_GATES: DecisionGate[] = [
     { label: "DG2", key: "dG2Date", visible: true },
     { label: "DG3", key: "dG3Date", visible: true },
     {
-        label: "DG4 *", key: "dG4Date", visible: true, required: true,
+        label: "DG4", key: "dG4Date", visible: true, required: true,
     },
 ]
 
@@ -50,9 +50,9 @@ const CaseScheduleTab = () => {
     const { setSnackBarMessage } = useAppStore()
 
     const createDateChangeEdit = useCallback((dateKey: string, newDate: Date | undefined, currentCaseData: any) => {
-        const gate = DECISION_GATES.find((g) => g.key === dateKey)
+        const milestone = CASE_MILESTONE_DATES.find((m) => m.key === dateKey)
 
-        if (!gate) { return null }
+        if (!milestone) { return null }
 
         const resourceObject = {
             ...currentCaseData,
@@ -72,9 +72,9 @@ const CaseScheduleTab = () => {
     const handleDateChange = useCallback((dateKey: string, dateValue: string) => {
         if (!apiData || !apiData.case) { return }
 
-        const gate = DECISION_GATES.find((g) => g.key === dateKey)
-        if (gate?.required && dateValue === "") {
-            setSnackBarMessage(`${gate.label} is required and cannot be empty.`)
+        const milestone = CASE_MILESTONE_DATES.find((m) => m.key === dateKey)
+        if (milestone?.required && dateValue === "") {
+            setSnackBarMessage(`${milestone.label} is required and cannot be empty.`)
             return
         }
 
@@ -113,14 +113,15 @@ const CaseScheduleTab = () => {
         return dateString ? true : undefined
     }, [])
 
-    const visibleDecisionGates = useMemo(() => {
+    // Memoize the filtered milestone dates to prevent recalculation on every render
+    const visibleMilestoneDates = useMemo(() => {
         if (!apiData || !apiData.case) { return [] }
 
-        return DECISION_GATES
-            .filter((gate) => Object.keys(apiData.case).includes(gate.key))
-            .filter((gate) => gate.visible
+        return CASE_MILESTONE_DATES
+            .filter((m) => Object.keys(apiData.case).includes(m.key))
+            .filter((m) => m.visible
                 || canEdit()
-                || toScheduleValue(apiData.case[gate.key as keyof typeof apiData.case]))
+                || toScheduleValue(apiData.case[m.key as keyof typeof apiData.case]))
     }, [apiData, canEdit, toScheduleValue])
 
     if (!apiData || !projectId) {
@@ -129,14 +130,14 @@ const CaseScheduleTab = () => {
 
     return (
         <TabContainer container spacing={2}>
-            {visibleDecisionGates.map((caseDate) => (
-                <Grid size={{ xs: 12, md: 6, lg: 6 }} key={caseDate.key}>
+            {visibleMilestoneDates.map((milestone) => (
+                <Grid size={{ xs: 12, md: 6, lg: 6 }} key={milestone.key}>
                     <SwitchableDateInput
-                        required={caseDate.required}
-                        label={caseDate.label}
-                        value={getDateValue(caseDate.key)}
-                        resourcePropertyKey={caseDate.key as ResourcePropertyKey}
-                        onChange={getChangeHandler(caseDate.key as ResourcePropertyKey)}
+                        required={milestone.required}
+                        label={milestone.label}
+                        value={getDateValue(milestone.key)}
+                        resourcePropertyKey={milestone.key as ResourcePropertyKey}
+                        onChange={getChangeHandler(milestone.key as ResourcePropertyKey)}
                     />
                 </Grid>
             ))}
