@@ -35,6 +35,7 @@ public static class AccessCalculator
 
     private static bool CanView(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, ProjectMemberRole? projectMemberRole)
     {
+        // TODO: Check for projectMemberRole before application user roles
         if (userRoles.Count == 0)
         {
             return false;
@@ -65,14 +66,14 @@ public static class AccessCalculator
             return true;
         }
 
-        if (!userRoles.Contains(ApplicationRole.User))
-        {
-            return false;
-        }
-
         if (projectMemberRole == ProjectMemberRole.Editor)
         {
             return true;
+        }
+
+        if (!userRoles.Contains(ApplicationRole.User))
+        {
+            return false;
         }
 
         if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
@@ -95,14 +96,14 @@ public static class AccessCalculator
             return true;
         }
 
-        if (!userRoles.Contains(ApplicationRole.User))
-        {
-            return false;
-        }
-
         if (projectMemberRole == ProjectMemberRole.Editor)
         {
             return true;
+        }
+
+        if (!userRoles.Contains(ApplicationRole.User))
+        {
+            return false;
         }
 
         if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
@@ -125,14 +126,14 @@ public static class AccessCalculator
             return true;
         }
 
-        if (!userRoles.Contains(ApplicationRole.User))
-        {
-            return false;
-        }
-
         if (projectMemberRole == ProjectMemberRole.Editor)
         {
             return true;
+        }
+
+        if (!userRoles.Contains(ApplicationRole.User))
+        {
+            return false;
         }
 
         if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
