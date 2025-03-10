@@ -10,7 +10,7 @@ public class GetRevisionController(GetProjectDataService getProjectDataService) 
 {
     [HttpGet("projects/{projectId:guid}/revisions/{revisionId:guid}")]
     [AuthorizeActionType(ActionType.Read)]
-    public async Task<RevisionDataDto> Get(Guid projectId,Guid revisionId)
+    public async Task<RevisionDataDto> Get(Guid projectId, Guid revisionId)
     {
         return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }
