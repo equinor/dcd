@@ -77,7 +77,7 @@ public static class StudyCostProfileService
             return;
         }
 
-        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
+        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeedStudies;
 
         if (caseItem.DG2Date == null || caseItem.DG3Date == null)
         {

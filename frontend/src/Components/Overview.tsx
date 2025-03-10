@@ -29,7 +29,7 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 const ControlsWrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 3;
+    z-index: 4;
 `
 
 const ContentWrapper = styled.div`

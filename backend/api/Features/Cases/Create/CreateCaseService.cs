@@ -36,7 +36,7 @@ public class CreateCaseService(DcdDbContext context)
             DG1Date = dgDates.dg1,
             DG0Date = dgDates.dg0,
             CapexFactorFeasibilityStudies = 0.015,
-            CapexFactorFEEDStudies = 0.015,
+            CapexFactorFeedStudies = 0.015,
 
             DrainageStrategyId = drainageStrategyId,
             DrainageStrategy = CreateDrainageStrategy(drainageStrategyId),

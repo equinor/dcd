@@ -37,7 +37,7 @@ declare namespace Components {
             breakEvenOverride: number | null; // double
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
-            capexFactorFEEDStudies: number; // double
+            capexFactorFeedStudies: number; // double
             host: string | null;
             averageCo2Intensity: number; // double
             discountedCashflow: number; // double
@@ -72,16 +72,16 @@ declare namespace Components {
             cessationOnshoreFacilitiesCostProfile: TimeSeriesDto;
             totalFeasibilityAndConceptStudies: TimeSeriesDto;
             totalFeasibilityAndConceptStudiesOverride: TimeSeriesOverrideDto;
-            totalFEEDStudies: TimeSeriesDto;
-            totalFEEDStudiesOverride: TimeSeriesOverrideDto;
+            totalFeedStudies: TimeSeriesDto;
+            totalFeedStudiesOverride: TimeSeriesOverrideDto;
             totalOtherStudiesCostProfile: TimeSeriesDto;
             historicCostCostProfile: TimeSeriesDto;
             wellInterventionCostProfile: TimeSeriesDto;
             wellInterventionCostProfileOverride: TimeSeriesOverrideDto;
             offshoreFacilitiesOperationsCostProfile: TimeSeriesDto;
             offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesOverrideDto;
-            onshoreRelatedOPEXCostProfile: TimeSeriesDto;
-            additionalOPEXCostProfile: TimeSeriesDto;
+            onshoreRelatedOpexCostProfile: TimeSeriesDto;
+            additionalOpexCostProfile: TimeSeriesDto;
             calculatedTotalIncomeCostProfileUsd: TimeSeriesDto;
             calculatedTotalCostCostProfileUsd: TimeSeriesDto;
             calculatedDiscountedCashflowService: TimeSeriesDto;
@@ -469,7 +469,7 @@ declare namespace Components {
             waterInjectorCount: number; // int32
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
-            capexFactorFEEDStudies: number; // double
+            capexFactorFeedStudies: number; // double
             npv: number; // double
             npvOverride: number | null; // double
             breakEven: number; // double
