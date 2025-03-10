@@ -148,7 +148,7 @@ public static class ProjectDuplicator
             WaterInjectorCount = existingCaseItem.WaterInjectorCount,
             FacilitiesAvailability = existingCaseItem.FacilitiesAvailability,
             CapexFactorFeasibilityStudies = existingCaseItem.CapexFactorFeasibilityStudies,
-            CapexFactorFEEDStudies = existingCaseItem.CapexFactorFEEDStudies,
+            CapexFactorFeedStudies = existingCaseItem.CapexFactorFeedStudies,
             Npv = existingCaseItem.Npv,
             NpvOverride = existingCaseItem.NpvOverride,
             BreakEven = existingCaseItem.BreakEven,

@@ -28,7 +28,7 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.WaterInjectorCount = updateCaseDto.WaterInjectorCount;
         existingCase.FacilitiesAvailability = updateCaseDto.FacilitiesAvailability;
         existingCase.CapexFactorFeasibilityStudies = updateCaseDto.CapexFactorFeasibilityStudies;
-        existingCase.CapexFactorFEEDStudies = updateCaseDto.CapexFactorFEEDStudies;
+        existingCase.CapexFactorFeedStudies = updateCaseDto.CapexFactorFeedStudies;
         existingCase.Npv = updateCaseDto.Npv;
         existingCase.NpvOverride = updateCaseDto.NpvOverride;
         existingCase.BreakEven = updateCaseDto.BreakEven;

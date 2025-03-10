@@ -142,7 +142,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 BreakEvenOverride = x.BreakEvenOverride,
                 FacilitiesAvailability = x.FacilitiesAvailability,
                 CapexFactorFeasibilityStudies = x.CapexFactorFeasibilityStudies,
-                CapexFactorFEEDStudies = x.CapexFactorFEEDStudies,
+                CapexFactorFeedStudies = x.CapexFactorFeedStudies,
                 Host = x.Host,
                 AverageCo2Intensity = x.AverageCo2Intensity,
                 DiscountedCashflow = x.DiscountedCashflow,
