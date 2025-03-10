@@ -4,12 +4,12 @@ import { ITimeSeries } from "@/Models/ITimeSeries"
 export const GetTimeSeriesLastYear = (
     timeSeries:
         | {
-              id?: string;
-              startYear?: number;
-              name?: string;
-              values?: number[] | null;
-              sum?: number | undefined;
-          }
+            id?: string;
+            startYear?: number;
+            name?: string;
+            values?: number[] | null;
+            sum?: number | undefined;
+        }
         | undefined,
 ): number | undefined => {
     if (
@@ -26,15 +26,15 @@ export const GetTimeSeriesLastYear = (
 export const SetTableYearsFromProfiles = (
     profiles: (
         | {
-              id?: string;
-              startYear?: number;
-              name?: string;
-              values?: number[] | null;
-              sum?: number | undefined;
-          }
+            id?: string;
+            startYear?: number;
+            name?: string;
+            values?: number[] | null;
+            sum?: number | undefined;
+        }
         | undefined
     )[],
-    dG4Year: number,
+    dg4Year: number,
     setStartYear: Dispatch<SetStateAction<number>>,
     setEndYear: Dispatch<SetStateAction<number>>,
     setTableYears: Dispatch<SetStateAction<[number, number]>>,
@@ -44,7 +44,7 @@ export const SetTableYearsFromProfiles = (
     profiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
             const { startYear } = profile
-            const profileStartYear: number = startYear + dG4Year
+            const profileStartYear: number = startYear + dg4Year
             if (firstYear === undefined) {
                 firstYear = profileStartYear
             } else if (profileStartYear < firstYear) {
@@ -54,7 +54,7 @@ export const SetTableYearsFromProfiles = (
 
         const profileLastYear = GetTimeSeriesLastYear(profile)
         if (profileLastYear !== undefined) {
-            const adjustedProfileLastYear = profileLastYear + dG4Year
+            const adjustedProfileLastYear = profileLastYear + dg4Year
             if (lastYear === undefined) {
                 lastYear = adjustedProfileLastYear
             } else if (adjustedProfileLastYear > lastYear) {
@@ -92,7 +92,7 @@ export const SetTableYearsFromProfiles = (
 
 export const SetSummaryTableYearsFromProfiles = (
     profiles: (ITimeSeries | undefined)[],
-    dG4Year: number,
+    dg4Year: number,
     setTableYears: Dispatch<SetStateAction<[number, number]>>,
 ) => {
     let firstYear: number | undefined
@@ -101,7 +101,7 @@ export const SetSummaryTableYearsFromProfiles = (
     profiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
             const { startYear } = profile
-            const profileStartYear: number = startYear + dG4Year
+            const profileStartYear: number = startYear + dg4Year
             if (firstYear === undefined) {
                 firstYear = profileStartYear
             } else if (profileStartYear < firstYear) {
@@ -111,7 +111,7 @@ export const SetSummaryTableYearsFromProfiles = (
 
         const profileLastYear = GetTimeSeriesLastYear(profile)
         if (profileLastYear !== undefined) {
-            const adjustedProfileLastYear = profileLastYear + dG4Year
+            const adjustedProfileLastYear = profileLastYear + dg4Year
 
             if (lastYear === undefined) {
                 lastYear = adjustedProfileLastYear

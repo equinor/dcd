@@ -90,7 +90,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={opexTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="OPEX cost"
             gridRef={opexGridRef}

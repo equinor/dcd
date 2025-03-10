@@ -46,11 +46,11 @@ declare namespace Components {
             apboDate: string | null; // date-time
             borDate: string | null; // date-time
             vpboDate: string | null; // date-time
-            dG0Date: string | null; // date-time
-            dG1Date: string | null; // date-time
-            dG2Date: string | null; // date-time
-            dG3Date: string | null; // date-time
-            dG4Date: string; // date-time
+            dg0Date: string | null; // date-time
+            dg1Date: string | null; // date-time
+            dg2Date: string | null; // date-time
+            dg3Date: string | null; // date-time
+            dg4Date: string; // date-time
             createdUtc: string; // date-time
             updatedUtc: string; // date-time
             surfId: string; // uuid
@@ -217,7 +217,7 @@ declare namespace Components {
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
-            dG4Date: string; // date-time
+            dg4Date: string; // date-time
         }
         export interface CreateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
@@ -481,11 +481,11 @@ declare namespace Components {
             apboDate: string | null; // date-time
             borDate: string | null; // date-time
             vpboDate: string | null; // date-time
-            dG0Date: string | null; // date-time
-            dG1Date: string | null; // date-time
-            dG2Date: string | null; // date-time
-            dG3Date: string | null; // date-time
-            dG4Date: string; // date-time
+            dg0Date: string | null; // date-time
+            dg1Date: string | null; // date-time
+            dg2Date: string | null; // date-time
+            dg3Date: string | null; // date-time
+            dg4Date: string; // date-time
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;

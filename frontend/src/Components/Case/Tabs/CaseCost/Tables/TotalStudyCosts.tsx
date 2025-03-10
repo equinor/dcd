@@ -79,7 +79,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={studyTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Total study cost"
             gridRef={studyGridRef}

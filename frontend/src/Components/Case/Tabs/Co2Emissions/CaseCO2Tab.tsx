@@ -114,7 +114,7 @@ const CaseCO2Tab = () => {
                     if (!yearRangeSetFromProfiles) {
                         SetTableYearsFromProfiles(
                             [co2EmissionsData, await co2IntensityData, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
-                            getYearFromDateString(caseData.dG4Date),
+                            getYearFromDateString(caseData.dg4Date),
                             setStartYear,
                             setEndYear,
                             setTableYears,
@@ -178,7 +178,7 @@ const CaseCO2Tab = () => {
                         useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
                         tableYears[0],
-                        getYearFromDateString(caseData.dG4Date),
+                        getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
                 co2Intensity: formatValue(
@@ -186,7 +186,7 @@ const CaseCO2Tab = () => {
                         co2IntensityData,
                         i,
                         tableYears[0],
-                        getYearFromDateString(caseData.dG4Date),
+                        getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
             })
@@ -300,7 +300,7 @@ const CaseCO2Tab = () => {
             <Grid size={12}>
                 <CaseTabTable
                     timeSeriesData={timeSeriesData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
+                    dg4Year={getYearFromDateString(caseData.dg4Date)}
                     tableYears={tableYears}
                     tableName="CO2 emissions"
                     includeFooter={false}

@@ -72,7 +72,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={cessationTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Cessation cost"
             gridRef={cessationGridRef}
