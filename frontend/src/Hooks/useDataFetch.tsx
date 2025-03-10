@@ -23,7 +23,7 @@ export const useDataFetch = () => {
     const { data: apiRevisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId && isRevision,
+        enabled: !!revisionId && isRevision && !!projectId,
     })
 
     useEffect(() => {
