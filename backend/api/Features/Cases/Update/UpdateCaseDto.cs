@@ -8,7 +8,6 @@ public class UpdateCaseDto
 {
     [Required] public required string Name { get; set; }
     [Required] public required string Description { get; set; }
-    [Required] public required bool ReferenceCase { get; set; }
     [Required] public required bool Archived { get; set; }
     [Required] public required ArtificialLift ArtificialLift { get; set; }
     [Required] public required ProductionStrategyOverview ProductionStrategyOverview { get; set; }

@@ -6,6 +6,7 @@ import { ProjectMemberRole } from "@/Models/enums"
 
 type AddPersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: {
         azureAdUserId: string;
         role: ProjectMemberRole;
@@ -14,6 +15,7 @@ type AddPersonVariables = {
 
 type UpdatePersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: {
         azureAdUserId: string;
         role: ProjectMemberRole;
@@ -22,6 +24,7 @@ type UpdatePersonVariables = {
 
 type DeletePersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     azureAdUserId: string;
 };
 
@@ -29,12 +32,12 @@ export const useEditPeople = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsSaving } = useAppStore()
 
-    const syncPmtMembers = async (projectId: string, contextId: string) => {
+    const syncPmtMembers = async (projectId: string, fusionProjectId: string, contextId: string) => {
         try {
             const syncPmt = await GetOrgChartMembersService().getOrgChartPeople(projectId, contextId)
             if (syncPmt) {
                 queryClient.invalidateQueries(
-                    { queryKey: ["projectApiData", projectId] },
+                    { queryKey: ["projectApiData", fusionProjectId] },
                 )
             }
         } catch (error) {
@@ -53,7 +56,7 @@ export const useEditPeople = () => {
         mutationFn: addPersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -68,7 +71,7 @@ export const useEditPeople = () => {
         mutationFn: updatePersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -83,7 +86,7 @@ export const useEditPeople = () => {
         mutationFn: deletePersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -96,28 +99,31 @@ export const useEditPeople = () => {
 
     const addPerson = (
         projectId: string,
+        fusionProjectId: string,
         azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        addPersonMutation.mutate({ projectId, body: { azureAdUserId, role } })
+        addPersonMutation.mutate({ projectId, fusionProjectId, body: { azureAdUserId, role } })
     }
 
     const updatePerson = (
         projectId: string,
+        fusionProjectId: string,
         azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        updatePersonMutation.mutate({ projectId, body: { azureAdUserId, role } })
+        updatePersonMutation.mutate({ projectId, fusionProjectId, body: { azureAdUserId, role } })
     }
 
     const deletePerson = (
         projectId: string,
+        fusionProjectId: string,
         azureAdUserId: string,
     ) => {
         setIsSaving(true)
-        deletePersonMutation.mutate({ projectId, azureAdUserId })
+        deletePersonMutation.mutate({ projectId, fusionProjectId, azureAdUserId })
     }
 
     return {

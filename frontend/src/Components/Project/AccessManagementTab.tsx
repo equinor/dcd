@@ -41,8 +41,8 @@ const AccessManagementTab = () => {
     )
 
     const handleRemovePerson = (azureAdUserId: string) => {
-        if (!projectId) { return }
-        deletePerson(projectId, azureAdUserId)
+        if (!projectId || !fusionProjectId) { return }
+        deletePerson(projectId, fusionProjectId, azureAdUserId)
     }
 
     const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
@@ -51,26 +51,35 @@ const AccessManagementTab = () => {
         if (
             !personToAdd
             || !projectId
+            || !fusionProjectId
             || projectData?.projectMembers.some((p) => p.azureAdUserId === personToAdd)
-        ) {
-            return
-        }
+        ) { return }
 
-        addPerson(projectId, personToAdd, role)
+        addPerson(projectId, fusionProjectId, personToAdd, role)
     }
 
     const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole) => {
-        if (!azureAdUserId || !projectId) { return }
-        updatePerson(projectId, azureAdUserId, role)
+        if (
+            !azureAdUserId
+            || !projectId
+            || !fusionProjectId
+        ) { return }
+
+        updatePerson(projectId, fusionProjectId, azureAdUserId, role)
     }
 
     // This is used to synchronize PMT members to projects
     useEffect(
         () => {
-            if (!projectId || !fusionProjectId || !currentContext?.id || !currentContext?.externalId) { return }
-            if (fusionProjectId !== currentContext.externalId) { return }
+            if (
+                !projectId
+                || !fusionProjectId
+                || !currentContext?.id
+                || !currentContext?.externalId
+                || fusionProjectId !== currentContext.externalId
+            ) { return }
 
-            syncPmtMembers(projectId, currentContext.id)
+            syncPmtMembers(projectId, fusionProjectId, currentContext.id)
         },
         [projectId, currentContext, fusionProjectId],
     )
