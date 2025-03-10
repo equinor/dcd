@@ -4,7 +4,9 @@ namespace api.Features.Profiles.Dtos;
 
 public class TimeSeries
 {
-    public TimeSeries() { }
+    public TimeSeries()
+    {
+    }
 
     public TimeSeries(TimeSeriesProfile? timeSeriesProfile)
     {

@@ -88,7 +88,7 @@ const Wells: React.FC<WellsProps> = ({
             updateWellDtos: [],
             deleteWellDtos: [],
         }
-        addWellsEdit(revisionAndProjectData.projectId, createWells)
+        addWellsEdit(revisionAndProjectData.projectId, revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId, createWells)
     }
 
     useEffect(() => {

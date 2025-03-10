@@ -25,7 +25,7 @@ const ExplorationCosts = () => {
     const revisionAndProjectData = useDataFetch()
     const { explorationOperationalWellCostsId } = revisionAndProjectData?.commonProjectAndRevisionData.explorationOperationalWellCosts ?? {}
     const { explorationOperationalWellCosts } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
-    const { currency } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
+    const { currency, fusionProjectId } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
     const { projectId } = revisionAndProjectData ?? {}
     const { editMode } = useAppStore()
     const { addExplorationWellCostEdit } = useTechnicalInputEdits()
@@ -58,13 +58,13 @@ const ExplorationCosts = () => {
     }, [revisionAndProjectData])
 
     useEffect(() => {
-        if (explorationOperationalWellCostsId && projectId && debouncedCosts && canEdit()) {
+        if (explorationOperationalWellCostsId && projectId && fusionProjectId && debouncedCosts && canEdit()) {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof ExplorationCostsState] !== value,
             )
             if (hasChanges) {
                 previousCostsRef.current = { ...debouncedCosts }
-                addExplorationWellCostEdit(projectId, explorationOperationalWellCostsId, debouncedCosts)
+                addExplorationWellCostEdit(projectId, fusionProjectId, explorationOperationalWellCostsId, debouncedCosts)
             }
         }
     }, [debouncedCosts, explorationOperationalWellCostsId, projectId, addExplorationWellCostEdit, editMode, isEditDisabled])
