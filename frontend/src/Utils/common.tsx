@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
-import { EditEntry, EditInstance } from "@/Models/Interfaces"
+import { EditInstance } from "@/Models/Interfaces"
 import { dateFromTimestamp } from "@/Utils/DateUtils"
 import { WellCategory } from "@/Models/enums"
 
@@ -301,11 +301,6 @@ export const formatTime = (timestamp: number): string => {
     return `${formattedHours}:${formattedMinutes}`
 }
 
-export const getCurrentEditId = (editIndexes: EditEntry[], caseId: string | undefined): string | undefined => {
-    const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === caseId && entry.currentEditId)
-    return (currentCaseEditId as unknown as EditEntry)?.currentEditId
-}
-
 export const formatColumnSum = (params: { values: any[] }) => {
     let sum = 0
     params.values.forEach((value: any) => {
@@ -345,7 +340,6 @@ export const generateProfile = (
     lastYear: number,
 ) => {
     const values: number[] = []
-
     if (tableTimeSeriesValues.length === 0) {
         return {
             ...profile,

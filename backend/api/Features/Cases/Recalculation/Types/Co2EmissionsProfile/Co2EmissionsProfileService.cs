@@ -46,7 +46,7 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = losses.StartYear,
-            Values = losses.Values.Select(loss => loss * caseItem.Project.CO2Vented).ToArray()
+            Values = losses.Values.Select(loss => loss * caseItem.Project.Co2Vented).ToArray()
         };
     }
 
@@ -57,7 +57,7 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = flarings.StartYear,
-            Values = flarings.Values.Select(flare => flare * caseItem.Project.CO2EmissionsFromFlaredGas).ToArray()
+            Values = flarings.Values.Select(flare => flare * caseItem.Project.Co2EmissionsFromFlaredGas).ToArray()
         };
     }
 
@@ -68,7 +68,7 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
-            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.CO2EmissionFromFuelGas).ToArray()
+            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.Co2EmissionFromFuelGas).ToArray()
         };
     }
 

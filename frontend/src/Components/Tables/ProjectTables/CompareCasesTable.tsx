@@ -258,7 +258,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         cellStyle: cellStyleRightAlign,
                     },
                     {
-                        field: "cO2Intensity",
+                        field: "co2Intensity",
                         headerName: "CO2 intensity (kg CO2/boe)",
                         width: 175,
                         editable: false,

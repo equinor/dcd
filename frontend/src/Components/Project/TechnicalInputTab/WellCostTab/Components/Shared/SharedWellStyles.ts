@@ -24,7 +24,6 @@ export const CostWithCurrency = styled.div`
 `
 
 export const Section = styled.section`
-    margin-top: 56px;
     display: flex;
     flex-direction: column;
     gap: 30px;

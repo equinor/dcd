@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250227121558_NullableDgDates")]
-    partial class NullableDgDates
+    [Migration("20250310083427_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,10 +144,10 @@ namespace api.Migrations
                     b.Property<double?>("BreakEvenOverride")
                         .HasColumnType("float");
 
-                    b.Property<double>("CapexFactorFEEDStudies")
+                    b.Property<double>("CapexFactorFeasibilityStudies")
                         .HasColumnType("float");
 
-                    b.Property<double>("CapexFactorFeasibilityStudies")
+                    b.Property<double>("CapexFactorFeedStudies")
                         .HasColumnType("float");
 
                     b.Property<string>("CreatedBy")
@@ -184,6 +184,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("DiscountedCashflow")
+                        .HasColumnType("float");
+
                     b.Property<Guid>("DrainageStrategyId")
                         .HasColumnType("uniqueidentifier");
 
@@ -196,15 +199,15 @@ namespace api.Migrations
                     b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("NPV")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("NPVOverride")
-                        .HasColumnType("float");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Npv")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("NpvOverride")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("OnshorePowerSupplyId")
                         .HasColumnType("uniqueidentifier");
@@ -354,6 +357,9 @@ namespace api.Migrations
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("CondensateYield")
+                        .HasColumnType("float");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -369,7 +375,7 @@ namespace api.Migrations
                     b.Property<int>("GasSolution")
                         .HasColumnType("int");
 
-                    b.Property<double>("NGLYield")
+                    b.Property<double>("NglYield")
                         .HasColumnType("float");
 
                     b.Property<int>("ProducerCount")
@@ -724,20 +730,20 @@ namespace api.Migrations
                     b.Property<double>("AverageDevelopmentDrillingDays")
                         .HasColumnType("float");
 
-                    b.Property<double>("CO2EmissionFromFuelGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2EmissionsFromFlaredGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2RemovedFromGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2Vented")
-                        .HasColumnType("float");
-
                     b.Property<int>("Classification")
                         .HasColumnType("int");
+
+                    b.Property<double>("Co2EmissionFromFuelGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2EmissionsFromFlaredGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2RemovedFromGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2Vented")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("CommonLibraryId")
                         .HasColumnType("uniqueidentifier");
@@ -769,7 +775,7 @@ namespace api.Migrations
                     b.Property<double>("DiscountRate")
                         .HasColumnType("float");
 
-                    b.Property<double>("ExchangeRateUSDToNOK")
+                    b.Property<double>("ExchangeRateUsdToNok")
                         .HasColumnType("float");
 
                     b.Property<double>("FlaredGasPerProducedVolume")
@@ -778,7 +784,7 @@ namespace api.Migrations
                     b.Property<Guid>("FusionProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("GasPriceNOK")
+                    b.Property<double>("GasPriceNok")
                         .HasColumnType("float");
 
                     b.Property<int>("InternalProjectPhase")
@@ -791,10 +797,13 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("NglPriceUsd")
+                        .HasColumnType("float");
+
                     b.Property<int>("NpvYear")
                         .HasColumnType("int");
 
-                    b.Property<double>("OilPriceUSD")
+                    b.Property<double>("OilPriceUsd")
                         .HasColumnType("float");
 
                     b.Property<Guid?>("OriginalProjectId")
@@ -1128,26 +1137,26 @@ namespace api.Migrations
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
 
-                    b.Property<double>("CO2OnMaxGasProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2OnMaxOilProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2OnMaxWaterInjectionProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2ShareGasProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2ShareOilProfile")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CO2ShareWaterInjectionProfile")
-                        .HasColumnType("float");
-
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Co2OnMaxGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2OnMaxOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2OnMaxWaterInjectionProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2ShareGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2ShareOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2ShareWaterInjectionProfile")
+                        .HasColumnType("float");
 
                     b.Property<int>("CostYear")
                         .HasColumnType("int");

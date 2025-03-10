@@ -15,18 +15,19 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? CessationOnshoreFacilitiesCostProfile { get; set; }
     public required TimeSeriesDto? TotalFeasibilityAndConceptStudies { get; set; }
     public required TimeSeriesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
-    public required TimeSeriesDto? TotalFEEDStudies { get; set; }
-    public required TimeSeriesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    public required TimeSeriesDto? TotalFeedStudies { get; set; }
+    public required TimeSeriesOverrideDto? TotalFeedStudiesOverride { get; set; }
     public required TimeSeriesDto? TotalOtherStudiesCostProfile { get; set; }
     public required TimeSeriesDto? HistoricCostCostProfile { get; set; }
     public required TimeSeriesDto? WellInterventionCostProfile { get; set; }
     public required TimeSeriesOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public required TimeSeriesDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
     public required TimeSeriesOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public required TimeSeriesDto? OnshoreRelatedOPEXCostProfile { get; set; }
-    public required TimeSeriesDto? AdditionalOPEXCostProfile { get; set; }
+    public required TimeSeriesDto? OnshoreRelatedOpexCostProfile { get; set; }
+    public required TimeSeriesDto? AdditionalOpexCostProfile { get; set; }
     public required TimeSeriesDto? CalculatedTotalIncomeCostProfileUsd { get; set; }
     public required TimeSeriesDto? CalculatedTotalCostCostProfileUsd { get; set; }
+    public required TimeSeriesDto? CalculatedDiscountedCashflowService { get; set; }
 
     [Required] public required TopsideDto Topside { get; set; }
     public required TimeSeriesDto? TopsideCostProfile { get; set; }

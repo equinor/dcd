@@ -17,9 +17,9 @@ public class Co2IntensityProfileServiceTests
         var project = new Project
         {
             DiscountRate = 8,
-            OilPriceUSD = 75,
-            GasPriceNOK = 3,
-            ExchangeRateUSDToNOK = 10
+            OilPriceUsd = 75,
+            GasPriceNok = 3,
+            ExchangeRateUsdToNok = 10
         };
 
         var caseItem = new Case

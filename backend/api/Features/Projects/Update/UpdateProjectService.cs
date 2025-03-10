@@ -36,17 +36,18 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         existingProject.InternalProjectPhase = projectDto.InternalProjectPhase;
         existingProject.ProjectCategory = projectDto.ProjectCategory;
         existingProject.SharepointSiteUrl = projectDto.SharepointSiteUrl;
-        existingProject.CO2RemovedFromGas = projectDto.CO2RemovedFromGas;
-        existingProject.CO2EmissionFromFuelGas = projectDto.CO2EmissionFromFuelGas;
+        existingProject.Co2RemovedFromGas = projectDto.Co2RemovedFromGas;
+        existingProject.Co2EmissionFromFuelGas = projectDto.Co2EmissionFromFuelGas;
         existingProject.FlaredGasPerProducedVolume = projectDto.FlaredGasPerProducedVolume;
-        existingProject.CO2EmissionsFromFlaredGas = projectDto.CO2EmissionsFromFlaredGas;
-        existingProject.CO2Vented = projectDto.CO2Vented;
+        existingProject.Co2EmissionsFromFlaredGas = projectDto.Co2EmissionsFromFlaredGas;
+        existingProject.Co2Vented = projectDto.Co2Vented;
         existingProject.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
         existingProject.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
-        existingProject.OilPriceUSD = projectDto.OilPriceUSD;
-        existingProject.GasPriceNOK = projectDto.GasPriceNOK;
+        existingProject.OilPriceUsd = projectDto.OilPriceUsd;
+        existingProject.GasPriceNok = projectDto.GasPriceNok;
+        existingProject.NglPriceUsd = projectDto.NglPriceUsd;
         existingProject.DiscountRate = projectDto.DiscountRate;
-        existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
+        existingProject.ExchangeRateUsdToNok = projectDto.ExchangeRateUsdToNok;
         existingProject.NpvYear = projectDto.NpvYear;
 
         if (shouldTriggerRecalculation)
@@ -63,7 +64,7 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
 
     private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
     {
-        if (existingProject.ExchangeRateUSDToNOK != projectDto.ExchangeRateUSDToNOK)
+        if (existingProject.ExchangeRateUsdToNok != projectDto.ExchangeRateUsdToNok)
         {
             return true;
         }
@@ -78,12 +79,17 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
             return true;
         }
 
-        if (existingProject.GasPriceNOK != projectDto.GasPriceNOK)
+        if (existingProject.GasPriceNok != projectDto.GasPriceNok)
         {
             return true;
         }
 
-        if (existingProject.OilPriceUSD != projectDto.OilPriceUSD)
+        if (existingProject.NglPriceUsd != projectDto.NglPriceUsd)
+        {
+            return true;
+        }
+
+        if (existingProject.OilPriceUsd != projectDto.OilPriceUsd)
         {
             return true;
         }
@@ -98,17 +104,17 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
             return true;
         }
 
-        if (existingProject.CO2EmissionFromFuelGas != projectDto.CO2EmissionFromFuelGas)
+        if (existingProject.Co2EmissionFromFuelGas != projectDto.Co2EmissionFromFuelGas)
         {
             return true;
         }
 
-        if (existingProject.CO2EmissionsFromFlaredGas != projectDto.CO2EmissionsFromFlaredGas)
+        if (existingProject.Co2EmissionsFromFlaredGas != projectDto.Co2EmissionsFromFlaredGas)
         {
             return true;
         }
 
-        if (existingProject.CO2Vented != projectDto.CO2Vented)
+        if (existingProject.Co2Vented != projectDto.Co2Vented)
         {
             return true;
         }

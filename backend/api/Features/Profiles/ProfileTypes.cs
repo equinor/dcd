@@ -35,6 +35,8 @@ public static class ProfileTypes
 
     public const string CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd";
 
+    public const string CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService";
+
     /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";
     public const string TopsideCostProfileOverride = "TopsideCostProfileOverride";
