@@ -13,23 +13,23 @@ public static class OpexCostProfileService
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 
-        CalculateWellInterventionCostProfile(caseItem, developmentWells, lastYearOfProduction);
+        CalculateWellInterventionCostProfile(caseItem, developmentWells, firstYearOfProduction, lastYearOfProduction);
         CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
     }
 
-    private static void CalculateWellInterventionCostProfile(Case caseItem, List<CampaignWell> developmentWells, int? lastYearOfProduction)
+    private static void CalculateWellInterventionCostProfile(Case caseItem, List<CampaignWell> developmentWells, int? firstYearOfProduction, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
             return;
         }
 
+        var firstYear = firstYearOfProduction ?? 0;
         var lastYear = lastYearOfProduction ?? 0;
 
         if (developmentWells.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile));
-
             return;
         }
 
@@ -45,7 +45,7 @@ public static class OpexCostProfileService
 
         var tempSeries = new TimeSeries
         {
-            StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
+            StartYear = Math.Max(firstYear, wellInterventionCostsFromDrillingSchedule.StartYear),
             Values = wellInterventionCostsFromDrillingSchedule.Values
         };
 
@@ -56,10 +56,38 @@ public static class OpexCostProfileService
 
         var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
+        // Compute the offset
+        var offset = Math.Abs(developmentWells.First().StartYear) + (firstYearOfProduction ?? 0);
+
+        // Ensure offset does not exceed the array bounds
+        if (offset < wellInterventionCostValues.Length)
+        {
+            wellInterventionCostValues = wellInterventionCostValues.Skip(offset).ToArray();
+        }
+        // else
+        // {
+        //     wellInterventionCostValues = Array.Empty<double>(); // If offset is too large, return empty
+        // }
+
+        for (int i = 0; i < cumulativeDrillingSchedule.Values.Length; i++)
+        {
+            int currentYear = cumulativeDrillingSchedule.StartYear + i;
+
+            // Apply Excel condition: If year is within valid range, apply cost
+            if (currentYear >= firstYear  && currentYear <= lastYear )
+            {
+                wellInterventionCostValues[i] = cumulativeDrillingSchedule.Values[i] * interventionCost;
+            }
+            else
+            {
+                wellInterventionCostValues[i] = 0; // Skip cost outside range
+            }
+        }
+
         wellInterventionCostsFromDrillingSchedule.Values = wellInterventionCostValues;
         wellInterventionCostsFromDrillingSchedule.StartYear = cumulativeDrillingSchedule.StartYear;
 
-        var totalValuesCount = lastYear == 0 ? wellInterventionCostsFromDrillingSchedule.Values.Length : lastYear - wellInterventionCostsFromDrillingSchedule.StartYear;
+        var totalValuesCount = lastYear == 0 ? wellInterventionCostsFromDrillingSchedule.Values.Length : lastYear - wellInterventionCostsFromDrillingSchedule.StartYear + 1;
         var additionalValuesCount = totalValuesCount - wellInterventionCostsFromDrillingSchedule.Values.Length;
 
         var additionalValues = new List<double>();
@@ -82,6 +110,7 @@ public static class OpexCostProfileService
         profile.Values = wellInterventionCostsFromDrillingSchedule.Values;
         profile.StartYear = wellInterventionCostsFromDrillingSchedule.StartYear;
     }
+
 
     private static void CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, int? firstYearOfProduction, int? lastYearOfProduction)
     {
