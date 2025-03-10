@@ -5,10 +5,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 
-public static class CalculateNpvService
+public class CalculateNpvService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var cashflowProfile = GetCashflowProfile(caseItem);
 
         if (cashflowProfile == null)

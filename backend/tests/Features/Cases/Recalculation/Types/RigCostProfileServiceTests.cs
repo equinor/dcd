@@ -1,3 +1,5 @@
+using api.Features.Cases.Recalculation;
+using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Cases.Recalculation.Types.RigCostProfile;
 using api.Features.Profiles;
 using api.Models;
@@ -79,8 +81,17 @@ public class RigCostProfileServiceTests
             Values = [1.2, 0.4, 0.8, 0, 0, 1.6]
         };
 
+        var dummyCaseWithCampaignWells = new CaseWithCampaignWells()
+        {
+            CaseItem = caseItem,
+            DevelopmentWells = [],
+            ExplorationWells = []
+        };
+
+        var rigCostProfileService = new RigCostProfileService();
+
         // Act
-        RigCostProfileService.RunCalculation(caseItem);
+        rigCostProfileService.RunCalculation(dummyCaseWithCampaignWells);
 
         // Assert
         AssertEqualWithTolerance(expectedExplorationRigUpgradingProfile.Values, caseItem.GetProfile(ProfileTypes.ExplorationRigUpgradingCostProfile).Values);

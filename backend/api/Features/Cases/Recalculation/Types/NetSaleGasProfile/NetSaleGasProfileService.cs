@@ -7,10 +7,11 @@ using api.Models.Enums;
 
 namespace api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
 
-public static class NetSaleGasProfileService
+public class NetSaleGasProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         if (caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride)?.Override == true)
         {
             return;

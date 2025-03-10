@@ -1,3 +1,5 @@
+using api.Features.Cases.Recalculation;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 using api.Features.Profiles;
 using api.Models;
@@ -54,8 +56,17 @@ public class Co2IntensityProfileServiceTests
             ]
         };
 
+        var dummyCaseWithCampaignWells = new CaseWithCampaignWells()
+        {
+            CaseItem = caseItem,
+            DevelopmentWells = [],
+            ExplorationWells = []
+        };
+
+        var co2IntensityProfileService = new Co2IntensityProfileService();
+
         // Act
-        Co2IntensityProfileService.RunCalculation(caseItem);
+        co2IntensityProfileService.RunCalculation(dummyCaseWithCampaignWells);
 
         // Assert
         const double expectedCo2Intensity = 7.72;

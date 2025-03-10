@@ -5,10 +5,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
 
-public static class FuelFlaringLossesProfileService
+public class FuelFlaringLossesProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {
             return;

@@ -8,10 +8,11 @@ using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
-public static class Co2IntensityProfileService
+public class Co2IntensityProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem);
         var co2EmissionsProfile = GetCo2EmissionsProfile(caseItem);
 

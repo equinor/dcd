@@ -6,10 +6,11 @@ using api.Models.Enums;
 
 namespace api.Features.Cases.Recalculation.Types.RigCostProfile;
 
-public static class RigCostProfileService
+public class RigCostProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var explorationRigUpgradingList = CreateTimeSeriesList(
             caseItem,
             CampaignType.ExplorationCampaign,

@@ -1,3 +1,4 @@
+using api.Features.Cases.Recalculation;
 using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 using api.Features.Profiles;
 using api.Models;
@@ -54,8 +55,16 @@ public class CalculateBreakEvenOilPriceServiceTests
             ]
         };
 
+        var dummyCaseWithCampaignWells = new CaseWithCampaignWells()
+        {
+            CaseItem = caseItem,
+            DevelopmentWells = [],
+            ExplorationWells = []
+        };
+
+        var calculateBreakEvenOilPriceService = new CalculateBreakEvenOilPriceService();
         // Act
-        CalculateBreakEvenOilPriceService.RunCalculation(caseItem);
+        calculateBreakEvenOilPriceService.RunCalculation(dummyCaseWithCampaignWells);
 
         // Assert
         const double expectedBreakEvenPrice = 29.82;

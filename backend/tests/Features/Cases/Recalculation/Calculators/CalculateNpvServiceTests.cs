@@ -1,3 +1,5 @@
+using api.Features.Cases.Recalculation;
+using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Profiles;
 using api.Models;
@@ -46,8 +48,15 @@ public class CalculateNpvServiceTests
                 }
             ]
         };
+        var dummyCaseWithCampaignWells = new CaseWithCampaignWells()
+        {
+            CaseItem = caseItem,
+            DevelopmentWells = [],
+            ExplorationWells = []
+        };
 
-        CalculateNpvService.RunCalculation(caseItem);
+        var calculateNpvService = new CalculateNpvService();
+        calculateNpvService.RunCalculation(dummyCaseWithCampaignWells);
 
         const double expectedNpvValue = 15311.106;
         Assert.Equal(expectedNpvValue, caseItem.Npv, precision: 1);

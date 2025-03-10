@@ -1,3 +1,4 @@
+using api.Features.Cases.Recalculation;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 using api.Features.Profiles;
 using api.Models;
@@ -62,8 +63,17 @@ public class CalculateTotalIncomeServiceTests
             ]
         };
 
+        var dummyCaseWithCampaignWells = new CaseWithCampaignWells()
+        {
+            CaseItem = caseItem,
+            DevelopmentWells = [],
+            ExplorationWells = []
+        };
+
+        var calculateTotalIncomeService = new CalculateTotalIncomeService();
+
         // Act
-        CalculateTotalIncomeService.RunCalculation(caseItem);
+        calculateTotalIncomeService.RunCalculation(dummyCaseWithCampaignWells);
 
         // Assert
         var expectedFirstYearIncome = (2 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 2 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUsdToNok;

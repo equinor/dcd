@@ -5,10 +5,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 
-public static class CalculateTotalCostService
+public class CalculateTotalCostService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var totalStudyCost = CalculateStudyCost(caseItem);
 
         var studiesProfile = new TimeSeries

@@ -5,10 +5,11 @@ using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
-public static class AverageCo2IntensityProfileService
+public class AverageCo2IntensityProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var co2IntensityData = caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity);
         var oilProductionSum = Co2IntensityProfileService.GetOilProfile(caseItem).Values.Sum();
         var netSalesGasSum = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas)?.Values.Sum() / 1_000_000_000 ?? 0;

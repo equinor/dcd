@@ -5,10 +5,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
 
-public static class ImportedElectricityProfileService
+public class ImportedElectricityProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         if (caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride)?.Override == true)
         {
             return;

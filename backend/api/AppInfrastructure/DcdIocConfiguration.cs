@@ -23,6 +23,25 @@ using api.Features.Cases.Delete;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
+using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
+using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
+using api.Features.Cases.Recalculation.Types.CalculateDiscountedCashflowProfile;
+using api.Features.Cases.Recalculation.Types.CessationCostProfile;
+using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
+using api.Features.Cases.Recalculation.Types.CondensateProduction;
+using api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
+using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
+using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
+using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
+using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.ProductionProfileNgl;
+using api.Features.Cases.Recalculation.Types.RigCostProfile;
+using api.Features.Cases.Recalculation.Types.StudyCostProfile;
+using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
+using api.Features.Cases.Recalculation.Types.WellCostProfile;
 using api.Features.Cases.Update;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Copy;
@@ -121,6 +140,29 @@ public static class DcdIocConfiguration
         /* Recalculation services */
         services.AddScoped<RecalculationService>();
         services.AddScoped<RecalculationRepository>();
+
+        /* Calculation serivces */
+        services.AddScoped<ICalculationService, DevelopmentWellCostProfileService>();
+        services.AddScoped<ICalculationService, ExplorationWellCostProfileService>();
+        services.AddScoped<ICalculationService, RigCostProfileService>();
+        services.AddScoped<ICalculationService, StudyCostProfileService>();
+        services.AddScoped<ICalculationService, CessationCostProfileService>();
+        services.AddScoped<ICalculationService, FuelFlaringLossesProfileService>();
+        services.AddScoped<ICalculationService, GenerateGAndGAdminCostProfile>();
+        services.AddScoped<ICalculationService, ImportedElectricityProfileService>();
+        services.AddScoped<ICalculationService, NetSaleGasProfileService>();
+        services.AddScoped<ICalculationService, OpexCostProfileService>();
+        services.AddScoped<ICalculationService, Co2EmissionsProfileService>();
+        services.AddScoped<ICalculationService, Co2IntensityProfileService>();
+        services.AddScoped<ICalculationService, AverageCo2IntensityProfileService>();
+        services.AddScoped<ICalculationService, CalculateTotalIncomeService>();
+        services.AddScoped<ICalculationService, CalculateTotalCostService>();
+        services.AddScoped<ICalculationService, CalculateNpvService>();
+        services.AddScoped<ICalculationService, CalculateBreakEvenOilPriceService>();
+        services.AddScoped<ICalculationService, ProductionProfileNglProfileService>();
+        services.AddScoped<ICalculationService, CondensateProductionProfileService>();
+        services.AddScoped<ICalculationService, TotalExportedVolumesProfileService>();
+        services.AddScoped<ICalculationService, CalculatedDiscountedCashflowService>();
 
         /* Auth */
         services.AddScoped<CurrentUser>();

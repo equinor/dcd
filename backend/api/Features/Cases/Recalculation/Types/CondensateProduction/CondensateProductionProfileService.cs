@@ -5,10 +5,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.CondensateProduction;
 
-public static class CondensateProductionProfileService
+public class CondensateProductionProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var condensateYield = caseItem.DrainageStrategy.CondensateYield;
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CondensateProduction);
 

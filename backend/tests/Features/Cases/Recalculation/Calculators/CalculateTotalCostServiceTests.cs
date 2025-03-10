@@ -1,3 +1,4 @@
+using api.Features.Cases.Recalculation;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 using api.Features.Profiles;
 using api.Models;
@@ -173,8 +174,17 @@ public class CalculateTotalCostServiceTests
             ]
         };
 
+        var dummyCaseWithCampaignWells = new CaseWithCampaignWells()
+        {
+            CaseItem = caseItem,
+            DevelopmentWells = [],
+            ExplorationWells = []
+        };
+
+        var calculateTotalCostService = new CalculateTotalCostService();
+
         // Act
-        CalculateTotalCostService.RunCalculation(caseItem);
+        calculateTotalCostService.RunCalculation(dummyCaseWithCampaignWells);
 
         // Assert
         var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);

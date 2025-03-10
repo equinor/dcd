@@ -4,10 +4,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.StudyCostProfile;
 
-public static class StudyCostProfileService
+public class StudyCostProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(caseItem);
 

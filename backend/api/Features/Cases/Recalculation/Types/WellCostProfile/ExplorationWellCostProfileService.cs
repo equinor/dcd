@@ -6,10 +6,11 @@ using api.Models.Enums;
 
 namespace api.Features.Cases.Recalculation.Types.WellCostProfile;
 
-public static class ExplorationWellCostProfileService
+public class ExplorationWellCostProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var profileTypes = new Dictionary<string, WellCategory>
         {
             { ProfileTypes.ExplorationWellCostProfile, WellCategory.ExplorationWell },

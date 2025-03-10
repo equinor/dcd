@@ -4,10 +4,12 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.CessationCostProfile;
 
-public static class CessationCostProfileService
+public class CessationCostProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
+        var developmentWells = caseWithCampaignWells.DevelopmentWells;
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
 
         CalculateCessationWellsCost(caseItem, developmentWells, lastYearOfProduction);

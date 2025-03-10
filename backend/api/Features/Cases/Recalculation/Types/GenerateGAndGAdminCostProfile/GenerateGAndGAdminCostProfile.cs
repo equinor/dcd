@@ -3,10 +3,12 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
 
-public static class GenerateGAndGAdminCostProfile
+public class GenerateGAndGAdminCostProfile : ICalculationService
 {
-    public static void RunCalculation(Case caseItem, List<CampaignWell> explorationWells)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
+        var explorationWells = caseWithCampaignWells.ExplorationWells;
         if (caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true)
         {
             return;

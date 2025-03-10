@@ -7,10 +7,11 @@ using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 
-public static class CalculateBreakEvenOilPriceService
+public class CalculateBreakEvenOilPriceService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var discountRate = caseItem.Project.DiscountRate;
         var oilPrice = caseItem.Project.OilPriceUsd;
         var gasPriceNok = caseItem.Project.GasPriceNok;

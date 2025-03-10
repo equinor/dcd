@@ -6,10 +6,12 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
 
-public static class Co2EmissionsProfileService
+public class Co2EmissionsProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
+        var developmentWells = caseWithCampaignWells.DevelopmentWells;
         if (caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true)
         {
             return;

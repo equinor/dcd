@@ -6,10 +6,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.CalculateDiscountedCashflowProfile;
 
-public static class CalculatedDiscountedCashflowService
+public class CalculatedDiscountedCashflowService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var discountRate = caseItem.Project.DiscountRate;
 
         var totalCost = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);

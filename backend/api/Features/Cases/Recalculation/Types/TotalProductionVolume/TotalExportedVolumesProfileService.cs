@@ -6,10 +6,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.TotalProductionVolume;
 
-public static class TotalExportedVolumesProfileService
+public class TotalExportedVolumesProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var oilProductionProfile = Co2IntensityProfileService.GetOilProfile(caseItem);
 
         var nglProduction = GetNglProduction(caseItem);

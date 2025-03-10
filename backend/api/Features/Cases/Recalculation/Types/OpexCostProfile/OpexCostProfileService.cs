@@ -6,10 +6,12 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.OpexCostProfile;
 
-public static class OpexCostProfileService
+public class OpexCostProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
+        var developmentWells = caseWithCampaignWells.DevelopmentWells;
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 

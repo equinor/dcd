@@ -5,10 +5,11 @@ using api.Models;
 
 namespace api.Features.Cases.Recalculation.Types.ProductionProfileNgl;
 
-public static class ProductionProfileNglProfileService
+public class ProductionProfileNglProfileService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl)?.Override == true)
         {
             return;

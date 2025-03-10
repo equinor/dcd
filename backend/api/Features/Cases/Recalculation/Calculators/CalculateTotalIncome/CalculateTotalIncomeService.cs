@@ -8,10 +8,11 @@ using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
 
-public static class CalculateTotalIncomeService
+public class CalculateTotalIncomeService : ICalculationService
 {
-    public static void RunCalculation(Case caseItem)
+    public void RunCalculation(CaseWithCampaignWells caseWithCampaignWells)
     {
+        var caseItem = caseWithCampaignWells.CaseItem;
         var gasPriceNok = caseItem.Project.GasPriceNok;
         var oilPrice = caseItem.Project.OilPriceUsd;
 
