@@ -55,8 +55,6 @@ export const useEditPeople = () => {
     const addPersonMutation = useMutation({
         mutationFn: addPersonMutationFn,
         onSuccess: (_, variables) => {
-            // print all key and values in the queryClient
-            console.log("Query Client Keys and Values:", queryClient.getQueryCache().getAll())
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
