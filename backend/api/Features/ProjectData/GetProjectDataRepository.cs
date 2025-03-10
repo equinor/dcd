@@ -24,7 +24,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Select(x => new ProjectMemberDto
             {
                 ProjectId = x.ProjectId,
-                UserId = x.UserId,
+                AzureAdUserId = x.AzureAdUserId,
                 Role = x.Role,
                 IsPmt = x.FromOrgChart
             })

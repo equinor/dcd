@@ -7,11 +7,11 @@ namespace api.Features.ProjectMembers.Delete;
 
 public class DeleteProjectMemberService(DcdDbContext context)
 {
-    public async Task DeleteProjectMember(Guid projectId, Guid userId)
+    public async Task DeleteProjectMember(Guid projectId, Guid azureAdUserId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        var projectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == userId);
+        var projectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.AzureAdUserId == azureAdUserId);
 
         if (projectMember == null)
         {

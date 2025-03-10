@@ -21,7 +21,7 @@ public class DcdClaimsMiddleware(RequestDelegate nextMiddleware)
         }
 
         currentUser.Username = httpContext.User.Identity!.Name!;
-        currentUser.UserId = httpContext.User.GetAzureUniqueId()!.Value;
+        currentUser.AzureAdUserId = httpContext.User.GetAzureUniqueId()!.Value;
         currentUser.ApplicationRoles = httpContext.User.DcdParseApplicationRoles();
 
         claimsIdentity.AddClaims(httpContext.User.DcdParseApplicationRoles().Select(role => new Claim(ApplicationRoleClaimType, role.ToString())));

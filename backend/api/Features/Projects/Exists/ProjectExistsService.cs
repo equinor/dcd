@@ -71,7 +71,7 @@ public class ProjectExistsService(DcdDbContext context, IFusionService fusionSer
 
         var projectMemberRole = await context.ProjectMembers
             .Where(x => x.ProjectId == projectId)
-            .Where(x => x.UserId == currentUser.UserId)
+            .Where(x => x.AzureAdUserId == currentUser.AzureAdUserId)
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 

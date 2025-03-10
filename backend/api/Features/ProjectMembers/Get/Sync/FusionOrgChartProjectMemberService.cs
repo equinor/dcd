@@ -26,7 +26,7 @@ public class FusionOrgChartProjectMemberService(
             .Where(x => x.FromOrgChart)
             .ToListAsync();
 
-        var dbAzureUserIds = pmtProjectMembers.Select(x => x.UserId).ToList();
+        var dbAzureUserIds = pmtProjectMembers.Select(x => x.AzureAdUserId).ToList();
 
         var fusionUsers = await GetAllPersonsOnProject(fusionContextId);
 
@@ -35,21 +35,21 @@ public class FusionOrgChartProjectMemberService(
         var userIdsToAdd = fusionAzureUserIds.Where(fusionUserId => !dbAzureUserIds.Contains(fusionUserId)).ToList();
         var userIdsToRemove = dbAzureUserIds.Where(dbUserId => !fusionAzureUserIds.Contains(dbUserId)).ToList();
 
-        foreach (var userId in userIdsToAdd)
+        foreach (var azureAdUserId in userIdsToAdd)
         {
             context.ProjectMembers.Add(new ProjectMember
             {
                 Id = Guid.NewGuid(),
                 ProjectId = projectId,
-                UserId = userId,
+                AzureAdUserId = azureAdUserId,
                 Role = ProjectMemberRole.Observer,
                 FromOrgChart = true
             });
         }
 
-        foreach (var userId in userIdsToRemove)
+        foreach (var azureAdUserId in userIdsToRemove)
         {
-            var userToRemove = pmtProjectMembers.Single(x => userId == x.UserId);
+            var userToRemove = pmtProjectMembers.Single(x => azureAdUserId == x.AzureAdUserId);
             context.ProjectMembers.Remove(userToRemove);
         }
 

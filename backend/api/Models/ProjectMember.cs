@@ -10,7 +10,7 @@ public class ProjectMember : IChangeTrackable, IDateTrackedEntity
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public required Guid UserId { get; set; } // Azure AD user id
+    public required Guid AzureAdUserId { get; set; }
     public required ProjectMemberRole Role { get; set; }
     public required bool FromOrgChart { get; set; }
 
