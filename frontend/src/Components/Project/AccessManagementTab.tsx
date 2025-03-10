@@ -42,7 +42,7 @@ const AccessManagementTab = () => {
 
     const handleRemovePerson = (azureAdUserId: string) => {
         if (!projectId || !fusionProjectId) { return }
-        deletePerson(projectId, fusionProjectId, userId)
+        deletePerson(projectId, fusionProjectId, azureAdUserId)
     }
 
     const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
@@ -58,9 +58,9 @@ const AccessManagementTab = () => {
         addPerson(projectId, fusionProjectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = (personId: string, role: ProjectMemberRole) => {
+    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole) => {
         if (
-            !personId
+            !azureAdUserId
             || !projectId
             || !fusionProjectId
         ) { return }

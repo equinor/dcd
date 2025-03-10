@@ -114,7 +114,7 @@ export const useEditPeople = () => {
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        updatePersonMutation.mutate({ projectId, fusionProjectId, body: {azureAdUserId, role } })
+        updatePersonMutation.mutate({ projectId, fusionProjectId, body: { azureAdUserId, role } })
     }
 
     const deletePerson = (
