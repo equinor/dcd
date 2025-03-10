@@ -1,6 +1,6 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import React from "react"
+import React, { memo } from "react"
 
 import { useAppStore } from "@/Store/AppStore"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
@@ -15,7 +15,7 @@ interface InputSwitcherProps {
     children: React.ReactElement;
 }
 
-const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
+const InputSwitcher = memo(({ value, label, children }: InputSwitcherProps): JSX.Element => {
     const { isSaving } = useAppStore()
     const { canEdit } = useCanUserEdit()
 
@@ -36,6 +36,8 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
             )}
         </InputWrapper>
     )
-}
+})
+
+InputSwitcher.displayName = "InputSwitcher"
 
 export default InputSwitcher
