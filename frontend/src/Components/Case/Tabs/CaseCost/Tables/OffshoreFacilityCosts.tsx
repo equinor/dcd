@@ -109,7 +109,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={capexTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Offshore facility cost"
             gridRef={capexGridRef}

@@ -38,7 +38,7 @@ public static class CalculateBreakEvenOilPriceService
 
         netSalesGasVolume.Values = netSalesGasVolume.Values.Select(v => v / 1_000_000_000).ToArray();
 
-        var dg4Year = caseItem.DG4Date.Year;
+        var dg4Year = caseItem.Dg4Date.Year;
         var discountYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
         var discountedOilVolume = EconomicsHelper.CalculateSumOfDiscountedVolume(

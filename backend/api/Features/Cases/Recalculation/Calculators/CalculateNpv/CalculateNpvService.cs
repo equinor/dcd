@@ -27,7 +27,7 @@ public static class CalculateNpvService
             return;
         }
 
-        var dg4Year = caseItem.DG4Date.Year;
+        var dg4Year = caseItem.Dg4Date.Year;
         var npvYearInRelationToDg4Year = caseItem.Project.NpvYear - dg4Year;
 
         var npvValue = EconomicsHelper.CalculateSumOfDiscountedVolume(

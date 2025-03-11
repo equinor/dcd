@@ -24,15 +24,15 @@ public static class StudyCostProfileService
 
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
-        if (caseItem.DG0Date == null || caseItem.DG2Date == null)
+        if (caseItem.Dg0Date == null || caseItem.Dg2Date == null)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies));
 
             return;
         }
 
-        var dg0 = caseItem.DG0Date.Value;
-        var dg2 = caseItem.DG2Date.Value;
+        var dg0 = caseItem.Dg0Date.Value;
+        var dg2 = caseItem.Dg2Date.Value;
 
         if (dg2.DayOfYear == 1)
         {
@@ -66,7 +66,7 @@ public static class StudyCostProfileService
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeasibilityAndConceptStudies);
 
-        profile.StartYear = dg0.Year - caseItem.DG4Date.Year;
+        profile.StartYear = dg0.Year - caseItem.Dg4Date.Year;
         profile.Values = valuesList.ToArray();
     }
 
@@ -79,15 +79,15 @@ public static class StudyCostProfileService
 
         var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeedStudies;
 
-        if (caseItem.DG2Date == null || caseItem.DG3Date == null)
+        if (caseItem.Dg2Date == null || caseItem.Dg3Date == null)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies));
 
             return;
         }
 
-        var dg2 = caseItem.DG2Date.Value;
-        var dg3 = caseItem.DG3Date.Value;
+        var dg2 = caseItem.Dg2Date.Value;
+        var dg3 = caseItem.Dg3Date.Value;
 
         if (!DateIsEqual(dg2, dg3) && dg3.DayOfYear == 1)
         {
@@ -126,7 +126,7 @@ public static class StudyCostProfileService
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFEEDStudies);
 
-        profile.StartYear = dg2.Year - caseItem.DG4Date.Year;
+        profile.StartYear = dg2.Year - caseItem.Dg4Date.Year;
         profile.Values = valuesList.ToArray();
     }
 
