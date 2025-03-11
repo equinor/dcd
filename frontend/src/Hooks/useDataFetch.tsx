@@ -8,7 +8,7 @@ import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 
 export const useDataFetch = () => {
     const { currentContext } = useModuleCurrentContext()
-    const { isRevision } = useProjectContext()
+    const { projectId, isRevision } = useProjectContext()
     const { revisionId } = useParams()
     const [data, setData] = useState<Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | undefined | null>(null)
 
@@ -22,8 +22,8 @@ export const useDataFetch = () => {
 
     const { data: apiRevisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
-        queryFn: () => revisionQueryFn(externalId, revisionId),
-        enabled: !!revisionId && !!externalId && isRevision,
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!revisionId && isRevision && !!projectId,
     })
 
     useEffect(() => {

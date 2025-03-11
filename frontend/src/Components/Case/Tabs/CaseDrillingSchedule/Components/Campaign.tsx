@@ -1,10 +1,6 @@
 import { useMemo, useRef, useEffect } from "react"
 import Grid from "@mui/material/Grid2"
 
-import {
-    CampaignProps,
-    CampaignWell,
-} from "@/Models/ICampaigns"
 import CaseTabTable from "@/Components/Tables/CaseTables/CaseTabTable"
 import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
 import { getYearFromDateString } from "@/Utils/DateUtils"
@@ -18,6 +14,12 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useGridRef } from "@/Store/GridRefContext"
+
+export interface CampaignProps {
+    campaign: Components.Schemas.CampaignDto
+    title: string
+    tableYears: [number, number]
+}
 
 const Campaign = ({
     tableYears,
@@ -72,32 +74,27 @@ const Campaign = ({
         }
         rows.push(mobDemobRow)
 
-        campaign.campaignWells?.forEach((well: CampaignWell) => {
-            const wellRow: ItimeSeriesTableDataWithWell = {
-                profileName: well.wellName,
-                unit: "Well",
-                profile: {
-                    startYear: well.startYear,
-                    values: well.values || [],
-                },
-                resourceName: "campaignWells",
-                resourceId: campaign.campaignId,
-                wellId: well.wellId,
-                resourcePropertyKey: "campaignWells",
-                overridable: false,
-                editable: true,
-            }
-            rows.push(wellRow)
-        })
+        const campaignWellsMap = new Map(
+            campaign.campaignWells?.map((well) => [well.wellId, well]) || [],
+        )
 
-        if (canUserEdit && title === "Exploration") {
-            allWells.explorationWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+        if (canUserEdit) {
+            let availableWells: Components.Schemas.WellOverviewDto[] = []
+            if (title === "Exploration") {
+                availableWells = allWells.explorationWells
+            } else if (title === "Development") {
+                availableWells = allWells.developmentWells
+            }
+
+            // In edit mode, show all wells in their original order
+            availableWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+                const campaignWell = campaignWellsMap.get(well.id)
                 const wellRow: ItimeSeriesTableDataWithWell = {
                     profileName: well.name,
                     unit: "Well",
                     profile: {
-                        startYear: 0,
-                        values: [],
+                        startYear: campaignWell?.startYear || 0,
+                        values: campaignWell?.values || [],
                     },
                     resourceName: "campaignWells",
                     resourceId: campaign.campaignId,
@@ -108,20 +105,19 @@ const Campaign = ({
                 }
                 rows.push(wellRow)
             })
-        }
-
-        if (canUserEdit && title === "Development") {
-            allWells.developmentWells.forEach((well: Components.Schemas.WellOverviewDto) => {
+        } else {
+            // In view mode, only show campaign wells
+            campaign.campaignWells?.forEach((well: Components.Schemas.CampaignWellDto) => {
                 const wellRow: ItimeSeriesTableDataWithWell = {
-                    profileName: well.name,
+                    profileName: well.wellName,
                     unit: "Well",
                     profile: {
-                        startYear: 0,
-                        values: [],
+                        startYear: well.startYear,
+                        values: well.values || [],
                     },
                     resourceName: "campaignWells",
                     resourceId: campaign.campaignId,
-                    wellId: well.id,
+                    wellId: well.wellId,
                     resourcePropertyKey: "campaignWells",
                     overridable: false,
                     editable: true,
@@ -171,7 +167,7 @@ const Campaign = ({
                 <CampaignTableContainer>
                     <CaseTabTable
                         timeSeriesData={rowData}
-                        dg4Year={getYearFromDateString(apiData.case.dG4Date ?? "")}
+                        dg4Year={getYearFromDateString(apiData.case.dg4Date ?? "")}
                         tableYears={tableYears}
                         tableName={`${title} campaign`}
                         totalRowName="Total"

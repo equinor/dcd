@@ -19,7 +19,7 @@ public class CreateCaseService(DcdDbContext context)
         var transportId = Guid.NewGuid();
         var onshorePowerSupplyId = Guid.NewGuid();
 
-        var dgDates = CalculateDgDates(createCaseDto.DG4Date);
+        var dgDates = CalculateDgDates(createCaseDto.Dg4Date);
 
         var createdCase = new Case
         {
@@ -30,13 +30,13 @@ public class CreateCaseService(DcdDbContext context)
             ProducerCount = createCaseDto.ProducerCount,
             GasInjectorCount = createCaseDto.GasInjectorCount,
             WaterInjectorCount = createCaseDto.WaterInjectorCount,
-            DG4Date = dgDates.dg4,
-            DG3Date = dgDates.dg3,
-            DG2Date = dgDates.dg2,
-            DG1Date = dgDates.dg1,
-            DG0Date = dgDates.dg0,
+            Dg4Date = dgDates.dg4,
+            Dg3Date = dgDates.dg3,
+            Dg2Date = dgDates.dg2,
+            Dg1Date = dgDates.dg1,
+            Dg0Date = dgDates.dg0,
             CapexFactorFeasibilityStudies = 0.015,
-            CapexFactorFEEDStudies = 0.015,
+            CapexFactorFeedStudies = 0.015,
 
             DrainageStrategyId = drainageStrategyId,
             DrainageStrategy = CreateDrainageStrategy(drainageStrategyId),

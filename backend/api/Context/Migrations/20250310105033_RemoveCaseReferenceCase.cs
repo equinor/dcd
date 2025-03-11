@@ -5,25 +5,25 @@
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class RemoveDrainageStrategyDescription : Migration
+    public partial class RemoveCaseReferenceCase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Description",
-                table: "DrainageStrategies");
+                name: "ReferenceCase",
+                table: "Cases");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Description",
-                table: "DrainageStrategies",
-                type: "nvarchar(max)",
+            migrationBuilder.AddColumn<bool>(
+                name: "ReferenceCase",
+                table: "Cases",
+                type: "bit",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: false);
         }
     }
 }

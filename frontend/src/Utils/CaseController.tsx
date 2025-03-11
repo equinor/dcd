@@ -1,6 +1,5 @@
 import { GetCaseService } from "../Services/CaseService"
 import { GetProjectService } from "../Services/ProjectService"
-import { EMPTY_GUID } from "../Utils/constants"
 
 export const deleteCase = async (
     caseId: string,
@@ -39,11 +38,9 @@ export const setCaseAsReference = async (
 ) => {
     try {
         const projectDto: Components.Schemas.UpdateProjectDto = { ...project.commonProjectAndRevisionData }
-        if (projectDto.referenceCaseId === caseId) {
-            projectDto.referenceCaseId = EMPTY_GUID
-        } else {
-            projectDto.referenceCaseId = caseId ?? ""
-        }
+
+        projectDto.referenceCaseId = projectDto.referenceCaseId === caseId ? null : (caseId || null)
+
         const newProject = await GetProjectService().updateProject(project.projectId, projectDto)
         addProjectEdit(project.projectId, newProject.commonProjectAndRevisionData)
     } catch (error) {

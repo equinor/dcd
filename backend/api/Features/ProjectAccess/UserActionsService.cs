@@ -19,7 +19,7 @@ public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
 
         var projectMemberRole = await context.ProjectMembers
             .Where(x => x.ProjectId == projectPk)
-            .Where(x => x.UserId == currentUser.UserId)
+            .Where(x => x.AzureAdUserId == currentUser.AzureAdUserId)
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 
@@ -40,7 +40,7 @@ public class UserActionsService(CurrentUser currentUser, DcdDbContext context)
 
         var projectMemberRole = await context.ProjectMembers
             .Where(x => x.Id == revisionData.OriginalProjectId)
-            .Where(x => x.UserId == currentUser.UserId)
+            .Where(x => x.AzureAdUserId == currentUser.AzureAdUserId)
             .Select(x => (ProjectMemberRole?)x.Role)
             .SingleOrDefaultAsync();
 

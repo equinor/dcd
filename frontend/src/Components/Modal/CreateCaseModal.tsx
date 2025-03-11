@@ -43,7 +43,7 @@ const CreateCaseModal = () => {
     } = useModalContext()
 
     const [caseName, setCaseName] = useState<string>("")
-    const [dG4Date, setDG4Date] = useState<Date | null>(null)
+    const [dg4Date, setDg4Date] = useState<Date | null>(null)
     const [description, setDescription] = useState<string>("")
     const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerWells] = useState<number>(0)
@@ -53,7 +53,7 @@ const CreateCaseModal = () => {
 
     const resetForm = () => {
         setCaseName("")
-        setDG4Date(null)
+        setDg4Date(null)
         setDescription("")
         setProductionStrategy(0)
         setProducerWells(0)
@@ -68,7 +68,7 @@ const CreateCaseModal = () => {
             if (selectedCase) {
                 setCaseItem(selectedCase)
                 setCaseName(selectedCase.name)
-                setDG4Date(dateStringToDateUtc(selectedCase.dG4Date))
+                setDg4Date(dateStringToDateUtc(selectedCase.dg4Date))
                 setDescription(selectedCase.description)
                 setProductionStrategy(selectedCase.productionStrategyOverview ?? 0)
                 setProducerWells(selectedCase.producerCount ?? 0)
@@ -98,10 +98,10 @@ const CreateCaseModal = () => {
         } else {
             newDate = dateStringToDateUtc(e.target.value)
         }
-        setDG4Date(newDate)
+        setDg4Date(newDate)
     }
 
-    const getDG4Value = () => toMonthDate(dG4Date)
+    const getDG4Value = () => toMonthDate(dg4Date)
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
@@ -116,7 +116,7 @@ const CreateCaseModal = () => {
                 const newCase = { ...projectCase }
                 newCase.name = caseName
                 newCase.description = description
-                newCase.dG4Date = dG4Date!.toISOString()
+                newCase.dg4Date = dg4Date!.toISOString()
                 newCase.producerCount = producerCount
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
@@ -134,7 +134,7 @@ const CreateCaseModal = () => {
                     {
                         name: caseName,
                         description,
-                        dG4Date: dG4Date!.toJSON(),
+                        dg4Date: dg4Date!.toJSON(),
                         producerCount,
                         gasInjectorCount,
                         waterInjectorCount,
@@ -152,7 +152,7 @@ const CreateCaseModal = () => {
         }
     }
 
-    const disableCreateButton = () => !dG4Date || !caseName || caseName.trim() === ""
+    const disableCreateButton = () => !dg4Date || !caseName || caseName.trim() === ""
 
     return (
         <Modal

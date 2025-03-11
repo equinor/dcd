@@ -25,7 +25,6 @@ declare namespace Components {
             name: string;
             description: string;
             archived: boolean;
-            referenceCase: boolean;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             artificialLift: ArtificialLift /* int32 */;
             producerCount: number; // int32
@@ -37,7 +36,7 @@ declare namespace Components {
             breakEvenOverride: number | null; // double
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
-            capexFactorFEEDStudies: number; // double
+            capexFactorFeedStudies: number; // double
             host: string | null;
             averageCo2Intensity: number; // double
             discountedCashflow: number; // double
@@ -47,11 +46,11 @@ declare namespace Components {
             apboDate: string | null; // date-time
             borDate: string | null; // date-time
             vpboDate: string | null; // date-time
-            dG0Date: string | null; // date-time
-            dG1Date: string | null; // date-time
-            dG2Date: string | null; // date-time
-            dG3Date: string | null; // date-time
-            dG4Date: string; // date-time
+            dg0Date: string | null; // date-time
+            dg1Date: string | null; // date-time
+            dg2Date: string | null; // date-time
+            dg3Date: string | null; // date-time
+            dg4Date: string; // date-time
             createdUtc: string; // date-time
             updatedUtc: string; // date-time
             surfId: string; // uuid
@@ -72,16 +71,16 @@ declare namespace Components {
             cessationOnshoreFacilitiesCostProfile: TimeSeriesDto;
             totalFeasibilityAndConceptStudies: TimeSeriesDto;
             totalFeasibilityAndConceptStudiesOverride: TimeSeriesOverrideDto;
-            totalFEEDStudies: TimeSeriesDto;
-            totalFEEDStudiesOverride: TimeSeriesOverrideDto;
+            totalFeedStudies: TimeSeriesDto;
+            totalFeedStudiesOverride: TimeSeriesOverrideDto;
             totalOtherStudiesCostProfile: TimeSeriesDto;
             historicCostCostProfile: TimeSeriesDto;
             wellInterventionCostProfile: TimeSeriesDto;
             wellInterventionCostProfileOverride: TimeSeriesOverrideDto;
             offshoreFacilitiesOperationsCostProfile: TimeSeriesDto;
             offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesOverrideDto;
-            onshoreRelatedOPEXCostProfile: TimeSeriesDto;
-            additionalOPEXCostProfile: TimeSeriesDto;
+            onshoreRelatedOpexCostProfile: TimeSeriesDto;
+            additionalOpexCostProfile: TimeSeriesDto;
             calculatedTotalIncomeCostProfileUsd: TimeSeriesDto;
             calculatedTotalCostCostProfileUsd: TimeSeriesDto;
             calculatedDiscountedCashflowService: TimeSeriesDto;
@@ -218,11 +217,11 @@ declare namespace Components {
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
-            dG4Date: string; // date-time
+            dg4Date: string; // date-time
         }
         export interface CreateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
-            userId: string; // uuid
+            azureAdUserId: string; // uuid
         }
         export interface CreateRevisionDto {
             name: string;
@@ -314,7 +313,7 @@ declare namespace Components {
         }
         export interface ProjectMemberDto {
             projectId: string; // uuid
-            userId: string; // uuid
+            azureAdUserId: string; // uuid
             role: ProjectMemberRole /* int32 */;
             isPmt: boolean;
         }
@@ -460,7 +459,6 @@ declare namespace Components {
         export interface UpdateCaseDto {
             name: string;
             description: string;
-            referenceCase: boolean;
             archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
@@ -469,7 +467,7 @@ declare namespace Components {
             waterInjectorCount: number; // int32
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
-            capexFactorFEEDStudies: number; // double
+            capexFactorFeedStudies: number; // double
             npv: number; // double
             npvOverride: number | null; // double
             breakEven: number; // double
@@ -483,11 +481,11 @@ declare namespace Components {
             apboDate: string | null; // date-time
             borDate: string | null; // date-time
             vpboDate: string | null; // date-time
-            dG0Date: string | null; // date-time
-            dG1Date: string | null; // date-time
-            dG2Date: string | null; // date-time
-            dG3Date: string | null; // date-time
-            dG4Date: string; // date-time
+            dg0Date: string | null; // date-time
+            dg1Date: string | null; // date-time
+            dg2Date: string | null; // date-time
+            dg3Date: string | null; // date-time
+            dg4Date: string; // date-time
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
@@ -524,7 +522,7 @@ declare namespace Components {
         }
         export interface UpdateProjectDto {
             name: string;
-            referenceCaseId: string; // uuid
+            referenceCaseId: string | null; // uuid
             description: string;
             country: string;
             currency: Currency /* int32 */;
@@ -550,7 +548,7 @@ declare namespace Components {
         }
         export interface UpdateProjectMemberDto {
             role: ProjectMemberRole /* int32 */;
-            userId: string; // uuid
+            azureAdUserId: string; // uuid
         }
         export interface UpdateRevisionDto {
             name: string;

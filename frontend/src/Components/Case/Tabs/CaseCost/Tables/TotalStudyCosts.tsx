@@ -33,8 +33,8 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     useEffect(() => {
         const totalFeasibilityAndConceptStudiesData = apiData.totalFeasibilityAndConceptStudies
         const totalFeasibilityAndConceptStudiesOverrideData = apiData.totalFeasibilityAndConceptStudiesOverride
-        const totalFEEDStudiesData = apiData.totalFEEDStudies
-        const totalFEEDStudiesOverrideData = apiData.totalFEEDStudiesOverride
+        const totalFeedStudiesData = apiData.totalFeedStudies
+        const totalFeedStudiesOverrideData = apiData.totalFeedStudiesOverride
         const totalOtherStudiesCostProfileData = apiData.totalOtherStudiesCostProfile
         const caseData = apiData.case
 
@@ -53,12 +53,12 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             {
                 profileName: "FEED studies (DG2-DG3)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                profile: totalFEEDStudiesData,
+                profile: totalFeedStudiesData,
                 resourceName: ProfileTypes.TotalFEEDStudiesOverride,
                 resourceId: caseData.caseId,
                 resourcePropertyKey: ProfileTypes.TotalFEEDStudiesOverride,
                 overridable: true,
-                overrideProfile: totalFEEDStudiesOverrideData,
+                overrideProfile: totalFeedStudiesOverrideData,
                 editable: true,
             },
             {
@@ -79,7 +79,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={studyTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Total study cost"
             gridRef={studyGridRef}

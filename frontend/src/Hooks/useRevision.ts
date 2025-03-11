@@ -22,7 +22,6 @@ export const useRevisions = () => {
     const navigateToRevision = async (currentRevisionId: string) => {
         if (revisionId !== currentRevisionId) {
             setIsRevision(true)
-            await queryClient.invalidateQueries({ queryKey: ["projectApiData", projectId] })
             await queryClient.invalidateQueries({ queryKey: ["revisionApiData", currentRevisionId] })
         }
         navigateToRevisionPath(currentRevisionId)
@@ -42,7 +41,6 @@ export const useRevisions = () => {
 
     const exitRevisionView = () => {
         setIsRevision(false)
-        queryClient.invalidateQueries({ queryKey: ["projectApiData", projectId] })
         navigateToProject()
     }
 

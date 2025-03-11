@@ -67,7 +67,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId, resourceObject: newResourceObject })
         if (result.success) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", revisionAndProjectData.projectId] },
+                { queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId] },
             )
         }
     }

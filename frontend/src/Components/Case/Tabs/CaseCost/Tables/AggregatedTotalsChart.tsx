@@ -41,15 +41,15 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             const costProfiles = {
                 studyProfiles: mergeTimeseriesList([
                     (apiData.totalFeasibilityAndConceptStudiesOverride?.override ? apiData.totalFeasibilityAndConceptStudiesOverride : apiData.totalFeasibilityAndConceptStudies),
-                    (apiData.totalFEEDStudiesOverride?.override ? apiData.totalFEEDStudiesOverride : apiData.totalFEEDStudies),
+                    (apiData.totalFeedStudiesOverride?.override ? apiData.totalFeedStudiesOverride : apiData.totalFeedStudies),
                     apiData.totalOtherStudiesCostProfile,
                 ]),
                 opexProfiles: mergeTimeseriesList([
                     apiData.historicCostCostProfile,
                     (apiData.wellInterventionCostProfileOverride?.override ? apiData.wellInterventionCostProfileOverride : apiData.wellInterventionCostProfile),
                     (apiData.offshoreFacilitiesOperationsCostProfileOverride?.override ? apiData.offshoreFacilitiesOperationsCostProfileOverride : apiData.offshoreFacilitiesOperationsCostProfile),
-                    apiData.onshoreRelatedOPEXCostProfile,
-                    apiData.additionalOPEXCostProfile,
+                    apiData.onshoreRelatedOpexCostProfile,
+                    apiData.additionalOpexCostProfile,
                 ]),
                 cessationProfiles: mergeTimeseriesList([
                     (apiData.cessationWellsCostOverride?.override ? apiData.cessationWellsCostOverride : apiData.cessationWellsCost),
@@ -150,7 +150,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         }
     }, [apiData, tableYears, revisionAndProjectData])
 
-    const dg4Year = getYearFromDateString(apiData.case.dG4Date)
+    const dg4Year = getYearFromDateString(apiData.case.dg4Date)
     const incomeProfile = apiData.calculatedTotalIncomeCostProfileUsd
     const costProfile = apiData.calculatedTotalCostCostProfileUsd
     const discountedCashflowData = apiData.calculatedDiscountedCashflowService

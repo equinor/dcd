@@ -20,7 +20,6 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     apiData,
 }) => {
     const revisionAndProjectData = useDataFetch()
-
     const [developmentTimeSeriesData, setDevelopmentTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
@@ -33,6 +32,10 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         const wellProjectWaterInjectorCostOverrideData = apiData.waterInjectorCostProfileOverride
         const wellProjectGasInjectorCostData = apiData.gasInjectorCostProfile
         const wellProjectGasInjectorCostOverrideData = apiData.gasInjectorCostProfileOverride
+        const rigUpgradeCostData = apiData.developmentRigUpgradingCostProfile
+        const rigUpgradeCostOverrideData = apiData.developmentRigUpgradingCostProfileOverride
+        const rigMobDemobCostData = apiData.developmentRigMobDemob
+        const rigMobDemobCostOverrideData = apiData.developmentRigMobDemobOverride
 
         if (!caseId) {
             console.error("No well project data")
@@ -40,6 +43,28 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         }
 
         const newDevelopmentTimeSeriesData: ITimeSeriesTableData[] = [
+            {
+                profileName: "Rig upgrade",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                profile: rigUpgradeCostData,
+                resourceName: ProfileTypes.DevelopmentRigUpgradingCostProfileOverride,
+                resourceId: caseId,
+                resourcePropertyKey: ProfileTypes.DevelopmentRigUpgradingCostProfileOverride,
+                editable: true,
+                overridable: true,
+                overrideProfile: rigUpgradeCostOverrideData,
+            },
+            {
+                profileName: "Rig mob/demob",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                profile: rigMobDemobCostData,
+                resourceName: ProfileTypes.DevelopmentRigMobDemobOverride,
+                resourceId: caseId,
+                resourcePropertyKey: ProfileTypes.DevelopmentRigMobDemobOverride,
+                editable: true,
+                overridable: true,
+                overrideProfile: rigMobDemobCostOverrideData,
+            },
             {
                 profileName: "Oil producer",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
@@ -52,17 +77,6 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 editable: true,
             },
             {
-                profileName: "Gas producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                profile: wellProjectGasProducerCostData,
-                resourceName: ProfileTypes.GasProducerCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.GasProducerCostProfileOverride,
-                overridable: true,
-                overrideProfile: wellProjectGasProducerCostOverrideData,
-                editable: true,
-            },
-            {
                 profileName: "Water injector",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
@@ -71,6 +85,17 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
                 resourcePropertyKey: ProfileTypes.WaterInjectorCostProfileOverride,
                 overridable: true,
                 overrideProfile: wellProjectWaterInjectorCostOverrideData,
+                editable: true,
+            },
+            {
+                profileName: "Gas producer",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                profile: wellProjectGasProducerCostData,
+                resourceName: ProfileTypes.GasProducerCostProfileOverride,
+                resourceId: caseId,
+                resourcePropertyKey: ProfileTypes.GasProducerCostProfileOverride,
+                overridable: true,
+                overrideProfile: wellProjectGasProducerCostOverrideData,
                 editable: true,
             },
             {
@@ -92,7 +117,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={developmentTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Development well cost"
             gridRef={developmentWellsGridRef}

@@ -44,19 +44,19 @@ const RolePanel = ({
                 {manuallyAddedPeople && manuallyAddedPeople.length > 0 ? (
                     <PeopleContainer>
                         {manuallyAddedPeople.filter((p) => !p.isPmt).map((person) => (
-                            <PersonListItem key={person.userId} azureId={person.userId}>
+                            <PersonListItem key={person.azureAdUserId} azureId={person.azureAdUserId}>
                                 {canEdit() && (
                                     <>
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
                                             <Button
                                                 variant="ghost_icon"
-                                                onClick={() => handleSwitchPerson(person.userId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
+                                                onClick={() => handleSwitchPerson(person.azureAdUserId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
                                             >
                                                 <Icon data={swap_horizontal} />
                                             </Button>
                                         </Tooltip>
                                         <Tooltip title={`Remove ${isViewers ? "viewer" : "editor"}`}>
-                                            <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
+                                            <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.azureAdUserId)}>
                                                 <Icon data={delete_to_trash} />
                                             </Button>
                                         </Tooltip>
@@ -72,7 +72,7 @@ const RolePanel = ({
                     <>
                         <Typography variant="h6">PMT members from the project orgchart:</Typography>
                         {
-                            orgChartPeople.map((p) => (<PersonListItem key={p.userId} azureId={p.userId} />))
+                            orgChartPeople.map((p) => (<PersonListItem key={p.azureAdUserId} azureId={p.azureAdUserId} />))
                         }
                     </>
                 ) : <Typography variant="h6">No PMT members from the project orgchart found</Typography>}

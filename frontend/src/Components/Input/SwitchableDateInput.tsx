@@ -1,4 +1,11 @@
-import React, { ChangeEventHandler, useState } from "react"
+import React, {
+    ChangeEventHandler,
+    useState,
+    useEffect,
+    memo,
+    useCallback,
+    useMemo,
+} from "react"
 import { InputWrapper, DatePicker } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import {
@@ -16,6 +23,7 @@ interface SwitchableDateInputProps {
     label: string
     resourcePropertyKey: ResourcePropertyKey
     onChange: ChangeEventHandler<HTMLInputElement>
+    required?: boolean
     min?: string
     max?: string
 }
@@ -27,20 +35,48 @@ const toScheduleValue = (value: Date | undefined): string | undefined => {
     return dateString
 }
 
-const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
+const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
     value,
     label,
     resourcePropertyKey,
     onChange,
+    required = false,
     min,
     max,
 }) => {
     const [hasError, setHasError] = useState(false)
     const [helperText, setHelperText] = useState("\u200B")
-    const [localValue, setLocalValue] = useState<string | undefined>(toScheduleValue(value))
+    const [localValue, setLocalValue] = useState<string | undefined>(() => toScheduleValue(value))
     const { setSnackBarMessage } = useAppStore()
 
-    const validateInput = (newValue: number) => {
+    const formattedValue = useMemo(
+        () => (localValue ? formatDate(localValue) : ""),
+        [localValue],
+    )
+
+    const datePickerValue = useMemo(
+        () => (localValue ? dateStringToDateUtc(localValue) : undefined),
+        [localValue],
+    )
+
+    const minValue = useMemo(
+        () => (min ? dateStringToDateUtc(min) : undefined),
+        [min],
+    )
+
+    const maxValue = useMemo(
+        () => (max ? dateStringToDateUtc(max) : undefined),
+        [max],
+    )
+
+    useEffect(() => {
+        const newValue = toScheduleValue(value)
+        if (newValue !== localValue) {
+            setLocalValue(newValue)
+        }
+    }, [value, localValue])
+
+    const validateInput = useCallback((newValue: number) => {
         if (!isWithinRange(newValue, 2010, 2110)) {
             setHelperText(`(min: ${2010}, max: ${2110})`)
             setHasError(true)
@@ -50,9 +86,9 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         setHelperText("\u200B")
 
         return true
-    }
+    }, [])
 
-    const handleDateChange = (date: Date | null) => {
+    const handleDateChange = useCallback((date: Date | null) => {
         if (!date) {
             setLocalValue(undefined)
             onChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)
@@ -67,7 +103,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         const dateString = date.toISOString()
         setLocalValue(dateString)
         onChange({ target: { value: dateString } } as React.ChangeEvent<HTMLInputElement>)
-    }
+    }, [onChange, validateInput, label, setSnackBarMessage])
 
     return (
         <InputWrapper
@@ -77,20 +113,25 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
             }}
         >
             <InputSwitcher
-                value={localValue ? formatDate(localValue) : ""}
+                value={formattedValue}
                 label={label}
             >
                 <DatePicker
                     id={resourcePropertyKey}
-                    value={localValue ? dateStringToDateUtc(localValue) : undefined}
+                    value={datePickerValue}
                     onChange={handleDateChange}
-                    minValue={min ? dateStringToDateUtc(min) : undefined}
-                    maxValue={max ? dateStringToDateUtc(max) : undefined}
-                    formatOptions={{ year: "numeric", month: "2-digit", day: "2-digit" }}
+                    minValue={minValue}
+                    maxValue={maxValue}
+                    formatOptions={{ day: "2-digit", month: "long", year: "numeric" }}
+                    locale="nb-NO"
+                    timezone="Europe/Oslo"
+                    hideClearButton={required}
                 />
             </InputSwitcher>
         </InputWrapper>
     )
-}
+})
+
+SwitchableDateInput.displayName = "SwitchableDateInput"
 
 export default SwitchableDateInput

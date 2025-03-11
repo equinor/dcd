@@ -78,7 +78,7 @@ const CaseProductionProfilesTab = () => {
                     apiData.deferredOilProduction,
                     apiData.deferredGasProduction,
                 ],
-                getYearFromDateString(apiData.case.dG4Date),
+                getYearFromDateString(apiData.case.dg4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -108,15 +108,15 @@ const CaseProductionProfilesTab = () => {
 
     const productionProfilesChartData = () => {
         const dataArray: object[] = []
-        if (caseData.dG4Date === undefined) { return dataArray }
+        if (caseData.dg4Date === undefined) { return dataArray }
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
-                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
-                additionalOilProduction: setValueToCorrespondingYear(additionalOilProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
-                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
-                additionalGasProduction: setValueToCorrespondingYear(additionalGasProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
-                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
+                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, getYearFromDateString(caseData.dg4Date)),
+                additionalOilProduction: setValueToCorrespondingYear(additionalOilProductionData, i, startYear, getYearFromDateString(caseData.dg4Date)),
+                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, getYearFromDateString(caseData.dg4Date)),
+                additionalGasProduction: setValueToCorrespondingYear(additionalGasProductionData, i, startYear, getYearFromDateString(caseData.dg4Date)),
+                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, getYearFromDateString(caseData.dg4Date)),
             })
         }
         return dataArray
@@ -124,12 +124,12 @@ const CaseProductionProfilesTab = () => {
 
     const injectionProfilesChartData = () => {
         const dataArray: object[] = []
-        if (caseData.dG4Date === undefined) { return dataArray }
+        if (caseData.dg4Date === undefined) { return dataArray }
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
                 waterInjection:
-                    setValueToCorrespondingYear(waterInjectionData, i, startYear, getYearFromDateString(caseData.dG4Date)),
+                    setValueToCorrespondingYear(waterInjectionData, i, startYear, getYearFromDateString(caseData.dg4Date)),
             })
         }
         return dataArray

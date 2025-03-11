@@ -40,9 +40,9 @@ const AccessManagementTab = () => {
         [projectData],
     )
 
-    const handleRemovePerson = (userId: string) => {
-        if (!projectId) { return }
-        deletePerson(projectId, userId)
+    const handleRemovePerson = (azureAdUserId: string) => {
+        if (!projectId || !fusionProjectId) { return }
+        deletePerson(projectId, fusionProjectId, azureAdUserId)
     }
 
     const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
@@ -51,26 +51,35 @@ const AccessManagementTab = () => {
         if (
             !personToAdd
             || !projectId
-            || projectData?.projectMembers.some((p) => p.userId === personToAdd)
-        ) {
-            return
-        }
+            || !fusionProjectId
+            || projectData?.projectMembers.some((p) => p.azureAdUserId === personToAdd)
+        ) { return }
 
-        addPerson(projectId, personToAdd, role)
+        addPerson(projectId, fusionProjectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = (personId: string, role: ProjectMemberRole) => {
-        if (!personId || !projectId) { return }
-        updatePerson(projectId, personId, role)
+    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole) => {
+        if (
+            !azureAdUserId
+            || !projectId
+            || !fusionProjectId
+        ) { return }
+
+        updatePerson(projectId, fusionProjectId, azureAdUserId, role)
     }
 
     // This is used to synchronize PMT members to projects
     useEffect(
         () => {
-            if (!projectId || !fusionProjectId || !currentContext?.id || !currentContext?.externalId) { return }
-            if (fusionProjectId !== currentContext.externalId) { return }
+            if (
+                !projectId
+                || !fusionProjectId
+                || !currentContext?.id
+                || !currentContext?.externalId
+                || fusionProjectId !== currentContext.externalId
+            ) { return }
 
-            syncPmtMembers(projectId, currentContext.id)
+            syncPmtMembers(projectId, fusionProjectId, currentContext.id)
         },
         [projectId, currentContext, fusionProjectId],
     )

@@ -19,7 +19,6 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
 
         existingCase.Name = updateCaseDto.Name;
         existingCase.Description = updateCaseDto.Description;
-        existingCase.ReferenceCase = updateCaseDto.ReferenceCase;
         existingCase.Archived = updateCaseDto.Archived;
         existingCase.ArtificialLift = updateCaseDto.ArtificialLift;
         existingCase.ProductionStrategyOverview = updateCaseDto.ProductionStrategyOverview;
@@ -28,7 +27,7 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.WaterInjectorCount = updateCaseDto.WaterInjectorCount;
         existingCase.FacilitiesAvailability = updateCaseDto.FacilitiesAvailability;
         existingCase.CapexFactorFeasibilityStudies = updateCaseDto.CapexFactorFeasibilityStudies;
-        existingCase.CapexFactorFEEDStudies = updateCaseDto.CapexFactorFEEDStudies;
+        existingCase.CapexFactorFeedStudies = updateCaseDto.CapexFactorFeedStudies;
         existingCase.Npv = updateCaseDto.Npv;
         existingCase.NpvOverride = updateCaseDto.NpvOverride;
         existingCase.BreakEven = updateCaseDto.BreakEven;
@@ -36,17 +35,17 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.Host = updateCaseDto.Host;
         existingCase.AverageCo2Intensity = updateCaseDto.AverageCo2Intensity;
         existingCase.DiscountedCashflow = updateCaseDto.DiscountedCashflow;
-        existingCase.DGADate = updateCaseDto.DGADate;
-        existingCase.DGBDate = updateCaseDto.DGBDate;
-        existingCase.DGCDate = updateCaseDto.DGCDate;
-        existingCase.APBODate = updateCaseDto.APBODate;
-        existingCase.BORDate = updateCaseDto.BORDate;
-        existingCase.VPBODate = updateCaseDto.VPBODate;
-        existingCase.DG0Date = updateCaseDto.DG0Date;
-        existingCase.DG1Date = updateCaseDto.DG1Date;
-        existingCase.DG2Date = updateCaseDto.DG2Date;
-        existingCase.DG3Date = updateCaseDto.DG3Date;
-        existingCase.DG4Date = updateCaseDto.DG4Date;
+        existingCase.DgaDate = updateCaseDto.DgaDate;
+        existingCase.DgbDate = updateCaseDto.DgbDate;
+        existingCase.DgcDate = updateCaseDto.DgcDate;
+        existingCase.ApboDate = updateCaseDto.ApboDate;
+        existingCase.BorDate = updateCaseDto.BorDate;
+        existingCase.VpboDate = updateCaseDto.VpboDate;
+        existingCase.Dg0Date = updateCaseDto.Dg0Date;
+        existingCase.Dg1Date = updateCaseDto.Dg1Date;
+        existingCase.Dg2Date = updateCaseDto.Dg2Date;
+        existingCase.Dg3Date = updateCaseDto.Dg3Date;
+        existingCase.Dg4Date = updateCaseDto.Dg4Date;
         existingCase.SharepointFileId = updateCaseDto.SharepointFileId;
         existingCase.SharepointFileName = updateCaseDto.SharepointFileName;
         existingCase.SharepointFileUrl = updateCaseDto.SharepointFileUrl;

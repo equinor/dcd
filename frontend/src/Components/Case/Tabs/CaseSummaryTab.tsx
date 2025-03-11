@@ -139,16 +139,16 @@ const CaseSummaryTab = () => {
                     apiData.cessationOnshoreFacilitiesCostProfile,
                     apiData.totalFeasibilityAndConceptStudiesOverride,
                     apiData.totalFeasibilityAndConceptStudies,
-                    apiData.totalFEEDStudiesOverride,
-                    apiData.totalFEEDStudies,
+                    apiData.totalFeedStudiesOverride,
+                    apiData.totalFeedStudies,
                     apiData.totalOtherStudiesCostProfile,
                     apiData.historicCostCostProfile,
                     handleOffshoreOpexPlussWellIntervention(),
-                    apiData.onshoreRelatedOPEXCostProfile,
-                    apiData.additionalOPEXCostProfile,
+                    apiData.onshoreRelatedOpexCostProfile,
+                    apiData.additionalOpexCostProfile,
                     apiData.onshorePowerSupplyCostProfile,
                 ],
-                getYearFromDateString(caseData.dG4Date),
+                getYearFromDateString(caseData.dg4Date),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -162,24 +162,51 @@ const CaseSummaryTab = () => {
             const totalExplorationCostData = handleTotalExplorationCost()
             const totalDrillingCostData = handleDrilling()
             const offshoreFacilitiesCostData = handleOffshoreFacilitiesCost()
+            const projectSpecificDrillingCostData = apiData?.projectSpecificDrillingCostProfile
+            const explorationRigUpgradingCostData = apiData?.explorationRigUpgradingCostProfile
+            const explorationRigUpgradingCostDataOverride = apiData?.explorationRigUpgradingCostProfileOverride
+            const explorationRigMobDemobCostData = apiData?.explorationRigMobDemobOverride
+            const explorationRigMobDemobCostDataOverride = apiData?.explorationRigMobDemobOverride
+            const developmentRigUpgradingCostData = apiData?.developmentRigUpgradingCostProfileOverride
+            const developmentRigUpgradingCostDataOverride = apiData?.developmentRigUpgradingCostProfileOverride
+            const developmentRigMobDemobCostData = apiData?.developmentRigMobDemobOverride
+            const developmentRigMobDemobCostDataOverride = apiData?.developmentRigMobDemobOverride
             const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
             const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
             const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
             const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
             const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
-            const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
-            const totalFEEDStudiesData = apiData?.totalFEEDStudies
+            const totalFeedStudiesOverrideData = apiData?.totalFeedStudiesOverride
+            const totalFeedStudiesData = apiData?.totalFeedStudies
             const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
             const historicCostCostProfileData = apiData?.historicCostCostProfile
             const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
-            const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
-            const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
+            const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOpexCostProfile
+            const additionalOPEXCostProfileData = apiData?.additionalOpexCostProfile
             const onshorePowerSupplyCostProfileData = apiData?.onshorePowerSupplyCostProfile
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                     profile: totalExplorationCostData,
+                    group: "Exploration",
+                },
+                {
+                    profileName: "project specific drilling cost",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: projectSpecificDrillingCostData,
+                    group: "Exploration",
+                },
+                {
+                    profileName: "rig upgrade",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: explorationRigUpgradingCostDataOverride?.override ? explorationRigUpgradingCostDataOverride : explorationRigUpgradingCostData,
+                    group: "Exploration",
+                },
+                {
+                    profileName: "rig mob/demob",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: explorationRigMobDemobCostDataOverride?.override ? explorationRigMobDemobCostDataOverride : explorationRigMobDemobCostData,
                     group: "Exploration",
                 },
             ]
@@ -189,6 +216,18 @@ const CaseSummaryTab = () => {
                     profileName: "Drilling",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                     profile: totalDrillingCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Rig upgrade",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: developmentRigUpgradingCostDataOverride?.override ? developmentRigUpgradingCostDataOverride : developmentRigUpgradingCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Rig mob/demob",
+                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                    profile: developmentRigMobDemobCostDataOverride?.override ? developmentRigMobDemobCostDataOverride : developmentRigMobDemobCostData,
                     group: "CAPEX",
                 },
                 {
@@ -227,7 +266,7 @@ const CaseSummaryTab = () => {
                 {
                     profileName: "FEED studies (DG2-DG3)",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                    profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
+                    profile: totalFeedStudiesOverrideData?.override ? totalFeedStudiesOverrideData : totalFeedStudiesData,
                     group: "Study cost",
                 },
                 {
@@ -348,7 +387,7 @@ const CaseSummaryTab = () => {
             <Grid size={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}
-                    dg4Year={getYearFromDateString(caseData.dG4Date)}
+                    dg4Year={getYearFromDateString(caseData.dg4Date)}
                     tableYears={tableYears}
                     includeFooter={false}
                 />

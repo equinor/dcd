@@ -120,7 +120,7 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("APBODate")
+                    b.Property<DateTime?>("ApboDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Archived")
@@ -132,7 +132,7 @@ namespace api.Migrations
                     b.Property<double>("AverageCo2Intensity")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("BORDate")
+                    b.Property<DateTime?>("BorDate")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("BreakEven")
@@ -141,10 +141,10 @@ namespace api.Migrations
                     b.Property<double?>("BreakEvenOverride")
                         .HasColumnType("float");
 
-                    b.Property<double>("CapexFactorFEEDStudies")
+                    b.Property<double>("CapexFactorFeasibilityStudies")
                         .HasColumnType("float");
 
-                    b.Property<double>("CapexFactorFeasibilityStudies")
+                    b.Property<double>("CapexFactorFeedStudies")
                         .HasColumnType("float");
 
                     b.Property<string>("CreatedBy")
@@ -153,33 +153,33 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DG0Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG1Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG2Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DG3Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DG4Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DGADate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DGBDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DGCDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Dg0Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Dg1Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Dg2Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Dg3Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Dg4Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DgaDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DgbDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DgcDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("DiscountedCashflow")
                         .HasColumnType("float");
@@ -221,9 +221,6 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("ReferenceCase")
-                        .HasColumnType("bit");
-
                     b.Property<string>("SharepointFileId")
                         .HasColumnType("nvarchar(max)");
 
@@ -251,7 +248,7 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("VPBODate")
+                    b.Property<DateTime?>("VpboDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("WaterInjectorCount")
@@ -742,9 +739,6 @@ namespace api.Migrations
                     b.Property<double>("Co2Vented")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("CommonLibraryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("CommonLibraryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -815,7 +809,7 @@ namespace api.Migrations
                     b.Property<int>("ProjectPhase")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ReferenceCaseId")
+                    b.Property<Guid?>("ReferenceCaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SharepointSiteUrl")
@@ -877,6 +871,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AzureAdUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -898,14 +895,11 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("UserId", "ProjectId")
+                    b.HasIndex("AzureAdUserId", "ProjectId")
                         .IsUnique();
 
                     b.ToTable("ProjectMembers");

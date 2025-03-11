@@ -25,8 +25,8 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const wellInterventionCostProfileOverrideData = apiData.wellInterventionCostProfileOverride
         const offshoreFacilitiesOperationsCostProfileData = apiData.offshoreFacilitiesOperationsCostProfile
         const offshoreFacilitiesOperationsCostProfileOverrideData = apiData.offshoreFacilitiesOperationsCostProfileOverride
-        const onshoreRelatedOPEXCostProfileData = apiData.onshoreRelatedOPEXCostProfile
-        const additionalOPEXCostProfileData = apiData.additionalOPEXCostProfile
+        const onshoreRelatedOpexCostProfileData = apiData.onshoreRelatedOpexCostProfile
+        const additionalOpexCostProfileData = apiData.additionalOpexCostProfile
         const caseData = apiData.case
 
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
@@ -65,7 +65,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             {
                 profileName: "Onshore related OPEX (input req.)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                profile: onshoreRelatedOPEXCostProfileData,
+                profile: onshoreRelatedOpexCostProfileData,
                 resourceName: ProfileTypes.OnshoreRelatedOPEXCostProfile,
                 resourceId: caseData.caseId,
                 resourcePropertyKey: ProfileTypes.OnshoreRelatedOPEXCostProfile,
@@ -75,7 +75,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             {
                 profileName: "Additional OPEX (input req.)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                profile: additionalOPEXCostProfileData,
+                profile: additionalOpexCostProfileData,
                 resourceName: ProfileTypes.AdditionalOPEXCostProfile,
                 resourceId: caseData.caseId,
                 resourcePropertyKey: ProfileTypes.AdditionalOPEXCostProfile,
@@ -90,7 +90,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={opexTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="OPEX cost"
             gridRef={opexGridRef}

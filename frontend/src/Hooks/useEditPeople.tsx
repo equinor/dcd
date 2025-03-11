@@ -6,35 +6,38 @@ import { ProjectMemberRole } from "@/Models/enums"
 
 type AddPersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: {
-        userId: string;
+        azureAdUserId: string;
         role: ProjectMemberRole;
     };
 };
 
 type UpdatePersonVariables = {
     projectId: string;
+    fusionProjectId: string;
     body: {
-        userId: string;
+        azureAdUserId: string;
         role: ProjectMemberRole;
     };
 };
 
 type DeletePersonVariables = {
     projectId: string;
-    userId: string;
+    fusionProjectId: string;
+    azureAdUserId: string;
 };
 
 export const useEditPeople = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsSaving } = useAppStore()
 
-    const syncPmtMembers = async (projectId: string, contextId: string) => {
+    const syncPmtMembers = async (projectId: string, fusionProjectId: string, contextId: string) => {
         try {
             const syncPmt = await GetOrgChartMembersService().getOrgChartPeople(projectId, contextId)
             if (syncPmt) {
                 queryClient.invalidateQueries(
-                    { queryKey: ["projectApiData", projectId] },
+                    { queryKey: ["projectApiData", fusionProjectId] },
                 )
             }
         } catch (error) {
@@ -47,13 +50,13 @@ export const useEditPeople = () => {
 
     const updatePersonMutationFn = async ({ projectId, body }: UpdatePersonVariables) => GetProjectMembersService().updatePerson(projectId, body)
 
-    const deletePersonMutationFn = async ({ projectId, userId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, userId)
+    const deletePersonMutationFn = async ({ projectId, azureAdUserId }: DeletePersonVariables) => GetProjectMembersService().deletePerson(projectId, azureAdUserId)
 
     const addPersonMutation = useMutation({
         mutationFn: addPersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -68,7 +71,7 @@ export const useEditPeople = () => {
         mutationFn: updatePersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -83,7 +86,7 @@ export const useEditPeople = () => {
         mutationFn: deletePersonMutationFn,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", variables.projectId] },
+                { queryKey: ["projectApiData", variables.fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -96,28 +99,31 @@ export const useEditPeople = () => {
 
     const addPerson = (
         projectId: string,
-        userId: string,
+        fusionProjectId: string,
+        azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        addPersonMutation.mutate({ projectId, body: { userId, role } })
+        addPersonMutation.mutate({ projectId, fusionProjectId, body: { azureAdUserId, role } })
     }
 
     const updatePerson = (
         projectId: string,
-        userId: string,
+        fusionProjectId: string,
+        azureAdUserId: string,
         role: ProjectMemberRole,
     ) => {
         setIsSaving(true)
-        updatePersonMutation.mutate({ projectId, body: { userId, role } })
+        updatePersonMutation.mutate({ projectId, fusionProjectId, body: { azureAdUserId, role } })
     }
 
     const deletePerson = (
         projectId: string,
-        userId: string,
+        fusionProjectId: string,
+        azureAdUserId: string,
     ) => {
         setIsSaving(true)
-        deletePersonMutation.mutate({ projectId, userId })
+        deletePersonMutation.mutate({ projectId, fusionProjectId, azureAdUserId })
     }
 
     return {

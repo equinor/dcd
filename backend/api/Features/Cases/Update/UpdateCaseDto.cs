@@ -8,7 +8,6 @@ public class UpdateCaseDto
 {
     [Required] public required string Name { get; set; }
     [Required] public required string Description { get; set; }
-    [Required] public required bool ReferenceCase { get; set; }
     [Required] public required bool Archived { get; set; }
     [Required] public required ArtificialLift ArtificialLift { get; set; }
     [Required] public required ProductionStrategyOverview ProductionStrategyOverview { get; set; }
@@ -17,7 +16,7 @@ public class UpdateCaseDto
     [Required] public required int WaterInjectorCount { get; set; }
     [Required] public required double FacilitiesAvailability { get; set; }
     [Required] public required double CapexFactorFeasibilityStudies { get; set; }
-    [Required] public required double CapexFactorFEEDStudies { get; set; }
+    [Required] public required double CapexFactorFeedStudies { get; set; }
     [Required] public required double Npv { get; set; }
     public required double? NpvOverride { get; set; }
     [Required] public required double BreakEven { get; set; }
@@ -25,17 +24,17 @@ public class UpdateCaseDto
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
     [Required] public required double DiscountedCashflow { get; set; }
-    public required DateTime? DGADate { get; set; }
-    public required DateTime? DGBDate { get; set; }
-    public required DateTime? DGCDate { get; set; }
-    public required DateTime? APBODate { get; set; }
-    public required DateTime? BORDate { get; set; }
-    public required DateTime? VPBODate { get; set; }
-    public required DateTime? DG0Date { get; set; }
-    public required DateTime? DG1Date { get; set; }
-    public required DateTime? DG2Date { get; set; }
-    public required DateTime? DG3Date { get; set; }
-    [Required] public required DateTime DG4Date { get; set; }
+    public required DateTime? DgaDate { get; set; }
+    public required DateTime? DgbDate { get; set; }
+    public required DateTime? DgcDate { get; set; }
+    public required DateTime? ApboDate { get; set; }
+    public required DateTime? BorDate { get; set; }
+    public required DateTime? VpboDate { get; set; }
+    public required DateTime? Dg0Date { get; set; }
+    public required DateTime? Dg1Date { get; set; }
+    public required DateTime? Dg2Date { get; set; }
+    public required DateTime? Dg3Date { get; set; }
+    [Required] public required DateTime Dg4Date { get; set; }
     public required string? SharepointFileId { get; set; }
     public required string? SharepointFileName { get; set; }
     public required string? SharepointFileUrl { get; set; }

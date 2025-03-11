@@ -7,10 +7,10 @@ interface props {
 const CapexFactorFeedStudies: React.FC<props> = ({ caseData }) => (
     <SwitchableNumberInput
         resourceName="case"
-        resourcePropertyKey="capexFactorFEEDStudies"
+        resourcePropertyKey="capexFactorFeedStudies"
         label="CAPEX factor FEED studies"
         previousResourceObject={caseData}
-        value={caseData.capexFactorFEEDStudies}
+        value={caseData.capexFactorFeedStudies}
         integer={false}
         unit="%"
         min={0}

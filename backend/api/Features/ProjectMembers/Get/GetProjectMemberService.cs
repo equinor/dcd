@@ -16,24 +16,24 @@ public class GetProjectMemberService(DcdDbContext context)
             .Select(x => new ProjectMemberDto
             {
                 ProjectId = x.ProjectId,
-                UserId = x.UserId,
+                AzureAdUserId = x.AzureAdUserId,
                 Role = x.Role,
                 IsPmt = x.FromOrgChart
             })
             .ToListAsync();
     }
 
-    public async Task<ProjectMemberDto> GetProjectMember(Guid projectId, Guid projectMemberId)
+    public async Task<ProjectMemberDto> GetProjectMember(Guid projectId, Guid azureAdUserId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         return await context.ProjectMembers
             .Where(x => x.ProjectId == projectPk)
-            .Where(c => c.UserId == projectMemberId)
+            .Where(c => c.AzureAdUserId == azureAdUserId)
             .Select(x => new ProjectMemberDto
             {
                 ProjectId = x.ProjectId,
-                UserId = x.UserId,
+                AzureAdUserId = x.AzureAdUserId,
                 Role = x.Role,
                 IsPmt = x.FromOrgChart
             })

@@ -12,22 +12,21 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public bool ReferenceCase { get; set; }
     public bool Archived { get; set; }
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-    public DateTime? DGADate { get; set; }
-    public DateTime? DGBDate { get; set; }
-    public DateTime? DGCDate { get; set; }
-    public DateTime? APBODate { get; set; }
-    public DateTime? BORDate { get; set; }
-    public DateTime? VPBODate { get; set; }
-    public DateTime? DG0Date { get; set; }
-    public DateTime? DG1Date { get; set; }
-    public DateTime? DG2Date { get; set; }
-    public DateTime? DG3Date { get; set; }
-    public DateTime DG4Date { get; set; }
+    public DateTime? DgaDate { get; set; }
+    public DateTime? DgbDate { get; set; }
+    public DateTime? DgcDate { get; set; }
+    public DateTime? ApboDate { get; set; }
+    public DateTime? BorDate { get; set; }
+    public DateTime? VpboDate { get; set; }
+    public DateTime? Dg0Date { get; set; }
+    public DateTime? Dg1Date { get; set; }
+    public DateTime? Dg2Date { get; set; }
+    public DateTime? Dg3Date { get; set; }
+    public DateTime Dg4Date { get; set; }
 
     public ArtificialLift ArtificialLift { get; set; }
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
@@ -36,7 +35,7 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public int WaterInjectorCount { get; set; }
     public double FacilitiesAvailability { get; set; }
     public double CapexFactorFeasibilityStudies { get; set; }
-    public double CapexFactorFEEDStudies { get; set; }
+    public double CapexFactorFeedStudies { get; set; }
     public double Npv { get; set; }
     public double? NpvOverride { get; set; }
     public double BreakEven { get; set; }

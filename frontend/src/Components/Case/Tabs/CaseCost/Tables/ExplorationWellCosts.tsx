@@ -32,6 +32,11 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         const countryOfficeCostData = apiData.countryOfficeCost
         const projectSpecificDrillingCostProfileData = apiData.projectSpecificDrillingCostProfile
 
+        const rigUpgradeCostData = apiData.explorationRigUpgradingCostProfile
+        const rigUpgradeCostOverrideData = apiData.explorationRigUpgradingCostProfileOverride
+        const rigMobDemobCostData = apiData.explorationRigMobDemob
+        const rigMobDemobCostOverrideData = apiData.explorationRigMobDemobOverride
+
         const explorationWellCostProfileData = apiData.explorationWellCostProfile
         const appraisalWellCostProfileData = apiData.appraisalWellCostProfile
         const sidetrackCostProfileData = apiData.sidetrackCostProfile
@@ -84,6 +89,28 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 overridable: false,
             },
             {
+                profileName: "Rig upgrade",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                profile: rigUpgradeCostData,
+                resourceName: ProfileTypes.ExplorationRigUpgradingCostProfileOverride,
+                resourceId: caseId,
+                resourcePropertyKey: ProfileTypes.ExplorationRigUpgradingCostProfileOverride,
+                editable: true,
+                overridable: true,
+                overrideProfile: rigUpgradeCostOverrideData,
+            },
+            {
+                profileName: "Rig mob/demob",
+                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                profile: rigMobDemobCostData,
+                resourceName: ProfileTypes.ExplorationRigMobDemobOverride,
+                resourceId: caseId,
+                resourcePropertyKey: ProfileTypes.ExplorationRigMobDemobOverride,
+                editable: true,
+                overridable: true,
+                overrideProfile: rigMobDemobCostOverrideData,
+            },
+            {
                 profileName: "Exploration well",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: explorationWellCostProfileData,
@@ -121,7 +148,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={explorationTimeSeriesData}
-            dg4Year={getYearFromDateString(apiData.case.dG4Date)}
+            dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
             tableName="Exploration well cost"
             gridRef={explorationWellsGridRef}
