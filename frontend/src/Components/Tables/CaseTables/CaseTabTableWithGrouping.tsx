@@ -47,7 +47,7 @@ const CaseTabTableWithGrouping = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
-    const { setShowRevisionReminder } = useAppStore()
+    const { setShowRevisionReminder, isSaving } = useAppStore()
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const { canEdit } = useCanUserEdit()
@@ -153,10 +153,10 @@ const CaseTabTableWithGrouping = ({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, canEdit()),
+                editable: (params: any) => tableCellisEditable(params, canEdit(), isSaving),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
-                cellClass: (params: any) => (tableCellisEditable(params, canEdit()) ? "editableCell" : undefined),
+                cellClass: (params: any) => (tableCellisEditable(params, canEdit(), isSaving) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
         }
@@ -170,7 +170,7 @@ const CaseTabTableWithGrouping = ({
         setRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [allTimeSeriesData])
+    }, [allTimeSeriesData, isSaving])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
