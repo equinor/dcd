@@ -1,9 +1,10 @@
-import { useState, useCallback, useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { EditInstance, ResourceObject } from "@/Models/Interfaces"
 import { useSubmitToApi } from "./UseSubmitToApi"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { ITimeSeries, TimeSeriesEntry } from "@/Models/ITimeSeries"
+import { useEditQueue } from "@/Store/EditQueueContext"
 
 interface TableQueueProps {
     setIsSaving: (isSaving: boolean) => void
@@ -43,11 +44,11 @@ const categorizeTimeSeriesEntries = (queue: EditInstance[]): { timeseriesEntries
 const submitCampaignUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
     const rigUpgradingEdits = getLatestEdits(
         editQueue.filter((edit) => edit.resourcePropertyKey === "rigUpgradingProfile"),
-        (edit) => edit.resourceName,
+        (edit) => edit.resourceId + edit.resourceName,
     )
     const rigMobDemobEdits = getLatestEdits(
         editQueue.filter((edit) => edit.resourcePropertyKey === "rigMobDemobProfile"),
-        (edit) => edit.resourceName,
+        (edit) => edit.resourceId + edit.resourceName,
     )
 
     const allEdits = [...rigUpgradingEdits, ...rigMobDemobEdits]
@@ -136,8 +137,9 @@ const submitCaseUpdates = async (editQueue: EditInstance[], submitToApi: any, pr
 export const useTableQueue = ({
     isSaving, setIsSaving, gridRef,
 }: TableQueueProps) => {
-    const [editQueue, setEditQueue] = useState<EditInstance[]>([])
-    const [lastEditTime, setLastEditTime] = useState<number>(Date.now())
+    const {
+        editQueue, addToQueue: addToGlobalQueue, clearQueue, lastEditTime,
+    } = useEditQueue()
     const { submitToApi } = useSubmitToApi()
     const { projectId } = useProjectContext()
     const { caseId } = useParams()
@@ -164,17 +166,13 @@ export const useTableQueue = ({
             throw error
         } finally {
             setIsSaving(false)
-            setEditQueue([])
+            clearQueue()
         }
-    }, [editQueue, isSaving, submitToApi, setIsSaving, projectId, caseId])
+    }, [editQueue, isSaving, submitToApi, setIsSaving, projectId, caseId, clearQueue])
 
     const addToQueue = useCallback((edit: EditInstance) => {
-        setLastEditTime(Date.now())
-        setEditQueue((prev) => {
-            const newQueue = [...prev, edit]
-            return newQueue
-        })
-    }, [])
+        addToGlobalQueue(edit)
+    }, [addToGlobalQueue])
 
     useEffect(() => {
         if (editQueue.length === 0) { return }

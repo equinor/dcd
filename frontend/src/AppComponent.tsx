@@ -11,6 +11,7 @@ import { buildConfig } from "./Services/config"
 import { ModalContextProvider } from "./Store/ModalContext"
 import { ProjectContextProvider } from "./Store/ProjectContext"
 import { FeatureContextProvider } from "./Store/FeatureContext"
+import { EditQueueProvider } from "./Store/EditQueueContext"
 import Styles from "./styles"
 
 const AppComponent: FC = () => {
@@ -47,10 +48,12 @@ const AppComponent: FC = () => {
                 <ThemeProvider theme={theme}>
                     <ReactQueryDevtools />
                     <ProjectContextProvider>
-                        <ModalContextProvider>
-                            <Styles />
-                            <AppRouter />
-                        </ModalContextProvider>
+                        <EditQueueProvider>
+                            <ModalContextProvider>
+                                <Styles />
+                                <AppRouter />
+                            </ModalContextProvider>
+                        </EditQueueProvider>
                     </ProjectContextProvider>
                 </ThemeProvider>
             </FeatureContextProvider>
