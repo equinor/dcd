@@ -100,7 +100,7 @@ const CaseTabTable = memo(({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
 
     // Custom Hooks
-    const { editQueue, addToQueue, submitEditQueue } = useTableQueue({
+    const { addToQueue } = useTableQueue({
         isSaving,
         gridRef,
         setIsSaving,
@@ -184,24 +184,24 @@ const CaseTabTable = memo(({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, canEdit()),
+                editable: (params: any) => tableCellisEditable(params, canEdit(), isSaving),
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: !params.node.footer && validateInput(params, canEdit()),
+                    errorMsg: !params.node.footer && validateInput(params, canEdit(), isSaving),
                 }),
                 cellStyle: {
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (tableCellisEditable(params, canEdit()) ? "editableCell" : undefined),
+                cellClass: (params: any) => (tableCellisEditable(params, canEdit(), isSaving) ? "editableCell" : undefined),
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
-    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled, isSaving])
 
     // Event Handlers
     const handleCellValueChange = useCallback((event: any) => {
@@ -257,7 +257,7 @@ const CaseTabTable = memo(({
             sortable: true,
             filter: true,
             resizable: true,
-            editable: (params: any) => tableCellisEditable(params, canEdit()),
+            editable: (params: any) => tableCellisEditable(params, canEdit(), isSaving),
             onCellValueChanged: handleCellValueChange,
             suppressHeaderMenuButton: true,
             enableCellChangeFlash: canEdit(),
@@ -297,6 +297,7 @@ const CaseTabTable = memo(({
         setSelectedRow,
         setIsSidesheetOpen,
         isEditDisabled,
+        isSaving,
     ])
 
     // Effects
@@ -322,22 +323,6 @@ const CaseTabTable = memo(({
         setColumnDefs(generateTableYearColDefs())
     }, [generateTableYearColDefs])
 
-    useEffect(() => {
-        const containerRef = document.getElementById(tableName)?.parentElement
-
-        const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef && !containerRef.contains(event.target as Node) && editQueue.length > 0) {
-                submitEditQueue()
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-        }
-    }, [tableName, editQueue, submitEditQueue])
-
-    // Render
     return (
         <>
             <div className={styles.root}>

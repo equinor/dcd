@@ -216,14 +216,11 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
  *
  * @param params The parameters of the table cell.
  * @param editAllowed A boolean indicating if the table can be eddited by user.
+ * @param isSaving Optional parameter indicating if data is currently being saved.
  * @returns A boolean indicating if the cell is editable.
  * */
-export const tableCellisEditable = (params: any, editAllowed: boolean): boolean => {
-    if (!params || !params.node || !params.data) {
-        return false
-    }
-
-    if (params.node.footer) {
+export const tableCellisEditable = (params: any, editAllowed: boolean, isSaving?: boolean): boolean => {
+    if (!params || !params.node || !params.data || params.node.footer || isSaving) {
         return false
     }
 
@@ -234,9 +231,9 @@ export const tableCellisEditable = (params: any, editAllowed: boolean): boolean 
     return editAllowed && params.data.editable
 }
 
-export const validateInput = (params: any, editAllowed: boolean) => {
+export const validateInput = (params: any, editAllowed: boolean, isSaving?: boolean) => {
     const { value, data } = params
-    if (tableCellisEditable(params, editAllowed) && value) {
+    if (tableCellisEditable(params, editAllowed, isSaving) && value) {
         const rule = TABLE_VALIDATION_RULES[data.profileName]
         if (rule && (value < rule.min || value > rule.max)) {
             return `Value must be between ${rule.min} and ${rule.max}.`
