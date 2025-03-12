@@ -11,7 +11,6 @@ import {
 } from "@equinor/eds-icons"
 import styled from "styled-components"
 
-import { v4 as uuidv4 } from "uuid"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import CaseDropMenu from "./CaseDropMenu"
 import { GetProjectService } from "@/Services/ProjectService"
@@ -104,7 +103,6 @@ const CaseControls: React.FC<props> = ({
         resourceObject.name = name
         if (caseData) {
             addEdit({
-                uuid: uuidv4(),
                 resourceObject,
                 projectId,
                 resourceName: "case",

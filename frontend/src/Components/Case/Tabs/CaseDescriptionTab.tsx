@@ -2,7 +2,6 @@ import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
 import { useEffect, useState } from "react"
-import { v4 as uuidv4 } from "uuid"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
@@ -53,7 +52,6 @@ const CaseDescriptionTab = () => {
         resourceObject.description = newValue
 
         addEdit({
-            uuid: uuidv4(),
             resourceObject,
             projectId,
             resourceName: "case",

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Input } from "@equinor/eds-core-react"
-import { v4 as uuidv4 } from "uuid"
 import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
 import InputSwitcher from "./Components/InputSwitcher"
 import { useProjectContext } from "../../Store/ProjectContext"
@@ -41,7 +40,6 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
         resourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
 
         addEdit({
-            uuid: uuidv4(),
             resourceObject,
             projectId,
             resourceName,

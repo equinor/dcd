@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { useParams } from "react-router-dom"
-import { v4 as uuidv4 } from "uuid"
 import Modal from "./Modal"
 import useEditCase from "@/Hooks/useEditCase"
 import { useProjectContext } from "@/Store/ProjectContext"
@@ -34,7 +33,6 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
         resourceObject.override = !profile.override
         if (profile !== undefined) {
             addEdit({
-                uuid: uuidv4(),
                 projectId,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
