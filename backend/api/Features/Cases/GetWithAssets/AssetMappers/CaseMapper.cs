@@ -27,6 +27,8 @@ public static class CaseMapper
             FacilitiesAvailability = caseItem.FacilitiesAvailability,
             CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies,
             CapexFactorFeedStudies = caseItem.CapexFactorFeedStudies,
+            InitialYearsWithoutWellInterventionCost = caseItem.InitialYearsWithoutWellInterventionCost,
+            FinalYearsWithoutWellInterventionCost = caseItem.FinalYearsWithoutWellInterventionCost,
             Host = caseItem.Host,
             AverageCo2Intensity = caseItem.AverageCo2Intensity,
             DgaDate = caseItem.DgaDate,

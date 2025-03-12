@@ -17,6 +17,8 @@ public class UpdateCaseDto
     [Required] public required double FacilitiesAvailability { get; set; }
     [Required] public required double CapexFactorFeasibilityStudies { get; set; }
     [Required] public required double CapexFactorFeedStudies { get; set; }
+    [Required] public required double InitialYearsWithoutWellInterventionCost { get; set; }
+    [Required] public required double FinalYearsWithoutWellInterventionCost { get; set; }
     [Required] public required double Npv { get; set; }
     public required double? NpvOverride { get; set; }
     [Required] public required double BreakEven { get; set; }

@@ -13,18 +13,22 @@ public static class OpexCostProfileService
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(caseItem);
         var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(caseItem);
 
-        CalculateWellInterventionCostProfile(caseItem, developmentWells, lastYearOfProduction);
+        CalculateWellInterventionCostProfile(caseItem, developmentWells, firstYearOfProduction, lastYearOfProduction);
         CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);
     }
 
-    private static void CalculateWellInterventionCostProfile(Case caseItem, List<CampaignWell> developmentWells, int? lastYearOfProduction)
+    private static void CalculateWellInterventionCostProfile(Case caseItem, List<CampaignWell> developmentWells, int? firstYearOfProduction, int? lastYearOfProduction)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true)
         {
             return;
         }
 
+        var firstYear = firstYearOfProduction ?? 0;
         var lastYear = lastYearOfProduction ?? 0;
+
+        var initialYearsWithoutWellInterventionCost = caseItem.InitialYearsWithoutWellInterventionCost;
+        var finalYearsWithoutWellInterventionCost = caseItem.FinalYearsWithoutWellInterventionCost;
 
         if (developmentWells.Count == 0)
         {
@@ -45,21 +49,37 @@ public static class OpexCostProfileService
 
         var tempSeries = new TimeSeries
         {
-            StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
+            StartYear = firstYear,
             Values = wellInterventionCostsFromDrillingSchedule.Values
         };
 
-        var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
-        cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
+        var cumulativeWellsDrilled = GetCumulativeWellsDrilled(tempSeries, lastYear);
+        cumulativeWellsDrilled.StartYear = tempSeries.StartYear;
 
         var interventionCost = caseItem.Project.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell;
+        var wellInterventionCostValues = cumulativeWellsDrilled.Values.Select(v => v * interventionCost).ToArray();
 
-        var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
+        var offset = Math.Abs(cumulativeWellsDrilled.StartYear - developmentWells.Min(w => w.StartYear));
+
+        if (offset < wellInterventionCostValues.Length)
+        {
+            wellInterventionCostValues = wellInterventionCostValues.Skip(offset).ToArray();
+        }
+
+        for (var i = 0; i < wellInterventionCostValues.Length; i++)
+        {
+            wellInterventionCostValues[i] = i + offset < cumulativeWellsDrilled.Values.Length
+                ? cumulativeWellsDrilled.Values[i + offset] * interventionCost
+                : 0;
+        }
 
         wellInterventionCostsFromDrillingSchedule.Values = wellInterventionCostValues;
-        wellInterventionCostsFromDrillingSchedule.StartYear = cumulativeDrillingSchedule.StartYear;
+        wellInterventionCostsFromDrillingSchedule.StartYear = cumulativeWellsDrilled.StartYear;
 
-        var totalValuesCount = lastYear == 0 ? wellInterventionCostsFromDrillingSchedule.Values.Length : lastYear - wellInterventionCostsFromDrillingSchedule.StartYear;
+        var totalValuesCount = lastYear == 0
+            ? wellInterventionCostsFromDrillingSchedule.Values.Length
+            : lastYear - wellInterventionCostsFromDrillingSchedule.StartYear + 1;
+
         var additionalValuesCount = totalValuesCount - wellInterventionCostsFromDrillingSchedule.Values.Length;
 
         var additionalValues = new List<double>();
@@ -74,11 +94,20 @@ public static class OpexCostProfileService
 
         var valuesList = wellInterventionCostsFromDrillingSchedule.Values.ToList();
         valuesList.AddRange(additionalValues);
-
         wellInterventionCostsFromDrillingSchedule.Values = valuesList.ToArray();
 
-        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.WellInterventionCostProfile);
+        if (initialYearsWithoutWellInterventionCost > 0 && wellInterventionCostsFromDrillingSchedule.Values.Length > initialYearsWithoutWellInterventionCost)
+        {
+            wellInterventionCostsFromDrillingSchedule.Values = wellInterventionCostsFromDrillingSchedule.Values.Skip((int)initialYearsWithoutWellInterventionCost).ToArray();
+            wellInterventionCostsFromDrillingSchedule.StartYear += (int)initialYearsWithoutWellInterventionCost;
+        }
 
+        if (finalYearsWithoutWellInterventionCost > 0 && wellInterventionCostsFromDrillingSchedule.Values.Length > finalYearsWithoutWellInterventionCost)
+        {
+            wellInterventionCostsFromDrillingSchedule.Values = wellInterventionCostsFromDrillingSchedule.Values.Take(wellInterventionCostsFromDrillingSchedule.Values.Length - (int)finalYearsWithoutWellInterventionCost).ToArray();
+        }
+
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.WellInterventionCostProfile);
         profile.Values = wellInterventionCostsFromDrillingSchedule.Values;
         profile.StartYear = wellInterventionCostsFromDrillingSchedule.StartYear;
     }
@@ -142,7 +171,7 @@ public static class OpexCostProfileService
     Input: [1, 2, 3, 4]
     Output: [1, 3, 6, 10]
     */
-    private static TimeSeries GetCumulativeDrillingSchedule(TimeSeries drillingSchedule)
+    private static TimeSeries GetCumulativeWellsDrilled(TimeSeries drillingSchedule, int lastYear)
     {
         var cumulativeSchedule = new TimeSeries
         {
@@ -151,10 +180,19 @@ public static class OpexCostProfileService
 
         var values = new List<double>();
         var sum = 0.0;
+        int currentYear = drillingSchedule.StartYear;
 
-        foreach (var value in drillingSchedule.Values)
+        var yearValueMap = drillingSchedule.Values
+            .Select((value, index) => new { Year = drillingSchedule.StartYear + index, Value = value })
+            .ToDictionary(x => x.Year, x => x.Value);
+
+        for (var year = drillingSchedule.StartYear; year <= lastYear; year++)
         {
-            sum += value;
+            if (yearValueMap.TryGetValue(year, out var value))
+            {
+                sum += value;
+            }
+
             values.Add(sum);
         }
 
