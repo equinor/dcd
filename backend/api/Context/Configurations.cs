@@ -17,6 +17,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .WithMany(p => p.Revisions)
             .HasForeignKey(p => p.OriginalProjectId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(p => p.ReferenceCase)
+            .WithMany()
+            .HasForeignKey(p => p.ReferenceCaseId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

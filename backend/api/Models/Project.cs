@@ -9,11 +9,11 @@ public class Project : IChangeTrackable, IDateTrackedEntity
 
     public Guid? OriginalProjectId { get; set; } // Id of the project the revision is based on
     public Project? OriginalProject { get; set; }
-
+    public Guid? ReferenceCaseId { get; set; }
+    public Case? ReferenceCase { get; set; }
     public string Name { get; set; } = string.Empty;
     public bool IsRevision { get; set; }
     public Guid FusionProjectId { get; set; } // ExternalId
-    public Guid? ReferenceCaseId { get; set; }
     public string CommonLibraryName { get; set; } = null!;
     public string Description { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
