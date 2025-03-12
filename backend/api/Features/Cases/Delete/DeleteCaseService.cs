@@ -12,6 +12,8 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
+        var project = await context.Projects.SingleAsync(x => x.Id == projectPk);
+
         var imageIds = await context.CaseImages
             .Where(x => x.Case.ProjectId == projectPk)
             .Where(x => x.CaseId == caseId)
@@ -30,6 +32,11 @@ public class DeleteCaseService(DcdDbContext context, DeleteCaseImageService dele
         foreach (var revisionCase in revisionCases)
         {
             revisionCase.OriginalCaseId = null;
+        }
+
+        if (project.ReferenceCaseId == caseId)
+        {
+            project.ReferenceCaseId = null;
         }
 
         var caseItem = await context.Cases
