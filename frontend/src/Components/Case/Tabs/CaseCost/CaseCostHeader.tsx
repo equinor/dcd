@@ -6,6 +6,8 @@ import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudie
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
 import { Currency } from "@/Models/enums"
+import InitialYearsWithoutWellInterventionCost from "./Inputs/InitialYearsWithoutWellInterventionCost"
+import FinalYearsWithoutWellInterventionCost from "./Inputs/FinalYearsWithoutWellInterventionCost"
 
 interface HeaderProps {
     startYear: number;
@@ -66,6 +68,13 @@ const Header: React.FC<HeaderProps> = ({
                             surfData={surfData}
                         />
                     </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <InitialYearsWithoutWellInterventionCost caseData={caseData} />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <FinalYearsWithoutWellInterventionCost caseData={caseData} />
+                    </Grid>
+
                 </Grid>
             </Grid>
             <DateRangePicker

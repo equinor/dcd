@@ -37,6 +37,8 @@ declare namespace Components {
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
             capexFactorFeedStudies: number; // double
+            initialYearsWithoutWellInterventionCost: number; // double
+            finalYearsWithoutWellInterventionCost: number; // double
             host: string | null;
             averageCo2Intensity: number; // double
             discountedCashflow: number; // double
@@ -468,6 +470,8 @@ declare namespace Components {
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
             capexFactorFeedStudies: number; // double
+            initialYearsWithoutWellInterventionCost: number; // double
+            finalYearsWithoutWellInterventionCost: number; // double
             npv: number; // double
             npvOverride: number | null; // double
             breakEven: number; // double

@@ -36,6 +36,8 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public double FacilitiesAvailability { get; set; }
     public double CapexFactorFeasibilityStudies { get; set; }
     public double CapexFactorFeedStudies { get; set; }
+    public double InitialYearsWithoutWellInterventionCost { get; set; }
+    public double FinalYearsWithoutWellInterventionCost { get; set; }
     public double Npv { get; set; }
     public double? NpvOverride { get; set; }
     public double BreakEven { get; set; }

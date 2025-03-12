@@ -142,6 +142,8 @@ public class GetProjectDataRepository(DcdDbContext context)
                 FacilitiesAvailability = x.FacilitiesAvailability,
                 CapexFactorFeasibilityStudies = x.CapexFactorFeasibilityStudies,
                 CapexFactorFeedStudies = x.CapexFactorFeedStudies,
+                InitialYearsWithoutWellInterventionCost = x.InitialYearsWithoutWellInterventionCost,
+                FinalYearsWithoutWellInterventionCost = x.FinalYearsWithoutWellInterventionCost,
                 Host = x.Host,
                 AverageCo2Intensity = x.AverageCo2Intensity,
                 DiscountedCashflow = x.DiscountedCashflow,
