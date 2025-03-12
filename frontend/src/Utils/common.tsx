@@ -1,7 +1,6 @@
 import { AxiosError } from "axios"
 import { Dispatch, SetStateAction } from "react"
 import isEqual from "lodash/isEqual"
-import { v4 as uuidv4 } from "uuid"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
@@ -460,7 +459,6 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
         (v) => v.profileName === profileName,
     )
     const editInstance: EditInstance = {
-        uuid: uuidv4(),
         projectId,
         caseId,
         resourceName: profileInTimeSeriesData?.resourceName,

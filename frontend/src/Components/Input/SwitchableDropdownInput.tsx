@@ -1,7 +1,6 @@
 import React, { ChangeEventHandler, useState } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { v4 as uuidv4 } from "uuid"
 import InputSwitcher from "./Components/InputSwitcher"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
 import { useProjectContext } from "@/Store/ProjectContext"
@@ -41,7 +40,6 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
         resourceObject[resourcePropertyKey] = Number(newValue)
 
         addEdit({
-            uuid: uuidv4(),
             resourceObject,
             projectId,
             resourceName,
