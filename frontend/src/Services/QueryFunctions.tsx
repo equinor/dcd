@@ -2,6 +2,7 @@ import { GetCaseService } from "./CaseService"
 import { GetFeatureToggleService } from "./FeatureToggleService"
 import { GetProjectMembersService } from "./ProjectMembersService"
 import { GetProjectService } from "./ProjectService"
+import { getImageService } from "./ImageService"
 
 export const caseQueryFn = async (projectId: string, caseId: string | undefined) => {
     if (projectId === "" || !caseId) {
@@ -45,3 +46,21 @@ export const compareCasesQueryFn = async (projectId: string | undefined) => {
 }
 
 export const featureToggleQueryFn = async () => GetFeatureToggleService().getFeatureToggles()
+
+export const galleryImagesQueryFn = async (
+    projectId: string | undefined,
+    caseId: string | undefined,
+    revisionId: string | undefined,
+) => {
+    if (!projectId) {
+        console.error("projectId is undefined")
+        return null
+    }
+
+    const projectIdOrRevisionId = revisionId || projectId
+    const imageService = getImageService()
+
+    return caseId
+        ? imageService.getCaseImages(projectIdOrRevisionId, caseId)
+        : imageService.getProjectImages(projectIdOrRevisionId)
+}

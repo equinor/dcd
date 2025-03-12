@@ -3,14 +3,17 @@ import { Grid } from "@mui/material"
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
 
+import { galleryImagesQueryFn } from "@/Services/QueryFunctions"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import GalleryImage from "./GalleryImage"
 import { useAppStore } from "@/Store/AppStore"
-import { getImageService } from "@/Services/ImageService"
 import { useProjectContext } from "@/Store/ProjectContext"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useEditGallery } from "@/Hooks/useEditGallery"
+import { useDebouncedCallback } from "@/Hooks/useDebounce"
 
 const Wrapper = styled.div`
     display: flex;
@@ -41,80 +44,23 @@ const Gallery = () => {
     const { revisionId } = useParams()
     const { projectId } = useProjectContext()
     const { canEdit } = useCanUserEdit()
+    const { updateImageDescription, deleteImage } = useEditGallery()
 
-    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
+    const { data: images, error } = useQuery({
+        queryKey: ["gallery", projectId, caseId, revisionId],
+        queryFn: () => galleryImagesQueryFn(projectId, caseId, revisionId),
+        enabled: !!projectId,
+    })
 
-    useEffect(() => {
-        const loadImages = async () => {
-            const projectIdOrRevisionId = revisionId || projectId
-            if (projectId) {
-                try {
-                    const imageService = getImageService()
-                    const imageDtos = caseId
-                        ? await imageService.getCaseImages(projectIdOrRevisionId, caseId)
-                        : await imageService.getProjectImages(projectIdOrRevisionId)
-                    setGallery(imageDtos)
-                } catch (error) {
-                    console.error("Error loading images:", error)
-                    setSnackBarMessage("Error loading images")
-                }
-            }
+    const debouncedUpdateDescription = useDebouncedCallback((imageId: string, newDescription: string) => {
+        if (projectId) {
+            updateImageDescription(projectId, imageId, newDescription, caseId)
         }
-
-        loadImages()
-    }, [projectId, caseId, revisionId, setSnackBarMessage])
-
-    const handleDescriptionChange = async (imageId: string, newDescription: string) => {
-        if (debounceTimeout) {
-            clearTimeout(debounceTimeout)
-        }
-        setGallery((prevGallery) => prevGallery.map((image) => (image.imageId === imageId ? { ...image, description: newDescription } : image)))
-
-        const timeout = setTimeout(async () => {
-            try {
-                const imageService = getImageService()
-                const image = gallery.find((img) => img.imageId === imageId)
-                if (image) {
-                    const updateImageDto = {
-                        description: newDescription,
-                    }
-
-                    if (caseId) {
-                        await imageService.updateCaseImage(image.projectId, image.caseId, image.imageId, updateImageDto)
-                    } else {
-                        await imageService.updateProjectImage(image.projectId, image.imageId, updateImageDto)
-                    }
-
-                    setSnackBarMessage("Description saved")
-                }
-            } catch (error) {
-                setSnackBarMessage("Error updating description")
-            }
-        }, 1000)
-
-        setDebounceTimeout(timeout)
-    }
+    }, 1000)
 
     const handleDelete = async (imageId: string) => {
-        try {
-            if (projectId) {
-                const imageService = getImageService()
-                const image = gallery.find((img) => img.imageId === imageId)
-                if (image) {
-                    if (caseId) {
-                        await imageService.deleteCaseImage(projectId, caseId, image.imageId)
-                    } else {
-                        await imageService.deleteProjectImage(projectId, image.imageId)
-                    }
-
-                    setGallery(gallery.filter((img) => img.imageId !== imageId))
-                    setExeededLimit(false)
-                } else {
-                    console.error("Image not found for the provided URL:", imageId)
-                }
-            }
-        } catch (error) {
-            console.error("Error deleting image:", error)
+        if (projectId) {
+            deleteImage(projectId, imageId, caseId)
         }
     }
 
@@ -122,6 +68,19 @@ const Gallery = () => {
         setExpandedImage(image)
         setModalOpen(true)
     }
+
+    useEffect(() => {
+        if (error) {
+            setSnackBarMessage("Error loading images")
+        }
+    }, [error, setSnackBarMessage])
+
+    useEffect(() => {
+        if (images) {
+            setGallery(images)
+            setExeededLimit(images.length >= 4)
+        }
+    }, [images])
 
     return gallery.length > 0 || canEdit() ? (
         <Grid item xs={12}>
@@ -138,7 +97,7 @@ const Gallery = () => {
                         editAllowed={canEdit()}
                         onDelete={handleDelete}
                         onExpand={handleExpand}
-                        onDescriptionChange={handleDescriptionChange}
+                        onDescriptionChange={debouncedUpdateDescription}
                     />
                 ))}
                 {canEdit() && gallery.length < 4 && (
