@@ -35,7 +35,11 @@ public static class AccessCalculator
 
     private static bool CanView(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, ProjectMemberRole? projectMemberRole)
     {
-        // TODO: Check for projectMemberRole before application user roles
+        if (projectMemberRole != null)
+        {
+            return true;
+        }
+
         if (userRoles.Count == 0)
         {
             return false;
@@ -46,12 +50,7 @@ public static class AccessCalculator
             return true;
         }
 
-        if (projectClassification is ProjectClassification.Open or ProjectClassification.Internal)
-        {
-            return true;
-        }
-
-        return projectMemberRole != null;
+        return projectClassification is ProjectClassification.Open or ProjectClassification.Internal;
     }
 
     private static bool CanCreateRevision(HashSet<ApplicationRole> userRoles, ProjectClassification projectClassification, bool isRevision, ProjectMemberRole? projectMemberRole)

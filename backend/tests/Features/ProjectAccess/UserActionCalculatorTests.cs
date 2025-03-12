@@ -16,6 +16,11 @@ public class UserActionCalculatorTests
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Open, isRevision: true, null));
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Observer));
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Open, isRevision: false, null));
+
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: true, ProjectMemberRole.Observer));
+        Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: true, null));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Observer));
+        Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: false, null));
     }
 
     [Fact]
@@ -25,6 +30,11 @@ public class UserActionCalculatorTests
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Internal, isRevision: true, null));
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Internal, isRevision: false, ProjectMemberRole.Observer));
         Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Internal, isRevision: false, null));
+
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: true, ProjectMemberRole.Observer));
+        Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: true, null));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: false, ProjectMemberRole.Observer));
+        Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: false, null));
     }
 
     [Fact]
@@ -44,6 +54,9 @@ public class UserActionCalculatorTests
 
         Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Restricted, isRevision: true, null));
         Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Restricted, isRevision: false, null));
+
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: true, ProjectMemberRole.Observer));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: false, ProjectMemberRole.Observer));
     }
 
     [Fact]
@@ -54,6 +67,9 @@ public class UserActionCalculatorTests
 
         Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Confidential, isRevision: true, null));
         Assert.DoesNotContain(ActionType.Read, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Confidential, isRevision: false, null));
+
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: true, ProjectMemberRole.Observer));
+        Assert.Contains(ActionType.Read, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: false, ProjectMemberRole.Observer));
     }
 
     [Fact]
@@ -174,5 +190,28 @@ public class UserActionCalculatorTests
         Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Internal, isRevision: true, null));
         Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Restricted, isRevision: true, null));
         Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.User], ProjectClassification.Confidential, isRevision: true, null));
+    }
+
+    [Fact]
+    public void User_should_be_able_to_edit_project_data__when_user_is_a_project_member()
+    {
+        Assert.Contains(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Observer));
+
+        Assert.Contains(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.ReadOnly], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.ReadOnly], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Observer));
+
+        Assert.Contains(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: false, ProjectMemberRole.Editor));
+        Assert.Contains(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: false, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: true, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: true, ProjectMemberRole.Editor));
+
+        Assert.Contains(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.ReadOnly], ProjectClassification.Restricted, isRevision: false, ProjectMemberRole.Editor));
+        Assert.Contains(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.ReadOnly], ProjectClassification.Confidential, isRevision: false, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.ReadOnly], ProjectClassification.Restricted, isRevision: true, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([ApplicationRole.ReadOnly], ProjectClassification.Confidential, isRevision: true, ProjectMemberRole.Editor));
+
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: false, ProjectMemberRole.Observer));
+        Assert.DoesNotContain(ActionType.Edit, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: false, ProjectMemberRole.Observer));
     }
 }
