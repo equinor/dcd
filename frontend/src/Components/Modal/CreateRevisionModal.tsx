@@ -1,5 +1,5 @@
 import React, {
-    ChangeEventHandler, useState,
+    ChangeEventHandler, useEffect, useState,
 } from "react"
 import {
     Divider, Icon, Typography, Button,
@@ -54,12 +54,18 @@ const CreateRevisionModal: React.FC<Props> = ({
     } = useRevisions()
 
     const [revisionName, setRevisionName] = useState<string>("")
-    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>(revisionAndProjectData?.commonProjectAndRevisionData.classification ?? 1)
+    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>(1)
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>(
         revisionAndProjectData?.commonProjectAndRevisionData.internalProjectPhase ?? 0,
     )
     const [mdqc, setMdqc] = useState(false)
     const [arena, setArena] = useState(false)
+
+    useEffect(() => {
+        if (revisionAndProjectData?.commonProjectAndRevisionData.classification) {
+            setClassification(revisionAndProjectData.commonProjectAndRevisionData.classification)
+        }
+    }, [revisionAndProjectData])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setRevisionName(e.currentTarget.value.trimStart())
