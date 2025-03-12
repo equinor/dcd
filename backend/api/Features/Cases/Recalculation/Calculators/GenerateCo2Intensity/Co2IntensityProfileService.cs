@@ -29,12 +29,12 @@ public static class Co2IntensityProfileService
             }
 
             if (totalExportedVolumes.Values[totalExportedVolumesIndex] == 0)
-            {
+                {
                 continue;
             }
 
             var totalExportedVolumesValue = totalExportedVolumes.Values[totalExportedVolumesIndex];
-            var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue * BarrelsPerCubicMeter);
+            var co2Intensity = co2EmissionsProfile.Values[i] / 1000 / (totalExportedVolumesValue/1_000_000);
             co2IntensityValues.Add(co2Intensity);
         }
 
