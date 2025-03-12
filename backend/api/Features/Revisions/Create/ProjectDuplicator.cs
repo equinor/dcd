@@ -147,6 +147,8 @@ public static class ProjectDuplicator
             FacilitiesAvailability = existingCaseItem.FacilitiesAvailability,
             CapexFactorFeasibilityStudies = existingCaseItem.CapexFactorFeasibilityStudies,
             CapexFactorFeedStudies = existingCaseItem.CapexFactorFeedStudies,
+            InitialYearsWithoutWellInterventionCost = existingCaseItem.InitialYearsWithoutWellInterventionCost,
+            FinalYearsWithoutWellInterventionCost = existingCaseItem.FinalYearsWithoutWellInterventionCost,
             Npv = existingCaseItem.Npv,
             NpvOverride = existingCaseItem.NpvOverride,
             BreakEven = existingCaseItem.BreakEven,
