@@ -58,23 +58,9 @@ const Gallery = () => {
         }
     }, 1000)
 
-    const handleDescriptionChange = (imageId: string, newDescription: string) => {
-        // Optimistically update the UI
-        setGallery((prevGallery) => prevGallery.map((image) => (
-            image.imageId === imageId
-                ? { ...image, description: newDescription }
-                : image
-        )))
-
-        debouncedUpdateDescription(imageId, newDescription)
-    }
-
     const handleDelete = async (imageId: string) => {
         if (projectId) {
             deleteImage(projectId, imageId, caseId)
-            // Optimistically update the UI
-            setGallery(gallery.filter((img) => img.imageId !== imageId))
-            setExeededLimit(false)
         }
     }
 
@@ -92,6 +78,7 @@ const Gallery = () => {
     useEffect(() => {
         if (images) {
             setGallery(images)
+            setExeededLimit(images.length >= 4)
         }
     }, [images])
 
@@ -110,7 +97,7 @@ const Gallery = () => {
                         editAllowed={canEdit()}
                         onDelete={handleDelete}
                         onExpand={handleExpand}
-                        onDescriptionChange={handleDescriptionChange}
+                        onDescriptionChange={debouncedUpdateDescription}
                     />
                 ))}
                 {canEdit() && gallery.length < 4 && (
