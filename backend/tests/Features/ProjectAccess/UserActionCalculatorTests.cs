@@ -97,6 +97,30 @@ public class UserActionCalculatorTests
     }
 
     [Fact]
+    public void Project_member_should_be_able_to_create_revision__when_has_editor_access_to_project_and_not_on_revision()
+    {
+        Assert.Contains(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Editor));
+        Assert.Contains(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: false, ProjectMemberRole.Editor));
+        Assert.Contains(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: false, ProjectMemberRole.Editor));
+        Assert.Contains(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: false, ProjectMemberRole.Editor));
+
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: false, null));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: false, null));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: false, null));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: false, null));
+
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: true, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: true, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: true, ProjectMemberRole.Editor));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: true, ProjectMemberRole.Editor));
+
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Open, isRevision: true, null));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Internal, isRevision: true, null));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Restricted, isRevision: true, null));
+        Assert.DoesNotContain(ActionType.CreateRevision, AccessCalculator.CalculateAccess([], ProjectClassification.Confidential, isRevision: true, null));
+    }
+
+    [Fact]
     public void User_should_be_able_to_create_revision__when_role_is_admin_and_has_view_access_to_project_and_not_on_revision()
     {
         Assert.Contains(ActionType.CreateRevision, AccessCalculator.CalculateAccess([ApplicationRole.Admin], ProjectClassification.Open, isRevision: false, ProjectMemberRole.Observer));
