@@ -35,7 +35,7 @@ public class Co2IntensityProfileServiceTests
                 {
                     ProfileType = ProfileTypes.TotalExportedVolumes,
                     StartYear = -7,
-                    Values = [3.23 / 6.29]
+                    Values = [3.23]
                 },
 
                 new TimeSeriesProfile
@@ -59,6 +59,6 @@ public class Co2IntensityProfileServiceTests
 
         // Assert
         const double expectedCo2Intensity = 7.72;
-        Assert.Equal(expectedCo2Intensity, caseItem.GetProfile(ProfileTypes.Co2Intensity).Values[0] * 1_000_000, precision: 1);
+        Assert.Equal(expectedCo2Intensity, caseItem.GetProfile(ProfileTypes.Co2Intensity).Values[0], precision: 1);
     }
 }
