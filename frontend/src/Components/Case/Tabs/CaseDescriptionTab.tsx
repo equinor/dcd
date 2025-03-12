@@ -2,7 +2,6 @@ import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
 import { useEffect, useState } from "react"
-import { v4 as uuidv4 } from "uuid"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import Gallery from "@/Components/Gallery/Gallery"
@@ -13,12 +12,28 @@ import useEditCase from "@/Hooks/useEditCase"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDebouncedCallback } from "@/Hooks/useDebounce"
 
+const productionStrategyOptions = {
+    0: "Depletion",
+    1: "Water injection",
+    2: "Gas injection",
+    3: "WAG",
+    4: "Mixed",
+}
+
+const artificialLiftOptions = {
+    0: "No lift",
+    1: "Gas lift",
+    2: "Electrical submerged pumps",
+    3: "Subsea booster pumps",
+}
+
 const CaseDescriptionTab = () => {
-    const { apiData } = useCaseApiData()
     const { projectId } = useProjectContext()
+    const { apiData } = useCaseApiData()
     const { addEdit } = useEditCase()
-    const [description, setDescription] = useState("")
     const { canEdit } = useCanUserEdit()
+
+    const [description, setDescription] = useState("")
 
     const debouncedAddEdit = useDebouncedCallback((newValue: string) => {
         if (!apiData || !projectId) {
@@ -29,7 +44,6 @@ const CaseDescriptionTab = () => {
         resourceObject.description = newValue
 
         addEdit({
-            uuid: uuidv4(),
             resourceObject,
             projectId,
             resourceName: "case",
@@ -37,7 +51,7 @@ const CaseDescriptionTab = () => {
             resourceId: "",
             caseId: apiData.case.caseId,
         })
-    }, 2000)
+    }, 3000)
 
     useEffect(() => {
         if (apiData && apiData.case.description !== undefined) {
@@ -55,21 +69,6 @@ const CaseDescriptionTab = () => {
         const newValue = e.target._value
         setDescription(newValue) // Update local state immediately
         debouncedAddEdit(newValue)
-    }
-
-    const productionStrategyOptions = {
-        0: "Depletion",
-        1: "Water injection",
-        2: "Gas injection",
-        3: "WAG",
-        4: "Mixed",
-    }
-
-    const artificialLiftOptions = {
-        0: "No lift",
-        1: "Gas lift",
-        2: "Electrical submerged pumps",
-        3: "Subsea booster pumps",
     }
 
     return (

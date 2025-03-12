@@ -8,11 +8,6 @@ export type ResourceName =
     "onshorePowerSupply" |
     "substructure" |
     "drainageStrategy" |
-    "fuelFlaringAndLossesOverride" |
-    "wellProject" |
-    "exploration" |
-    "explorationWellDrillingSchedule" |
-    "developmentWellDrillingSchedule" |
     "rigUpgradingCost" |
     "rigMobDemobCost" |
     `${ProfileTypes}`
@@ -33,8 +28,6 @@ export type ResourceObject =
     ProfileObject
 
 export type ProfileObject =
-    Components.Schemas.TimeSeriesOverrideDto |
-    Components.Schemas.TimeSeriesDto |
     Components.Schemas.SaveTimeSeriesDto |
     Components.Schemas.SaveTimeSeriesOverrideDto
 
@@ -46,14 +39,12 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.OnshorePowerSupplyDto |
     keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
-    keyof Components.Schemas.UpdateCampaignDto |
     keyof Components.Schemas.CampaignDto |
     keyof Components.Schemas.CampaignWellDto |
     keyof Components.Schemas.TimeSeriesOverrideDto |
     keyof Components.Schemas.TimeSeriesDto
 
 export interface EditInstance {
-    uuid: string;
     projectId: string;
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
@@ -61,7 +52,6 @@ export interface EditInstance {
     wellId?: string;
     caseId?: string;
     resourceObject: ResourceObject;
-    campaignId?: string;
 }
 
 export interface TableCase {
