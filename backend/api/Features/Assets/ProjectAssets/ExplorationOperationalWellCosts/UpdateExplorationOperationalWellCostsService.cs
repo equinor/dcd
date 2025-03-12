@@ -2,6 +2,7 @@ using api.Context;
 using api.Context.Extensions;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
+using api.Models.Infrastructure.ProjectRecalculation;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,13 @@ public class UpdateExplorationOperationalWellCostsService(DcdDbContext context)
         existingExplorationOperationalWellCosts.AppraisalProjectDrillingCosts = dto.AppraisalProjectDrillingCosts;
 
         await context.UpdateProjectUpdatedUtc(projectPk);
+
+        context.PendingRecalculations.Add(new PendingRecalculation
+        {
+            ProjectId = projectPk,
+            CreatedUtc = DateTime.UtcNow
+        });
+
         await context.SaveChangesAsync();
 
         return new ExplorationOperationalWellCostsOverviewDto
