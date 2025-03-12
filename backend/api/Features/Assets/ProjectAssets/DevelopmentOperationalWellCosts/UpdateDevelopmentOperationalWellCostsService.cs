@@ -1,7 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
-using api.Features.Cases.Recalculation;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Models.Infrastructure.ProjectRecalculation;
 
@@ -9,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 
-public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context, RecalculationService recalculationService)
+public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
 {
     public async Task<DevelopmentOperationalWellCostsOverviewDto> UpdateDevelopmentOperationalWellCosts(
         Guid projectId,
@@ -34,7 +33,6 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context, 
         });
 
         await context.SaveChangesAsync();
-        await recalculationService.SaveChangesAndRecalculateProject(projectId);
 
         return new DevelopmentOperationalWellCostsOverviewDto
         {
