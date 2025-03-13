@@ -47,7 +47,7 @@ const Gallery = () => {
     const { updateImageDescription, deleteImage } = useEditGallery()
 
     const { data: images, error } = useQuery({
-        queryKey: ["gallery", projectId, caseId, revisionId],
+        queryKey: ["gallery", projectId, caseId, revisionId].filter(Boolean),
         queryFn: () => galleryImagesQueryFn(projectId, caseId, revisionId),
         enabled: !!projectId,
     })
@@ -57,6 +57,15 @@ const Gallery = () => {
             updateImageDescription(projectId, imageId, newDescription, caseId)
         }
     }, 1000)
+
+    const handleDescriptionChange = (imageId: string, newDescription: string) => {
+        setGallery((prevGallery) => prevGallery.map((image) => (
+            image.imageId === imageId
+                ? { ...image, description: newDescription }
+                : image
+        )))
+        debouncedUpdateDescription(imageId, newDescription)
+    }
 
     const handleDelete = async (imageId: string) => {
         if (projectId) {
@@ -97,11 +106,11 @@ const Gallery = () => {
                         editAllowed={canEdit()}
                         onDelete={handleDelete}
                         onExpand={handleExpand}
-                        onDescriptionChange={debouncedUpdateDescription}
+                        onDescriptionChange={handleDescriptionChange}
                     />
                 ))}
                 {canEdit() && gallery.length < 4 && (
-                    <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />
+                    <ImageUpload gallery={gallery} />
                 )}
             </Wrapper>
         </Grid>

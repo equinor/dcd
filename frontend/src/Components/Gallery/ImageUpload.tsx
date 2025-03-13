@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { Box } from "@mui/material"
 import styled from "styled-components"
@@ -6,11 +6,9 @@ import { Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { getImageService } from "../../Services/ImageService"
 import { useAppStore } from "../../Store/AppStore"
-import { useDataFetch } from "@/Hooks"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { useEditGallery } from "@/Hooks/useEditGallery"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -40,36 +38,14 @@ const UploadBox = styled(Box)`
 `
 
 interface ImageUploadProps {
-    setGallery: React.Dispatch<React.SetStateAction<Components.Schemas.ImageDto[]>>
     gallery: Components.Schemas.ImageDto[]
-    setExeededLimit: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ gallery }) => {
     const { caseId } = useParams()
     const { setSnackBarMessage } = useAppStore()
-    const revisionAndProjectData = useDataFetch()
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
     const { projectId } = useProjectContext()
-
-    useEffect(() => {
-        const loadImages = async () => {
-            if (revisionAndProjectData && caseId) {
-                try {
-                    const imageService = getImageService()
-                    const imageDtos = caseId
-                        ? await imageService.getCaseImages(projectId, caseId)
-                        : await imageService.getProjectImages(projectId)
-                    setGallery(imageDtos)
-                } catch (error) {
-                    console.error("Error loading images:", error)
-                    setSnackBarMessage("Error loading images")
-                }
-            }
-        }
-        loadImages()
-    }, [setGallery, revisionAndProjectData, projectId, caseId])
+    const { addImage } = useEditGallery()
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4
@@ -92,36 +68,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         })
 
         if (gallery.length + acceptedFiles.length > MAX_FILES) {
-            setExeededLimit(true)
+            setSnackBarMessage("Error uploading images. Maximum number of images is 4.")
             return
         }
-        setExeededLimit(false)
 
-        if (!revisionAndProjectData || !externalId) {
+        if (!projectId) {
             console.error("Project ID is missing.")
             return
         }
-
-        const imageService = getImageService()
-
-        // if we could avoid project name here, we could drop the project query
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(
-            revisionAndProjectData.projectId,
-            revisionAndProjectData.commonProjectAndRevisionData.name,
-            file,
-            caseId,
-        ))
-        try {
-            const uploadedImageDtos = await Promise.all(uploadPromises)
-            if (Array.isArray(uploadedImageDtos)) {
-                setGallery((prevGallery) => [...prevGallery, ...uploadedImageDtos])
-            } else {
-                console.error("Received undefined response from uploadImage")
-            }
-        } catch (error) {
-            console.error("Error uploading images:", error)
-            setSnackBarMessage("Error uploading images")
-        }
+        acceptedFiles.map((file) => addImage(projectId, file, caseId))
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
