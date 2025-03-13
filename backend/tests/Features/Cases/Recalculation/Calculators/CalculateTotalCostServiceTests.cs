@@ -44,7 +44,7 @@ public class CalculateTotalCostServiceTests
 
                 new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.OnshoreRelatedOPEXCostProfile,
+                    ProfileType = ProfileTypes.OnshoreRelatedOpexCostProfile,
                     StartYear = 2020,
                     Values = [500.0, 600.0, 700.0]
                 },

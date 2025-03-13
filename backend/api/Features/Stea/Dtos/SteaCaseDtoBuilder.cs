@@ -40,8 +40,8 @@ public static class SteaCaseDtoBuilder
         var costProfileDtos = new List<TimeSeries>
         {
             new(caseDto.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile)),
-            new(caseDto.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile)),
-            new(caseDto.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile)),
+            new(caseDto.GetProfileOrNull(ProfileTypes.OnshoreRelatedOpexCostProfile)),
+            new(caseDto.GetProfileOrNull(ProfileTypes.AdditionalOpexCostProfile)),
 
             caseDto.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true
                 ? new TimeSeries(caseDto.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride))
@@ -68,9 +68,9 @@ public static class SteaCaseDtoBuilder
                 ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride))
                 : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies)),
 
-            caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true
-                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride))
-                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies))
+            caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)?.Override == true
+                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride))
+                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies))
         };
 
         var dto = TimeSeriesMerger.MergeTimeSeries(costProfileDtos);
