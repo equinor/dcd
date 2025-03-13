@@ -7,6 +7,8 @@ using api.Models;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Images.Upload;
 
 public class UploadProjectImageService(DcdDbContext context, BlobServiceClient blobServiceClient)
@@ -14,6 +16,8 @@ public class UploadProjectImageService(DcdDbContext context, BlobServiceClient b
     public async Task<Guid> SaveImage(IFormFile image, Guid projectId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+        var imageCount = await CountImages(projectPk);
+        UploadImageValidator.EnsureImageLimit(imageCount);
 
         var containerClient = blobServiceClient.GetBlobContainerClient(DcdEnvironments.BlobStorageContainerName);
 
@@ -39,5 +43,14 @@ public class UploadProjectImageService(DcdDbContext context, BlobServiceClient b
         await context.SaveChangesAsync();
 
         return imageEntity.Id;
+    }
+
+    private async Task<int> CountImages(Guid projectPk)
+    {
+        var imagesCount = await context.ProjectImages
+            .Where(img => img.ProjectId == projectPk)
+            .CountAsync();
+
+        return imagesCount;
     }
 }

@@ -49,12 +49,22 @@ export class ImageService extends __BaseService {
         return response
     }
 
-    public async uploadImage(projectId: string, projectName: string, file: File, caseId?: string): Promise<Components.Schemas.ImageDto> {
+    public async uploadCaseImage(projectId: string, file: File, caseId: string): Promise<Components.Schemas.ImageDto> {
         const formData = new FormData()
         formData.append("image", file)
-        formData.append("projectName", projectName)
+        const response = await this.post(caseUrl(projectId, caseId), {
+            body: formData,
+        })
+        if (response) {
+            return response
+        }
+        throw new Error("Upload image response data is undefined")
+    }
 
-        const response = await this.post(caseId ? caseUrl(projectId, caseId) : projectUrl(projectId), {
+    public async uploadProjectImage(projectId: string, file: File): Promise<Components.Schemas.ImageDto> {
+        const formData = new FormData()
+        formData.append("image", file)
+        const response = await this.post(projectUrl(projectId), {
             body: formData,
         })
         if (response) {

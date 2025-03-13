@@ -15,6 +15,12 @@ type DeleteImageVariables = {
     caseId?: string
 }
 
+type AddImagesVariables = {
+    projectId: string
+    caseId?: string
+    file: File
+}
+
 export const useEditGallery = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsSaving } = useAppStore()
@@ -43,6 +49,21 @@ export const useEditGallery = () => {
         return imageService.deleteProjectImage(projectId, imageId)
     }
 
+    const addImageMutationFn = async ({ projectId, caseId, file }: AddImagesVariables) => {
+        const imageService = getImageService()
+        if (caseId) {
+            return imageService.uploadCaseImage(
+                projectId,
+                file,
+                caseId,
+            )
+        }
+        return imageService.uploadProjectImage(
+            projectId,
+            file,
+        )
+    }
+
     const updateImageMutation = useMutation({
         mutationFn: updateImageMutationFn,
         onMutate: () => {
@@ -50,7 +71,7 @@ export const useEditGallery = () => {
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
-                queryKey: ["gallery", variables.projectId, variables.caseId],
+                queryKey: ["gallery", variables.projectId, variables.caseId].filter(Boolean),
             })
             setIsSaving(false)
         },
@@ -68,13 +89,31 @@ export const useEditGallery = () => {
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
-                queryKey: ["gallery", variables.projectId, variables.caseId],
+                queryKey: ["gallery", variables.projectId, variables.caseId].filter(Boolean),
             })
             setIsSaving(false)
         },
         onError: (error) => {
             console.error("Error deleting image:", error)
             setSnackBarMessage("Error deleting image")
+            setIsSaving(false)
+        },
+    })
+
+    const addImageMutation = useMutation({
+        mutationFn: addImageMutationFn,
+        onMutate: async () => {
+            setIsSaving(true)
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["gallery", variables.projectId, variables.caseId].filter(Boolean),
+            })
+            setIsSaving(false)
+        },
+        onError: (error) => {
+            console.error("Error uploading image:", error)
+            setSnackBarMessage("Error uploading image")
             setIsSaving(false)
         },
     })
@@ -101,9 +140,18 @@ export const useEditGallery = () => {
         deleteImageMutation.mutate({ projectId, imageId, caseId })
     }
 
+    const addImage = (
+        projectId: string,
+        file: File,
+        caseId?: string,
+    ) => {
+        addImageMutation.mutate({ projectId, caseId, file })
+    }
+
     return {
         updateImageDescription,
         deleteImage,
+        addImage,
         isUpdating: updateImageMutation.isPending,
         isDeleting: deleteImageMutation.isPending,
     }

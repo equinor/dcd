@@ -15,6 +15,10 @@ public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blob
 {
     public async Task<Guid> SaveImage(IFormFile image, Guid projectId, Guid caseId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+        var imageCount = await CountImages(projectPk, caseId);
+        UploadImageValidator.EnsureImageLimit(imageCount);
+
         var containerClient = blobServiceClient.GetBlobContainerClient(DcdEnvironments.BlobStorageContainerName);
 
         var imageId = Guid.NewGuid();
@@ -25,8 +29,6 @@ public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blob
 
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
-
-        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
         var caseItem = await context.Cases
             .Where(x => x.Id == caseId)
@@ -47,5 +49,15 @@ public class UploadCaseImageService(DcdDbContext context, BlobServiceClient blob
         await context.SaveChangesAsync();
 
         return imageEntity.Id;
+    }
+
+    private async Task<int> CountImages(Guid projectPk, Guid caseId)
+    {
+        var imagesCount = await context.CaseImages
+            .Include(x => x.Case)
+            .Where(img => img.Case.ProjectId == projectPk && img.CaseId == caseId)
+            .CountAsync();
+
+        return imagesCount;
     }
 }
