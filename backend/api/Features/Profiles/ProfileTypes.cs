@@ -18,16 +18,16 @@ public static class ProfileTypes
     public const string TotalFeasibilityAndConceptStudies = "TotalFeasibilityAndConceptStudies";
     public const string TotalFeasibilityAndConceptStudiesOverride = "TotalFeasibilityAndConceptStudiesOverride";
 
-    public const string TotalFEEDStudies = "TotalFEEDStudies";
-    public const string TotalFEEDStudiesOverride = "TotalFEEDStudiesOverride";
+    public const string TotalFeedStudies = "TotalFeedStudies";
+    public const string TotalFeedStudiesOverride = "TotalFeedStudiesOverride";
 
     public const string CessationOnshoreFacilitiesCostProfile = "CessationOnshoreFacilitiesCostProfile";
 
     public const string HistoricCostCostProfile = "HistoricCostCostProfile";
 
-    public const string OnshoreRelatedOPEXCostProfile = "OnshoreRelatedOPEXCostProfile";
+    public const string OnshoreRelatedOpexCostProfile = "OnshoreRelatedOpexCostProfile";
 
-    public const string AdditionalOPEXCostProfile = "AdditionalOPEXCostProfile";
+    public const string AdditionalOpexCostProfile = "AdditionalOpexCostProfile";
 
     public const string TotalOtherStudiesCostProfile = "TotalOtherStudiesCostProfile";
 

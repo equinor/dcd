@@ -25,7 +25,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
 
     const calculatedFields = useMemo(() => [
         ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
-        ProfileTypes.TotalFEEDStudiesOverride,
+        ProfileTypes.TotalFeedStudiesOverride,
     ], [])
 
     const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
@@ -54,9 +54,9 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 profileName: "FEED studies (DG2-DG3)",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalFeedStudiesData,
-                resourceName: ProfileTypes.TotalFEEDStudiesOverride,
+                resourceName: ProfileTypes.TotalFeedStudiesOverride,
                 resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.TotalFEEDStudiesOverride,
+                resourcePropertyKey: ProfileTypes.TotalFeedStudiesOverride,
                 overridable: true,
                 overrideProfile: totalFeedStudiesOverrideData,
                 editable: true,

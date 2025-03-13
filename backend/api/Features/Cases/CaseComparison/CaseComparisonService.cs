@@ -78,9 +78,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         var feasibility = new TimeSeries(feasibilityProfile);
 
-        var feedProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies);
+        var feedProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)?.Override == true
+            ? caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)
+            : caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies);
 
         var feed = new TimeSeries(feedProfile);
 
@@ -104,10 +104,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         var historicCostCostProfile = caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile);
         var historicCost = new TimeSeries(historicCostCostProfile);
 
-        var onshoreRelatedOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        var onshoreRelatedOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOpexCostProfile);
         var onshoreOpex = new TimeSeries(onshoreRelatedOpexCostProfile);
 
-        var additionalOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile);
+        var additionalOpexCostProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOpexCostProfile);
         var additionalOpex = new TimeSeries(additionalOpexCostProfile);
 
         var opexTimeSeries = TimeSeriesMerger.MergeTimeSeries(
