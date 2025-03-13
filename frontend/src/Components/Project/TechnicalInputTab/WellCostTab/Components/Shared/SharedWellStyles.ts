@@ -27,6 +27,10 @@ export const Section = styled.section`
     display: flex;
     flex-direction: column;
     gap: 30px;
+
+    &:not(:first-child) {
+        margin-top: 100px;
+    }
 `
 
 export const SectionHeader = styled.div`

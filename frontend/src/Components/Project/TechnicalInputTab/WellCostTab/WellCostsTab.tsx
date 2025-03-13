@@ -1,5 +1,3 @@
-import { Typography } from "@equinor/eds-core-react"
-
 import { Section } from "./Components/Shared/SharedWellStyles"
 import ExplorationCosts from "./Components/Costs/ExplorationCosts"
 import DevelopmentCosts from "./Components/Costs/DevelopmentCosts"
@@ -9,7 +7,6 @@ import { developmentWellOptions, explorationWellOptions, isExplorationWell } fro
 
 const WellCostsTab = () => (
     <div>
-
         <Section>
             <Wells
                 title="Exploration Well Costs"
