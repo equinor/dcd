@@ -72,7 +72,7 @@ public static class StudyCostProfileService
 
     private static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)?.Override == true)
         {
             return;
         }
@@ -81,7 +81,7 @@ public static class StudyCostProfileService
 
         if (caseItem.Dg2Date == null || caseItem.Dg3Date == null)
         {
-            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies));
+            CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies));
 
             return;
         }
@@ -124,7 +124,7 @@ public static class StudyCostProfileService
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeedStudies);
 
-        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFEEDStudies);
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeedStudies);
 
         profile.StartYear = dg2.Year - caseItem.Dg4Date.Year;
         profile.Values = valuesList.ToArray();

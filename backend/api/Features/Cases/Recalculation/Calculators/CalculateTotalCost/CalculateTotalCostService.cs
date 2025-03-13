@@ -86,8 +86,8 @@ public static class CalculateTotalCostService
         );
 
         var feedProfile = UseOverrideOrProfile(
-            caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudies),
-            caseItem.GetProfileOrNull(ProfileTypes.TotalFEEDStudiesOverride)
+            caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies),
+            caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)
         );
 
         var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
@@ -114,10 +114,10 @@ public static class CalculateTotalCostService
         var historicCostProfile = caseItem.GetProfileOrNull(ProfileTypes.HistoricCostCostProfile);
         var historicCost = new TimeSeries(historicCostProfile);
 
-        var onshoreRelatedOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOPEXCostProfile);
+        var onshoreRelatedOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOpexCostProfile);
         var onshoreRelatedOpex = new TimeSeries(onshoreRelatedOpexProfile);
 
-        var additionalOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOPEXCostProfile);
+        var additionalOpexProfile = caseItem.GetProfileOrNull(ProfileTypes.AdditionalOpexCostProfile);
         var additionalOpex = new TimeSeries(additionalOpexProfile);
 
         var totalOpexCost = TimeSeriesMerger.MergeTimeSeries(

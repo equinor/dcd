@@ -65,7 +65,7 @@ const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) 
         if (rowData?.resourceName === ProfileTypes.TotalFeasibilityAndConceptStudiesOverride) {
             return "feasibilityStudies"
         }
-        if (rowData?.resourceName === ProfileTypes.TotalFEEDStudiesOverride) {
+        if (rowData?.resourceName === ProfileTypes.TotalFeedStudiesOverride) {
             return "feedStudies"
         }
         if (rowData?.resourceName === ProfileTypes.WellInterventionCostProfileOverride) {
@@ -115,7 +115,7 @@ const CalculationsTab: React.FC<Props> = ({ profileType, rowData = [] }: Props) 
                 return "totalExportedVolumes"
             case ProfileTypes.TotalFeasibilityAndConceptStudiesOverride:
                 return "feasibilityStudies"
-            case ProfileTypes.TotalFEEDStudiesOverride:
+            case ProfileTypes.TotalFeedStudiesOverride:
                 return "feedStudies"
             case ProfileTypes.WellInterventionCostProfileOverride:
                 return "wellIntervention"
