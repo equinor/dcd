@@ -1,5 +1,6 @@
 using System.Text.Json;
 
+using api.Models;
 using api.Models.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace api.Features.ChangeLogs;
 
 public static class ProjectChangeLogDtoMapperService
 {
-    public static List<ProjectChangeLogDto> MapToDtos(List<ChangeLog> changes)
+    public static List<ProjectChangeLogDto> MapToDtos(List<ChangeLog> changes, Project liveData)
     {
         var result = new List<ProjectChangeLogDto>();
 
@@ -18,6 +19,7 @@ public static class ProjectChangeLogDtoMapperService
             {
                 result.Add(new ProjectChangeLogDto
                 {
+                    EntityDescription = GetEntityDescription(change.EntityId, change.EntityName, liveData),
                     EntityId = change.EntityId,
                     EntityName = change.EntityName,
                     PropertyName = change.PropertyName,
@@ -35,6 +37,7 @@ public static class ProjectChangeLogDtoMapperService
             {
                 result.Add(new ProjectChangeLogDto
                 {
+                    EntityDescription = GetEntityDescription(change.EntityId, change.EntityName, liveData),
                     EntityId = change.EntityId,
                     EntityName = change.EntityName,
                     PropertyName = null,
@@ -50,7 +53,7 @@ public static class ProjectChangeLogDtoMapperService
 
             if (change.EntityState == EntityState.Added.ToString())
             {
-                result.AddRange(ExpandToFields(change.EntityName, change.EntityId, change.Username, change.TimestampUtc, change.Payload!));
+                result.AddRange(ExpandToFields(change.EntityName, change.EntityId, change.Username, change.TimestampUtc, change.Payload!, liveData));
             }
         }
 
@@ -66,7 +69,7 @@ public static class ProjectChangeLogDtoMapperService
         { "ProjectImage", ["Url"] }
     };
 
-    private static List<ProjectChangeLogDto> ExpandToFields(string entityName, Guid entityId, string? username, DateTime timestampUtc, string payload)
+    private static List<ProjectChangeLogDto> ExpandToFields(string entityName, Guid entityId, string? username, DateTime timestampUtc, string payload, Project liveData)
     {
         var mapping = JsonSerializer.Deserialize<Dictionary<string, object?>>(payload, JsonSerializerOptions)!;
 
@@ -76,6 +79,7 @@ public static class ProjectChangeLogDtoMapperService
             .Where(x => !entitySpecificPropertiesToIgnore.Contains(x.Key))
             .Select(change => new ProjectChangeLogDto
             {
+                EntityDescription = GetEntityDescription(entityId, entityName, liveData),
                 EntityId = entityId,
                 EntityName = entityName,
                 PropertyName = change.Key,
@@ -86,5 +90,15 @@ public static class ProjectChangeLogDtoMapperService
                 EntityState = EntityState.Added.ToString()
             })
             .ToList();
+    }
+
+    private static string? GetEntityDescription(Guid entityId, string entityName, Project liveData)
+    {
+        return entityName switch
+        {
+            nameof(ProjectMember) => liveData.ProjectMembers.SingleOrDefault(x => x.Id == entityId)?.AzureAdUserId.ToString(),
+            nameof(Well) => liveData.Wells.SingleOrDefault(x => x.Id == entityId)?.Name,
+            _ => null
+        };
     }
 }

@@ -4,6 +4,7 @@ namespace api.Features.ChangeLogs;
 
 public class ProjectChangeLogDto
 {
+    public required string? EntityDescription { get; set; }
     [Required] public required Guid EntityId { get; set; }
     [Required] public required string EntityName { get; set; }
     public required string? PropertyName { get; set; }

@@ -11,6 +11,7 @@ import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 interface IRow {
+    entityDescription: string | null;
     entityName: string;
     propertyName: string;
     oldValue: string | null;
@@ -42,6 +43,7 @@ const ChangeLogView: React.FC = () => {
 
     const [colDefs] = useState<ColDef<IRow>[]>(
         [
+            { field: "entityDescription" },
             { field: "entityName" },
             { field: "propertyName" },
             { field: "oldValue" },

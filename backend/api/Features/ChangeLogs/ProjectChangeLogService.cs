@@ -19,7 +19,16 @@ public class ProjectChangeLogService(DcdDbContext context)
             .ThenBy(x => x.EntityName)
             .ToListAsync();
 
-        return ProjectChangeLogDtoMapperService.MapToDtos(changes);
+        var liveData = await context.Projects
+            .Include(x => x.DevelopmentOperationalWellCosts)
+            .Include(x => x.ExplorationOperationalWellCosts)
+            .Where(x => x.Id == projectId)
+            .SingleAsync();
+
+        await context.ProjectMembers.Where(x => x.ProjectId == projectPk).LoadAsync();
+        await context.Wells.Where(x => x.ProjectId == projectPk).LoadAsync();
+
+        return ProjectChangeLogDtoMapperService.MapToDtos(changes, liveData);
     }
 
     private async Task<List<Guid>> GetPrimaryKeysForProjectRelatedEntities(Guid projectPk)
