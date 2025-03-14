@@ -22,6 +22,13 @@ const CostCell = ({
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }
+
+    const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+        if (e.currentTarget === document.activeElement) {
+            e.currentTarget.blur()
+        }
+    }
+
     return (
         <Table.Row key={1}>
             <Table.Cell>
@@ -35,6 +42,7 @@ const CostCell = ({
                             type="number"
                             value={value}
                             onChange={onValueChange}
+                            onWheel={handleWheel}
                         />
                     )
                     : <StyledTypography>{value}</StyledTypography>}
