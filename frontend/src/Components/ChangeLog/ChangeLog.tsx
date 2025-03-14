@@ -9,14 +9,16 @@ import { useProjectContext } from "@/Store/ProjectContext"
 import { changeLogQueryFn } from "@/Services/QueryFunctions"
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { formatDateAndTime } from "@/Utils/DateUtils"
 
 interface IRow {
     entityDescription: string | null;
     entityName: string;
-    propertyName: string;
+    propertyName: string | null;
+    fieldName: string;
     oldValue: string | null;
     newValue: string | null;
-    username: string;
+    username: string | null;
     timestampUtc: string;
     entityState: string;
 }
@@ -37,23 +39,64 @@ const ChangeLogView: React.FC = () => {
         enabled: !!projectId,
     })
 
-    const data = projectChangeLogData as IRow[]
+    const data = (projectChangeLogData || []).map((row) => ({
+        entityDescription: row.entityDescription,
+        entityName: row.entityName,
+        propertyName: row.propertyName,
+        fieldName: row.propertyName ? `${row.entityName}.${row.propertyName}` : row.entityName,
+        oldValue: row.oldValue,
+        newValue: row.newValue,
+        username: row.username,
+        timestampUtc: row.timestampUtc,
+        entityState: row.entityState,
+    }))
 
     const rowData = useMemo<IRow[]>(() => data, [data])
 
     const [colDefs] = useState<ColDef<IRow>[]>(
         [
-            { field: "entityDescription" },
-            { field: "entityName" },
-            { field: "propertyName" },
-            { field: "oldValue" },
-            { field: "newValue" },
-            { field: "username" },
-            { field: "timestampUtc" },
-            { field: "entityState" },
+            {
+                field: "entityDescription",
+                headerName: "Entity name",
+                maxWidth: 210,
+            },
+            {
+                field: "fieldName",
+                headerName: "Field name",
+                maxWidth: 420,
+            },
+            {
+                field: "oldValue",
+                headerName: "Old value",
+            },
+            {
+                field: "newValue",
+                headerName: "New value",
+            },
+            {
+                field: "username",
+                headerName: "Changed by",
+                maxWidth: 180,
+            },
+            {
+                field: "timestampUtc",
+                headerName: "Changed at",
+                width: 100,
+                valueFormatter: (params) => formatDateAndTime(params.value),
+                maxWidth: 150,
+            },
+            {
+                field: "entityState",
+                headerName: "Change type",
+                maxWidth: 135,
+            },
         ],
     )
-    const defaultColDef: ColDef = { flex: 1 }
+    const defaultColDef: ColDef = {
+        flex: 1,
+        sortable: true,
+        filter: true,
+    }
 
     if (!projectChangeLogData || !revisionAndProjectData) {
         return <ProjectSkeleton />
@@ -67,9 +110,13 @@ const ChangeLogView: React.FC = () => {
                 </Typography>
             </div>
             <div
-                style={{ height: "100%", marginTop: "20px" }}
+                style={{ height: "100%", marginTop: "40px" }}
             >
-                <AgGridReact rowData={rowData} columnDefs={colDefs} defaultColDef={defaultColDef} />
+                <AgGridReact
+                    rowData={rowData}
+                    columnDefs={colDefs}
+                    defaultColDef={defaultColDef}
+                />
             </div>
         </ChangeLogWrapper>
     )
