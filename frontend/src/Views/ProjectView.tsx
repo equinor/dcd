@@ -11,6 +11,7 @@ import ProjectCompareCasesTab from "@/Components/Project/CompareCasesTab/Compare
 import { useProjectContext } from "@/Store/ProjectContext"
 import { projectTabNames } from "@/Utils/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import ProjectChangeLog from "@/Components/ChangeLog/ProjectChangeLog"
 
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
@@ -50,6 +51,9 @@ const ProjectView = () => {
             </div>
             <div role="tabpanel" hidden={activeTabProject !== 4}>
                 <ProjectSettingsTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabProject !== 5}>
+                <ProjectChangeLog />
             </div>
         </Wrapper>
     )

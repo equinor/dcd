@@ -15,7 +15,7 @@ type ProjectTabsProps = {
 }
 
 const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTabProject }) => {
-    const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
+    const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings" && name !== "Project change log")
     const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
@@ -46,7 +46,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
                 sx={{ marginRight: "5px" }}
                 value={
                     typeof activeTabProject === "number"
-                    && activeTabProject >= leftTabs.length
+                        && activeTabProject >= leftTabs.length
                         ? activeTabProject - leftTabs.length
                         : false
                 }

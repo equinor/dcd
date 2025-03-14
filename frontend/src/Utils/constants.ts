@@ -76,6 +76,7 @@ export const projectTabNames = [
     "Technical Input",
     "Access Management",
     "Settings",
+    "Project change log",
 ]
 
 export const productionOverrideResources = [
