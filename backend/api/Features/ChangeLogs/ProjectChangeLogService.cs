@@ -28,7 +28,9 @@ public class ProjectChangeLogService(DcdDbContext context)
         await context.ProjectMembers.Where(x => x.ProjectId == projectPk).LoadAsync();
         await context.Wells.Where(x => x.ProjectId == projectPk).LoadAsync();
 
-        return ProjectChangeLogDtoMapperService.MapToDtos(changes, liveData);
+        return ProjectChangeLogDtoMapperService.MapToDtos(changes, liveData)
+            .Where(x => x.Category != ChangeLogCategory.None)
+            .ToList();
     }
 
     private async Task<List<Guid>> GetPrimaryKeysForProjectRelatedEntities(Guid projectPk)

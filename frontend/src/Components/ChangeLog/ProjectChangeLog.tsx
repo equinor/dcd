@@ -12,10 +12,6 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 import { ChangeLogCategory } from "@/Models/enums"
 
-interface ChangeLogProps {
-    changeLogCategory: ChangeLogCategory
-}
-
 interface IRow {
     entityDescription: string | null;
     entityName: string;
@@ -26,6 +22,7 @@ interface IRow {
     username: string | null;
     timestampUtc: string;
     entityState: string;
+    category: string;
 }
 
 const ChangeLogWrapper = styled.div`
@@ -33,8 +30,7 @@ const ChangeLogWrapper = styled.div`
     padding: 40px;
 `
 
-const ChangeLogView = (props: ChangeLogProps) => {
-    const { changeLogCategory } = props
+const ProjectChangeLog = () => {
     useStyles()
     const { projectId } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
@@ -46,7 +42,6 @@ const ChangeLogView = (props: ChangeLogProps) => {
     })
 
     const data = (projectChangeLogData || [])
-        .filter((row) => row.category === changeLogCategory || changeLogCategory === ChangeLogCategory.None)
         .map((row) => ({
             entityDescription: row.entityDescription,
             entityName: row.entityName,
@@ -57,11 +52,17 @@ const ChangeLogView = (props: ChangeLogProps) => {
             username: row.username,
             timestampUtc: row.timestampUtc,
             entityState: row.entityState,
+            category: ChangeLogCategory[row.category],
         }))
 
     const rowData = useMemo<IRow[]>(() => data, [data])
 
-    const allColumns: ColDef<IRow>[] = [
+    const [colDefs] = useState<ColDef<IRow>[]>([
+        {
+            field: "category",
+            headerName: "Area",
+            maxWidth: 200,
+        },
         {
             field: "entityDescription",
             headerName: "Entity name",
@@ -90,18 +91,14 @@ const ChangeLogView = (props: ChangeLogProps) => {
             headerName: "Changed at",
             width: 100,
             valueFormatter: (params) => formatDateAndTime(params.value),
-            maxWidth: 150,
+            maxWidth: 155,
         },
         {
             field: "entityState",
             headerName: "Change type",
             maxWidth: 155,
         },
-    ]
-
-    const displayAllColumns = [ChangeLogCategory.None, ChangeLogCategory.WellCostTab, ChangeLogCategory.AccessManagementTab].includes(changeLogCategory)
-
-    const [colDefs] = useState<ColDef<IRow>[]>(displayAllColumns ? allColumns : allColumns.filter((col) => col.field !== "entityDescription"))
+    ])
 
     const defaultColDef: ColDef = {
         flex: 1,
@@ -133,4 +130,4 @@ const ChangeLogView = (props: ChangeLogProps) => {
     )
 }
 
-export default ChangeLogView
+export default ProjectChangeLog

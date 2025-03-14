@@ -107,14 +107,15 @@ public static class ProjectChangeLogDtoMapperService
 
     private static ChangeLogCategory CalculateCategory(string entityName, string propertyName)
     {
-        if (entityName == nameof(ProjectMember))
+        switch (entityName)
         {
-            return ChangeLogCategory.AccessManagementTab;
-        }
+            case nameof(ProjectMember):
+                return ChangeLogCategory.AccessManagementTab;
 
-        if (entityName == nameof(Well))
-        {
-            return ChangeLogCategory.WellCostTab;
+            case nameof(Well):
+            case nameof(DevelopmentOperationalWellCosts):
+            case nameof(ExplorationOperationalWellCosts):
+                return ChangeLogCategory.WellCostTab;
         }
 
         switch (entityName, propertyName)

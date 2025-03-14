@@ -7,7 +7,7 @@ import CaseView from "./Views/CaseView"
 import ProjectSelector from "./Components/ProjectSelector"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 import UserGuideView from "./Components/Guide/UserGuide"
-import ChangeLogCategorySelector from "./Components/ChangeLog/ChangeLogCategorySelector"
+import ChangeLogView from "./Components/ChangeLog/ProjectChangeLog"
 
 const routes: RouteObject[] = [
     {
@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
                     { path: "revision/:revisionId/case/:caseId/:tab", element: <CaseView /> },
                     { path: "case/:caseId", element: <CaseView /> },
                     { path: "case/:caseId/:tab", element: <CaseView /> },
-                    { path: "change-logs", element: <ChangeLogCategorySelector /> },
+                    { path: "change-log", element: <ChangeLogView /> },
                 ],
             },
         ],
