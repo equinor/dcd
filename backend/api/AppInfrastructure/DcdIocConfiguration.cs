@@ -24,6 +24,7 @@ using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Recalculation;
 using api.Features.Cases.Update;
+using api.Features.ChangeLogs;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Copy;
 using api.Features.Images.Delete;
@@ -160,5 +161,8 @@ public static class DcdIocConfiguration
 
         /* Videos */
         services.AddScoped<GetVideoService>();
+
+        /* Change logs */
+        services.AddScoped<ProjectChangeLogService>();
     }
 }
