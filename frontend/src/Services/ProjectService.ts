@@ -46,6 +46,11 @@ export class __ProjectService extends __BaseService {
         const res: Components.Schemas.CompareCasesDto[] = await this.get<Components.Schemas.CompareCasesDto[]>(`projects/${projectId}/case-comparison`)
         return res
     }
+
+    public async getProjectChangeLogs(projectId: string) {
+        const res: Components.Schemas.ProjectChangeLogDto[] = await this.get<Components.Schemas.ProjectChangeLogDto[]>(`projects/${projectId}/change-logs`)
+        return res
+    }
 }
 
 export const GetProjectService = () => new __ProjectService()
