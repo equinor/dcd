@@ -24,7 +24,10 @@ public class ProjectChangeLogService(DcdDbContext context)
 
     private async Task<List<Guid>> GetPrimaryKeysForProjectRelatedEntities(Guid projectPk)
     {
-        var primaryKeys = new List<Guid>();
+        var primaryKeys = new List<Guid>
+        {
+            projectPk
+        };
 
         primaryKeys.AddRange(await context.ProjectImages
                                  .Where(x => x.ProjectId == projectPk)

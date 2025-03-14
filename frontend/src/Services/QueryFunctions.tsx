@@ -45,6 +45,14 @@ export const compareCasesQueryFn = async (projectId: string | undefined) => {
     return GetProjectService().compareCases(projectId!)
 }
 
+export const changeLogQueryFn = async (projectId: string | undefined) => {
+    if (!projectId) {
+        console.error("projectId is undefined")
+        return null
+    }
+    return GetProjectService().getProjectChangeLogs(projectId!)
+}
+
 export const featureToggleQueryFn = async () => GetFeatureToggleService().getFeatureToggles()
 
 export const galleryImagesQueryFn = async (
