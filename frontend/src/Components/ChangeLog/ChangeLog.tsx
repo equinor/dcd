@@ -10,6 +10,11 @@ import { changeLogQueryFn } from "@/Services/QueryFunctions"
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { formatDateAndTime } from "@/Utils/DateUtils"
+import { ChangeLogCategory } from "@/Models/enums"
+
+interface ChangeLogProps {
+    changeLogCategory: ChangeLogCategory
+}
 
 interface IRow {
     entityDescription: string | null;
@@ -28,7 +33,8 @@ const ChangeLogWrapper = styled.div`
     padding: 40px;
 `
 
-const ChangeLogView: React.FC = () => {
+const ChangeLogView = (props: ChangeLogProps) => {
+    const { changeLogCategory } = props
     useStyles()
     const { projectId } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
@@ -39,59 +45,64 @@ const ChangeLogView: React.FC = () => {
         enabled: !!projectId,
     })
 
-    const data = (projectChangeLogData || []).map((row) => ({
-        entityDescription: row.entityDescription,
-        entityName: row.entityName,
-        propertyName: row.propertyName,
-        fieldName: row.propertyName ? `${row.entityName}.${row.propertyName}` : row.entityName,
-        oldValue: row.oldValue,
-        newValue: row.newValue,
-        username: row.username,
-        timestampUtc: row.timestampUtc,
-        entityState: row.entityState,
-    }))
+    const data = (projectChangeLogData || [])
+        .filter((row) => row.category === changeLogCategory || changeLogCategory === ChangeLogCategory.None)
+        .map((row) => ({
+            entityDescription: row.entityDescription,
+            entityName: row.entityName,
+            propertyName: row.propertyName,
+            fieldName: row.propertyName ? `${row.entityName}.${row.propertyName}` : row.entityName,
+            oldValue: row.oldValue,
+            newValue: row.newValue,
+            username: row.username,
+            timestampUtc: row.timestampUtc,
+            entityState: row.entityState,
+        }))
 
     const rowData = useMemo<IRow[]>(() => data, [data])
 
-    const [colDefs] = useState<ColDef<IRow>[]>(
-        [
-            {
-                field: "entityDescription",
-                headerName: "Entity name",
-                maxWidth: 210,
-            },
-            {
-                field: "fieldName",
-                headerName: "Field name",
-                maxWidth: 420,
-            },
-            {
-                field: "oldValue",
-                headerName: "Old value",
-            },
-            {
-                field: "newValue",
-                headerName: "New value",
-            },
-            {
-                field: "username",
-                headerName: "Changed by",
-                maxWidth: 180,
-            },
-            {
-                field: "timestampUtc",
-                headerName: "Changed at",
-                width: 100,
-                valueFormatter: (params) => formatDateAndTime(params.value),
-                maxWidth: 150,
-            },
-            {
-                field: "entityState",
-                headerName: "Change type",
-                maxWidth: 135,
-            },
-        ],
-    )
+    const allColumns: ColDef<IRow>[] = [
+        {
+            field: "entityDescription",
+            headerName: "Entity name",
+            maxWidth: 210,
+        },
+        {
+            field: "fieldName",
+            headerName: "Field name",
+            maxWidth: 420,
+        },
+        {
+            field: "oldValue",
+            headerName: "Old value",
+        },
+        {
+            field: "newValue",
+            headerName: "New value",
+        },
+        {
+            field: "username",
+            headerName: "Changed by",
+            maxWidth: 180,
+        },
+        {
+            field: "timestampUtc",
+            headerName: "Changed at",
+            width: 100,
+            valueFormatter: (params) => formatDateAndTime(params.value),
+            maxWidth: 150,
+        },
+        {
+            field: "entityState",
+            headerName: "Change type",
+            maxWidth: 155,
+        },
+    ]
+
+    const displayAllColumns = [ChangeLogCategory.None, ChangeLogCategory.WellCostTab, ChangeLogCategory.AccessManagementTab].includes(changeLogCategory)
+
+    const [colDefs] = useState<ColDef<IRow>[]>(displayAllColumns ? allColumns : allColumns.filter((col) => col.field !== "entityDescription"))
+
     const defaultColDef: ColDef = {
         flex: 1,
         sortable: true,

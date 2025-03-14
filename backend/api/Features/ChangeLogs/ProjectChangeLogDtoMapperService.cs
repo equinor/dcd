@@ -27,7 +27,8 @@ public static class ProjectChangeLogDtoMapperService
                     NewValue = change.NewValue,
                     Username = change.Username,
                     TimestampUtc = change.TimestampUtc,
-                    EntityState = change.EntityState
+                    EntityState = change.EntityState,
+                    Category = CalculateCategory(change.EntityName, change.PropertyName!)
                 });
 
                 continue;
@@ -45,7 +46,8 @@ public static class ProjectChangeLogDtoMapperService
                     NewValue = null,
                     Username = change.Username,
                     TimestampUtc = change.TimestampUtc,
-                    EntityState = change.EntityState
+                    EntityState = change.EntityState,
+                    Category = ChangeLogCategory.None
                 });
 
                 continue;
@@ -87,7 +89,8 @@ public static class ProjectChangeLogDtoMapperService
                 NewValue = change.Value?.ToString(),
                 Username = username,
                 TimestampUtc = timestampUtc,
-                EntityState = EntityState.Added.ToString()
+                EntityState = EntityState.Added.ToString(),
+                Category = CalculateCategory(entityName, change.Key)
             })
             .ToList();
     }
@@ -100,5 +103,52 @@ public static class ProjectChangeLogDtoMapperService
             nameof(Well) => liveData.Wells.SingleOrDefault(x => x.Id == entityId)?.Name,
             _ => null
         };
+    }
+
+    private static ChangeLogCategory CalculateCategory(string entityName, string propertyName)
+    {
+        if (entityName == nameof(ProjectMember))
+        {
+            return ChangeLogCategory.AccessManagementTab;
+        }
+
+        if (entityName == nameof(Well))
+        {
+            return ChangeLogCategory.WellCostTab;
+        }
+
+        switch (entityName, propertyName)
+        {
+            case (nameof(Project), nameof(Project.AverageDevelopmentDrillingDays)):
+            case (nameof(Project), nameof(Project.Co2EmissionFromFuelGas)):
+            case (nameof(Project), nameof(Project.Co2EmissionsFromFlaredGas)):
+            case (nameof(Project), nameof(Project.Co2RemovedFromGas)):
+            case (nameof(Project), nameof(Project.Co2Vented)):
+            case (nameof(Project), nameof(Project.DailyEmissionFromDrillingRig)):
+            case (nameof(Project), nameof(Project.FlaredGasPerProducedVolume)):
+                return ChangeLogCategory.Co2Tab;
+
+            case (nameof(Project), nameof(Project.PhysicalUnit)):
+            case (nameof(Project), nameof(Project.Currency)):
+            case (nameof(Project), nameof(Project.Classification)):
+            case (nameof(Project), nameof(Project.OilPriceUsd)):
+            case (nameof(Project), nameof(Project.NglPriceUsd)):
+            case (nameof(Project), nameof(Project.GasPriceNok)):
+            case (nameof(Project), nameof(Project.DiscountRate)):
+            case (nameof(Project), nameof(Project.ExchangeRateUsdToNok)):
+            case (nameof(Project), nameof(Project.NpvYear)):
+                return ChangeLogCategory.SettingsTab;
+
+            case (nameof(Project), nameof(Project.Country)):
+            case (nameof(Project), nameof(Project.Description)):
+            case (nameof(Project), nameof(Project.Name)):
+            case (nameof(Project), nameof(Project.ProjectCategory)):
+            case (nameof(Project), nameof(Project.ProjectPhase)):
+            case (nameof(ProjectImage), nameof(ProjectImage.Description)):
+                return ChangeLogCategory.ProjectOverviewTab;
+
+            default:
+                return ChangeLogCategory.None;
+        }
     }
 }

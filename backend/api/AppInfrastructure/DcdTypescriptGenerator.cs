@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 
 using api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaign;
+using api.Features.ChangeLogs;
 using api.Features.Profiles;
 using api.Features.Projects.Exists;
 using api.Models.Enums;
@@ -15,6 +16,7 @@ public static class DcdTypescriptGenerator
         typeof(ArtificialLift),
         typeof(CampaignCostType),
         typeof(CampaignType),
+        typeof(ChangeLogCategory),
         typeof(Concept),
         typeof(Currency),
         typeof(GasSolution),

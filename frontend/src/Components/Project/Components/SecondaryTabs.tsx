@@ -2,11 +2,11 @@ import { Tab, Tabs, Box } from "@mui/material"
 import styled from "styled-components"
 import { ReactNode } from "react"
 
-const TabWrapper = styled.div`
+export const TabWrapper = styled.div`
     border-radius: 8px;
 `
 
-const StyledTabs = styled(Tabs)`
+export const StyledTabs = styled(Tabs)`
     &.MuiTabs-root {
         min-height: unset;
     }
@@ -16,7 +16,7 @@ const StyledTabs = styled(Tabs)`
     }
 `
 
-const StyledTab = styled(Tab)`
+export const StyledTab = styled(Tab)`
     &.MuiTab-root {
         border-radius: 4px 4px 0 0;
         margin: 0;
@@ -50,7 +50,7 @@ const StyledTab = styled(Tab)`
     }
 `
 
-const TabPanel = styled.div`
+export const TabPanel = styled.div`
     background: white;
     border-radius: 0 0 4px 4px;
     border: 1px solid #DCDCDC; 
@@ -59,13 +59,13 @@ const TabPanel = styled.div`
     position: relative;
 `
 
-interface TabPanelProps {
+export interface TabPanelProps {
     children?: ReactNode;
     index: number;
     value: number;
 }
 
-const CustomTabPanel = (props: TabPanelProps) => {
+export const CustomTabPanel = (props: TabPanelProps) => {
     const {
         children, value, index, ...other
     } = props
@@ -84,13 +84,13 @@ const CustomTabPanel = (props: TabPanelProps) => {
     )
 }
 
-interface Tab {
+export interface CustomTab {
     label: string;
     content: ReactNode;
 }
 
-interface SecondaryTabsProps {
-    tabs: Tab[];
+export interface SecondaryTabsProps {
+    tabs: CustomTab[];
     value: number;
     onChange: (event: React.SyntheticEvent, newValue: number) => void;
 }

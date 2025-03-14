@@ -13,4 +13,15 @@ public class ProjectChangeLogDto
     public required string? Username { get; set; }
     [Required] public required DateTime TimestampUtc { get; set; }
     [Required] public required string EntityState { get; set; }
+    [Required] public required ChangeLogCategory Category { get; set; }
+}
+
+public enum ChangeLogCategory
+{
+    None,
+    WellCostTab,
+    Co2Tab,
+    AccessManagementTab,
+    SettingsTab,
+    ProjectOverviewTab
 }

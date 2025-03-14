@@ -101,6 +101,15 @@ export enum CampaignType {
     ExplorationCampaign = 2,
 }
 
+export enum ChangeLogCategory {
+    None = 0,
+    WellCostTab = 1,
+    Co2Tab = 2,
+    AccessManagementTab = 3,
+    SettingsTab = 4,
+    ProjectOverviewTab = 5,
+}
+
 export enum Concept {
     NoConcept = 0,
     TieBack = 1,
