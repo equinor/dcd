@@ -26,7 +26,7 @@ interface IRow {
 }
 
 const ChangeLogWrapper = styled.div`
-    height: calc(100vh - 230px);
+    height: calc(100vh - 250px);
     padding: 40px;
 `
 
