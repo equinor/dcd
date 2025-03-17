@@ -6,7 +6,6 @@ import {
     dateStringToDateUtc,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
-import { ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseApiData } from "@/Hooks"
@@ -70,7 +69,7 @@ const CaseScheduleTab = () => {
     }, [apiData, setSnackBarMessage, updateMilestoneDate])
 
     const getChangeHandler = useCallback(
-        (dateKey: ResourcePropertyKey) => (e: React.ChangeEvent<HTMLInputElement>) => handleDateChange(dateKey, e.target.value),
+        (dateKey: any) => (e: React.ChangeEvent<HTMLInputElement>) => handleDateChange(dateKey, e.target.value),
         [handleDateChange],
     )
 
@@ -91,7 +90,6 @@ const CaseScheduleTab = () => {
         return dateString ? true : undefined
     }, [])
 
-    // Memoize the filtered milestone dates to prevent recalculation on every render
     const visibleMilestoneDates = useMemo(() => {
         if (!apiData || !apiData.case) { return [] }
 
@@ -114,8 +112,7 @@ const CaseScheduleTab = () => {
                         required={milestone.required}
                         label={milestone.label}
                         value={getDateValue(milestone.key)}
-                        resourcePropertyKey={milestone.key as ResourcePropertyKey}
-                        onChange={getChangeHandler(milestone.key as ResourcePropertyKey)}
+                        onChange={getChangeHandler(milestone.key)}
                     />
                 </Grid>
             ))}

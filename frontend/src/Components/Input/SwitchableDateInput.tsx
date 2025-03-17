@@ -15,13 +15,11 @@ import {
 import {
     isWithinRange,
 } from "../../Utils/common"
-import { ResourcePropertyKey } from "../../Models/Interfaces"
 import { useAppStore } from "@/Store/AppStore"
 
 interface SwitchableDateInputProps {
     value: Date | undefined
     label: string
-    resourcePropertyKey: ResourcePropertyKey
     onChange: ChangeEventHandler<HTMLInputElement>
     required?: boolean
     min?: string
@@ -38,7 +36,6 @@ const toScheduleValue = (value: Date | undefined): string | undefined => {
 const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
     value,
     label,
-    resourcePropertyKey,
     onChange,
     required = false,
     min,
@@ -117,7 +114,6 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
                 label={label}
             >
                 <DatePicker
-                    id={resourcePropertyKey}
                     value={datePickerValue}
                     onChange={handleDateChange}
                     minValue={minValue}
