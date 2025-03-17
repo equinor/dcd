@@ -2,14 +2,13 @@ import React, { useState } from "react"
 import { Button, CircularProgress, Tooltip } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { ICellRendererParams } from "@ag-grid-community/core"
-import { useSubmitToApi, useCaseApiData } from "@/Hooks"
+import { useCaseApiData } from "@/Hooks"
 import { DisabledExcelHideIcon } from "@/Media/Icons/DisabledExcelHideIcon"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 import { CalculatorToggle, ExcelToggle } from "./ToggleIcons"
 import { ProfileTypes } from "@/Models/enums"
-import { ResourceObject } from "@/Models/Interfaces"
+import { useTimeSeriesMutation } from "@/Hooks/Mutations"
 
 interface CalculationSourceToggleProps {
     clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>
@@ -25,50 +24,38 @@ const CalculationSourceToggle: React.FC<CalculationSourceToggleProps> = ({
     sharepointFileId,
 }) => {
     const { caseId } = useParams()
-    const { projectId } = useProjectContext()
     const [sharepointId] = useState(sharepointFileId)
     const { apiQueue } = useAppStore()
-    const { submitToApi } = useSubmitToApi()
     const { apiData } = useCaseApiData()
+    const { updateProfileOverride } = useTimeSeriesMutation()
 
     const handleToggleClick = async (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (!editAllowed || params?.data?.override === undefined || !caseId) {
             return
         }
 
-        const profile = {
-            ...params.data.overrideProfile,
-            resourceId: params.data.resourceId,
-            resourceName: params.data.resourceName,
-            overridable: params.data.overridable,
-            editable: params.data.editable,
-        }
-
-        const resourceKey = profile.resourceName.charAt(0).toLowerCase() + profile.resourceName.slice(1)
-
+        const resourceKey = params.data.resourceName.charAt(0).toLowerCase() + params.data.resourceName.slice(1)
         const overrideData = apiData![resourceKey as keyof typeof apiData] as Record<string, any>
 
-        const createOverrideDto = (data: Record<string, any> | undefined, profileType: string, override: boolean) => ({
-            values: data?.values ?? [],
-            startYear: data?.startYear ?? 0,
-            profileType,
-            override,
-        })
+        // Create the profile object with all necessary data
+        const profile = {
+            resourceId: params.data.resourceId,
+            resourceName: params.data.resourceName,
+            startYear: overrideData?.startYear ?? 0,
+            values: overrideData?.values ?? [],
+            override: !params.data.override, // Toggle the override state
+        }
 
-        await submitToApi({
-            projectId,
-            caseId,
-            resourceName: "caseProfiles",
-            resourceObject: {
-                timeSeries: [],
-                overrideTimeSeries: [
-                    createOverrideDto(overrideData, profile.resourceName, !profile.override),
-                ],
-            } as unknown as ResourceObject,
-        })
+        try {
+            // Use the mutation hook to update the profile override
+            await updateProfileOverride(profile)
 
-        params.api.redrawRows()
-        params.api.refreshCells()
+            // Update the grid
+            params.api.redrawRows()
+            params.api.refreshCells()
+        } catch (error) {
+            console.error("Failed to toggle profile override:", error)
+        }
     }
 
     if (apiQueue.find((item) => item.resourceName === clickedElement.data?.resourceName as ProfileTypes)) {

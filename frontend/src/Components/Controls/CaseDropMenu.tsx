@@ -15,13 +15,12 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseApiData, useDataFetch } from "@/Hooks"
 
-import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
 import { useModalContext } from "@/Store/ModalContext"
-import { ResourceObject } from "@/Models/Interfaces"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "@/Components/Modal/Modal"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useCaseMutation } from "@/Hooks/Mutations"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -42,9 +41,9 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const queryClient = useQueryClient()
     const { addNewCase } = useModalContext()
     const { addProjectEdit } = useEditProject()
-    const { updateCase } = useSubmitToApi()
     const { isEditDisabled } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
+    const { updateArchived } = useCaseMutation()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -63,12 +62,17 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 
     const archiveCase = async (archived: boolean) => {
         if (!apiData?.case || !caseId || !revisionAndProjectData?.projectId) { return }
-        const newResourceObject = { ...apiData?.case, archived } as ResourceObject
-        const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId, resourceObject: newResourceObject })
-        if (result.success) {
-            queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId] },
-            )
+
+        try {
+            await updateArchived(archived, caseId)
+
+            if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) {
+                queryClient.invalidateQueries({
+                    queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId],
+                })
+            }
+        } catch (error) {
+            console.error("Failed to archive/unarchive case:", error)
         }
     }
 

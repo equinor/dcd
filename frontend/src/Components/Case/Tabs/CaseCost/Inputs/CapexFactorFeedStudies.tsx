@@ -1,21 +1,26 @@
 import React from "react"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import { useCaseMutation } from "@/Hooks/Mutations"
 
-interface props {
+interface Props {
     caseData: Components.Schemas.CaseOverviewDto
 }
-const CapexFactorFeedStudies: React.FC<props> = ({ caseData }) => (
-    <SwitchableNumberInput
-        resourceName="case"
-        resourcePropertyKey="capexFactorFeedStudies"
-        label="CAPEX factor FEED studies"
-        previousResourceObject={caseData}
-        value={caseData.capexFactorFeedStudies}
-        integer={false}
-        unit="%"
-        min={0}
-        max={100}
-    />
-)
+
+const CapexFactorFeedStudies: React.FC<Props> = ({ caseData }) => {
+    const { updateCapexFactorFeedStudies } = useCaseMutation()
+
+    return (
+        <SwitchableNumberInput
+            label="CAPEX factor FEED studies"
+            value={caseData.capexFactorFeedStudies}
+            id={`case-capex-factor-feed-studies-${caseData.caseId}`}
+            integer={false}
+            unit="%"
+            min={0}
+            max={100}
+            onSubmit={(newValue) => updateCapexFactorFeedStudies(newValue)}
+        />
+    )
+}
 
 export default CapexFactorFeedStudies

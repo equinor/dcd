@@ -19,6 +19,7 @@ import { useDataFetch, useCaseApiData } from "@/Hooks"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
+import { useTopsideMutation } from "@/Hooks/Mutations"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -29,6 +30,7 @@ const CaseCO2Tab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
+    const { updateFuelConsumption } = useTopsideMutation()
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside
@@ -245,14 +247,12 @@ const CaseCO2Tab = () => {
             </Grid>
             <div>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="fuelConsumption"
-                    resourceId={topsideData.id}
                     label="Fuel consumption"
                     value={topsideData.fuelConsumption}
-                    previousResourceObject={topsideData}
+                    id={`topside-fuel-consumption-${topsideData.id}`}
                     integer={false}
                     unit="million Sm³ gas/sd"
+                    onSubmit={(newValue) => updateFuelConsumption(topsideData.id, newValue)}
                 />
             </div>
             <Grid size={12}>

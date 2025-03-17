@@ -19,8 +19,9 @@ import { formatDateAndTime } from "@/Utils/DateUtils"
 import { useAppStore } from "@/Store/AppStore"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import {
-    useDataFetch, useEditProject, useEditCase, useCaseApiData,
+    useDataFetch, useEditProject, useCaseApiData,
 } from "@/Hooks"
+import { useCaseMutation } from "@/Hooks/Mutations"
 import UndoControls from "./UndoControls"
 import CaseTabs from "./TabNavigators/CaseTabs"
 
@@ -80,10 +81,10 @@ const CaseControls: React.FC<props> = ({
     const nameInputRef = useRef<HTMLInputElement>(null)
     const { addProjectEdit } = useEditProject()
     const { editMode } = useAppStore()
-    const { addEdit } = useEditCase()
     const { isEditDisabled, getEditDisabledText } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
+    const { updateName } = useCaseMutation()
 
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
@@ -99,17 +100,8 @@ const CaseControls: React.FC<props> = ({
     const caseData = apiData.case
 
     const handleCaseNameChange = (name: string) => {
-        const resourceObject = structuredClone(caseData)
-        resourceObject.name = name
-        if (caseData) {
-            addEdit({
-                resourceObject,
-                projectId,
-                resourceName: "case",
-                resourcePropertyKey: "name",
-                resourceId: EMPTY_GUID,
-                caseId,
-            })
+        if (name !== caseData.name) {
+            updateName(name)
         }
     }
 

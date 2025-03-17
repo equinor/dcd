@@ -13,6 +13,7 @@ import { filterWells } from "@/Utils/common"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
+import { useCampaignMutation } from "@/Hooks/Mutations"
 
 export interface CampaignProps {
     campaign: Components.Schemas.CampaignDto
@@ -27,6 +28,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { canEdit } = useCanUserEdit()
     const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
+    const { updateRigUpgradingCost, updateRigMobDemobCost } = useCampaignMutation()
 
     const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
     const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
@@ -130,26 +132,22 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             <CampaignInputsContainer container size={12} spacing={2}>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
-                        resourceName="rigUpgradingCost"
-                        resourcePropertyKey="rigUpgradingCost"
                         label={`Rig upgrading cost - ${title}`}
-                        resourceId={campaign.campaignId}
-                        previousResourceObject={campaign}
                         value={campaign.rigUpgradingCost}
+                        id={`campaign-rig-upgrading-cost-${campaign.campaignId}`}
                         unit="MUSD"
                         integer
+                        onSubmit={(newValue) => updateRigUpgradingCost(campaign.campaignId, newValue)}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <SwitchableNumberInput
-                        resourceName="rigMobDemobCost"
-                        resourcePropertyKey="rigMobDemobCost"
                         label={`Rig mob/demob cost - ${title}`}
-                        resourceId={campaign.campaignId}
-                        previousResourceObject={campaign}
                         value={campaign.rigMobDemobCost}
+                        id={`campaign-rig-mobdemob-cost-${campaign.campaignId}`}
                         unit="MUSD"
                         integer
+                        onSubmit={(newValue) => updateRigMobDemobCost(campaign.campaignId, newValue)}
                     />
                 </Grid>
             </CampaignInputsContainer>

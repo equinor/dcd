@@ -15,8 +15,6 @@ import { useMemo, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
-import { ResourceObject } from "@/Models/Interfaces"
-import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { useDataFetch } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
@@ -24,6 +22,7 @@ import Modal from "@/Components/Modal/Modal"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
 import { caseTabNames } from "@/Utils/constants"
+import { useCaseMutation } from "@/Hooks/Mutations"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -43,10 +42,10 @@ const CasesDropMenu = ({
     const queryClient = useQueryClient()
     const { addProjectEdit } = useEditProject()
     const { navigateToCase } = useAppNavigation()
-    const { updateCase } = useSubmitToApi()
     const { isEditDisabled } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
     const { activeTabCase } = useCaseStore()
+    const { updateArchived } = useCaseMutation()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -76,13 +75,26 @@ const CasesDropMenu = ({
     }
 
     const archiveCase = async (isArchived: boolean) => {
-        if (!selectedCase || selectedCaseId === undefined || !revisionAndProjectData?.projectId) { return }
-        const newResourceObject = { ...selectedCase, archived: isArchived } as ResourceObject
-        const result = await updateCase({ projectId: revisionAndProjectData.projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
-        if (result.success) {
-            queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId] },
-            )
+        if (!selectedCase || selectedCaseId === undefined || !revisionAndProjectData?.projectId) {
+            console.error("Missing required data for archiving case:", {
+                selectedCase,
+                selectedCaseId,
+                projectId: revisionAndProjectData?.projectId,
+            })
+            return
+        }
+
+        try {
+            await updateArchived(isArchived, selectedCaseId)
+
+            // Invalidate the project data query to update the case list in the UI
+            if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) {
+                queryClient.invalidateQueries({
+                    queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId],
+                })
+            }
+        } catch (error) {
+            console.error("Failed to archive/unarchive case:", error)
         }
     }
 

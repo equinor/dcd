@@ -177,68 +177,62 @@ const CaseDrillingScheduleTab = () => {
                             <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                                     <SwitchableNumberInput
-                                        resourceName="case"
-                                        resourcePropertyKey="producerCount"
                                         label="Exploration wells"
-                                        previousResourceObject={caseData}
                                         value={explorationWellCount}
                                         integer
                                         disabled
+                                        id={`case-exploration-wells-${caseData.caseId}`}
+                                        onSubmit={() => {}}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                                     <SwitchableNumberInput
-                                        resourceName="case"
-                                        resourcePropertyKey="producerCount"
                                         label="Oil producer wells"
-                                        previousResourceObject={caseData}
                                         value={oilProducerCount}
                                         integer
                                         disabled
+                                        id={`case-oil-producer-wells-${caseData.caseId}`}
+                                        onSubmit={() => {}}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                                     <SwitchableNumberInput
-                                        resourceName="case"
-                                        resourcePropertyKey="producerCount"
                                         label="Water injector wells"
-                                        previousResourceObject={caseData}
                                         value={waterInjectorCount}
                                         integer
                                         disabled
+                                        id={`case-water-injector-wells-${caseData.caseId}`}
+                                        onSubmit={() => {}}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                                     <SwitchableNumberInput
-                                        resourceName="case"
-                                        resourcePropertyKey="producerCount"
                                         label="Appraisal wells"
-                                        previousResourceObject={caseData}
                                         value={appraisalWellCount}
                                         integer
                                         disabled
+                                        id={`case-appraisal-wells-${caseData.caseId}`}
+                                        onSubmit={() => {}}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                                     <SwitchableNumberInput
-                                        resourceName="case"
-                                        resourcePropertyKey="producerCount"
                                         label="Gas producer wells"
-                                        previousResourceObject={caseData}
                                         value={gasProducerCount}
                                         integer
                                         disabled
+                                        id={`case-gas-producer-wells-${caseData.caseId}`}
+                                        onSubmit={() => {}}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                                     <SwitchableNumberInput
-                                        resourceName="case"
-                                        resourcePropertyKey="producerCount"
                                         label="Gas injector wells"
-                                        previousResourceObject={caseData}
                                         value={gasInjectorCount}
                                         integer
                                         disabled
+                                        id={`case-gas-injector-wells-${caseData.caseId}`}
+                                        onSubmit={() => {}}
                                     />
                                 </Grid>
                             </Grid>

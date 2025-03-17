@@ -1,11 +1,14 @@
 import React from "react"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
+import { useSurfMutation } from "@/Hooks/Mutations"
 
 interface props {
     surfData: Components.Schemas.SurfDto
 }
 
 const Maturity: React.FC<props> = ({ surfData }) => {
+    const { updateMaturity } = useSurfMutation()
+
     const maturityOptions: { [key: string]: string } = {
         0: "A",
         1: "B",
@@ -15,13 +18,11 @@ const Maturity: React.FC<props> = ({ surfData }) => {
 
     return (
         <SwitchableDropdownInput
-            resourceName="surf"
-            resourcePropertyKey="maturity"
-            resourceId={surfData.id}
             value={surfData.maturity}
-            previousResourceObject={structuredClone(surfData)}
             options={maturityOptions}
-            label="Gas solution"
+            label="Maturity"
+            id={`surf-maturity-${surfData.id}`}
+            onSubmit={(newValue) => updateMaturity(surfData.id, newValue)}
         />
     )
 }

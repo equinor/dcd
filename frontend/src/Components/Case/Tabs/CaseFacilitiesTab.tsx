@@ -8,6 +8,9 @@ import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
 import { Concept, Currency } from "@/Models/enums"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
+import {
+    useTopsideMutation, useSurfMutation, useTransportMutation, useCaseMutation, useSubstructureMutation,
+} from "@/Hooks/Mutations"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
@@ -16,6 +19,41 @@ const TabContainer = styled(Grid)`
 const CaseFacilitiesTab = () => {
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
+    const {
+        updateFacilityOpex,
+        updateDryWeight: updateTopsideDryWeight,
+        updatePeakElectricityImported,
+        updateOilCapacity,
+        updateGasCapacity,
+        updateWaterInjectionCapacity,
+        updateProducerCount: updateTopsideProducerCount,
+        updateGasInjectorCount: updateTopsideGasInjectorCount,
+        updateWaterInjectorCount: updateTopsideWaterInjectorCount,
+    } = useTopsideMutation()
+
+    const {
+        updateProductionFlowline,
+        updateCessationCost,
+        updateTemplateCount,
+        updateRiserCount,
+        updateInfieldPipelineSystemLength,
+        updateUmbilicalSystemLength,
+        updateProducerCount: updateSurfProducerCount,
+        updateGasInjectorCount: updateSurfGasInjectorCount,
+        updateWaterInjectorCount: updateSurfWaterInjectorCount,
+    } = useSurfMutation()
+
+    const {
+        updateOilExportPipelineLength,
+        updateGasExportPipelineLength,
+    } = useTransportMutation()
+
+    const { updateHost } = useCaseMutation()
+
+    const {
+        updateConcept,
+        updateDryWeight: updateSubstructureDryWeight,
+    } = useSubstructureMutation()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -70,48 +108,41 @@ const CaseFacilitiesTab = () => {
         <TabContainer container spacing={2}>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
-                    resourceName="substructure"
-                    resourcePropertyKey="concept"
-                    resourceId={substructureData.id}
-                    previousResourceObject={substructureData}
                     value={substructureData.concept}
                     options={platformConceptValues}
                     label="Platform concept"
+                    id={`substructure-concept-${substructureData.id}`}
+                    onSubmit={(newValue) => updateConcept(substructureData.id, newValue)}
                 />
             </Grid>
             {substructureData.concept === Concept.TieBack && (
                 <Grid size={{ xs: 12, md: 4 }}>
                     <SwitchableStringInput
                         label="Host"
-                        resourceName="case"
-                        resourcePropertyKey="host"
-                        previousResourceObject={caseData}
                         value={caseData.host || ""}
+                        id={`case-host-${caseData.caseId}`}
+                        onSubmit={(newValue) => updateHost(newValue)}
                     />
                 </Grid>
             )}
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="facilityOpex"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Facility opex"
                     value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
                     unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`}
+                    id={`topside-facility-opex-${topsideData.id}`}
+                    onSubmit={(newValue) => updateFacilityOpex(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourcePropertyKey="cessationCost"
-                    resourceName="surf"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Cessation cost"
                     value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
                     unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`}
+                    id={`surf-cessation-cost-${surfData.id}`}
+                    onSubmit={(newValue) => updateCessationCost(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -119,23 +150,18 @@ const CaseFacilitiesTab = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="dryWeight"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Topside dry weight"
                     value={Math.round(Number(topsideData.dryWeight) * 1) / 1}
                     integer
                     unit="tonnes"
                     min={0}
                     max={1_000_000}
+                    id={`topside-dry-weight-${topsideData.id}`}
+                    onSubmit={(newValue) => updateTopsideDryWeight(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="case"
-                    resourcePropertyKey="facilitiesAvailability"
-                    previousResourceObject={caseData}
                     label="Facilities availability"
                     value={caseData.facilitiesAvailability ?? 0 * 100}
                     integer
@@ -143,60 +169,54 @@ const CaseFacilitiesTab = () => {
                     unit="%"
                     min={0}
                     max={100}
+                    id="case-facilities-availability"
+                    onSubmit={() => {}}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="peakElectricityImported"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Peak electricity imported"
                     value={Math.round(Number(topsideData.peakElectricityImported) * 10) / 10}
                     integer={false}
                     unit="MW"
                     min={0}
                     max={1_000_000}
+                    id={`topside-peak-electricity-imported-${topsideData.id}`}
+                    onSubmit={(newValue) => updatePeakElectricityImported(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="oilCapacity"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Oil capacity"
                     value={Math.round(Number(topsideData.oilCapacity) * 1) / 1}
                     integer
                     unit="Sm³/sd"
                     min={0}
                     max={1_000_000}
+                    id={`topside-oil-capacity-${topsideData.id}`}
+                    onSubmit={(newValue) => updateOilCapacity(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="gasCapacity"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Gas capacity"
                     value={Math.round(Number(topsideData.gasCapacity) * 10) / 10}
                     integer={false}
                     unit="MSm³/sd"
                     min={0}
                     max={1_000_000}
+                    id={`topside-gas-capacity-${topsideData.id}`}
+                    onSubmit={(newValue) => updateGasCapacity(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="waterInjectionCapacity"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Water injection capacity"
                     value={Math.round(Number(topsideData.waterInjectionCapacity) * 1) / 1}
                     integer
                     unit="MSm³/sd"
+                    id={`topside-water-injection-capacity-${topsideData.id}`}
+                    onSubmit={(newValue) => updateWaterInjectionCapacity(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -204,41 +224,35 @@ const CaseFacilitiesTab = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="producerCount"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Producer count"
                     value={topsideData.producerCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`topside-producer-count-${topsideData.id}`}
+                    onSubmit={(newValue) => updateTopsideProducerCount(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="gasInjectorCount"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Gas injector count"
                     value={topsideData.gasInjectorCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`topside-gas-injector-count-${topsideData.id}`}
+                    onSubmit={(newValue) => updateTopsideGasInjectorCount(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="topside"
-                    resourcePropertyKey="waterInjectorCount"
-                    resourceId={topsideData.id}
-                    previousResourceObject={topsideData}
                     label="Water injector count"
                     value={topsideData.waterInjectorCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`topside-water-injector-count-${topsideData.id}`}
+                    onSubmit={(newValue) => updateTopsideWaterInjectorCount(topsideData.id, newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -246,67 +260,57 @@ const CaseFacilitiesTab = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="templateCount"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Templates"
                     value={surfData.templateCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`surf-template-count-${surfData.id}`}
+                    onSubmit={(newValue) => updateTemplateCount(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="riserCount"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Risers"
                     value={surfData.riserCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`surf-riser-count-${surfData.id}`}
+                    onSubmit={(newValue) => updateRiserCount(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="infieldPipelineSystemLength"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Production lines length"
                     value={Math.round(Number(surfData.infieldPipelineSystemLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
                     max={1_000_000}
+                    id={`surf-infield-pipeline-system-length-${surfData.id}`}
+                    onSubmit={(newValue) => updateInfieldPipelineSystemLength(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="umbilicalSystemLength"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Umbilical system length"
                     value={Math.round(Number(surfData.umbilicalSystemLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
                     max={1_000_000}
+                    id={`surf-umbilical-system-length-${surfData.id}`}
+                    onSubmit={(newValue) => updateUmbilicalSystemLength(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableDropdownInput
-                    resourceName="surf"
-                    resourcePropertyKey="productionFlowline"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     value={surfData.productionFlowline}
                     options={productionFlowlineValues}
                     label="Production flowline"
+                    id={`surf-production-flowline-${surfData.id}`}
+                    onSubmit={(newValue) => updateProductionFlowline(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -314,39 +318,33 @@ const CaseFacilitiesTab = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="producerCount"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Producer count"
                     value={surfData.producerCount}
                     integer
+                    id={`surf-producer-count-${surfData.id}`}
+                    onSubmit={(newValue) => updateSurfProducerCount(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="gasInjectorCount"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Gas injector count"
                     value={surfData.gasInjectorCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`surf-gas-injector-count-${surfData.id}`}
+                    onSubmit={(newValue) => updateSurfGasInjectorCount(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="surf"
-                    resourcePropertyKey="waterInjectorCount"
-                    resourceId={surfData.id}
-                    previousResourceObject={surfData}
                     label="Water injector count"
                     value={surfData.waterInjectorCount}
                     integer
                     min={0}
                     max={1_000_000}
+                    id={`surf-water-injector-count-${surfData.id}`}
+                    onSubmit={(newValue) => updateSurfWaterInjectorCount(surfData.id, newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -354,30 +352,26 @@ const CaseFacilitiesTab = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="transport"
-                    resourcePropertyKey="oilExportPipelineLength"
-                    resourceId={transportData.id}
-                    previousResourceObject={transportData}
                     label="Oil export pipeline length"
                     value={Math.round(Number(transportData.oilExportPipelineLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
                     max={1_000_000}
+                    id={`transport-oil-export-pipeline-length-${transportData.id}`}
+                    onSubmit={(newValue) => updateOilExportPipelineLength(transportData.id, newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="transport"
-                    resourcePropertyKey="gasExportPipelineLength"
-                    resourceId={transportData.id}
-                    previousResourceObject={transportData}
                     label="Gas export pipeline length"
                     value={Math.round(Number(transportData.gasExportPipelineLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
                     max={1_000_000}
+                    id={`transport-gas-export-pipeline-length-${transportData.id}`}
+                    onSubmit={(newValue) => updateGasExportPipelineLength(transportData.id, newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -385,16 +379,14 @@ const CaseFacilitiesTab = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
-                    resourceName="substructure"
-                    resourcePropertyKey="dryWeight"
-                    resourceId={substructureData.id}
-                    previousResourceObject={substructureData}
                     label="Substructure dry weight"
                     value={Math.round(Number(substructureData.dryWeight) * 1) / 1}
                     integer
                     unit="tonnes"
                     min={0}
                     max={1_000_000}
+                    id={`substructure-dry-weight-${substructureData.id}`}
+                    onSubmit={(newValue) => updateSubstructureDryWeight(substructureData.id, newValue)}
                 />
             </Grid>
         </TabContainer>
