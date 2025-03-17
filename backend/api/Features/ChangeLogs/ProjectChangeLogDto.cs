@@ -23,5 +23,6 @@ public enum ChangeLogCategory
     Co2Tab,
     AccessManagementTab,
     SettingsTab,
-    ProjectOverviewTab
+    ProjectOverviewTab,
+    ProspTab
 }

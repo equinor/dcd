@@ -148,6 +148,9 @@ public static class ProjectChangeLogDtoMapperService
             case (nameof(ProjectImage), nameof(ProjectImage.Description)):
                 return ChangeLogCategory.ProjectOverviewTab;
 
+            case (nameof(Project), nameof(Project.SharepointSiteUrl)):
+                return ChangeLogCategory.ProspTab;
+
             default:
                 return ChangeLogCategory.None;
         }

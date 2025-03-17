@@ -108,6 +108,7 @@ export enum ChangeLogCategory {
     AccessManagementTab = 3,
     SettingsTab = 4,
     ProjectOverviewTab = 5,
+    ProspTab = 6,
 }
 
 export enum Concept {
