@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 
 using api.AppInfrastructure.Authorization;
+using api.Models;
 using api.Models.Infrastructure;
 using api.Models.Interfaces;
 
@@ -35,7 +36,8 @@ public static class ChangeLogService
                                  Payload = GenerateInitialState(x.Properties),
                                  NewValue = null,
                                  OldValue = null,
-                                 PropertyName = null
+                                 PropertyName = null,
+                                 ParentEntityId = ParentEntityId((IChangeTrackable)x.Entity)
                              }));
 
         return changes;
@@ -64,6 +66,11 @@ public static class ChangeLogService
         }
 
         if (type == typeof(decimal) || type == typeof(decimal?) || type == typeof(string))
+        {
+            return true;
+        }
+
+        if (type == typeof(Guid) || type == typeof(Guid?))
         {
             return true;
         }
@@ -99,11 +106,100 @@ public static class ChangeLogService
                     Username = username,
                     TimestampUtc = utcNow,
                     EntityState = EntityState.Modified.ToString(),
-                    Payload = null
+                    Payload = null,
+                    ParentEntityId = ParentEntityId(entity.Entity)
                 });
             }
         }
 
         return changes;
+    }
+
+    private static Guid? ParentEntityId(IChangeTrackable entity)
+    {
+        // Project entities
+        if (entity.GetType() == typeof(ProjectImage))
+        {
+            return (entity as ProjectImage)!.ProjectId;
+        }
+
+        if (entity.GetType() == typeof(ProjectMember))
+        {
+            return (entity as ProjectMember)!.ProjectId;
+        }
+
+        if (entity.GetType() == typeof(DevelopmentOperationalWellCosts))
+        {
+            return (entity as DevelopmentOperationalWellCosts)!.ProjectId;
+        }
+
+        if (entity.GetType() == typeof(ExplorationOperationalWellCosts))
+        {
+            return (entity as ExplorationOperationalWellCosts)!.ProjectId;
+        }
+
+        if (entity.GetType() == typeof(Well))
+        {
+            return (entity as Well)!.ProjectId;
+        }
+
+        if (entity.GetType() == typeof(Case))
+        {
+            return (entity as Case)!.ProjectId;
+        }
+
+        // Case entities
+        if (entity.GetType() == typeof(Campaign))
+        {
+            return (entity as Campaign)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(TimeSeriesProfile))
+        {
+            return (entity as TimeSeriesProfile)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(CaseImage))
+        {
+            return (entity as CaseImage)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(Transport))
+        {
+            return (entity as Transport)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(Substructure))
+        {
+            return (entity as Substructure)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(Topside))
+        {
+            return (entity as Topside)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(Surf))
+        {
+            return (entity as Surf)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(DrainageStrategy))
+        {
+            return (entity as DrainageStrategy)!.CaseId;
+        }
+
+        if (entity.GetType() == typeof(OnshorePowerSupply))
+        {
+            return (entity as OnshorePowerSupply)!.CaseId;
+        }
+
+        // Campaign entities
+        if (entity.GetType() == typeof(CampaignWell))
+        {
+            return (entity as CampaignWell)!.CampaignId;
+        }
+
+        return null;
     }
 }

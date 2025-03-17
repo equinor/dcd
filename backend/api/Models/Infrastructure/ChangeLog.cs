@@ -6,6 +6,7 @@ public class ChangeLog
     public required string EntityName { get; set; }
     public required string? PropertyName { get; set; }
     public required Guid EntityId { get; set; }
+    public required Guid? ParentEntityId { get; set; }
     public required string? OldValue { get; set; }
     public required string? NewValue { get; set; }
     public required string? Username { get; set; }

@@ -28,7 +28,7 @@ public class RecalculateProjectService(IDbContextFactory<DcdDbContext> contextFa
             var pendingRecalculationsWithSameProjectId = await context.PendingRecalculations
                 .Where(x => x.ProjectId == pendingProject.ProjectId)
                 .ToListAsync();
-            
+
             context.PendingRecalculations.RemoveRange(pendingRecalculationsWithSameProjectId);
 
             var end = DateTime.UtcNow;

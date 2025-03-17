@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class CampaignWell : IDateTrackedEntity
+public class CampaignWell : IChangeTrackable, IDateTrackedEntity
 {
     public Guid Id { get; set; }
 

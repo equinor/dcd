@@ -22,8 +22,12 @@ public class ProjectChangeLogService(DcdDbContext context)
         var liveData = await context.Projects
             .Include(x => x.DevelopmentOperationalWellCosts)
             .Include(x => x.ExplorationOperationalWellCosts)
-            .Where(x => x.Id == projectId)
+            .Where(x => x.Id == projectPk)
             .SingleAsync();
+
+        await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .LoadAsync();
 
         await context.ProjectMembers.Where(x => x.ProjectId == projectPk).LoadAsync();
         await context.Wells.Where(x => x.ProjectId == projectPk).LoadAsync();
@@ -40,29 +44,10 @@ public class ProjectChangeLogService(DcdDbContext context)
             projectPk
         };
 
-        primaryKeys.AddRange(await context.ProjectImages
-                                 .Where(x => x.ProjectId == projectPk)
-                                 .Select(x => x.Id)
+        primaryKeys.AddRange(await context.ChangeLogs
+                                 .Where(x => x.ParentEntityId == projectPk)
+                                 .Select(x => x.EntityId)
                                  .ToListAsync());
-
-        primaryKeys.AddRange(await context.ProjectMembers
-                                 .Where(x => x.ProjectId == projectPk)
-                                 .Select(x => x.Id)
-                                 .ToListAsync());
-
-        primaryKeys.AddRange(await context.Wells
-                                 .Where(x => x.ProjectId == projectPk)
-                                 .Select(x => x.Id)
-                                 .ToListAsync());
-
-        var operationalWellCostIds = await (from d in context.DevelopmentOperationalWellCosts
-                                            join e in context.ExplorationOperationalWellCosts on d.ProjectId equals e.ProjectId
-                                            where d.ProjectId == projectPk
-                                            select new { Id1 = d.Id, Id2 = e.Id })
-            .SingleAsync();
-
-        primaryKeys.AddRange(operationalWellCostIds.Id1);
-        primaryKeys.AddRange(operationalWellCostIds.Id2);
 
         return primaryKeys;
     }

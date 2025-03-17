@@ -103,6 +103,7 @@ public class ChangeLogConfiguration : IEntityTypeConfiguration<ChangeLog>
     public void Configure(EntityTypeBuilder<ChangeLog> builder)
     {
         builder.HasIndex(x => x.EntityId);
+        builder.HasIndex(x => x.ParentEntityId);
         builder.HasIndex(x => x.EntityName);
         builder.HasIndex(x => x.PropertyName);
         builder.HasIndex(x => x.TimestampUtc);

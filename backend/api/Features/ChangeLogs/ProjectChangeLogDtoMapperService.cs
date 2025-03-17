@@ -17,91 +17,117 @@ public static class ProjectChangeLogDtoMapperService
         {
             if (change.EntityState == EntityState.Modified.ToString())
             {
-                result.Add(new ProjectChangeLogDto
-                {
-                    EntityDescription = GetEntityDescription(change.EntityId, change.EntityName, liveData),
-                    EntityId = change.EntityId,
-                    EntityName = change.EntityName,
-                    PropertyName = change.PropertyName,
-                    OldValue = change.OldValue,
-                    NewValue = change.NewValue,
-                    Username = change.Username,
-                    TimestampUtc = change.TimestampUtc,
-                    EntityState = change.EntityState,
-                    Category = CalculateCategory(change.EntityName, change.PropertyName!)
-                });
+                result.Add(MapModified(change, liveData));
 
                 continue;
             }
 
             if (change.EntityState == EntityState.Deleted.ToString())
             {
-                result.Add(new ProjectChangeLogDto
-                {
-                    EntityDescription = GetEntityDescription(change.EntityId, change.EntityName, liveData),
-                    EntityId = change.EntityId,
-                    EntityName = change.EntityName,
-                    PropertyName = null,
-                    OldValue = null,
-                    NewValue = null,
-                    Username = change.Username,
-                    TimestampUtc = change.TimestampUtc,
-                    EntityState = change.EntityState,
-                    Category = ChangeLogCategory.None
-                });
+                result.Add(MapDeleted(change, liveData));
 
                 continue;
             }
 
             if (change.EntityState == EntityState.Added.ToString())
             {
-                result.AddRange(ExpandToFields(change.EntityName, change.EntityId, change.Username, change.TimestampUtc, change.Payload!, liveData));
+                result.AddRange(MapAdded(change, liveData));
             }
         }
 
         return result;
     }
 
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
-    private static readonly HashSet<string> PropertyNamesToIgnore = ["Id", "ProjectId", "CreatedBy", "UpdatedBy", "CreatedUtc", "UpdatedUtc"];
-
-    private static readonly Dictionary<string, HashSet<string>> EntitySpecificPropertiesToIgnore = new()
+    private static ProjectChangeLogDto MapModified(ChangeLog change, Project liveData)
     {
-        { "CaseImage", ["Url"] },
-        { "ProjectImage", ["Url"] }
-    };
-
-    private static List<ProjectChangeLogDto> ExpandToFields(string entityName, Guid entityId, string? username, DateTime timestampUtc, string payload, Project liveData)
-    {
-        var mapping = JsonSerializer.Deserialize<Dictionary<string, object?>>(payload, JsonSerializerOptions)!;
-
-        var entitySpecificPropertiesToIgnore = EntitySpecificPropertiesToIgnore.TryGetValue(entityName, out var value) ? value : [];
-
-        return mapping.Where(x => !PropertyNamesToIgnore.Contains(x.Key))
-            .Where(x => !entitySpecificPropertiesToIgnore.Contains(x.Key))
-            .Select(change => new ProjectChangeLogDto
-            {
-                EntityDescription = GetEntityDescription(entityId, entityName, liveData),
-                EntityId = entityId,
-                EntityName = entityName,
-                PropertyName = change.Key,
-                OldValue = null,
-                NewValue = change.Value?.ToString(),
-                Username = username,
-                TimestampUtc = timestampUtc,
-                EntityState = EntityState.Added.ToString(),
-                Category = CalculateCategory(entityName, change.Key)
-            })
-            .ToList();
+        return new ProjectChangeLogDto
+        {
+            EntityDescription = GetEntityDescription(change.EntityName, liveData, change.EntityId),
+            EntityId = change.EntityId,
+            EntityName = change.EntityName,
+            PropertyName = change.PropertyName,
+            OldValue = change.OldValue,
+            NewValue = change.NewValue,
+            Username = change.Username,
+            TimestampUtc = change.TimestampUtc,
+            EntityState = change.EntityState,
+            Category = CalculateCategory(change.EntityName, change.PropertyName!)
+        };
     }
 
-    private static string? GetEntityDescription(Guid entityId, string entityName, Project liveData)
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
+
+    private static ProjectChangeLogDto MapAdded(ChangeLog change, Project liveData)
+    {
+        var mapping = JsonSerializer.Deserialize<Dictionary<string, object?>>(change.Payload!, JsonSerializerOptions)!;
+
+        return new ProjectChangeLogDto
+        {
+            EntityDescription = GetEntityDescription(mapping, change.EntityName, liveData, change.EntityId),
+            EntityId = change.EntityId,
+            EntityName = change.EntityName,
+            PropertyName = null,
+            OldValue = null,
+            NewValue = null,
+            Username = change.Username,
+            TimestampUtc = change.TimestampUtc,
+            EntityState = EntityState.Added.ToString(),
+            Category = CalculateCategoryForDeletedEntity(change.EntityName)
+        };
+    }
+
+    private static ProjectChangeLogDto MapDeleted(ChangeLog change, Project liveData)
+    {
+        var mapping = JsonSerializer.Deserialize<Dictionary<string, object?>>(change.Payload!, JsonSerializerOptions)!;
+
+        return new ProjectChangeLogDto
+        {
+            EntityDescription = GetEntityDescription(mapping, change.EntityName, liveData, change.EntityId),
+            EntityId = change.EntityId,
+            EntityName = change.EntityName,
+            PropertyName = null,
+            OldValue = null,
+            NewValue = null,
+            Username = change.Username,
+            TimestampUtc = change.TimestampUtc,
+            EntityState = EntityState.Deleted.ToString(),
+            Category = CalculateCategoryForDeletedEntity(change.EntityName)
+        };
+    }
+
+    private static string? GetEntityDescription(string entityName, Project liveData, Guid entityId)
+    {
+        return GetEntityDescription(new Dictionary<string, object?>(), entityName, liveData, entityId);
+    }
+
+    private static string? GetEntityDescription(Dictionary<string, object?> deserializedPayload, string entityName, Project liveData, Guid entityId)
     {
         return entityName switch
         {
-            nameof(ProjectMember) => liveData.ProjectMembers.SingleOrDefault(x => x.Id == entityId)?.AzureAdUserId.ToString(),
-            nameof(Well) => liveData.Wells.SingleOrDefault(x => x.Id == entityId)?.Name,
+            nameof(Case) => liveData.Cases.SingleOrDefault(x => x.Id == entityId)?.Name
+                            ?? (deserializedPayload.TryGetValue(nameof(Case.Name), out var value) ? value?.ToString() : null),
+
+            nameof(ProjectImage) => liveData.Images.SingleOrDefault(x => x.Id == entityId)?.Description
+                                    ?? (deserializedPayload.TryGetValue(nameof(ProjectImage.Description), out var value) ? value?.ToString() : null),
+
+            nameof(ProjectMember) => liveData.ProjectMembers.SingleOrDefault(x => x.Id == entityId)?.AzureAdUserId.ToString()
+                                     ?? (deserializedPayload.TryGetValue(nameof(ProjectMember.AzureAdUserId), out var value) ? value?.ToString() : null),
+
+            nameof(Well) => liveData.Wells.SingleOrDefault(x => x.Id == entityId)?.Name
+                            ?? (deserializedPayload.TryGetValue(nameof(Well.Name), out var value) ? value?.ToString() : null),
+
             _ => null
+        };
+    }
+
+    private static ChangeLogCategory CalculateCategoryForDeletedEntity(string entityName)
+    {
+        return entityName switch
+        {
+            nameof(ProjectMember) => ChangeLogCategory.AccessManagementTab,
+            nameof(Well) => ChangeLogCategory.WellCostTab,
+            nameof(ProjectImage) or nameof(Case) => ChangeLogCategory.ProjectOverviewTab,
+            _ => ChangeLogCategory.None
         };
     }
 
