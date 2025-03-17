@@ -43,7 +43,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addProjectEdit } = useEditProject()
     const { isEditDisabled } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
-    const { updateName } = useCaseMutation()
+    const { updateArchived } = useCaseMutation()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -63,10 +63,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const archiveCase = async (archived: boolean) => {
         if (!apiData?.case || !caseId || !revisionAndProjectData?.projectId) { return }
 
-        const updatedCase = { ...apiData.case, archived }
-
         try {
-            await updateName(updatedCase.name)
+            await updateArchived(archived, caseId)
 
             if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) {
                 queryClient.invalidateQueries({

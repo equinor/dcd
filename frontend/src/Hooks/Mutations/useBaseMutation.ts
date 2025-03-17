@@ -8,6 +8,7 @@ interface MutationParams {
   resourceId?: string;
   updatedValue: any;
   propertyKey: string;
+  localCaseId?: string;
 }
 
 interface BaseMutationOptions {
@@ -40,8 +41,9 @@ export const useBaseMutation = ({
             resourceId,
             updatedValue,
             propertyKey,
+            localCaseId: paramLocalCaseId,
         }: MutationParams) => {
-            if (!projectId || !caseId) {
+            if (!projectId || (!caseId && !paramLocalCaseId)) {
                 throw new Error("Project ID and Case ID are required")
             }
 
@@ -50,7 +52,20 @@ export const useBaseMutation = ({
 
             try {
                 const service = getService()
-                const apiData = await queryClient.getQueryData<any>(["caseApiData", projectId, caseId])
+                const finalCaseId = paramLocalCaseId || caseId
+
+                let apiData = await queryClient.getQueryData<any>(["caseApiData", projectId, finalCaseId])
+                // If the data is not in the cache and we're dealing with a case resource, fetch it directly
+                if (!apiData && resourceName === "case" && finalCaseId) {
+                    try {
+                        apiData = await service.getCaseWithAssets(projectId, finalCaseId)
+                        // Store the fetched data in the cache for future use
+                        queryClient.setQueryData(["caseApiData", projectId, finalCaseId], apiData)
+                    } catch (error) {
+                        console.error("Error fetching case data directly:", error)
+                    }
+                }
+
                 const resource = getResourceFromApiData(apiData)
 
                 if (!resource) {
@@ -67,13 +82,13 @@ export const useBaseMutation = ({
                 if (resourceName === "case") {
                     result = await service[updateMethod](
                         projectId,
-                        caseId,
+                        finalCaseId,
                         updatedResource,
                     )
                 } else {
                     result = await service[updateMethod](
                         projectId,
-                        caseId,
+                        finalCaseId,
                         resourceId || updatedResource.id,
                         resourceId ? updatedValue : updatedResource,
                     )
@@ -84,9 +99,16 @@ export const useBaseMutation = ({
                 setIsSaving(false)
             }
         },
-        onSuccess: () => {
-            if (projectId && caseId) {
-                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
+        onSuccess: (_, variables) => {
+            const finalCaseId = variables.localCaseId || caseId
+            if (projectId && finalCaseId) {
+                // Invalidate the case data query
+                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, finalCaseId] })
+
+                // Also invalidate the project data query to update the case list
+                if (resourceName === "case" && variables.propertyKey === "archived") {
+                    queryClient.invalidateQueries({ queryKey: ["projectApiData"] })
+                }
             }
         },
         onError: (error: any) => {

@@ -45,7 +45,7 @@ const CasesDropMenu = ({
     const { isEditDisabled } = useCanUserEdit()
     const revisionAndProjectData = useDataFetch()
     const { activeTabCase } = useCaseStore()
-    const { updateName } = useCaseMutation()
+    const { updateArchived } = useCaseMutation()
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -75,13 +75,19 @@ const CasesDropMenu = ({
     }
 
     const archiveCase = async (isArchived: boolean) => {
-        if (!selectedCase || selectedCaseId === undefined || !revisionAndProjectData?.projectId) { return }
+        if (!selectedCase || selectedCaseId === undefined || !revisionAndProjectData?.projectId) {
+            console.error("Missing required data for archiving case:", {
+                selectedCase,
+                selectedCaseId,
+                projectId: revisionAndProjectData?.projectId,
+            })
+            return
+        }
 
         try {
-            const updatedCase = { ...selectedCase, archived: isArchived }
+            await updateArchived(isArchived, selectedCaseId)
 
-            await updateName(updatedCase.name)
-
+            // Invalidate the project data query to update the case list in the UI
             if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) {
                 queryClient.invalidateQueries({
                     queryKey: ["projectApiData", revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId],

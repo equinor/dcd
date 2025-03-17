@@ -90,6 +90,12 @@ export const useCaseMutation = () => {
         propertyKey: "name",
     })
 
+    const updateArchived = (newValue: boolean, caseId: string) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "archived",
+        localCaseId: caseId,
+    })
+
     return {
         updateFacilitiesAvailability,
         updateHost,
@@ -107,6 +113,7 @@ export const useCaseMutation = () => {
         updateDescription,
         updateMilestoneDate,
         updateName,
+        updateArchived,
         isLoading: mutation.isPending,
     }
 }
