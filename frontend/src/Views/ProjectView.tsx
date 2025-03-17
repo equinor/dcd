@@ -50,10 +50,10 @@ const ProjectView = () => {
                 <AccessManagementTab />
             </div>
             <div role="tabpanel" hidden={activeTabProject !== 4}>
-                <ProjectSettingsTab />
+                <ProjectChangeLog />
             </div>
             <div role="tabpanel" hidden={activeTabProject !== 5}>
-                <ProjectChangeLog />
+                <ProjectSettingsTab />
             </div>
         </Wrapper>
     )

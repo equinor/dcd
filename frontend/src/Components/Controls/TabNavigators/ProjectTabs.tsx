@@ -2,8 +2,8 @@ import React from "react"
 import {
     Tabs, Tab, Box,
 } from "@mui/material"
-import { Icon } from "@equinor/eds-core-react"
-import { users_circle, settings } from "@equinor/eds-icons"
+import { Icon, Tooltip } from "@equinor/eds-core-react"
+import { users_circle, settings, assignment } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
 
 import { projectTabNames } from "@/Utils/constants"
@@ -16,7 +16,7 @@ type ProjectTabsProps = {
 
 const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTabProject }) => {
     const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings" && name !== "Project change log")
-    const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
+    const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Project change log" || name === "Settings")
     const { revisionId } = useParams()
     const { navigateToProjectTab } = useAppNavigation()
 
@@ -30,6 +30,19 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
             return index + leftTabs.length
         }
         return index
+    }
+
+    const getRightTabIcon = (tabName: string) => {
+        if (tabName === "Access Management") {
+            return users_circle
+        }
+        if (tabName === "Project change log") {
+            return assignment
+        }
+        if (tabName === "Settings") {
+            return settings
+        }
+        return settings // fallback icon
     }
 
     return (
@@ -57,9 +70,15 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
                     <Tab
                         key={tabName}
                         sx={{ minWidth: "48px" }}
-                        icon={tabName === "Access Management"
-                            ? <Icon data={users_circle} />
-                            : <Icon data={settings} />}
+                        icon={
+                            (
+                                <Tooltip title={tabName} placement="left">
+                                    <span>
+                                        <Icon data={getRightTabIcon(tabName)} />
+                                    </span>
+                                </Tooltip>
+                            )
+                        }
                     />
                 ))}
             </Tabs>
