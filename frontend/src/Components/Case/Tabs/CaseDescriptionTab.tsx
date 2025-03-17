@@ -12,6 +12,21 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDebouncedCallback } from "@/Hooks/useDebounce"
 import { useCaseMutation } from "@/Hooks/Mutations"
 
+const productionStrategyOptions = {
+    0: "Depletion",
+    1: "Water injection",
+    2: "Gas injection",
+    3: "WAG",
+    4: "Mixed",
+}
+
+const artificialLiftOptions = {
+    0: "No lift",
+    1: "Gas lift",
+    2: "Electrical submerged pumps",
+    3: "Subsea booster pumps",
+}
+
 const CaseDescriptionTab = () => {
     const { projectId } = useProjectContext()
     const { apiData } = useCaseApiData()
@@ -28,21 +43,6 @@ const CaseDescriptionTab = () => {
         updateFacilitiesAvailability,
         updateDescription,
     } = useCaseMutation()
-
-    const productionStrategyOptions = {
-        0: "Depletion",
-        1: "Water injection",
-        2: "Gas injection",
-        3: "WAG",
-        4: "Mixed",
-    }
-
-    const artificialLiftOptions = {
-        0: "No lift",
-        1: "Gas lift",
-        2: "Electrical submerged pumps",
-        3: "Subsea booster pumps",
-    }
 
     // Save the description to the API
     const saveDescription = (newValue: string) => {
