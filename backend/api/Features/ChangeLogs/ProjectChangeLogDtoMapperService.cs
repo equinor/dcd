@@ -51,7 +51,7 @@ public static class ProjectChangeLogDtoMapperService
             Username = change.Username,
             TimestampUtc = change.TimestampUtc,
             EntityState = change.EntityState,
-            Category = CalculateCategory(change.EntityName, change.PropertyName!)
+            Category = CalculateCategory(change.EntityState, change.EntityName, change.PropertyName!)
         };
     }
 
@@ -72,7 +72,7 @@ public static class ProjectChangeLogDtoMapperService
             Username = change.Username,
             TimestampUtc = change.TimestampUtc,
             EntityState = EntityState.Added.ToString(),
-            Category = CalculateCategoryForDeletedEntity(change.EntityName)
+            Category = CalculateCategory(change.EntityState, change.EntityName, null)
         };
     }
 
@@ -91,7 +91,7 @@ public static class ProjectChangeLogDtoMapperService
             Username = change.Username,
             TimestampUtc = change.TimestampUtc,
             EntityState = EntityState.Deleted.ToString(),
-            Category = CalculateCategoryForDeletedEntity(change.EntityName)
+            Category = CalculateCategory(change.EntityState, change.EntityName, null)
         };
     }
 
@@ -120,19 +120,19 @@ public static class ProjectChangeLogDtoMapperService
         };
     }
 
-    private static ChangeLogCategory CalculateCategoryForDeletedEntity(string entityName)
+    private static ChangeLogCategory CalculateCategory(string entityState, string entityName, string? propertyName)
     {
-        return entityName switch
+        if (entityState == EntityState.Added.ToString() || entityState == EntityState.Deleted.ToString())
         {
-            nameof(ProjectMember) => ChangeLogCategory.AccessManagementTab,
-            nameof(Well) => ChangeLogCategory.WellCostTab,
-            nameof(ProjectImage) or nameof(Case) => ChangeLogCategory.ProjectOverviewTab,
-            _ => ChangeLogCategory.None
-        };
-    }
+            return entityName switch
+            {
+                nameof(ProjectMember) => ChangeLogCategory.AccessManagementTab,
+                nameof(Well) => ChangeLogCategory.WellCostTab,
+                nameof(ProjectImage) or nameof(Case) => ChangeLogCategory.ProjectOverviewTab,
+                _ => ChangeLogCategory.None
+            };
+        }
 
-    private static ChangeLogCategory CalculateCategory(string entityName, string propertyName)
-    {
         switch (entityName)
         {
             case nameof(ProjectMember):
