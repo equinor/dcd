@@ -75,15 +75,7 @@ export const projectTabNames = [
     "Compare cases",
     "Technical Input",
     "Access Management",
-    "Settings",
     "Project change log",
-]
-
-export const sidebarTabNames = [
-    "Overview",
-    "Compare cases",
-    "Technical Input",
-    "Access Management",
     "Settings",
 ]
 

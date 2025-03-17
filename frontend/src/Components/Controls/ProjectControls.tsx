@@ -20,7 +20,6 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 import RevisionsControl from "./Revision/RevisionsControl"
-import FullPageLoading from "../fullPageLoading"
 import { useFeatureContext } from "@/Store/FeatureContext"
 import ProjectTabs from "./TabNavigators/ProjectTabs"
 

@@ -13,6 +13,7 @@ import {
     compare,
     tune,
     users_circle,
+    assignment,
 } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
@@ -25,7 +26,7 @@ import {
 } from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import { sidebarTabNames } from "@/Utils/constants"
+import { projectTabNames } from "@/Utils/constants"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
@@ -58,6 +59,7 @@ const icons = [
     compare,
     tune,
     users_circle,
+    assignment,
     settings,
 ]
 
@@ -100,7 +102,7 @@ const ProjectDetails: React.FC = () => {
                         </ProjectTitle>
                     </Header>
                     <Timeline data-timeline={sidebarOpen}>
-                        {sidebarTabNames.map((tab, index) => (
+                        {projectTabNames.map((tab, index) => (
                             <ProjectTimeline key={tab} data-timeline-active={index === activeTabProject}>
                                 <TimelineElement
                                     variant="ghost"
