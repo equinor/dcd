@@ -1,52 +1,30 @@
 import React, { ChangeEventHandler, useState } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
-import { ResourcePropertyKey, ResourceName, ResourceObject } from "@/Models/Interfaces"
-import { useProjectContext } from "@/Store/ProjectContext"
-import useEditCase from "@/Hooks/useEditCase"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
     options: { [key: string]: string };
-    resourceName: ResourceName;
-    resourcePropertyKey: ResourcePropertyKey;
-    previousResourceObject: ResourceObject
-    resourceId?: string;
     label: string;
+    id?: string;
+    onSubmit: (newValue: number) => void;
+    disabled?: boolean;
 }
 
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     value,
     options,
-    resourceName,
-    resourcePropertyKey,
-    previousResourceObject,
-    resourceId,
     label,
+    id,
+    onSubmit,
+    disabled = false,
 }: SwitchableDropdownInputProps) => {
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
     const [localValue, setLocalValue] = useState(value)
-    const { addEdit } = useEditCase()
 
-    const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if (!caseId || !projectId) { return }
-
-        const newValue = e.currentTarget.value
-        setLocalValue(Number(newValue))
-
-        const resourceObject: any = structuredClone(previousResourceObject)
-        resourceObject[resourcePropertyKey] = Number(newValue)
-
-        addEdit({
-            resourceObject,
-            projectId,
-            resourceName,
-            resourcePropertyKey,
-            resourceId,
-            caseId,
-        })
+    const handleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
+        const newValue = Number(e.currentTarget.value)
+        setLocalValue(newValue)
+        onSubmit(newValue)
     }
 
     return (
@@ -55,10 +33,11 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             label={label}
         >
             <NativeSelect
-                id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
+                id={id || `dropdown-${label}`}
                 label=""
                 value={localValue}
-                onChange={addToEditsAndSubmit}
+                onChange={handleChange}
+                disabled={disabled}
             >
                 {Object.entries(options).map(([key, val]) => (
                     <option key={key} value={key}>{val}</option>

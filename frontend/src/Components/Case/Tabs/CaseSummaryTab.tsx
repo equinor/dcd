@@ -16,11 +16,13 @@ import CaseTabTableWithGrouping from "@/Components/Tables/CaseTables/CaseTabTabl
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { Currency } from "@/Models/enums"
+import { useCaseMutation } from "@/Hooks/Mutations"
 
 const CaseSummaryTab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
+    const { updateNpvOverride, updateBreakEvenOverride } = useCaseMutation()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
@@ -325,28 +327,23 @@ const CaseSummaryTab = () => {
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="npv"
                             label="NPV before tax (MUSD)"
                             value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
-                            previousResourceObject={caseData}
+                            id={`case-npv-${caseData.caseId}`}
                             integer={false}
-                            allowNegative
                             disabled
+                            onSubmit={() => {}}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="npvOverride"
                             label="STEA NPV after tax(MUSD)"
                             value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
-                            previousResourceObject={caseData}
+                            id={`case-npv-override-${caseData.caseId}`}
                             integer={false}
-                            allowNegative
                             min={0}
                             max={1_000_000}
-                            resourceId={caseData.caseId}
+                            onSubmit={(newValue) => updateNpvOverride(newValue)}
                         />
                     </Grid>
                 </Grid>
@@ -356,29 +353,24 @@ const CaseSummaryTab = () => {
                 <Grid container size={{ xs: 12, md: 8, lg: 6 }} spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="breakEven"
-                            previousResourceObject={caseData}
                             label="B/E before tax (USD/bbl)"
                             value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
+                            id={`case-break-even-${caseData.caseId}`}
                             integer={false}
-                            min={0}
-                            max={1_000_000}
                             disabled
+                            onSubmit={() => {}}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="breakEvenOverride"
                             label="STEA B/E after tax(MUSD)"
                             value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
-                            previousResourceObject={caseData}
+                            id={`case-break-even-override-${caseData.caseId}`}
                             integer={false}
                             allowNegative
                             min={0}
                             max={1_000_000}
-                            resourceId={caseData.caseId}
+                            onSubmit={(newValue) => updateBreakEvenOverride(newValue)}
                         />
                     </Grid>
                 </Grid>

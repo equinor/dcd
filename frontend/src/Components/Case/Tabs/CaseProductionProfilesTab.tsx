@@ -3,7 +3,6 @@ import {
     useRef,
     useEffect,
 } from "react"
-import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import { PhysUnit } from "@/Models/enums"
 
@@ -11,7 +10,6 @@ import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/Cas
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "@/Components/AgGrid/AgChartsTimeseries"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import { useCaseStore } from "@/Store/CaseStore"
 import { defaultAxesData } from "@/Utils/common"
@@ -19,6 +17,7 @@ import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "@/Components/Tables/CaseTables/CaseTabTableHelper"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { useCaseApiData, useDataFetch } from "@/Hooks"
+import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 
 const CaseProductionProfilesTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -27,6 +26,20 @@ const CaseProductionProfilesTab = () => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
     const revisionAndProjectData = useDataFetch()
+    const {
+        updateGasSolution,
+        updateNglYield,
+        updateCondensateYield,
+        updateGasShrinkageFactor,
+    } = useDrainageStrategyMutation()
+    const {
+        updateFacilitiesAvailability,
+        updateProductionStrategyOverview,
+        updateArtificialLift,
+        updateProducerCount,
+        updateWaterInjectorCount,
+        updateGasInjectorCount,
+    } = useCaseMutation()
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -147,136 +160,106 @@ const CaseProductionProfilesTab = () => {
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="facilitiesAvailability"
                             label="Facilities availability"
                             value={caseData.facilitiesAvailability}
-                            previousResourceObject={caseData}
                             integer={false}
                             unit="%"
                             min={0}
                             max={100}
-                            resourceId={caseData.caseId}
+                            id={`case-facilities-availability-${caseData.caseId}`}
+                            onSubmit={(newValue) => updateFacilitiesAvailability(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableDropdownInput
-                            resourceName="drainageStrategy"
-                            resourcePropertyKey="gasSolution"
-                            resourceId={drainageStrategyData.id}
                             value={drainageStrategyData.gasSolution}
-                            previousResourceObject={drainageStrategyData}
                             options={gasSolutionOptions}
                             label="Gas solution"
+                            id={`drainage-strategy-gas-solution-${drainageStrategyData.id}`}
+                            onSubmit={(newValue) => updateGasSolution(drainageStrategyData.id, newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <InputSwitcher
-                            value={productionStrategyOptions[caseData.productionStrategyOverview]}
+                        <SwitchableDropdownInput
+                            value={caseData.productionStrategyOverview}
+                            options={productionStrategyOptions}
                             label="Production strategy overview"
-                        >
-                            <NativeSelect
-                                id="productionStrategy"
-                                label=""
-                                disabled
-                                value={caseData.productionStrategyOverview}
-                                onChange={() => { }}
-                            >
-                                {Object.entries(productionStrategyOptions).map(([value, label]) => (
-                                    <option key={value} value={value}>{label}</option>
-                                ))}
-                            </NativeSelect>
-                        </InputSwitcher>
+                            disabled
+                            id={`case-production-strategy-overview-${caseData.caseId}`}
+                            onSubmit={(newValue) => updateProductionStrategyOverview(newValue)}
+                        />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <InputSwitcher
-                            value={artificialLiftOptions[caseData.artificialLift]}
+                        <SwitchableDropdownInput
+                            value={caseData.artificialLift}
+                            options={artificialLiftOptions}
                             label="Artificial lift"
-                        >
-                            <NativeSelect
-                                id="artificialLift"
-                                label=""
-                                disabled
-                                value={caseData.artificialLift}
-                                onChange={() => { }}
-                            >
-                                {Object.entries(artificialLiftOptions).map(([value, label]) => (
-                                    <option key={value} value={value}>{label}</option>
-                                ))}
-                            </NativeSelect>
-                        </InputSwitcher>
+                            id={`case-artificial-lift-${caseData.caseId}`}
+                            disabled
+                            onSubmit={(newValue) => updateArtificialLift(newValue)}
+                        />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="producerCount"
                             label="Oil producer wells"
                             value={caseData.producerCount}
-                            previousResourceObject={caseData}
                             integer
                             disabled
-                            resourceId={caseData.caseId}
+                            id={`case-producer-count-${caseData.caseId}`}
+                            onSubmit={(newValue) => updateProducerCount(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="waterInjectorCount"
                             label="Water injector wells"
                             value={caseData.waterInjectorCount}
-                            previousResourceObject={caseData}
                             integer
                             disabled
+                            id={`case-water-injector-count-${caseData.caseId}`}
+                            onSubmit={(newValue) => updateWaterInjectorCount(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            resourceName="case"
-                            resourcePropertyKey="gasInjectorCount"
                             label="Gas injector wells"
                             value={caseData.gasInjectorCount}
-                            previousResourceObject={caseData}
                             integer
                             disabled
+                            id={`case-gas-injector-count-${caseData.caseId}`}
+                            onSubmit={(newValue) => updateGasInjectorCount(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            resourceName="drainageStrategy"
-                            resourcePropertyKey="nglYield"
                             label="NGL yield"
                             value={drainageStrategyData.nglYield}
-                            previousResourceObject={drainageStrategyData}
-                            resourceId={drainageStrategyData.id}
+                            id={`drainage-strategy-ngl-yield-${drainageStrategyData.id}`}
                             integer
                             unit={getPhysicalUnit() === "SI" ? "tonnes/MSm³" : "tonnes/mmscf"}
+                            onSubmit={(newValue) => updateNglYield(drainageStrategyData.id, newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <SwitchableNumberInput
-                            resourceName="drainageStrategy"
-                            resourcePropertyKey="condensateYield"
                             label="Condensate yield"
                             value={drainageStrategyData.condensateYield}
-                            previousResourceObject={drainageStrategyData}
-                            resourceId={drainageStrategyData.id}
+                            id={`drainage-strategy-condensate-yield-${drainageStrategyData.id}`}
                             integer
                             unit={getPhysicalUnit() === "SI" ? "Sm³/MSm³" : "bbls/mmscf"}
+                            onSubmit={(newValue) => updateCondensateYield(drainageStrategyData.id, newValue)}
                         />
                     </Grid>
                     {(drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
                         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                             <SwitchableNumberInput
-                                resourceName="drainageStrategy"
-                                resourcePropertyKey="gasShrinkageFactor"
                                 label="Gas shrinkage factor"
                                 value={drainageStrategyData.gasShrinkageFactor}
-                                previousResourceObject={drainageStrategyData}
-                                resourceId={drainageStrategyData.id}
+                                id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
                                 integer
                                 min={0}
                                 max={100}
                                 unit="%"
+                                onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
                             />
                         </Grid>
                     )}

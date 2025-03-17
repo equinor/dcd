@@ -1,15 +1,18 @@
 import { useCallback, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { EditInstance, ResourceObject } from "@/Models/Interfaces"
-import { useSubmitToApi } from "./UseSubmitToApi"
+import { EditInstance } from "@/Models/Interfaces"
+import { useTimeSeriesQueueMutation } from "./Mutations/useTimeSeriesQueueMutation"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { ITimeSeries, TimeSeriesEntry } from "@/Models/ITimeSeries"
+import { ITimeSeries } from "@/Models/ITimeSeries"
 import { useEditQueue } from "@/Store/EditQueueContext"
+import { useAppStore } from "@/Store/AppStore"
+import { useCampaignMutation } from "./Mutations/useCampaignMutation"
+import { useWellMutation } from "./Mutations/useWellMutation"
 
 interface TableQueueProps {
-    setIsSaving: (isSaving: boolean) => void
-    isSaving: boolean
     gridRef: React.RefObject<any>
+    onSubmitSuccess?: () => void
+    onSubmitError?: (error: any) => void
 }
 
 interface QueueStats {
@@ -40,159 +43,157 @@ const categorizeTimeSeriesEntries = (queue: EditInstance[]): { timeseriesEntries
     return acc
 }, { timeseriesEntries: [] as EditInstance[], overrideEntries: [] as EditInstance[] })
 
-// API submission handlers
-const submitCampaignUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
-    const rigUpgradingEdits = getLatestEdits(
-        editQueue.filter((edit) => edit.resourcePropertyKey === "rigUpgradingProfile"),
-        (edit) => edit.resourceId + edit.resourceName,
-    )
-    const rigMobDemobEdits = getLatestEdits(
-        editQueue.filter((edit) => edit.resourcePropertyKey === "rigMobDemobProfile"),
-        (edit) => edit.resourceId + edit.resourceName,
-    )
-
-    const allEdits = [...rigUpgradingEdits, ...rigMobDemobEdits]
-    await Promise.all(allEdits.map(async (edit) => {
-        const timeSeriesData = edit.resourceObject as ITimeSeries
-        const resourceName = edit.resourcePropertyKey === "rigUpgradingProfile" ? "rigUpgrading" : "rigMobDemob"
-
-        try {
-            await submitToApi({
-                projectId: edit.projectId,
-                caseId: edit.caseId,
-                resourceName,
-                resourceObject: {
-                    startYear: timeSeriesData?.startYear ?? 0,
-                    values: timeSeriesData?.values ?? [],
-                },
-                resourceId: edit.resourceId,
-            })
-        } catch (error) {
-            console.error("Campaign profile update failed", { error, edit })
-            throw error
-        }
-    }))
-}
-
-const submitWellUpdates = async (editQueue: EditInstance[], submitToApi: any) => {
-    const uniqueWellEdits = getLatestEdits(editQueue, (edit) => edit.wellId!)
-
-    if (uniqueWellEdits.length === 0) {
-        return
-    }
-
-    const firstEdit = uniqueWellEdits[0]
-    const wellUpdates = uniqueWellEdits.map((edit) => {
-        const timeSeriesData = edit.resourceObject as ITimeSeries
-        return {
-            wellId: edit.wellId,
-            startYear: timeSeriesData.startYear,
-            values: timeSeriesData.values,
-        }
-    })
-
-    try {
-        await submitToApi({
-            projectId: firstEdit.projectId,
-            caseId: firstEdit.caseId,
-            resourceName: firstEdit.resourceName,
-            resourceId: firstEdit.resourceId,
-            resourceObject: wellUpdates,
-        })
-    } catch (error) {
-        console.error("Campaign wells update failed", { error, wells: wellUpdates.map((w) => w.wellId) })
-        throw error
-    }
-}
-
-const submitCaseUpdates = async (editQueue: EditInstance[], submitToApi: any, projectId: string, caseId: string) => {
-    const uniqueEdits = getLatestEdits(editQueue, (edit) => edit.resourceName)
-    const { timeseriesEntries, overrideEntries } = categorizeTimeSeriesEntries(uniqueEdits)
-
-    const createTimeSeriesEntry = (edit: EditInstance, isOverride = false): TimeSeriesEntry => {
-        const resourceObject = edit.resourceObject as Components.Schemas.SaveTimeSeriesDto | Components.Schemas.SaveTimeSeriesOverrideDto
-        return {
-            profileType: edit.resourceName,
-            startYear: resourceObject.startYear,
-            values: resourceObject.values,
-            ...(isOverride && { override: true }),
-        }
-    }
-
-    const timeSeriesData = timeseriesEntries.map((edit) => createTimeSeriesEntry(edit))
-    const overrideData = overrideEntries.map((edit) => createTimeSeriesEntry(edit, true))
-
-    await submitToApi({
-        projectId,
-        caseId,
-        resourceName: "caseProfiles",
-        resourceObject: {
-            timeSeries: timeSeriesData,
-            overrideTimeSeries: overrideData,
-        } as unknown as ResourceObject,
-    })
-}
-
-// Main hook
 export const useTableQueue = ({
-    isSaving, setIsSaving, gridRef,
+    gridRef,
+    onSubmitSuccess,
+    onSubmitError,
 }: TableQueueProps) => {
     const {
-        editQueue, addToQueue: addToGlobalQueue, clearQueue, lastEditTime,
+        editQueue, clearQueue, addToQueue, lastEditTime,
     } = useEditQueue()
-    const { submitToApi } = useSubmitToApi()
+    const { submitTimeSeriesQueue } = useTimeSeriesQueueMutation()
+    const { updateRigUpgradingCost, updateRigMobDemobCost } = useCampaignMutation()
+    const { updateCampaignWells } = useWellMutation()
     const { projectId } = useProjectContext()
     const { caseId } = useParams()
+    const { setIsSaving: appSetIsSaving } = useAppStore()
+
+    const submitCampaignUpdates = async (campaignEdits: EditInstance[]) => {
+        const rigUpgradingEdits = getLatestEdits(
+            campaignEdits.filter((edit) => edit.resourcePropertyKey === "rigUpgradingProfile"),
+            (edit) => edit.resourceId + edit.resourceName,
+        )
+        const rigMobDemobEdits = getLatestEdits(
+            campaignEdits.filter((edit) => edit.resourcePropertyKey === "rigMobDemobProfile"),
+            (edit) => edit.resourceId + edit.resourceName,
+        )
+
+        const allEdits = [...rigUpgradingEdits, ...rigMobDemobEdits]
+        await Promise.all(allEdits.map(async (edit) => {
+            const timeSeriesData = edit.resourceObject as ITimeSeries
+
+            if (!edit.resourceId) {
+                console.error("Campaign edit missing resourceId", edit)
+                return
+            }
+
+            try {
+                if (edit.resourcePropertyKey === "rigUpgradingProfile") {
+                    await updateRigUpgradingCost(
+                        edit.resourceId,
+                        {
+                            startYear: timeSeriesData?.startYear ?? 0,
+                            values: timeSeriesData?.values ?? [],
+                        },
+                    )
+                } else {
+                    await updateRigMobDemobCost(
+                        edit.resourceId,
+                        {
+                            startYear: timeSeriesData?.startYear ?? 0,
+                            values: timeSeriesData?.values ?? [],
+                        },
+                    )
+                }
+            } catch (error) {
+                console.error("Campaign profile update failed", { error, edit })
+                throw error
+            }
+        }))
+    }
+
+    const submitWellUpdates = async (wellEdits: EditInstance[]) => {
+        const uniqueWellEdits = getLatestEdits(wellEdits, (edit) => edit.wellId!)
+
+        if (uniqueWellEdits.length === 0) {
+            return
+        }
+
+        const firstEdit = uniqueWellEdits[0]
+
+        // Skip if resourceId is undefined
+        if (!firstEdit.resourceId) {
+            console.error("Well edit missing resourceId", firstEdit)
+            return
+        }
+
+        const wellUpdates = uniqueWellEdits.map((edit) => {
+            const timeSeriesData = edit.resourceObject as ITimeSeries
+            return {
+                wellId: edit.wellId,
+                startYear: timeSeriesData.startYear,
+                values: timeSeriesData.values,
+            }
+        })
+
+        try {
+            await updateCampaignWells({
+                campaignId: firstEdit.resourceId,
+                wells: wellUpdates,
+            })
+        } catch (error) {
+            console.error("Campaign wells update failed", { error, wells: wellUpdates.map((w) => w.wellId) })
+            throw error
+        }
+    }
 
     const submitEditQueue = useCallback(async () => {
-        if (isSaving || editQueue.length === 0 || !projectId || !caseId) {
-            if (!projectId || !caseId) {
-                console.warn("Cannot submit edits - missing project or case ID", { projectId, caseId })
-            }
+        if (editQueue.length === 0) {
+            return
+        }
+
+        if (!projectId || !caseId) {
             return
         }
 
         try {
-            setIsSaving(true)
-            const { profileEdits, wellEdits, caseEdits } = categorizeEdits(editQueue)
+            appSetIsSaving(true)
+            const categorizedEdits = categorizeEdits(editQueue)
 
-            await Promise.all([
-                profileEdits.length > 0 && submitCampaignUpdates(profileEdits, submitToApi),
-                wellEdits.length > 0 && submitWellUpdates(wellEdits, submitToApi),
-                caseEdits.length > 0 && submitCaseUpdates(caseEdits, submitToApi, projectId, caseId),
-            ].filter(Boolean))
-        } catch (error) {
-            console.error("Edit submission failed:", error)
-            throw error
-        } finally {
-            setIsSaving(false)
+            if (categorizedEdits.profileEdits.length > 0) {
+                await submitCampaignUpdates(categorizedEdits.profileEdits)
+            }
+
+            if (categorizedEdits.caseEdits.length > 0) {
+                await submitTimeSeriesQueue(categorizedEdits.caseEdits)
+            }
+
+            if (categorizedEdits.wellEdits.length > 0) {
+                await submitWellUpdates(categorizedEdits.wellEdits)
+            }
+
             clearQueue()
+            onSubmitSuccess?.()
+        } catch (error: any) {
+            onSubmitError?.(error)
+        } finally {
+            appSetIsSaving(false)
         }
-    }, [editQueue, isSaving, submitToApi, setIsSaving, projectId, caseId, clearQueue])
-
-    const addToQueue = useCallback((edit: EditInstance) => {
-        addToGlobalQueue(edit)
-    }, [addToGlobalQueue])
+    }, [
+        editQueue,
+        projectId,
+        caseId,
+        submitTimeSeriesQueue,
+        clearQueue,
+        onSubmitSuccess,
+        onSubmitError,
+        appSetIsSaving,
+        updateRigUpgradingCost,
+        updateRigMobDemobCost,
+        updateCampaignWells,
+    ])
 
     useEffect(() => {
         if (editQueue.length === 0) { return }
 
         const timer = setTimeout(() => {
-            const timeSinceLastEdit = Date.now() - lastEditTime
-            const hasEditingCells = gridRef.current?.api?.getEditingCells().length > 0
-
-            if (timeSinceLastEdit >= 3000) {
-                if (hasEditingCells) {
-                    gridRef.current.api.stopEditing()
-                } else {
-                    submitEditQueue()
-                }
-            }
-        }, 3000)
+            submitEditQueue()
+        }, 2000)
 
         const cleanup = () => {
             clearTimeout(timer)
         }
+
         // eslint-disable-next-line consistent-return
         return cleanup
     }, [editQueue, lastEditTime, submitEditQueue, gridRef])

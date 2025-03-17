@@ -1,64 +1,52 @@
-import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import { Input } from "@equinor/eds-core-react"
-import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
+import React, { ChangeEventHandler, useState } from "react"
+import { TextField } from "@equinor/eds-core-react"
 import InputSwitcher from "./Components/InputSwitcher"
-import { useProjectContext } from "../../Store/ProjectContext"
-import useEditCase from "@/Hooks/useEditCase"
 
-interface CaseEditInputProps {
+interface SwitchableStringInputProps {
+    value: string;
     label: string;
-    value: string | undefined;
-    resourceName: ResourceName
-    resourcePropertyKey: ResourcePropertyKey
-    resourceId?: string;
-    previousResourceObject: ResourceObject;
+    id?: string;
+    onSubmit: (newValue: string) => void;
+    disabled?: boolean;
 }
 
-const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
-    label,
+const SwitchableStringInput: React.FC<SwitchableStringInputProps> = ({
     value,
-    resourceName,
-    resourcePropertyKey,
-    resourceId,
-    previousResourceObject,
-}: CaseEditInputProps) => {
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
-    const { addEdit } = useEditCase()
+    label,
+    id,
+    onSubmit,
+    disabled = false,
+}: SwitchableStringInputProps) => {
+    const [localValue, setLocalValue] = useState(value)
 
-    const [inputValue, setInputValue] = useState(value || "")
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setLocalValue(e.target.value)
+    }
 
-    useEffect(() => {
-        setInputValue(value || "")
-    }, [value])
+    const handleBlur = () => {
+        if (localValue !== value) {
+            onSubmit(localValue)
+        }
+    }
 
-    const addToEditsAndSubmit = (insertedValue: string) => {
-        if (!caseId || projectId === "") { return }
-
-        const resourceObject: ResourceObject = structuredClone(previousResourceObject)
-        resourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
-
-        addEdit({
-            resourceObject,
-            projectId,
-            resourceName,
-            resourcePropertyKey,
-            resourceId,
-            caseId,
-        })
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.currentTarget.blur()
+        }
     }
 
     return (
         <InputSwitcher
+            value={value}
             label={label}
-            value={`${inputValue}`}
         >
-            <Input
-                label={label}
-                value={inputValue}
-                onChange={(e: any) => setInputValue(e.target.value)}
-                onBlur={(e: any) => addToEditsAndSubmit(e.target.value)}
+            <TextField
+                id={id || `string-input-${label}`}
+                value={localValue}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                disabled={disabled}
             />
         </InputSwitcher>
     )

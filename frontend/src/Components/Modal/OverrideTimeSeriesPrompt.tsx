@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import { useParams } from "react-router-dom"
 import Modal from "./Modal"
-import useEditCase from "@/Hooks/useEditCase"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { ProfileTypes } from "@/Models/enums"
+import { useTimeSeriesMutation } from "@/Hooks/Mutations"
 
 type Props = {
     isOpen: boolean
@@ -20,8 +19,7 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
     profileType,
     profile,
 }) => {
-    const { addEdit } = useEditCase()
-    const { caseId } = useParams()
+    const { updateProfileOverride } = useTimeSeriesMutation()
     const { projectId } = useProjectContext()
 
     if (!isOpen || !projectId || !profileType) { return null }
@@ -29,17 +27,8 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
         setIsOpen(!isOpen)
     }
     const toggleLock = () => {
-        const resourceObject = structuredClone(profile)
-        resourceObject.override = !profile.override
         if (profile !== undefined) {
-            addEdit({
-                projectId,
-                resourceName: profile.resourceName,
-                resourcePropertyKey: "override",
-                caseId,
-                resourceId: profile.resourceId,
-                resourceObject,
-            })
+            updateProfileOverride(profile)
         }
         setIsOpen(!isOpen)
     }

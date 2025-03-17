@@ -85,9 +85,7 @@ const CaseTabTable = memo(({
     sharepointFileId,
 }: Props) => {
     // Hooks and Context
-    const {
-        setIsSaving, editMode, setSnackBarMessage, isSaving,
-    } = useAppStore()
+    const { editMode, setSnackBarMessage, isSaving } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
@@ -100,11 +98,7 @@ const CaseTabTable = memo(({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
 
     // Custom Hooks
-    const { addToQueue } = useTableQueue({
-        isSaving,
-        gridRef,
-        setIsSaving,
-    })
+    const { addToQueue } = useTableQueue({ gridRef })
 
     // Refs
     const previousTimeSeriesDataRef = useRef(timeSeriesData)

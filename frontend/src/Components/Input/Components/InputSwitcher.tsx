@@ -27,7 +27,9 @@ const InputSwitcher = memo(({ value, label, children }: InputSwitcherProps): JSX
         >
             {canEdit() ? (
                 <div key="input">
-                    {React.cloneElement(children, { disabled: isSaving })}
+                    {React.cloneElement(children, {
+                        disabled: children.props.disabled === true ? true : isSaving,
+                    })}
                 </div>
             ) : (
                 <div key="text">

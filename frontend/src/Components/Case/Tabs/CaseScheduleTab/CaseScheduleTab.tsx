@@ -1,5 +1,4 @@
 import Grid from "@mui/material/Grid2"
-import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
 import { useCallback, useMemo } from "react"
 
@@ -7,13 +6,13 @@ import {
     dateStringToDateUtc,
 } from "@/Utils/DateUtils"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
-import { ResourceName, ResourcePropertyKey } from "@/Models/Interfaces"
+import { ResourcePropertyKey } from "@/Models/Interfaces"
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useCaseApiData } from "@/Hooks"
-import useEditCase from "@/Hooks/useEditCase"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
+import { useCaseMutation } from "@/Hooks/Mutations"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -44,30 +43,10 @@ const CASE_MILESTONE_DATES: CaseMilestoneDate[] = [
 
 const CaseScheduleTab = () => {
     const { projectId } = useProjectContext()
-    const { addEdit } = useEditCase()
     const { apiData } = useCaseApiData()
     const { canEdit } = useCanUserEdit()
     const { setSnackBarMessage } = useAppStore()
-
-    const createDateChangeEdit = useCallback((dateKey: string, newDate: Date | undefined, currentCaseData: any) => {
-        const milestone = CASE_MILESTONE_DATES.find((m) => m.key === dateKey)
-
-        if (!milestone) { return null }
-
-        const resourceObject = {
-            ...currentCaseData,
-            [dateKey]: newDate?.toISOString() ?? null,
-        }
-
-        return {
-            uuid: uuidv4(),
-            projectId: currentCaseData.projectId,
-            resourceName: "case" as ResourceName,
-            resourcePropertyKey: dateKey as ResourcePropertyKey,
-            caseId: currentCaseData.caseId,
-            resourceObject,
-        }
-    }, [])
+    const { updateMilestoneDate } = useCaseMutation()
 
     const handleDateChange = useCallback((dateKey: string, dateValue: string) => {
         if (!apiData || !apiData.case) { return }
@@ -78,7 +57,7 @@ const CaseScheduleTab = () => {
             return
         }
 
-        let newDate: Date | undefined
+        let newDate: Date | null = null
 
         if (dateValue !== "") {
             const parsedDate = dateStringToDateUtc(dateValue)
@@ -87,9 +66,8 @@ const CaseScheduleTab = () => {
             }
         }
 
-        const editData = createDateChangeEdit(dateKey, newDate, apiData.case)
-        if (editData) { addEdit(editData) }
-    }, [addEdit, apiData, createDateChangeEdit, setSnackBarMessage])
+        updateMilestoneDate(dateKey, newDate)
+    }, [apiData, setSnackBarMessage, updateMilestoneDate])
 
     const getChangeHandler = useCallback(
         (dateKey: ResourcePropertyKey) => (e: React.ChangeEvent<HTMLInputElement>) => handleDateChange(dateKey, e.target.value),
