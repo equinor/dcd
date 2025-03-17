@@ -25,7 +25,7 @@ import {
 } from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import { projectTabNames } from "@/Utils/constants"
+import { sidebarTabNames } from "@/Utils/constants"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
@@ -100,7 +100,7 @@ const ProjectDetails: React.FC = () => {
                         </ProjectTitle>
                     </Header>
                     <Timeline data-timeline={sidebarOpen}>
-                        {projectTabNames.map((tab, index) => (
+                        {sidebarTabNames.map((tab, index) => (
                             <ProjectTimeline key={tab} data-timeline-active={index === activeTabProject}>
                                 <TimelineElement
                                     variant="ghost"

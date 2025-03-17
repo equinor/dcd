@@ -79,6 +79,14 @@ export const projectTabNames = [
     "Project change log",
 ]
 
+export const sidebarTabNames = [
+    "Overview",
+    "Compare cases",
+    "Technical Input",
+    "Access Management",
+    "Settings",
+]
+
 export const productionOverrideResources = [
     ProfileTypes.ProductionProfileOil,
     ProfileTypes.AdditionalProductionProfileOil,
