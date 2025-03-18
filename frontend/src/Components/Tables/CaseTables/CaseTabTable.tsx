@@ -41,7 +41,7 @@ import {
 } from "@/Models/ITimeSeries"
 import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Components/AgGrid/AgGridHelperFunctions"
 import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
-import { useTableQueue } from "@/Hooks/useTableQueue"
+import { useEditQueueHandler } from "@/Hooks/useEditQueue"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 // Styled Components
@@ -54,7 +54,6 @@ const CenterGridIcons = styled.div`
     gap: 8px;
 `
 
-// Component Props Interface
 interface Props {
     timeSeriesData: ITimeSeriesTableDataWithSet[]
     dg4Year: number
@@ -84,27 +83,22 @@ const CaseTabTable = memo(({
     isProsp,
     sharepointFileId,
 }: Props) => {
-    // Hooks and Context
     const { editMode, setSnackBarMessage, isSaving } = useAppStore()
     const styles = useStyles()
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const { canEdit, isEditDisabled } = useCanUserEdit()
 
-    // State Management
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
 
-    // Custom Hooks
-    const { addToQueue } = useTableQueue({ gridRef })
+    const { addToQueue } = useEditQueueHandler({ gridRef })
 
-    // Refs
     const previousTimeSeriesDataRef = useRef(timeSeriesData)
     const gridInitializedRef = useRef(false)
 
-    // Memoized Data
     const gridRowData = useMemo(
         () => {
             if (!presentedTableData?.length) { return [] }
@@ -135,7 +129,6 @@ const CaseTabTable = memo(({
         )
     }
 
-    // Column Definitions
     const generateTableYearColDefs = useCallback(() => {
         const columnPinned: any[] = [
             {
@@ -197,7 +190,6 @@ const CaseTabTable = memo(({
         return columnPinned.concat([...yearDefs])
     }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled, isSaving])
 
-    // Event Handlers
     const handleCellValueChange = useCallback((event: any) => {
         const params: ITableCellChangeParams = {
             data: event.data,
@@ -245,7 +237,6 @@ const CaseTabTable = memo(({
         }
     }, [gridRowData])
 
-    // Grid Configuration
     const gridConfig = useMemo(() => ({
         defaultColDef: {
             sortable: true,
@@ -294,7 +285,6 @@ const CaseTabTable = memo(({
         isSaving,
     ])
 
-    // Effects
     useEffect(() => {
         if (timeSeriesData?.length > 0) {
             setPresentedTableData(timeSeriesData)

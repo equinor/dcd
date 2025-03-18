@@ -1,11 +1,57 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { GetSurfService } from "@/Services/SurfService"
-import { useBaseMutation } from "./useBaseMutation"
+import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
 export const useSurfMutation = () => {
+    const queryClient = useQueryClient()
+
+    const surfMutationFn = async (
+        service: ReturnType<typeof GetSurfService>,
+        projectIdParam: string,
+        caseIdParam: string,
+        params: MutationParams<any>,
+    ) => {
+        const apiData = await queryClient.getQueryData<any>(["caseApiData", projectIdParam, caseIdParam])
+
+        if (!apiData?.surf) {
+            throw new Error("Surf data not found in cache")
+        }
+
+        const currentSurf = apiData.surf
+        const updatedSurf = {
+            ...currentSurf,
+            [params.propertyKey]: params.updatedValue,
+        }
+
+        const dto = {
+            cessationCost: updatedSurf.cessationCost,
+            infieldPipelineSystemLength: updatedSurf.infieldPipelineSystemLength,
+            umbilicalSystemLength: updatedSurf.umbilicalSystemLength,
+            artificialLift: updatedSurf.artificialLift,
+            riserCount: updatedSurf.riserCount,
+            templateCount: updatedSurf.templateCount,
+            producerCount: updatedSurf.producerCount,
+            gasInjectorCount: updatedSurf.gasInjectorCount,
+            waterInjectorCount: updatedSurf.waterInjectorCount,
+            productionFlowline: updatedSurf.productionFlowline,
+            costYear: updatedSurf.costYear,
+            source: updatedSurf.source,
+            approvedBy: updatedSurf.approvedBy || "",
+            maturity: updatedSurf.maturity,
+        }
+
+        return service.updateSurf(
+            projectIdParam,
+            caseIdParam,
+            dto,
+        )
+    }
+
     const mutation = useBaseMutation({
         resourceName: "surf",
         getService: GetSurfService,
         updateMethod: "updateSurf",
+        customMutationFn: surfMutationFn,
         getResourceFromApiData: (apiData) => apiData?.surf,
         loggerName: "SURF_MUTATION",
     })

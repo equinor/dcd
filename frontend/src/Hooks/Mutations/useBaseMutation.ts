@@ -4,28 +4,41 @@ import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { createLogger } from "@/Utils/logger"
 
-interface MutationParams {
+export interface MutationParams<T = any> {
   resourceId?: string;
-  updatedValue: any;
+  updatedValue: T;
   propertyKey: string;
   localCaseId?: string;
+  [key: string]: any; // Allow additional custom parameters
 }
 
-interface BaseMutationOptions {
+export interface BaseMutationOptions<T = any, R = any> {
   resourceName: string;
   getService: () => any;
   updateMethod: string;
+  customMutationFn?: (
+    service: any,
+    projectId: string,
+    caseId: string,
+    params: MutationParams<T>
+  ) => Promise<R>;
   getResourceFromApiData: (apiData: any) => any;
   loggerName: string;
+  invalidateQueries?: string[][];
 }
 
-export const useBaseMutation = ({
+/**
+ * Base mutation hook that supports both standard property updates and custom mutation functions
+ */
+export const useBaseMutation = <T = any, R = any>({
     resourceName,
     getService,
     updateMethod,
+    customMutationFn,
     getResourceFromApiData,
     loggerName,
-}: BaseMutationOptions) => {
+    invalidateQueries = [],
+}: BaseMutationOptions<T, R>) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
@@ -37,22 +50,22 @@ export const useBaseMutation = ({
     })
 
     const mutation = useMutation({
-        mutationFn: async ({
-            resourceId,
-            updatedValue,
-            propertyKey,
-            localCaseId: paramLocalCaseId,
-        }: MutationParams) => {
-            if (!projectId || (!caseId && !paramLocalCaseId)) {
+        mutationFn: async (params: MutationParams<T>) => {
+            if (!projectId || (!caseId && !params.localCaseId)) {
                 throw new Error("Project ID and Case ID are required")
             }
 
             setIsSaving(true)
-            logger.info(`Updating ${resourceName}:`, { resourceId, updatedValue, propertyKey })
+            logger.info(`Updating ${resourceName}:`, params)
 
             try {
                 const service = getService()
-                const finalCaseId = paramLocalCaseId || caseId
+                const finalCaseId = params.localCaseId || caseId || ""
+
+                // If a custom mutation function is provided, use it
+                if (customMutationFn) {
+                    return await customMutationFn(service, projectId, finalCaseId, params)
+                }
 
                 let apiData = await queryClient.getQueryData<any>(["caseApiData", projectId, finalCaseId])
                 // If the data is not in the cache and we're dealing with a case resource, fetch it directly
@@ -74,7 +87,7 @@ export const useBaseMutation = ({
 
                 const updatedResource = {
                     ...resource,
-                    [propertyKey]: updatedValue,
+                    [params.propertyKey as string]: params.updatedValue,
                 }
 
                 let result
@@ -89,8 +102,8 @@ export const useBaseMutation = ({
                     result = await service[updateMethod](
                         projectId,
                         finalCaseId,
-                        resourceId || updatedResource.id,
-                        resourceId ? updatedValue : updatedResource,
+                        params.resourceId || updatedResource.id,
+                        params.resourceId ? params.updatedValue : updatedResource,
                     )
                 }
 
@@ -109,6 +122,11 @@ export const useBaseMutation = ({
                 if (resourceName === "case" && variables.propertyKey === "archived") {
                     queryClient.invalidateQueries({ queryKey: ["projectApiData"] })
                 }
+
+                // Invalidate any additional queries specified in the options
+                invalidateQueries.forEach((queryKey) => {
+                    queryClient.invalidateQueries({ queryKey })
+                })
             }
         },
         onError: (error: any) => {

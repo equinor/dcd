@@ -9,11 +9,11 @@ import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableContainer } from "./SharedCampaignStyles"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { filterWells } from "@/Utils/common"
+import { filterWells, CampaignProfileType } from "@/Utils/common"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useCampaignMutation } from "@/Hooks/Mutations"
+import { useCampaignMutation } from "@/Hooks/Mutations/useCampaignMutation"
 
 export interface CampaignProps {
     campaign: Components.Schemas.CampaignDto
@@ -21,6 +21,11 @@ export interface CampaignProps {
     tableYears: [number, number]
 }
 
+/**
+ * Campaign component displays and manages campaign data including:
+ * - Standalone cost input fields (rig upgrading cost, rig mob/demob cost)
+ * - Table-based profile edits (rig upgrading profile, rig mob/demob profile, campaign wells)
+ */
 const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const { apiData } = useCaseApiData()
     const campaignGridRef = useRef<any>(null)
@@ -33,6 +38,9 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
     const allWells = useMemo(() => filterWells(revisionAndProjectData?.commonProjectAndRevisionData.wells ?? []), [revisionAndProjectData])
     const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
 
+    /**
+     * Generate table row data for the campaign profiles and wells
+     */
     const generateRowData = (): ItimeSeriesTableDataWithWell[] => {
         const rows: ITimeSeriesTableData[] = []
 
@@ -45,12 +53,13 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             },
             resourceName: "rigUpgrading",
             resourceId: campaign.campaignId,
-            resourcePropertyKey: "rigUpgradingProfile",
+            resourcePropertyKey: CampaignProfileType.RigUpgrading,
             overridable: false,
             editable: true,
         }
         rows.push(upgradingRow)
 
+        // Add rig mob/demob profile row (table edit)
         const mobDemobRow: ITimeSeriesTableData = {
             profileName: "Rig mob/demob",
             unit: "Percentage in decimals",
@@ -60,7 +69,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             },
             resourceName: "rigMobDemob",
             resourceId: campaign.campaignId,
-            resourcePropertyKey: "rigMobDemobProfile",
+            resourcePropertyKey: CampaignProfileType.RigMobDemob,
             overridable: false,
             editable: true,
         }
@@ -137,7 +146,10 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                         id={`campaign-rig-upgrading-cost-${campaign.campaignId}`}
                         unit="MUSD"
                         integer
-                        onSubmit={(newValue) => updateRigUpgradingCost(campaign.campaignId, newValue)}
+                        onSubmit={(newValue) => updateRigUpgradingCost(
+                            campaign.campaignId,
+                            newValue,
+                        )}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 5 }}>
@@ -147,7 +159,10 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                         id={`campaign-rig-mobdemob-cost-${campaign.campaignId}`}
                         unit="MUSD"
                         integer
-                        onSubmit={(newValue) => updateRigMobDemobCost(campaign.campaignId, newValue)}
+                        onSubmit={(newValue) => updateRigMobDemobCost(
+                            campaign.campaignId,
+                            newValue,
+                        )}
                     />
                 </Grid>
             </CampaignInputsContainer>

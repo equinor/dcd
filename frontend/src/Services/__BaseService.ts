@@ -26,7 +26,12 @@ type RequestOptions = {
 export class __BaseService {
     private client: AxiosInstance
     constructor() {
-        this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
+        this.client = axios.create({
+            baseURL: config.BaseUrl.BASE_URL,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
         this.client.interceptors.response.use(
             (response: any) => response,
             (error: any) => {
@@ -45,6 +50,7 @@ export class __BaseService {
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         }
 
         const { data } = await this.client.request({
@@ -62,6 +68,7 @@ export class __BaseService {
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         }
 
         const { data } = await this.client.request({
@@ -84,6 +91,7 @@ export class __BaseService {
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         }
 
         const { data } = await this.client.post(path, options?.body, requestQuery)
@@ -100,6 +108,7 @@ export class __BaseService {
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         }
 
         const { data } = await this.client.put(path, options?.body, requestQuery)
@@ -115,6 +124,7 @@ export class __BaseService {
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         }
 
         const { data } = await this.client.get(path, requestQuery)

@@ -8,6 +8,11 @@ import { EditInstance } from "@/Models/Interfaces"
 import { dateFromTimestamp } from "@/Utils/DateUtils"
 import { WellCategory } from "@/Models/enums"
 
+export enum CampaignProfileType {
+    RigUpgrading = "rigUpgradingProfile",
+    RigMobDemob = "rigMobDemobProfile"
+}
+
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
@@ -467,21 +472,6 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
         wellId: params.data.wellId,
         resourceObject: newProfile,
     }
-
-    /*
-    return {
-        inputLabel: profileName,
-        projectId,
-        resourceName: profileInTimeSeriesData?.resourceName,
-        resourcePropertyKey: profileInTimeSeriesData?.resourcePropertyKey,
-        caseId,
-        resourceId: profileInTimeSeriesData?.resourceId,
-        newResourceObject: newProfile,
-        previousResourceObject: existingProfile,
-        tabName: tab,
-        tableName,
-    }
-        */
 
     return editInstance
 }
