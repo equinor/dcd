@@ -1,23 +1,22 @@
 param location string
-param appConfigName string
 param preprod bool
 
 resource appConfig 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
-    location: location
-    name: appConfigName
-    sku: {
-      name: 'standard'
-    }
-    properties: {
-      disableLocalAuth: false
-      encryption: {}
-      softDeleteRetentionInDays: 7
-      enablePurgeProtection: false
-    }
-    identity: {
-      type: 'SystemAssigned'
-    }
+  location: location
+  name: preprod ? 'dcdappconfig-preprod' : 'dcdappconfig-prod'
+  sku: {
+    name: 'standard'
   }
+  properties: {
+    disableLocalAuth: false
+    encryption: {}
+    softDeleteRetentionInDays: 7
+    enablePurgeProtection: false
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+}
 
 resource appConfigTentantId 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
   parent: appConfig
@@ -28,17 +27,17 @@ resource appConfigTentantId 'Microsoft.AppConfiguration/configurationStores/keyV
 }
 
 resource appConfigInstanceId 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
-    parent: appConfig
-    name: 'AzureAd:Instance'
-    properties: {
-      value: 'https://login.microsoftonline.com'
-    }
+  parent: appConfig
+  name: 'AzureAd:Instance'
+  properties: {
+    value: 'https://login.microsoftonline.com'
   }
+}
 
-  resource appConfigClientId 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
-    parent: appConfig
-    name: 'AzureAd:ClientId'
-    properties: {
-      value: preprod ? '151950a5-f886-47cd-b361-afb81e75c345' : '81bd7b7f-4096-4c4f-b0c2-ebef7d05c0e6'
-    }
+resource appConfigClientId 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
+  parent: appConfig
+  name: 'AzureAd:ClientId'
+  properties: {
+    value: preprod ? '151950a5-f886-47cd-b361-afb81e75c345' : '81bd7b7f-4096-4c4f-b0c2-ebef7d05c0e6'
   }
+}

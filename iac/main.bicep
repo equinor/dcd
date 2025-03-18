@@ -1,24 +1,24 @@
+@allowed(['ci', 'qa', 'prod'])
 param environmentName string = 'ci'
-param preprod bool = true
 param location string = 'norwayeast'
 
-var keyVaultName = preprod ? 'dcdkeyvault-preprod' : 'dcdkeyvault-prod'
-var storageAccountName = 'dcdstorage${environmentName}'
-var appConfigName = preprod ? 'dcdappconfig-preprod' : 'dcdappconfig-prod'
-var roughtechsObjectId = 'a64069dd-12fd-422b-8c1e-2093fa32819d'
+var preprod = environmentName == 'ci' || environmentName == 'qa'
+
+var roughtechsEntraGroupObjectId = 'a64069dd-12fd-422b-8c1e-2093fa32819d'
+
 var commonTags = {
   'environment': environmentName
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
-  name: keyVaultName
+  name: preprod ? 'dcdkeyvault-preprod' : 'dcdkeyvault-prod'
   location: location
   properties: {
     tenantId: subscription().tenantId
     accessPolicies: [
       {
         tenantId: subscription().tenantId
-        objectId: roughtechsObjectId
+        objectId: roughtechsEntraGroupObjectId
         permissions: {
           keys: []
           secrets: ['all']
@@ -34,7 +34,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: storageAccountName
+  name: 'dcdstorage${environmentName}'
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -45,9 +45,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   }
 }
 
-var storageAccountKeys = storageAccount.listKeys()
+var storageAccountKey = storageAccount.listKeys().keys[0].value
 
-var connectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKeys.keys[0].value};EndpointSuffix=core.windows.net'
+var connectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKey};EndpointSuffix=core.windows.net'
 
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: keyVault
@@ -61,7 +61,6 @@ module appconfig './appconfig.bicep' = {
   name: 'appconfig'
   params: {
     location: location
-    appConfigName: appConfigName
     preprod: preprod
   }
 }
@@ -79,13 +78,10 @@ module sql './sql.bicep' = {
   params: {
     location: location
     preprod: preprod
-    keyVaultName: keyVaultName
+    keyVaultName: keyVault.name
     environmentName: environmentName
   }
 }
-
-
-
 
 /*
 // TODO: Fix this reference
@@ -104,5 +100,4 @@ resource appConfigItem3 'Microsoft.AppConfiguration/configurationStores/keyValue
       value: 'Value3'
     }
   }
-
 */
