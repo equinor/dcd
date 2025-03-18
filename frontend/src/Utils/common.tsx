@@ -463,6 +463,15 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
     const profileInTimeSeriesData = timeSeriesData.find(
         (v) => v.profileName === profileName,
     )
+
+    if (data.override !== undefined) {
+        newProfile.overrideProfile = {
+            override: !!data.override,
+        }
+    } else if (data.overrideProfile) {
+        newProfile.overrideProfile = data.overrideProfile
+    }
+
     const editInstance: EditInstance = {
         projectId,
         caseId,

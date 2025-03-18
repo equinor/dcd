@@ -95,7 +95,6 @@ export const useEditQueueHandler = ({
                 .filter((edit) => edit.resourceId)
                 .map((edit) => {
                     const profile = edit.resourceObject as ITimeSeries
-                    console.log(`Processing table edit for ${CampaignProfileType.RigUpgrading}`, profile)
 
                     try {
                         return updateRigUpgradingProfile(edit.resourceId!, profile)
@@ -110,7 +109,6 @@ export const useEditQueueHandler = ({
                 .filter((edit) => edit.resourceId)
                 .map((edit) => {
                     const profile = edit.resourceObject as ITimeSeries
-                    console.log(`Processing table edit for ${CampaignProfileType.RigMobDemob}`, profile)
 
                     try {
                         return updateRigMobDemobProfile(edit.resourceId!, profile)

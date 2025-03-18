@@ -55,9 +55,6 @@ export class TimeSeriesService {
     ): Promise<any> {
         const service = GetCaseService()
 
-        // Add debugging to help diagnose toggle issues
-        console.log("TimeSeriesService.saveProfiles - Input data:", timeSeriesData)
-
         // Separate regular time series from overrides
         const regularEntries: TimeSeriesEntry[] = []
         const overrideEntries: SaveTimeSeriesOverrideDto[] = []
@@ -69,10 +66,11 @@ export class TimeSeriesService {
                 values: data.values,
             }
 
-            if (data.override) {
+            // If the profile type ends with "Override", it should go in overrideTimeSeries
+            if (data.profileType.endsWith("Override")) {
                 overrideEntries.push({
                     ...entry,
-                    override: true,
+                    override: !!data.override, // Ensure override is a boolean
                 })
             } else {
                 regularEntries.push(entry)
@@ -83,12 +81,6 @@ export class TimeSeriesService {
             timeSeries: regularEntries,
             overrideTimeSeries: overrideEntries,
         }
-
-        console.log("TimeSeriesService.saveProfiles - Sending to API:", {
-            regularEntries: regularEntries.length,
-            overrideEntries: overrideEntries.length,
-            dtoPaths: Object.keys(saveTimeSeriesDto),
-        })
 
         return service.saveProfiles(projectId, caseId, saveTimeSeriesDto)
     }
