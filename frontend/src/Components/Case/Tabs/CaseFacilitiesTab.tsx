@@ -6,10 +6,14 @@ import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilit
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
-import { Concept, Currency } from "@/Models/enums"
+import { Concept, Currency, Source } from "@/Models/enums"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import {
-    useTopsideMutation, useSurfMutation, useTransportMutation, useCaseMutation, useSubstructureMutation,
+    useTopsideMutation,
+    useSurfMutation,
+    useTransportMutation,
+    useCaseMutation,
+    useSubstructureMutation,
 } from "@/Hooks/Mutations"
 
 const TabContainer = styled(Grid)`
@@ -87,11 +91,17 @@ const CaseFacilitiesTab = () => {
         13: "HDPE lined CS (Water injection only)",
     }
 
+    const sourceValues: { [key: number]: string } = {
+        [Source.ConceptApp]: "Concept App",
+        [Source.Prosp]: "Prosp",
+    }
+
     const caseData = apiData?.case
     const topsideData = apiData?.topside
     const surfData = apiData?.surf
     const transportData = apiData?.transport
     const substructureData = apiData?.substructure
+    const onshorePowerSupplyData = apiData?.onshorePowerSupply
 
     if (
         !caseData
@@ -100,6 +110,7 @@ const CaseFacilitiesTab = () => {
         || !surfData
         || !transportData
         || !substructureData
+        || !onshorePowerSupplyData
     ) {
         return (<CaseFasilitiesTabSkeleton />)
     }

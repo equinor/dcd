@@ -18,6 +18,4 @@ export {
     useCampaignMutation,
     useTransportMutation,
     useTimeSeriesMutation,
-    useTimeSeriesQueueMutation,
-    useWellMutation,
 } from "./Mutations"

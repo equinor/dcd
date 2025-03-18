@@ -1,84 +1,60 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useParams } from "react-router"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppStore } from "@/Store/AppStore"
+import { useQueryClient } from "@tanstack/react-query"
 import { GetTransportService } from "@/Services/TransportService"
-import { createLogger } from "@/Utils/logger"
-
-const logger = createLogger({
-    name: "TRANSPORT_MUTATION",
-    enabled: false,
-})
+import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
 export const useTransportMutation = () => {
     const queryClient = useQueryClient()
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
-    const { setIsSaving, setSnackBarMessage } = useAppStore()
 
-    const mutation = useMutation({
-        mutationFn: async ({
-            transportId,
-            updatedValue,
-            propertyKey,
-        }: {
-            transportId: string,
-            updatedValue: any,
-            propertyKey: string,
-        }) => {
-            if (!projectId || !caseId) {
-                throw new Error("Project ID and Case ID are required")
-            }
+    const transportMutationFn = async (
+        service: ReturnType<typeof GetTransportService>,
+        projectIdParam: string,
+        caseIdParam: string,
+        params: MutationParams<any>,
+    ) => {
+        const apiData = await queryClient.getQueryData<any>(["caseApiData", projectIdParam, caseIdParam])
 
-            setIsSaving(true)
-            logger.info("Updating transport:", { transportId, updatedValue, propertyKey })
+        if (!apiData?.transport) {
+            throw new Error("Transport data not found in cache")
+        }
 
-            try {
-                const service = GetTransportService()
-                const transport = await queryClient.getQueryData<any>(["caseApiData", projectId, caseId])?.transport
+        const currentTransport = apiData.transport
+        const updatedTransport = {
+            ...currentTransport,
+            [params.propertyKey]: params.updatedValue,
+        }
 
-                if (!transport) {
-                    throw new Error("Transport not found")
-                }
+        const dto = {
+            gasExportPipelineLength: updatedTransport.gasExportPipelineLength,
+            oilExportPipelineLength: updatedTransport.oilExportPipelineLength,
+            costYear: updatedTransport.costYear,
+            source: updatedTransport.source,
+            maturity: updatedTransport.maturity,
+        }
 
-                // Create a copy of the transport and update the specified property
-                const updatedTransport = {
-                    ...transport,
-                    [propertyKey]: updatedValue,
-                }
+        return service.updateTransport(
+            projectIdParam,
+            caseIdParam,
+            dto,
+        )
+    }
 
-                // Send the updated transport to the API
-                const result = await service.updateTransport(
-                    projectId,
-                    caseId,
-                    updatedTransport,
-                )
-
-                return result
-            } finally {
-                setIsSaving(false)
-            }
-        },
-        onSuccess: () => {
-            // Invalidate the case data query to trigger a refetch
-            if (projectId && caseId) {
-                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
-            }
-        },
-        onError: (error: any) => {
-            setSnackBarMessage(error.message || "Failed to update transport")
-            logger.error("Error updating transport:", error)
-        },
+    const mutation = useBaseMutation({
+        resourceName: "transport",
+        getService: GetTransportService,
+        updateMethod: "updateTransport",
+        customMutationFn: transportMutationFn,
+        getResourceFromApiData: (apiData) => apiData?.transport,
+        loggerName: "TRANSPORT_MUTATION",
     })
 
     const updateOilExportPipelineLength = (transportId: string, newValue: number) => mutation.mutateAsync({
-        transportId,
+        resourceId: transportId,
         updatedValue: newValue,
         propertyKey: "oilExportPipelineLength",
     })
 
     const updateGasExportPipelineLength = (transportId: string, newValue: number) => mutation.mutateAsync({
-        transportId,
+        resourceId: transportId,
         updatedValue: newValue,
         propertyKey: "gasExportPipelineLength",
     })
