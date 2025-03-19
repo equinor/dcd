@@ -26,24 +26,32 @@ const SwitchableNumberInput: React.FC<SwitchableNumberInputProps> = ({
     min,
     max,
     onSubmit,
-}: SwitchableNumberInputProps) => (
-    <InputSwitcher
-        label={label}
-        value={`${value ?? ""} ${unit ?? ""}`}
-    >
-        <NumberInputWithValidation
+}: SwitchableNumberInputProps) => {
+    const handleSubmit = (newValue: number) => {
+        if (newValue !== value) {
+            onSubmit(newValue)
+        }
+    }
+
+    return (
+        <InputSwitcher
             label={label}
-            id={id || `number-input-${label}`}
-            onSubmit={onSubmit}
-            defaultValue={value}
-            integer={integer}
-            disabled={disabled}
-            unit={unit}
-            allowNegative={allowNegative}
-            min={min}
-            max={max}
-        />
-    </InputSwitcher>
-)
+            value={`${value ?? ""} ${unit ?? ""}`}
+        >
+            <NumberInputWithValidation
+                label={label}
+                id={id || `number-input-${label}`}
+                onSubmit={handleSubmit}
+                defaultValue={value}
+                integer={integer}
+                disabled={disabled}
+                unit={unit}
+                allowNegative={allowNegative}
+                min={min}
+                max={max}
+            />
+        </InputSwitcher>
+    )
+}
 
 export default SwitchableNumberInput
