@@ -21,7 +21,7 @@ public static class ExplorationWellCostProfileService
         {
             List<CampaignWell> wells = [];
 
-            foreach (var campaign in caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.DevelopmentCampaign))
+            foreach (var campaign in caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.ExplorationCampaign))
             {
                 foreach (var explorationWell in campaign.CampaignWells)
                 {
