@@ -15,7 +15,6 @@ import {
 } from "@ag-grid-community/core"
 
 import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
-import { EMPTY_GUID } from "@/Utils/constants"
 import { useAppStore } from "@/Store/AppStore"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import profileAndUnitInSameCell from "./CellRenderers/ProfileAndUnitCellRenderer"
@@ -69,7 +68,7 @@ const CaseTabTableWithGrouping = ({
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
-                id: EMPTY_GUID, startYear: 0, values: [], override: false,
+                startYear: 0, values: [], override: false,
             }
 
             if (rowObject.profile && rowObject.profile.values?.length > 0) {

@@ -11,7 +11,7 @@ import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCas
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
-import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
+import { caseTabNames } from "@/Utils/constants"
 import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
@@ -75,7 +75,7 @@ const CasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.caseId)}>
-                            {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
+                            {revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId !== null
                                 ? (
                                     <SideBarRefCaseWrapper>
                                         {sidebarOpen && revisionAndProjectData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (

@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 import { useMemo } from "react"
 
-import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
+import { caseTabNames } from "@/Utils/constants"
 import { productionStrategyOverviewToString, truncateText } from "@/Utils/common"
 import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import { useDataFetch } from "@/Hooks"
@@ -72,7 +72,7 @@ const ArchivedCasesList = (): JSX.Element | null => {
                     <ReferenceCaseIcon iconPlacement="sideBar" />
                 </SideBarRefCaseWrapper>
             )}
-            {projectCase.caseId !== EMPTY_GUID
+            {projectCase.caseId !== null
                 && getCaseDisplayName(projectCase.name, index, sidebarOpen)}
         </>
     )
