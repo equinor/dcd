@@ -6,11 +6,13 @@ const caseUrl = (projectId: string, caseId: string) => `projects/${projectId}/ca
 export class ImageService extends __BaseService {
     public async getCaseImages(projectId: string, caseId?: string): Promise<Components.Schemas.ImageDto[]> {
         const response = await this.get(caseId ? caseUrl(projectId, caseId) : projectUrl(projectId))
+
         return response
     }
 
     public async getProjectImages(projectId: string): Promise<Components.Schemas.ImageDto[]> {
         const response = await this.get(projectUrl(projectId))
+
         return response
     }
 
@@ -36,6 +38,7 @@ export class ImageService extends __BaseService {
         dto: Components.Schemas.UpdateImageDto,
     ): Promise<Components.Schemas.ImageDto> {
         const response: Components.Schemas.ImageDto = await this.put(`projects/${projectId}/images/${imageId}`, { body: dto })
+
         return response
     }
 
@@ -46,15 +49,18 @@ export class ImageService extends __BaseService {
         dto: Components.Schemas.UpdateImageDto,
     ): Promise<Components.Schemas.ImageDto> {
         const response: Components.Schemas.ImageDto = await this.put(`projects/${projectId}/cases/${caseId}/images/${imageId}`, { body: dto })
+
         return response
     }
 
     public async uploadCaseImage(projectId: string, file: File, caseId: string): Promise<Components.Schemas.ImageDto> {
         const formData = new FormData()
+
         formData.append("image", file)
         const response = await this.post(caseUrl(projectId, caseId), {
             body: formData,
         })
+
         if (response) {
             return response
         }
@@ -63,10 +69,12 @@ export class ImageService extends __BaseService {
 
     public async uploadProjectImage(projectId: string, file: File): Promise<Components.Schemas.ImageDto> {
         const formData = new FormData()
+
         formData.append("image", file)
         const response = await this.post(projectUrl(projectId), {
             body: formData,
         })
+
         if (response) {
             return response
         }

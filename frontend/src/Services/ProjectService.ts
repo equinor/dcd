@@ -3,11 +3,13 @@ import { __BaseService } from "./__BaseService"
 export class __ProjectService extends __BaseService {
     async getProject(id: string) {
         const project: Components.Schemas.ProjectDataDto = await this.get<Components.Schemas.ProjectDataDto>(`projects/${id}`)
+
         return project
     }
 
     async getRevision(projectId: string, revisionId: string) {
         const revision: Components.Schemas.RevisionDataDto = await this.get<Components.Schemas.RevisionDataDto>(`projects/${projectId}/revisions/${revisionId}`)
+
         return revision
     }
 
@@ -21,6 +23,7 @@ export class __ProjectService extends __BaseService {
             {},
             { params: { contextId } },
         )
+
         return res
     }
 
@@ -29,26 +32,31 @@ export class __ProjectService extends __BaseService {
             `projects/${projectId}/revisions`,
             { body },
         )
+
         return res
     }
 
     public async updateRevision(projectId: string, revisionId: string, body: Components.Schemas.UpdateRevisionDto): Promise<Components.Schemas.RevisionDataDto> {
         const res = await this.put(`projects/${projectId}/revisions/${revisionId}`, { body })
+
         return res
     }
 
     public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectDataDto> {
         const res = await this.put(`projects/${projectId}`, { body })
+
         return res
     }
 
     public async compareCases(projectId: string) {
         const res: Components.Schemas.CompareCasesDto[] = await this.get<Components.Schemas.CompareCasesDto[]>(`projects/${projectId}/case-comparison`)
+
         return res
     }
 
     public async getProjectChangeLogs(projectId: string) {
         const res: Components.Schemas.ProjectChangeLogDto[] = await this.get<Components.Schemas.ProjectChangeLogDto[]>(`projects/${projectId}/change-logs`)
+
         return res
     }
 }

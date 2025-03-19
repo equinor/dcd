@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { Currency, ProfileTypes } from "@/Models/enums"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
@@ -42,6 +42,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
 
         if (!surf || !topside || !substructure || !transport || !onshorePowerSupply) {
             console.error("Missing offshore facility data")
+
             return
         }
 

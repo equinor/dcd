@@ -1,4 +1,5 @@
 import { GetCaseService } from "./CaseService"
+
 import { ProfileTypes } from "@/Models/enums"
 
 interface TimeSeriesEntry {
@@ -39,9 +40,11 @@ export class TimeSeriesService {
         const enumKey = Object.keys(ProfileTypes).find(
             (key) => key.toLowerCase() === profileType.toLowerCase(),
         )
+
         if (enumKey) {
             return ProfileTypes[enumKey as keyof typeof ProfileTypes]
         }
+
         return profileType
     }
 

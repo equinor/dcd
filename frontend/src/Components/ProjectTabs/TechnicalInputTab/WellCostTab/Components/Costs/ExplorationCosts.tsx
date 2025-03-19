@@ -1,8 +1,5 @@
 import { useEffect, useState, useRef } from "react"
 
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import { useDataFetch } from "@/Hooks"
-import { useDebounce } from "@/Hooks/useDebounce"
 import CostCell from "../Shared/CostCell"
 import {
     FullwidthTable,
@@ -12,9 +9,13 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
+
+import { useDataFetch } from "@/Hooks"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useDebounce } from "@/Hooks/useDebounce"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { Currency } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 type ExplorationCostsState = Omit<
     Components.Schemas.ExplorationOperationalWellCostsOverviewDto,
@@ -52,6 +53,7 @@ const ExplorationCosts = () => {
                 appraisalRigMobDemob: explorationOperationalWellCosts.appraisalRigMobDemob ?? 0,
                 appraisalProjectDrillingCosts: explorationOperationalWellCosts.appraisalProjectDrillingCosts ?? 0,
             } as ExplorationCostsState
+
             setCosts(newCosts)
             previousCostsRef.current = newCosts
         }
@@ -62,6 +64,7 @@ const ExplorationCosts = () => {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof ExplorationCostsState] !== value,
             )
+
             if (hasChanges) {
                 previousCostsRef.current = { ...debouncedCosts }
                 addExplorationWellCostEdit(projectId, fusionProjectId, explorationOperationalWellCostsId, debouncedCosts)

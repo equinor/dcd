@@ -23,6 +23,7 @@ export const dateStringToDateUtc = (dateString: string): Date => {
             return new Date(`${dateString}Z`)
         }
     }
+
     return new Date(dateString)
 }
 
@@ -33,6 +34,7 @@ export const dateFromTimestamp = (timestamp: number): Date => new Date(timestamp
 export const sortUtcDateStrings = (a: string, b: string): number => {
     const dateA = dateStringToDateUtc(a)
     const dateB = dateStringToDateUtc(b)
+
     return dateA.getTime() - dateB.getTime()
 }
 
@@ -49,14 +51,17 @@ export function formatDate(isoDateString: string): string {
         return "_"
     }
     const date = new Date(isoDateString)
+
     if (Number.isNaN(date.getTime())) {
         console.error(`Invalid date string: ${isoDateString}`)
+
         return "Unavailable"
     }
     const options: Intl.DateTimeFormatOptions = {
         month: "long",
         year: "numeric",
     }
+
     return new Intl.DateTimeFormat("no-NO", options).format(date)
 }
 
@@ -71,6 +76,7 @@ export const formatDateAndTime = (dateString: string | undefined | null) => {
         minute: "2-digit",
         hour12: false,
     }
+
     return new Intl.DateTimeFormat("en-GB", options)
         .format(date)
         .replace(",", "")
@@ -84,6 +90,7 @@ export const formatFullDate = (dateString: string | undefined | null) => {
         month: "short",
         year: "numeric",
     }
+
     return new Intl.DateTimeFormat("en-GB", options)
         .format(date)
         .replace(",", "")

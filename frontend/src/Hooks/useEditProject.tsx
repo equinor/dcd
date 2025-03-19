@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 import { GetProjectService } from "../Services/ProjectService"
 import { useAppStore } from "../Store/AppStore"
 
@@ -13,6 +14,7 @@ export const useProjectEdits = () => {
 
     const projectMutationFn = async ({ projectId, body }: UpdateProjectVariables) => {
         const res = await GetProjectService().updateProject(projectId, body)
+
         return res
     }
 
@@ -20,6 +22,7 @@ export const useProjectEdits = () => {
         mutationFn: projectMutationFn,
         onSuccess: (variables) => {
             const { fusionProjectId } = variables.commonProjectAndRevisionData
+
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", fusionProjectId] },
             )

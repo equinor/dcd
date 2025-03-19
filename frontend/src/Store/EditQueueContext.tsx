@@ -1,6 +1,7 @@
 import React, {
     createContext, useContext, useState, useCallback, ReactNode, useMemo,
 } from "react"
+
 import { EditInstance } from "@/Models/Interfaces"
 
 interface EditQueueContextType {
@@ -45,8 +46,10 @@ export const EditQueueProvider: React.FC<EditQueueProviderProps> = ({ children }
 
 export const useEditQueue = (): EditQueueContextType => {
     const context = useContext(EditQueueContext)
+
     if (context === undefined) {
         throw new Error("useEditQueue must be used within an EditQueueProvider")
     }
+
     return context
 }

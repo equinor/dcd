@@ -1,23 +1,25 @@
+import Grid from "@mui/material/Grid2"
 import {
     useEffect,
     useRef,
     useState,
     useMemo,
 } from "react"
-import Grid from "@mui/material/Grid2"
-import { useCaseStore } from "@/Store/CaseStore"
+
+import AggregatedTotals from "./AggregatedTotalsChart"
 import CaseCostHeader from "./CaseCostHeader"
-import OpexCosts from "./Tables/OpexCosts"
 import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
+import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
-import AggregatedTotals from "./AggregatedTotalsChart"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
+
 import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
-import { getYearFromDateString } from "@/Utils/DateUtils"
 import { useCaseApiData } from "@/Hooks"
+import { useCaseStore } from "@/Store/CaseStore"
+import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -58,6 +60,7 @@ const CaseCostTab = () => {
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
             const caseData = apiData?.case
+
             SetTableYearsFromProfiles(
                 [
                     apiData.totalFeasibilityAndConceptStudies,

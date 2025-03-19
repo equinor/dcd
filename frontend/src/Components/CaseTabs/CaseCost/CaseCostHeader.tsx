@@ -1,13 +1,14 @@
 import Grid from "@mui/material/Grid2"
 
-import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useDataFetch } from "@/Hooks"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
-import Maturity from "./Inputs/Maturity"
-import { Currency } from "@/Models/enums"
-import InitialYearsWithoutWellInterventionCost from "./Inputs/InitialYearsWithoutWellInterventionCost"
 import FinalYearsWithoutWellInterventionCost from "./Inputs/FinalYearsWithoutWellInterventionCost"
+import InitialYearsWithoutWellInterventionCost from "./Inputs/InitialYearsWithoutWellInterventionCost"
+import Maturity from "./Inputs/Maturity"
+
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import { useDataFetch } from "@/Hooks"
+import { Currency } from "@/Models/enums"
 
 interface HeaderProps {
     startYear: number;
@@ -40,6 +41,7 @@ const Header: React.FC<HeaderProps> = ({
         } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Usd) {
             return "MUSD"
         }
+
         return ""
     })()
 

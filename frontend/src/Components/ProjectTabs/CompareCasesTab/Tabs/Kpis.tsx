@@ -1,5 +1,5 @@
-import React from "react"
 import Grid from "@mui/material/Grid2"
+import React from "react"
 
 import { CompareCasesChart } from "@/Components/Charts/CompareCasesChart"
 
@@ -10,6 +10,7 @@ interface KpisProps {
 
 const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
     if (!npvChartData || !breakEvenChartData) { return <div>No data available</div> }
+
     return (
         <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>

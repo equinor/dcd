@@ -1,9 +1,11 @@
 import { useParams } from "react-router"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
-import { ITimeSeries } from "@/Models/ITimeSeries"
-import { CampaignProfileType } from "@/Utils/commonUtils"
+
 import { useBaseMutation, MutationParams } from "./useBaseMutation"
+
+import { ITimeSeries } from "@/Models/ITimeSeries"
+import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { CampaignProfileType } from "@/Utils/commonUtils"
 
 export interface CampaignWellUpdate {
     wellId: string
@@ -45,6 +47,7 @@ export const useCampaignMutation = () => {
             startYear: profile.startYear,
             values: profile.values || [],
         }
+
         return service.updateCampaign(
             projectIdParam,
             caseIdParam,

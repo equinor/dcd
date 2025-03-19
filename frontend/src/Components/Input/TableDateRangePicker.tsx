@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react"
-import Grid from "@mui/material/Grid2"
 import {
     Typography,
     TextField,
@@ -7,7 +5,9 @@ import {
     Icon,
 } from "@equinor/eds-core-react"
 import { undo } from "@equinor/eds-icons"
+import Grid from "@mui/material/Grid2"
 import Slider from "@mui/material/Slider"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 
 const StyledContainer = styled(Grid)`
@@ -110,6 +110,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     const handleYearChange = (_event: Event, newValue: number | number[]) => {
         if (Array.isArray(newValue)) {
             const [newStart, newEnd] = newValue
+
             if (newStart <= newEnd) {
                 setStartYear(newStart)
                 setEndYear(newEnd)
@@ -119,9 +120,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     const handleStartYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value
+
         setLocalStartYear(inputValue)
 
         const value = parseInt(inputValue, 10)
+
         if (!Number.isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
             if (value <= endYear) {
                 setStartYear(value)
@@ -131,9 +134,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     const handleEndYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value
+
         setLocalEndYear(inputValue)
 
         const value = parseInt(inputValue, 10)
+
         if (!Number.isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
             if (value >= startYear) {
                 setEndYear(value)
@@ -143,6 +148,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     const handleStartYearBlur = () => {
         const value = parseInt(localStartYear, 10)
+
         if (Number.isNaN(value)) {
             setStartYear(MIN_YEAR)
             setLocalStartYear(MIN_YEAR.toString())
@@ -163,6 +169,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     const handleEndYearBlur = () => {
         const value = parseInt(localEndYear, 10)
+
         if (Number.isNaN(value)) {
             setEndYear(MIN_YEAR)
             setLocalEndYear(MIN_YEAR.toString())

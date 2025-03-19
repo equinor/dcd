@@ -1,10 +1,10 @@
+import { Icon } from "@equinor/eds-core-react"
+import { chevron_down } from "@equinor/eds-icons"
 import {
     Table, TableBody, TableCell, TableContainer, TableRow, Typography, Chip, Accordion, AccordionSummary, AccordionDetails,
 } from "@mui/material"
-import styled from "styled-components"
 import { grey } from "@mui/material/colors"
-import { Icon } from "@equinor/eds-core-react"
-import { chevron_down } from "@equinor/eds-icons"
+import styled from "styled-components"
 
 const Container = styled.div`
     padding: 20px;
@@ -142,6 +142,7 @@ const MetadataTab = ({ rowData }: Props) => {
             const year = profile.startYear + index + 1
             const prevValue = profile.values[index]
             let change = ""
+
             if (prevValue === 0) {
                 change = value === 0 ? "0%" : "New entry"
             } else {

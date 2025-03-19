@@ -38,6 +38,7 @@ export const ChooseReferenceCase = ({ handleReferenceCaseChange, projectRefCaseI
             </Tooltip>
         )
     }
+
     return (
         <Tooltip title="Remove as reference case">
             <Button variant="ghost" onClick={handleReferenceCaseChange}>
@@ -53,6 +54,7 @@ interface PropsShowIcon {
 
 export const ReferenceCaseIcon = ({ iconPlacement }: PropsShowIcon) => {
     const { sidebarOpen } = useAppStore()
+
     if (iconPlacement === "sideBar") {
         return (
             <Tooltip title="Reference case">
@@ -67,6 +69,7 @@ export const ReferenceCaseIcon = ({ iconPlacement }: PropsShowIcon) => {
             </Tooltip>
         )
     }
+
     return (
         <Tooltip title="Reference case">
             <CaseViewIcon data={bookmark_filled} size={18} />

@@ -1,14 +1,16 @@
-import React from "react"
-import { Accept, FileRejection, useDropzone } from "react-dropzone"
-import { Box } from "@mui/material"
-import styled from "styled-components"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
+import { Box } from "@mui/material"
+import React from "react"
+import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { useParams } from "react-router-dom"
+import styled from "styled-components"
+
 import { useAppStore } from "../../Store/AppStore"
-import { useProjectContext } from "@/Store/ProjectContext"
+
 import { useEditGallery } from "@/Hooks/useEditGallery"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -58,6 +60,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ gallery }) => {
     const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
         fileRejections.forEach((rejection) => {
             const { file, errors } = rejection
+
             errors.forEach((error: { code: string }) => {
                 if (error.code === "file-too-large") {
                     setSnackBarMessage(`File ${file.name} is too large. Maximum size is 5MB.`)
@@ -69,11 +72,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ gallery }) => {
 
         if (gallery.length + acceptedFiles.length > MAX_FILES) {
             setSnackBarMessage("Error uploading images. Maximum number of images is 4.")
+
             return
         }
 
         if (!projectId) {
             console.error("Project ID is missing.")
+
             return
         }
         acceptedFiles.map((file) => addImage(projectId, file, caseId))

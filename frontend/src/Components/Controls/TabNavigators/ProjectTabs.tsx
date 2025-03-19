@@ -1,13 +1,13 @@
-import React from "react"
+import { Icon, Tooltip } from "@equinor/eds-core-react"
+import { users_circle, settings, assignment } from "@equinor/eds-icons"
 import {
     Tabs, Tab, Box,
 } from "@mui/material"
-import { Icon, Tooltip } from "@equinor/eds-core-react"
-import { users_circle, settings, assignment } from "@equinor/eds-icons"
+import React from "react"
 import { useParams } from "react-router-dom"
 
-import { projectTabNames } from "@/Utils/Config/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { projectTabNames } from "@/Utils/Config/constants"
 
 type ProjectTabsProps = {
     activeTabProject: number | boolean
@@ -29,6 +29,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
         if (isRightTabs) {
             return index + leftTabs.length
         }
+
         return index
     }
 
@@ -42,6 +43,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ activeTabProject, setActiveTa
         if (tabName === "Settings") {
             return settings
         }
+
         return settings // fallback icon
     }
 

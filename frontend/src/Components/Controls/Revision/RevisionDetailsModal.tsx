@@ -1,6 +1,3 @@
-import React, {
-    ChangeEventHandler, useEffect, useState,
-} from "react"
 import {
     Typography,
     Icon,
@@ -13,22 +10,25 @@ import {
 import {
     checkbox, checkbox_outline, info_circle, close as closeIcon,
 } from "@equinor/eds-icons"
-import { useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import styled from "styled-components"
-import { useParams } from "react-router-dom"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
-import DialogActions from "@mui/material/DialogActions"
-import Dialog from "@mui/material/Dialog"
 import Grid from "@mui/material/Grid2"
+import { useQueryClient } from "@tanstack/react-query"
+import React, {
+    ChangeEventHandler, useEffect, useState,
+} from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
 
-import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/Config/constants"
-import { getProjectPhaseName } from "@/Utils/commonUtils"
-import { formatFullDate } from "@/Utils/DateUtils"
+import { useDataFetch } from "@/Hooks"
 import { GetProjectService } from "@/Services/ProjectService"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { useDataFetch } from "@/Hooks"
+import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/Config/constants"
+import { formatFullDate } from "@/Utils/DateUtils"
+import { getProjectPhaseName } from "@/Utils/commonUtils"
 
 type RevisionDetailsModalProps = {
     isMenuOpen: boolean;
@@ -88,6 +88,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     useEffect(() => {
         if (revisionData?.revisionDetails) {
             const { revisionName, mdqc, arena } = revisionData.revisionDetails
+
             setRevisionDetails({ revisionName, mdqc, arena })
             setSavedRevisionName(revisionName || "")
             setSavedMdqc(mdqc || false)
@@ -113,6 +114,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
             revisionId ?? "",
             updateRevisionDto,
         )
+
         if (updatedRevision) {
             setSavedRevisionName(revisionName)
             setSavedMdqc(mdqc)
@@ -137,6 +139,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
 
     const handleRevisionNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { value } = e.currentTarget
+
         setRevisionDetails((prevDetails) => ({
             ...prevDetails,
             revisionName: value,

@@ -1,5 +1,6 @@
-import React, { ChangeEventHandler, useState } from "react"
 import { TextField } from "@equinor/eds-core-react"
+import React, { ChangeEventHandler, useState } from "react"
+
 import InputSwitcher from "./Components/InputSwitcher"
 
 interface SwitchableStringInputProps {

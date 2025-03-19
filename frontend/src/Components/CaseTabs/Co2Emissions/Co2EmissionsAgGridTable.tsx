@@ -1,10 +1,10 @@
+import { ColDef } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
+import { Icon } from "@equinor/eds-core-react"
+import { lock } from "@equinor/eds-icons"
 import {
     useMemo, useRef, useState,
 } from "react"
-import { lock } from "@equinor/eds-icons"
-import { Icon } from "@equinor/eds-core-react"
-import { ColDef } from "@ag-grid-community/core"
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -39,6 +39,7 @@ const CaseCO2DistributionTable = ({
         if (!params.data.set) {
             return <Icon data={lock} color="#007079" />
         }
+
         return null
     }
 

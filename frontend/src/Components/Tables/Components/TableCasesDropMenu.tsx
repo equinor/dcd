@@ -11,18 +11,18 @@ import {
     archive,
     unarchive,
 } from "@equinor/eds-icons"
-import { useMemo, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { useMemo, useState } from "react"
 
-import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseUtils"
+import BaseModal from "@/Components/Modal/BaseModal"
 import { useDataFetch } from "@/Hooks"
+import { useCaseMutation } from "@/Hooks/Mutations"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
-import BaseModal from "@/Components/Modal/BaseModal"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
+import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseUtils"
 import { caseTabNames } from "@/Utils/Config/constants"
-import { useCaseMutation } from "@/Hooks/Mutations"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -58,6 +58,7 @@ const CasesDropMenu = ({
         try {
             if (selectedCaseId) {
                 const currentTab = caseTabNames[activeTabCase]
+
                 navigateToCase(selectedCaseId, currentTab)
             }
         } catch (error) {
@@ -81,6 +82,7 @@ const CasesDropMenu = ({
                 selectedCaseId,
                 projectId: revisionAndProjectData?.projectId,
             })
+
             return
         }
 
@@ -108,6 +110,7 @@ const CasesDropMenu = ({
         if (!projectData || selectedCase?.archived || isEditDisabled) { return }
         setCaseAsReference(selectedCaseId, projectData, addProjectEdit)
     }
+
     return (
         <>
             <BaseModal

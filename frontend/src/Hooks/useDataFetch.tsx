@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useParams } from "react-router"
+import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router"
 
-import { useProjectContext } from "@/Store/ProjectContext"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 export const useDataFetch = () => {
     const { currentContext } = useModuleCurrentContext()

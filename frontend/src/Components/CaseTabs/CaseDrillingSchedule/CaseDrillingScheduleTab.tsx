@@ -1,22 +1,14 @@
+import { Button, Typography } from "@equinor/eds-core-react"
+import { useMediaQuery } from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import { useQueryClient } from "@tanstack/react-query"
 import {
     useState,
     useEffect,
     useMemo,
 } from "react"
-import { Button, Typography } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid2"
-import { useMediaQuery } from "@mui/material"
-
 import { styled } from "styled-components"
-import { useQueryClient } from "@tanstack/react-query"
-import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useAppNavigation } from "@/Hooks/useNavigate"
-import { useCaseStore } from "@/Store/CaseStore"
-import { useDataFetch, useCaseApiData, useCanUserEdit } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+
 import Campaign from "./Components/Campaign"
 import {
     CampaignHeader,
@@ -25,9 +17,18 @@ import {
     FieldsAndDatePickerContainer,
     LinkText,
 } from "./Components/SharedCampaignStyles"
+
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import { useDataFetch, useCaseApiData, useCanUserEdit } from "@/Hooks"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import { CampaignType, WellCategory } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useAppStore } from "@/Store/AppStore"
+import { useCaseStore } from "@/Store/CaseStore"
+import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 const InputGroup = styled.div`
     display: flex;
@@ -72,6 +73,7 @@ const CaseDrillingScheduleTab = () => {
         if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {
             const explorationDrillingSchedule = apiData.explorationCampaigns.flatMap((ew) => ew.campaignWells) ?? []
             const developmentDrillingSchedule = apiData.developmentCampaigns.flatMap((ew) => ew.campaignWells) ?? []
+
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...developmentDrillingSchedule],
                 getYearFromDateString(apiData.case.dg4Date),
@@ -90,6 +92,7 @@ const CaseDrillingScheduleTab = () => {
             if ([WellCategory.ExplorationWell, WellCategory.AppraisalWell, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
+
                 filteredWells.forEach((fw) => {
                     apiData.explorationCampaigns.flatMap((x) => x.campaignWells).filter((few) => few.wellId === fw.id).forEach((ew) => {
                         if (ew.values && ew.values.length > 0) {
@@ -97,10 +100,12 @@ const CaseDrillingScheduleTab = () => {
                         }
                     })
                 })
+
                 return sum
             }
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
+
             filteredWells.forEach((fw) => {
                 apiData.developmentCampaigns.flatMap((x) => x.campaignWells).filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
                     if (ew.values && ew.values.length > 0) {
@@ -108,8 +113,10 @@ const CaseDrillingScheduleTab = () => {
                     }
                 })
             })
+
             return sum
         }
+
         return 0
     }
 

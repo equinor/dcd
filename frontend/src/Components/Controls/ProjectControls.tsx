@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react"
-import styled from "styled-components"
 import {
     Typography,
     Icon,
@@ -15,13 +13,17 @@ import {
 
 } from "@equinor/eds-icons"
 import { useMediaQuery } from "@mui/material"
-import { useProjectContext } from "@/Store/ProjectContext"
+import { useState, useEffect } from "react"
+import styled from "styled-components"
+
+import RevisionsControl from "./Revision/RevisionsControl"
+import ProjectTabs from "./TabNavigators/ProjectTabs"
+
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
-import { formatDateAndTime } from "@/Utils/DateUtils"
-import RevisionsControl from "./Revision/RevisionsControl"
 import { useFeatureContext } from "@/Store/FeatureContext"
-import ProjectTabs from "./TabNavigators/ProjectTabs"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { formatDateAndTime } from "@/Utils/DateUtils"
 
 const Header = styled.div`
     grid-area: top-right;

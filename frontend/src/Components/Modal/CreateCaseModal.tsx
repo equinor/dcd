@@ -6,14 +6,15 @@ import {
     Progress,
     InputWrapper,
 } from "@equinor/eds-core-react"
+import { MarkdownEditor } from "@equinor/fusion-react-markdown"
+import Grid from "@mui/material/Grid2"
 import {
     useState,
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
 } from "react"
-import { MarkdownEditor } from "@equinor/fusion-react-markdown"
-import Grid from "@mui/material/Grid2"
+
 import BaseModal from "./BaseModal"
 import {
     ModalContent,
@@ -22,14 +23,14 @@ import {
     InputGroup,
 } from "./styles"
 
+import { useDataFetch } from "@/Hooks"
+import { GetCaseService } from "@/Services/CaseService"
+import { useAppStore } from "@/Store/AppStore"
+import { useModalContext } from "@/Store/ModalContext"
 import {
     dateStringToDateUtc,
     toMonthDate,
 } from "@/Utils/DateUtils"
-import { GetCaseService } from "@/Services/CaseService"
-import { useModalContext } from "@/Store/ModalContext"
-import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppStore()
@@ -83,12 +84,14 @@ const CreateCaseModal = () => {
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
+
             setProductionStrategy(newProductionStrategy)
         }
     }
 
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         let newDate: Date | null = dateStringToDateUtc(e.target.value)
+
         if (Number.isNaN(newDate.getTime())) {
             newDate = null
         } else {
@@ -108,6 +111,7 @@ const CreateCaseModal = () => {
 
             if (caseModalEditMode && projectCase && projectCase.caseId) {
                 const newCase = { ...projectCase }
+
                 newCase.name = caseName
                 newCase.description = description
                 newCase.dg4Date = dg4Date!.toISOString()
@@ -150,6 +154,7 @@ const CreateCaseModal = () => {
 
     const getButtonText = () => {
         if (isLoading) { return <Progress.Dots /> }
+
         return caseModalEditMode ? "Save" : "Create case"
     }
 

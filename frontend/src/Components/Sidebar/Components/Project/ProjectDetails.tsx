@@ -1,12 +1,8 @@
-import React, { useState } from "react"
-import { Stack } from "@mui/material"
 import {
     Tooltip,
     Typography,
     Icon,
 } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
-import styled from "styled-components"
 import {
     dashboard,
     settings,
@@ -16,16 +12,20 @@ import {
     assignment,
 } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { Stack } from "@mui/material"
+import React, { useState } from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
 
-import { useAppStore } from "@/Store/AppStore"
 import {
     TimelineElement,
     Timeline,
     Header,
     StyledDivider,
 } from "@/Components/Sidebar/SidebarWrapper"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { projectTabNames } from "@/Utils/Config/constants"
 
 const ProjectTitle = styled(Typography)`
@@ -73,6 +73,7 @@ const ProjectDetails: React.FC = () => {
 
     const handleTitleClick = () => {
         const newClickCount = titleClicks + 1
+
         setTitleClicks(newClickCount)
 
         if (newClickCount === 5) {

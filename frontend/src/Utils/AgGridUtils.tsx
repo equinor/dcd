@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
+
 import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet, ITimeSeries } from "@/Models/ITimeSeries"
 import { generateProfile, isExplorationWell } from "@/Utils/commonUtils"
 
@@ -32,6 +33,7 @@ export const separateProfileObjects = (barProfiles: string[], barNames: string[]
             },
         },
     }))
+
     return barProfileObjects
 }
 
@@ -39,12 +41,14 @@ export const insertIf = (condition: boolean, addAxes: boolean, axesData: any, ..
     if (addAxes) {
         return condition ? { axes: axesData } : []
     }
+
     return condition ? elements : []
 }
 
 export const gridRefArrayToAlignedGrid = (alignedGridsRef: any[]) => {
     if (alignedGridsRef && alignedGridsRef.length > 0) {
         const refArray: any[] = []
+
         alignedGridsRef.forEach((agr: any) => {
             if (agr && agr.current) {
                 refArray.push(agr.current)
@@ -54,6 +58,7 @@ export const gridRefArrayToAlignedGrid = (alignedGridsRef: any[]) => {
             return refArray
         }
     }
+
     return undefined
 }
 
@@ -100,6 +105,7 @@ const createYearlyValues = (
     if (drillingSchedule.values?.length > 0 && drillingSchedule.startYear !== undefined) {
         drillingSchedule.values.forEach((value, index) => {
             const yearKey = calculateYearKey(dg4Year, drillingSchedule.startYear, index)
+
             result[yearKey] = value
         })
         result.total = sumValues(drillingSchedule.values)
@@ -135,6 +141,7 @@ export const wellsToRowData = (
         if (editAllowed || tableWell.total > 0) {
             return tableWell
         }
+
         return undefined
     })
 
@@ -182,6 +189,7 @@ export const profilesToRowData = (
 
             for (let i = profile.startYear; i < profile.startYear + profile.values.length; i += 1) {
                 const yearKey = calculateYearKey(dg4Year, i, 0)
+
                 rowObject[yearKey] = roundedValues[j]
                 j += 1
             }
@@ -212,13 +220,16 @@ export const getExistingProfile = (tableData: any, resourceId: string) => (table
 export const generateNewProfile = (rowValues: any[], existingProfile: any, dg4Year: number, tableData: any) => {
     if (rowValues.length === 0) {
         const emptyProfile = structuredClone(existingProfile)
+
         emptyProfile.values = []
+
         return emptyProfile
     }
 
     const firstYear = rowValues[0].year
     const lastYear = rowValues[rowValues.length - 1].year
     const startYear = firstYear - dg4Year
+
     return generateProfile(rowValues, tableData.profile, startYear, firstYear, lastYear)
 }
 
@@ -243,6 +254,7 @@ export const GetTimeSeriesLastYear = (
     ) {
         return timeSeries.startYear + timeSeries.values.length - 1
     }
+
     return undefined
 }
 
@@ -264,10 +276,12 @@ export const SetTableYearsFromProfiles = (
 ) => {
     let firstYear: number | undefined
     let lastYear: number | undefined
+
     profiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
             const { startYear } = profile
             const profileStartYear: number = startYear + dg4Year
+
             if (firstYear === undefined) {
                 firstYear = profileStartYear
             } else if (profileStartYear < firstYear) {
@@ -276,8 +290,10 @@ export const SetTableYearsFromProfiles = (
         }
 
         const profileLastYear = GetTimeSeriesLastYear(profile)
+
         if (profileLastYear !== undefined) {
             const adjustedProfileLastYear = profileLastYear + dg4Year
+
             if (lastYear === undefined) {
                 lastYear = adjustedProfileLastYear
             } else if (adjustedProfileLastYear > lastYear) {
@@ -295,6 +311,7 @@ export const SetTableYearsFromProfiles = (
 
     const totalYears = (lastYear !== undefined && firstYear !== undefined) ? lastYear - firstYear + 1 : 0
     const desiredYears = 11
+
     if (totalYears < desiredYears) {
         const additionalYears = desiredYears - totalYears
         const additionalYearsBefore = Math.floor(additionalYears / 2)
@@ -325,6 +342,7 @@ export const SetSummaryTableYearsFromProfiles = (
         if (profile?.startYear !== undefined) {
             const { startYear } = profile
             const profileStartYear: number = startYear + dg4Year
+
             if (firstYear === undefined) {
                 firstYear = profileStartYear
             } else if (profileStartYear < firstYear) {
@@ -333,6 +351,7 @@ export const SetSummaryTableYearsFromProfiles = (
         }
 
         const profileLastYear = GetTimeSeriesLastYear(profile)
+
         if (profileLastYear !== undefined) {
             const adjustedProfileLastYear = profileLastYear + dg4Year
 

@@ -1,6 +1,6 @@
+import { tokens } from "@equinor/eds-tokens"
 import { Stack, Typography } from "@mui/material"
 import styled from "styled-components"
-import { tokens } from "@equinor/eds-tokens"
 
 const Container = styled.div`
     padding: 24px;

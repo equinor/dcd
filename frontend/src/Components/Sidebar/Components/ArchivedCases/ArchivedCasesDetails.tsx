@@ -1,4 +1,3 @@
-import { useState } from "react"
 import {
     Icon,
     Button,
@@ -7,11 +6,13 @@ import {
 } from "@equinor/eds-core-react"
 import { arrow_drop_up, arrow_drop_down } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
+import { useState } from "react"
 import styled from "styled-components"
 
-import { useAppStore } from "@/Store/AppStore"
-import { Timeline, Header } from "@/Components/Sidebar/SidebarWrapper"
 import ArchivedCasesList from "./ArchivedCasesList"
+
+import { Timeline, Header } from "@/Components/Sidebar/SidebarWrapper"
+import { useAppStore } from "@/Store/AppStore"
 
 const ClickableTitle = styled.div`
     cursor: pointer;

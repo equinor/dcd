@@ -1,6 +1,8 @@
 import { Button, Tooltip } from "@equinor/eds-core-react"
 import styled from "styled-components"
+
 import { ReferenceCaseIcon } from "../CellRenderers/ReferenceCaseIcon"
+
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
@@ -32,6 +34,7 @@ export const CaseNameCell = ({
     const navigateToSelectedCase = () => {
         setEditMode(false)
         const currentTab = caseTabNames[activeTabCase]
+
         if (isRevision && revisionId) {
             navigateToRevisionCase(revisionId, data.id, currentTab)
         } else {

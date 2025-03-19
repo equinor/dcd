@@ -6,6 +6,7 @@ import React, {
     useMemo,
     useEffect,
 } from "react"
+
 import { useAppStore } from "./AppStore"
 
 interface ModalContextType {
@@ -111,9 +112,11 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
 export const useModalContext = (): ModalContextType => {
     const context = useContext(ModalContext)
+
     if (context === undefined) {
         throw new Error("useModalContext must be used within an ModalContextProvider")
     }
+
     return context
 }
 

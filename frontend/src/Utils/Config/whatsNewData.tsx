@@ -1,5 +1,6 @@
-import { Version, WhatsNewUpdates } from "@/Models/Interfaces"
 import { sortVersions } from "../commonUtils"
+
+import { Version, WhatsNewUpdates } from "@/Models/Interfaces"
 
 export const whatsNewUpdates: WhatsNewUpdates = {
     "2.0.0": {

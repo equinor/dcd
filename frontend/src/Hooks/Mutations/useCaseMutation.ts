@@ -1,5 +1,6 @@
-import { GetCaseService } from "@/Services/CaseService"
 import { useBaseMutation } from "./useBaseMutation"
+
+import { GetCaseService } from "@/Services/CaseService"
 
 export const useCaseMutation = () => {
     const mutation = useBaseMutation({

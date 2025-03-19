@@ -1,17 +1,17 @@
-import { useEffect } from "react"
 import Grid2 from "@mui/material/Grid2"
+import { useEffect } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
-import TechnicalInputTab from "@/Components/ProjectTabs/TechnicalInputTab/TechnicalInputTab"
-import ProjectOverviewTab from "@/Components/ProjectTabs/ProjectOverviewTab"
-import ProjectSettingsTab from "@/Components/ProjectTabs/ProjectSettingsTab"
+import ProjectChangeLog from "@/Components/ChangeLog/ProjectChangeLog"
 import AccessManagementTab from "@/Components/ProjectTabs/AccessManagementTab"
 import ProjectCompareCasesTab from "@/Components/ProjectTabs/CompareCasesTab/CompareCasesTabOverview"
+import ProjectOverviewTab from "@/Components/ProjectTabs/ProjectOverviewTab"
+import ProjectSettingsTab from "@/Components/ProjectTabs/ProjectSettingsTab"
+import TechnicalInputTab from "@/Components/ProjectTabs/TechnicalInputTab/TechnicalInputTab"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { projectTabNames } from "@/Utils/Config/constants"
-import { useAppNavigation } from "@/Hooks/useNavigate"
-import ProjectChangeLog from "@/Components/ChangeLog/ProjectChangeLog"
 
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
@@ -26,6 +26,7 @@ const ProjectView = () => {
     useEffect(() => {
         if (tab) {
             const tabIndex = projectTabNames.indexOf(tab)
+
             if (activeTabProject !== tabIndex) {
                 setActiveTabProject(tabIndex)
             }

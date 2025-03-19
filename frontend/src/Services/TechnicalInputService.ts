@@ -3,6 +3,7 @@ import { __BaseService } from "./__BaseService"
 class TechnicalInputService extends __BaseService {
     public async updateWells(projectId: string, body: Components.Schemas.UpdateWellsDto): Promise<Components.Schemas.ProjectDataDto> {
         const res: Components.Schemas.ProjectDataDto = await this.put(`projects/${projectId}/wells`, { body })
+
         return res
     }
 
@@ -15,6 +16,7 @@ class TechnicalInputService extends __BaseService {
             `projects/${projectId}/development-operational-well-costs/${developmentOperationalWellCostsId}`,
             { body },
         )
+
         return res
     }
 
@@ -27,6 +29,7 @@ class TechnicalInputService extends __BaseService {
             `projects/${projectId}/exploration-operational-well-costs/${explorationOperationalWellCostsId}`,
             { body },
         )
+
         return res
     }
 }

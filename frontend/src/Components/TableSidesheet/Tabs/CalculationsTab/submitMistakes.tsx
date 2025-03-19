@@ -1,9 +1,9 @@
-import React, { useState } from "react"
+import { Icon } from "@equinor/eds-core-react"
+import { info_circle } from "@equinor/eds-icons"
 import {
     Box, Button, Typography, TextField, Collapse,
 } from "@mui/material"
-import { Icon } from "@equinor/eds-core-react"
-import { info_circle } from "@equinor/eds-icons"
+import React, { useState } from "react"
 import styled from "styled-components"
 
 // Create a div instead of extending Box to avoid MUI styling system conflicts
@@ -63,6 +63,7 @@ const SubmitMistakes: React.FC<SubmitMistakesProps> = ({ profileType, rowData })
             `I believe there might be an issue with the AI-generated explanation.\nProfile: ${profileType || "N/A"}\n`
             + `Resource Name: ${rowData?.resourceName || "N/A"}\nResource Type: ${rowData?.resourceType || "N/A"}\n\nDetails:\n${explanation}\n`,
         )
+
         window.location.href = `mailto:agars@equinor.com?subject=${subject}&body=${body}`
         handleClose()
     }

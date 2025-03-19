@@ -6,16 +6,16 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
 import { ChangeEventHandler, useState } from "react"
 
-import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/commonUtils"
-import { useModalContext } from "@/Store/ModalContext"
-import useEditProject from "@/Hooks/useEditProject"
-import { INTERNAL_PROJECT_PHASE } from "@/Utils/Config/constants"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import { useDataFetch } from "@/Hooks"
-import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
-import AllCasesTable from "@/Components/Tables/ProjectTables/AllCasesTable"
 import Gallery from "@/Components/Gallery/Gallery"
+import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
+import AllCasesTable from "@/Components/Tables/ProjectTables/AllCasesTable"
+import { useDataFetch } from "@/Hooks"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import useEditProject from "@/Hooks/useEditProject"
+import { useModalContext } from "@/Store/ModalContext"
+import { INTERNAL_PROJECT_PHASE } from "@/Utils/Config/constants"
+import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/commonUtils"
 
 const ProjectOverviewTab = () => {
     const { addProjectEdit } = useEditProject()
@@ -38,6 +38,7 @@ const ProjectOverviewTab = () => {
                     ...revisionAndProjectData.commonProjectAndRevisionData,
                     description: newDescription,
                 }
+
                 addProjectEdit(revisionAndProjectData.projectId, updatedProject)
             }
         }, 3000)
@@ -47,11 +48,13 @@ const ProjectOverviewTab = () => {
 
     const handlePhaseChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
         const selectedPhase = Number(e.currentTarget.value)
+
         if ([0, 1, 2].includes(selectedPhase) && revisionAndProjectData) {
             const updatedProject = {
                 ...revisionAndProjectData.commonProjectAndRevisionData,
                 internalProjectPhase: selectedPhase as Components.Schemas.InternalProjectPhase,
             }
+
             addProjectEdit(revisionAndProjectData.projectId, updatedProject)
         }
     }

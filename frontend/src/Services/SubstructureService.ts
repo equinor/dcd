@@ -10,6 +10,7 @@ class SubstructureService extends __BaseService {
             `projects/${projectId}/cases/${caseId}/substructure`,
             { body: dto },
         )
+
         return res
     }
 }

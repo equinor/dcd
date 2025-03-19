@@ -1,13 +1,16 @@
 import { useState, useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks"
-import { CasesTable } from "./CasesTable"
-import { ArchivedCasesTable } from "./ArchivedCasesTable"
+
 import { STEAExportButton } from "../Components/STEAExportButton"
 import TableCasesDropMenu from "../Components/TableCasesDropMenu"
+
+import { ArchivedCasesTable } from "./ArchivedCasesTable"
+import { CasesTable } from "./CasesTable"
+
+import { useDataFetch } from "@/Hooks"
+import { useAppStore } from "@/Store/AppStore"
 import { useModalContext } from "@/Store/ModalContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const AllCasesTable = () => {
     const { isRevision } = useProjectContext()
@@ -29,10 +32,11 @@ const AllCasesTable = () => {
 
     const mapCasesToTableData = (isArchived: boolean) => {
         if (!revisionAndProjectData?.commonProjectAndRevisionData?.cases) { return [] }
+
         return revisionAndProjectData.commonProjectAndRevisionData.cases
             .filter((c) => c.archived === isArchived)
             .map((c) => ({
-                id: c.caseId!,
+                id: c.caseId,
                 name: c.name ?? "",
                 description: c.description ?? "",
                 productionStrategyOverview: c.productionStrategyOverview,

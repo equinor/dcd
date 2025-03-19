@@ -1,6 +1,3 @@
-import React, {
-    ChangeEventHandler, useEffect, useState,
-} from "react"
 import {
     Divider, Icon, Typography, Button,
     InputWrapper,
@@ -9,19 +6,22 @@ import {
     Chip,
     Progress,
 } from "@equinor/eds-core-react"
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
 import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
-import styled from "styled-components"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
 import Grid from "@mui/material/Grid2"
+import React, {
+    ChangeEventHandler, useEffect, useState,
+} from "react"
+import styled from "styled-components"
 
-import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
-import { useRevisions } from "@/Hooks/useRevision"
-import { getProjectPhaseName } from "@/Utils/commonUtils"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { useDataFetch } from "@/Hooks"
+import { useRevisions } from "@/Hooks/useRevision"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
+import { getProjectPhaseName } from "@/Utils/commonUtils"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -74,6 +74,7 @@ const CreateRevisionModal: React.FC<Props> = ({
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
+
             setClassification(newClassification)
         }
     }
@@ -81,6 +82,7 @@ const CreateRevisionModal: React.FC<Props> = ({
     const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
+
             setInternalProjectPhase(newInternalProjectPhase)
         }
     }
@@ -93,6 +95,7 @@ const CreateRevisionModal: React.FC<Props> = ({
         if (disableAfterDG0()) {
             return <option key={key}>{getProjectPhaseName(revisionAndProjectData.commonProjectAndRevisionData.projectPhase)}</option>
         }
+
         return <option key={key} value={key}>{value.label}</option>
     })
 
@@ -110,6 +113,7 @@ const CreateRevisionModal: React.FC<Props> = ({
             mdqc,
             arena,
         }
+
         createRevision(newRevision)
         setRevisionName("")
     }

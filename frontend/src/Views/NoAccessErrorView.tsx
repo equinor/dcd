@@ -1,8 +1,9 @@
-import React from "react"
-import styled from "styled-components"
-import { Box } from "@mui/material"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
+import { Box } from "@mui/material"
+import React from "react"
+import styled from "styled-components"
+
 import ExternalAccessInfo from "@/Components/ProjectTabs/Components/ExternalAccessInfo"
 import { NoAccessReason } from "@/Models/enums"
 

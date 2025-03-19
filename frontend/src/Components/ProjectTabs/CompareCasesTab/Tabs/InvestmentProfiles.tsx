@@ -1,7 +1,9 @@
 import React from "react"
+
 import { CompareCasesChart } from "../../../Charts/CompareCasesChart"
-import { Currency } from "@/Models/enums"
+
 import { useDataFetch } from "@/Hooks"
+import { Currency } from "@/Models/enums"
 
 interface InvestmentProfilesProps {
     investmentProfilesChartData?: object

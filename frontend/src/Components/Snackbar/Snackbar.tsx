@@ -4,11 +4,11 @@ import {
 import { clear } from "@equinor/eds-icons"
 import styled from "styled-components"
 
-import { useAppStore } from "@/Store/AppStore"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useFeatureContext } from "@/Store/FeatureContext"
-import { useDataFetch } from "@/Hooks"
 import CreateRevisionModal from "@/Components/Modal/CreateRevisionModal"
+import { useDataFetch } from "@/Hooks"
+import { useAppStore } from "@/Store/AppStore"
+import { useFeatureContext } from "@/Store/FeatureContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const SnackbarCentering = styled.div`
     display: flex;

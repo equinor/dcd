@@ -1,22 +1,23 @@
+import Grid from "@mui/material/Grid2"
 import {
     useState, useEffect,
 } from "react"
-import Grid from "@mui/material/Grid2"
+
+import CaseTableWithGrouping from "@/Components/CaseTabs/CaseSummaryTab/CaseTableWithGrouping"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
+import { useCaseMutation } from "@/Hooks/Mutations"
 import {
     ITimeSeries,
     ITimeSeriesDataWithGroup,
     ITimeSeriesData,
 } from "@/Models/ITimeSeries"
-import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import { Currency } from "@/Models/enums"
 import { useCaseStore } from "@/Store/CaseStore"
-import { mergeTimeseriesList } from "@/Utils/commonUtils"
-import { useDataFetch, useCaseApiData } from "@/Hooks"
-import CaseTableWithGrouping from "@/Components/CaseTabs/CaseSummaryTab/CaseTableWithGrouping"
 import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency } from "@/Models/enums"
-import { useCaseMutation } from "@/Hooks/Mutations"
+import { mergeTimeseriesList } from "@/Utils/commonUtils"
 
 const CaseSummaryTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -86,7 +87,7 @@ const CaseSummaryTab = () => {
                 gasProducerCostProfile,
                 waterInjectorCostProfile,
                 gasInjectorCostProfile,
-            ].map((series) => series?.startYear).filter((year) => year !== undefined) as number[]
+            ].map((series) => series?.startYear).filter((year) => year !== undefined)
 
             const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
 
@@ -123,14 +124,17 @@ const CaseSummaryTab = () => {
                     drillingCostSeriesList.push(timeSeriesWithCostProfile)
                 }
             }
+
             return mergeTimeseriesList(drillingCostSeriesList)
         }
+
         return undefined
     }
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
             const caseData = apiData?.case
+
             SetTableYearsFromProfiles(
                 [
                     handleTotalExplorationCost(),

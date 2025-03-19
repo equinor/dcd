@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 
-import { truncateText } from "@/Utils/commonUtils"
-import { formatFullDate } from "@/Utils/DateUtils"
-import { useRevisions } from "@/Hooks/useRevision"
-import { useDataFetch } from "@/Hooks"
 import MenuControls from "./MenuControls"
+
+import { useDataFetch } from "@/Hooks"
+import { useRevisions } from "@/Hooks/useRevision"
+import { formatFullDate } from "@/Utils/DateUtils"
+import { truncateText } from "@/Utils/commonUtils"
 
 interface RevisionsDropMenuProps {
     isMenuOpen: boolean
@@ -63,6 +64,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
             name: revisionName,
             date: revisionDate,
         }))
+
         setRevisions(formattedRevisions)
     }, [revisionAndProjectData])
 

@@ -1,12 +1,12 @@
 import { AxiosError } from "axios"
-import { Dispatch, SetStateAction } from "react"
 import isEqual from "lodash/isEqual"
+import { Dispatch, SetStateAction } from "react"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
-import { TABLE_VALIDATION_RULES } from "@/Utils/Config/constants"
 import { EditInstance } from "@/Models/Interfaces"
-import { dateFromTimestamp } from "@/Utils/DateUtils"
 import { WellCategory } from "@/Models/enums"
+import { TABLE_VALIDATION_RULES } from "@/Utils/Config/constants"
+import { dateFromTimestamp } from "@/Utils/DateUtils"
 
 export enum CampaignProfileType {
     RigUpgrading = "rigUpgradingProfile",
@@ -24,6 +24,7 @@ export const caseRevisionPath = (projectId: string, caseId: string, isRevision: 
     if (isRevision && revisionId) {
         return `${projectPath(projectId)}/revision/${revisionId}/case/${caseId}`
     }
+
     return `${projectPath(projectId)}/case/${caseId}`
 }
 export const storeAppId = (appId: string) => {
@@ -36,6 +37,7 @@ export const storeAppScope = (appScope: string) => {
 
 export const getToken = () => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
+
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
@@ -43,6 +45,7 @@ export const unwrapProjectId = (projectId?: string | undefined | null): string =
     if (projectId === undefined || projectId === null) {
         throw new Error("Attempted to use a Project ID which does not exist")
     }
+
     return projectId
 }
 
@@ -70,6 +73,7 @@ export const filterWells = (wells: Components.Schemas.WellOverviewDto[]) => {
             explorationWellOptions,
         }
     }
+
     return {
         explorationWells: wells.filter((well) => isExplorationWell(well)),
         developmentWells: wells.filter((well) => !isExplorationWell(well)),
@@ -82,6 +86,7 @@ export const getProjectCategoryName = (key?: Components.Schemas.ProjectCategory)
     if (key === undefined) {
         return ""
     }
+
     return {
         0: "Unknown",
         1: "Brownfield",
@@ -112,6 +117,7 @@ export const getProjectPhaseName = (key?: Components.Schemas.ProjectPhase): stri
     if (key === undefined) {
         return ""
     }
+
     return {
         0: "Unknown",
         1: "Bid preparations",
@@ -130,6 +136,7 @@ export const isInteger = (value: string) => /^-?\d+$/.test(value)
 
 export const productionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
     if (value === undefined) { return "" }
+
     return {
         0: "Depletion",
         1: "Water injection",
@@ -149,8 +156,10 @@ const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): numbe
 
     dataArrays.forEach((dataArray: number[], index: number) => {
         const offset = offsets[index]
+
         dataArray.forEach((value: number, i: number) => {
             const adjustedIndex = i + offset
+
             if (adjustedIndex < maxLength) {
                 result[adjustedIndex] += value
             }
@@ -205,13 +214,16 @@ export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): 
 export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetStateAction<T | undefined>>, key: keyof T, value: any): void {
     if (!object || !value) {
         console.error("Object or value is undefined")
+
         return
     }
     if (object[key] === value) {
         console.error("Object key is already set to value")
+
         return
     }
     const newObject: T = { ...object }
+
     newObject[key] = value
     setObject(newObject)
 }
@@ -237,12 +249,15 @@ export const tableCellisEditable = (params: any, editAllowed: boolean, isSaving?
 
 export const validateInput = (params: any, editAllowed: boolean, isSaving?: boolean) => {
     const { value, data } = params
+
     if (tableCellisEditable(params, editAllowed, isSaving) && value) {
         const rule = TABLE_VALIDATION_RULES[data.profileName]
+
         if (rule && (value < rule.min || value > rule.max)) {
             return `Value must be between ${rule.min} and ${rule.max}.`
         }
     }
+
     return null
 }
 
@@ -256,6 +271,7 @@ export const numberValueParser = (
 
     if ((allCommasTurnedToDots.match(/\./g) || []).length > 1) {
         setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
+
         return oldValue
     }
 
@@ -270,6 +286,7 @@ export const getCaseRowStyle = (params: any) => {
     if (params.node.footer) {
         return { fontWeight: "bold" }
     }
+
     return undefined
 }
 
@@ -286,6 +303,7 @@ export const cellStyleRightAlign = { textAlign: "right" }
  */
 export const setNonNegativeNumberState = (value: number, objectKey: string, state: any, setState: Dispatch<SetStateAction<any>>): void => {
     const newState = { ...state }
+
     newState[objectKey] = Math.max(value, 0)
     setState(newState)
 }
@@ -304,11 +322,13 @@ export const formatTime = (timestamp: number): string => {
 
 export const formatColumnSum = (params: { values: any[] }) => {
     let sum = 0
+
     params.values.forEach((value: any) => {
         if (!Number.isNaN(parseFloat(value)) && Number.isFinite(value)) {
             sum += Number(value)
         }
     })
+
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
 }
 
@@ -330,6 +350,7 @@ export const getValuesFromEntireRow = (tableData: any) => {
             })
         }
     })
+
     return valuePerYear.sort((a, b) => a.year - b.year)
 }
 
@@ -341,6 +362,7 @@ export const generateProfile = (
     lastYear: number,
 ) => {
     const values: number[] = []
+
     if (tableTimeSeriesValues.length === 0) {
         return {
             ...profile,
@@ -351,6 +373,7 @@ export const generateProfile = (
 
     for (let year = firstYear; year <= lastYear; year += 1) {
         const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === year)
+
         values.push(tableTimeSeriesValue ? tableTimeSeriesValue.value : 0)
     }
 
@@ -422,8 +445,10 @@ export const validateTableCellChange = (params: ITableCellChangeParams, config: 
     const { setSnackBarMessage } = config
 
     const rule = TABLE_VALIDATION_RULES[profileName]
+
     if (rule && setSnackBarMessage && (newValue < rule.min || newValue > rule.max)) {
         setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+
         return false
     }
 
@@ -446,10 +471,12 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
     }
 
     let newProfile
+
     if (rowValues.length > 0) {
         const firstYear = rowValues[0].year
         const lastYear = rowValues[rowValues.length - 1].year
         const startYear = firstYear - dg4Year
+
         newProfile = generateProfile(rowValues, data.profile, startYear, firstYear, lastYear)
     } else {
         newProfile = structuredClone(existingProfile)
@@ -491,6 +518,7 @@ export const sortVersions = (versions: string[]): string[] => versions.sort((a, 
 
     if (aMajor !== bMajor) { return bMajor - aMajor }
     if (aMinor !== bMinor) { return bMinor - aMinor }
+
     return bPatch - aPatch
 })
 

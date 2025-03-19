@@ -1,21 +1,24 @@
-import { RouterProvider, RouteObject } from "react-router-dom"
 import { useRouter } from "@equinor/fusion-framework-react-app/navigation"
-import { AgnosticRouteObject } from "@remix-run/router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import ProjectLayout from "./Components/ProjectTabs/ProjectLayout"
-import ProjectView from "./Views/ProjectView"
-import CaseView from "./Views/CaseView"
-import UserGuideView from "./Components/Guide/UserGuide"
+import { AgnosticRouteObject } from "@remix-run/router"
+import { RouterProvider, RouteObject } from "react-router-dom"
+
 import ChangeLogView from "./Components/ChangeLog/ProjectChangeLog"
+import UserGuideView from "./Components/Guide/UserGuide"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
-import NotFoundView from "./Views/NotFoundView"
+import ProjectLayout from "./Components/ProjectTabs/ProjectLayout"
+import CaseView from "./Views/CaseView"
 import IndexView from "./Views/IndexView"
+import NotFoundView from "./Views/NotFoundView"
+import ProjectView from "./Views/ProjectView"
 
 const ProjectRoute = () => {
     const { currentContext } = useModuleCurrentContext()
+
     if (!currentContext) {
         return <NotFoundView />
     }
+
     return <ProjectLayout />
 }
 
@@ -51,6 +54,7 @@ const routes: RouteObject[] = [
 
 export default function AppRouter() {
     const router = useRouter(routes as AgnosticRouteObject[])
+
     return (
         <RouterProvider
             router={router}

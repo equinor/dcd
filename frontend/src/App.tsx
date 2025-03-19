@@ -1,18 +1,19 @@
-import { FC } from "react"
+import { ThemeProvider, createTheme } from "@mui/material"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { ThemeProvider, createTheme } from "@mui/material"
-import { APP_VERSION } from "./version"
+import { FC } from "react"
+
 import AppRouter from "./Router"
+import { buildConfig } from "./Services/config"
+import { EditQueueProvider } from "./Store/EditQueueContext"
+import { FeatureContextProvider } from "./Store/FeatureContext"
+import { ModalContextProvider } from "./Store/ModalContext"
+import { ProjectContextProvider } from "./Store/ProjectContext"
 import { resolveConfiguration } from "./Utils/Config/EnvConfig"
 import { EnvironmentVariables } from "./Utils/Config/environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/commonUtils"
-import { buildConfig } from "./Services/config"
-import { ModalContextProvider } from "./Store/ModalContext"
-import { ProjectContextProvider } from "./Store/ProjectContext"
-import { FeatureContextProvider } from "./Store/FeatureContext"
-import { EditQueueProvider } from "./Store/EditQueueContext"
 import Styles from "./styles"
+import { APP_VERSION } from "./version"
 
 const App: FC = () => {
     const queryClient = new QueryClient({

@@ -1,12 +1,13 @@
-import { useMemo } from "react"
-import { AgGridReact } from "@ag-grid-community/react"
 import { ColDef } from "@ag-grid-community/core"
+import { AgGridReact } from "@ag-grid-community/react"
+import { useMemo } from "react"
 import styled from "styled-components"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+
 import { CaseNameCell } from "@/Components/Tables/Components/CellRenderers/CaseNameCell"
 import { MenuButtonCell } from "@/Components/Tables/Components/CellRenderers/MenuButtonCell"
 import { ProductionStrategyCell } from "@/Components/Tables/Components/CellRenderers/ProductionStrategyCell"
 import { TableCase } from "@/Models/Interfaces"
+import { cellStyleRightAlign } from "@/Utils/commonUtils"
 
 const AgTableContainer = styled.div`
     overflow: auto;

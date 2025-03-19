@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react"
-import { AgCharts } from "ag-charts-react"
 import Grid from "@mui/material/Grid2"
+import { AgCharts } from "ag-charts-react"
+import React, { useEffect, useMemo, useState } from "react"
 
-import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
-import { Currency, ProfileTypes } from "@/Models/enums"
-import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/commonUtils"
 import { setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
+import { useDataFetch } from "@/Hooks"
+import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { Currency, ProfileTypes } from "@/Models/enums"
+import { getYearFromDateString } from "@/Utils/DateUtils"
+import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/commonUtils"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -71,6 +71,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     apiData.sidetrackCostProfile,
                 ]),
             }
+
             setMergedCostProfiles(costProfiles)
             const incomeProfiles = {
                 liquidRevenue: [
@@ -81,9 +82,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                                 apiData.productionProfileOil,
                                 apiData.additionalProductionProfileOil,
                             ).values
+
                             if (!mergedValues) { return null }
                             const oilPriceUsd = revisionAndProjectData?.commonProjectAndRevisionData?.oilPriceUsd ?? 0
                             const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
+
                             return mergedValues.map((v: number) => (v * 6.29 * oilPriceUsd) * exchangeRateUsdToNok)
                         })(),
                     },
@@ -102,6 +105,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             }
 
             const newTimeSeriesData: ITimeSeriesTableData[] = []
+
             Object.entries(costProfiles).forEach(([profileName, profileData]) => {
                 const updatedProfile = {
                     ...profileData,
@@ -123,6 +127,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
             Object.entries(incomeProfiles).forEach(([profileName, profileData]) => {
                 const resourceName: ProfileTypes = profileName as ProfileTypes
+
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
                     unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD",
@@ -172,6 +177,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 : 0
 
             const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
+
             return income * exchangeRateUsdToNok - cost
         }),
     }
@@ -194,22 +200,27 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const chartData = useMemo(() => {
         const data: any[] = []
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
+
         years.forEach((year) => {
             const yearData: any = { year }
+
             aggregatedTimeSeriesData.forEach((series) => {
                 const value = setValueToCorrespondingYear(series.profile, year, dg4Year)
+
                 yearData[series.profileName] = value
             })
             yearData.cashflow = (cashflow.values || []).reduce((acc, value, index) => {
                 if (cashflow.startYear + index === year) {
                     return acc + value
                 }
+
                 return acc
             }, 0)
             yearData.discountedCashflow = (discountedCashflow?.values || []).reduce((acc, value, index) => {
                 if (discountedCashflow.startYear + index === year) {
                     return acc + value
                 }
+
                 return acc
             }, 0)
 
