@@ -7,8 +7,6 @@ public static class CampaignMapper
 {
     public static CampaignDto MapToDto(Campaign campaign)
     {
-        var wells = MapCampaignWells(campaign.CampaignWells);
-
         return new CampaignDto
         {
             CampaignId = campaign.Id,
@@ -25,21 +23,17 @@ public static class CampaignMapper
                 StartYear = campaign.RigMobDemobCostStartYear,
                 Values = campaign.RigMobDemobCostValues
             },
-            CampaignWells = wells
+            CampaignWells = campaign.CampaignWells
+                .OrderBy(x => x.CreatedUtc)
+                .Select(x => new CampaignWellDto
+                {
+                    WellId = x.WellId,
+                    WellName = x.Well.Name ?? "",
+                    WellCategory = x.Well.WellCategory,
+                    StartYear = x.StartYear,
+                    Values = x.Values
+                })
+                .ToList()
         };
-    }
-
-    private static List<CampaignWellDto> MapCampaignWells(List<CampaignWell> campaignWells)
-    {
-        return campaignWells
-            .Select(x => new CampaignWellDto
-            {
-                WellId = x.WellId,
-                WellName = x.Well.Name ?? "",
-                WellCategory = x.Well.WellCategory,
-                StartYear = x.StartYear,
-                Values = x.Values
-            })
-            .ToList();
     }
 }
