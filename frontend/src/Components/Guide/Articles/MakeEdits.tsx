@@ -1,5 +1,5 @@
-import VideoPlayer from "../VideoPlayer"
 import Article from "../Components/Article"
+import VideoPlayer from "../VideoPlayer"
 
 const MakeEdits = () => (
     <Article>

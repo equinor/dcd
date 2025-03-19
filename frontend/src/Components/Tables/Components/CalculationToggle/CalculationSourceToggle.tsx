@@ -1,14 +1,16 @@
-import React, { useState } from "react"
-import { Button, CircularProgress, Tooltip } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
 import { ICellRendererParams } from "@ag-grid-community/core"
-import { useCaseApiData } from "@/Hooks"
-import { DisabledExcelHideIcon } from "@/Assets/Icons/DisabledExcelHideIcon"
-import { useAppStore } from "@/Store/AppStore"
-import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
+import { Button, CircularProgress, Tooltip } from "@equinor/eds-core-react"
+import React, { useState } from "react"
+import { useParams } from "react-router-dom"
+
 import { CalculatorToggle, ExcelToggle } from "./ToggleIcons"
-import { ProfileTypes } from "@/Models/enums"
+
+import { DisabledExcelHideIcon } from "@/Assets/Icons/DisabledExcelHideIcon"
+import { useCaseApiData } from "@/Hooks"
 import { useTimeSeriesMutation } from "@/Hooks/Mutations"
+import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
+import { ProfileTypes } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
 
 interface CalculationSourceToggleProps {
     clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>

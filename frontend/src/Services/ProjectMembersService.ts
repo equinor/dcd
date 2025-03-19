@@ -5,11 +5,13 @@ class __ProjectMembersService extends __BaseService {
         const res: Components.Schemas.ProjectMemberDto[] = await this.get<Components.Schemas.ProjectMemberDto[]>(
             `projects/${projectId}/members`,
         )
+
         return res
     }
 
     async deletePerson(projectId: string, userId: string) {
         const res: Components.Schemas.ProjectMemberDto = await this.delete<Components.Schemas.ProjectMemberDto>(`projects/${projectId}/members/${userId}`)
+
         return res
     }
 
@@ -18,6 +20,7 @@ class __ProjectMembersService extends __BaseService {
             `projects/${projectId}/members`,
             { body },
         )
+
         return res
     }
 
@@ -26,6 +29,7 @@ class __ProjectMembersService extends __BaseService {
             `projects/${projectId}/members`,
             { body },
         )
+
         return res
     }
 }

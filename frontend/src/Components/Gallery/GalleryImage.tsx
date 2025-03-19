@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react"
-import styled from "styled-components"
-import { Box } from "@mui/material"
 import {
     Icon,
     Button,
     Input,
 } from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
+import { Box } from "@mui/material"
+import { useEffect, useRef, useState } from "react"
+import styled from "styled-components"
+
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
 
 const ImageCard = styled.div`
@@ -74,19 +75,24 @@ const GalleryImage = ({
 
     useEffect(() => {
         const img = imageRef.current
+
         if (img) {
             const updateWidth = () => {
                 setWidth(img.clientWidth)
             }
+
             img.addEventListener("load", updateWidth)
             if (img.complete) {
                 updateWidth()
             }
+
             return () => {
                 img.removeEventListener("load", updateWidth)
+
                 return undefined
             }
         }
+
         return undefined
     }, [])
 

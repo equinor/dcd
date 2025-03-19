@@ -1,6 +1,7 @@
-import { create } from "zustand"
 import { SetStateAction } from "react"
+import { create } from "zustand"
 import { persist } from "zustand/middleware"
+
 import { EditInstance } from "../Models/Interfaces"
 
 interface AppState {

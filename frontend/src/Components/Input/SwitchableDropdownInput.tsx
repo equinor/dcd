@@ -1,5 +1,6 @@
-import React, { ChangeEventHandler, useState } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
+import React, { ChangeEventHandler, useState } from "react"
+
 import InputSwitcher from "./Components/InputSwitcher"
 
 interface SwitchableDropdownInputProps {
@@ -23,6 +24,7 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
 
     const handleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
         const newValue = Number(e.currentTarget.value)
+
         setLocalValue(newValue)
         onSubmit(newValue)
     }

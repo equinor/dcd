@@ -1,14 +1,4 @@
-import React from "react"
-import styled from "styled-components"
 import { Typography, Icon } from "@equinor/eds-core-react"
-import {
-    Container,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Box,
-} from "@mui/material"
-import Grid2 from "@mui/material/Grid2"
 import {
     chevron_down,
     grid_on,
@@ -17,8 +7,19 @@ import {
     history,
     bar_chart,
 } from "@equinor/eds-icons"
-import { versions, whatsNewUpdates } from "@/Utils/Config/whatsNewData"
+import {
+    Container,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Box,
+} from "@mui/material"
+import Grid2 from "@mui/material/Grid2"
+import React from "react"
+import styled from "styled-components"
+
 import { UpdateEntry } from "@/Models/Interfaces"
+import { versions, whatsNewUpdates } from "@/Utils/Config/whatsNewData"
 import { formatFullDate } from "@/Utils/DateUtils"
 
 const StyledContainer = styled(Container)`

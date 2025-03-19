@@ -1,9 +1,11 @@
-import styled from "styled-components"
-import { CircularProgress } from "@equinor/eds-core-react"
 import { ICellRendererParams } from "@ag-grid-community/core"
-import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
+import { CircularProgress } from "@equinor/eds-core-react"
+import styled from "styled-components"
+
 import CalculationSourceToggle from "../CalculationToggle/CalculationSourceToggle"
+
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 
 const CenterGridIcons = styled.div`
     padding-top: 0px;

@@ -10,6 +10,7 @@ class TopsideService extends __BaseService {
             `projects/${projectId}/cases/${caseId}/topside`,
             { body: dto },
         )
+
         return res
     }
 }

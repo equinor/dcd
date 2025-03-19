@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { Currency, ProfileTypes } from "@/Models/enums"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface DevelopmentWellCostsProps {
     tableYears: [number, number];
@@ -39,6 +39,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
 
         if (!caseId) {
             console.error("No well project data")
+
             return
         }
 

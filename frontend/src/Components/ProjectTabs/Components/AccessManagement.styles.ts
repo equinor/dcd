@@ -1,6 +1,6 @@
-import styled from "styled-components"
-import Grid from "@mui/material/Grid2"
 import { Icon, Typography } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
+import styled from "styled-components"
 
 export const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     display: flex;

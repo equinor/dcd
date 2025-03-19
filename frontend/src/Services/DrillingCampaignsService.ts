@@ -10,6 +10,7 @@ class DrillingCampaignsService extends __BaseService {
             `projects/${projectId}/cases/${caseId}/campaigns`,
             { body },
         )
+
         return dto
     }
 

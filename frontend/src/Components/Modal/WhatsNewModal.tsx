@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react"
 import { Button, Typography, List } from "@equinor/eds-core-react"
-import { v4 as uuidv4 } from "uuid"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
+import { v4 as uuidv4 } from "uuid"
+
 import BaseModal from "./BaseModal"
-import { useModalContext } from "@/Store/ModalContext"
+
 import { useLocalStorage } from "@/Hooks"
 import { Version } from "@/Models/Interfaces"
+import { useModalContext } from "@/Store/ModalContext"
 import { versions, whatsNewUpdates } from "@/Utils/Config/whatsNewData"
 
 const Header = styled(Typography)`
@@ -30,6 +32,7 @@ const WhatsNewModal: React.FC = () => {
                 if (versionMajor < lastMajor) { return false }
                 if (versionMinor > lastMinor) { return true }
                 if (versionMinor < lastMinor) { return false }
+
                 return versionPatch > lastPatch
             })
             : versions

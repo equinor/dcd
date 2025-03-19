@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 import { GetTechnicalInputService } from "../Services/TechnicalInputService"
 import { useAppStore } from "../Store/AppStore"
 
@@ -28,16 +29,19 @@ export const useTechnicalInputEdits = () => {
 
     const technicalInputMutationFn = async ({ projectId, body }: UpdateTechnicalInputVariables) => {
         const res = await GetTechnicalInputService().updateWells(projectId, body)
+
         return res
     }
 
     const ExplorationWellCostMutationFn = async ({ projectId, explorationOperationalWellCostsId, body }: UpdateExplorationWellCostVariables) => {
         const res = await GetTechnicalInputService().updateExplorationOperationalWellCosts(projectId, explorationOperationalWellCostsId, body)
+
         return res
     }
 
     const DevelopmentWellCostMutationFn = async ({ projectId, developmentOperationalWellCostsId, body }: UpdateDevelopmentWellCostVariables) => {
         const res = await GetTechnicalInputService().updateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, body)
+
         return res
     }
 
@@ -45,6 +49,7 @@ export const useTechnicalInputEdits = () => {
         mutationFn: technicalInputMutationFn,
         onSuccess: (variables) => {
             const { fusionProjectId } = variables.commonProjectAndRevisionData
+
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", fusionProjectId] },
             )

@@ -1,21 +1,21 @@
-import React, { useMemo } from "react"
-import Grid from "@mui/material/Grid2"
 import { Tooltip } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
+import React, { useMemo } from "react"
 import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 
+import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
+import { ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
+import { useDataFetch } from "@/Hooks"
+import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useAppStore } from "@/Store/AppStore"
+import { useCaseStore } from "@/Store/CaseStore"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { caseTabNames } from "@/Utils/Config/constants"
+import { sortUtcDateStrings } from "@/Utils/DateUtils"
 import {
     productionStrategyOverviewToString, truncateText,
 } from "@/Utils/commonUtils"
-import { ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks"
-import { caseTabNames } from "@/Utils/Config/constants"
-import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
-import { useAppNavigation } from "@/Hooks/useNavigate"
-import { sortUtcDateStrings } from "@/Utils/DateUtils"
-import { useCaseStore } from "@/Store/CaseStore"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -37,17 +37,20 @@ const CasesList: React.FC = () => {
         if (!caseId) { return null }
         setEditMode(false)
         const currentTab = caseTabNames[activeTabCase]
+
         if (isRevision && revisionId) {
             navigateToRevisionCase(revisionId, caseId, currentTab)
         } else {
             navigateToCase(caseId, currentTab)
         }
+
         return null
     }
 
     const cases = useMemo(
         () => {
             const filteredCases = revisionAndProjectData?.commonProjectAndRevisionData.cases
+
             return filteredCases ? filteredCases.filter((c) => !c.archived) : []
         },
         [revisionAndProjectData],

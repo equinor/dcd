@@ -1,10 +1,10 @@
-import React from "react"
-import styled from "styled-components"
-import { Box, Button } from "@mui/material"
 import { Typography, Card, Icon } from "@equinor/eds-core-react"
 import { home } from "@equinor/eds-icons"
-import { useNavigate } from "react-router-dom"
 import { tokens } from "@equinor/eds-tokens"
+import { Box, Button } from "@mui/material"
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import styled from "styled-components"
 
 const Container = styled.div`
     max-width: 800px;

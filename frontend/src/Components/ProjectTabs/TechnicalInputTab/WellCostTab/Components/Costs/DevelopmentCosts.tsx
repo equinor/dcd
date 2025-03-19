@@ -4,9 +4,6 @@ import {
     useState,
 } from "react"
 
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import { useDataFetch } from "@/Hooks"
-import { useDebounce } from "@/Hooks/useDebounce"
 import OperationalWellCost from "../Shared/CostCell"
 import {
     FullwidthTable,
@@ -16,9 +13,13 @@ import {
     Cell,
     CostWithCurrency,
 } from "../Shared/SharedWellStyles"
+
+import { useDataFetch } from "@/Hooks"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useDebounce } from "@/Hooks/useDebounce"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { Currency } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 type DevelopmentCostsState = Omit<
     Components.Schemas.DevelopmentOperationalWellCostsOverviewDto,
@@ -53,6 +54,7 @@ const DevelopmentCosts = () => {
                 annualWellInterventionCostPerWell: developmentOperationalWellCosts?.annualWellInterventionCostPerWell ?? 0,
                 pluggingAndAbandonment: developmentOperationalWellCosts?.pluggingAndAbandonment ?? 0,
             } as DevelopmentCostsState
+
             setCosts(newCosts)
             previousCostsRef.current = newCosts
         }
@@ -63,6 +65,7 @@ const DevelopmentCosts = () => {
             const hasChanges = !previousCostsRef.current || Object.entries(debouncedCosts).some(
                 ([key, value]) => previousCostsRef.current?.[key as keyof DevelopmentCostsState] !== value,
             )
+
             if (hasChanges) {
                 previousCostsRef.current = { ...debouncedCosts }
                 addDevelopmentWellCostEdit(projectId, fusionProjectId, developmentOperationalWellCostsId, debouncedCosts)

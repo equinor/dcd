@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect, useMemo, useState } from "react"
 
+import { useDataFetch } from "@/Hooks"
 import { compareCasesQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { useDataFetch } from "@/Hooks"
 
 interface TableCompareCase {
     id: string,
@@ -68,6 +68,7 @@ export const useProjectChartData = () => {
 
         const productionProfilesObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
+
             return {
                 cases: caseItem.name,
                 oilProduction: compareCase?.totalOilProduction,
@@ -80,6 +81,7 @@ export const useProjectChartData = () => {
 
         const investmentProfilesObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
+
             return {
                 cases: caseItem.name,
                 offshorePlusOnshoreFacilityCosts: compareCase?.offshorePlusOnshoreFacilityCosts,
@@ -90,6 +92,7 @@ export const useProjectChartData = () => {
 
         const totalCo2EmissionsObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
+
             return {
                 cases: caseItem.name,
                 totalCO2Emissions: compareCase?.totalCo2Emissions,
@@ -98,6 +101,7 @@ export const useProjectChartData = () => {
 
         const co2IntensityObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
+
             return {
                 cases: caseItem.name,
                 co2Intensity: compareCase?.co2Intensity,
@@ -116,9 +120,11 @@ export const useProjectChartData = () => {
     const casesToRowData = () => {
         if (revisionAndProjectData) {
             const tableCompareCases: TableCompareCase[] = []
+
             if (compareCasesTotals) {
                 cases.forEach((c) => {
                     const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.caseId)
+
                     if (matchingCase) {
                         const tableCase: TableCompareCase = {
                             id: c.caseId,
@@ -141,6 +147,7 @@ export const useProjectChartData = () => {
                             totalCO2Emissions: Math.round(matchingCase.totalCo2Emissions * 10) / 10,
                             co2Intensity: Math.round(matchingCase.co2Intensity * 10) / 10,
                         }
+
                         tableCompareCases.push(tableCase)
                     }
                 })
@@ -152,7 +159,8 @@ export const useProjectChartData = () => {
     // Fetch compareCasesTotals and set it to state
     useEffect(() => {
         if (compareCasesData) {
-            const casesOrderedByGuid = compareCasesData.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
+            const casesOrderedByGuid = compareCasesData.sort((a, b) => a.caseId.localeCompare(b.caseId))
+
             setCompareCasesTotals(casesOrderedByGuid)
         }
     }, [compareCasesData])

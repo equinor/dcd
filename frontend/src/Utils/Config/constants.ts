@@ -1,4 +1,5 @@
 import { visibility, lock, type IconData } from "@equinor/eds-icons"
+
 import { ProfileTypes } from "@/Models/enums"
 
 export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number } } = {

@@ -1,6 +1,6 @@
+import { Typography } from "@equinor/eds-core-react"
 import React, { ReactNode } from "react"
 import styled from "styled-components"
-import { Typography } from "@equinor/eds-core-react"
 
 const StyledArticle = styled.div`
     padding: 30px 0;

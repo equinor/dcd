@@ -1,17 +1,17 @@
 import Grid from "@mui/material/Grid2"
-import styled from "styled-components"
 import { useCallback, useMemo } from "react"
+import styled from "styled-components"
 
+import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
+import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
+import { useCaseApiData } from "@/Hooks"
+import { useCaseMutation } from "@/Hooks/Mutations"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 import {
     dateStringToDateUtc,
 } from "@/Utils/DateUtils"
-import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
-import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useCaseApiData } from "@/Hooks"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import { useAppStore } from "@/Store/AppStore"
-import { useCaseMutation } from "@/Hooks/Mutations"
 
 const TabContainer = styled(Grid)`
     max-width: 800px;
@@ -51,8 +51,10 @@ const CaseScheduleTab = () => {
         if (!apiData || !apiData.case) { return }
 
         const milestone = CASE_MILESTONE_DATES.find((m) => m.key === dateKey)
+
         if (milestone?.required && dateValue === "") {
             setSnackBarMessage(`${milestone.label} is required and cannot be empty.`)
+
             return
         }
 
@@ -60,6 +62,7 @@ const CaseScheduleTab = () => {
 
         if (dateValue !== "") {
             const parsedDate = dateStringToDateUtc(dateValue)
+
             if (!Number.isNaN(parsedDate.getTime())) {
                 newDate = parsedDate
             }
@@ -87,6 +90,7 @@ const CaseScheduleTab = () => {
     const toScheduleValue = useCallback((date: string | number | boolean | null | undefined) => {
         if (!date) { return undefined }
         const dateString = dateStringToDateUtc(String(date))
+
         return dateString ? true : undefined
     }, [])
 

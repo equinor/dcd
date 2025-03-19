@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
+import { useState, useEffect } from "react"
+
 import Gallery from "@/Components/Gallery/Gallery"
+import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import CaseDescriptionTabSkeleton from "@/Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useCaseApiData } from "@/Hooks/useCaseApiData"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import { useDebouncedCallback } from "@/Hooks/useDebounce"
 import { useCaseMutation } from "@/Hooks/Mutations"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useCaseApiData } from "@/Hooks/useCaseApiData"
+import { useDebouncedCallback } from "@/Hooks/useDebounce"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const productionStrategyOptions = {
     0: "Depletion",
@@ -62,6 +63,7 @@ const CaseDescriptionTab = () => {
     useEffect(() => {
         if (apiData && apiData.case.description !== undefined) {
             const caseDescription = apiData.case.description || ""
+
             setDescription(caseDescription)
         }
     }, [apiData])
@@ -74,6 +76,7 @@ const CaseDescriptionTab = () => {
     const handleChange = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
+
         setDescription(newValue) // Update local state immediately
         debouncedAddEdit(newValue)
     }

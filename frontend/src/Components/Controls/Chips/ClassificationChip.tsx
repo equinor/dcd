@@ -1,9 +1,9 @@
-import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useMemo } from "react"
+import styled from "styled-components"
 
-import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
 import { useDataFetch } from "@/Hooks"
+import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -32,6 +32,7 @@ const Classification = () => {
 
     const getClassification = useMemo(() => {
         const classification = String(revisionAndProjectData?.commonProjectAndRevisionData.classification)
+
         return classification ? PROJECT_CLASSIFICATION[classification as unknown as number] : false
     }, [revisionAndProjectData])
 

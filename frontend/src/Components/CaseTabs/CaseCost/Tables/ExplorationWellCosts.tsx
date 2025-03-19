@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { Currency, ProfileTypes } from "@/Models/enums"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface ExplorationWellCostsProps {
     tableYears: [number, number];
@@ -43,6 +43,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
         if (!caseId) {
             console.error("No exploration data")
+
             return
         }
 

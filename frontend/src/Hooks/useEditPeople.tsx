@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { GetProjectMembersService } from "../Services/ProjectMembersService"
+
 import { GetOrgChartMembersService } from "../Services/OrgChartMembersService"
+import { GetProjectMembersService } from "../Services/ProjectMembersService"
 import { useAppStore } from "../Store/AppStore"
+
 import { ProjectMemberRole } from "@/Models/enums"
 
 type AddPersonVariables = {
@@ -35,6 +37,7 @@ export const useEditPeople = () => {
     const syncPmtMembers = async (projectId: string, fusionProjectId: string, contextId: string) => {
         try {
             const syncPmt = await GetOrgChartMembersService().getOrgChartPeople(projectId, contextId)
+
             if (syncPmt) {
                 queryClient.invalidateQueries(
                     { queryKey: ["projectApiData", fusionProjectId] },

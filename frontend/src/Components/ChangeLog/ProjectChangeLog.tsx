@@ -1,16 +1,18 @@
-import { useQuery } from "@tanstack/react-query"
-import { AgGridReact } from "@ag-grid-community/react"
-import { useMemo, useState } from "react"
 import { ColDef } from "@ag-grid-community/core"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { styled } from "styled-components"
+import { AgGridReact } from "@ag-grid-community/react"
 import { Typography } from "@equinor/eds-core-react"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { changeLogQueryFn } from "@/Services/QueryFunctions"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import { useQuery } from "@tanstack/react-query"
+import { useMemo, useState } from "react"
+import { styled } from "styled-components"
+
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
+
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { formatDateAndTime } from "@/Utils/DateUtils"
 import { ChangeLogCategory } from "@/Models/enums"
+import { changeLogQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { formatDateAndTime } from "@/Utils/DateUtils"
 
 interface IRow {
     entityDescription: string | null;

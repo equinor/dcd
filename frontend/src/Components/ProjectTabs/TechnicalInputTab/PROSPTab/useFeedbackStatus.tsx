@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react"
+
 import { FeedbackStatus } from "./ActionButton"
 
 interface UseFeedbackStatusResult {
@@ -42,7 +43,9 @@ export const useFeedbackStatus = (resetDelay = 3000): UseFeedbackStatusResult =>
         setIsLoading(true)
         try {
             const result = await promise
+
             setSuccess()
+
             return result
         } catch (error) {
             setError()

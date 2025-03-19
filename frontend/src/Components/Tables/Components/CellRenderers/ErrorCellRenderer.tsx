@@ -1,6 +1,6 @@
-import styled from "styled-components"
 import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { error_outlined } from "@equinor/eds-icons"
+import styled from "styled-components"
 
 const ErrorCellContainer = styled.div<{ $hasError: boolean }>`
     display: flex;

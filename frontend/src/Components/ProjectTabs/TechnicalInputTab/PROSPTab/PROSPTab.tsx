@@ -2,17 +2,12 @@ import {
     Typography,
     Card,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
 import React, {
     useEffect, useState, useCallback, useMemo,
 } from "react"
-import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
-import { GetProspService } from "@/Services/ProspService"
-import { GetProjectService } from "@/Services/ProjectService"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import { useDataFetch } from "@/Hooks"
-import useEditProject from "@/Hooks/useEditProject"
-import { useAppStore } from "@/Store/AppStore"
+
 import ActionButton from "./ActionButton"
 import SharePointFileDropdown from "./SharePointFileDropdown"
 import {
@@ -26,6 +21,13 @@ import {
     UrlLink,
 } from "./SharedStyledComponents"
 import { useFeedbackStatus } from "./useFeedbackStatus"
+
+import { useDataFetch } from "@/Hooks"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import useEditProject from "@/Hooks/useEditProject"
+import { GetProjectService } from "@/Services/ProjectService"
+import { GetProspService } from "@/Services/ProspService"
+import { useAppStore } from "@/Store/AppStore"
 
 // Card styled components
 const StyledCard = styled(Card)`
@@ -83,12 +85,14 @@ const PROSPTab = () => {
 
     const getFileNameById = useCallback((fileId: string | null): string | null => {
         if (!fileId) { return null }
+
         return sharePointFiles.find((f) => f.id === fileId)?.name || null
     }, [sharePointFiles])
 
     const loadSharePointFiles = async (url: string) => {
         try {
             const result = await GetProspService().getSharePointFileNamesAndId({ url }, projectId!)
+
             setSharePointFiles(result)
         } catch (error) {
             console.error("[PROSPTab] error while fetching SharePoint files", error)
@@ -98,10 +102,11 @@ const PROSPTab = () => {
     useEffect(() => {
         if (cases.length > 0) {
             const mappings = cases.map((c) => ({
-                caseId: c.caseId!,
+                caseId: c.caseId,
                 sharePointFileId: c.sharepointFileId,
                 sharePointFileName: c.sharepointFileName,
             }))
+
             setCaseMappings(mappings)
         }
     }, [cases])
@@ -129,11 +134,12 @@ const PROSPTab = () => {
 
                     if (sharepointUrl !== currentSharePointSiteUrl) {
                         const newProject: Components.Schemas.UpdateProjectDto = {
-                            ...revisionAndProjectData!.commonProjectAndRevisionData,
+                            ...revisionAndProjectData.commonProjectAndRevisionData,
                             sharepointSiteUrl: sharepointUrl,
                         }
 
                         const projectResult = await GetProjectService().updateProject(projectId, newProject)
+
                         addProjectEdit(projectId, projectResult.commonProjectAndRevisionData)
                     }
 
@@ -161,6 +167,7 @@ const PROSPTab = () => {
                     sharePointFileId: fileId || null,
                 }
             }
+
             return item
         }))
 
@@ -173,6 +180,7 @@ const PROSPTab = () => {
             }
 
             const newProject = await GetProspService().importFromSharePoint(projectId, [dto])
+
             addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
 
             setCaseMappings((prev) => prev.map((item) => {
@@ -183,6 +191,7 @@ const PROSPTab = () => {
                         sharePointFileName: getFileNameById(fileId),
                     }
                 }
+
                 return item
             }))
 
@@ -207,13 +216,16 @@ const PROSPTab = () => {
             }
 
             const newProject = await GetProspService().importFromSharePoint(projectId, [dto])
+
             addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
 
             setSnackBarMessage(`Successfully imported data from ${getFileNameById(fileId)}`)
+
             return true
         } catch (error) {
             console.error("[PROSPTab] error while refreshing file data", error)
             setSnackBarMessage("Failed to import file data. Please try again.")
+
             return false
         } finally {
             setIsSaving(false)
@@ -222,6 +234,7 @@ const PROSPTab = () => {
 
     const renderCaseDropdown = (caseMapping: CaseSharePointMapping) => {
         const caseItem = cases.find((c) => c.caseId === caseMapping.caseId)
+
         if (!caseItem) { return null }
 
         const isInputDisabled = !canEdit() || isSaving

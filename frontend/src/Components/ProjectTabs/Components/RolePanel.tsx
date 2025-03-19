@@ -1,15 +1,16 @@
-import { useMemo } from "react"
-import {
-    delete_to_trash, edit, swap_horizontal, visibility,
-} from "@equinor/eds-icons"
 import {
     Button, Icon, Tooltip, Typography,
 } from "@equinor/eds-core-react"
+import {
+    delete_to_trash, edit, swap_horizontal, visibility,
+} from "@equinor/eds-icons"
 import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion-react-person"
+import { useMemo } from "react"
 
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
-import { ProjectMemberRole } from "@/Models/enums"
+
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { ProjectMemberRole } from "@/Models/enums"
 
 interface RolePanelProps {
     isSmallScreen: boolean;

@@ -10,6 +10,7 @@ class DrainageStrategyService extends __BaseService {
             `projects/${projectId}/cases/${caseId}/drainage-strategy`,
             { body: dto },
         )
+
         return res
     }
 }

@@ -2,11 +2,10 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
-import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
-import { Concept, Currency, Source } from "@/Models/enums"
+import CaseFasilitiesTabSkeleton from "@/Components/LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
 import {
     useTopsideMutation,
@@ -15,6 +14,7 @@ import {
     useCaseMutation,
     useSubstructureMutation,
 } from "@/Hooks/Mutations"
+import { Concept, Currency, Source } from "@/Models/enums"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;

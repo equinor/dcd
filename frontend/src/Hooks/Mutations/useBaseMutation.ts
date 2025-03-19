@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useProjectContext } from "@/Store/ProjectContext"
+
 import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 export interface MutationParams<T = any> {
   resourceId?: string;
@@ -59,6 +60,7 @@ export const useBaseMutation = <T = any, R = any>({
                 }
 
                 let apiData = await queryClient.getQueryData<any>(["caseApiData", projectId, finalCaseId])
+
                 // If the data is not in the cache and we're dealing with a case resource, fetch it directly
                 if (!apiData && resourceName === "case" && finalCaseId) {
                     try {
@@ -78,7 +80,7 @@ export const useBaseMutation = <T = any, R = any>({
 
                 const updatedResource = {
                     ...resource,
-                    [params.propertyKey as string]: params.updatedValue,
+                    [params.propertyKey]: params.updatedValue,
                 }
 
                 let result
@@ -105,6 +107,7 @@ export const useBaseMutation = <T = any, R = any>({
         },
         onSuccess: (_, variables) => {
             const finalCaseId = variables.localCaseId || caseId
+
             if (projectId && finalCaseId) {
                 // Invalidate the case data query
                 queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, finalCaseId] })

@@ -1,4 +1,14 @@
 import {
+    ColDef,
+    GridReadyEvent,
+    ICellRendererParams,
+    CellClickedEvent,
+} from "@ag-grid-community/core"
+import { AgGridReact } from "@ag-grid-community/react"
+import { CircularProgress } from "@equinor/eds-core-react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import isEqual from "lodash/isEqual"
+import {
     useMemo,
     useState,
     useEffect,
@@ -6,19 +16,24 @@ import {
     memo,
     useRef,
 } from "react"
-import { AgGridReact } from "@ag-grid-community/react"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { useParams } from "react-router"
-import {
-    ColDef,
-    GridReadyEvent,
-    ICellRendererParams,
-    CellClickedEvent,
-} from "@ag-grid-community/core"
-import isEqual from "lodash/isEqual"
-import { CircularProgress } from "@equinor/eds-core-react"
 import styled from "styled-components"
 
+import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
+
+import ErrorCellRenderer from "./Components/CellRenderers/ErrorCellRenderer"
+import OverrideToggleRenderer from "./Components/CellRenderers/OverrideToggleRenderer"
+import profileAndUnitInSameCell from "./Components/CellRenderers/ProfileAndUnitCellRenderer"
+
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useEditQueueHandler } from "@/Hooks/useEditQueue"
+import {
+    ITimeSeriesTableDataOverrideWithSet,
+    ITimeSeriesTableDataWithSet,
+} from "@/Models/ITimeSeries"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Utils/AgGridUtils"
 import {
     tableCellisEditable,
     numberValueParser,
@@ -30,19 +45,6 @@ import {
     ITableCellChangeConfig,
     validateInput,
 } from "@/Utils/commonUtils"
-import { useAppStore } from "@/Store/AppStore"
-import { useProjectContext } from "@/Store/ProjectContext"
-import profileAndUnitInSameCell from "./Components/CellRenderers/ProfileAndUnitCellRenderer"
-import ErrorCellRenderer from "./Components/CellRenderers/ErrorCellRenderer"
-import OverrideToggleRenderer from "./Components/CellRenderers/OverrideToggleRenderer"
-import {
-    ITimeSeriesTableDataOverrideWithSet,
-    ITimeSeriesTableDataWithSet,
-} from "@/Models/ITimeSeries"
-import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Utils/AgGridUtils"
-import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
-import { useEditQueueHandler } from "@/Hooks/useEditQueue"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
 const CenterGridIcons = styled.div`
     padding-top: 0px;
@@ -115,6 +117,7 @@ const CaseBaseTable = memo(({
     const gridRowData = useMemo(
         () => {
             if (!presentedTableData?.length) { return [] }
+
             return profilesToRowData(presentedTableData, dg4Year, tableName, canEdit())
         },
         [presentedTableData, editMode, dg4Year, tableName, isEditDisabled],
@@ -163,6 +166,7 @@ const CaseBaseTable = memo(({
         ]
 
         const yearDefs: any[] = []
+
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
@@ -183,6 +187,7 @@ const CaseBaseTable = memo(({
                 valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
+
         return columnPinned.concat([...yearDefs])
     }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled, isSaving])
 
@@ -210,6 +215,7 @@ const CaseBaseTable = memo(({
         if (!validateTableCellChange(params, config)) { return }
 
         const edit = generateTableCellEdit(params, config)
+
         if (edit) {
             addToQueue(edit)
         }
@@ -219,6 +225,7 @@ const CaseBaseTable = memo(({
         if (!event.data || (canEdit())) { return }
 
         const clickedYear = event.column.getColId()
+
         setSelectedRow({
             ...event.data,
             clickedYear,

@@ -3,8 +3,8 @@ import {
     Progress,
     Icon,
 } from "@equinor/eds-core-react"
-import React from "react"
 import { cloud_download, check_circle_outlined, error_filled } from "@equinor/eds-icons"
+import React from "react"
 import styled from "styled-components"
 
 export type FeedbackStatus = "none" | "success" | "error";

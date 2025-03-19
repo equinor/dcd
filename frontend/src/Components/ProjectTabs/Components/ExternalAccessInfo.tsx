@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { Icon, Typography } from "@equinor/eds-core-react"
 import {
     chevron_down, chevron_up, edit, external_link, visibility,
 } from "@equinor/eds-icons"
-import { Icon, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
+import { useState } from "react"
+
 import {
     ExternalAccessHeader,
     AccessGroupContainer,
@@ -15,6 +16,7 @@ import {
 
 const ExternalAccessInfo = () => {
     const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
+
     return (
         <>
             <ExternalAccessHeader onClick={() => setExpandAllAccess(!expandAllAccess)}>

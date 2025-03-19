@@ -1,11 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios"
+
 import { config } from "./config"
+
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
 import {
     getToken,
     getLastForcedReloadDate,
     setLastForcedReloadDate,
 } from "@/Utils/commonUtils"
-import { dateStringToDateUtc } from "@/Utils/DateUtils"
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -34,6 +36,7 @@ export class __BaseService {
                 } else if (error.response.status === 500) {
                     console.error("Error: An internal server error occurred. Please try again later.")
                 }
+
                 return Promise.reject(error)
             },
         )
@@ -41,6 +44,7 @@ export class __BaseService {
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
         const token = await getToken()!
+
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -53,11 +57,13 @@ export class __BaseService {
             url: path,
             data: options?.body,
         })
+
         return data
     }
 
     private async requestExcel(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
         const token = await getToken()!
+
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
@@ -71,6 +77,7 @@ export class __BaseService {
             data: options?.body,
             responseType: responseType ?? "text",
         })
+
         return data
     }
 
@@ -80,12 +87,14 @@ export class __BaseService {
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
         const token = await getToken()!
+
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
         }
 
         const { data } = await this.client.post(path, options?.body, requestQuery)
+
         return data
     }
 
@@ -95,12 +104,14 @@ export class __BaseService {
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
         const token = await getToken()!
+
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
         }
 
         const { data } = await this.client.put(path, options?.body, requestQuery)
+
         return data
     }
 
@@ -109,12 +120,14 @@ export class __BaseService {
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
         const token = await getToken()!
+
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
         }
 
         const { data } = await this.client.get(path, requestQuery)
+
         return data
     }
 
@@ -144,6 +157,7 @@ export class __BaseService {
         const reloadTimeoutMs = 5 * 60 * 1000
         const isPastReloadTimeout = !lastForcedReloadDate || new Date().valueOf() - dateStringToDateUtc(lastForcedReloadDate).valueOf() > reloadTimeoutMs
         const expectedAuth403Data = ""
+
         if (error.response.data === expectedAuth403Data && isPastReloadTimeout) {
             setLastForcedReloadDate(new Date().toISOString())
             window.location.reload()

@@ -1,19 +1,20 @@
-import { useMemo, useRef } from "react"
 import Grid from "@mui/material/Grid2"
+import { useMemo, useRef } from "react"
 
-import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
-import { getYearFromDateString } from "@/Utils/DateUtils"
-import { useCaseApiData } from "@/Hooks/useCaseApiData"
-import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableContainer } from "./SharedCampaignStyles"
-import { useDataFetch } from "@/Hooks/useDataFetch"
-import { filterWells, CampaignProfileType } from "@/Utils/commonUtils"
+
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
+import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
+import { useCampaignMutation } from "@/Hooks/Mutations/useCampaignMutation"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useCaseApiData } from "@/Hooks/useCaseApiData"
+import { useDataFetch } from "@/Hooks/useDataFetch"
+import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { useCampaignMutation } from "@/Hooks/Mutations/useCampaignMutation"
+import { getYearFromDateString } from "@/Utils/DateUtils"
+import { filterWells, CampaignProfileType } from "@/Utils/commonUtils"
 
 export interface CampaignProps {
     campaign: Components.Schemas.CampaignDto
@@ -57,6 +58,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             overridable: false,
             editable: true,
         }
+
         rows.push(upgradingRow)
 
         // Add rig mob/demob profile row (table edit)
@@ -73,6 +75,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
             overridable: false,
             editable: true,
         }
+
         rows.push(mobDemobRow)
 
         const campaignWellsMap = new Map(
@@ -81,6 +84,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
 
         if (canUserEdit) {
             let availableWells: Components.Schemas.WellOverviewDto[] = []
+
             if (title === "Exploration") {
                 availableWells = allWells.explorationWells
             } else if (title === "Development") {
@@ -104,6 +108,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                     overridable: false,
                     editable: true,
                 }
+
                 rows.push(wellRow)
             })
         } else {
@@ -123,6 +128,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                     overridable: false,
                     editable: true,
                 }
+
                 rows.push(wellRow)
             })
         }

@@ -1,18 +1,20 @@
-import { useParams } from "react-router-dom"
-import Grid from "@mui/material/Grid2"
-import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import Grid from "@mui/material/Grid2"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
 
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppStore } from "@/Store/AppStore"
+import WhatsNewModal from "../Modal/WhatsNewModal"
+
+import CaseControls from "./CaseControls"
+import Classification from "./Chips/ClassificationChip"
+import RevisionChip from "./Chips/RevisionChip"
+import ProjectControls from "./ProjectControls"
+
 import { useDataFetch } from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import WhatsNewModal from "../Modal/WhatsNewModal"
-import ProjectControls from "./ProjectControls"
-import CaseControls from "./CaseControls"
-import RevisionChip from "./Chips/RevisionChip"
-import Classification from "./Chips/ClassificationChip"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const Wrapper = styled(Grid)`
     padding-top: 20px;

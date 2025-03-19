@@ -1,6 +1,7 @@
 import { Button, Icon } from "@equinor/eds-core-react"
 import { archive } from "@equinor/eds-icons"
 import styled from "styled-components"
+
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
 import { unwrapProjectId } from "@/Utils/commonUtils"
@@ -24,6 +25,7 @@ export const STEAExportButton = ({ projectOrRevisionId, setShowRevisionReminder 
             setShowRevisionReminder(true)
             const unwrappedProjectId = unwrapProjectId(projectOrRevisionId)
             const projectResult = await GetProjectService().getProject(unwrappedProjectId)
+
             await GetSTEAService().excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] Error while exporting to STEA", error)

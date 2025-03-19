@@ -1,9 +1,10 @@
-import React, { useEffect } from "react"
 import {
     Typography, Icon, Tooltip, CircularProgress,
 } from "@equinor/eds-core-react"
 import { check_circle_outlined } from "@equinor/eds-icons"
+import React, { useEffect } from "react"
 import styled from "styled-components"
+
 import { useAppStore } from "../../Store/AppStore"
 
 const Container = styled.div`
@@ -46,6 +47,7 @@ const UndoControls: React.FC = () => {
         }
 
         window.addEventListener("keydown", handleKeyDown)
+
         return () => window.removeEventListener("keydown", handleKeyDown)
     }, [])
 

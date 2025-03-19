@@ -1,21 +1,20 @@
+import { ColDef } from "@ag-grid-community/core"
+import { AgGridReact } from "@ag-grid-community/react"
+import { Button, Icon } from "@equinor/eds-core-react"
+import { delete_to_trash } from "@equinor/eds-icons"
 import React, {
     useMemo,
     useRef,
     Dispatch,
     SetStateAction,
 } from "react"
-import { AgGridReact } from "@ag-grid-community/react"
-import { ColDef } from "@ag-grid-community/core"
 
-import { Button, Icon } from "@equinor/eds-core-react"
-import { delete_to_trash } from "@equinor/eds-icons"
-
-import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
-import { GetWellService } from "@/Services/WellService"
-import { TableWell } from "@/Models/Interfaces"
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
+import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
+import { TableWell } from "@/Models/Interfaces"
 import { Currency, WellCategory } from "@/Models/enums"
+import { GetWellService } from "@/Services/WellService"
+import { cellStyleRightAlign } from "@/Utils/commonUtils"
 
 interface WellsTableProps {
     rowData: TableWell[]

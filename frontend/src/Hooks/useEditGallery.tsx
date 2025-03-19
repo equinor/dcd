@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 import { getImageService } from "@/Services/ImageService"
 import { useAppStore } from "@/Store/AppStore"
 
@@ -37,6 +38,7 @@ export const useEditGallery = () => {
         if (caseId) {
             return imageService.updateCaseImage(projectId, caseId, imageId, updateImageDto)
         }
+
         return imageService.updateProjectImage(projectId, imageId, updateImageDto)
     }
 
@@ -46,11 +48,13 @@ export const useEditGallery = () => {
         if (caseId) {
             return imageService.deleteCaseImage(projectId, caseId, imageId)
         }
+
         return imageService.deleteProjectImage(projectId, imageId)
     }
 
     const addImageMutationFn = async ({ projectId, caseId, file }: AddImagesVariables) => {
         const imageService = getImageService()
+
         if (caseId) {
             return imageService.uploadCaseImage(
                 projectId,
@@ -58,6 +62,7 @@ export const useEditGallery = () => {
                 caseId,
             )
         }
+
         return imageService.uploadProjectImage(
             projectId,
             file,

@@ -1,17 +1,20 @@
-import { useEffect, useMemo } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import { PersonSelectEvent } from "@equinor/fusion-react-person"
-import Grid from "@mui/material/Grid2"
-import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useProjectContext } from "@/Store/ProjectContext"
+import { PersonSelectEvent } from "@equinor/fusion-react-person"
+import { useMediaQuery } from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import { useEffect, useMemo } from "react"
+
 import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkeleton"
+
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
+
 import { useDataFetch } from "@/Hooks"
 import { useEditPeople } from "@/Hooks/useEditPeople"
 import { ProjectMemberRole } from "@/Models/enums"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const AccessManagementTab = () => {
     const { projectId } = useProjectContext()

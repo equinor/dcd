@@ -5,6 +5,7 @@ interface Props {
 }
 export const DisabledExcelHideIcon = ({ size }: Props) => {
     const color = "#adada5"
+
     return (
         <svg
             id="Layer_1"

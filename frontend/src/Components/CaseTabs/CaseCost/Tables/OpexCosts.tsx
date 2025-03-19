@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { Currency, ProfileTypes } from "@/Models/enums"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface OpexCostsProps {
     tableYears: [number, number]

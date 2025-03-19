@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react"
-import Grid from "@mui/material/Grid2"
 import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { useStyles } from "@equinor/fusion-react-ag-grid-styles"
-
+import Grid from "@mui/material/Grid2"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
+
 import WellsTable from "@/Components/Tables/ProjectTables/WellsTable"
-import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
-import { useAppStore } from "@/Store/AppStore"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import useTechnicalInputEdits from "@/Hooks/useEditTechnicalInput"
 import { TableWell } from "@/Models/Interfaces"
 import { WellCategory } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
 
 const ButtonWrapper = styled.div`
     display: flex;
@@ -57,7 +57,7 @@ const Wells: React.FC<WellsProps> = ({
         }
 
         const tableWells: TableWell[] = wells.map((w) => ({
-            id: w.id!,
+            id: w.id,
             name: w.name ?? "",
             wellCategory: w.wellCategory || defaultWellCategory,
             drillingDays: w.drillingDays ?? 0,
@@ -88,6 +88,7 @@ const Wells: React.FC<WellsProps> = ({
             updateWellDtos: [],
             deleteWellDtos: [],
         }
+
         addWellsEdit(revisionAndProjectData.projectId, revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId, createWells)
     }
 

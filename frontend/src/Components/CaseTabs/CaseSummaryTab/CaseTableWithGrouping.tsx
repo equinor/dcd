@@ -1,26 +1,27 @@
 /* eslint-disable camelcase */
 import {
-    useMemo,
-    useState,
-    useEffect,
-} from "react"
-import { AgGridReact } from "@ag-grid-community/react"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import {
     CellKeyDownEvent,
     ColDef,
     GetContextMenuItemsParams,
     MenuItemDef,
     CellClickedEvent,
 } from "@ag-grid-community/core"
+import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import {
+    useMemo,
+    useState,
+    useEffect,
+} from "react"
 
-import { formatColumnSum, tableCellisEditable } from "@/Utils/commonUtils"
-import { useAppStore } from "@/Store/AppStore"
-import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import profileAndUnitInSameCell from "../../Tables/Components/CellRenderers/ProfileAndUnitCellRenderer"
-import { gridRefArrayToAlignedGrid } from "@/Utils/AgGridUtils"
+
 import SidesheetWrapper from "@/Components/TableSidesheet/SidesheetWrapper"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
+import { useAppStore } from "@/Store/AppStore"
+import { gridRefArrayToAlignedGrid } from "@/Utils/AgGridUtils"
+import { formatColumnSum, tableCellisEditable } from "@/Utils/commonUtils"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -51,10 +52,12 @@ const CaseTableWithGrouping = ({
     const profilesToRowData = () => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
         const timeSeriesData = allTimeSeriesData?.flat()
+
         timeSeriesData?.forEach((ts: ITimeSeriesTableDataWithSet) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
             const { group, profileName, unit } = ts
+
             rowObject.group = group
             rowObject.profileName = profileName
             rowObject.unit = unit
@@ -70,16 +73,19 @@ const CaseTableWithGrouping = ({
 
             if (rowObject.profile && rowObject.profile.values?.length > 0) {
                 let j = 0
+
                 for (let i = rowObject.profile.startYear; i < rowObject.profile.startYear + rowObject.profile.values.length; i += 1) {
                     const yearKey = (dg4Year + i).toString()
                     const value = rowObject.profile.values[j]
                     const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
+
                     rowObject[yearKey] = roundedValue
 
                     j += 1
                 }
 
                 const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
+
                 rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
                 if (ts.total !== undefined) {
                     rowObject.total = Math.round(Number(ts.total) * 100) / 100
@@ -95,11 +101,13 @@ const CaseTableWithGrouping = ({
         if (params.node.footer) {
             return { fontWeight: "bold" }
         }
+
         return undefined
     }
 
     const handleCopy = (gridEvent: CellKeyDownEvent) => {
         const keyboardEvent = gridEvent.event as KeyboardEvent
+
         if ((keyboardEvent.ctrlKey || keyboardEvent.metaKey) && keyboardEvent.key === "c") {
             setShowRevisionReminder(true)
         }
@@ -145,6 +153,7 @@ const CaseTableWithGrouping = ({
         ]
 
         const yearDefs: any[] = []
+
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
@@ -156,6 +165,7 @@ const CaseTableWithGrouping = ({
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
         }
+
         return columnPinned.concat([...yearDefs])
     }
     const groupDefaultExpanded = 1
@@ -165,6 +175,7 @@ const CaseTableWithGrouping = ({
     useEffect(() => {
         setRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
+
         setColumnDefs(newColDefs)
     }, [allTimeSeriesData, isSaving])
 
@@ -190,6 +201,7 @@ const CaseTableWithGrouping = ({
                     },
                 } as MenuItemDef
             }
+
             return item
         })
     }
@@ -197,6 +209,7 @@ const CaseTableWithGrouping = ({
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
         const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
+
         return {
             columnKeys,
             fileName: "export.xlsx",

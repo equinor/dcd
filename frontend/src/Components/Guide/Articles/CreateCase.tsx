@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
+
 import Article from "../Components/Article"
+
 import { getVideoService } from "@/Services/VideoService"
 
 const CreateCase = () => {
@@ -9,11 +11,13 @@ const CreateCase = () => {
         const loadVideo = async () => {
             try {
                 const videoData = await getVideoService().getVideo("how_to_create_case.mp4")
+
                 setVideoUrl(videoData.base64EncodedData)
             } catch (error) {
                 console.error("Error loading video:", error)
             }
         }
+
         loadVideo()
     }, [])
 

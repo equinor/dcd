@@ -1,6 +1,7 @@
-import React from "react"
 import { Button } from "@equinor/eds-core-react"
+import React from "react"
 import styled from "styled-components"
+
 import BaseModal from "./BaseModal"
 
 const ModalContent = styled.div`

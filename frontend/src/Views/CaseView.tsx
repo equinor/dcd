@@ -1,19 +1,20 @@
+import Grid2 from "@mui/material/Grid2"
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Grid2 from "@mui/material/Grid2"
 import styled from "styled-components"
-import CaseDrillingScheduleTab from "@/Components/CaseTabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
-import CaseProductionProfilesTab from "@/Components/CaseTabs/CaseProductionProfilesTab"
-import CaseDescriptionTab from "@/Components/CaseTabs/CaseDescriptionTab"
-import CaseFacilitiesTab from "@/Components/CaseTabs/CaseFacilitiesTab"
-import CaseCO2Tab from "@/Components/CaseTabs/Co2Emissions/CaseCO2Tab"
+
 import CaseCostTab from "@/Components/CaseTabs/CaseCost/CaseCostTab"
+import CaseDescriptionTab from "@/Components/CaseTabs/CaseDescriptionTab"
+import CaseDrillingScheduleTab from "@/Components/CaseTabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
+import CaseFacilitiesTab from "@/Components/CaseTabs/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "@/Components/CaseTabs/CaseProductionProfilesTab"
 import CaseScheduleTab from "@/Components/CaseTabs/CaseScheduleTab/CaseScheduleTab"
 import CaseSummaryTab from "@/Components/CaseTabs/CaseSummaryTab/CaseSummaryTab"
-import { useCaseStore } from "@/Store/CaseStore"
+import CaseCO2Tab from "@/Components/CaseTabs/Co2Emissions/CaseCO2Tab"
 import { useDataFetch } from "@/Hooks"
-import { caseTabNames } from "@/Utils/Config/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useCaseStore } from "@/Store/CaseStore"
+import { caseTabNames } from "@/Utils/Config/constants"
 
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
@@ -33,6 +34,7 @@ const CaseView = () => {
     useEffect(() => {
         if (tab) {
             const tabIndex = caseTabNames.indexOf(tab)
+
             if (activeTabCase !== tabIndex) {
                 setActiveTabCase(tabIndex)
             }

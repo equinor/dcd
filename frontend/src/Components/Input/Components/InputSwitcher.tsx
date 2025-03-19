@@ -1,14 +1,15 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
-import styled from "styled-components"
 import React, { memo } from "react"
+import styled from "styled-components"
 
-import { useAppStore } from "@/Store/AppStore"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useAppStore } from "@/Store/AppStore"
 
 const ViewValue = styled(Typography)`
     margin-top: 10px;
     font-size: 16px;
 `
+
 interface InputSwitcherProps {
     label?: string;
     value: string;

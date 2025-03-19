@@ -1,5 +1,6 @@
-import { useNavigate as useRouterNavigate, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useNavigate as useRouterNavigate, useLocation } from "react-router-dom"
+
 import { projectTabNames } from "@/Utils/Config/constants"
 
 export const useAppNavigation = () => {
@@ -13,6 +14,7 @@ export const useAppNavigation = () => {
         const path = tabName
             ? `${projectPath(projectId)}/${tabName}`
             : projectPath(projectId)
+
         navigate(path)
     }
 
@@ -38,6 +40,7 @@ export const useAppNavigation = () => {
         const path = tabName
             ? `${projectPath()}/revision/${revisionId}/${tabName}`
             : `${projectPath()}/revision/${revisionId}`
+
         navigate(path)
     }
 
@@ -48,17 +51,20 @@ export const useAppNavigation = () => {
         const finalTabName = shouldKeepTab ? tabName : undefined
 
         const path = `${projectPath()}/revision/${revisionId}/case/${caseId}${finalTabName ? `/${finalTabName}` : ""}`
+
         navigate(path, { replace: options?.replace })
     }
 
     const navigateToProjectTab = (tabIndex: number, revisionId?: string): number => {
         if (!currentContext?.id) { return tabIndex }
         const tabName = projectTabNames[tabIndex]
+
         if (revisionId) {
             navigateToRevision(revisionId, tabName)
         } else {
             navigateToProject(undefined, tabName)
         }
+
         return tabIndex
     }
 

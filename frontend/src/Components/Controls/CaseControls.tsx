@@ -1,4 +1,3 @@
-import React, { useRef, useEffect, useState } from "react"
 import {
     Icon, Button, Input, Typography,
     Tooltip,
@@ -9,20 +8,22 @@ import {
     visibility,
     edit,
 } from "@equinor/eds-icons"
+import React, { useRef, useEffect, useState } from "react"
 import styled from "styled-components"
 
-import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import CaseDropMenu from "./CaseDropMenu"
-import { GetProjectService } from "@/Services/ProjectService"
-import { formatDateAndTime } from "@/Utils/DateUtils"
-import { useAppStore } from "@/Store/AppStore"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import CaseTabs from "./TabNavigators/CaseTabs"
+import UndoControls from "./UndoControls"
+
+import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import {
     useDataFetch, useEditProject, useCaseApiData,
 } from "@/Hooks"
 import { useCaseMutation } from "@/Hooks/Mutations"
-import UndoControls from "./UndoControls"
-import CaseTabs from "./TabNavigators/CaseTabs"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { GetProjectService } from "@/Services/ProjectService"
+import { useAppStore } from "@/Store/AppStore"
+import { formatDateAndTime } from "@/Utils/DateUtils"
 
 const Header = styled.div`
     display: flex;
@@ -109,12 +110,14 @@ const CaseControls: React.FC<props> = ({
             const newProject: Components.Schemas.UpdateProjectDto = {
                 ...revisionAndProjectData.commonProjectAndRevisionData,
             }
+
             if (newProject.referenceCaseId === referenceCaseId) {
                 newProject.referenceCaseId = null
             } else {
                 newProject.referenceCaseId = referenceCaseId ?? null
             }
             const updateProject = await GetProjectService().updateProject(projectId, newProject)
+
             if (updateProject) {
                 addProjectEdit(updateProject.projectId, updateProject.commonProjectAndRevisionData)
             }
@@ -213,4 +216,5 @@ const CaseControls: React.FC<props> = ({
         </>
     )
 }
+
 export default CaseControls

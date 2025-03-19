@@ -1,13 +1,14 @@
-import { useState, ChangeEventHandler, useEffect } from "react"
 import { Input, NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
+import { useState, ChangeEventHandler, useEffect } from "react"
+
+import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
-import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
-import useEditProject from "@/Hooks/useEditProject"
 import { useDataFetch } from "@/Hooks"
-import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
+import useEditProject from "@/Hooks/useEditProject"
 import { Currency, PhysUnit } from "@/Models/enums"
+import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
 
 const ProjectSettingsTab = () => {
     const { addProjectEdit } = useEditProject()
@@ -36,6 +37,7 @@ const ProjectSettingsTab = () => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
+
             newProject.physicalUnit = newPhysicalUnit
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
@@ -45,6 +47,7 @@ const ProjectSettingsTab = () => {
         if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
+
             newProject.currency = newCurrency
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
@@ -54,6 +57,7 @@ const ProjectSettingsTab = () => {
         if ([1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && revisionAndProjectData) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
+
             newProject.classification = newClassification
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
@@ -61,48 +65,60 @@ const ProjectSettingsTab = () => {
 
     const handleOilPriceChange = () => {
         const newOilPrice = oilPriceUsd
+
         if (!Number.isNaN(newOilPrice) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, oilPriceUsd: newOilPrice }
+
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleNglPriceChange = () => {
         const newNglPrice = nglpriceUsd
+
         if (!Number.isNaN(newNglPrice) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, nglPriceUsd: newNglPrice }
+
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleGasPriceChange = () => {
         const newGasPrice = gasPriceNok
+
         if (!Number.isNaN(newGasPrice) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, gasPriceNok: newGasPrice }
+
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleDiscountRateChange = () => {
         const newDiscountRate = discountRate
+
         if (!Number.isNaN(newDiscountRate) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, discountRate: newDiscountRate }
+
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleExchangeRateChange = () => {
         const newExchangeRate = exchangeRateUsdToNok
+
         if (!Number.isNaN(newExchangeRate) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, exchangeRateUsdToNok: newExchangeRate }
+
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }
 
     const handleNpvYearChange = () => {
         const newNpvYear = npvYear
+
         if (!Number.isNaN(newNpvYear) && revisionAndProjectData) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData, npvYear: newNpvYear }
+
             addProjectEdit(revisionAndProjectData.projectId, newProject)
         }
     }

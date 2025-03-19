@@ -1,25 +1,27 @@
+import { Typography } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
 import {
     useState,
     useEffect,
     useRef,
 } from "react"
-import { Typography } from "@equinor/eds-core-react"
-import Grid from "@mui/material/Grid2"
+
+import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+
+import { PieChart } from "@/Components/CaseTabs/Co2Emissions/PieChart"
 import { TimeSeriesChart, setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
-import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
+import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { PieChart } from "@/Components/CaseTabs/Co2Emissions/PieChart"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
+import { useTopsideMutation } from "@/Hooks/Mutations"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { PhysUnit, ProfileTypes } from "@/Models/enums"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
 import { useCaseStore } from "@/Store/CaseStore"
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useDataFetch, useCaseApiData } from "@/Hooks"
-import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { PhysUnit, ProfileTypes } from "@/Models/enums"
-import { useTopsideMutation } from "@/Hooks/Mutations"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -154,6 +156,7 @@ const CaseCO2Tab = () => {
                 resourcePropertyKey: ProfileTypes.Co2Intensity,
             },
         ]
+
         setTimeSeriesData(newTimeSeriesData)
     }, [
         co2EmissionsData,
@@ -170,8 +173,10 @@ const CaseCO2Tab = () => {
 
     const co2EmissionsChartData = () => {
         const dataArray = []
+
         if (!caseData) { return [{}] }
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
@@ -191,6 +196,7 @@ const CaseCO2Tab = () => {
                 ),
             })
         }
+
         return dataArray
     }
 
