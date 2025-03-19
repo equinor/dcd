@@ -27,9 +27,7 @@ const SwitchableNumberInput: React.FC<SwitchableNumberInputProps> = ({
     max,
     onSubmit,
 }: SwitchableNumberInputProps) => {
-    // Only submit if the value has actually changed
     const handleSubmit = (newValue: number) => {
-        // Check if the value has actually changed
         if (newValue !== value) {
             onSubmit(newValue)
         }
