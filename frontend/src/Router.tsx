@@ -1,13 +1,12 @@
 import { RouterProvider, RouteObject } from "react-router-dom"
 import { useRouter } from "@equinor/fusion-framework-react-app/navigation"
 import { AgnosticRouteObject } from "@remix-run/router"
-import Overview from "./Components/Overview"
+import ProjectLayout from "./Components/Project/ProjectLayout"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
-import ProjectSelectionView from "./Views/ProjectSelectionView"
-import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 import UserGuideView from "./Components/Guide/UserGuide"
 import ChangeLogView from "./Components/ChangeLog/ProjectChangeLog"
+import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 
 const routes: RouteObject[] = [
     {
@@ -16,13 +15,13 @@ const routes: RouteObject[] = [
     },
     {
         path: "/",
-        element: <ProjectSelectionView />,
         children: [
             {
                 path: ":fusionContextId",
-                element: <Overview />,
+                element: <ProjectLayout />,
                 children: [
                     { index: true, element: <ProjectView /> },
+                    { path: "change-log", element: <ChangeLogView /> },
                     { path: ":tab", element: <ProjectView /> },
                     { path: "revision/:revisionId", element: <ProjectView /> },
                     { path: "revision/:revisionId/:tab", element: <ProjectView /> },
@@ -30,7 +29,6 @@ const routes: RouteObject[] = [
                     { path: "revision/:revisionId/case/:caseId/:tab", element: <CaseView /> },
                     { path: "case/:caseId", element: <CaseView /> },
                     { path: "case/:caseId/:tab", element: <CaseView /> },
-                    { path: "change-log", element: <ChangeLogView /> },
                 ],
             },
         ],

@@ -14,7 +14,7 @@ import { FeatureContextProvider } from "./Store/FeatureContext"
 import { EditQueueProvider } from "./Store/EditQueueContext"
 import Styles from "./styles"
 
-const AppComponent: FC = () => {
+const App: FC = () => {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
@@ -61,4 +61,4 @@ const AppComponent: FC = () => {
     )
 }
 
-export default AppComponent
+export default App

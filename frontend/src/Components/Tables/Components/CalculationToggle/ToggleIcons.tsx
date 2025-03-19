@@ -3,9 +3,9 @@ import { microsoft_excel } from "@equinor/eds-icons"
 import { Icon, Tooltip, Button } from "@equinor/eds-core-react"
 import { ICellRendererParams } from "@ag-grid-community/core"
 import styled from "styled-components"
-import { ExcelHideIcon } from "@/Media/Icons/ExcelHideIcon"
-import { CalculatorIcon } from "@/Media/Icons/CalculatorIcon"
-import { CalculatorHideIcon } from "@/Media/Icons/CalculatorHideIcon"
+import { ExcelHideIcon } from "@/Assets/Icons/ExcelHideIcon"
+import { CalculatorIcon } from "@/Assets/Icons/CalculatorIcon"
+import { CalculatorHideIcon } from "@/Assets/Icons/CalculatorHideIcon"
 import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 
 const IconButton = styled(Button)`

@@ -7,11 +7,15 @@ export const useCaseApiData = () => {
     const { caseId, revisionId } = useParams()
     const { projectId, isRevision } = useProjectContext()
 
-    const { data: apiData, ...rest } = useQuery({
+    const {
+        data: apiData, isLoading, error, ...rest
+    } = useQuery({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
-    return { apiData, ...rest }
+    return {
+        apiData, isLoading, error, ...rest,
+    }
 }
