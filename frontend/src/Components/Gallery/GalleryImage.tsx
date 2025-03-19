@@ -69,6 +69,7 @@ const GalleryImage = ({
     onDescriptionChange,
 }: GalleryImageProps) => {
     const [width, setWidth] = useState<number | null>(null)
+    const [localDescription, setLocalDescription] = useState(image.description || "")
     const imageRef = useRef<HTMLImageElement | null>(null)
 
     useEffect(() => {
@@ -109,10 +110,11 @@ const GalleryImage = ({
                 </GalleryControls>
             </ImageWithHover>
             <div className="input-container">
-                <InputSwitcher label="Description" value={`${image.description || ""}`}>
+                <InputSwitcher label="Description" value={`${localDescription}`}>
                     <Input
-                        value={image.description || ""}
-                        onChange={(e: any) => onDescriptionChange(image.imageId, e.target.value)}
+                        value={localDescription}
+                        onChange={(e: any) => setLocalDescription(e.target.value)}
+                        onBlur={(e: any) => onDescriptionChange(image.imageId, e.target.value)}
                     />
                 </InputSwitcher>
             </div>

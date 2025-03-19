@@ -13,7 +13,6 @@ import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useEditGallery } from "@/Hooks/useEditGallery"
-import { useDebouncedCallback } from "@/Hooks/useDebounce"
 
 const Wrapper = styled.div`
     display: flex;
@@ -52,19 +51,15 @@ const Gallery = () => {
         enabled: !!projectId,
     })
 
-    const debouncedUpdateDescription = useDebouncedCallback((imageId: string, newDescription: string) => {
-        if (projectId) {
-            updateImageDescription(projectId, imageId, newDescription, caseId)
-        }
-    }, 1000)
-
     const handleDescriptionChange = (imageId: string, newDescription: string) => {
         setGallery((prevGallery) => prevGallery.map((image) => (
             image.imageId === imageId
                 ? { ...image, description: newDescription }
                 : image
         )))
-        debouncedUpdateDescription(imageId, newDescription)
+        if (projectId) {
+            updateImageDescription(projectId, imageId, newDescription, caseId)
+        }
     }
 
     const handleDelete = async (imageId: string) => {

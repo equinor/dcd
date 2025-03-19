@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Box } from "@mui/material"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
-import ExternalAccessInfo from "@/Components/Project/Components/ExternalAccessInfo"
+import ExternalAccessInfo from "@/Components/ProjectTabs/Components/ExternalAccessInfo"
 import { NoAccessReason } from "@/Models/enums"
 
 const Container = styled.div`

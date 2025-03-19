@@ -11,7 +11,7 @@ import {
 } from "@equinor/eds-icons"
 import styled from "styled-components"
 
-import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import CaseDropMenu from "./CaseDropMenu"
 import { GetProjectService } from "@/Services/ProjectService"
 import { formatDateAndTime } from "@/Utils/DateUtils"

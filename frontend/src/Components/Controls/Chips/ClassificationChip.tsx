@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useMemo } from "react"
 
-import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
 import { useDataFetch } from "@/Hooks"
 
 const StyledChip = styled(Chip)`

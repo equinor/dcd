@@ -118,7 +118,6 @@ export const useTimeSeriesMutation = () => {
         updateMethod: "saveProfiles", // Not directly used with custom mutation function
         customMutationFn: timeSeriesMutationFn,
         getResourceFromApiData: () => null, // Not used with custom mutation function
-        loggerName: "TIME_SERIES_MUTATION",
         invalidateQueries: caseId && projectId ? [["caseApiData", projectId, caseId]] : [],
     })
 

@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
-import { createLogger } from "@/Utils/logger"
 
 export interface MutationParams<T = any> {
   resourceId?: string;
@@ -23,7 +22,6 @@ export interface BaseMutationOptions<T = any, R = any> {
     params: MutationParams<T>
   ) => Promise<R>;
   getResourceFromApiData: (apiData: any) => any;
-  loggerName: string;
   invalidateQueries?: string[][];
 }
 
@@ -36,18 +34,12 @@ export const useBaseMutation = <T = any, R = any>({
     updateMethod,
     customMutationFn,
     getResourceFromApiData,
-    loggerName,
     invalidateQueries = [],
 }: BaseMutationOptions<T, R>) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const { setIsSaving, setSnackBarMessage } = useAppStore()
-
-    const logger = createLogger({
-        name: loggerName,
-        enabled: false,
-    })
 
     const mutation = useMutation({
         mutationFn: async (params: MutationParams<T>) => {
@@ -56,7 +48,6 @@ export const useBaseMutation = <T = any, R = any>({
             }
 
             setIsSaving(true)
-            logger.info(`Updating ${resourceName}:`, params)
 
             try {
                 const service = getService()
@@ -131,7 +122,6 @@ export const useBaseMutation = <T = any, R = any>({
         },
         onError: (error: any) => {
             setSnackBarMessage(error.message || `Failed to update ${resourceName}`)
-            logger.error(`Error updating ${resourceName}:`, error)
         },
     })
 

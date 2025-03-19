@@ -1,7 +1,7 @@
 import React from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import Modal from "./Modal"
+import BaseModal from "./BaseModal"
 
 const ModalContent = styled.div`
   padding: 1rem;
@@ -27,7 +27,7 @@ const DeleteWellInUseModal: React.FC<DeleteWellInUseModalProps> = ({
     onClose,
     onConfirm,
 }) => (
-    <Modal
+    <BaseModal
         isOpen={isOpen}
         title="Warning"
         size="sm"

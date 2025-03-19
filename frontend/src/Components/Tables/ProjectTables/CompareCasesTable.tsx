@@ -6,8 +6,8 @@ import { bookmark_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
 
-import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
-import { cellStyleRightAlign } from "@/Utils/common"
+import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
+import { cellStyleRightAlign } from "@/Utils/commonUtils"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const MenuIcon = styled(Icon)`

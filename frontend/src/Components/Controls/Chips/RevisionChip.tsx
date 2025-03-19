@@ -11,7 +11,7 @@ import { useParams } from "react-router"
 import styled from "styled-components"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { revisionQueryFn } from "@/Services/QueryFunctions"
-import { truncateText } from "@/Utils/common"
+import { truncateText } from "@/Utils/commonUtils"
 import RevisionDetailsModal from "../Revision/RevisionDetailsModal"
 import { useRevisions } from "@/Hooks/useRevision"
 

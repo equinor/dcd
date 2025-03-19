@@ -44,7 +44,6 @@ export const useTransportMutation = () => {
         updateMethod: "updateTransport",
         customMutationFn: transportMutationFn,
         getResourceFromApiData: (apiData) => apiData?.transport,
-        loggerName: "TRANSPORT_MUTATION",
     })
 
     const updateOilExportPipelineLength = (transportId: string, newValue: number) => mutation.mutateAsync({

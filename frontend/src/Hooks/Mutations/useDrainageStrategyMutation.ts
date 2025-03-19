@@ -49,7 +49,6 @@ export const useDrainageStrategyMutation = () => {
         updateMethod: "updateDrainageStrategy",
         customMutationFn: drainageStrategyMutationFn,
         getResourceFromApiData: (apiData) => apiData?.drainageStrategy,
-        loggerName: "DRAINAGE_STRATEGY_MUTATION",
     })
 
     const updateGasSolution = (drainageStrategyId: string, newValue: number) => mutation.mutateAsync({

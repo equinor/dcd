@@ -2,7 +2,7 @@ import { InputWrapper, Input, Icon } from "@equinor/eds-core-react"
 import { useState, useEffect } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { preventNonDigitInput, isWithinRange } from "../../../Utils/common"
+import { preventNonDigitInput, isWithinRange } from "../../../Utils/commonUtils"
 import { useAppStore } from "../../../Store/AppStore"
 
 const ErrorIcon = styled(Icon)`

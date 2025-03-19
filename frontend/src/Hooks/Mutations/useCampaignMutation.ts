@@ -2,7 +2,7 @@ import { useParams } from "react-router"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { ITimeSeries } from "@/Models/ITimeSeries"
-import { CampaignProfileType } from "@/Utils/common"
+import { CampaignProfileType } from "@/Utils/commonUtils"
 import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
 export interface CampaignWellUpdate {
@@ -130,7 +130,6 @@ export const useCampaignMutation = () => {
         updateMethod: "updateCampaign", // Not directly used with custom mutation function
         customMutationFn: campaignMutationFn,
         getResourceFromApiData: () => null, // Not used with custom mutation function
-        loggerName: "CAMPAIGN_MUTATION",
         invalidateQueries: caseId && projectId ? [["caseApiData", projectId, caseId]] : [],
     })
 

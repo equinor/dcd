@@ -15,10 +15,10 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseApiData, useDataFetch } from "@/Hooks"
 
-import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
+import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseUtils"
 import { useModalContext } from "@/Store/ModalContext"
 import useEditProject from "@/Hooks/useEditProject"
-import Modal from "@/Components/Modal/Modal"
+import BaseModal from "@/Components/Modal/BaseModal"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useCaseMutation } from "@/Hooks/Mutations"
 
@@ -82,7 +82,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 
     return (
         <>
-            <Modal
+            <BaseModal
                 title="Delete Case?"
                 size="sm"
                 isOpen={confirmDelete}

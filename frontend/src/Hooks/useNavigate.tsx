@@ -1,6 +1,6 @@
 import { useNavigate as useRouterNavigate, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { projectTabNames } from "@/Utils/constants"
+import { projectTabNames } from "@/Utils/Config/constants"
 
 export const useAppNavigation = () => {
     const navigate = useRouterNavigate()

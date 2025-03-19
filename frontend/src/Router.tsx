@@ -1,13 +1,23 @@
 import { RouterProvider, RouteObject } from "react-router-dom"
 import { useRouter } from "@equinor/fusion-framework-react-app/navigation"
 import { AgnosticRouteObject } from "@remix-run/router"
-import Overview from "./Components/Overview"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import ProjectLayout from "./Components/ProjectTabs/ProjectLayout"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
-import ProjectSelector from "./Components/ProjectSelector"
-import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 import UserGuideView from "./Components/Guide/UserGuide"
 import ChangeLogView from "./Components/ChangeLog/ProjectChangeLog"
+import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
+import NotFoundView from "./Views/NotFoundView"
+import IndexView from "./Views/IndexView"
+
+const ProjectRoute = () => {
+    const { currentContext } = useModuleCurrentContext()
+    if (!currentContext) {
+        return <NotFoundView />
+    }
+    return <ProjectLayout />
+}
 
 const routes: RouteObject[] = [
     {
@@ -16,13 +26,14 @@ const routes: RouteObject[] = [
     },
     {
         path: "/",
-        element: <ProjectSelector />,
         children: [
+            { index: true, element: <IndexView /> },
             {
                 path: ":fusionContextId",
-                element: <Overview />,
+                element: <ProjectRoute />,
                 children: [
                     { index: true, element: <ProjectView /> },
+                    { path: "change-log", element: <ChangeLogView /> },
                     { path: ":tab", element: <ProjectView /> },
                     { path: "revision/:revisionId", element: <ProjectView /> },
                     { path: "revision/:revisionId/:tab", element: <ProjectView /> },
@@ -30,9 +41,10 @@ const routes: RouteObject[] = [
                     { path: "revision/:revisionId/case/:caseId/:tab", element: <CaseView /> },
                     { path: "case/:caseId", element: <CaseView /> },
                     { path: "case/:caseId/:tab", element: <CaseView /> },
-                    { path: "change-log", element: <ChangeLogView /> },
+                    { path: "*", element: <NotFoundView /> },
                 ],
             },
+            { path: "*", element: <NotFoundView /> },
         ],
     },
 ]

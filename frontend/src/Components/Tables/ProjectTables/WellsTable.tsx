@@ -10,10 +10,10 @@ import { ColDef } from "@ag-grid-community/core"
 import { Button, Icon } from "@equinor/eds-core-react"
 import { delete_to_trash } from "@equinor/eds-icons"
 
-import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
-import { cellStyleRightAlign } from "@/Utils/common"
+import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
+import { cellStyleRightAlign } from "@/Utils/commonUtils"
 import { GetWellService } from "@/Services/WellService"
-import { TableWell } from "@/Models/Wells"
+import { TableWell } from "@/Models/Interfaces"
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
 import { Currency, WellCategory } from "@/Models/enums"
 

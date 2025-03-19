@@ -17,9 +17,9 @@ import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import Grid from "@mui/material/Grid2"
 
-import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
 import { useRevisions } from "@/Hooks/useRevision"
-import { getProjectPhaseName } from "@/Utils/common"
+import { getProjectPhaseName } from "@/Utils/commonUtils"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useDataFetch } from "@/Hooks"
 

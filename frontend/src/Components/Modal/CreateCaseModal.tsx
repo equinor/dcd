@@ -14,7 +14,7 @@ import {
 } from "react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
-import Modal from "./Modal"
+import BaseModal from "./BaseModal"
 import {
     ModalContent,
     ModalActions,
@@ -80,10 +80,6 @@ const CreateCaseModal = () => {
         }
     }, [revisionAndProjectData, modalCaseId])
 
-    const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setCaseName(e.currentTarget.value.trimStart())
-    }
-
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
@@ -100,8 +96,6 @@ const CreateCaseModal = () => {
         }
         setDg4Date(newDate)
     }
-
-    const getDG4Value = () => toMonthDate(dg4Date)
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
@@ -154,8 +148,13 @@ const CreateCaseModal = () => {
 
     const disableCreateButton = () => !dg4Date || !caseName || caseName.trim() === ""
 
+    const getButtonText = () => {
+        if (isLoading) { return <Progress.Dots /> }
+        return caseModalEditMode ? "Save" : "Create case"
+    }
+
     return (
-        <Modal
+        <BaseModal
             isOpen={caseModalIsOpen}
             title={caseModalEditMode ? "Edit case" : "Add new case"}
             content={(
@@ -166,7 +165,7 @@ const CreateCaseModal = () => {
                                 id="name"
                                 name="name"
                                 placeholder="Enter a name"
-                                onChange={handleNameChange}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCaseName(e.currentTarget.value.trimStart())}
                                 value={caseName}
                             />
                         </InputWrapper>
@@ -177,7 +176,7 @@ const CreateCaseModal = () => {
                                 type="month"
                                 id="dgDate"
                                 name="dgDate"
-                                value={getDG4Value()}
+                                value={toMonthDate(dg4Date)}
                                 onChange={handleDG4Change}
                             />
                         </InputWrapper>
@@ -278,7 +277,7 @@ const CreateCaseModal = () => {
                             disabled={disableCreateButton()}
                             onClick={submitCaseForm}
                         >
-                            {isLoading ? <Progress.Dots /> : caseModalEditMode ? "Save" : "Create case"}
+                            {getButtonText()}
                         </Button>
                     </Grid>
                 </ModalActions>

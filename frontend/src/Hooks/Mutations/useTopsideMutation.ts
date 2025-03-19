@@ -61,7 +61,6 @@ export const useTopsideMutation = () => {
         updateMethod: "updateTopside",
         customMutationFn: topsideMutationFn,
         getResourceFromApiData: (apiData) => apiData?.topside,
-        loggerName: "TOPSIDE_MUTATION",
     })
 
     const updateFacilityOpex = (topsideId: string, newValue: number) => mutation.mutateAsync({

@@ -1,6 +1,6 @@
 import { Tabs, Tab, Box } from "@mui/material"
 import { useParams } from "react-router-dom"
-import { caseTabNames } from "@/Utils/constants"
+import { caseTabNames } from "@/Utils/Config/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useWindowSize } from "@/Hooks/useWindowSize"

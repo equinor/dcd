@@ -45,7 +45,6 @@ export const useSubstructureMutation = () => {
         updateMethod: "updateSubstructure",
         customMutationFn: substructureMutationFn,
         getResourceFromApiData: (apiData) => apiData?.substructure,
-        loggerName: "SUBSTRUCTURE_MUTATION",
     })
 
     const updateConcept = (substructureId: string, newValue: number) => mutation.mutateAsync({

@@ -6,7 +6,7 @@ import { Icon, Tooltip } from "@equinor/eds-core-react"
 import { users_circle, settings, assignment } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
 
-import { projectTabNames } from "@/Utils/constants"
+import { projectTabNames } from "@/Utils/Config/constants"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 
 type ProjectTabsProps = {
