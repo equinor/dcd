@@ -7,7 +7,7 @@ import styled from "styled-components"
 import {
     productionStrategyOverviewToString, truncateText,
 } from "@/Utils/common"
-import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
+import { ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"

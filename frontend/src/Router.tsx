@@ -4,7 +4,7 @@ import { AgnosticRouteObject } from "@remix-run/router"
 import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
-import ProjectSelector from "./Components/ProjectSelector"
+import ProjectSelectionView from "./Views/ProjectSelectionView"
 import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 import UserGuideView from "./Components/Guide/UserGuide"
 import ChangeLogView from "./Components/ChangeLog/ProjectChangeLog"
@@ -16,7 +16,7 @@ const routes: RouteObject[] = [
     },
     {
         path: "/",
-        element: <ProjectSelector />,
+        element: <ProjectSelectionView />,
         children: [
             {
                 path: ":fusionContextId",

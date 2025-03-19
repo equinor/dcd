@@ -1,5 +1,5 @@
 import React from "react"
-import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
+import { CompareCasesChart } from "@/Components/Charts/CompareCasesChart"
 
 interface ProductionProfilesProps {
     productionProfilesChartData?: object
@@ -9,7 +9,7 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ productionProfi
     if (!productionProfilesChartData) { return <div>No data available</div> }
 
     return (
-        <AgChartsCompareCases
+        <CompareCasesChart
             data={productionProfilesChartData}
             chartTitle="Production profiles"
             barColors={["#243746", "#281457", "#EB0037", "#FF5733", "#8C1159"]}

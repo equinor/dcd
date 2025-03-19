@@ -1,6 +1,6 @@
 import React from "react"
 import Grid from "@mui/material/Grid2"
-import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
+import { CompareCasesChart } from "@/Components/Charts/CompareCasesChart"
 
 interface ProductionProfilesProps {
     totalCo2EmissionsChartData?: object
@@ -13,7 +13,7 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ totalCo2Emissio
     return (
         <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-                <AgChartsCompareCases
+                <CompareCasesChart
                     data={totalCo2EmissionsChartData}
                     chartTitle="Total CO2 emissions"
                     barColors={["#E24973"]}
@@ -25,7 +25,7 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ totalCo2Emissio
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-                <AgChartsCompareCases
+                <CompareCasesChart
                     data={co2IntensityChartData}
                     chartTitle="CO2 intensity"
                     barColors={["#FF92A8"]}

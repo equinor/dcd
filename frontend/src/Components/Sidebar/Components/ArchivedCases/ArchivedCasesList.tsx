@@ -6,7 +6,7 @@ import { useMemo } from "react"
 
 import { caseTabNames } from "@/Utils/constants"
 import { productionStrategyOverviewToString, truncateText } from "@/Utils/common"
-import { ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
+import { ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import { useDataFetch } from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"

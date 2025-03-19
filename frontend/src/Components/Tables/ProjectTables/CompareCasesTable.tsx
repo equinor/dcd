@@ -6,7 +6,7 @@ import { bookmark_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
 
-import SecondaryTableHeader from "@/Components/AgGrid/SecondaryTableHeader"
+import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
 import { cellStyleRightAlign } from "@/Utils/common"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 

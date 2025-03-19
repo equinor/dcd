@@ -1,5 +1,5 @@
 import React from "react"
-import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
+import { CompareCasesChart } from "../../../Charts/CompareCasesChart"
 import { Currency } from "@/Models/enums"
 import { useDataFetch } from "@/Hooks"
 
@@ -13,7 +13,7 @@ const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfi
     if (!investmentProfilesChartData) { return <div>No data available</div> }
 
     return (
-        <AgChartsCompareCases
+        <CompareCasesChart
             data={investmentProfilesChartData}
             chartTitle="Investment profiles"
             barColors={["#005F57", "#00977B", "#40D38F"]}

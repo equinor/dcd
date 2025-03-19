@@ -1,7 +1,7 @@
 import React from "react"
 import Grid from "@mui/material/Grid2"
 
-import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
+import { CompareCasesChart } from "@/Components/Charts/CompareCasesChart"
 
 interface KpisProps {
     npvChartData?: object
@@ -13,7 +13,7 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
     return (
         <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-                <AgChartsCompareCases
+                <CompareCasesChart
                     data={npvChartData}
                     chartTitle="NPV before tax"
                     barColors={["#005F57", "#B4260D"]}
@@ -24,7 +24,7 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-                <AgChartsCompareCases
+                <CompareCasesChart
                     data={breakEvenChartData}
                     chartTitle="Break even before tax"
                     barColors={["#00977B", "#FF6347"]}

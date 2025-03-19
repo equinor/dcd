@@ -94,7 +94,6 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
 
     return (
         <>
-            {/* isSaving && <FullPageLoading /> */}
             <Header>
                 <div>
                     {!editMode

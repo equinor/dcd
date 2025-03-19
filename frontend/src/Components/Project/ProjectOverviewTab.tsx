@@ -14,7 +14,7 @@ import { INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
 import InputSwitcher from "@/Components/Input/Components/InputSwitcher"
-import CasesTable from "@/Components/Tables/ProjectTables/OverviewCasesTable/CasesTable"
+import AllCasesTable from "@/Components/Tables/ProjectTables/AllCasesTable"
 import Gallery from "@/Components/Gallery/Gallery"
 import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
 
@@ -153,7 +153,7 @@ const ProjectOverviewTab = () => {
                     </Tooltip>
                 </Grid>
                 <Grid size={12}>
-                    <CasesTable />
+                    <AllCasesTable />
                 </Grid>
             </Grid>
         </Grid>
