@@ -5,7 +5,7 @@ import { arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useState } from "react"
 import { TableCase } from "@/Models/Interfaces"
-import { ActiveCasesTable } from "./ActiveCasesTable"
+import { CasesTable } from "./CasesTable"
 
 const ArchivedTitle = styled.div`
     margin-bottom: 12px;
@@ -50,7 +50,7 @@ export const ArchivedCasesTable = ({
                 </Tooltip>
             </ArchivedTitle>
             {isExpanded && (
-                <ActiveCasesTable
+                <CasesTable
                     cases={cases}
                     isRevision={isRevision}
                     revisionId={revisionId}

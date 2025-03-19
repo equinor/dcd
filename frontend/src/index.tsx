@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client"
 import { ComponentRenderArgs, makeComponent } from "@equinor/fusion-framework-react-app"
 
 import App from "./App"
-import { configure } from "./config"
+import { configure } from "./Utils/AgGrid/AgGridConfig"
 
 const appComponent = createElement(App)
 

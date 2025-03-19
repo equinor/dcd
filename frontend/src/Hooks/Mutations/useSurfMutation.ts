@@ -53,7 +53,6 @@ export const useSurfMutation = () => {
         updateMethod: "updateSurf",
         customMutationFn: surfMutationFn,
         getResourceFromApiData: (apiData) => apiData?.surf,
-        loggerName: "SURF_MUTATION",
     })
 
     const updateProductionFlowline = (surfId: string, newValue: number) => mutation.mutateAsync({

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet, ITimeSeries } from "@/Models/ITimeSeries"
-import { generateProfile, isExplorationWell } from "@/Utils/common"
+import { generateProfile, isExplorationWell } from "@/Utils/commonUtils"
 
 interface IAssetWell {
     assetId: string

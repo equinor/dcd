@@ -1,4 +1,4 @@
-import { productionStrategyOverviewToString } from "@/Utils/common"
+import { productionStrategyOverviewToString } from "@/Utils/commonUtils"
 
 interface ProductionStrategyCellProps {
     value: Components.Schemas.ProductionStrategyOverview

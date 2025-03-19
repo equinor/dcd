@@ -29,12 +29,12 @@ import {
     ITableCellChangeParams,
     ITableCellChangeConfig,
     validateInput,
-} from "@/Utils/common"
+} from "@/Utils/commonUtils"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import profileAndUnitInSameCell from "./Components/CellRenderers/ProfileAndUnitCellRenderer"
 import ErrorCellRenderer from "./Components/CellRenderers/ErrorCellRenderer"
-import CalculationSourceToggle from "./Components/CalculationToggle/CalculationSourceToggle"
+import OverrideToggleRenderer from "./Components/CellRenderers/OverrideToggleRenderer"
 import {
     ITimeSeriesTableDataOverrideWithSet,
     ITimeSeriesTableDataWithSet,
@@ -44,7 +44,6 @@ import SidesheetWrapper from "../TableSidesheet/SidesheetWrapper"
 import { useEditQueueHandler } from "@/Hooks/useEditQueue"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 
-// Styled Components
 const CenterGridIcons = styled.div`
     padding-top: 0px;
     padding-left: 0px;
@@ -69,6 +68,21 @@ interface Props {
     sharepointFileId?: string
 }
 
+const createOverrideToggleCellRenderer = (
+    calculatedFields?: string[],
+    ongoingCalculation?: boolean,
+    isProsp?: boolean,
+    sharepointFileId?: string,
+) => (params: any) => (
+    <OverrideToggleRenderer
+        params={params}
+        calculatedFields={calculatedFields}
+        ongoingCalculation={ongoingCalculation}
+        isProsp={isProsp}
+        sharepointFileId={sharepointFileId}
+    />
+)
+
 const CaseBaseTable = memo(({
     timeSeriesData,
     dg4Year,
@@ -88,16 +102,15 @@ const CaseBaseTable = memo(({
     const { caseId, tab } = useParams()
     const { projectId } = useProjectContext()
     const { canEdit, isEditDisabled } = useCanUserEdit()
+    const { addToQueue } = useEditQueueHandler({ gridRef })
+
+    const previousTimeSeriesDataRef = useRef(timeSeriesData)
+    const gridInitializedRef = useRef(false)
 
     const [presentedTableData, setPresentedTableData] = useState<ITimeSeriesTableDataWithSet[]>([])
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
-
-    const { addToQueue } = useEditQueueHandler({ gridRef })
-
-    const previousTimeSeriesDataRef = useRef(timeSeriesData)
-    const gridInitializedRef = useRef(false)
 
     const gridRowData = useMemo(
         () => {
@@ -106,28 +119,6 @@ const CaseBaseTable = memo(({
         },
         [presentedTableData, editMode, dg4Year, tableName, isEditDisabled],
     )
-
-    // Cell Renderers
-    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
-        if (!params.data) { return null }
-
-        const isUnlocked = params.data.overrideProfile?.override
-
-        if (!isUnlocked && calculatedFields?.includes(params.data.resourceName) && ongoingCalculation) {
-            return <CircularProgress size={24} />
-        }
-
-        return (
-            <CenterGridIcons>
-                <CalculationSourceToggle
-                    editAllowed={canEdit()}
-                    isProsp={isProsp}
-                    sharepointFileId={sharepointFileId}
-                    clickedElement={params}
-                />
-            </CenterGridIcons>
-        )
-    }
 
     const generateTableYearColDefs = useCallback(() => {
         const columnPinned: any[] = [
@@ -162,7 +153,12 @@ const CaseBaseTable = memo(({
                 pinned: "right",
                 aggFunc: "",
                 editable: false,
-                cellRenderer: lockIconRenderer,
+                cellRenderer: createOverrideToggleCellRenderer(
+                    calculatedFields,
+                    ongoingCalculation,
+                    isProsp,
+                    sharepointFileId,
+                ),
             },
         ]
 

@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import styled from "styled-components"
 
-import { truncateText } from "@/Utils/common"
+import { truncateText } from "@/Utils/commonUtils"
 import { formatFullDate } from "@/Utils/DateUtils"
 import { useRevisions } from "@/Hooks/useRevision"
 import { useDataFetch } from "@/Hooks"

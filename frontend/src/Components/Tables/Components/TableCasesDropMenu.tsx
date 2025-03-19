@@ -14,14 +14,14 @@ import {
 import { useMemo, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
+import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseUtils"
 import { useDataFetch } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
-import Modal from "@/Components/Modal/Modal"
+import BaseModal from "@/Components/Modal/BaseModal"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useCaseStore } from "@/Store/CaseStore"
-import { caseTabNames } from "@/Utils/constants"
+import { caseTabNames } from "@/Utils/Config/constants"
 import { useCaseMutation } from "@/Hooks/Mutations"
 
 interface CasesDropMenuProps {
@@ -110,7 +110,7 @@ const CasesDropMenu = ({
     }
     return (
         <>
-            <Modal
+            <BaseModal
                 title="Delete Case?"
                 isOpen={confirmDelete}
                 size="sm"

@@ -4,7 +4,7 @@ import { ReferenceCaseIcon } from "../CellRenderers/ReferenceCaseIcon"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { caseTabNames } from "@/Utils/constants"
+import { caseTabNames } from "@/Utils/Config/constants"
 
 const Wrapper = styled.div`
     justify-content: center;

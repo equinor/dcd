@@ -7,7 +7,6 @@ export const useCaseMutation = () => {
         getService: GetCaseService,
         updateMethod: "updateCase",
         getResourceFromApiData: (apiData) => apiData?.case,
-        loggerName: "CASE_MUTATION",
     })
 
     const updateFacilitiesAvailability = (newValue: number) => mutation.mutateAsync({

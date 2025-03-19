@@ -3,7 +3,7 @@ import { archive } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
-import { unwrapProjectId } from "@/Utils/common"
+import { unwrapProjectId } from "@/Utils/commonUtils"
 
 const ButtonContainer = styled.div`
     margin-top: 12px;

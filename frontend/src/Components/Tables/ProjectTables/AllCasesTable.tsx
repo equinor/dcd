@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
-import { ActiveCasesTable } from "./ActiveCasesTable"
+import { CasesTable } from "./CasesTable"
 import { ArchivedCasesTable } from "./ArchivedCasesTable"
 import { STEAExportButton } from "../Components/STEAExportButton"
 import TableCasesDropMenu from "../Components/TableCasesDropMenu"
@@ -63,7 +63,7 @@ const AllCasesTable = () => {
 
     return (
         <div>
-            <ActiveCasesTable
+            <CasesTable
                 cases={activeCases}
                 isRevision={isRevision}
                 revisionId={revisionId}

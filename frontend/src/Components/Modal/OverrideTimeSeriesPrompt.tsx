@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
-import Modal from "./Modal"
+import BaseModal from "./BaseModal"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { ProfileTypes } from "@/Models/enums"
 import { useTimeSeriesMutation } from "@/Hooks/Mutations"
@@ -33,7 +33,7 @@ export const OverrideTimeSeriesPrompt: React.FC<Props> = ({
         setIsOpen(!isOpen)
     }
     return (
-        <Modal
+        <BaseModal
             isOpen={isOpen}
             title="Warning"
             size="sm"

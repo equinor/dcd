@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react"
 import { Button, Typography, List } from "@equinor/eds-core-react"
 import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
-import Modal from "./Modal"
+import BaseModal from "./BaseModal"
 import { useModalContext } from "@/Store/ModalContext"
 import { useLocalStorage } from "@/Hooks"
 import { Version } from "@/Models/Interfaces"
-import { versions, whatsNewUpdates } from "@/Utils/whatsNewData"
+import { versions, whatsNewUpdates } from "@/Utils/Config/whatsNewData"
 
 const Header = styled(Typography)`
     margin: 20px 0 10px 0;
@@ -46,7 +46,7 @@ const WhatsNewModal: React.FC = () => {
     }
 
     return (
-        <Modal
+        <BaseModal
             isOpen={featuresModalIsOpen}
             title="What's New"
             size="sm"

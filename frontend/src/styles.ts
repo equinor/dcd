@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components"
-import { EnvironmentVariables } from "./environmentVariables"
+import { EnvironmentVariables } from "./Utils/Config/environmentVariables"
 
 const env = EnvironmentVariables.ENVIRONMENT
 

@@ -26,7 +26,7 @@ import {
 } from "@/Components/Sidebar/SidebarWrapper"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppNavigation } from "@/Hooks/useNavigate"
-import { projectTabNames } from "@/Utils/constants"
+import { projectTabNames } from "@/Utils/Config/constants"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;

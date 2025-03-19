@@ -17,7 +17,7 @@ import {
     history,
     bar_chart,
 } from "@equinor/eds-icons"
-import { versions, whatsNewUpdates } from "@/Utils/whatsNewData"
+import { versions, whatsNewUpdates } from "@/Utils/Config/whatsNewData"
 import { UpdateEntry } from "@/Models/Interfaces"
 import { formatFullDate } from "@/Utils/DateUtils"
 

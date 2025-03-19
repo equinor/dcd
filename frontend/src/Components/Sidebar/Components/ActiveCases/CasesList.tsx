@@ -6,12 +6,12 @@ import styled from "styled-components"
 
 import {
     productionStrategyOverviewToString, truncateText,
-} from "@/Utils/common"
+} from "@/Utils/commonUtils"
 import { ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
-import { caseTabNames } from "@/Utils/constants"
+import { caseTabNames } from "@/Utils/Config/constants"
 import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
