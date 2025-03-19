@@ -14,7 +14,6 @@ import styled from "styled-components"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "@/Components/Tables/ProjectTables/OverviewCasesTable/CellRenderers/ReferenceCaseIcon"
 import CaseDropMenu from "./CaseDropMenu"
 import { GetProjectService } from "@/Services/ProjectService"
-import { EMPTY_GUID } from "@/Utils/constants"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 import { useAppStore } from "@/Store/AppStore"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
@@ -111,9 +110,9 @@ const CaseControls: React.FC<props> = ({
                 ...revisionAndProjectData.commonProjectAndRevisionData,
             }
             if (newProject.referenceCaseId === referenceCaseId) {
-                newProject.referenceCaseId = EMPTY_GUID
+                newProject.referenceCaseId = null
             } else {
-                newProject.referenceCaseId = referenceCaseId ?? ""
+                newProject.referenceCaseId = referenceCaseId ?? null
             }
             const updateProject = await GetProjectService().updateProject(projectId, newProject)
             if (updateProject) {

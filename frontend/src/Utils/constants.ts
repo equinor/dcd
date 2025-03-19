@@ -1,8 +1,6 @@
 import { visibility, lock, type IconData } from "@equinor/eds-icons"
 import { ProfileTypes } from "@/Models/enums"
 
-export const EMPTY_GUID = "00000000-0000-0000-0000-000000000000"
-
 export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number } } = {
     // production profiles
     "Oil production": { min: 0, max: 1_000_000 },

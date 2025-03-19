@@ -119,8 +119,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             DevelopmentRigMobDemob = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemob)),
             DevelopmentRigMobDemobOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.DevelopmentRigMobDemobOverride)),
 
-            DevelopmentCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.DevelopmentCampaign).Select(CampaignMapper.MapToDto).ToList(),
-            ExplorationCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.ExplorationCampaign).Select(CampaignMapper.MapToDto).ToList()
+            DevelopmentCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.DevelopmentCampaign).OrderBy(x => x.CreatedUtc).Select(CampaignMapper.MapToDto).ToList(),
+            ExplorationCampaigns = caseItem.Campaigns.Where(x => x.CampaignType == CampaignType.ExplorationCampaign).OrderBy(x => x.CreatedUtc).Select(CampaignMapper.MapToDto).ToList()
         };
     }
 
