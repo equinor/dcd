@@ -156,7 +156,7 @@ declare namespace Components {
             developmentRigMobDemob: TimeSeriesDto;
             developmentRigMobDemobOverride: TimeSeriesOverrideDto;
         }
-        export type ChangeLogCategory = 0 | 1 | 2 | 3 | 4 | 5; // int32
+        export type ChangeLogCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
             co2Fuel: number; // double

@@ -114,7 +114,7 @@ const ProjectChangeLog = () => {
         <ChangeLogWrapper>
             <div>
                 <Typography variant="h3">
-                    Project change log
+                    Project changelog
                 </Typography>
             </div>
             <div
