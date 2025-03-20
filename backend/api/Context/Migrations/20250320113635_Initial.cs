@@ -53,6 +53,7 @@ namespace api.Migrations
                     EntityName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PropertyName = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OldValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NewValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -119,56 +120,6 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OriginalProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsRevision = table.Column<bool>(type: "bit", nullable: false),
-                    CommonLibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FusionProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReferenceCaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CommonLibraryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    PhysicalUnit = table.Column<int>(type: "int", nullable: false),
-                    ProjectPhase = table.Column<int>(type: "int", nullable: false),
-                    InternalProjectPhase = table.Column<int>(type: "int", nullable: false),
-                    Classification = table.Column<int>(type: "int", nullable: false),
-                    ProjectCategory = table.Column<int>(type: "int", nullable: false),
-                    SharepointSiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Co2RemovedFromGas = table.Column<double>(type: "float", nullable: false),
-                    Co2EmissionFromFuelGas = table.Column<double>(type: "float", nullable: false),
-                    FlaredGasPerProducedVolume = table.Column<double>(type: "float", nullable: false),
-                    Co2EmissionsFromFlaredGas = table.Column<double>(type: "float", nullable: false),
-                    Co2Vented = table.Column<double>(type: "float", nullable: false),
-                    DailyEmissionFromDrillingRig = table.Column<double>(type: "float", nullable: false),
-                    AverageDevelopmentDrillingDays = table.Column<double>(type: "float", nullable: false),
-                    OilPriceUsd = table.Column<double>(type: "float", nullable: false),
-                    GasPriceNok = table.Column<double>(type: "float", nullable: false),
-                    NglPriceUsd = table.Column<double>(type: "float", nullable: false),
-                    DiscountRate = table.Column<double>(type: "float", nullable: false),
-                    ExchangeRateUsdToNok = table.Column<double>(type: "float", nullable: false),
-                    NpvYear = table.Column<int>(type: "int", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Projects_Projects_OriginalProjectId",
-                        column: x => x.OriginalProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RequestLogs",
                 columns: table => new
                 {
@@ -187,6 +138,71 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Campaigns",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RigUpgradingCostStartYear = table.Column<int>(type: "int", nullable: false),
+                    RigUpgradingCostInternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RigMobDemobCostStartYear = table.Column<int>(type: "int", nullable: false),
+                    RigMobDemobCostInternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CampaignType = table.Column<int>(type: "int", nullable: false),
+                    RigUpgradingCost = table.Column<double>(type: "float", nullable: false),
+                    RigMobDemobCost = table.Column<double>(type: "float", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Campaigns", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CampaignWells",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WellId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CampaignId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CampaignWells", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CampaignWells_Campaigns_CampaignId",
+                        column: x => x.CampaignId,
+                        principalTable: "Campaigns",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CaseImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CaseImages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Cases",
                 columns: table => new
                 {
@@ -194,22 +210,21 @@ namespace api.Migrations
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReferenceCase = table.Column<bool>(type: "bit", nullable: false),
                     Archived = table.Column<bool>(type: "bit", nullable: false),
                     SharepointFileId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SharepointFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SharepointFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DGADate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DGBDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DGCDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    APBODate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    BORDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    VPBODate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DG0Date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DG1Date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DG2Date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DG3Date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DG4Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DgaDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DgbDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DgcDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ApboDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    BorDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    VpboDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Dg0Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Dg1Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Dg2Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Dg3Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Dg4Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArtificialLift = table.Column<int>(type: "int", nullable: false),
                     ProductionStrategyOverview = table.Column<int>(type: "int", nullable: false),
                     ProducerCount = table.Column<int>(type: "int", nullable: false),
@@ -218,6 +233,8 @@ namespace api.Migrations
                     FacilitiesAvailability = table.Column<double>(type: "float", nullable: false),
                     CapexFactorFeasibilityStudies = table.Column<double>(type: "float", nullable: false),
                     CapexFactorFeedStudies = table.Column<double>(type: "float", nullable: false),
+                    InitialYearsWithoutWellInterventionCost = table.Column<double>(type: "float", nullable: false),
+                    FinalYearsWithoutWellInterventionCost = table.Column<double>(type: "float", nullable: false),
                     Npv = table.Column<double>(type: "float", nullable: false),
                     NpvOverride = table.Column<double>(type: "float", nullable: true),
                     BreakEven = table.Column<double>(type: "float", nullable: false),
@@ -246,221 +263,6 @@ namespace api.Migrations
                         principalTable: "Cases",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Cases_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DevelopmentOperationalWellCosts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RigUpgrading = table.Column<double>(type: "float", nullable: false),
-                    RigMobDemob = table.Column<double>(type: "float", nullable: false),
-                    AnnualWellInterventionCostPerWell = table.Column<double>(type: "float", nullable: false),
-                    PluggingAndAbandonment = table.Column<double>(type: "float", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DevelopmentOperationalWellCosts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DevelopmentOperationalWellCosts_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExplorationOperationalWellCosts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExplorationRigUpgrading = table.Column<double>(type: "float", nullable: false),
-                    ExplorationRigMobDemob = table.Column<double>(type: "float", nullable: false),
-                    ExplorationProjectDrillingCosts = table.Column<double>(type: "float", nullable: false),
-                    AppraisalRigMobDemob = table.Column<double>(type: "float", nullable: false),
-                    AppraisalProjectDrillingCosts = table.Column<double>(type: "float", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExplorationOperationalWellCosts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ExplorationOperationalWellCosts_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProjectImages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProjectImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProjectImages_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProjectMembers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    FromOrgChart = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProjectMembers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProjectMembers_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RevisionDetails",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RevisionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RevisionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Arena = table.Column<bool>(type: "bit", nullable: false),
-                    Mdqc = table.Column<bool>(type: "bit", nullable: false),
-                    Classification = table.Column<int>(type: "int", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RevisionDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RevisionDetails_Projects_RevisionId",
-                        column: x => x.RevisionId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Wells",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WellCategory = table.Column<int>(type: "int", nullable: false),
-                    WellCost = table.Column<double>(type: "float", nullable: false),
-                    DrillingDays = table.Column<double>(type: "float", nullable: false),
-                    PlugingAndAbandonmentCost = table.Column<double>(type: "float", nullable: false),
-                    WellInterventionCost = table.Column<double>(type: "float", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Wells", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Wells_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Campaigns",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RigUpgradingCostStartYear = table.Column<int>(type: "int", nullable: false),
-                    RigUpgradingCostInternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RigMobDemobCostStartYear = table.Column<int>(type: "int", nullable: false),
-                    RigMobDemobCostInternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CampaignType = table.Column<int>(type: "int", nullable: false),
-                    RigUpgradingCost = table.Column<double>(type: "float", nullable: false),
-                    RigMobDemobCost = table.Column<double>(type: "float", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Campaigns", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Campaigns_Cases_CaseId",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CaseImages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CaseImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CaseImages_Cases_CaseId",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -516,6 +318,61 @@ namespace api.Migrations
                         principalTable: "Cases",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OriginalProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ReferenceCaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRevision = table.Column<bool>(type: "bit", nullable: false),
+                    FusionProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommonLibraryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false),
+                    PhysicalUnit = table.Column<int>(type: "int", nullable: false),
+                    ProjectPhase = table.Column<int>(type: "int", nullable: false),
+                    InternalProjectPhase = table.Column<int>(type: "int", nullable: false),
+                    Classification = table.Column<int>(type: "int", nullable: false),
+                    ProjectCategory = table.Column<int>(type: "int", nullable: false),
+                    SharepointSiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Co2RemovedFromGas = table.Column<double>(type: "float", nullable: false),
+                    Co2EmissionFromFuelGas = table.Column<double>(type: "float", nullable: false),
+                    FlaredGasPerProducedVolume = table.Column<double>(type: "float", nullable: false),
+                    Co2EmissionsFromFlaredGas = table.Column<double>(type: "float", nullable: false),
+                    Co2Vented = table.Column<double>(type: "float", nullable: false),
+                    DailyEmissionFromDrillingRig = table.Column<double>(type: "float", nullable: false),
+                    AverageDevelopmentDrillingDays = table.Column<double>(type: "float", nullable: false),
+                    OilPriceUsd = table.Column<double>(type: "float", nullable: false),
+                    GasPriceNok = table.Column<double>(type: "float", nullable: false),
+                    NglPriceUsd = table.Column<double>(type: "float", nullable: false),
+                    DiscountRate = table.Column<double>(type: "float", nullable: false),
+                    ExchangeRateUsdToNok = table.Column<double>(type: "float", nullable: false),
+                    NpvYear = table.Column<int>(type: "int", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projects_Cases_ReferenceCaseId",
+                        column: x => x.ReferenceCaseId,
+                        principalTable: "Cases",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Projects_Projects_OriginalProjectId",
+                        column: x => x.OriginalProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -684,14 +541,15 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CampaignWells",
+                name: "DevelopmentOperationalWellCosts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    WellId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CampaignId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StartYear = table.Column<int>(type: "int", nullable: false),
-                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RigUpgrading = table.Column<double>(type: "float", nullable: false),
+                    RigMobDemob = table.Column<double>(type: "float", nullable: false),
+                    AnnualWellInterventionCostPerWell = table.Column<double>(type: "float", nullable: false),
+                    PluggingAndAbandonment = table.Column<double>(type: "float", nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -699,17 +557,143 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CampaignWells", x => x.Id);
+                    table.PrimaryKey("PK_DevelopmentOperationalWellCosts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CampaignWells_Campaigns_CampaignId",
-                        column: x => x.CampaignId,
-                        principalTable: "Campaigns",
-                        principalColumn: "Id");
+                        name: "FK_DevelopmentOperationalWellCosts_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExplorationOperationalWellCosts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExplorationRigUpgrading = table.Column<double>(type: "float", nullable: false),
+                    ExplorationRigMobDemob = table.Column<double>(type: "float", nullable: false),
+                    ExplorationProjectDrillingCosts = table.Column<double>(type: "float", nullable: false),
+                    AppraisalRigMobDemob = table.Column<double>(type: "float", nullable: false),
+                    AppraisalProjectDrillingCosts = table.Column<double>(type: "float", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExplorationOperationalWellCosts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CampaignWells_Wells_WellId",
-                        column: x => x.WellId,
-                        principalTable: "Wells",
-                        principalColumn: "Id");
+                        name: "FK_ExplorationOperationalWellCosts_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectImages_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectMembers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AzureAdUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    FromOrgChart = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectMembers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectMembers_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RevisionDetails",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RevisionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RevisionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Arena = table.Column<bool>(type: "bit", nullable: false),
+                    Mdqc = table.Column<bool>(type: "bit", nullable: false),
+                    Classification = table.Column<int>(type: "int", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RevisionDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RevisionDetails_Projects_RevisionId",
+                        column: x => x.RevisionId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Wells",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WellCategory = table.Column<int>(type: "int", nullable: false),
+                    WellCost = table.Column<double>(type: "float", nullable: false),
+                    DrillingDays = table.Column<double>(type: "float", nullable: false),
+                    PlugingAndAbandonmentCost = table.Column<double>(type: "float", nullable: false),
+                    WellInterventionCost = table.Column<double>(type: "float", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wells", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Wells_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -759,6 +743,11 @@ namespace api.Migrations
                 column: "EntityName");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChangeLogs_ParentEntityId",
+                table: "ChangeLogs",
+                column: "ParentEntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChangeLogs_PropertyName",
                 table: "ChangeLogs",
                 column: "PropertyName");
@@ -803,15 +792,15 @@ namespace api.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectMembers_AzureAdUserId_ProjectId",
+                table: "ProjectMembers",
+                columns: new[] { "AzureAdUserId", "ProjectId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectMembers_ProjectId",
                 table: "ProjectMembers",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProjectMembers_UserId_ProjectId",
-                table: "ProjectMembers",
-                columns: new[] { "UserId", "ProjectId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_FusionProjectId",
@@ -822,6 +811,11 @@ namespace api.Migrations
                 name: "IX_Projects_OriginalProjectId",
                 table: "Projects",
                 column: "OriginalProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_ReferenceCaseId",
+                table: "Projects",
+                column: "ReferenceCaseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestLogs_RequestStartUtc",
@@ -868,11 +862,46 @@ namespace api.Migrations
                 name: "IX_Wells_ProjectId",
                 table: "Wells",
                 column: "ProjectId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Campaigns_Cases_CaseId",
+                table: "Campaigns",
+                column: "CaseId",
+                principalTable: "Cases",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CampaignWells_Wells_WellId",
+                table: "CampaignWells",
+                column: "WellId",
+                principalTable: "Wells",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CaseImages_Cases_CaseId",
+                table: "CaseImages",
+                column: "CaseId",
+                principalTable: "Cases",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Cases_Projects_ProjectId",
+                table: "Cases",
+                column: "ProjectId",
+                principalTable: "Projects",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Projects_Cases_ReferenceCaseId",
+                table: "Projects");
+
             migrationBuilder.DropTable(
                 name: "BackgroundJobLogs");
 

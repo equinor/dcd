@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20250313074810_RenameProfiles")]
-    partial class RenameProfiles
+    [Migration("20250320113635_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -528,6 +528,9 @@ namespace api.Migrations
                     b.Property<string>("OldValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ParentEntityId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Payload")
                         .HasColumnType("nvarchar(max)");
 
@@ -545,6 +548,8 @@ namespace api.Migrations
                     b.HasIndex("EntityId");
 
                     b.HasIndex("EntityName");
+
+                    b.HasIndex("ParentEntityId");
 
                     b.HasIndex("PropertyName");
 
