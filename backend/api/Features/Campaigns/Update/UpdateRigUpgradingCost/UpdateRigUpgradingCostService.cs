@@ -4,7 +4,7 @@ using api.Features.Cases.Recalculation;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigUpgradingCost;
+namespace api.Features.Campaigns.Update.UpdateRigUpgradingCost;
 
 public class UpdateRigUpgradingCostService(DcdDbContext context, RecalculationService recalculationService)
 {

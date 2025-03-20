@@ -2,7 +2,7 @@ using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigMobDemobCost;
+namespace api.Features.Campaigns.Update.UpdateRigMobDemobCost;
 
 public class UpdateRigMobDemobCostController(UpdateRigMobDemobCostService updateRigMobDemobCostService) : ControllerBase
 {

@@ -1,10 +1,10 @@
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Assets.CaseAssets.Campaigns.Get;
+using api.Features.Campaigns.Get;
 using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Create;
+namespace api.Features.Campaigns.Create;
 
 public class CreateCampaignController(CreateCampaignService createCampaignService, GetCampaignService getCampaignService) : ControllerBase
 {

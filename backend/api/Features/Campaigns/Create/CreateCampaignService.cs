@@ -7,7 +7,7 @@ using api.Models.Enums;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Create;
+namespace api.Features.Campaigns.Create;
 
 public class CreateCampaignService(DcdDbContext context, RecalculationService recalculationService)
 {

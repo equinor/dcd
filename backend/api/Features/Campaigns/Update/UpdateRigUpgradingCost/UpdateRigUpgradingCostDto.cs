@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigUpgradingCost;
+namespace api.Features.Campaigns.Update.UpdateRigUpgradingCost;
 
 public class UpdateRigUpgradingCostDto
 {

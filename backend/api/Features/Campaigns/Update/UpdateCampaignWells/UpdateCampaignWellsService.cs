@@ -5,7 +5,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaignWells;
+namespace api.Features.Campaigns.Update.UpdateCampaignWells;
 
 public class UpdateCampaignWellsService(DcdDbContext context, RecalculationService recalculationService)
 {

@@ -5,7 +5,7 @@ using api.Features.Cases.GetWithAssets.Dtos.AssetDtos;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Get;
+namespace api.Features.Campaigns.Get;
 
 public class GetCampaignService(DcdDbContext context)
 {

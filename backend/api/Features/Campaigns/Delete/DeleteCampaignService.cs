@@ -4,7 +4,7 @@ using api.Features.Cases.Recalculation;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Delete;
+namespace api.Features.Campaigns.Delete;
 
 public class DeleteCampaignService(DcdDbContext context, RecalculationService recalculationService)
 {

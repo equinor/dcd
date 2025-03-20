@@ -2,7 +2,7 @@ using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Delete;
+namespace api.Features.Campaigns.Delete;
 
 public class DeleteCampaignController(DeleteCampaignService deleteCampaignService) : ControllerBase
 {

@@ -2,7 +2,7 @@ using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaign;
+namespace api.Features.Campaigns.Update.UpdateCampaign;
 
 public class UpdateCampaignController(UpdateCampaignService updateCampaignService) : ControllerBase
 {

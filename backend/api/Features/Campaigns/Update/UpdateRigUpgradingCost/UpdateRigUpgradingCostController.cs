@@ -2,7 +2,7 @@ using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateRigUpgradingCost;
+namespace api.Features.Campaigns.Update.UpdateRigUpgradingCost;
 
 public class UpdateRigUpgradingCostController(UpdateRigUpgradingCostService updateRigUpgradingCostService) : ControllerBase
 {

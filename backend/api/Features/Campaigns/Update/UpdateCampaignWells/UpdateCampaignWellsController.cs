@@ -2,7 +2,7 @@ using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Features.Assets.CaseAssets.Campaigns.Update.UpdateCampaignWells;
+namespace api.Features.Campaigns.Update.UpdateCampaignWells;
 
 public class UpdateCampaignWellsController(UpdateCampaignWellsService updateCampaignWellsService) : ControllerBase
 {
