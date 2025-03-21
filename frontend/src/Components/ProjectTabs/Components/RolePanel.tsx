@@ -73,7 +73,21 @@ const RolePanel = ({
                     <>
                         <Typography variant="h6">PMT members from the project orgchart:</Typography>
                         {
-                            orgChartPeople.map((p) => (<PersonListItem key={p.azureAdUserId} azureId={p.azureAdUserId} />))
+                            orgChartPeople.map((p) => (
+                                <PersonListItem key={p.azureAdUserId} azureId={p.azureAdUserId}>
+                                    {canEdit() && (
+                                        <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
+                                            <Button
+                                                variant="ghost_icon"
+                                                onClick={() => handleSwitchPerson(p.azureAdUserId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
+                                            >
+                                                <Icon data={swap_horizontal} />
+                                            </Button>
+                                        </Tooltip>
+
+                                    )}
+                                </PersonListItem>
+                            ))
                         }
                     </>
                 ) : <Typography variant="h6">No PMT members from the project orgchart found</Typography>}
