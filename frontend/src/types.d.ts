@@ -657,7 +657,7 @@ declare namespace Components {
             videoName: string;
             base64EncodedData: string;
         }
-        export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
+        export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
         export interface WellOverviewDto {
             id: string; // uuid
             name: string;

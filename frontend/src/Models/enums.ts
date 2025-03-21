@@ -250,5 +250,4 @@ export enum WellCategory {
     ExplorationWell = 4,
     AppraisalWell = 5,
     Sidetrack = 6,
-    RigMobDemob = 7,
 }

@@ -89,7 +89,7 @@ const CaseDrillingScheduleTab = () => {
         if (!apiData) { return 0 }
 
         if (wells && wells.length > 0) {
-            if ([WellCategory.ExplorationWell, WellCategory.AppraisalWell, WellCategory.Sidetrack, WellCategory.RigMobDemob].includes(category)) {
+            if ([WellCategory.ExplorationWell, WellCategory.AppraisalWell, WellCategory.Sidetrack].includes(category)) {
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
 
@@ -189,7 +189,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-exploration-wells-${caseData.caseId}`}
-                                        onSubmit={() => {}}
+                                        onSubmit={() => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -199,7 +199,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-oil-producer-wells-${caseData.caseId}`}
-                                        onSubmit={() => {}}
+                                        onSubmit={() => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -209,7 +209,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-water-injector-wells-${caseData.caseId}`}
-                                        onSubmit={() => {}}
+                                        onSubmit={() => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -219,7 +219,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-appraisal-wells-${caseData.caseId}`}
-                                        onSubmit={() => {}}
+                                        onSubmit={() => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -229,7 +229,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-gas-producer-wells-${caseData.caseId}`}
-                                        onSubmit={() => {}}
+                                        onSubmit={() => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -239,7 +239,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-gas-injector-wells-${caseData.caseId}`}
-                                        onSubmit={() => {}}
+                                        onSubmit={() => { }}
                                     />
                                 </Grid>
                             </Grid>
