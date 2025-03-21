@@ -10,7 +10,7 @@ class TechnicalInputService extends __BaseService {
     public async updateDevelopmentOperationalWellCosts(
         projectId: string,
         developmentOperationalWellCostsId: string,
-        body: any,
+        body: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto,
     ): Promise<Components.Schemas.UpdateDevelopmentOperationalWellCostsDto> {
         const res: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto = await this.put(
             `projects/${projectId}/development-operational-well-costs/${developmentOperationalWellCostsId}`,
@@ -23,7 +23,7 @@ class TechnicalInputService extends __BaseService {
     public async updateExplorationOperationalWellCosts(
         projectId: string,
         explorationOperationalWellCostsId: string,
-        body: any,
+        body: Components.Schemas.UpdateExplorationOperationalWellCostsDto,
     ): Promise<Components.Schemas.UpdateExplorationOperationalWellCostsDto> {
         const res: Components.Schemas.UpdateExplorationOperationalWellCostsDto = await this.put(
             `projects/${projectId}/exploration-operational-well-costs/${explorationOperationalWellCostsId}`,
