@@ -49,7 +49,7 @@ public static class EmissionCalculationHelper
 
         var step1 = wsp * wom;
         var wrp = wr.Select(v => v / (Cd * (facilitiesAvailability / 100)) / wic);
-        var wrpWspWom = wrp.Select(v => step1 + v * 100 * wsp * (1 - wom));
+        var wrpWspWom = wrp.Select(v => step1 + v * wsp * (1 - wom));
 
         return new TimeSeries
         {
@@ -122,11 +122,7 @@ public static class EmissionCalculationHelper
 
         if (mergedProfile.Values.Length == 0 || oc == 0 || facilitiesAvailability == 0)
         {
-            return new TimeSeries
-            {
-                Values = new double[(int)(osp * oom)],
-                StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.StartYear ?? 0
-            };
+            return new TimeSeries();
         }
 
         var step1 = osp * oom;

@@ -10,25 +10,25 @@ interface Props {
     topside: Components.Schemas.TopsideDto,
 }
 
-const CaseCO2DistributionTable = ({
+const CaseCO2DistributionTable: React.FC<Props> = ({
     topside,
 }: Props) => {
     // Show data as percentages
     const co2Data = [
         {
             profile: "Oil profile",
-            expectedProfile: `${Math.round(Number(topside?.co2ShareOilProfile) * 100 * 1) / 1}%`,
-            maxProfile: `${Math.round(Number(topside?.co2OnMaxOilProfile) * 100 * 1) / 1}%`,
+            expectedProfile: `${Math.round(Number(topside?.co2ShareOilProfile) * 100)}%`,
+            maxProfile: `${Math.round(Number(topside?.co2OnMaxOilProfile) * 100)}%`,
         },
         {
             profile: "Gas profile",
-            expectedProfile: `${Math.round(Number(topside?.co2ShareGasProfile) * 100 * 1) / 1}%`,
-            maxProfile: `${Math.round(Number(topside?.co2OnMaxGasProfile) * 100 * 1) / 1}%`,
+            expectedProfile: `${Math.round(Number(topside?.co2ShareGasProfile) * 100)}%`,
+            maxProfile: `${Math.round(Number(topside?.co2OnMaxGasProfile) * 100)}%`,
         },
         {
             profile: "Water injection profile",
-            expectedProfile: `${Math.round(Number(topside?.co2ShareWaterInjectionProfile) * 100 * 1) / 1}%`,
-            maxProfile: `${Math.round(Number(topside?.co2OnMaxWaterInjectionProfile) * 100 * 1) / 1}%`,
+            expectedProfile: `${Math.round(Number(topside?.co2ShareWaterInjectionProfile) * 100)}%`,
+            maxProfile: `${Math.round(Number(topside?.co2OnMaxWaterInjectionProfile) * 100)}%`,
         },
     ]
 
