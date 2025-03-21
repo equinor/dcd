@@ -1,11 +1,9 @@
 import {
     ColDef,
     GridReadyEvent,
-    ICellRendererParams,
     CellClickedEvent,
 } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
-import { CircularProgress } from "@equinor/eds-core-react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import isEqual from "lodash/isEqual"
 import {
@@ -27,14 +25,12 @@ import profileAndUnitInSameCell from "./Components/CellRenderers/ProfileAndUnitC
 
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useEditQueueHandler } from "@/Hooks/useEditQueue"
-import {
-    ITimeSeriesTableDataOverrideWithSet,
-    ITimeSeriesTableDataWithSet,
-} from "@/Models/ITimeSeries"
+import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Utils/AgGridUtils"
 import {
+    gridRefArrayToAlignedGrid,
+    profilesToRowData,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
@@ -44,7 +40,7 @@ import {
     ITableCellChangeParams,
     ITableCellChangeConfig,
     validateInput,
-} from "@/Utils/commonUtils"
+} from "@/Utils/TableUtils"
 
 const CenterGridIcons = styled.div`
     padding-top: 0px;
