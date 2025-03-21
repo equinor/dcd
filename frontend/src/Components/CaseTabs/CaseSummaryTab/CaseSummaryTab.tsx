@@ -97,16 +97,7 @@ const CaseSummaryTab = (): React.ReactNode => {
                 ? apiData.developmentRigMobDemobOverride
                 : apiData?.developmentRigMobDemob
 
-            const startYears = [
-                oilProducerCostProfile,
-                gasProducerCostProfile,
-                waterInjectorCostProfile,
-                gasInjectorCostProfile,
-            ].map((series) => series?.startYear).filter((year) => year !== undefined)
-
-            const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
-
-            let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
+            const drillingCostSeriesList: (ITimeSeries | undefined)[] = [
                 oilProducerCostProfile,
                 gasProducerCostProfile,
                 waterInjectorCostProfile,
@@ -114,33 +105,6 @@ const CaseSummaryTab = (): React.ReactNode => {
                 developmentRigUpgrading,
                 developmentRigMobDemob,
             ]
-
-            const rigUpgradingCost = revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts?.rigUpgrading
-            const rigMobDemobCost = revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts?.rigMobDemob
-            const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
-
-            if (sumOfRigAndMobDemob > 0) {
-                interface ITimeSeriesWithCostProfile extends ITimeSeries {
-                    developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
-                }
-
-                const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
-                    startYear: minStartYear,
-                    name: "Development Rig Upgrading and Mob/Demob Costs",
-                    values: [sumOfRigAndMobDemob],
-                    sum: sumOfRigAndMobDemob,
-                }
-
-                if (
-                    drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
-                    && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
-                ) {
-                    drillingCostSeriesList = [timeSeriesWithCostProfile]
-                }
-                if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
-                    drillingCostSeriesList.push(timeSeriesWithCostProfile)
-                }
-            }
 
             return mergeTimeseriesList(drillingCostSeriesList)
         }
@@ -190,10 +154,6 @@ const CaseSummaryTab = (): React.ReactNode => {
             const explorationRigUpgradingCostDataOverride = apiData?.explorationRigUpgradingCostProfileOverride
             const explorationRigMobDemobCostData = apiData?.explorationRigMobDemobOverride
             const explorationRigMobDemobCostDataOverride = apiData?.explorationRigMobDemobOverride
-            // const developmentRigUpgradingCostData = apiData?.developmentRigUpgradingCostProfileOverride
-            // const developmentRigUpgradingCostDataOverride = apiData?.developmentRigUpgradingCostProfileOverride
-            // const developmentRigMobDemobCostData = apiData?.developmentRigMobDemobOverride
-            // const developmentRigMobDemobCostDataOverride = apiData?.developmentRigMobDemobOverride
             const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
             const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
             const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
@@ -242,18 +202,6 @@ const CaseSummaryTab = (): React.ReactNode => {
                     profile: totalDrillingCostData,
                     group: "CAPEX",
                 },
-                // {
-                //     profileName: "Rig upgrade",
-                //     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                //     profile: developmentRigUpgradingCostDataOverride?.override ? developmentRigUpgradingCostDataOverride : developmentRigUpgradingCostData,
-                //     group: "CAPEX",
-                // },
-                // {
-                //     profileName: "Rig mob/demob",
-                //     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                //     profile: developmentRigMobDemobCostDataOverride?.override ? developmentRigMobDemobCostDataOverride : developmentRigMobDemobCostData,
-                //     group: "CAPEX",
-                // },
                 {
                     profileName: "Offshore facilities",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
