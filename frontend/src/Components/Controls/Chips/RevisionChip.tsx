@@ -15,7 +15,7 @@ import RevisionDetailsModal from "../Revision/RevisionDetailsModal"
 import { useRevisions } from "@/Hooks/useRevision"
 import { revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { truncateText } from "@/Utils/commonUtils"
+import { truncateText } from "@/Utils/FormatingUtils"
 
 const RevisionChipContainer = styled(Chip)`
     height: auto;

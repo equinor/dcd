@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import { useAppStore } from "../../../Store/AppStore"
-import { preventNonDigitInput, isWithinRange } from "../../../Utils/commonUtils"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -33,6 +32,10 @@ interface Props {
     allowNegative?: boolean;
     min?: number;
     max?: number;
+}
+
+const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!/\d/.test(e.key)) { e.preventDefault() }
 }
 
 const NumberInputWithValidation = ({
@@ -64,6 +67,8 @@ const NumberInputWithValidation = ({
         const numValue = Number(value)
 
         if (min !== undefined && max !== undefined) {
+            const isWithinRange = (num: number, upper: number, lower: number): boolean => num >= lower && num <= upper
+
             if (!isWithinRange(numValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)

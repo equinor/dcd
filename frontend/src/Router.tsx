@@ -12,7 +12,7 @@ import IndexView from "./Views/IndexView"
 import NotFoundView from "./Views/NotFoundView"
 import ProjectView from "./Views/ProjectView"
 
-const ProjectRoute = () => {
+const ProjectRoute = (): JSX.Element => {
     const { currentContext } = useModuleCurrentContext()
 
     if (!currentContext) {
@@ -52,7 +52,7 @@ const routes: RouteObject[] = [
     },
 ]
 
-export default function AppRouter() {
+const AppRouter = (): JSX.Element => {
     const router = useRouter(routes as AgnosticRouteObject[])
 
     return (
@@ -62,3 +62,5 @@ export default function AppRouter() {
         />
     )
 }
+
+export default AppRouter

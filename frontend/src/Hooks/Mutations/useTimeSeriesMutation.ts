@@ -1,9 +1,7 @@
-import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
 import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
-import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 import { EditInstance, ResourceName } from "@/Models/Interfaces"
 import { TimeSeriesService, TimeSeriesData } from "@/Services/TimeSeriesService"
 import { useProjectContext } from "@/Store/ProjectContext"

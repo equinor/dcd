@@ -10,9 +10,9 @@ import { useDataFetch } from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { caseTabNames } from "@/Utils/Config/constants"
+import { caseTabNames, PRODUCTION_STRATEGY } from "@/Utils/Config/constants"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
-import { productionStrategyOverviewToString, truncateText } from "@/Utils/commonUtils"
+import { truncateText } from "@/Utils/FormatingUtils"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -25,7 +25,7 @@ const sortCasesByDate = (a: ArchivedCase, b: ArchivedCase) => sortUtcDateStrings
 const getTooltipText = (
     caseName: string | undefined,
     strategy: Components.Schemas.ProductionStrategyOverview | undefined,
-) => `${caseName || "Untitled"} - Strategy: ${productionStrategyOverviewToString(strategy)}`
+) => `${caseName || "Untitled"} - Strategy: ${strategy !== undefined ? PRODUCTION_STRATEGY[strategy] : "Unknown"}`
 
 const getCaseDisplayName = (caseName: string | undefined, index: number, isSidebarOpen: boolean) => {
     if (!isSidebarOpen) { return `#${index + 1}` }

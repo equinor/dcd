@@ -27,8 +27,8 @@ import { CampaignType, WellCategory } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { SetTableYearsFromProfiles } from "@/Utils/TableUtils"
 
 const InputGroup = styled.div`
     display: flex;

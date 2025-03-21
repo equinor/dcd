@@ -15,9 +15,8 @@ import {
 } from "@/Models/ITimeSeries"
 import { Currency } from "@/Models/enums"
 import { useCaseStore } from "@/Store/CaseStore"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { mergeTimeseriesList } from "@/Utils/commonUtils"
+import { SetTableYearsFromProfiles, mergeTimeseriesList } from "@/Utils/TableUtils"
 
 const CaseSummaryTab = (): React.ReactNode => {
     const { activeTabCase } = useCaseStore()

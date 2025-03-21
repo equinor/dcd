@@ -18,7 +18,7 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 const StyledContainer = styled.div`
     display: flex;

@@ -11,9 +11,16 @@ import { ModalContextProvider } from "./Store/ModalContext"
 import { ProjectContextProvider } from "./Store/ProjectContext"
 import { resolveConfiguration } from "./Utils/Config/EnvConfig"
 import { EnvironmentVariables } from "./Utils/Config/environmentVariables"
-import { storeAppId, storeAppScope } from "./Utils/commonUtils"
 import Styles from "./styles"
 import { APP_VERSION } from "./version"
+
+const storeAppId = (appId: string): void => {
+    window.sessionStorage.setItem("appId", appId)
+}
+
+const storeAppScope = (appScope: string): void => {
+    window.sessionStorage.setItem("appScope", appScope)
+}
 
 const App: FC = () => {
     const queryClient = new QueryClient({

@@ -4,7 +4,6 @@ import styled from "styled-components"
 
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
-import { unwrapProjectId } from "@/Utils/commonUtils"
 
 const ButtonContainer = styled.div`
     margin-top: 12px;
@@ -14,6 +13,14 @@ const ButtonContainer = styled.div`
 interface Props {
     projectOrRevisionId?: string
     setShowRevisionReminder: (show: boolean) => void
+}
+
+export const unwrapProjectId = (projectId?: string | undefined | null): string => {
+    if (projectId === undefined || projectId === null) {
+        throw new Error("Attempted to use a Project ID which does not exist")
+    }
+
+    return projectId
 }
 
 export const STEAExportButton = ({ projectOrRevisionId, setShowRevisionReminder }: Props) => {

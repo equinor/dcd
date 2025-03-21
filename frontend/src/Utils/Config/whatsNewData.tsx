@@ -1,6 +1,14 @@
-import { sortVersions } from "../commonUtils"
-
 import { Version, WhatsNewUpdates } from "@/Models/Interfaces"
+
+const sortVersions = (versions: string[]): string[] => versions.sort((a, b) => {
+    const [aMajor, aMinor, aPatch] = a.split(".").map(Number)
+    const [bMajor, bMinor, bPatch] = b.split(".").map(Number)
+
+    if (aMajor !== bMajor) { return bMajor - aMajor }
+    if (aMinor !== bMinor) { return bMinor - aMinor }
+
+    return bPatch - aPatch
+})
 
 export const whatsNewUpdates: WhatsNewUpdates = {
     "2.0.0": {

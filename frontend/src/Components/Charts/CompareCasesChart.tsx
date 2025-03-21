@@ -1,6 +1,6 @@
 import { AgCharts } from "ag-charts-react"
 
-import { insertIf, separateProfileObjects } from "../../Utils/AgGridUtils"
+import { insertIf, separateProfileObjects } from "@/Utils/TableUtils"
 
 interface Props {
     data: any
