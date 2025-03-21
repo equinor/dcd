@@ -23,7 +23,7 @@ interface RolePanelProps {
 
 const RolePanel = ({
     isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson,
-}: RolePanelProps) => {
+}: RolePanelProps): React.ReactNode => {
     const { canEdit } = useCanUserEdit()
     const orgChartPeople = useMemo(() => people?.filter((person) => person.isPmt === true), [people])
     const manuallyAddedPeople = useMemo(() => people?.filter((person) => person.isPmt === false), [people])
@@ -39,7 +39,7 @@ const RolePanel = ({
                     <PersonSelect
                         placeholder={`Add new ${isViewers ? "viewer" : "editor"}`}
                         selectedPerson={null}
-                        onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, isViewers ? ProjectMemberRole.Observer : ProjectMemberRole.Editor)}
+                        onSelect={(selectedPerson): void => handleAddPerson(selectedPerson as PersonSelectEvent, isViewers ? ProjectMemberRole.Observer : ProjectMemberRole.Editor)}
                     />
                 )}
                 {manuallyAddedPeople && manuallyAddedPeople.length > 0 ? (
@@ -51,13 +51,13 @@ const RolePanel = ({
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
                                             <Button
                                                 variant="ghost_icon"
-                                                onClick={() => handleSwitchPerson(person.azureAdUserId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
+                                                onClick={(): void => handleSwitchPerson(person.azureAdUserId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
                                             >
                                                 <Icon data={swap_horizontal} />
                                             </Button>
                                         </Tooltip>
                                         <Tooltip title={`Remove ${isViewers ? "viewer" : "editor"}`}>
-                                            <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.azureAdUserId)}>
+                                            <Button variant="ghost_icon" color="danger" onClick={(): void => handleRemovePerson(person.azureAdUserId)}>
                                                 <Icon data={delete_to_trash} />
                                             </Button>
                                         </Tooltip>
