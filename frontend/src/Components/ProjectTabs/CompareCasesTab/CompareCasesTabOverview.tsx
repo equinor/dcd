@@ -1,12 +1,15 @@
-import { useState } from "react"
 import Grid from "@mui/material/Grid2"
-import { useProjectChartData } from "@/Hooks/useProjectChartData"
+import { useState } from "react"
+
+import { SecondaryTabs } from "../Components/SecondaryTabs"
+
+import Co2Emissions from "./Tabs/Co2Emissions"
+import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Kpis from "./Tabs/Kpis"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
-import InvestmentProfiles from "./Tabs/InvestmentProfiles"
-import Co2Emissions from "./Tabs/Co2Emissions"
+
 import CompareCasesTable from "@/Components/Tables/ProjectTables/CompareCasesTable"
-import { SecondaryTabs } from "../Components/SecondaryTabs"
+import { useProjectChartData } from "@/Hooks/useProjectChartData"
 
 const ProjectCompareCasesTab = () => {
     const {

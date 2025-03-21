@@ -1,13 +1,14 @@
+import { tokens } from "@equinor/eds-tokens"
 import React, {
     useState, useEffect, useRef, RefObject,
 } from "react"
-import styled from "styled-components"
 import { Link } from "react-router-dom"
-import { tokens } from "@equinor/eds-tokens"
-import Article from "./Components/Article"
-import Header from "./Components/Header"
+import styled from "styled-components"
+
 import CreateCase from "./Articles/CreateCase"
 import MakeEdits from "./Articles/MakeEdits"
+import Article from "./Components/Article"
+import Header from "./Components/Header"
 
 const Wrapper = styled.div`
     display: flex;
@@ -96,6 +97,7 @@ const placeholder = (title: string) => {
             </Article.Body>
         </Article>
     )
+
     return PlaceholderComponent
 }
 
@@ -126,6 +128,7 @@ const UserGuideView: React.FC = () => {
     const handleScroll = () => {
         const newActiveIndex = articleRefs.current.findIndex((ref) => {
             const rect = ref.current?.getBoundingClientRect()
+
             return rect ? rect.top >= 0 && rect.top < window.innerHeight / 2 : false
         })
 
@@ -144,6 +147,7 @@ const UserGuideView: React.FC = () => {
         }
 
         window.addEventListener("scroll", handleScroll)
+
         return () => {
             window.removeEventListener("scroll", handleScroll)
         }

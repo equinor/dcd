@@ -1,5 +1,5 @@
-import React from "react"
 import { Grid, Skeleton } from "@mui/material"
+import React from "react"
 
 const caseScheduleTabSkeleton: React.FC = () => (
     <Grid container spacing={2} sx={{ padding: "16px" }}>

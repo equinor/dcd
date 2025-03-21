@@ -1,9 +1,10 @@
 import { InputWrapper, Input, Icon } from "@equinor/eds-core-react"
-import { useState, useEffect } from "react"
 import { error_filled } from "@equinor/eds-icons"
+import { useState, useEffect } from "react"
 import styled from "styled-components"
-import { preventNonDigitInput, isWithinRange } from "../../../Utils/commonUtils"
+
 import { useAppStore } from "../../../Store/AppStore"
+import { preventNonDigitInput, isWithinRange } from "../../../Utils/commonUtils"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -56,20 +57,25 @@ const NumberInputWithValidation = ({
             setInputValue("0")
             setHasError(false)
             setHelperText("\u200B")
+
             return true
         }
 
         const numValue = Number(value)
+
         if (min !== undefined && max !== undefined) {
             if (!isWithinRange(numValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
+
                 return false
             }
             setHasError(false)
             setHelperText("\u200B")
+
             return true
         }
+
         return true
     }
 
@@ -77,10 +83,12 @@ const NumberInputWithValidation = ({
         if (value === "") {
             setInputValue("0")
             onSubmit(0)
+
             return
         }
 
         const numValue = Number(value)
+
         if (validateInput(value)) {
             onSubmit(numValue)
         } else {
@@ -92,6 +100,7 @@ const NumberInputWithValidation = ({
         // If the input is "0" and user starts typing, clear it
         if (inputValue === "0" && value.length === 2 && value.startsWith("0")) {
             setInputValue(value.slice(1))
+
             return
         }
         setInputValue(value)

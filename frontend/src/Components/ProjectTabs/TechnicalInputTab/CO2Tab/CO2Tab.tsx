@@ -1,3 +1,8 @@
+import { ColDef } from "@ag-grid-community/core"
+import { AgGridReact } from "@ag-grid-community/react"
+import { Switch, Tooltip, Typography } from "@equinor/eds-core-react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import Grid from "@mui/material/Grid2"
 import React, {
     useEffect,
     useState,
@@ -6,19 +11,14 @@ import React, {
     useCallback,
     ChangeEvent,
 } from "react"
-import { AgGridReact } from "@ag-grid-community/react"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { Switch, Tooltip, Typography } from "@equinor/eds-core-react"
-import { ColDef } from "@ag-grid-community/core"
-import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppStore } from "@/Store/AppStore"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
-import useEditProject from "@/Hooks/useEditProject"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useDataFetch } from "@/Hooks"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import useEditProject from "@/Hooks/useEditProject"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { cellStyleRightAlign } from "@/Utils/commonUtils"
 
 const StyledContainer = styled.div`
     display: flex;
@@ -104,6 +104,7 @@ const CO2Tab = () => {
         if (value !== undefined) {
             return Math.round(value * 100) / 100
         }
+
         return value
     }
 
@@ -181,6 +182,7 @@ const CO2Tab = () => {
             if (co2VentedRow) {
                 return node.data.profile === "CO2 vented"
             }
+
             return node.data.profile !== "CO2 vented"
         },
         [co2VentedRow],
@@ -188,6 +190,7 @@ const CO2Tab = () => {
 
     const handleCellValueChange = (p: any) => {
         const value = p.data.value === null ? 0 : p.data.value
+
         p.data.set(Number(value.toString().replace(/,/g, ".")))
     }
 
@@ -200,8 +203,10 @@ const CO2Tab = () => {
         suppressKeyboardEvent: (params: any) => {
             if (params.event.key === "Enter") {
                 gridRef.current?.stopEditing()
+
                 return true
             }
+
             return false
         },
     }), [])
@@ -210,6 +215,7 @@ const CO2Tab = () => {
         if (check) {
             return externalFilterChanged(true)
         }
+
         return externalFilterChanged(false)
     }
 
@@ -234,6 +240,7 @@ const CO2Tab = () => {
             )
         ) {
             const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
+
             newProject.co2RemovedFromGas = co2RemovedFromGas
             newProject.co2EmissionFromFuelGas = co2EmissionsFromFuelGas
             newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume

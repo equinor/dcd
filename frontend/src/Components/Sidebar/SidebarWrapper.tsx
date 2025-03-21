@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react"
-import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
+import { useEffect, useState } from "react"
+import styled from "styled-components"
 
-import { useAppStore } from "@/Store/AppStore"
-import { useDataFetch } from "@/Hooks"
-import ProjectDetails from "./Components/Project/ProjectDetails"
 import CasesDetails from "./Components/ActiveCases/CasesDetails"
 import ArchivedCasesDetails from "./Components/ArchivedCases/ArchivedCasesDetails"
+import ProjectDetails from "./Components/Project/ProjectDetails"
 import { sharedTimelineStyles } from "./sharedStyles"
+
+import { useDataFetch } from "@/Hooks"
+import { useAppStore } from "@/Store/AppStore"
 
 const { Toggle, Footer } = SideBar
 

@@ -1,12 +1,12 @@
-import React from "react"
 import { Typography, Icon } from "@equinor/eds-core-react"
 import { add, exit_to_app, gear } from "@equinor/eds-icons"
 import MenuItem from "@mui/material/MenuItem"
+import React from "react"
 import styled from "styled-components"
 
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useRevisions } from "@/Hooks/useRevision"
 import { useDataFetch } from "@/Hooks"
+import { useRevisions } from "@/Hooks/useRevision"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 interface MenuControlsContainerProps {
     $hasRevisions: boolean

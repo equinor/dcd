@@ -9,6 +9,7 @@ class CaseService extends __BaseService {
             `projects/${projectId}/cases`,
             { body: data },
         )
+
         return res
     }
 
@@ -25,6 +26,7 @@ class CaseService extends __BaseService {
         caseId: string,
     ): Promise<Components.Schemas.CaseWithAssetsDto> {
         const res = await this.get(`projects/${projectId}/cases/${caseId}/case-with-assets`)
+
         return res
     }
 
@@ -37,6 +39,7 @@ class CaseService extends __BaseService {
             { body: {} },
             { params: { copyCaseId } },
         )
+
         return res
     }
 
@@ -47,6 +50,7 @@ class CaseService extends __BaseService {
         const res: Components.Schemas.ProjectDataDto = await this.delete(
             `projects/${projectId}/cases/${caseId}`,
         )
+
         return res
     }
 
@@ -59,6 +63,7 @@ class CaseService extends __BaseService {
             `projects/${projectId}/cases/${caseId}/profiles/save-batch`,
             { body: dto },
         )
+
         return res
     }
 }

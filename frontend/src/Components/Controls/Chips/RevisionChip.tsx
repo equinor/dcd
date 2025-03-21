@@ -4,16 +4,18 @@ import {
     Icon,
     Typography,
 } from "@equinor/eds-core-react"
-import { useState } from "react"
 import { close } from "@equinor/eds-icons"
 import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
 import { useParams } from "react-router"
 import styled from "styled-components"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { revisionQueryFn } from "@/Services/QueryFunctions"
-import { truncateText } from "@/Utils/commonUtils"
+
 import RevisionDetailsModal from "../Revision/RevisionDetailsModal"
+
 import { useRevisions } from "@/Hooks/useRevision"
+import { revisionQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { truncateText } from "@/Utils/commonUtils"
 
 const RevisionChipContainer = styled(Chip)`
     height: auto;

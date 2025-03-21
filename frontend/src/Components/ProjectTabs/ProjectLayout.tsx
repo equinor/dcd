@@ -1,31 +1,32 @@
-import { useEffect, useRef, useState } from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Banner, Icon, Typography, Button,
 } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
+import { useEffect, useRef, useState } from "react"
 import { Outlet, useLocation } from "react-router-dom"
 import styled from "styled-components"
-import { useQuery } from "@tanstack/react-query"
+
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppStore } from "../../Store/AppStore"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppNavigation } from "@/Hooks/useNavigate"
-import { useDataFetch, useLocalStorage } from "@/Hooks"
-import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
-import { peopleQueryFn } from "@/Services/QueryFunctions"
-import { dateStringToDateUtc } from "@/Utils/DateUtils"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
-
-import IndexView from "@/Views/IndexView"
-import CreateCaseModal from "../Modal/CreateCaseModal"
-import NoAccessErrorView from "@/Views/NoAccessErrorView"
-import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
-import SidebarWrapper from "../Sidebar/SidebarWrapper"
 import BaseControls from "../Controls/BaseControls"
+import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 import BaseModal from "../Modal/BaseModal"
+import CreateCaseModal from "../Modal/CreateCaseModal"
+import SidebarWrapper from "../Sidebar/SidebarWrapper"
 import SnackbarComponent from "../Snackbar/Snackbar"
+
+import { useDataFetch, useLocalStorage } from "@/Hooks"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import { NoAccessReason } from "@/Models/enums"
+import { peopleQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Store/ProjectContext"
+import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
+import { dateStringToDateUtc } from "@/Utils/DateUtils"
+import IndexView from "@/Views/IndexView"
+import NoAccessErrorView from "@/Views/NoAccessErrorView"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -85,6 +86,7 @@ const ProjectLayout = (): JSX.Element => {
     // Update revision state based on URL changes
     useEffect(() => {
         const isInRevisionPath = location.pathname.includes("/revision/")
+
         setIsRevision(isInRevisionPath)
     }, [location.pathname])
 
@@ -93,6 +95,7 @@ const ProjectLayout = (): JSX.Element => {
         if (!currentContext?.externalId) { return }
 
         const isProjectChanged = previousContextRef.current !== currentContext.id
+
         previousContextRef.current = currentContext.id
 
         if (isProjectChanged) {
@@ -112,11 +115,13 @@ const ProjectLayout = (): JSX.Element => {
             try {
                 const projectService = GetProjectService()
                 const results = await projectService.projectExists(currentContext.externalId)
+
                 setProjectExists(results.projectExists)
                 setNoAccessReason(results.noAccessReason)
 
                 if (results.projectExists) {
                     setIsLoading(false)
+
                     return
                 }
 
@@ -128,6 +133,7 @@ const ProjectLayout = (): JSX.Element => {
                     setProjectExists(true)
                     setIsCreating(false)
                     setIsLoading(false)
+
                     return
                 }
 
@@ -188,6 +194,7 @@ const ProjectLayout = (): JSX.Element => {
         if (revisionAndProjectData && currentContext?.externalId) {
             if (warnedProjects && warnedProjects[currentContext.externalId]) {
                 const wp = { ...warnedProjects }
+
                 wp[currentContext.externalId].push(revisionAndProjectData.projectId)
                 setWarnedProjects(wp)
             } else {

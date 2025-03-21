@@ -1,12 +1,14 @@
-import { Drawer, Tab, Tabs } from "@mui/material"
-import styled from "styled-components"
-import { useState, useMemo } from "react"
 import { tokens } from "@equinor/eds-tokens"
+import { Drawer, Tab, Tabs } from "@mui/material"
+import { useState, useMemo } from "react"
+import styled from "styled-components"
+
 import SidesheetHeader from "./SidesheetHeader"
 import CalculationsTab from "./Tabs/CalculationsTab/CalculationsTab"
 import EditHistoryTab from "./Tabs/EditHistoryTab"
 import MetadataTab from "./Tabs/MetadataTab"
 import TimeSeriesTab from "./Tabs/TimeSeriesTab"
+
 import { useAppStore } from "@/Store/AppStore"
 import { formatFullDate } from "@/Utils/DateUtils"
 

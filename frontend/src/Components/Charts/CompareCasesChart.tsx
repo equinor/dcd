@@ -1,4 +1,5 @@
 import { AgCharts } from "ag-charts-react"
+
 import { insertIf, separateProfileObjects } from "../../Utils/AgGridUtils"
 
 interface Props {
@@ -42,6 +43,7 @@ export const CompareCasesChart = ({
                                 if (params.value.length > 18) {
                                     return `${params.value.substr(0, 16)}...`
                                 }
+
                                 return params.value
                             },
                         },

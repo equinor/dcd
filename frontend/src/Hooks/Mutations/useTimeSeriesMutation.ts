@@ -1,14 +1,18 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useProjectContext } from "@/Store/ProjectContext"
+
+import { useBaseMutation, MutationParams } from "./useBaseMutation"
+
+import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 import { EditInstance, ResourceName } from "@/Models/Interfaces"
 import { TimeSeriesService, TimeSeriesData } from "@/Services/TimeSeriesService"
-import { useBaseMutation, MutationParams } from "./useBaseMutation"
-import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const getLatestEdits = (queue: EditInstance[], keySelector: (edit: EditInstance) => string): EditInstance[] => {
     const latestEditsMap = new Map<string, EditInstance>()
+
     queue.forEach((edit) => latestEditsMap.set(keySelector(edit), edit))
+
     return Array.from(latestEditsMap.values())
 }
 
@@ -22,6 +26,7 @@ const categorizeTimeSeriesEntries = (queue: EditInstance[]): { timeseriesEntries
     } else {
         acc.timeseriesEntries.push(edit)
     }
+
     return acc
 }, { timeseriesEntries: [] as EditInstance[], overrideEntries: [] as EditInstance[] })
 
@@ -83,6 +88,7 @@ export const useTimeSeriesMutation = () => {
             // Regular profiles with override=false
             ...timeseriesEntries.map((edit) => {
                 const resourceObj = edit.resourceObject as any
+
                 return {
                     profileType: edit.resourceName,
                     startYear: resourceObj.startYear ?? 0,

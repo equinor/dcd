@@ -1,5 +1,5 @@
-import styled from "styled-components"
 import { Table } from "@equinor/eds-core-react"
+import styled from "styled-components"
 
 export const {
     Head, Body, Row, Cell,

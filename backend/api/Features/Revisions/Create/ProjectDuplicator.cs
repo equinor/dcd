@@ -29,6 +29,10 @@ public static class ProjectDuplicator
             });
         }
 
+        var cases = existingProject.Cases
+            .Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping, true))
+            .ToList();
+
         var newProject = new Project
         {
             Id = projectId,
@@ -45,7 +49,6 @@ public static class ProjectDuplicator
 
             Name = existingProject.Name,
             FusionProjectId = existingProject.FusionProjectId,
-            ReferenceCaseId = existingProject.ReferenceCaseId == null ? null : caseIdMapping[existingProject.ReferenceCaseId.Value],
             CommonLibraryName = existingProject.CommonLibraryName,
             Description = existingProject.Description,
             Country = existingProject.Country,
@@ -91,7 +94,7 @@ public static class ProjectDuplicator
             },
 
             Wells = wells,
-            Cases = existingProject.Cases.Select(caseItem => DuplicateCase(caseItem, projectId, caseIdMapping[caseItem.Id], wellIdMapping, true)).ToList(),
+            Cases = cases,
 
             // Mapped in a separate step later
             Images = [],

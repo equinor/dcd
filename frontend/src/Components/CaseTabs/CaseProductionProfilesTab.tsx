@@ -1,23 +1,24 @@
+import Grid from "@mui/material/Grid2"
 import {
     useState,
     useRef,
     useEffect,
 } from "react"
-import Grid from "@mui/material/Grid2"
-import { PhysUnit } from "@/Models/enums"
 
-import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
+
 import { TimeSeriesChart, setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
-import { useCaseStore } from "@/Store/CaseStore"
-import { defaultAxesData } from "@/Utils/commonUtils"
-import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { useCaseApiData, useDataFetch } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
+import { PhysUnit } from "@/Models/enums"
+import { useCaseStore } from "@/Store/CaseStore"
+import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
+import { getYearFromDateString } from "@/Utils/DateUtils"
+import { defaultAxesData } from "@/Utils/commonUtils"
 
 const CaseProductionProfilesTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -121,6 +122,7 @@ const CaseProductionProfilesTab = () => {
 
     const getProductionProfilesChartData = () => {
         const dataArray: object[] = []
+
         if (caseData.dg4Date === undefined) { return dataArray }
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
@@ -132,11 +134,13 @@ const CaseProductionProfilesTab = () => {
                 waterProduction: setValueToCorrespondingYear(waterProductionData, i, getYearFromDateString(caseData.dg4Date)),
             })
         }
+
         return dataArray
     }
 
     const injectionProfilesChartData = () => {
         const dataArray: object[] = []
+
         if (caseData.dg4Date === undefined) { return dataArray }
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
@@ -145,6 +149,7 @@ const CaseProductionProfilesTab = () => {
                     setValueToCorrespondingYear(waterInjectionData, i, getYearFromDateString(caseData.dg4Date)),
             })
         }
+
         return dataArray
     }
 

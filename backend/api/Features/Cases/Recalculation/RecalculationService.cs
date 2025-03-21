@@ -58,8 +58,7 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         var explorationWells = caseWithCampaignWells.ExplorationWells;
         var developmentWell = caseWithCampaignWells.DevelopmentWells;
 
-        DevelopmentWellCostProfileService.RunCalculation(caseItem);
-        ExplorationWellCostProfileService.RunCalculation(caseItem);
+        WellCostProfileService.RunCalculation(caseItem);
         RigCostProfileService.RunCalculation(caseItem);
         StudyCostProfileService.RunCalculation(caseItem);
         CessationCostProfileService.RunCalculation(caseItem, developmentWell);

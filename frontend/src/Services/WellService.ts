@@ -6,6 +6,7 @@ class WellService extends __BaseService {
         wellId: string,
     ): Promise<boolean> {
         const res = await this.get(`projects/${projectId}/wells/${wellId}/is-in-use`)
+
         return res
     }
 }

@@ -2,10 +2,12 @@ import {
     Button, Icon, Tooltip, Typography,
 } from "@equinor/eds-core-react"
 import { arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
-import styled from "styled-components"
 import { useState } from "react"
-import { TableCase } from "@/Models/Interfaces"
+import styled from "styled-components"
+
 import { CasesTable } from "./CasesTable"
+
+import { TableCase } from "@/Models/Interfaces"
 
 const ArchivedTitle = styled.div`
     margin-bottom: 12px;

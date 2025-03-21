@@ -1,9 +1,9 @@
+import { Icon, Button } from "@equinor/eds-core-react"
+import { close } from "@equinor/eds-icons"
 import {
     Box, Stack, Typography,
 } from "@mui/material"
-import { close } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { Icon, Button } from "@equinor/eds-core-react"
 
 const HeaderContainer = styled(Box)`
     padding: 56px 20px 20px;

@@ -8,6 +8,5 @@ public enum WellCategory
     GasInjector,
     ExplorationWell,
     AppraisalWell,
-    Sidetrack,
-    RigMobDemob
+    Sidetrack
 }

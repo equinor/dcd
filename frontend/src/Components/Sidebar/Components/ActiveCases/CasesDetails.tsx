@@ -4,16 +4,17 @@ import {
     Typography,
     Tooltip,
 } from "@equinor/eds-core-react"
-import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
 import { Stack } from "@mui/material"
+import styled from "styled-components"
 
-import { useModalContext } from "@/Store/ModalContext"
-import { useAppStore } from "@/Store/AppStore"
 import CasesList from "./CasesList"
-import { sharedTimelineStyles } from "@/Components/Sidebar/sharedStyles"
+
 import { Header } from "@/Components/Sidebar/SidebarWrapper"
+import { sharedTimelineStyles } from "@/Components/Sidebar/sharedStyles"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useAppStore } from "@/Store/AppStore"
+import { useModalContext } from "@/Store/ModalContext"
 
 export const CasesTimeline = styled(Stack)`
     height: 100%;

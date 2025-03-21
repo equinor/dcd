@@ -1,4 +1,5 @@
 import React from "react"
+
 import { CompareCasesChart } from "@/Components/Charts/CompareCasesChart"
 
 interface ProductionProfilesProps {

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
 
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppStore } from "@/Store/AppStore"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,

@@ -1,10 +1,10 @@
-import { useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { useParams } from "react-router-dom"
 
+import { useAppNavigation } from "@/Hooks/useNavigate"
 import { GetProjectService } from "@/Services/ProjectService"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { useAppNavigation } from "@/Hooks/useNavigate"
 
 export const useRevisions = () => {
     const {
@@ -32,6 +32,7 @@ export const useRevisions = () => {
     ) => {
         setIsRevisionsLoading(true)
         const newRevision = await GetProjectService().createRevision(projectId, revision)
+
         if (newRevision) {
             setIsRevisionsLoading(false)
             setIsCreateRevisionModalOpen(false)

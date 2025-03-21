@@ -1,7 +1,8 @@
-import { Section } from "./Components/Shared/SharedWellStyles"
-import ExplorationCosts from "./Components/Costs/ExplorationCosts"
 import DevelopmentCosts from "./Components/Costs/DevelopmentCosts"
+import ExplorationCosts from "./Components/Costs/ExplorationCosts"
+import { Section } from "./Components/Shared/SharedWellStyles"
 import Wells from "./Components/Shared/Wells"
+
 import { WellCategory } from "@/Models/enums"
 import { developmentWellOptions, explorationWellOptions, isExplorationWell } from "@/Utils/commonUtils"
 

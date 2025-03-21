@@ -1,6 +1,6 @@
 import { useDataFetch } from "@/Hooks"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 /**
  * Custom hook to determine if the current user can edit data.
@@ -25,6 +25,7 @@ const useCanUserEdit = () => {
         if (isEditDisabled) {
             return "You do not have access to edit this project"
         }
+
         return ""
     }
     /**

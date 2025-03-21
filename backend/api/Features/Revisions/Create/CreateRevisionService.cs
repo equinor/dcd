@@ -39,6 +39,12 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 
         await context.SaveChangesAsync();
 
+        if (project.ReferenceCaseId != null)
+        {
+            revision.ReferenceCaseId = caseIdMapping[project.ReferenceCaseId.Value];
+            await context.SaveChangesAsync();
+        }
+
         return revision.Id;
     }
 

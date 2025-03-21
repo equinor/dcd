@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material"
-import styled from "styled-components"
 import { grey } from "@mui/material/colors"
+import styled from "styled-components"
+
 import { TimeSeriesChart } from "@/Components/Charts/TimeSeriesChart"
 
 const Container = styled.div`
@@ -73,6 +74,7 @@ interface Props {
 
 const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
     const profile = rowData.overrideProfile?.override ? rowData.overrideProfile : rowData.profile
+
     if (!profile) { return null }
 
     const chartData = profile.values.map((value: number, index: number) => ({
@@ -84,21 +86,26 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
         // Handle cases where old value is 0 or missing
         if (oldValue === 0 || !oldValue) {
             if (newValue === 0) { return "0%" }
+
             return "New entry"
         }
+
         return `${(((newValue - oldValue) / oldValue) * 100).toFixed(1)}%`
     }
 
     const determineTrend = (newValue: number, oldValue: number): TrendType => {
         if (oldValue === 0 || !oldValue) { return "neutral" }
         const change = ((newValue - oldValue) / oldValue) * 100
+
         if (change > 1) { return "up" }
         if (change < -1) { return "down" }
+
         return "neutral"
     }
 
     const getStatistics = (): TimeSeriesDataItem[] | null => {
         const { values } = profile
+
         if (!values?.length) { return null }
 
         const sum = values.reduce((a: number, b: number) => a + b, 0)
@@ -109,7 +116,9 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
         // Calculate year-over-year changes for non-zero/non-missing values only
         const yoyChanges = values.slice(1).map((value: number, index: number) => {
             const prevValue = values[index]
+
             if (prevValue === 0 || !prevValue) { return null }
+
             return ((value - prevValue) / prevValue) * 100
         }).filter((change: number | null): change is number => change !== null)
 
@@ -119,6 +128,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
         const trend: TrendType = (() => {
             if (avgYoyChange > 1) { return "up" }
             if (avgYoyChange < -1) { return "down" }
+
             return "neutral"
         })()
 
@@ -147,6 +157,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
                     if (firstValue === 0) { return "neutral" }
                     if (totalChange > 0) { return "up" }
                     if (totalChange < 0) { return "down" }
+
                     return "neutral"
                 })(),
             },
@@ -177,6 +188,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
             down: "↓",
             neutral: "→",
         }
+
         return (
             <TrendIndicator trend={trend}>
                 {arrows[trend]}

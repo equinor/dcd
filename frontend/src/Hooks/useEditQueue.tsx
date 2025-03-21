@@ -1,18 +1,22 @@
 import { useCallback, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { EditInstance } from "@/Models/Interfaces"
-import { useTimeSeriesMutation } from "./Mutations/useTimeSeriesMutation"
+
 import { useCampaignMutation } from "./Mutations/useCampaignMutation"
+import { useTimeSeriesMutation } from "./Mutations/useTimeSeriesMutation"
+
 import { ITimeSeries } from "@/Models/ITimeSeries"
-import { useProjectContext } from "@/Store/ProjectContext"
-import { useEditQueue } from "@/Store/EditQueueContext"
+import { EditInstance } from "@/Models/Interfaces"
 import { useAppStore } from "@/Store/AppStore"
+import { useEditQueue } from "@/Store/EditQueueContext"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { CampaignProfileType } from "@/Utils/commonUtils"
 
 // Queue processing utilities
 const getLatestEdits = (queue: EditInstance[], keySelector: (edit: EditInstance) => string): EditInstance[] => {
     const latestEditsMap = new Map<string, EditInstance>()
+
     queue.forEach((edit) => latestEditsMap.set(keySelector(edit), edit))
+
     return Array.from(latestEditsMap.values())
 }
 
@@ -100,6 +104,7 @@ export const useEditQueueHandler = ({
                         return updateRigUpgradingProfile(edit.resourceId!, profile)
                     } catch (error) {
                         console.error(`Failed to process ${CampaignProfileType.RigUpgrading} edit`, error)
+
                         return Promise.resolve()
                     }
                 }),
@@ -114,6 +119,7 @@ export const useEditQueueHandler = ({
                         return updateRigMobDemobProfile(edit.resourceId!, profile)
                     } catch (error) {
                         console.error(`Failed to process ${CampaignProfileType.RigMobDemob} edit`, error)
+
                         return Promise.resolve()
                     }
                 }),
@@ -137,6 +143,7 @@ export const useEditQueueHandler = ({
         const editsByCampaign = wellEdits.reduce((acc, edit) => {
             if (!edit.resourceId) {
                 console.error("Well edit missing resourceId", edit)
+
                 return acc
             }
 
@@ -144,6 +151,7 @@ export const useEditQueueHandler = ({
                 acc[edit.resourceId] = []
             }
             acc[edit.resourceId].push(edit)
+
             return acc
         }, {} as Record<string, EditInstance[]>)
 
@@ -156,6 +164,7 @@ export const useEditQueueHandler = ({
                 .filter((edit) => edit.wellId !== undefined)
                 .map((edit) => {
                     const timeSeriesData = edit.resourceObject as ITimeSeries
+
                     return {
                         wellId: edit.wellId!,
                         startYear: timeSeriesData.startYear,
@@ -172,6 +181,7 @@ export const useEditQueueHandler = ({
                     campaignId,
                     wells: wellUpdates,
                 })
+
                 return Promise.resolve()
             } catch (error) {
                 console.error("Campaign wells update failed", { error, campaignId, wells: wellUpdates.map((w) => w.wellId) })

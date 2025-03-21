@@ -1,11 +1,14 @@
-import { useState } from "react"
 import Grid from "@mui/material/Grid2"
-import { useDataFetch } from "@/Hooks"
-import WellCostsTab from "./WellCostTab/WellCostsTab"
-import PROSPTab from "./PROSPTab/PROSPTab"
-import CO2Tab from "./CO2Tab/CO2Tab"
-import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
+import { useState } from "react"
+
 import { SecondaryTabs } from "../Components/SecondaryTabs"
+
+import CO2Tab from "./CO2Tab/CO2Tab"
+import PROSPTab from "./PROSPTab/PROSPTab"
+import WellCostsTab from "./WellCostTab/WellCostsTab"
+
+import ProjectSkeleton from "@/Components/LoadingSkeletons/ProjectSkeleton"
+import { useDataFetch } from "@/Hooks"
 
 const TechnicalInputTab = () => {
     const revisionAndProjectData = useDataFetch()

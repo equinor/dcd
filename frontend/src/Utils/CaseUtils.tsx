@@ -8,10 +8,13 @@ export const deleteCase = async (
 ): Promise<boolean> => {
     try {
         const newProject = await GetCaseService().deleteCase(projectId, caseId)
+
         addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
+
         return true
     } catch (error) {
         console.error("[ProjectView] Error while deleting case", error)
+
         return false
     }
 }
@@ -23,10 +26,13 @@ export const duplicateCase = async (
 ): Promise<boolean> => {
     try {
         const newProject = await GetCaseService().duplicateCase(projectId, caseId)
+
         addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
+
         return true
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
+
         return false
     }
 }
@@ -42,6 +48,7 @@ export const setCaseAsReference = async (
         projectDto.referenceCaseId = projectDto.referenceCaseId === caseId ? null : (caseId || null)
 
         const newProject = await GetProjectService().updateProject(project.projectId, projectDto)
+
         addProjectEdit(project.projectId, newProject.commonProjectAndRevisionData)
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)

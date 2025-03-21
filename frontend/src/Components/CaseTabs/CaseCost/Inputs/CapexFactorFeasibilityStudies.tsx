@@ -1,4 +1,5 @@
 import React from "react"
+
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import { useCaseMutation } from "@/Hooks/Mutations"
 

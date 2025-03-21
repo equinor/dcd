@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import {
     FC,
     createContext,
@@ -7,7 +8,7 @@ import {
     useMemo,
     useEffect,
 } from "react"
-import { useQuery } from "@tanstack/react-query"
+
 import { featureToggleQueryFn } from "@/Services/QueryFunctions"
 
 interface FeatureContextType {
@@ -48,9 +49,11 @@ const FeatureContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
 export const useFeatureContext = (): FeatureContextType => {
     const context = useContext(FeatureContext)
+
     if (context === undefined) {
         throw new Error("useAppStore must be used within an FeatureContextProvider")
     }
+
     return context
 }
 

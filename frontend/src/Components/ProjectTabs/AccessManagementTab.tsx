@@ -1,22 +1,24 @@
-import { useEffect, useMemo, useState } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import { PersonSelectEvent } from "@equinor/fusion-react-person"
-import Grid from "@mui/material/Grid2"
-import { useMediaQuery } from "@mui/material"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { PersonSelectEvent } from "@equinor/fusion-react-person"
+import { useMediaQuery } from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import { useEffect, useMemo, useState } from "react"
 
-import { useProjectContext } from "@/Store/ProjectContext"
 import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkeleton"
+
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
+
+import RemoveCurrentUserAccess from "@/Components/Modal/RemoveCurrentUserAccess"
 import { useDataFetch } from "@/Hooks"
 import { useEditPeople } from "@/Hooks/useEditPeople"
 import { ProjectMemberRole } from "@/Models/enums"
-import RemoveCurrentUserAccess from "@/Components/Modal/RemoveCurrentUserAccess"
+import { useProjectContext } from "@/Store/ProjectContext"
 
-const AccessManagementTab = () => {
+const AccessManagementTab = (): JSX.Element => {
     const user = useCurrentUser()
     const { projectId } = useProjectContext()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
@@ -57,7 +59,7 @@ const AccessManagementTab = () => {
         [projectData],
     )
 
-    const handleRemovePerson = (azureAdUserId: string) => {
+    const handleRemovePerson = (azureAdUserId: string): void => {
         if (!projectId || !fusionProjectId) { return }
 
         // If current user is trying to remove themselves, show confirmation modal
@@ -67,13 +69,14 @@ const AccessManagementTab = () => {
                 isSwitch: false,
                 azureAdUserId,
             })
+
             return
         }
 
         deletePerson(projectId, fusionProjectId, azureAdUserId)
     }
 
-    const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
+    const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole): void => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
 
         if (
@@ -86,7 +89,7 @@ const AccessManagementTab = () => {
         addPerson(projectId, fusionProjectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole) => {
+    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole): void => {
         if (
             !azureAdUserId
             || !projectId
@@ -101,13 +104,14 @@ const AccessManagementTab = () => {
                 azureAdUserId,
                 role,
             })
+
             return
         }
 
         updatePerson(projectId, fusionProjectId, azureAdUserId, role)
     }
 
-    const handleConfirmUserAction = () => {
+    const handleConfirmUserAction = (): void => {
         if (!projectId || !fusionProjectId) { return }
 
         if (userActionModal.isSwitch && userActionModal.role !== undefined) {
@@ -179,7 +183,7 @@ const AccessManagementTab = () => {
             <RemoveCurrentUserAccess
                 isOpen={userActionModal.isOpen}
                 isSwitch={userActionModal.isSwitch}
-                onClose={() => setUserActionModal({ isOpen: false, isSwitch: false, azureAdUserId: "" })}
+                onClose={(): void => setUserActionModal({ isOpen: false, isSwitch: false, azureAdUserId: "" })}
                 onConfirm={handleConfirmUserAction}
             />
         </Grid>

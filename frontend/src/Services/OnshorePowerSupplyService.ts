@@ -10,6 +10,7 @@ class OnshorePowerSupplyService extends __BaseService {
             `projects/${projectId}/cases/${caseId}/onshore-power-supply`,
             { body: dto },
         )
+
         return res
     }
 }

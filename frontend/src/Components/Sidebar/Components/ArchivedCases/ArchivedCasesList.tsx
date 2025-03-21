@@ -1,18 +1,18 @@
-import Grid from "@mui/material/Grid2"
 import { Tooltip } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid2"
+import { useMemo } from "react"
 import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
-import { useMemo } from "react"
 
-import { caseTabNames } from "@/Utils/Config/constants"
-import { productionStrategyOverviewToString, truncateText } from "@/Utils/commonUtils"
+import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
 import { ReferenceCaseIcon } from "@/Components/Tables/Components/CellRenderers/ReferenceCaseIcon"
 import { useDataFetch } from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
-import { TimelineElement } from "@/Components/Sidebar/SidebarWrapper"
-import { sortUtcDateStrings } from "@/Utils/DateUtils"
 import { useCaseStore } from "@/Store/CaseStore"
+import { caseTabNames } from "@/Utils/Config/constants"
+import { sortUtcDateStrings } from "@/Utils/DateUtils"
+import { productionStrategyOverviewToString, truncateText } from "@/Utils/commonUtils"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -29,6 +29,7 @@ const getTooltipText = (
 
 const getCaseDisplayName = (caseName: string | undefined, index: number, isSidebarOpen: boolean) => {
     if (!isSidebarOpen) { return `#${index + 1}` }
+
     return caseName ? truncateText(caseName, 30) : "Untitled"
 }
 
@@ -45,6 +46,7 @@ const ArchivedCasesList = (): JSX.Element | null => {
             if (!revisionAndProjectData?.commonProjectAndRevisionData.cases) { return [] }
 
             const { referenceCaseId } = revisionAndProjectData.commonProjectAndRevisionData
+
             return revisionAndProjectData.commonProjectAndRevisionData.cases
                 .filter((c) => c.archived)
                 .map((c) => ({
@@ -58,6 +60,7 @@ const ArchivedCasesList = (): JSX.Element | null => {
 
     const handleCaseClick = (caseId: string) => {
         const currentTab = caseTabNames[activeTabCase]
+
         if (revisionId) {
             navigateToRevisionCase(revisionId, caseId, currentTab)
         } else {

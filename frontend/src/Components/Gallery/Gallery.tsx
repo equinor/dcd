@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react"
-import { Grid } from "@mui/material"
-import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
+import { Grid } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
 
-import { galleryImagesQueryFn } from "@/Services/QueryFunctions"
-import ImageUpload from "./ImageUpload"
-import ImageModal from "./ImageModal"
 import GalleryImage from "./GalleryImage"
-import { useAppStore } from "@/Store/AppStore"
-import { useProjectContext } from "@/Store/ProjectContext"
+import ImageModal from "./ImageModal"
+import ImageUpload from "./ImageUpload"
+
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useEditGallery } from "@/Hooks/useEditGallery"
+import { galleryImagesQueryFn } from "@/Services/QueryFunctions"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const Wrapper = styled.div`
     display: flex;

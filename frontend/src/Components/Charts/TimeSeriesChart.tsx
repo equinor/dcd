@@ -1,4 +1,5 @@
 import { AgCharts } from "ag-charts-react"
+
 import { insertIf, separateProfileObjects } from "../../Utils/AgGridUtils"
 
 interface Props {
@@ -16,8 +17,10 @@ export const setValueToCorrespondingYear = (profile: any, year: number, dg4Year:
     if (profile && profile.values) {
         const profileStartYear: number = Number(profile.startYear) + dg4Year
         const valueYearIndex = year - profileStartYear
+
         return profile.values[valueYearIndex] ?? 0
     }
+
     return 0
 }
 

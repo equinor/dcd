@@ -1,14 +1,14 @@
 import { AgGridReact } from "@ag-grid-community/react"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { useRef, useMemo, useState } from "react"
 import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { bookmark_filled } from "@equinor/eds-icons"
-import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import { useRef, useMemo, useState } from "react"
+import styled from "styled-components"
 
 import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { cellStyleRightAlign } from "@/Utils/commonUtils"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -272,6 +272,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                 ],
             },
         ]
+
         return columnPinned.concat([...nonPinnedColumns])
     }
 

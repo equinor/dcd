@@ -1,6 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { GetSubstructureService } from "@/Services/SubstructureService"
+
 import { useBaseMutation, MutationParams } from "./useBaseMutation"
+
+import { GetSubstructureService } from "@/Services/SubstructureService"
 
 export const useSubstructureMutation = () => {
     const queryClient = useQueryClient()

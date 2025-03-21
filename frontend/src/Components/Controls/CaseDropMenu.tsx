@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
@@ -12,15 +11,16 @@ import {
     unarchive,
 } from "@equinor/eds-icons"
 import { useQueryClient } from "@tanstack/react-query"
-import { useAppNavigation } from "@/Hooks/useNavigate"
-import { useCaseApiData, useDataFetch } from "@/Hooks"
+import React, { useState } from "react"
 
-import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseUtils"
-import { useModalContext } from "@/Store/ModalContext"
-import useEditProject from "@/Hooks/useEditProject"
 import BaseModal from "@/Components/Modal/BaseModal"
-import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import { useCaseApiData, useDataFetch } from "@/Hooks"
 import { useCaseMutation } from "@/Hooks/Mutations"
+import useCanUserEdit from "@/Hooks/useCanUserEdit"
+import useEditProject from "@/Hooks/useEditProject"
+import { useAppNavigation } from "@/Hooks/useNavigate"
+import { useModalContext } from "@/Store/ModalContext"
+import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseUtils"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -55,6 +55,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         if (await deleteCase(caseId, revisionAndProjectData.projectId, addProjectEdit)) {
             if (revisionAndProjectData.commonProjectAndRevisionData.fusionProjectId) {
                 const { fusionProjectId } = revisionAndProjectData.commonProjectAndRevisionData
+
                 navigateToProject(fusionProjectId)
             }
         }

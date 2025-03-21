@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { useAppStore } from "@/Store/AppStore"
 import { useDataFetch } from "@/Hooks"
-import { getYearFromDateString } from "@/Utils/DateUtils"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { Currency, ProfileTypes } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
+import { getYearFromDateString } from "@/Utils/DateUtils"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];

@@ -1,6 +1,6 @@
 import { Tab, Tabs, Box } from "@mui/material"
-import styled from "styled-components"
 import { ReactNode } from "react"
+import styled from "styled-components"
 
 export const TabWrapper = styled.div`
     border-radius: 8px;
