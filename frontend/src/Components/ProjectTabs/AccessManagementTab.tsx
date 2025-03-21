@@ -1,9 +1,10 @@
 import { Typography } from "@equinor/eds-core-react"
+import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { PersonSelectEvent } from "@equinor/fusion-react-person"
 import { useMediaQuery } from "@mui/material"
 import Grid from "@mui/material/Grid2"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import AccessManagementSkeleton from "../LoadingSkeletons/AccessManagementSkeleton"
 
@@ -11,17 +12,30 @@ import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
 
+import RemoveCurrentUserAccess from "@/Components/Modal/RemoveCurrentUserAccess"
 import { useDataFetch } from "@/Hooks"
 import { useEditPeople } from "@/Hooks/useEditPeople"
 import { ProjectMemberRole } from "@/Models/enums"
 import { useProjectContext } from "@/Store/ProjectContext"
 
-const AccessManagementTab = () => {
+const AccessManagementTab = (): JSX.Element => {
+    const user = useCurrentUser()
     const { projectId } = useProjectContext()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { currentContext } = useModuleCurrentContext()
     const revisionAndProjectData = useDataFetch()
     const fusionProjectId = revisionAndProjectData?.commonProjectAndRevisionData?.fusionProjectId
+
+    const [userActionModal, setUserActionModal] = useState<{
+        isOpen: boolean;
+        isSwitch: boolean;
+        azureAdUserId: string;
+        role?: ProjectMemberRole;
+    }>({
+        isOpen: false,
+        isSwitch: false,
+        azureAdUserId: "",
+    })
 
     const {
         addPerson,
@@ -34,6 +48,8 @@ const AccessManagementTab = () => {
         ? (revisionAndProjectData as Components.Schemas.ProjectDataDto)
         : null
 
+    const currentUserAzureId = useMemo(() => user?.localAccountId, [user])
+
     const viewers = useMemo(
         () => projectData?.projectMembers?.filter((m) => m.role === ProjectMemberRole.Observer) ?? [],
         [projectData],
@@ -43,12 +59,24 @@ const AccessManagementTab = () => {
         [projectData],
     )
 
-    const handleRemovePerson = (azureAdUserId: string) => {
+    const handleRemovePerson = (azureAdUserId: string): void => {
         if (!projectId || !fusionProjectId) { return }
+
+        // If current user is trying to remove themselves, show confirmation modal
+        if (azureAdUserId === currentUserAzureId) {
+            setUserActionModal({
+                isOpen: true,
+                isSwitch: false,
+                azureAdUserId,
+            })
+
+            return
+        }
+
         deletePerson(projectId, fusionProjectId, azureAdUserId)
     }
 
-    const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole) => {
+    const handleAddPerson = (e: PersonSelectEvent, role: ProjectMemberRole): void => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
 
         if (
@@ -61,14 +89,42 @@ const AccessManagementTab = () => {
         addPerson(projectId, fusionProjectId, personToAdd, role)
     }
 
-    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole) => {
+    const handleSwitchPerson = (azureAdUserId: string, role: ProjectMemberRole): void => {
         if (
             !azureAdUserId
             || !projectId
             || !fusionProjectId
         ) { return }
 
+        // If current user is trying to switch themselves from editor to viewer, show confirmation modal
+        if (azureAdUserId === currentUserAzureId && role === ProjectMemberRole.Observer) {
+            setUserActionModal({
+                isOpen: true,
+                isSwitch: true,
+                azureAdUserId,
+                role,
+            })
+
+            return
+        }
+
         updatePerson(projectId, fusionProjectId, azureAdUserId, role)
+    }
+
+    const handleConfirmUserAction = (): void => {
+        if (!projectId || !fusionProjectId) { return }
+
+        if (userActionModal.isSwitch && userActionModal.role !== undefined) {
+            updatePerson(projectId, fusionProjectId, userActionModal.azureAdUserId, userActionModal.role)
+        } else {
+            deletePerson(projectId, fusionProjectId, userActionModal.azureAdUserId)
+        }
+
+        setUserActionModal({
+            isOpen: false,
+            isSwitch: false,
+            azureAdUserId: "",
+        })
     }
 
     // This is used to synchronize PMT members to projects
@@ -123,6 +179,13 @@ const AccessManagementTab = () => {
                 />
             </EditorViewerContainer>
             <ExternalAccessInfo />
+
+            <RemoveCurrentUserAccess
+                isOpen={userActionModal.isOpen}
+                isSwitch={userActionModal.isSwitch}
+                onClose={(): void => setUserActionModal({ isOpen: false, isSwitch: false, azureAdUserId: "" })}
+                onConfirm={handleConfirmUserAction}
+            />
         </Grid>
     )
 }

@@ -1,6 +1,6 @@
 import { __BaseService } from "./__BaseService"
 
-export class __ProspService extends __BaseService {
+export class ProspService extends __BaseService {
     async getSharePointFileNamesAndId(body: Components.Schemas.SharePointSiteUrlDto, projectId: string) {
         const driveItem: Components.Schemas.SharePointFileDto[] = await this.post(`projects/${projectId}/prosp/list`, { body })
 
@@ -17,4 +17,4 @@ export class __ProspService extends __BaseService {
     }
 }
 
-export const GetProspService = () => new __ProspService()
+export const GetProspService = () => new ProspService()

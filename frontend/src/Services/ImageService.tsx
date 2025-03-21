@@ -1,17 +1,16 @@
 import { __BaseService } from "./__BaseService"
 
-const projectUrl = (projectId: string) => `projects/${projectId}/images`
-const caseUrl = (projectId: string, caseId: string) => `projects/${projectId}/cases/${caseId}/images`
-
 export class ImageService extends __BaseService {
     public async getCaseImages(projectId: string, caseId?: string): Promise<Components.Schemas.ImageDto[]> {
-        const response = await this.get(caseId ? caseUrl(projectId, caseId) : projectUrl(projectId))
+        const response = await this.get(caseId
+            ? `projects/${projectId}/cases/${caseId}/images`
+            : `projects/${projectId}/images`)
 
         return response
     }
 
     public async getProjectImages(projectId: string): Promise<Components.Schemas.ImageDto[]> {
-        const response = await this.get(projectUrl(projectId))
+        const response = await this.get(`projects/${projectId}/images`)
 
         return response
     }
@@ -57,7 +56,7 @@ export class ImageService extends __BaseService {
         const formData = new FormData()
 
         formData.append("image", file)
-        const response = await this.post(caseUrl(projectId, caseId), {
+        const response = await this.post(`projects/${projectId}/cases/${caseId}/images`, {
             body: formData,
         })
 
@@ -71,7 +70,7 @@ export class ImageService extends __BaseService {
         const formData = new FormData()
 
         formData.append("image", file)
-        const response = await this.post(projectUrl(projectId), {
+        const response = await this.post(`projects/${projectId}/images`, {
             body: formData,
         })
 

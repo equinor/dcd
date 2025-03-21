@@ -42,7 +42,7 @@ public class FusionOrgChartProjectMemberService(
                 Id = Guid.NewGuid(),
                 ProjectId = projectId,
                 AzureAdUserId = azureAdUserId,
-                Role = ProjectMemberRole.Editor,
+                Role = ProjectMemberRole.Observer,
                 FromOrgChart = true
             });
         }
