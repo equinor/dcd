@@ -1,48 +1,18 @@
 import { ProfileTypes } from "@/Models/enums"
 
 export type ResourceName =
-    "case" |
-    "topside" |
-    "surf" |
-    "transport" |
-    "onshorePowerSupply" |
-    "substructure" |
-    "drainageStrategy" |
     "rigUpgradingCost" |
     "rigMobDemobCost" |
     `${ProfileTypes}`
-
-export type ResourceObject =
-    Components.Schemas.TopsideDto |
-    Components.Schemas.SurfDto |
-    Components.Schemas.SubstructureDto |
-    Components.Schemas.TransportDto |
-    Components.Schemas.CaseOverviewDto |
-    Components.Schemas.CaseWithAssetsDto |
-    Components.Schemas.DrainageStrategyDto |
-    Components.Schemas.OnshorePowerSupplyDto |
-    Components.Schemas.UpdateCampaignDto |
-    Components.Schemas.CampaignDto |
-    Components.Schemas.UpdateRigMobDemobCostDto |
-    Components.Schemas.UpdateRigUpgradingCostDto |
-    ProfileObject
 
 export type ProfileObject =
     Components.Schemas.SaveTimeSeriesDto |
     Components.Schemas.SaveTimeSeriesOverrideDto
 
 export type ResourcePropertyKey =
-    keyof Components.Schemas.TopsideDto |
-    keyof Components.Schemas.SurfDto |
-    keyof Components.Schemas.SubstructureDto |
-    keyof Components.Schemas.TransportDto |
-    keyof Components.Schemas.OnshorePowerSupplyDto |
-    keyof Components.Schemas.CaseOverviewDto |
-    keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.CampaignDto |
-    keyof Components.Schemas.CampaignWellDto |
-    keyof Components.Schemas.TimeSeriesOverrideDto |
-    keyof Components.Schemas.TimeSeriesDto
+    keyof Components.Schemas.TimeSeriesDto |
+    keyof Components.Schemas.TimeSeriesOverrideDto
 
 export interface EditInstance {
     projectId: string;
@@ -51,7 +21,7 @@ export interface EditInstance {
     resourceId?: string;
     wellId?: string;
     caseId?: string;
-    resourceObject: ResourceObject;
+    resourceObject: ProfileObject;
 }
 
 export interface TableCase {
