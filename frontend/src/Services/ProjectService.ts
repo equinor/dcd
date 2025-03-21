@@ -1,6 +1,6 @@
 import { __BaseService } from "./__BaseService"
 
-export class __ProjectService extends __BaseService {
+export class ProjectService extends __BaseService {
     async getProject(id: string) {
         const project: Components.Schemas.ProjectDataDto = await this.get<Components.Schemas.ProjectDataDto>(`projects/${id}`)
 
@@ -61,4 +61,4 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export const GetProjectService = () => new __ProjectService()
+export const GetProjectService = () => new ProjectService()
