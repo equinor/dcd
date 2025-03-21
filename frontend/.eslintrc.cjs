@@ -97,7 +97,7 @@ module.exports = {
 
         // Enforce consistent naming
         camelcase: ["warn", { properties: "never", ignoreDestructuring: true, ignoreImports: true }],
-        "id-length": ["warn", { min: 2, max: 40, exceptions: ["e", "p", "c", "i", "j", "x", "y", "v", "t", "_"] }],
+        "id-length": ["warn", { min: 2, max: 50, exceptions: ["e", "p", "c", "i", "j", "x", "y", "v", "t", "_"] }],
 
         // Prevent prop drilling
         "react/jsx-max-props-per-line": ["error", { maximum: 3, when: "multiline" }],

@@ -19,7 +19,7 @@ import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { mergeTimeseriesList } from "@/Utils/commonUtils"
 
-const CaseSummaryTab = () => {
+const CaseSummaryTab = (): React.ReactNode => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
@@ -31,7 +31,7 @@ const CaseSummaryTab = () => {
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
+    const handleOffshoreFacilitiesCost = (): ITimeSeries | undefined => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
             ? apiData?.surfCostProfileOverride
             : apiData?.surfCostProfile),
@@ -46,7 +46,7 @@ const CaseSummaryTab = () => {
             : apiData?.topsideCostProfile),
     ])
 
-    const handleOffshoreOpexPlussWellIntervention = () => mergeTimeseriesList([
+    const handleOffshoreOpexPlussWellIntervention = (): ITimeSeries | undefined => mergeTimeseriesList([
         (apiData?.wellInterventionCostProfileOverride?.override === true
             ? apiData?.wellInterventionCostProfileOverride
             : apiData?.wellInterventionCostProfile),
@@ -55,16 +55,23 @@ const CaseSummaryTab = () => {
             : apiData?.offshoreFacilitiesOperationsCostProfile),
     ])
 
-    const handleTotalExplorationCost = () => mergeTimeseriesList([
+    const handleTotalExplorationCost = (): ITimeSeries | undefined => mergeTimeseriesList([
         apiData?.explorationWellCostProfile,
         apiData?.appraisalWellCostProfile,
         apiData?.sidetrackCostProfile,
         apiData?.seismicAcquisitionAndProcessing,
         apiData?.countryOfficeCost,
         apiData?.gAndGAdminCost,
+        apiData?.projectSpecificDrillingCostProfile,
+        (apiData?.explorationRigMobDemobOverride?.override === true
+            ? apiData?.explorationRigMobDemobOverride
+            : apiData?.explorationRigMobDemob),
+        (apiData?.explorationRigUpgradingCostProfileOverride?.override === true
+            ? apiData?.explorationRigUpgradingCostProfileOverride
+            : apiData?.explorationRigUpgradingCostProfile),
     ])
 
-    const handleDrilling = () => {
+    const handleDrilling = (): ITimeSeries | undefined => {
         if (revisionAndProjectData) {
             const oilProducerCostProfile = apiData?.oilProducerCostProfileOverride?.override
                 ? apiData.oilProducerCostProfileOverride
@@ -82,6 +89,14 @@ const CaseSummaryTab = () => {
                 ? apiData.gasInjectorCostProfileOverride
                 : apiData?.gasInjectorCostProfile
 
+            const developmentRigUpgrading = apiData?.developmentRigUpgradingCostProfileOverride?.override
+                ? apiData.developmentRigUpgradingCostProfileOverride
+                : apiData?.developmentRigUpgradingCostProfile
+
+            const developmentRigMobDemob = apiData?.developmentRigMobDemobOverride?.override
+                ? apiData.developmentRigMobDemobOverride
+                : apiData?.developmentRigMobDemob
+
             const startYears = [
                 oilProducerCostProfile,
                 gasProducerCostProfile,
@@ -96,6 +111,8 @@ const CaseSummaryTab = () => {
                 gasProducerCostProfile,
                 waterInjectorCostProfile,
                 gasInjectorCostProfile,
+                developmentRigUpgrading,
+                developmentRigMobDemob,
             ]
 
             const rigUpgradingCost = revisionAndProjectData.commonProjectAndRevisionData.developmentOperationalWellCosts?.rigUpgrading
@@ -173,10 +190,10 @@ const CaseSummaryTab = () => {
             const explorationRigUpgradingCostDataOverride = apiData?.explorationRigUpgradingCostProfileOverride
             const explorationRigMobDemobCostData = apiData?.explorationRigMobDemobOverride
             const explorationRigMobDemobCostDataOverride = apiData?.explorationRigMobDemobOverride
-            const developmentRigUpgradingCostData = apiData?.developmentRigUpgradingCostProfileOverride
-            const developmentRigUpgradingCostDataOverride = apiData?.developmentRigUpgradingCostProfileOverride
-            const developmentRigMobDemobCostData = apiData?.developmentRigMobDemobOverride
-            const developmentRigMobDemobCostDataOverride = apiData?.developmentRigMobDemobOverride
+            // const developmentRigUpgradingCostData = apiData?.developmentRigUpgradingCostProfileOverride
+            // const developmentRigUpgradingCostDataOverride = apiData?.developmentRigUpgradingCostProfileOverride
+            // const developmentRigMobDemobCostData = apiData?.developmentRigMobDemobOverride
+            // const developmentRigMobDemobCostDataOverride = apiData?.developmentRigMobDemobOverride
             const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
             const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
             const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
@@ -190,6 +207,7 @@ const CaseSummaryTab = () => {
             const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOpexCostProfile
             const additionalOPEXCostProfileData = apiData?.additionalOpexCostProfile
             const onshorePowerSupplyCostProfileData = apiData?.onshorePowerSupplyCostProfile
+
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
@@ -224,18 +242,18 @@ const CaseSummaryTab = () => {
                     profile: totalDrillingCostData,
                     group: "CAPEX",
                 },
-                {
-                    profileName: "Rig upgrade",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                    profile: developmentRigUpgradingCostDataOverride?.override ? developmentRigUpgradingCostDataOverride : developmentRigUpgradingCostData,
-                    group: "CAPEX",
-                },
-                {
-                    profileName: "Rig mob/demob",
-                    unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
-                    profile: developmentRigMobDemobCostDataOverride?.override ? developmentRigMobDemobCostDataOverride : developmentRigMobDemobCostData,
-                    group: "CAPEX",
-                },
+                // {
+                //     profileName: "Rig upgrade",
+                //     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                //     profile: developmentRigUpgradingCostDataOverride?.override ? developmentRigUpgradingCostDataOverride : developmentRigUpgradingCostData,
+                //     group: "CAPEX",
+                // },
+                // {
+                //     profileName: "Rig mob/demob",
+                //     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
+                //     profile: developmentRigMobDemobCostDataOverride?.override ? developmentRigMobDemobCostDataOverride : developmentRigMobDemobCostData,
+                //     group: "CAPEX",
+                // },
                 {
                     profileName: "Offshore facilities",
                     unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
@@ -336,7 +354,7 @@ const CaseSummaryTab = () => {
                             id={`case-npv-${caseData.caseId}`}
                             integer={false}
                             disabled
-                            onSubmit={() => {}}
+                            onSubmit={(): void => {}}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
@@ -347,7 +365,7 @@ const CaseSummaryTab = () => {
                             integer={false}
                             min={0}
                             max={1_000_000}
-                            onSubmit={(newValue) => updateNpvOverride(newValue)}
+                            onSubmit={(newValue: number): Promise<void> => updateNpvOverride(newValue)}
                         />
                     </Grid>
                 </Grid>
@@ -362,7 +380,7 @@ const CaseSummaryTab = () => {
                             id={`case-break-even-${caseData.caseId}`}
                             integer={false}
                             disabled
-                            onSubmit={() => {}}
+                            onSubmit={(): void => {}}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
@@ -374,7 +392,7 @@ const CaseSummaryTab = () => {
                             allowNegative
                             min={0}
                             max={1_000_000}
-                            onSubmit={(newValue) => updateBreakEvenOverride(newValue)}
+                            onSubmit={(newValue: number): Promise<void> => updateBreakEvenOverride(newValue)}
                         />
                     </Grid>
                 </Grid>

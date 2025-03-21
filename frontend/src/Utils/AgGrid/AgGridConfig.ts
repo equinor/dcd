@@ -13,7 +13,8 @@ import { AppModuleInitiator } from "@equinor/fusion-framework-app"
 import { enableAgGrid } from "@equinor/fusion-framework-module-ag-grid"
 import { enableContext } from "@equinor/fusion-framework-module-context"
 import { enableNavigation } from "@equinor/fusion-framework-module-navigation"
-// import { agGridLicenseKey } from "./agGridLicense"
+
+import { agGridLicenseKey } from "./agGridLicense"
 
 export const configure: AppModuleInitiator = (configurator, args) => {
     const { basename } = args.env
@@ -31,15 +32,15 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         ExcelExportModule,
     ])
 
-    // if (agGridLicenseKey && agGridLicenseKey.length > 0) {
-    //     enableAgGrid(configurator, {
-    //         licenseKey: agGridLicenseKey || "",
-    //     })
-    // } else {
-    //     enableAgGrid(configurator)
-    // }
+    if (agGridLicenseKey && agGridLicenseKey.length > 0) {
+        enableAgGrid(configurator, {
+            licenseKey: agGridLicenseKey || "",
+        })
+    } else {
+        enableAgGrid(configurator)
+    }
 
-    enableAgGrid(configurator)
+    // enableAgGrid(configurator)
 
     configurator.useFrameworkServiceClient("portal")
 
