@@ -17,7 +17,7 @@ import { useCaseApiData, useCaseMutation, useTopsideMutation } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 const StyledContainer = styled.div`
     display: flex;

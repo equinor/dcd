@@ -6,10 +6,10 @@ import { useTimeSeriesMutation } from "./Mutations/useTimeSeriesMutation"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { EditInstance } from "@/Models/Interfaces"
+import { CampaignProfileType } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
 import { useEditQueue } from "@/Store/EditQueueContext"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { CampaignProfileType } from "@/Utils/commonUtils"
 
 // Queue processing utilities
 const getLatestEdits = (queue: EditInstance[], keySelector: (edit: EditInstance) => string): EditInstance[] => {

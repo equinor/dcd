@@ -20,8 +20,7 @@ import SidesheetWrapper from "@/Components/TableSidesheet/SidesheetWrapper"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
-import { gridRefArrayToAlignedGrid } from "@/Utils/AgGridUtils"
-import { formatColumnSum, tableCellisEditable } from "@/Utils/commonUtils"
+import { gridRefArrayToAlignedGrid, formatColumnSum, tableCellisEditable } from "@/Utils/TableUtils"
 
 interface Props {
     allTimeSeriesData: any[]
