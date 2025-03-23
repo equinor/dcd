@@ -11,11 +11,9 @@ import { useAppNavigation } from "@/Hooks/useNavigate"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { caseTabNames } from "@/Utils/Config/constants"
+import { caseTabNames, PRODUCTION_STRATEGY } from "@/Utils/Config/constants"
 import { sortUtcDateStrings } from "@/Utils/DateUtils"
-import {
-    productionStrategyOverviewToString, truncateText,
-} from "@/Utils/commonUtils"
+import { truncateText } from "@/Utils/FormatingUtils"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -73,7 +71,7 @@ const CasesList: React.FC = () => {
                         title={`${
                             projectCase.name ? truncateText(projectCase.name, 120) : "Untitled"
                         } - Strategy: ${
-                            productionStrategyOverviewToString(projectCase.productionStrategyOverview)
+                            PRODUCTION_STRATEGY[projectCase.productionStrategyOverview]
                         }`}
                         placement="right"
                     >

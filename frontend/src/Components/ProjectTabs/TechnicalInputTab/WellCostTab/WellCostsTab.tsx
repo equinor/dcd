@@ -4,7 +4,8 @@ import { Section } from "./Components/Shared/SharedWellStyles"
 import Wells from "./Components/Shared/Wells"
 
 import { WellCategory } from "@/Models/enums"
-import { developmentWellOptions, explorationWellOptions, isExplorationWell } from "@/Utils/commonUtils"
+import { developmentWellOptions, explorationWellOptions } from "@/Utils/Config/constants"
+import { isExplorationWell } from "@/Utils/TableUtils"
 
 const WellCostsTab = () => (
     <div>

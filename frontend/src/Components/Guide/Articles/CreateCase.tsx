@@ -29,6 +29,7 @@ const CreateCase = () => {
                     && (
                         <video controls>
                             <source src={videoUrl} type="video/mp4" />
+                            <track kind="captions" src="" label="English captions" />
                             Your browser does not support HTML video.
                         </video>
                     )}

@@ -16,9 +16,34 @@ import { useCaseApiData, useDataFetch } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 import { PhysUnit } from "@/Models/enums"
 import { useCaseStore } from "@/Store/CaseStore"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { defaultAxesData } from "@/Utils/commonUtils"
+import { SetTableYearsFromProfiles } from "@/Utils/TableUtils"
+
+const defaultAxesData = [
+    {
+        type: "category",
+        position: "bottom",
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
+        label: {
+            formatter: (label: any) => Math.floor(Number(label.value)),
+        },
+    },
+    {
+        type: "number",
+        position: "left",
+    },
+]
 
 const CaseProductionProfilesTab = () => {
     const { activeTabCase } = useCaseStore()

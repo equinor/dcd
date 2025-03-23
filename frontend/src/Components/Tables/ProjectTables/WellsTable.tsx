@@ -14,7 +14,7 @@ import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableH
 import { TableWell } from "@/Models/Interfaces"
 import { Currency, WellCategory } from "@/Models/enums"
 import { GetWellService } from "@/Services/WellService"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 interface WellsTableProps {
     rowData: TableWell[]

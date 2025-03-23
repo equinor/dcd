@@ -8,7 +8,7 @@ import styled from "styled-components"
 
 import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
