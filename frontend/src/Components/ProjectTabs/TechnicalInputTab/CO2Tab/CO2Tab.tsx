@@ -18,6 +18,7 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { parseDecimalInput, roundToDecimals } from "@/Utils/FormatingUtils"
 import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 const StyledContainer = styled.div`
@@ -102,7 +103,7 @@ const CO2Tab = () => {
 
     const toRowValue = (value: number | undefined) => {
         if (value !== undefined) {
-            return Math.round(value * 100) / 100
+            return roundToDecimals(value)
         }
 
         return value
@@ -191,7 +192,7 @@ const CO2Tab = () => {
     const handleCellValueChange = (p: any) => {
         const value = p.data.value === null ? 0 : p.data.value
 
-        p.data.set(Number(value.toString().replace(/,/g, ".")))
+        p.data.set(parseDecimalInput(value))
     }
 
     const defaultColDef = useMemo(() => ({
