@@ -18,8 +18,8 @@ import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
 import { useCaseApiData } from "@/Hooks"
 import { useCaseStore } from "@/Store/CaseStore"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { SetTableYearsFromProfiles } from "@/Utils/TableUtils"
 
 const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()

@@ -9,7 +9,7 @@ import MenuControls from "./MenuControls"
 import { useDataFetch } from "@/Hooks"
 import { useRevisions } from "@/Hooks/useRevision"
 import { formatFullDate } from "@/Utils/DateUtils"
-import { truncateText } from "@/Utils/commonUtils"
+import { truncateText } from "@/Utils/FormatingUtils"
 
 interface RevisionsDropMenuProps {
     isMenuOpen: boolean

@@ -7,7 +7,7 @@ import { CaseNameCell } from "@/Components/Tables/Components/CellRenderers/CaseN
 import { MenuButtonCell } from "@/Components/Tables/Components/CellRenderers/MenuButtonCell"
 import { ProductionStrategyCell } from "@/Components/Tables/Components/CellRenderers/ProductionStrategyCell"
 import { TableCase } from "@/Models/Interfaces"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 const AgTableContainer = styled.div`
     overflow: auto;

@@ -96,6 +96,11 @@ export enum CampaignCostType {
     RigMobDemob = 1,
 }
 
+// export enum CampaignCostType {
+//     RigUpgradingCost = "rigUpgradingCost",
+//     RigMobDemobCost = "rigMobDemobCost"
+// }
+
 export enum CampaignType {
     DevelopmentCampaign = 1,
     ExplorationCampaign = 2,
@@ -250,4 +255,9 @@ export enum WellCategory {
     ExplorationWell = 4,
     AppraisalWell = 5,
     Sidetrack = 6,
+}
+
+export enum CampaignProfileType {
+    RigUpgrading = "rigUpgradingProfile",
+    RigMobDemob = "rigMobDemobProfile"
 }

@@ -7,7 +7,7 @@ import { useDataFetch } from "@/Hooks"
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { Currency, ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/commonUtils"
+import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/TableUtils"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -109,7 +109,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             Object.entries(costProfiles).forEach(([profileName, profileData]) => {
                 const updatedProfile = {
                     ...profileData,
-                    values: profileData.values?.map((value) => -Math.abs(value)) || [],
+                    values: profileData.values?.map((value: number) => -Math.abs(value)) || [],
                 }
                 const resourceName: ProfileTypes = profileName as ProfileTypes
 
