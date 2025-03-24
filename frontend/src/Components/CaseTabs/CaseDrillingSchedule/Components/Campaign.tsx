@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid2"
 import { useMemo, useRef } from "react"
 
+import { CampaignProfileType } from "./CampaignProfileTypes"
 import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableContainer } from "./SharedCampaignStyles"
 
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
@@ -11,7 +12,6 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import { useDataFetch } from "@/Hooks/useDataFetch"
 import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
-import { CampaignProfileType } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
 import { developmentWellOptions, explorationWellOptions } from "@/Utils/Config/constants"
