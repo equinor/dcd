@@ -31,7 +31,7 @@ public static class TopsideCostProfileService
     {
         if (caseItem.Topside.ProspVersion == null)
         {
-            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride), true);
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride), false);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.TopsideCostProfile);

@@ -31,7 +31,7 @@ public static class SubstructureCostProfileService
     {
         if (caseItem.Substructure.ProspVersion == null)
         {
-            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride), true);
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride), false);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.SubstructureCostProfile);

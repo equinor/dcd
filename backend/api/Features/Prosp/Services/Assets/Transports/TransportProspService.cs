@@ -25,15 +25,15 @@ public static class TransportProspService
     {
         List<string> costProfileCoords = ["J113", "K113", "L113", "M113", "N113", "O113", "P113"];
 
-        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Transport.Dg4Date);
+        var firstYearInCostProfile = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.MainSheet.CostProfilesFirstYear);
+
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Transport.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Transport.CostYear);
         var oilExportPipelineLength = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Transport.OilExportPipelineLength);
         var gasExportPipelineLength = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Transport.GasExportPipelineLength);
 
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Transport.CostProfileStartYear);
         var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
-        var startYear = costProfileStartYear - dG4Date.Year;
+        var startYear = firstYearInCostProfile - caseItem.Dg4Date.Year;
 
         var asset = caseItem.Transport;
 

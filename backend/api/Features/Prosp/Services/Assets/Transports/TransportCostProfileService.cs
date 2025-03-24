@@ -31,7 +31,7 @@ public static class TransportCostProfileService
     {
         if (caseItem.Transport.ProspVersion == null)
         {
-            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride), true);
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride), false);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.TransportCostProfile);
