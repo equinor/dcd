@@ -6,6 +6,7 @@ public static class ProspCellReferences
     {
         public const string CostProfilesFirstYear = "J103";
     }
+
     public static class Surf
     {
         public const string LengthProductionLine = "K35";
