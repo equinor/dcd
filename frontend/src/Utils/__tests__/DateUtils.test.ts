@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest"
+
 import {
     dateFromTimestamp,
     dateStringToDateUtc,
@@ -11,6 +12,7 @@ describe("dateStringToDateUtc", () => {
         const dateString = "0001-01-01"
         const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 
@@ -18,6 +20,7 @@ describe("dateStringToDateUtc", () => {
         const dateString = "0001-01-01T00:00"
         const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 
@@ -25,6 +28,7 @@ describe("dateStringToDateUtc", () => {
         const dateString = "0001-01-01T00:00:00"
         const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 
@@ -32,6 +36,7 @@ describe("dateStringToDateUtc", () => {
         const dateString = "0001-01-01T00:00:00Z"
         const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 
@@ -39,6 +44,7 @@ describe("dateStringToDateUtc", () => {
         const dateString = "0001-01-01T00:00:00+00:00"
         const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 
@@ -46,6 +52,7 @@ describe("dateStringToDateUtc", () => {
         const dateString = "0001-01-01T00:00:00.0000000"
         const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 })
@@ -55,6 +62,7 @@ describe("getYearFromDateString", () => {
         const dateString = "2025-01-01T00:00:00Z"
         const expectedYear = 2025
         const result = getYearFromDateString(dateString)
+
         expect(result).toBe(expectedYear)
     })
 
@@ -62,6 +70,7 @@ describe("getYearFromDateString", () => {
         const dateString = "2025-01-01"
         const expectedYear = 2025
         const result = getYearFromDateString(dateString)
+
         expect(result).toBe(expectedYear)
     })
 })
@@ -71,6 +80,7 @@ describe("dateFromTimestamp", () => {
         const timestamp = 1735689600000 // Equivalent to 2025-01-01T00:00:00Z
         const expectedDate = new Date("2025-01-01T00:00:00Z")
         const result = dateFromTimestamp(timestamp)
+
         expect(result.toISOString()).toBe(expectedDate.toISOString())
     })
 })
@@ -80,15 +90,18 @@ describe("sortUtcDateStrings", () => {
         const dateString1 = "2025-01-01T00:00:00Z"
         const dateString2 = "2023-01-01T00:00:00Z"
         const result = sortUtcDateStrings(dateString1, dateString2)
+
         expect(result).toBeGreaterThan(0) // dateString1 is after dateString2
 
         const result2 = sortUtcDateStrings(dateString2, dateString1)
+
         expect(result2).toBeLessThan(0) // dateString2 is before dateString1
     })
 
     it("should return 0 for two identical UTC date strings", () => {
         const dateString = "2025-01-01T00:00:00Z"
         const result = sortUtcDateStrings(dateString, dateString)
+
         expect(result).toBe(0)
     })
 })

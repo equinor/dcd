@@ -14,7 +14,8 @@ import {
     useCaseMutation,
     useSubstructureMutation,
 } from "@/Hooks/Mutations"
-import { Concept, Currency, Source } from "@/Models/enums"
+import { Concept, Source } from "@/Models/enums"
+import { formatCurrencyUnit, roundToDecimals } from "@/Utils/FormatingUtils"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
@@ -139,9 +140,9 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Facility opex"
-                    value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
+                    value={roundToDecimals(Number(topsideData.facilityOpex), 1)}
                     integer={false}
-                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`}
+                    unit={formatCurrencyUnit(revisionAndProjectData.commonProjectAndRevisionData.currency)}
                     id={`topside-facility-opex-${topsideData.id}`}
                     onSubmit={(newValue) => updateFacilityOpex(topsideData.id, newValue)}
                 />
@@ -149,9 +150,9 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Cessation cost"
-                    value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
+                    value={roundToDecimals(Number(surfData?.cessationCost), 1)}
                     integer={false}
-                    unit={`${revisionAndProjectData.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`}
+                    unit={formatCurrencyUnit(revisionAndProjectData.commonProjectAndRevisionData.currency)}
                     id={`surf-cessation-cost-${surfData.id}`}
                     onSubmit={(newValue) => updateCessationCost(surfData.id, newValue)}
                 />
@@ -162,7 +163,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Topside dry weight"
-                    value={Math.round(Number(topsideData.dryWeight) * 1) / 1}
+                    value={roundToDecimals(Number(topsideData.dryWeight), 0)}
                     integer
                     unit="tonnes"
                     min={0}
@@ -187,7 +188,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Peak electricity imported"
-                    value={Math.round(Number(topsideData.peakElectricityImported) * 10) / 10}
+                    value={roundToDecimals(Number(topsideData.peakElectricityImported), 1)}
                     integer={false}
                     unit="MW"
                     min={0}
@@ -199,7 +200,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Oil capacity"
-                    value={Math.round(Number(topsideData.oilCapacity) * 1) / 1}
+                    value={roundToDecimals(Number(topsideData.oilCapacity), 0)}
                     integer
                     unit="Sm³/sd"
                     min={0}
@@ -211,7 +212,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Gas capacity"
-                    value={Math.round(Number(topsideData.gasCapacity) * 10) / 10}
+                    value={roundToDecimals(Number(topsideData.gasCapacity), 1)}
                     integer={false}
                     unit="MSm³/sd"
                     min={0}
@@ -223,7 +224,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Water injection capacity"
-                    value={Math.round(Number(topsideData.waterInjectionCapacity) * 1) / 1}
+                    value={roundToDecimals(Number(topsideData.waterInjectionCapacity), 0)}
                     integer
                     unit="MSm³/sd"
                     id={`topside-water-injection-capacity-${topsideData.id}`}
@@ -294,7 +295,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Production lines length"
-                    value={Math.round(Number(surfData.infieldPipelineSystemLength) * 10) / 10}
+                    value={roundToDecimals(Number(surfData.infieldPipelineSystemLength), 1)}
                     integer={false}
                     unit="km"
                     min={0}
@@ -306,7 +307,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Umbilical system length"
-                    value={Math.round(Number(surfData.umbilicalSystemLength) * 10) / 10}
+                    value={roundToDecimals(Number(surfData.umbilicalSystemLength), 1)}
                     integer={false}
                     unit="km"
                     min={0}
@@ -364,7 +365,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Oil export pipeline length"
-                    value={Math.round(Number(transportData.oilExportPipelineLength) * 10) / 10}
+                    value={roundToDecimals(Number(transportData.oilExportPipelineLength), 1)}
                     integer={false}
                     unit="km"
                     min={0}
@@ -376,7 +377,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Gas export pipeline length"
-                    value={Math.round(Number(transportData.gasExportPipelineLength) * 10) / 10}
+                    value={roundToDecimals(Number(transportData.gasExportPipelineLength), 1)}
                     integer={false}
                     unit="km"
                     min={0}
@@ -391,7 +392,7 @@ const CaseFacilitiesTab = () => {
             <Grid size={{ xs: 12, md: 4 }}>
                 <SwitchableNumberInput
                     label="Substructure dry weight"
-                    value={Math.round(Number(substructureData.dryWeight) * 1) / 1}
+                    value={roundToDecimals(Number(substructureData.dryWeight), 0)}
                     integer
                     unit="tonnes"
                     min={0}

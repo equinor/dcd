@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useDataFetch } from "@/Hooks"
 import { compareCasesQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { roundToDecimals } from "@/Utils/FormatingUtils"
 
 interface TableCompareCase {
     id: string,
@@ -130,22 +131,22 @@ export const useProjectChartData = () => {
                             id: c.caseId,
                             cases: c.name ?? "",
                             description: c.description ?? "",
-                            npv: Math.round(c.npv ?? 0 * 1) / 1,
-                            npvOverride: Math.round(c.npvOverride ?? 0 * 1) / 1,
-                            breakEven: Math.round(c.breakEven ?? 0 * 1) / 1,
-                            breakEvenOverride: Math.round(c.breakEvenOverride ?? 0 * 1) / 1,
-                            oilProduction: Math.round(matchingCase.totalOilProduction * 10) / 10,
-                            additionalOilProduction: Math.round(matchingCase.additionalOilProduction * 10) / 10,
-                            gasProduction: Math.round(matchingCase.totalGasProduction * 10) / 10,
-                            additionalGasProduction: Math.round(matchingCase.additionalGasProduction * 10) / 10,
-                            totalExportedVolumes: Math.round(matchingCase.totalExportedVolumes * 10) / 10,
-                            studyCostsPlusOpex: Math.round(matchingCase.totalStudyCostsPlusOpex * 1) / 1,
-                            cessationCosts: Math.round(matchingCase.totalCessationCosts * 1) / 1,
-                            offshorePlusOnshoreFacilityCosts: Math.round(matchingCase.offshorePlusOnshoreFacilityCosts * 1) / 1,
-                            developmentCosts: Math.round(matchingCase.developmentWellCosts * 1) / 1,
-                            explorationWellCosts: Math.round(matchingCase.explorationWellCosts * 1) / 1,
-                            totalCO2Emissions: Math.round(matchingCase.totalCo2Emissions * 10) / 10,
-                            co2Intensity: Math.round(matchingCase.co2Intensity * 10) / 10,
+                            npv: roundToDecimals(c.npv ?? 0, 0),
+                            npvOverride: roundToDecimals(c.npvOverride ?? 0, 0),
+                            breakEven: roundToDecimals(c.breakEven ?? 0, 0),
+                            breakEvenOverride: roundToDecimals(c.breakEvenOverride ?? 0, 0),
+                            oilProduction: roundToDecimals(matchingCase.totalOilProduction, 1),
+                            additionalOilProduction: roundToDecimals(matchingCase.additionalOilProduction, 1),
+                            gasProduction: roundToDecimals(matchingCase.totalGasProduction, 1),
+                            additionalGasProduction: roundToDecimals(matchingCase.additionalGasProduction, 1),
+                            totalExportedVolumes: roundToDecimals(matchingCase.totalExportedVolumes, 1),
+                            studyCostsPlusOpex: roundToDecimals(matchingCase.totalStudyCostsPlusOpex, 0),
+                            cessationCosts: roundToDecimals(matchingCase.totalCessationCosts, 0),
+                            offshorePlusOnshoreFacilityCosts: roundToDecimals(matchingCase.offshorePlusOnshoreFacilityCosts, 0),
+                            developmentCosts: roundToDecimals(matchingCase.developmentWellCosts, 0),
+                            explorationWellCosts: roundToDecimals(matchingCase.explorationWellCosts, 0),
+                            totalCO2Emissions: roundToDecimals(matchingCase.totalCo2Emissions, 1),
+                            co2Intensity: roundToDecimals(matchingCase.co2Intensity, 1),
                         }
 
                         tableCompareCases.push(tableCase)

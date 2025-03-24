@@ -20,6 +20,7 @@ import SidesheetWrapper from "@/Components/TableSidesheet/SidesheetWrapper"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
+import { roundToDecimals } from "@/Utils/FormatingUtils"
 import { gridRefArrayToAlignedGrid, formatColumnSum, tableCellisEditable } from "@/Utils/TableUtils"
 
 interface Props {
@@ -76,18 +77,17 @@ const CaseTableWithGrouping = ({
                 for (let i = rowObject.profile.startYear; i < rowObject.profile.startYear + rowObject.profile.values.length; i += 1) {
                     const yearKey = (dg4Year + i).toString()
                     const value = rowObject.profile.values[j]
-                    const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
 
-                    rowObject[yearKey] = roundedValue
+                    rowObject[yearKey] = roundToDecimals(value)
 
                     j += 1
                 }
 
                 const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
 
-                rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
+                rowObject.total = roundToDecimals(totalValue)
                 if (ts.total !== undefined) {
-                    rowObject.total = Math.round(Number(ts.total) * 100) / 100
+                    rowObject.total = roundToDecimals(Number(ts.total))
                 }
             }
             tableRows.push(rowObject)

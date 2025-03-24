@@ -3,9 +3,10 @@ import React, { useEffect, useMemo, useState } from "react"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
@@ -38,39 +39,55 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         const totalOtherStudiesCostProfileData = apiData.totalOtherStudiesCostProfile
         const caseData = apiData.case
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+            overridable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+            overridable,
+        }: CreateProfileDataParams): ITimeSeriesTableData => ({
+            profileName,
+            unit: getUnitByProfileName(profileName, physUnit, currency),
+            profile,
+            resourceName,
+            resourceId: caseData.caseId,
+            resourcePropertyKey: resourceName,
+            editable,
+            overridable: overridable ?? !!overrideProfile,
+            ...(overrideProfile && { overrideProfile }),
+        })
+
         const newStudyTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Feasibility & conceptual stud.",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalFeasibilityAndConceptStudiesData,
                 resourceName: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.TotalFeasibilityAndConceptStudiesOverride,
-                overridable: true,
                 overrideProfile: totalFeasibilityAndConceptStudiesOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "FEED studies (DG2-DG3)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalFeedStudiesData,
                 resourceName: ProfileTypes.TotalFeedStudiesOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.TotalFeedStudiesOverride,
-                overridable: true,
                 overrideProfile: totalFeedStudiesOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Other studies",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: totalOtherStudiesCostProfileData,
                 resourceName: ProfileTypes.TotalOtherStudiesCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.TotalOtherStudiesCostProfile,
-                editable: true,
-                overridable: false,
-            },
+            }),
         ]
 
         setStudyTimeSeriesData(newStudyTimeSeriesData)
