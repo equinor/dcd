@@ -4,10 +4,21 @@ import { Dispatch, SetStateAction } from "react"
 import { ITimeSeries, ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { EditInstance } from "@/Models/Interfaces"
 import { TABLE_VALIDATION_RULES } from "@/Utils/Config/constants"
+import { parseDecimalInput, roundToDecimals, sumAndRound } from "@/Utils/FormatingUtils"
 
+/**
+ * Checks if a well is an exploration well based on its category
+ * @param well - Well to check
+ * @returns True if well belongs to categories 4, 5, or 6
+ */
 export const isExplorationWell = (well: Components.Schemas.WellOverviewDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-// Core time series operations
+/**
+ * Merges multiple time series data arrays with their respective offsets
+ * @param dataArrays - Arrays of numerical values to merge
+ * @param offsets - Offset positions for each array
+ * @returns Combined array with summed values at corresponding positions
+ */
 const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): number[] => {
     if (dataArrays.length !== offsets.length) {
         throw new Error("dataArrays and offsets must have the same length")
@@ -31,6 +42,12 @@ const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): numbe
     return result
 }
 
+/**
+ * Merges two time series objects
+ * @param t1 - First time series
+ * @param t2 - Second time series
+ * @returns Combined time series with values summed at corresponding years
+ */
 export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
     if (!t1) { return t2 || { startYear: 0, values: [] } }
     if (!t2) { return t1 }
@@ -49,6 +66,11 @@ export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     }
 }
 
+/**
+ * Merges multiple time series objects into a single series
+ * @param timeSeriesList - Array of time series objects to merge
+ * @returns Single combined time series
+ */
 export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
     let mergedTimeSeries: ITimeSeries = { startYear: 0, values: [] }
 
@@ -63,7 +85,15 @@ export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[])
     return mergedTimeSeries
 }
 
-// Time series data manipulation
+/**
+ * Generates a time series profile from table values
+ * @param tableTimeSeriesValues - Array of year/value pairs
+ * @param profile - Base profile to extend
+ * @param startYear - Start year of the profile
+ * @param firstYear - First year to include
+ * @param lastYear - Last year to include
+ * @returns Complete profile with values array
+ */
 export const generateProfile = (
     tableTimeSeriesValues: { year: number, value: number }[],
     profile: any,
@@ -94,6 +124,11 @@ export const generateProfile = (
     }
 }
 
+/**
+ * Gets the last year from a time series
+ * @param timeSeries - Time series to analyze
+ * @returns Last year in the series or undefined if invalid
+ */
 export const GetTimeSeriesLastYear = (
     timeSeries:
         | {
@@ -117,7 +152,6 @@ export const GetTimeSeriesLastYear = (
     return undefined
 }
 
-// Table interfaces
 export interface ITableCellChangeParams {
     data: any
     newValue: any
@@ -138,7 +172,13 @@ export interface ITableCellChangeConfig {
     setSnackBarMessage?: (message: string) => void
 }
 
-// Table cell operations
+/**
+ * Determines if a table cell is editable
+ * @param params - Cell parameters including node and data
+ * @param editAllowed - Whether editing is allowed globally
+ * @param isSaving - Whether a save operation is in progress
+ * @returns True if the cell can be edited
+ */
 export const tableCellisEditable = (params: any, editAllowed: boolean, isSaving?: boolean): boolean => {
     if (!params || !params.node || !params.data || params.node.footer || isSaving) {
         return false
@@ -151,6 +191,13 @@ export const tableCellisEditable = (params: any, editAllowed: boolean, isSaving?
     return editAllowed && params.data.editable
 }
 
+/**
+ * Validates input against defined rules for table cells
+ * @param params - Cell parameters including value and data
+ * @param editAllowed - Whether editing is allowed
+ * @param isSaving - Whether a save operation is in progress
+ * @returns Error message or null if valid
+ */
 export const validateInput = (params: any, editAllowed: boolean, isSaving?: boolean) => {
     const { value, data } = params
 
@@ -165,28 +212,47 @@ export const validateInput = (params: any, editAllowed: boolean, isSaving?: bool
     return null
 }
 
+/**
+ * Parses and validates numerical input for table cells
+ * @param setSnackBarMessage - Function to display validation messages
+ * @param params - Cell parameters with old and new values
+ * @returns Parsed value or original value if invalid
+ */
 export const numberValueParser = (
     setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>,
     params: { newValue: any, oldValue: any, data: any },
 ) => {
     const { oldValue, newValue } = params
-    const valueWithOnlyValidChars = newValue.toString().replace(/[^0-9.,-]/g, "")
-    const allCommasTurnedToDots = valueWithOnlyValidChars.replace(/,/g, ".")
 
-    if ((allCommasTurnedToDots.match(/\./g) || []).length > 1) {
+    // Check if the newValue has more than one decimal point
+    const dotCount = (newValue.toString().match(/\./g) || []).length
+                   + (newValue.toString().match(/,/g) || []).length
+
+    if (dotCount > 1) {
         setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
 
         return oldValue
     }
 
-    if (valueWithOnlyValidChars.toString() !== newValue.toString()) {
+    // First check if the input only contains valid characters
+    const validInput = /^-?[0-9.,]+$/.test(newValue.toString())
+
+    if (!validInput && newValue.toString() !== "") {
         setSnackBarMessage("Only numbers, commas, dots and minus signs are allowed. Invalid characters have been removed.")
+        // Filter out invalid characters and try again
+        const filtered = newValue.toString().replace(/[^0-9.,-]/g, "")
+
+        return parseDecimalInput(filtered)
     }
 
-    return allCommasTurnedToDots
+    return parseDecimalInput(newValue)
 }
 
-// Table data formatting
+/**
+ * Returns style for case rows in tables
+ * @param params - Row parameters
+ * @returns Style object or undefined
+ */
 export const getCaseRowStyle = (params: any) => {
     if (params.node.footer) {
         return { fontWeight: "bold" }
@@ -195,8 +261,18 @@ export const getCaseRowStyle = (params: any) => {
     return undefined
 }
 
+/**
+ * Style object for right-aligned cells
+ */
 export const cellStyleRightAlign = { textAlign: "right" }
 
+/**
+ * Sets a non-negative number in state object
+ * @param value - Number value to set
+ * @param objectKey - Key in state object
+ * @param state - Current state
+ * @param setState - State setter function
+ */
 export const setNonNegativeNumberState = (value: number, objectKey: string, state: any, setState: Dispatch<SetStateAction<any>>): void => {
     const newState = { ...state }
 
@@ -204,18 +280,41 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
     setState(newState)
 }
 
+/**
+ * Formats sum of column values with validation
+ * @param params - Object containing values array
+ * @returns Formatted sum or empty string if invalid
+ */
 export const formatColumnSum = (params: { values: any[] }) => {
-    let sum = 0
+    const validNumbers = params.values
+        .filter((value: any) => {
+            // Skip empty, null, or undefined values
+            if (value === "" || value === null || value === undefined) {
+                return false
+            }
+            // Check if the value can be parsed as a number
+            const numValue = parseDecimalInput(value.toString())
 
-    params.values.forEach((value: any) => {
-        if (!Number.isNaN(parseFloat(value)) && Number.isFinite(value)) {
-            sum += Number(value)
-        }
-    })
+            return !Number.isNaN(numValue) && Number.isFinite(numValue)
+        })
+        .map((value: any) => parseDecimalInput(value.toString()))
 
-    return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
+    // Calculate the sum
+    if (validNumbers.length === 0) {
+        return ""
+    }
+
+    const sum = sumAndRound(validNumbers, 10)
+
+    // Return empty string for zero or negative sums
+    return sum > 0 ? sum : ""
 }
 
+/**
+ * Extracts year/value pairs from table row data
+ * @param tableData - Row data object
+ * @returns Array of year/value pairs sorted by year
+ */
 export const getValuesFromEntireRow = (tableData: any) => {
     const valuePerYear: { year: number, value: number }[] = []
     const isInteger = (value: string): boolean => /^-?\d+$/.test(value)
@@ -227,11 +326,11 @@ export const getValuesFromEntireRow = (tableData: any) => {
             isInteger(columnName)
             && cellValue !== ""
             && cellValue !== null
-            && !Number.isNaN(Number(cellValue.toString().replace(/,/g, ".")))
+            && !Number.isNaN(parseDecimalInput(cellValue.toString()))
         ) {
             valuePerYear.push({
                 year: parseInt(columnName, 10),
-                value: Number(cellValue.toString().replace(/,/g, ".")),
+                value: parseDecimalInput(cellValue.toString()),
             })
         }
     })
@@ -239,7 +338,12 @@ export const getValuesFromEntireRow = (tableData: any) => {
     return valuePerYear.sort((a, b) => a.year - b.year)
 }
 
-// Table validation and edit generation
+/**
+ * Validates a table cell change against defined rules
+ * @param params - Cell change parameters
+ * @param config - Configuration including rules and notifications
+ * @returns True if change is valid
+ */
 export const validateTableCellChange = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
     const { newValue, profileName } = params
     const { setSnackBarMessage } = config
@@ -255,6 +359,12 @@ export const validateTableCellChange = (params: ITableCellChangeParams, config: 
     return true
 }
 
+/**
+ * Generates edit instance for table cell change
+ * @param params - Cell change parameters
+ * @param config - Configuration including case and project info
+ * @returns Edit instance or null if no changes
+ */
 export const generateTableCellEdit = (params: ITableCellChangeParams, config: ITableCellChangeConfig): EditInstance | null => {
     const { data, profileName } = params
     const {
@@ -312,7 +422,14 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
     return editInstance
 }
 
-// Table year management
+/**
+ * Sets table year range based on profiles
+ * @param profiles - Array of time series profiles
+ * @param dg4Year - Base year for DG4
+ * @param setStartYear - Start year setter
+ * @param setEndYear - End year setter
+ * @param setTableYears - Table years range setter
+ */
 export const SetTableYearsFromProfiles = (
     profiles: (
         | {
@@ -385,6 +502,12 @@ export const SetTableYearsFromProfiles = (
     }
 }
 
+/**
+ * Sets summary table year range based on profiles
+ * @param profiles - Array of time series
+ * @param dg4Year - Base year for DG4
+ * @param setTableYears - Table years range setter
+ */
 export const SetSummaryTableYearsFromProfiles = (
     profiles: (ITimeSeries | undefined)[],
     dg4Year: number,
@@ -423,7 +546,13 @@ export const SetSummaryTableYearsFromProfiles = (
     }
 }
 
-// Table UI components
+/**
+ * Creates bar profile objects for charts
+ * @param barProfiles - Profile identifiers
+ * @param barNames - Display names for profiles
+ * @param xKey - X-axis key
+ * @returns Array of configured bar profile objects
+ */
 export const separateProfileObjects = (barProfiles: string[], barNames: string[], xKey: string) => {
     const barProfileObjects = barProfiles.map((bp, i) => ({
         type: "bar",
@@ -448,6 +577,14 @@ export const separateProfileObjects = (barProfiles: string[], barNames: string[]
     return barProfileObjects
 }
 
+/**
+ * Conditionally inserts elements based on condition
+ * @param condition - Whether to insert elements
+ * @param addAxes - Whether to add axes data
+ * @param axesData - Axes configuration data
+ * @param elements - Elements to conditionally insert
+ * @returns Inserted elements or empty array
+ */
 export const insertIf = (condition: boolean, addAxes: boolean, axesData: any, ...elements: any) => {
     if (addAxes) {
         return condition ? { axes: axesData } : []
@@ -456,6 +593,11 @@ export const insertIf = (condition: boolean, addAxes: boolean, axesData: any, ..
     return condition ? elements : []
 }
 
+/**
+ * Converts grid reference array to aligned grid
+ * @param alignedGridsRef - Array of grid references
+ * @returns Aligned grid array or undefined
+ */
 export const gridRefArrayToAlignedGrid = (alignedGridsRef: any[]) => {
     if (alignedGridsRef && alignedGridsRef.length > 0) {
         const refArray: any[] = []
@@ -483,6 +625,15 @@ interface IAssetWell {
     }
 }
 
+/**
+ * Creates missing asset wells from available wells
+ * @param existingAssetWells - Currently defined asset wells
+ * @param availableWells - All available wells
+ * @param resourceId - Current resource identifier
+ * @param dg4Year - Base year for DG4
+ * @param isExplorationTable - Whether table is for exploration wells
+ * @returns Complete array with existing and missing wells
+ */
 export const createMissingAssetWellsFromWells = (
     existingAssetWells: any[],
     availableWells: Components.Schemas.WellOverviewDto[] | undefined,
@@ -513,10 +664,28 @@ export const createMissingAssetWellsFromWells = (
     return [...formattedAssetWells, ...missingWells]
 }
 
+/**
+ * Calculates year key from base year and index
+ * @param baseYear - Base year (DG4)
+ * @param startYear - Start year of series
+ * @param index - Index in values array
+ * @returns Year as string key
+ */
 const calculateYearKey = (baseYear: number, startYear: number, index: number): string => (baseYear + startYear + index).toString()
 
+/**
+ * Sums array of numerical values
+ * @param values - Array of numbers to sum
+ * @returns Total sum
+ */
 const sumValues = (values: number[]): number => values.reduce((acc, val) => acc + val, 0)
 
+/**
+ * Creates yearly values object from drilling schedule
+ * @param drillingSchedule - Drilling schedule with values
+ * @param dg4Year - Base year for DG4
+ * @returns Object with year keys and values plus total
+ */
 const createYearlyValues = (
     drillingSchedule: IAssetWell["drillingSchedule"],
     dg4Year: number,
@@ -535,6 +704,16 @@ const createYearlyValues = (
     return result
 }
 
+/**
+ * Converts wells to table row data
+ * @param assetWells - Wells associated with asset
+ * @param wells - All available wells
+ * @param dg4Year - Base year for DG4
+ * @param editAllowed - Whether editing is allowed
+ * @param resourceId - Current resource identifier
+ * @param isExplorationTable - Whether table is for exploration wells
+ * @returns Array of formatted row data objects
+ */
 export const wellsToRowData = (
     assetWells: Components.Schemas.CampaignWellDto[],
     wells: Components.Schemas.WellOverviewDto[] | undefined,
@@ -569,10 +748,30 @@ export const wellsToRowData = (
     return tableWells.filter((tableWell) => tableWell !== undefined)
 }
 
-const roundValues = (values: number[], precision: number): number[] => values.map((v) => Math.round((v + Number.EPSILON) * precision) / precision)
+/**
+ * Rounds array of values to specified precision
+ * @param values - Array of numbers to round
+ * @param precision - Decimal precision
+ * @returns Array of rounded values
+ */
+const roundValues = (values: number[], precision: number): number[] => values.map((v) => roundToDecimals(v, precision))
 
-const calculateTotal = (values: number[], precision: number): number => Math.round(values.reduce((x, y) => x + y) * precision) / precision
+/**
+ * Calculates total from values with rounding
+ * @param values - Array of numbers to sum
+ * @param precision - Decimal precision
+ * @returns Rounded total
+ */
+const calculateTotal = (values: number[], precision: number): number => roundToDecimals(sumAndRound(values, precision), precision)
 
+/**
+ * Converts time series data to table row data
+ * @param timeSeriesData - Array of time series data
+ * @param dg4Year - Base year for DG4
+ * @param tableName - Name of table for precision settings
+ * @param editAllowed - Whether editing is allowed
+ * @returns Array of formatted row data
+ */
 export const profilesToRowData = (
     timeSeriesData: ITimeSeriesTableData[],
     dg4Year: number,
@@ -617,7 +816,7 @@ export const profilesToRowData = (
 
             rowObject.total = calculateTotal(profile.values, precision)
             if (ts.total !== undefined) {
-                rowObject.total = Math.round(Number(ts.total) * 1000) / 1000
+                rowObject.total = roundToDecimals(Number(ts.total), 3)
             }
         }
 
@@ -632,12 +831,26 @@ export const profilesToRowData = (
     return tableRows
 }
 
+/**
+ * Gets existing profile from table data or creates empty one
+ * @param tableData - Current table data
+ * @param resourceId - Resource identifier
+ * @returns Existing profile or new empty profile
+ */
 export const getExistingProfile = (tableData: any, resourceId: string) => (tableData.profile ? structuredClone(tableData.profile) : {
     startYear: 0,
     values: [],
     id: resourceId,
 })
 
+/**
+ * Generates new profile from row values
+ * @param rowValues - Array of year/value pairs
+ * @param existingProfile - Existing profile to extend
+ * @param dg4Year - Base year for DG4
+ * @param tableData - Current table data
+ * @returns New or updated profile
+ */
 export const generateNewProfile = (rowValues: any[], existingProfile: any, dg4Year: number, tableData: any) => {
     if (rowValues.length === 0) {
         const emptyProfile = structuredClone(existingProfile)
@@ -654,4 +867,10 @@ export const generateNewProfile = (rowValues: any[], existingProfile: any, dg4Ye
     return generateProfile(rowValues, tableData.profile, startYear, firstYear, lastYear)
 }
 
+/**
+ * Finds profile data by name in time series data array
+ * @param timeSeriesData - Array of time series data
+ * @param profileName - Name of profile to find
+ * @returns Matching profile data or undefined
+ */
 export const getProfileDataFromTimeSeriesData = (timeSeriesData: ITimeSeriesTableData[], profileName: string) => timeSeriesData.find((v) => v.profileName === profileName)

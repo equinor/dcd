@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
@@ -46,62 +47,75 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             return
         }
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            resourceId: string;
+            overrideProfile?: any;
+            editable?: boolean;
+            overridable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            resourceId,
+            overrideProfile,
+            editable = true,
+            overridable,
+        }: CreateProfileDataParams): ITimeSeriesTableData => ({
+            profileName,
+            unit: getUnitByProfileName(profileName, physUnit, currency),
+            profile,
+            resourceName,
+            resourceId,
+            resourcePropertyKey: resourceName,
+            editable,
+            overridable: overridable ?? !!overrideProfile,
+            ...(overrideProfile && { overrideProfile }),
+        })
+
         const newCapexTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Subsea production system",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: surfCostData,
                 resourceName: ProfileTypes.SurfCostProfileOverride,
                 resourceId: surf.id,
-                resourcePropertyKey: ProfileTypes.SurfCostProfileOverride,
-                overridable: true,
                 overrideProfile: surfCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Topside",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: topsideCostData,
                 resourceName: ProfileTypes.TopsideCostProfileOverride,
                 resourceId: topside.id,
-                resourcePropertyKey: ProfileTypes.TopsideCostProfileOverride,
-                overridable: true,
                 overrideProfile: topsideCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Substructure",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: substructureCostData,
                 resourceName: ProfileTypes.SubstructureCostProfileOverride,
                 resourceId: substructure.id,
-                resourcePropertyKey: ProfileTypes.SubstructureCostProfileOverride,
-                overridable: true,
                 overrideProfile: substructureCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Transport system",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
                 resourceName: ProfileTypes.TransportCostProfileOverride,
                 resourceId: transport.id,
-                resourcePropertyKey: ProfileTypes.TransportCostProfileOverride,
-                overridable: true,
                 overrideProfile: transportCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Onshore (Power from shore)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: onshorePowerSupplyCostData,
                 resourceName: ProfileTypes.OnshorePowerSupplyCostProfileOverride,
                 resourceId: onshorePowerSupply.id,
-                resourcePropertyKey: ProfileTypes.OnshorePowerSupplyCostProfileOverride,
-                overridable: true,
                 overrideProfile: onshorePowerSupplyCostOverrideData,
-                editable: true,
-            },
+            }),
         ]
 
         setCapexTimeSeriesData(newCapexTimeSeriesData)
