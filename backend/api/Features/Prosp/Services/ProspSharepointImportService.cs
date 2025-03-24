@@ -29,18 +29,23 @@ public class ProspSharepointImportService(
             : await graphServiceClient.Sites[siteId].Drives[driveId].Root.ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
 
         return driveItemsDelta.Select(x => new SharePointFileDto
-            {
-                Name = x.Name,
-                Id = x.Id
-            })
-            .ToList();
+                              {
+                                  Name = x.Name,
+                                  Id = x.Id
+                              })
+                              .ToList();
     }
 
     public async Task ImportFilesFromSharePoint(Guid projectId, SharePointImportDto[] dtos)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        await prospExcelImportService.ClearImportedProspData(projectPk, dtos.Select(x => x.CaseId).ToList());
+        if (string.IsNullOrEmpty(dtos.First().SharePointFileId))
+        {
+            await prospExcelImportService.ClearImportedProspData(projectPk, dtos.Select(x => x.CaseId).ToList());
+
+            return;
+        }
 
         var (success, siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
 
@@ -57,10 +62,10 @@ public class ProspSharepointImportService(
             }
 
             var driveItemStream = await graphServiceClient.Sites[siteId]
-                .Drives[driveId]
-                .Items[dto.SharePointFileId]
-                .Content.Request()
-                .GetAsync();
+                                                          .Drives[driveId]
+                                                          .Items[dto.SharePointFileId]
+                                                          .Content.Request()
+                                                          .GetAsync();
 
             await prospExcelImportService.ImportProsp(driveItemStream, projectPk, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
         }
@@ -109,10 +114,10 @@ public class ProspSharepointImportService(
         try
         {
             return await graphServiceClient
-                .Sites
-                .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
-                .Request()
-                .GetAsync();
+                         .Sites
+                         .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
+                         .Request()
+                         .GetAsync();
         }
         catch (Exception)
         {

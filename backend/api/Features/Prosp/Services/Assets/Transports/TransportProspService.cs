@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -18,7 +19,14 @@ public static class TransportProspService
         asset.OilExportPipelineLength = 0;
         asset.CostYear = 0;
 
-        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, 0, []);
+        var overrideProfile = caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride);
+
+        if (overrideProfile != null)
+        {
+            overrideProfile.Override = true;
+        }
+
+        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportTransport(List<Cell> cellData, Case caseItem)
@@ -43,6 +51,6 @@ public static class TransportProspService
         asset.OilExportPipelineLength = oilExportPipelineLength;
         asset.CostYear = costYear;
 
-        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, startYear, values);
+        TransportCostProfileService.AddOrUpdateTransportCostProfile(caseItem, startYear, values, false);
     }
 }
