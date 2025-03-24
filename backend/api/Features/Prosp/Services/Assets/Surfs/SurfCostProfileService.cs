@@ -31,7 +31,7 @@ public static class SurfCostProfileService
     {
         if (caseItem.Surf.ProspVersion == null)
         {
-            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride), true);
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride), false);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.SurfCostProfile);

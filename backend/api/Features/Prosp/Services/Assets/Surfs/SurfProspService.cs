@@ -34,7 +34,8 @@ public static class SurfProspService
     {
         List<string> costProfileCoords = ["J112", "K112", "L112", "M112", "N112", "O112", "P112"];
 
-        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Surf.Dg4Date);
+        var firstYearInCostProfile = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.MainSheet.CostProfilesFirstYear);
+
         var lengthProductionLine = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Surf.LengthProductionLine);
         var lengthUmbilicalSystem = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Surf.LengthUmbilicalSystem);
         var productionFlowLine = ParseHelpers.MapProductionFlowLine(ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Surf.ProductionFlowLineInt));
@@ -48,8 +49,7 @@ public static class SurfProspService
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Surf.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Surf.CostYear);
 
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Surf.CostProfileStartYear);
-        var startYear = costProfileStartYear - dG4Date.Year;
+        var startYear = firstYearInCostProfile - caseItem.Dg4Date.Year;
         var costProfileValues = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
 
         var asset = caseItem.Surf;

@@ -31,7 +31,7 @@ public static class OnshorePowerSupplyCostProfileService
     {
         if (caseItem.OnshorePowerSupply.ProspVersion == null)
         {
-            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride), true);
+            SetOverrideFlag(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride), false);
         }
 
         var existingProfile = caseItem.GetProfile(ProfileTypes.OnshorePowerSupplyCostProfile);
