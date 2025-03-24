@@ -17,6 +17,7 @@ import { useAppStore } from "@/Store/AppStore"
 import {
     formatDate,
     dateStringToDateUtc,
+    dateToUtcDateStringWithZeroTimePart,
 } from "@/Utils/DateUtils"
 
 interface SwitchableDateInputProps {
@@ -105,7 +106,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
             return
         }
 
-        const dateString = date.toISOString()
+        const dateString = dateToUtcDateStringWithZeroTimePart(date)
 
         setLocalValue(dateString)
         onChange({ target: { value: dateString } } as React.ChangeEvent<HTMLInputElement>)
@@ -129,7 +130,6 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
                     maxValue={maxValue}
                     formatOptions={{ day: "2-digit", month: "long", year: "numeric" }}
                     locale="nb-NO"
-                    timezone="Europe/Oslo"
                     hideClearButton={required}
                 />
             </InputSwitcher>

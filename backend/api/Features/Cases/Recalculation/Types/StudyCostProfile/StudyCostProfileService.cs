@@ -70,16 +70,14 @@ public static class StudyCostProfileService
         profile.Values = valuesList.ToArray();
     }
 
-    private static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)?.Override == true)
         {
             return;
         }
 
-        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeedStudies;
-
-        if (caseItem.Dg2Date == null || caseItem.Dg3Date == null)
+        if (caseItem.Dg2Date == null || caseItem.Dg3Date == null || caseItem.Dg3Date.Value < caseItem.Dg2Date.Value)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies));
 
@@ -97,37 +95,25 @@ public static class StudyCostProfileService
 
         var totalDays = (dg3 - dg2).Days + 1;
 
-        if (totalDays == 0) // Might want to throw an exception here
+        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeedStudies;
+
+        var costPerDay = totalFeedStudies / totalDays;
+
+        var costsPerYear = new List<double>();
+
+        for (var year = dg2.Year; year <= dg3.Year; year++)
         {
-            totalDays = 1;
+            var startDateForYear = dg2.Year == year ? dg2 : new DateTime(year, 1, 1);
+            var endDateForYear = dg3.Year == year ? dg3 : new DateTime(year, 12, 31);
+
+            var daysInYear = (endDateForYear - startDateForYear).TotalDays + 1;
+            costsPerYear.Add(daysInYear * costPerDay);
         }
-
-        var firstYearDays = DateTime.IsLeapYear(dg2.Year) ? 366 : 365;
-        var firstYearPercentage = firstYearDays / (double)totalDays;
-
-        var lastYearDays = dg3.DayOfYear;
-        var lastYearPercentage = lastYearDays / (double)totalDays;
-
-        var percentageOfYearList = new List<double>
-        {
-            firstYearPercentage
-        };
-
-        for (var i = dg2.Year + 1; i < dg3.Year; i++)
-        {
-            var days = DateTime.IsLeapYear(i) ? 366 : 365;
-            var percentage = days / (double)totalDays;
-            percentageOfYearList.Add(percentage);
-        }
-
-        percentageOfYearList.Add(lastYearPercentage);
-
-        var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeedStudies);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeedStudies);
 
         profile.StartYear = dg2.Year - caseItem.Dg4Date.Year;
-        profile.Values = valuesList.ToArray();
+        profile.Values = costsPerYear.ToArray();
     }
 
     private static double SumAllCostFacility(Case caseItem)

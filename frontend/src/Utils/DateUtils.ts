@@ -27,6 +27,8 @@ export const dateStringToDateUtc = (dateString: string): Date => {
     return new Date(dateString)
 }
 
+export const dateToUtcDateStringWithZeroTimePart = (date: Date): string => dateStringToDateUtc(date.toString()).toISOString()
+
 export const getYearFromDateString = (dateString: string): number => new Date(dateString).getFullYear()
 
 export const dateFromTimestamp = (timestamp: number): Date => new Date(timestamp)
