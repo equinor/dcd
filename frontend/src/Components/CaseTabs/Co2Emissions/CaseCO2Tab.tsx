@@ -7,6 +7,7 @@ import {
 } from "react"
 
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import Co2EmissionsTable from "./Co2EmissionsTable"
 
 import { PieChart } from "@/Components/CaseTabs/Co2Emissions/PieChart"
 import { TimeSeriesChart, setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
@@ -310,6 +311,9 @@ const CaseCO2Tab = () => {
                     includeFooter={false}
                     gridRef={co2GridRef}
                 />
+            </Grid>
+            <Grid size={12}>
+                <Co2EmissionsTable />
             </Grid>
         </Grid>
     )

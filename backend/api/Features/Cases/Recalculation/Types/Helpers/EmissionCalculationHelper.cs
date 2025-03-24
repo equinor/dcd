@@ -165,15 +165,15 @@ public static class EmissionCalculationHelper
 
         return new TimeSeries
         {
-            Values = mergedOilAndGas.Values.Select(v => v * caseItem.Project.FlaredGasPerProducedVolume).ToArray(),
+            Values = mergedOilAndGas.Values.Select(v => v * caseItem.FlaredGasPerProducedVolume).ToArray(),
             StartYear = mergedOilAndGas.StartYear
         };
     }
 
     public static TimeSeries CalculateLosses(Case caseItem)
     {
-        var lossesValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v * caseItem.Project.Co2RemovedFromGas).ToArray() ?? [];
-        var additionalGasLossesValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v * caseItem.Project.Co2RemovedFromGas).ToArray() ?? [];
+        var lossesValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v * caseItem.Co2RemovedFromGas).ToArray() ?? [];
+        var additionalGasLossesValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v * caseItem.Co2RemovedFromGas).ToArray() ?? [];
 
         var gasLossesTs = new TimeSeries
         {

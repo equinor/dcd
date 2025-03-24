@@ -16,12 +16,10 @@ public class Co2EmissionProfileServiceTests
         // Arrange
         var caseItem = new Case
         {
-            Project = new Project
-            {
-                FlaredGasPerProducedVolume = 1.122765,
-                Co2RemovedFromGas = 0.0,
-                DailyEmissionFromDrillingRig = 117
-            },
+            FlaredGasPerProducedVolume = 1.122765,
+            Co2RemovedFromGas = 0.0,
+            DailyEmissionFromDrillingRig = 117,
+
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles =
             [
@@ -104,11 +102,8 @@ public class Co2EmissionProfileServiceTests
         // Arrange
         var caseItem = new Case
         {
-            Project = new Project
-            {
-                FlaredGasPerProducedVolume = 1.122765,
-                Co2RemovedFromGas = 0.0
-            },
+            FlaredGasPerProducedVolume = 1.122765,
+            Co2RemovedFromGas = 0.0,
             FacilitiesAvailability = 93, // 93%
             TimeSeriesProfiles =
             [

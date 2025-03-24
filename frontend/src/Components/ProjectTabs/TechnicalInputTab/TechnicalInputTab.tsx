@@ -3,7 +3,6 @@ import { useState } from "react"
 
 import { SecondaryTabs } from "../Components/SecondaryTabs"
 
-import CO2Tab from "./CO2Tab/CO2Tab"
 import PROSPTab from "./PROSPTab/PROSPTab"
 import WellCostsTab from "./WellCostTab/WellCostsTab"
 
@@ -21,7 +20,6 @@ const TechnicalInputTab = () => {
     const tabs = [
         { label: "Well Costs", content: <WellCostsTab /> },
         { label: "PROSP", content: <PROSPTab /> },
-        { label: "CO2", content: <CO2Tab /> },
     ]
 
     return (

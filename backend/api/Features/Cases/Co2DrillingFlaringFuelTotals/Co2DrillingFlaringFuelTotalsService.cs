@@ -50,7 +50,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
         var flaringsTotal = GetFlaringsProfileTotal(caseItem);
-        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem.Project, developmentWells);
+        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem, developmentWells);
 
         return new Co2DrillingFlaringFuelTotalsDto
         {
@@ -67,7 +67,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var flaringsProfile = new TimeSeries
         {
             StartYear = flarings.StartYear,
-            Values = flarings.Values.Select(flare => flare * caseItem.Project.Co2EmissionsFromFlaredGas).ToArray()
+            Values = flarings.Values.Select(flare => flare * caseItem.Co2EmissionsFromFlaredGas).ToArray()
         };
 
         return flaringsProfile.Values.Sum() / 1000;
@@ -80,13 +80,13 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var fuelConsumptionsProfile = new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
-            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.Co2EmissionFromFuelGas).ToArray()
+            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Co2EmissionFromFuelGas).ToArray()
         };
 
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private static double CalculateDrillingEmissionsTotal(Project project, List<CampaignWell> developmentWells)
+    private static double CalculateDrillingEmissionsTotal(Case caseItem, List<CampaignWell> developmentWells)
     {
         var wellDrillingSchedules = developmentWells.Select(developmentWell => new TimeSeries
         {
@@ -97,7 +97,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         var merged = TimeSeriesMerger.MergeTimeSeries(wellDrillingSchedules);
 
         return merged.Values
-            .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
+            .Select(well => well * caseItem.AverageDevelopmentDrillingDays * caseItem.DailyEmissionFromDrillingRig)
             .Sum();
     }
 }

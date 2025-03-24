@@ -104,11 +104,10 @@ export enum CampaignType {
 export enum ChangeLogCategory {
     None = 0,
     WellCostTab = 1,
-    Co2Tab = 2,
-    AccessManagementTab = 3,
-    SettingsTab = 4,
-    ProjectOverviewTab = 5,
-    ProspTab = 6,
+    AccessManagementTab = 2,
+    SettingsTab = 3,
+    ProjectOverviewTab = 4,
+    ProspTab = 5,
 }
 
 export enum Concept {

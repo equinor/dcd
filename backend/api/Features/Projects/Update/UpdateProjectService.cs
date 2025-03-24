@@ -36,13 +36,6 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         existingProject.InternalProjectPhase = projectDto.InternalProjectPhase;
         existingProject.ProjectCategory = projectDto.ProjectCategory;
         existingProject.SharepointSiteUrl = projectDto.SharepointSiteUrl;
-        existingProject.Co2RemovedFromGas = projectDto.Co2RemovedFromGas;
-        existingProject.Co2EmissionFromFuelGas = projectDto.Co2EmissionFromFuelGas;
-        existingProject.FlaredGasPerProducedVolume = projectDto.FlaredGasPerProducedVolume;
-        existingProject.Co2EmissionsFromFlaredGas = projectDto.Co2EmissionsFromFlaredGas;
-        existingProject.Co2Vented = projectDto.Co2Vented;
-        existingProject.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
-        existingProject.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
         existingProject.OilPriceUsd = projectDto.OilPriceUsd;
         existingProject.GasPriceNok = projectDto.GasPriceNok;
         existingProject.NglPriceUsd = projectDto.NglPriceUsd;
@@ -90,31 +83,6 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
         }
 
         if (existingProject.OilPriceUsd != projectDto.OilPriceUsd)
-        {
-            return true;
-        }
-
-        if (existingProject.AverageDevelopmentDrillingDays != projectDto.AverageDevelopmentDrillingDays)
-        {
-            return true;
-        }
-
-        if (existingProject.DailyEmissionFromDrillingRig != projectDto.DailyEmissionFromDrillingRig)
-        {
-            return true;
-        }
-
-        if (existingProject.Co2EmissionFromFuelGas != projectDto.Co2EmissionFromFuelGas)
-        {
-            return true;
-        }
-
-        if (existingProject.Co2EmissionsFromFlaredGas != projectDto.Co2EmissionsFromFlaredGas)
-        {
-            return true;
-        }
-
-        if (existingProject.Co2Vented != projectDto.Co2Vented)
         {
             return true;
         }

@@ -39,6 +39,12 @@ public class CreateCaseService(DcdDbContext context)
             CapexFactorFeedStudies = 0.015,
             InitialYearsWithoutWellInterventionCost = 0,
             FinalYearsWithoutWellInterventionCost = 0,
+            Co2EmissionFromFuelGas = 2.34,
+            FlaredGasPerProducedVolume = 1.122765,
+            Co2EmissionsFromFlaredGas = 3.73,
+            Co2Vented = 1.96,
+            DailyEmissionFromDrillingRig = 100,
+            AverageDevelopmentDrillingDays = 50,
 
             DrainageStrategyId = drainageStrategyId,
             DrainageStrategy = CreateDrainageStrategy(drainageStrategyId),

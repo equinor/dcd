@@ -20,7 +20,6 @@ public enum ChangeLogCategory
 {
     None,
     WellCostTab,
-    Co2Tab,
     AccessManagementTab,
     SettingsTab,
     ProjectOverviewTab,
