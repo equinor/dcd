@@ -2,8 +2,8 @@ import { useParams } from "react-router"
 
 import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
+import { CampaignProfileType } from "@/Components/CaseTabs/CaseDrillingSchedule/Components/CampaignProfileTypes"
 import { ITimeSeries } from "@/Models/ITimeSeries"
-import { CampaignProfileType } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useProjectContext } from "@/Store/ProjectContext"
 
