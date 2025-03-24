@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -16,7 +17,7 @@ public static class OnshorePowerSupplyProspService
         asset.CostYear = 0;
         asset.ProspVersion = null;
 
-        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, []);
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportOnshorePowerSupply(List<Cell> cellData, Case caseItem)
@@ -28,6 +29,6 @@ public static class OnshorePowerSupplyProspService
         var startYear = firstYearInCostProfile - caseItem.Dg4Date.Year;
         var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
 
-        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, startYear, values);
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, startYear, values, false);
     }
 }

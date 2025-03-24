@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -34,7 +35,7 @@ public static class TopsideProspService
         asset.PeakElectricityImported = 0;
         asset.ProspVersion = null;
 
-        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, 0, []);
+        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportTopside(List<Cell> cellData, Case caseItem)
@@ -92,6 +93,6 @@ public static class TopsideProspService
         asset.PeakElectricityImported = peakElectricityImported;
         asset.ProspVersion = versionDate;
 
-        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, startYear, values);
+        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, startYear, values, false);
     }
 }

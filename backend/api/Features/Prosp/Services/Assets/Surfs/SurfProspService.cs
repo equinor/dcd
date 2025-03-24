@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -27,7 +28,7 @@ public static class SurfProspService
         asset.ApprovedBy = "";
         asset.ProspVersion = null;
 
-        SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, 0, []);
+        SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportSurf(List<Cell> cellData, Case caseItem)
@@ -69,6 +70,6 @@ public static class SurfProspService
         asset.ApprovedBy = "";
         asset.ProspVersion = versionDate;
 
-        SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, startYear, costProfileValues);
+        SurfCostProfileService.AddOrUpdateSurfCostProfile(caseItem, startYear, costProfileValues, false);
     }
 }

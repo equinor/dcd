@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -18,7 +19,7 @@ public static class SubstructureProspService
         asset.Concept = Concept.NoConcept;
         asset.ProspVersion = null;
 
-        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, 0, []);
+        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportSubstructure(List<Cell> cellData, Case caseItem)
@@ -43,6 +44,6 @@ public static class SubstructureProspService
         asset.Concept = concept;
         asset.ProspVersion = versionDate;
 
-        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, startYear, values);
+        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, startYear, values, false);
     }
 }
