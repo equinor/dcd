@@ -23,7 +23,10 @@ public static class UpdateCaseDtoValidator
                 dto.Dg4Date,
                 dto.DgaDate,
                 dto.DgbDate,
-                dto.DgcDate
+                dto.DgcDate,
+                dto.ApboDate,
+                dto.BorDate,
+                dto.VpboDate
             }
             .Where(x => x != null)
             .Where(x => x != DateTime.MinValue)
@@ -37,6 +40,11 @@ public static class UpdateCaseDtoValidator
         if (dgDates.Any(x => x > maxAllowedDbDate))
         {
             throw new UnprocessableContentException($"One of the provided DG dates is after {maxAllowedDbDate}.");
+        }
+
+        if (dgDates.Any(x => x!.Value.TimeOfDay != TimeSpan.Zero))
+        {
+            throw new UnprocessableContentException("One of the provided DG dates are not in UTC time.");
         }
     }
 }
