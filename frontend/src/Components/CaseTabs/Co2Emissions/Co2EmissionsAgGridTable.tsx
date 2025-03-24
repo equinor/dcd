@@ -6,6 +6,8 @@ import {
     useMemo, useRef, useState,
 } from "react"
 
+import { roundToDecimals } from "@/Utils/FormatingUtils"
+
 interface Props {
     topside: Components.Schemas.TopsideDto,
 }
@@ -17,18 +19,18 @@ const CaseCO2DistributionTable = ({
     const co2Data = [
         {
             profile: "Oil profile",
-            expectedProfile: `${Math.round(Number(topside?.co2ShareOilProfile) * 100 * 1) / 1}%`,
-            maxProfile: `${Math.round(Number(topside?.co2OnMaxOilProfile) * 100 * 1) / 1}%`,
+            expectedProfile: `${roundToDecimals(Number(topside?.co2ShareOilProfile) * 100, 0)}%`,
+            maxProfile: `${roundToDecimals(Number(topside?.co2OnMaxOilProfile) * 100, 0)}%`,
         },
         {
             profile: "Gas profile",
-            expectedProfile: `${Math.round(Number(topside?.co2ShareGasProfile) * 100 * 1) / 1}%`,
-            maxProfile: `${Math.round(Number(topside?.co2OnMaxGasProfile) * 100 * 1) / 1}%`,
+            expectedProfile: `${roundToDecimals(Number(topside?.co2ShareGasProfile) * 100, 0)}%`,
+            maxProfile: `${roundToDecimals(Number(topside?.co2OnMaxGasProfile) * 100, 0)}%`,
         },
         {
             profile: "Water injection profile",
-            expectedProfile: `${Math.round(Number(topside?.co2ShareWaterInjectionProfile) * 100 * 1) / 1}%`,
-            maxProfile: `${Math.round(Number(topside?.co2OnMaxWaterInjectionProfile) * 100 * 1) / 1}%`,
+            expectedProfile: `${roundToDecimals(Number(topside?.co2ShareWaterInjectionProfile) * 100, 0)}%`,
+            maxProfile: `${roundToDecimals(Number(topside?.co2OnMaxWaterInjectionProfile) * 100, 0)}%`,
         },
     ]
 

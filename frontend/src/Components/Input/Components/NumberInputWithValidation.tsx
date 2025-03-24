@@ -5,6 +5,8 @@ import styled from "styled-components"
 
 import { useAppStore } from "../../../Store/AppStore"
 
+import { parseDecimalInput } from "@/Utils/FormatingUtils"
+
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
 `
@@ -64,7 +66,7 @@ const NumberInputWithValidation = ({
             return true
         }
 
-        const numValue = Number(value)
+        const numValue = parseDecimalInput(value)
 
         if (min !== undefined && max !== undefined) {
             const isWithinRange = (num: number, upper: number, lower: number): boolean => num >= lower && num <= upper
@@ -92,7 +94,7 @@ const NumberInputWithValidation = ({
             return
         }
 
-        const numValue = Number(value)
+        const numValue = parseDecimalInput(value)
 
         if (validateInput(value)) {
             onSubmit(numValue)

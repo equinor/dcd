@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface DevelopmentWellCostsProps {
     tableYears: [number, number];
@@ -43,73 +44,74 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             return
         }
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+            overridable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+            overridable,
+        }: CreateProfileDataParams): ITimeSeriesTableData => ({
+            profileName,
+            unit: getUnitByProfileName(profileName, physUnit, currency),
+            profile,
+            resourceName,
+            resourceId: caseId,
+            resourcePropertyKey: resourceName,
+            editable,
+            overridable: overridable ?? !!overrideProfile,
+            ...(overrideProfile && { overrideProfile }),
+        })
+
         const newDevelopmentTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Rig upgrade",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: rigUpgradeCostData,
                 resourceName: ProfileTypes.DevelopmentRigUpgradingCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.DevelopmentRigUpgradingCostProfileOverride,
-                editable: true,
-                overridable: true,
                 overrideProfile: rigUpgradeCostOverrideData,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Rig mob/demob",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: rigMobDemobCostData,
                 resourceName: ProfileTypes.DevelopmentRigMobDemobOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.DevelopmentRigMobDemobOverride,
-                editable: true,
-                overridable: true,
                 overrideProfile: rigMobDemobCostOverrideData,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Oil producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectOilProducerCostData,
                 resourceName: ProfileTypes.OilProducerCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.OilProducerCostProfileOverride,
-                overridable: true,
                 overrideProfile: wellProjectOilProducerCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Water injector",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
                 resourceName: ProfileTypes.WaterInjectorCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.WaterInjectorCostProfileOverride,
-                overridable: true,
                 overrideProfile: wellProjectWaterInjectorCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Gas producer",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasProducerCostData,
                 resourceName: ProfileTypes.GasProducerCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.GasProducerCostProfileOverride,
-                overridable: true,
                 overrideProfile: wellProjectGasProducerCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Gas injector",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
                 resourceName: ProfileTypes.GasInjectorCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.GasInjectorCostProfileOverride,
-                overridable: true,
                 overrideProfile: wellProjectGasInjectorCostOverrideData,
-                editable: true,
-            },
+            }),
         ]
 
         setDevelopmentTimeSeriesData(newDevelopmentTimeSeriesData)

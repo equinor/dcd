@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface ExplorationWellCostsProps {
     tableYears: [number, number];
@@ -47,100 +48,89 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             return
         }
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+            overridable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+            overridable,
+        }: CreateProfileDataParams): ITimeSeriesTableData => ({
+            profileName,
+            unit: getUnitByProfileName(profileName, physUnit, currency),
+            profile,
+            resourceName,
+            resourceId: caseId,
+            resourcePropertyKey: resourceName,
+            editable,
+            overridable: overridable ?? !!overrideProfile,
+            ...(overrideProfile && { overrideProfile }),
+        })
+
         const newExplorationTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Seismic acquisition and processing",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: seismicAcquisitionAndProcessingData,
                 resourceName: ProfileTypes.SeismicAcquisitionAndProcessing,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.SeismicAcquisitionAndProcessing,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Country office",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: countryOfficeCostData,
                 resourceName: ProfileTypes.CountryOfficeCost,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.CountryOfficeCost,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "G&G and admin",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: gAndGAdminCostData,
                 resourceName: ProfileTypes.GAndGAdminCostOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.GAndGAdminCostOverride,
-                editable: true,
-                overridable: true,
                 overrideProfile: explorationGAndGAdminCostOverrideData,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Project specific drilling cost",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: projectSpecificDrillingCostProfileData,
                 resourceName: ProfileTypes.ProjectSpecificDrillingCostProfile,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.ProjectSpecificDrillingCostProfile,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Rig upgrade",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: rigUpgradeCostData,
                 resourceName: ProfileTypes.ExplorationRigUpgradingCostProfileOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.ExplorationRigUpgradingCostProfileOverride,
-                editable: true,
-                overridable: true,
                 overrideProfile: rigUpgradeCostOverrideData,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Rig mob/demob",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: rigMobDemobCostData,
                 resourceName: ProfileTypes.ExplorationRigMobDemobOverride,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.ExplorationRigMobDemobOverride,
-                editable: true,
-                overridable: true,
                 overrideProfile: rigMobDemobCostOverrideData,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Exploration well",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: explorationWellCostProfileData,
                 resourceName: ProfileTypes.ExplorationWellCostProfile,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.ExplorationWellCostProfile,
                 editable: false,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Appraisal well",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: appraisalWellCostProfileData,
                 resourceName: ProfileTypes.AppraisalWellCostProfile,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.AppraisalWellCostProfile,
                 editable: false,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Sidetrack well",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: sidetrackCostProfileData,
                 resourceName: ProfileTypes.SidetrackCostProfile,
-                resourceId: caseId,
-                resourcePropertyKey: ProfileTypes.SidetrackCostProfile,
                 editable: false,
-                overridable: false,
-            },
+            }),
         ]
 
         setExplorationTimeSeriesData(newExplorationTimeSeriesData)
