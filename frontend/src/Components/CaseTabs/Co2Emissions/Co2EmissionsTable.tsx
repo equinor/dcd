@@ -13,9 +13,8 @@ import React, {
 } from "react"
 import styled from "styled-components"
 
-import { useCaseApiData, useCaseMutation, useDataFetch } from "@/Hooks"
+import { useCaseApiData, useCaseMutation, useTopsideMutation } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import useEditProject from "@/Hooks/useEditProject"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { cellStyleRightAlign } from "@/Utils/commonUtils"
@@ -60,8 +59,13 @@ const Co2EmissionsTable = () => {
         updateDailyEmissionFromDrillingRig,
     } = useCaseMutation()
 
+    const {
+        updateFuelConsumption,
+    } = useTopsideMutation()
+
     const [check, setCheck] = useState(false)
 
+    const [fuelConsumption, setFuelConsumption] = useState<number>()
     const [co2RemovedFromGas, setCo2RemovedFromGas] = useState<number>()
     const [co2EmissionsFromFuelGas, setCo2EmissionsFromFuelGas] = useState<number>()
     const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>()
@@ -99,6 +103,7 @@ const Co2EmissionsTable = () => {
 
     useEffect(() => {
         if (apiData) {
+            setFuelConsumption(apiData.topside.fuelConsumption)
             setCo2RemovedFromGas(apiData.case.co2RemovedFromGas)
             setCo2EmissionsFromFuelGas(apiData.case.co2EmissionFromFuelGas)
             setFlaredGasPerProducedVolume(apiData.case.flaredGasPerProducedVolume)
@@ -118,6 +123,12 @@ const Co2EmissionsTable = () => {
     }
 
     const rowData = useMemo(() => [
+        {
+            profile: "Fuel gas consumption from Prosp (Scope 1)",
+            unit: "million Sm³ gas/sd",
+            set: setFuelConsumption,
+            value: toRowValue(fuelConsumption),
+        },
         {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
@@ -161,6 +172,7 @@ const Co2EmissionsTable = () => {
             value: toRowValue(dailyEmissionsFromDrillingRig),
         },
     ] as CO2Data[], [
+        fuelConsumption,
         co2RemovedFromGas,
         co2EmissionsFromFuelGas,
         flaredGasPerProducedVolume,
@@ -229,10 +241,16 @@ const Co2EmissionsTable = () => {
     }
 
     useEffect(() => {
+        if (apiData && canEdit() && fuelConsumption !== undefined) {
+            if (fuelConsumption !== apiData.topside.fuelConsumption) {
+                updateFuelConsumption(apiData.topside.id, fuelConsumption)
+            }
+        }
+    }, [fuelConsumption])
+
+    useEffect(() => {
         if (apiData && canEdit() && co2RemovedFromGas !== undefined) {
             if (co2RemovedFromGas !== apiData.case.co2RemovedFromGas) {
-                console.log("co2RemovedFromGas", co2RemovedFromGas)
-                console.log("apiData.case.co2RemovedFromGas", apiData.case.co2RemovedFromGas)
                 updateCo2RemovedFromGas(co2RemovedFromGas)
             }
         }

@@ -250,16 +250,6 @@ const CaseCO2Tab = () => {
             <Grid size={12}>
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
-            <div>
-                <SwitchableNumberInput
-                    label="Fuel consumption"
-                    value={topsideData.fuelConsumption}
-                    id={`topside-fuel-consumption-${topsideData.id}`}
-                    integer={false}
-                    unit="million Sm³ gas/sd"
-                    onSubmit={(newValue) => updateFuelConsumption(topsideData.id, newValue)}
-                />
-            </div>
             <Grid size={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
