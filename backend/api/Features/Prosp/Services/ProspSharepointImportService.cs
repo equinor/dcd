@@ -29,11 +29,11 @@ public class ProspSharepointImportService(
             : await graphServiceClient.Sites[siteId].Drives[driveId].Root.ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
 
         return driveItemsDelta.Select(x => new SharePointFileDto
-                              {
-                                  Name = x.Name,
-                                  Id = x.Id
-                              })
-                              .ToList();
+            {
+                Name = x.Name,
+                Id = x.Id
+            })
+            .ToList();
     }
 
     public async Task ImportFilesFromSharePoint(Guid projectId, SharePointImportDto[] dtos)
@@ -62,10 +62,10 @@ public class ProspSharepointImportService(
             }
 
             var driveItemStream = await graphServiceClient.Sites[siteId]
-                                                          .Drives[driveId]
-                                                          .Items[dto.SharePointFileId]
-                                                          .Content.Request()
-                                                          .GetAsync();
+                .Drives[driveId]
+                .Items[dto.SharePointFileId]
+                .Content.Request()
+                .GetAsync();
 
             await prospExcelImportService.ImportProsp(driveItemStream, projectPk, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
         }
@@ -114,10 +114,10 @@ public class ProspSharepointImportService(
         try
         {
             return await graphServiceClient
-                         .Sites
-                         .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
-                         .Request()
-                         .GetAsync();
+                .Sites
+                .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
+                .Request()
+                .GetAsync();
         }
         catch (Exception)
         {
