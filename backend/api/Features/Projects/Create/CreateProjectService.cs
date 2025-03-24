@@ -51,12 +51,6 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
                 AnnualWellInterventionCostPerWell = 0,
                 PluggingAndAbandonment = 0
             },
-            Co2EmissionFromFuelGas = 2.34,
-            FlaredGasPerProducedVolume = 1.122765,
-            Co2EmissionsFromFlaredGas = 3.73,
-            Co2Vented = 1.96,
-            DailyEmissionFromDrillingRig = 100,
-            AverageDevelopmentDrillingDays = 50,
             Classification = ProjectClassification.Internal,
             DiscountRate = 8.0,
             OilPriceUsd = 75.0,

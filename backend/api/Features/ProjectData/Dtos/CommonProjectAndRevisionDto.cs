@@ -20,20 +20,12 @@ public class CommonProjectAndRevisionDto
     [Required] public required InternalProjectPhase InternalProjectPhase { get; set; }
     [Required] public required ProjectCategory ProjectCategory { get; set; }
     public required string? SharepointSiteUrl { get; set; }
-    [Required] public required double Co2RemovedFromGas { get; set; }
-    [Required] public required double Co2EmissionFromFuelGas { get; set; }
-    [Required] public required double FlaredGasPerProducedVolume { get; set; }
-    [Required] public required double Co2EmissionsFromFlaredGas { get; set; }
-    [Required] public required double Co2Vented { get; set; }
-    [Required] public required double DailyEmissionFromDrillingRig { get; set; }
-    [Required] public required double AverageDevelopmentDrillingDays { get; set; }
     [Required] public required double OilPriceUsd { get; set; }
     [Required] public required double GasPriceNok { get; set; }
     [Required] public required double NglPriceUsd { get; set; }
     [Required] public required double DiscountRate { get; set; }
     [Required] public required double ExchangeRateUsdToNok { get; set; }
     [Required] public required int NpvYear { get; set; }
-
     [Required] public required ExplorationOperationalWellCostsOverviewDto ExplorationOperationalWellCosts { get; set; }
     [Required] public required DevelopmentOperationalWellCostsOverviewDto DevelopmentOperationalWellCosts { get; set; }
     [Required] public required List<CaseOverviewDto> Cases { get; set; }

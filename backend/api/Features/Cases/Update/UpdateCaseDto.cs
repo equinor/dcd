@@ -26,6 +26,13 @@ public class UpdateCaseDto
     public required string? Host { get; set; }
     [Required] public required double AverageCo2Intensity { get; set; }
     [Required] public required double DiscountedCashflow { get; set; }
+    [Required] public required double Co2RemovedFromGas { get; set; }
+    [Required] public required double Co2EmissionFromFuelGas { get; set; }
+    [Required] public required double FlaredGasPerProducedVolume { get; set; }
+    [Required] public required double Co2EmissionsFromFlaredGas { get; set; }
+    [Required] public required double Co2Vented { get; set; }
+    [Required] public required double DailyEmissionFromDrillingRig { get; set; }
+    [Required] public required double AverageDevelopmentDrillingDays { get; set; }
     public required DateTime? DgaDate { get; set; }
     public required DateTime? DgbDate { get; set; }
     public required DateTime? DgcDate { get; set; }

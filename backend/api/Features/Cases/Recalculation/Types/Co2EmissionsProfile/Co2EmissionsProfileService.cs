@@ -29,7 +29,7 @@ public static class Co2EmissionsProfileService
             Values = convertedValues.ToArray()
         };
 
-        var drillingEmissionsProfile = CalculateDrillingEmissions(caseItem.Project, developmentWells);
+        var drillingEmissionsProfile = CalculateDrillingEmissions(caseItem, developmentWells);
 
         var totalProfile = TimeSeriesMerger.MergeTimeSeries(newProfile, drillingEmissionsProfile);
 
@@ -46,7 +46,7 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = losses.StartYear,
-            Values = losses.Values.Select(loss => loss * caseItem.Project.Co2Vented).ToArray()
+            Values = losses.Values.Select(loss => loss * caseItem.Co2Vented).ToArray()
         };
     }
 
@@ -57,7 +57,7 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = flarings.StartYear,
-            Values = flarings.Values.Select(flare => flare * caseItem.Project.Co2EmissionsFromFlaredGas).ToArray()
+            Values = flarings.Values.Select(flare => flare * caseItem.Co2EmissionsFromFlaredGas).ToArray()
         };
     }
 
@@ -68,11 +68,11 @@ public static class Co2EmissionsProfileService
         return new TimeSeries
         {
             StartYear = fuelConsumptions.StartYear,
-            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Project.Co2EmissionFromFuelGas).ToArray()
+            Values = fuelConsumptions.Values.Select(fuel => fuel * caseItem.Co2EmissionFromFuelGas).ToArray()
         };
     }
 
-    private static TimeSeries CalculateDrillingEmissions(Project project, List<CampaignWell> developmentWells)
+    private static TimeSeries CalculateDrillingEmissions(Case caseItem, List<CampaignWell> developmentWells)
     {
         var wellDrillingSchedules = developmentWells.Select(developmentWell => new TimeSeries
             {
@@ -87,7 +87,7 @@ public static class Co2EmissionsProfileService
         {
             StartYear = wellDrillingSchedule.StartYear,
             Values = wellDrillingSchedule.Values
-                .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
+                .Select(well => well * caseItem.AverageDevelopmentDrillingDays * caseItem.DailyEmissionFromDrillingRig)
                 .ToArray()
         };
     }

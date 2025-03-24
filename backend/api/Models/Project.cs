@@ -24,6 +24,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public string? SharepointSiteUrl { get; set; }
+
     public double Co2RemovedFromGas { get; set; }
     public double Co2EmissionFromFuelGas { get; set; } = 2.34;
     public double FlaredGasPerProducedVolume { get; set; } = 1.122765;
@@ -31,6 +32,7 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public double Co2Vented { get; set; } = 1.96;
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
+
     public double OilPriceUsd { get; set; }
     public double GasPriceNok { get; set; }
     public double NglPriceUsd { get; set; }

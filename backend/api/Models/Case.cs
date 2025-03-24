@@ -43,6 +43,14 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public double BreakEven { get; set; }
     public double? BreakEvenOverride { get; set; }
 
+    public double Co2RemovedFromGas { get; set; }
+    public double Co2EmissionFromFuelGas { get; set; }
+    public double FlaredGasPerProducedVolume { get; set; }
+    public double Co2EmissionsFromFlaredGas { get; set; }
+    public double Co2Vented { get; set; }
+    public double DailyEmissionFromDrillingRig { get; set; }
+    public double AverageDevelopmentDrillingDays { get; set; }
+
     public string? Host { get; set; }
     public double AverageCo2Intensity { get; set; }
     public double DiscountedCashflow { get; set; }

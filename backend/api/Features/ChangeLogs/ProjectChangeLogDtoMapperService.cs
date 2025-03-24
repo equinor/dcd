@@ -146,15 +146,6 @@ public static class ProjectChangeLogDtoMapperService
 
         switch (entityName, propertyName)
         {
-            case (nameof(Project), nameof(Project.AverageDevelopmentDrillingDays)):
-            case (nameof(Project), nameof(Project.Co2EmissionFromFuelGas)):
-            case (nameof(Project), nameof(Project.Co2EmissionsFromFlaredGas)):
-            case (nameof(Project), nameof(Project.Co2RemovedFromGas)):
-            case (nameof(Project), nameof(Project.Co2Vented)):
-            case (nameof(Project), nameof(Project.DailyEmissionFromDrillingRig)):
-            case (nameof(Project), nameof(Project.FlaredGasPerProducedVolume)):
-                return ChangeLogCategory.Co2Tab;
-
             case (nameof(Project), nameof(Project.PhysicalUnit)):
             case (nameof(Project), nameof(Project.Currency)):
             case (nameof(Project), nameof(Project.Classification)):
