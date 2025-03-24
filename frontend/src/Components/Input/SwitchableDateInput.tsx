@@ -77,7 +77,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
     }, [value, localValue])
 
     const validateInput = useCallback((newValue: number): boolean => {
-        const isWithinRange = (num: number, upper: number, lower: number): boolean => num >= lower && num <= upper
+        const isWithinRange = (num: number, lower: number, upper: number): boolean => num >= lower && num <= upper
 
         if (!isWithinRange(newValue, 2010, 2110)) {
             setHelperText(`(min: ${2010}, max: ${2110})`)
