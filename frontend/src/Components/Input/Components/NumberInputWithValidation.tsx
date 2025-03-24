@@ -69,7 +69,7 @@ const NumberInputWithValidation = ({
         const numValue = parseDecimalInput(value)
 
         if (min !== undefined && max !== undefined) {
-            const isWithinRange = (num: number, upper: number, lower: number): boolean => num >= lower && num <= upper
+            const isWithinRange = (num: number, lower: number, upper: number): boolean => num >= lower && num <= upper
 
             if (!isWithinRange(numValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
