@@ -17,6 +17,7 @@ import { useCaseApiData, useCaseMutation, useTopsideMutation } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { parseDecimalInput, roundToDecimals } from "@/Utils/FormatingUtils"
 import { cellStyleRightAlign } from "@/Utils/TableUtils"
 
 const StyledContainer = styled.div`
@@ -116,7 +117,7 @@ const Co2EmissionsTable = () => {
 
     const toRowValue = (value: number | undefined) => {
         if (value !== undefined) {
-            return Math.round(value * 100) / 100
+            return roundToDecimals(value)
         }
 
         return value
@@ -212,7 +213,7 @@ const Co2EmissionsTable = () => {
     const handleCellValueChange = (p: any) => {
         const value = p.data.value === null ? 0 : p.data.value
 
-        p.data.set(Number(value.toString().replace(/,/g, ".")))
+        p.data.set(parseDecimalInput(value))
     }
 
     const defaultColDef = useMemo(() => ({

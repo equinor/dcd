@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -29,59 +30,65 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const additionalOpexCostProfileData = apiData.additionalOpexCostProfile
         const caseData = apiData.case
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+            overridable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+            overridable,
+        }: CreateProfileDataParams): ITimeSeriesTableData => ({
+            profileName,
+            unit: getUnitByProfileName(profileName, physUnit, currency),
+            profile,
+            resourceName,
+            resourceId: caseData.caseId,
+            resourcePropertyKey: resourceName,
+            editable,
+            overridable: overridable ?? !!overrideProfile,
+            ...(overrideProfile && { overrideProfile }),
+        })
+
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Historic cost",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
                 resourceName: ProfileTypes.HistoricCostCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.HistoricCostCostProfile,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Well intervention",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
                 resourceName: ProfileTypes.WellInterventionCostProfileOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.WellInterventionCostProfileOverride,
-                overridable: true,
                 overrideProfile: wellInterventionCostProfileOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Offshore facilities operations",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
                 resourceName: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
-                overridable: true,
                 overrideProfile: offshoreFacilitiesOperationsCostProfileOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Onshore related OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOpexCostProfileData,
                 resourceName: ProfileTypes.OnshoreRelatedOpexCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.OnshoreRelatedOpexCostProfile,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Additional OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: additionalOpexCostProfileData,
                 resourceName: ProfileTypes.AdditionalOpexCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.AdditionalOpexCostProfile,
-                editable: true,
-                overridable: false,
-            },
+            }),
         ]
 
         setOpexTimeSeriesData(newOpexTimeSeriesData)
