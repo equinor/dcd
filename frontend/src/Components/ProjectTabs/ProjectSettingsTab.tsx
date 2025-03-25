@@ -1,6 +1,8 @@
-import { Input, NativeSelect } from "@equinor/eds-core-react"
+import { Icon, Input, NativeSelect, Typography } from "@equinor/eds-core-react"
+import { help_outline } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
 import { useState, ChangeEventHandler, useEffect } from "react"
+import { styled } from "styled-components"
 
 import ProjectSkeleton from "../LoadingSkeletons/ProjectSkeleton"
 
@@ -9,6 +11,15 @@ import { useDataFetch } from "@/Hooks"
 import useEditProject from "@/Hooks/useEditProject"
 import { Currency, PhysUnit } from "@/Models/enums"
 import { PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
+
+export const PhysicalUnitExplanation = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+`
 
 const ProjectSettingsTab = () => {
     const { addProjectEdit } = useEditProject()
@@ -149,6 +160,11 @@ const ProjectSettingsTab = () => {
                                 <option key={1} value={1}>Oil field</option>
                             </NativeSelect>
                         </InputSwitcher>
+
+                        <PhysicalUnitExplanation>
+                            <Icon data={help_outline} size={24} />
+                            <Typography variant="caption"> Switching physical unit will display all numbers in the selected unit</Typography>
+                        </PhysicalUnitExplanation>
                     </Grid>
                     <Grid size={12}>
                         <InputSwitcher
