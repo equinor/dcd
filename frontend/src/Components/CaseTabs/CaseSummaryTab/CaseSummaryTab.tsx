@@ -351,6 +351,7 @@ const CaseSummaryTab = (): React.ReactNode => {
                     dg4Year={getYearFromDateString(caseData.dg4Date)}
                     tableYears={tableYears}
                     includeFooter={false}
+                    decimalPrecision={4}
                 />
             </Grid>
         </Grid>

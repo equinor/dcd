@@ -99,11 +99,12 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             timeSeriesData={opexTimeSeriesData}
             dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
-            tableName="OPEX cost"
+            tableName="Opex costs"
             gridRef={opexGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            decimalPrecision={1}
         />
     )
 }

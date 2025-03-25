@@ -28,6 +28,7 @@ import { useEditQueueHandler } from "@/Hooks/useEditQueue"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { roundToDecimals } from "@/Utils/FormatingUtils"
 import {
     gridRefArrayToAlignedGrid,
     profilesToRowData,
@@ -64,6 +65,7 @@ interface Props {
     ongoingCalculation?: boolean
     isProsp?: boolean
     sharepointFileId?: string
+    decimalPrecision: number
 }
 
 const createOverrideToggleCellRenderer = (
@@ -94,6 +96,7 @@ const CaseBaseTable = memo(({
     ongoingCalculation,
     isProsp,
     sharepointFileId,
+    decimalPrecision,
 }: Props) => {
     const { editMode, setSnackBarMessage, isSaving } = useAppStore()
     const styles = useStyles()
@@ -114,9 +117,9 @@ const CaseBaseTable = memo(({
         () => {
             if (!presentedTableData?.length) { return [] }
 
-            return profilesToRowData(presentedTableData, dg4Year, tableName, canEdit())
+            return profilesToRowData(presentedTableData, dg4Year, canEdit(), decimalPrecision)
         },
-        [presentedTableData, editMode, dg4Year, tableName, isEditDisabled],
+        [presentedTableData, editMode, dg4Year, tableName, isEditDisabled, decimalPrecision],
     )
 
     const generateTableYearColDefs = useCallback(() => {
@@ -142,8 +145,15 @@ const CaseBaseTable = memo(({
                 editable: false,
                 pinned: "right",
                 width: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: (params: any) => formatColumnSum(params, decimalPrecision),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
+                valueFormatter: (params: any) => {
+                    if (!canEdit() && typeof params.value === "number") {
+                        return roundToDecimals(params.value, decimalPrecision).toString()
+                    }
+
+                    return params.value
+                },
             },
             {
                 headerName: "",
@@ -169,23 +179,32 @@ const CaseBaseTable = memo(({
                 flex: 1,
                 editable: (params: any) => tableCellisEditable(params, canEdit(), isSaving),
                 minWidth: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: (params: any) => formatColumnSum(params, decimalPrecision),
+                valueFormatter: (params: any) => {
+                    if (!canEdit() && typeof params.value === "number") {
+                        return roundToDecimals(params.value, decimalPrecision).toString()
+                    }
+
+                    return params.value
+                },
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
-                    value: params.value,
                     errorMsg: !params.node.footer && validateInput(params, canEdit(), isSaving),
+                    value: params.value,
+                    isEditMode: editMode,
+                    precision: decimalPrecision,
                 }),
+                cellClass: (params: any) => (tableCellisEditable(params, canEdit(), isSaving) ? "editableCell" : undefined),
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
                 cellStyle: {
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (tableCellisEditable(params, canEdit(), isSaving) ? "editableCell" : undefined),
-                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
 
         return columnPinned.concat([...yearDefs])
-    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled, isSaving])
+    }, [tableYears, editMode, gridRowData, tableName, totalRowName, isEditDisabled, isSaving, decimalPrecision])
 
     const handleCellValueChange = useCallback((event: any) => {
         const params: ITableCellChangeParams = {
@@ -236,7 +255,7 @@ const CaseBaseTable = memo(({
         }
     }, [gridRowData])
 
-    const gridConfig = useMemo(() => ({
+    const { key, ...gridConfigWithoutKey } = useMemo(() => ({
         defaultColDef: {
             sortable: true,
             filter: true,
@@ -268,6 +287,7 @@ const CaseBaseTable = memo(({
             setSelectedRow,
             setIsSidesheetOpen,
         },
+        key: `grid-${editMode ? "edit" : "view"}-${decimalPrecision}`,
     }), [
         editMode,
         handleCellValueChange,
@@ -282,6 +302,7 @@ const CaseBaseTable = memo(({
         setIsSidesheetOpen,
         isEditDisabled,
         isSaving,
+        decimalPrecision,
     ])
 
     useEffect(() => {
@@ -296,6 +317,15 @@ const CaseBaseTable = memo(({
         }
     }, [gridRowData])
 
+    // Force redraw when edit mode changes
+    useEffect(() => {
+        if (gridRef.current?.api) {
+            // Force a complete redraw of all rows when switching between edit/view modes
+            gridRef.current.api.redrawRows()
+            gridRef.current.api.refreshCells({ force: true })
+        }
+    }, [editMode])
+
     useEffect(() => {
         if (!isEqual(previousTimeSeriesDataRef.current, timeSeriesData)) {
             previousTimeSeriesDataRef.current = timeSeriesData
@@ -304,7 +334,7 @@ const CaseBaseTable = memo(({
 
     useEffect(() => {
         setColumnDefs(generateTableYearColDefs())
-    }, [generateTableYearColDefs])
+    }, [generateTableYearColDefs, editMode])
 
     return (
         <>
@@ -319,7 +349,8 @@ const CaseBaseTable = memo(({
                 >
                     <AgGridReact
                         ref={gridRef}
-                        {...gridConfig}
+                        key={key}
+                        {...gridConfigWithoutKey}
                     />
                 </div>
             </div>

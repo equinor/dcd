@@ -127,6 +127,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            decimalPrecision={1}
         />
     )
 }

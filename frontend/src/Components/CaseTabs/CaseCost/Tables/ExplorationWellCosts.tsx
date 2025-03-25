@@ -146,6 +146,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            decimalPrecision={1}
         />
     )
 }

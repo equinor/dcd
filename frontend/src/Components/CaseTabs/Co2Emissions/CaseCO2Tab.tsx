@@ -11,7 +11,6 @@ import Co2EmissionsTable from "./Co2EmissionsTable"
 
 import { PieChart } from "@/Components/CaseTabs/Co2Emissions/PieChart"
 import { TimeSeriesChart, setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
@@ -300,6 +299,7 @@ const CaseCO2Tab = () => {
                     tableName="CO2 emissions"
                     includeFooter={false}
                     gridRef={co2GridRef}
+                    decimalPrecision={4}
                 />
             </Grid>
             <Grid size={12}>

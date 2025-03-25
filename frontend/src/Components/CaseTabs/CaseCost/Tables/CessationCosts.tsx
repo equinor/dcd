@@ -97,6 +97,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            decimalPrecision={1}
         />
     )
 }

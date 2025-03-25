@@ -133,6 +133,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             totalRowName="Total"
             isProsp
             sharepointFileId={apiData.case.sharepointFileId ?? undefined}
+            decimalPrecision={1}
         />
     )
 }

@@ -117,7 +117,7 @@ const Co2EmissionsTable = () => {
 
     const toRowValue = (value: number | undefined) => {
         if (value !== undefined) {
-            return roundToDecimals(value)
+            return roundToDecimals(value, 2)
         }
 
         return value

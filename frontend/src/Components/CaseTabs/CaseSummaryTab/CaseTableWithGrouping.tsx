@@ -21,7 +21,11 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { roundToDecimals } from "@/Utils/FormatingUtils"
-import { gridRefArrayToAlignedGrid, formatColumnSum, tableCellisEditable } from "@/Utils/TableUtils"
+import {
+    gridRefArrayToAlignedGrid,
+    formatColumnSum,
+    tableCellisEditable,
+} from "@/Utils/TableUtils"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -31,6 +35,7 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    decimalPrecision: number
 }
 
 const CaseTableWithGrouping = ({
@@ -41,10 +46,11 @@ const CaseTableWithGrouping = ({
     gridRef,
     includeFooter,
     totalRowName,
+    decimalPrecision,
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
-    const { setShowRevisionReminder, isSaving } = useAppStore()
+    const { setShowRevisionReminder, isSaving, editMode } = useAppStore()
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const { canEdit } = useCanUserEdit()
@@ -78,16 +84,16 @@ const CaseTableWithGrouping = ({
                     const yearKey = (dg4Year + i).toString()
                     const value = rowObject.profile.values[j]
 
-                    rowObject[yearKey] = roundToDecimals(value)
+                    rowObject[yearKey] = roundToDecimals(value, decimalPrecision)
 
                     j += 1
                 }
 
                 const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
 
-                rowObject.total = roundToDecimals(totalValue)
+                rowObject.total = roundToDecimals(totalValue, decimalPrecision)
                 if (ts.total !== undefined) {
-                    rowObject.total = roundToDecimals(Number(ts.total))
+                    rowObject.total = roundToDecimals(Number(ts.total), decimalPrecision)
                 }
             }
             tableRows.push(rowObject)
@@ -146,7 +152,7 @@ const CaseTableWithGrouping = ({
                 editable: false,
                 pinned: "right",
                 width: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: (params: any) => formatColumnSum(params, decimalPrecision),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
         ]
@@ -159,7 +165,7 @@ const CaseTableWithGrouping = ({
                 flex: 1,
                 editable: (params: any) => tableCellisEditable(params, canEdit(), isSaving),
                 minWidth: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: (params: any) => formatColumnSum(params, decimalPrecision),
                 cellClass: (params: any) => (tableCellisEditable(params, canEdit(), isSaving) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
@@ -265,6 +271,7 @@ const CaseTableWithGrouping = ({
                         getContextMenuItems={getContextMenuItems}
                         onCellKeyDown={handleCopy}
                         onCellClicked={handleCellClicked}
+                        key={`grid-${editMode ? "edit" : "view"}-${decimalPrecision}`}
                     />
                 </div>
             </div>
