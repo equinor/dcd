@@ -1,5 +1,6 @@
 import { AgCharts } from "ag-charts-react"
 
+import { formatChartNumber } from "@/Utils/FormatingUtils"
 import { insertIf, separateProfileObjects } from "@/Utils/TableUtils"
 
 interface Props {
@@ -58,6 +59,24 @@ export const TimeSeriesChart = ({
             ...insertIf(lineChart !== undefined, false, axesData, lineChart),
         ],
         ...insertIf(axesData !== undefined, true, axesData, lineChart),
+        tooltip: {
+            renderer: (params: any) => ({
+                content: `${params.title}: ${formatChartNumber(params.yValue)}`,
+            }),
+        },
+        axes: axesData ? undefined : [
+            {
+                type: "category",
+                position: "bottom",
+            },
+            {
+                type: "number",
+                position: "left",
+                label: {
+                    formatter: (params: any) => formatChartNumber(params.value),
+                },
+            },
+        ],
         legend: { position: "bottom", spacing: 40 },
     }
 

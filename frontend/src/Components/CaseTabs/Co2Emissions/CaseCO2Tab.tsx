@@ -25,6 +25,7 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { formatChartNumber } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
 
 interface ICo2DistributionChartData {
@@ -70,49 +71,51 @@ const CaseCO2Tab = () => {
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
-    const chartAxes = [
-        {
-            type: "category",
-            position: "bottom",
-            gridLine: {
-                style: [
-                    {
-                        stroke: "rgba(0, 0, 0, 0.2)",
-                        lineDash: [3, 2],
-                    },
-                    {
-                        stroke: "rgba(0, 0, 0, 0.2)",
-                        lineDash: [3, 2],
-                    },
-                ],
+    const chartAxes = {
+        axes: [
+            {
+                type: "category",
+                position: "bottom",
+                gridLine: {
+                    style: [
+                        {
+                            stroke: "rgba(0, 0, 0, 0.2)",
+                            lineDash: [3, 2],
+                        },
+                        {
+                            stroke: "rgba(0, 0, 0, 0.2)",
+                            lineDash: [3, 2],
+                        },
+                    ],
+                },
+                label: {
+                    formatter: (label: any) => Math.floor(Number(label.value)),
+                },
             },
-            label: {
-                formatter: (label: any) => Math.floor(Number(label.value)),
+            {
+                type: "number",
+                position: "left",
+                keys: ["co2Emissions"],
+                title: {
+                    text: "CO2 emissions",
+                },
+                label: {
+                    formatter: (params: any) => formatChartNumber(params.value), // emission values
+                },
             },
-        },
-        {
-            type: "number",
-            position: "left",
-            keys: ["co2Emissions"],
-            title: {
-                text: "CO2 emissions",
+            {
+                type: "number",
+                position: "right",
+                keys: ["co2Intensity"],
+                title: {
+                    text: "Year-by-year CO2 intensity",
+                },
+                label: {
+                    formatter: (params: any) => formatChartNumber(params.value), // intensity values
+                },
             },
-            label: {
-                formatter: (params: any) => `${params.value}`, // emission values
-            },
-        },
-        {
-            type: "number",
-            position: "right",
-            keys: ["co2Intensity"],
-            title: {
-                text: "Year-by-year CO2 intensity",
-            },
-            label: {
-                formatter: (params: any) => `${params.value}`, // intensity values
-            },
-        },
-    ]
+        ],
+    }
 
     useEffect(() => {
         (async () => {
@@ -308,7 +311,7 @@ const CaseCO2Tab = () => {
                 <Typography variant="h4">Average lifetime CO2 intensity</Typography>
 
                 <Typography variant="h4">
-                    {averageCo2IntensityData?.toFixed(4)}
+                    {averageCo2IntensityData ? formatChartNumber(averageCo2IntensityData) : "0"}
                     {" "}
                     kg CO2/boe
                 </Typography>
