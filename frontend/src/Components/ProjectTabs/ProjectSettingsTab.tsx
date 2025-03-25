@@ -163,7 +163,7 @@ const ProjectSettingsTab = () => {
 
                         <PhysicalUnitExplanation>
                             <Icon data={help_outline} size={24} />
-                            <Typography variant="caption"> Switching physical unit will display all numbers in the selected unit</Typography>
+                            <Typography variant="caption">Switching physical unit will convert and display all applicable numbers in the selected unit</Typography>
                         </PhysicalUnitExplanation>
                     </Grid>
                     <Grid size={12}>
