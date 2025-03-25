@@ -200,6 +200,11 @@ export const tableCellisEditable = (params: any, editAllowed: boolean, isSaving?
 export const validateInput = (params: any, editAllowed: boolean, isSaving?: boolean) => {
     const { value, data } = params
 
+    // Empty strings are valid input
+    if (value === "") {
+        return null
+    }
+
     if (tableCellisEditable(params, editAllowed, isSaving) && value) {
         const rule = TABLE_VALIDATION_RULES[data.profileName]
 
@@ -215,13 +220,18 @@ export const validateInput = (params: any, editAllowed: boolean, isSaving?: bool
  * Parses and validates number input for table cells
  * @param setSnackBarMessage - Function to display error messages
  * @param params - Object with new and old values
- * @returns Parsed and validated number value
+ * @returns Parsed and validated number value or empty string
  */
 export const numberValueParser = (
     setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>,
     params: { newValue: any, oldValue: any, data: any },
 ) => {
     const { oldValue, newValue } = params
+
+    // Allow empty string to clear cell value
+    if (newValue === "") {
+        return ""
+    }
 
     // Check if the newValue has more than one decimal point
     const dotCount = (newValue.toString().match(/\./g) || []).length
@@ -301,7 +311,7 @@ export function formatColumnSum(params: any, decimalPrecision: number = 2): stri
 
             return value
         })
-        // Filter out invalid values (NaN, null, undefined, Infinity)
+        // Filter out invalid values (NaN, null, undefined, Infinity, empty strings)
         .filter((value: any) => (
             typeof value === "number"
             && !Number.isNaN(value)
@@ -335,16 +345,18 @@ export const getValuesFromEntireRow = (tableData: any) => {
 
     Object.keys(tableData).forEach((columnName) => {
         const cellValue = tableData[columnName]
+        const parsedValue = parseDecimalInput(cellValue?.toString() ?? "")
 
         if (
             isInteger(columnName)
             && cellValue !== ""
             && cellValue !== null
-            && !Number.isNaN(parseDecimalInput(cellValue.toString()))
+            && typeof parsedValue === "number"
+            && !Number.isNaN(parsedValue)
         ) {
             valuePerYear.push({
                 year: parseInt(columnName, 10),
-                value: parseDecimalInput(cellValue.toString()),
+                value: parsedValue,
             })
         }
     })
@@ -361,6 +373,11 @@ export const getValuesFromEntireRow = (tableData: any) => {
 export const validateTableCellChange = (params: ITableCellChangeParams, config: ITableCellChangeConfig) => {
     const { newValue, profileName } = params
     const { setSnackBarMessage } = config
+
+    // Allow empty strings
+    if (newValue === "") {
+        return true
+    }
 
     const rule = TABLE_VALIDATION_RULES[profileName]
 

@@ -11,12 +11,17 @@ export function truncateText(text: string, maxLength: number): string {
  * @param value The string value to convert
  * @returns The converted number, or 0 if the input is not valid
  */
-export function parseDecimalInput(value: string | number | null): number {
+export function parseDecimalInput(value: string | number | null): number | "" {
     if (value === null || value === undefined) {
         return 0
     }
 
     const stringValue = typeof value === "number" ? value.toString() : value
+
+    // Return empty string if the input is empty
+    if (stringValue === "") {
+        return ""
+    }
 
     return Number(stringValue.replace(/,/g, "."))
 }
