@@ -23,9 +23,9 @@ interface WellsTableProps {
     wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
-      projectId: string,
-      fusionProjectId: string,
-      updatePayload: Components.Schemas.UpdateWellsDto,
+        projectId: string,
+        fusionProjectId: string,
+        updatePayload: Components.Schemas.UpdateWellsDto,
     ) => void
     defaultWellCategory: WellCategory
     wellStagedForDeletion: any
@@ -133,7 +133,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             },
             {
                 field: "drillingDays",
-                headerName: "Drilling days",
+                headerName: "Drilling and completion days",
                 flex: 1,
                 cellStyle: cellStyleRightAlign,
                 editable: editMode && !isEditDisabled,
@@ -144,7 +144,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                     ? "mill NOK"
                     : "mill USD"
-                })`,
+                    })`,
                 flex: 1,
                 headerComponent: SecondaryTableHeader,
                 headerComponentParams: {
