@@ -259,6 +259,7 @@ const PROSPTab = () => {
             feedbackStatus={urlFeedbackStatus}
             onClick={(e) => e && refreshSharePointUrl(e)}
             disabled={!canEdit() || isSaving}
+            buttonText="Link files"
         />
     )
 
