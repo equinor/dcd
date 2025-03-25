@@ -1,6 +1,8 @@
 import { AgChartOptions, AgCharts } from "ag-charts-community"
 import { useEffect, useRef } from "react"
 
+import { formatChartNumber } from "@/Utils/FormatingUtils"
+
 interface Props {
     data: any[]
     chartTitle: string
@@ -29,13 +31,11 @@ export const PieChart = ({
     ]
 
     useEffect(() => {
-        // Skip if container ref is not available
         if (!chartRef.current) { return }
 
         // Clean up previous chart if any
         chartRef.current.innerHTML = ""
 
-        // Create the options for AG Chart
         const options: AgChartOptions = {
             container: chartRef.current,
             data: chartData,
@@ -57,7 +57,6 @@ export const PieChart = ({
             },
         }
 
-        // Create the chart
         AgCharts.create(options)
     }, [chartData, chartTitle, barColors, unit, enableLegend])
 
