@@ -202,6 +202,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                         totalRowName="Total"
                         gridRef={campaignGridRef}
                         includeFooter={false}
+                        decimalPrecision={1}
                     />
                 </CampaignTableContainer>
             </Grid>

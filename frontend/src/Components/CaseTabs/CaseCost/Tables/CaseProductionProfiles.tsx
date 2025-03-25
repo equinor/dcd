@@ -184,6 +184,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             gridRef={alignedGridsRef}
             calculatedFields={calculatedFields}
             ongoingCalculation={isCalculatingProductionOverrides}
+            decimalPrecision={4}
         />
     )
 }

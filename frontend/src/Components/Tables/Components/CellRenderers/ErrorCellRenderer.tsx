@@ -2,6 +2,8 @@ import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { error_outlined } from "@equinor/eds-icons"
 import styled from "styled-components"
 
+import { roundToDecimals } from "@/Utils/FormatingUtils"
+
 const ErrorCellContainer = styled.div<{ $hasError: boolean }>`
     display: flex;
     justify-content: space-between;
@@ -25,22 +27,32 @@ const CellRenderer = styled.div`
 
 interface ErrorCellRendererProps {
     errorMsg: null | string
-    value: string
+    value: string | number
+    isEditMode?: boolean
+    precision?: number
 }
 
-const ErrorCellRenderer = ({ errorMsg, value }: ErrorCellRendererProps) => (
-    errorMsg ? (
+const ErrorCellRenderer = ({
+    errorMsg, value, isEditMode = false, precision = 2,
+}: ErrorCellRendererProps) => {
+    let displayValue = value
+
+    if (!isEditMode && typeof value === "number") {
+        displayValue = roundToDecimals(value, precision).toString()
+    }
+
+    return errorMsg ? (
         <ErrorCellContainer $hasError={!!errorMsg}>
             <Tooltip title={errorMsg} placement="top">
                 <div>
                     <Icon data={error_outlined} size={18} color="red" />
                 </div>
             </Tooltip>
-            {value}
+            {displayValue}
         </ErrorCellContainer>
     ) : (
-        <CellRenderer>{value}</CellRenderer>
+        <CellRenderer>{displayValue}</CellRenderer>
     )
-)
+}
 
 export default ErrorCellRenderer

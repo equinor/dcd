@@ -96,14 +96,27 @@ describe("numberValueParser", () => {
 })
 
 describe("formatColumnSum", () => {
-    it("should sum valid numbers and round to 10 decimal places", () => {
+    it("should sum valid numbers and round to 2 decimal places", () => {
         const params = {
             values: [1.111, 2.222, 3.333],
         }
-        const expected = 6.666
-        const result = formatColumnSum(params)
+        const expected = 6.67
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
+    })
+
+    it("should respect the specified precision parameter", () => {
+        const params = {
+            values: [1.111, 2.222, 3.333],
+        }
+
+        // Test with precision 4
+        expect(formatColumnSum(params, 4)).toBe(6.666)
+        // Test with precision 1
+        expect(formatColumnSum(params, 1)).toBe(6.7)
+        // Test with precision 0
+        expect(formatColumnSum(params, 0)).toBe(7)
     })
 
     it("should filter out NaN and non-finite values", () => {
@@ -111,7 +124,7 @@ describe("formatColumnSum", () => {
             values: [1.5, NaN, 2.5, Infinity],
         }
         const expected = 4
-        const result = formatColumnSum(params)
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
     })
@@ -121,17 +134,17 @@ describe("formatColumnSum", () => {
             values: [0, 0, 0],
         }
         const expected = ""
-        const result = formatColumnSum(params)
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
     })
 
-    it("should return empty string for negative sum", () => {
+    it("should handle negative numbers and return the negative sum", () => {
         const params = {
             values: [-5, 2],
         }
-        const expected = ""
-        const result = formatColumnSum(params)
+        const expected = -3
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
     })
@@ -141,7 +154,7 @@ describe("formatColumnSum", () => {
             values: [],
         }
         const expected = ""
-        const result = formatColumnSum(params)
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
     })
@@ -151,7 +164,7 @@ describe("formatColumnSum", () => {
             values: ["1.5", "2.5", "3.5"],
         }
         const expected = 7.5
-        const result = formatColumnSum(params)
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
     })
@@ -161,7 +174,7 @@ describe("formatColumnSum", () => {
             values: ["1,5", "2,5", "3,5"],
         }
         const expected = 7.5
-        const result = formatColumnSum(params)
+        const result = formatColumnSum(params, 2)
 
         expect(result).toBe(expected)
     })

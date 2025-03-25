@@ -12,7 +12,9 @@ export function truncateText(text: string, maxLength: number): string {
  * @returns The converted number, or 0 if the input is not valid
  */
 export function parseDecimalInput(value: string | number | null): number {
-    if (value === null || value === undefined) { return 0 }
+    if (value === null || value === undefined) {
+        return 0
+    }
 
     const stringValue = typeof value === "number" ? value.toString() : value
 
@@ -71,7 +73,14 @@ export function formatNumberWithDecimals(value: number): string {
  * @returns The rounded number
  */
 export function roundToDecimals(value: number, decimals: number = 2): number {
-    return Math.round((value + Number.EPSILON) * 10 ** decimals) / 10 ** decimals
+    // Check if value is NaN
+    if (Number.isNaN(value)) {
+        return NaN
+    }
+
+    const factor = 10 ** decimals
+
+    return Math.round((value + Number.EPSILON) * factor) / factor
 }
 
 /**

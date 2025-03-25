@@ -19,28 +19,6 @@ export const isExplorationWell = (well: Components.Schemas.WellOverviewDto | und
  * @param offsets - Offset positions for each array
  * @returns Combined array with summed values at corresponding positions
  */
-const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): number[] => {
-    if (dataArrays.length !== offsets.length) {
-        throw new Error("dataArrays and offsets must have the same length")
-    }
-
-    const maxLength = Math.max(...dataArrays.map((dataArray, index) => dataArray.length + offsets[index]))
-    const result = new Array(maxLength).fill(0)
-
-    dataArrays.forEach((dataArray: number[], index: number) => {
-        const offset = offsets[index]
-
-        dataArray.forEach((value: number, i: number) => {
-            const adjustedIndex = i + offset
-
-            if (adjustedIndex < maxLength) {
-                result[adjustedIndex] += value
-            }
-        })
-    })
-
-    return result
-}
 
 /**
  * Merges two time series objects
@@ -58,11 +36,32 @@ export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     const arrays = [t1, t2].map((t: ITimeSeries | undefined) => t?.values ?? [])
     const offsets = startYears.map((year: number) => Math.abs(year - minYear))
 
-    const mergedValues = mergeTimeSeriesValues(arrays, offsets)
+    const mergeTimeSeriesValues = (): number[] => {
+        if (arrays.length !== offsets.length) {
+            throw new Error("dataArrays and offsets must have the same length")
+        }
+
+        const maxLength = Math.max(...arrays.map((dataArray, index) => dataArray.length + offsets[index]))
+        const result = new Array(maxLength).fill(0)
+
+        arrays.forEach((dataArray: number[], index: number) => {
+            const offset = offsets[index]
+
+            dataArray.forEach((value: number, i: number) => {
+                const adjustedIndex = i + offset
+
+                if (adjustedIndex < maxLength) {
+                    result[adjustedIndex] += value
+                }
+            })
+        })
+
+        return result
+    }
 
     return {
         startYear: minYear,
-        values: mergedValues,
+        values: mergeTimeSeriesValues(),
     }
 }
 
@@ -213,10 +212,10 @@ export const validateInput = (params: any, editAllowed: boolean, isSaving?: bool
 }
 
 /**
- * Parses and validates numerical input for table cells
- * @param setSnackBarMessage - Function to display validation messages
- * @param params - Cell parameters with old and new values
- * @returns Parsed value or original value if invalid
+ * Parses and validates number input for table cells
+ * @param setSnackBarMessage - Function to display error messages
+ * @param params - Object with new and old values
+ * @returns Parsed and validated number value
  */
 export const numberValueParser = (
     setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>,
@@ -283,31 +282,46 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
 /**
  * Formats sum of column values with validation
  * @param params - Object containing values array
- * @returns Formatted sum or empty string if invalid
+ * @param decimalPrecision - Number of decimal places to round to
+ * @returns Formatted sum as a number, or empty string for zero sums or empty arrays
  */
-export const formatColumnSum = (params: { values: any[] }) => {
-    const validNumbers = params.values
-        .filter((value: any) => {
-            // Skip empty, null, or undefined values
-            if (value === "" || value === null || value === undefined) {
-                return false
-            }
-            // Check if the value can be parsed as a number
-            const numValue = parseDecimalInput(value.toString())
-
-            return !Number.isNaN(numValue) && Number.isFinite(numValue)
-        })
-        .map((value: any) => parseDecimalInput(value.toString()))
-
-    // Calculate the sum
-    if (validNumbers.length === 0) {
+export function formatColumnSum(params: any, decimalPrecision: number = 2): string | number {
+    // Early returns for invalid inputs
+    if (!params || !params.values) {
         return ""
     }
 
-    const sum = sumAndRound(validNumbers, 10)
+    // Process each value in the array
+    const validNumbers = params.values
+        // Convert strings to numbers if needed
+        .map((value: any) => {
+            if (typeof value === "string") {
+                return parseDecimalInput(value)
+            }
 
-    // Return empty string for zero or negative sums
-    return sum > 0 ? sum : ""
+            return value
+        })
+        // Filter out invalid values (NaN, null, undefined, Infinity)
+        .filter((value: any) => (
+            typeof value === "number"
+            && !Number.isNaN(value)
+            && Number.isFinite(value)
+        ))
+
+    // If we have valid numbers, calculate and return the sum
+    if (validNumbers.length > 0) {
+        const sum = sumAndRound(validNumbers, decimalPrecision)
+
+        // Return empty string for zero sums
+        if (sum === 0) {
+            return ""
+        }
+
+        return sum
+    }
+
+    // Return empty string for empty arrays
+    return ""
 }
 
 /**
@@ -749,38 +763,23 @@ export const wellsToRowData = (
 }
 
 /**
- * Rounds array of values to specified precision
- * @param values - Array of numbers to round
- * @param precision - Decimal precision
- * @returns Array of rounded values
- */
-const roundValues = (values: number[], precision: number): number[] => values.map((v) => roundToDecimals(v, precision))
-
-/**
- * Calculates total from values with rounding
- * @param values - Array of numbers to sum
- * @param precision - Decimal precision
- * @returns Rounded total
- */
-const calculateTotal = (values: number[], precision: number): number => roundToDecimals(sumAndRound(values, precision), precision)
-
-/**
  * Converts time series data to table row data
  * @param timeSeriesData - Array of time series data
  * @param dg4Year - Base year for DG4
  * @param tableName - Name of table for precision settings
  * @param editAllowed - Whether editing is allowed
+ * @param decimalPrecision - Number of decimal places to round to (default: 2)
  * @returns Array of formatted row data
  */
 export const profilesToRowData = (
     timeSeriesData: ITimeSeriesTableData[],
     dg4Year: number,
-    tableName: string,
     editAllowed: boolean,
+    decimalPrecision: number = 2,
 ) => {
     const tableRows: ITimeSeriesTableData[] = []
 
-    timeSeriesData.forEach((ts: ITimeSeriesTableDataWithSet) => {
+    timeSeriesData?.forEach((ts: ITimeSeriesTableDataWithSet) => {
         const isOverridden = ts.overrideProfile?.override === true
         const profile = isOverridden ? ts.overrideProfile : ts.profile
         const profileSet = isOverridden ? ts.overrideProfileSet : ts.set
@@ -803,20 +802,26 @@ export const profilesToRowData = (
         }
 
         if (profile && profile.values && profile.values.length > 0) {
-            const precision = (tableName === "Production profiles" || tableName === "CO2 emissions") ? 10000 : 10
-            const roundedValues = roundValues(profile.values, precision)
             let j = 0
 
             for (let i = profile.startYear; i < profile.startYear + profile.values.length; i += 1) {
-                const yearKey = calculateYearKey(dg4Year, i, 0)
+                const year = dg4Year + i
+                const value = profile.values[j]
 
-                rowObject[yearKey] = roundedValues[j]
+                // In edit mode, keep full precision, otherwise round the values
+                rowObject[year.toString()] = editAllowed
+                    ? value // Keep full precision in edit mode
+                    : roundToDecimals(value, decimalPrecision) // Round in view mode
                 j += 1
             }
 
-            rowObject.total = calculateTotal(profile.values, precision)
+            // Calculate total with full precision as well
+            const total = profile.values.reduce((acc, value) => acc + value, 0)
+
+            rowObject.total = total
+
             if (ts.total !== undefined) {
-                rowObject.total = roundToDecimals(Number(ts.total), 3)
+                rowObject.total = Number(ts.total)
             }
         }
 
