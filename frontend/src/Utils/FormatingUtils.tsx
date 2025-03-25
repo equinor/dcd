@@ -169,3 +169,67 @@ export function getUnitByProfileName(
     // Default to currency for cost profiles
     return formatCurrencyUnit(currency)
 }
+
+/**
+ * Formats a number for display in charts, adding thousands separators
+ * Abbreviates numbers with trailing zeros (100000 -> 100K, 2000000 -> 2M)
+ * But keeps precise numbers with separators (100123 -> 100,123)
+ * Handles small decimal values for CO2 intensity metrics
+ * @param value The number to format
+ * @returns Formatted string with appropriate precision
+ */
+export function formatChartNumber(value: number | string): string {
+    if (value === null || value === undefined || value === "") {
+        return "0"
+    }
+
+    const numericValue = typeof value === "number" ? value : parseFloat(value)
+
+    if (Number.isNaN(numericValue)) {
+        return "0"
+    }
+
+    if (numericValue === 0) {
+        return "0"
+    }
+
+    // For very small decimal values (like fractional CO2 intensity values)
+    if (Math.abs(numericValue) < 1) {
+        // Use fixed 4 decimal places for very small values
+        return numericValue.toFixed(4)
+    }
+
+    // For small whole numbers (1-9)
+    if (Math.abs(numericValue) < 10 && Number.isInteger(numericValue)) {
+        return numericValue.toString()
+    }
+
+    // For small decimal numbers between 1 and 10
+    if (Math.abs(numericValue) < 10) {
+        return numericValue.toFixed(2)
+    }
+
+    // Check if number has only trailing zeros in thousands
+    const absValue = Math.abs(numericValue)
+
+    // For thousands with trailing zeros (1000, 2000, 10000, etc.)
+    if (absValue >= 1000 && absValue < 1000000 && absValue % 1000 === 0) {
+        return `${(numericValue / 1000)}K`
+    }
+
+    // For millions with trailing zeros (1000000, 2000000, etc.)
+    if (absValue >= 1000000 && absValue < 1000000000 && absValue % 1000000 === 0) {
+        return `${(numericValue / 1000000)}M`
+    }
+
+    // For billions with trailing zeros (1000000000, 2000000000, etc.)
+    if (absValue >= 1000000000 && absValue % 1000000000 === 0) {
+        return `${(numericValue / 1000000000)}B`
+    }
+
+    // For numbers that are not round, use localeString with commas
+    return numericValue.toLocaleString("en-US", {
+        maximumFractionDigits: 1,
+        minimumFractionDigits: 0,
+    })
+}

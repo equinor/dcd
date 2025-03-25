@@ -7,7 +7,9 @@ import { useDataFetch } from "@/Hooks"
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { formatCurrencyUnit, formatNumberWithDecimals, formatProfileName } from "@/Utils/FormatingUtils"
+import {
+    formatCurrencyUnit, formatNumberWithDecimals, formatProfileName, formatChartNumber,
+} from "@/Utils/FormatingUtils"
 import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/TableUtils"
 
 interface AggregatedTotalsProps {
@@ -314,12 +316,20 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 },
             },
         ],
+        tooltip: {
+            renderer: (params: any) => ({
+                content: `${params.yName || params.title}: ${formatChartNumber(params.yValue)}`,
+            }),
+        },
         axes: [
             axesConfig,
             {
                 type: "number",
                 position: "left",
                 title: { text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency) },
+                label: {
+                    formatter: (params: any) => formatChartNumber(params.value),
+                },
             },
         ],
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
@@ -357,9 +367,14 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 calloutLabel: { enabled: false },
                 innerRadiusOffset: -25,
                 strokes: ["white"],
+                formatter: (params: any) => {
+                    const value = typeof params.datum.value === "number" ? params.datum.value : parseFloat(params.datum.value)
+
+                    return formatChartNumber(value)
+                },
                 innerLabels: [
                     {
-                        text: formatNumberWithDecimals(totalValue),
+                        text: formatChartNumber(totalValue),
                         fontSize: 18,
                         color: "#000000",
                     },
@@ -383,6 +398,15 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 },
             },
         ],
+        tooltip: {
+            renderer: (params: any) => {
+                const value = typeof params.datum.value === "number" ? params.datum.value : parseFloat(params.datum.value)
+
+                return {
+                    content: `${params.datum.label}: ${formatChartNumber(value)}`,
+                }
+            },
+        },
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }
 

@@ -1,5 +1,7 @@
 import { AgCharts } from "ag-charts-react"
 
+import { formatChartNumber } from "@/Utils/FormatingUtils"
+
 interface Props {
     data: any
     chartTitle: string
@@ -47,8 +49,68 @@ export const PieChart = ({
                 sectorLabel: {
                     enabled: false,
                 },
+                calloutLabel: {
+                    formatter: (params: any) => {
+                        if (params.value === null || params.value === undefined) {
+                            return "0"
+                        }
+
+                        const value = typeof params.value === "number" ? params.value : parseFloat(params.value)
+
+                        if (Number.isNaN(value)) {
+                            return "0"
+                        }
+
+                        // For very small decimal values (typical for CO2 intensity)
+                        if (Math.abs(value) < 1) {
+                            return value.toFixed(4)
+                        }
+
+                        // For small whole numbers (1-9)
+                        if (Math.abs(value) < 10 && Number.isInteger(value)) {
+                            return value.toString()
+                        }
+
+                        // Use the standard formatter for all other values
+                        return formatChartNumber(value)
+                    },
+                },
+                // Do not use formatter here as it causes issues with pie segments
+                // when values are small decimals
             },
         ],
+        tooltip: {
+            renderer: (params: any) => {
+                if (!params.datum || params.datum.value === null || params.datum.value === undefined) {
+                    return { content: "0" }
+                }
+
+                const value = typeof params.datum.value === "number"
+                    ? params.datum.value
+                    : parseFloat(params.datum.value)
+
+                if (Number.isNaN(value)) {
+                    return { content: "0" }
+                }
+
+                let formattedValue
+
+                // For very small decimal values
+                if (Math.abs(value) < 1) {
+                    formattedValue = value.toFixed(4)
+                } else if (Math.abs(value) < 10 && Number.isInteger(value)) {
+                    // For small whole numbers
+                    formattedValue = value.toString()
+                } else {
+                    // For other values
+                    formattedValue = formatChartNumber(value)
+                }
+
+                return {
+                    content: `${params.datum.profile || params.title}: ${formattedValue}`,
+                }
+            },
+        },
         highlightStyle: {
             item: {
                 fill: undefined,
