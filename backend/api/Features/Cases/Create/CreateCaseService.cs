@@ -45,6 +45,7 @@ public class CreateCaseService(DcdDbContext context)
             Co2Vented = 1.96,
             DailyEmissionFromDrillingRig = 100,
             AverageDevelopmentDrillingDays = 50,
+            FacilitiesAvailability = 90,
 
             DrainageStrategyId = drainageStrategyId,
             DrainageStrategy = CreateDrainageStrategy(drainageStrategyId),
