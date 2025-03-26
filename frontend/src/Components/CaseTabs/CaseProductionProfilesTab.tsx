@@ -92,7 +92,7 @@ const CaseProductionProfilesTab = () => {
     const { apiData } = useCaseApiData()
 
     useEffect(() => {
-        if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
+        if (apiData && activeTabCase === 1) {
             SetTableYearsFromProfiles(
                 [
                     apiData.drainageStrategy,
@@ -124,7 +124,11 @@ const CaseProductionProfilesTab = () => {
             )
             setYearRangeSetFromProfiles(true)
         }
-    }, [apiData, activeTabCase, tableYears])
+    }, [apiData, activeTabCase])
+
+    useEffect(() => {
+        setYearRangeSetFromProfiles(false)
+    }, [apiData?.case?.caseId])
 
     if (activeTabCase !== 1) { return null }
 

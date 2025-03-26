@@ -132,6 +132,11 @@ const CaseCO2Tab = () => {
         })()
     }, [activeTabCase, caseData])
 
+    // Add effect to reset yearRangeSetFromProfiles when case changes
+    useEffect(() => {
+        setYearRangeSetFromProfiles(false)
+    }, [caseData?.caseId])
+
     useEffect(() => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {

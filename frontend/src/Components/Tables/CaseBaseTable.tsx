@@ -317,6 +317,11 @@ const CaseBaseTable = memo(({
         }
     }, [gridRowData])
 
+    // Generate column definitions when tableYears change
+    useEffect(() => {
+        setColumnDefs(generateTableYearColDefs())
+    }, [generateTableYearColDefs, editMode, tableYears])
+
     // Force redraw when edit mode changes
     useEffect(() => {
         if (gridRef.current?.api) {

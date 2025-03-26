@@ -115,6 +115,11 @@ const CaseCostTab = () => {
         }
     }, [activeTabCase, apiData])
 
+    // Add effect to reset yearRangeSetFromProfiles when case changes
+    useEffect(() => {
+        setYearRangeSetFromProfiles(false)
+    }, [apiData?.case?.caseId])
+
     if (activeTabCase !== 5) { return null }
 
     if (!apiData) {

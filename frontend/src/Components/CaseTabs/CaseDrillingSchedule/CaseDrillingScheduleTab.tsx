@@ -85,6 +85,11 @@ const CaseDrillingScheduleTab = () => {
         }
     }, [activeTabCase, apiData])
 
+    // Add effect to reset yearRangeSetFromProfiles when case changes
+    useEffect(() => {
+        setYearRangeSetFromProfiles(false)
+    }, [apiData?.case?.caseId])
+
     const sumWellsForWellCategory = (category: WellCategory): number => {
         if (!apiData) { return 0 }
 

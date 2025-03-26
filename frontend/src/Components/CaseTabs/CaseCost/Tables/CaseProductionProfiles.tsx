@@ -177,7 +177,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         ]
 
         setCaseProductionProfilesData(newTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
