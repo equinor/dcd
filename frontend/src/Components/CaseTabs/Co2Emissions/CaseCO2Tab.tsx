@@ -1,3 +1,4 @@
+import { GridApi } from "@ag-grid-community/core"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import {
@@ -28,7 +29,7 @@ interface ICo2DistributionChartData {
     value: number | undefined
 }
 
-const CaseCO2Tab = () => {
+const CaseCO2Tab = (): React.ReactNode => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
@@ -53,7 +54,7 @@ const CaseCO2Tab = () => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const co2GridRef = useRef<any>(null)
+    const co2GridRef = useRef<GridApi | null>(null)
     const averageCo2IntensityData = apiData?.case.averageCo2Intensity
 
     const co2IntensityLine = {
@@ -80,7 +81,7 @@ const CaseCO2Tab = () => {
                 ],
             },
             label: {
-                formatter: (label: any) => Math.floor(Number(label.value)),
+                formatter: (label: { value: number }) => Math.floor(Number(label.value)),
             },
         },
         {
@@ -91,7 +92,7 @@ const CaseCO2Tab = () => {
                 text: "CO2 emissions",
             },
             label: {
-                formatter: (params: any) => `${params.value}`, // emission values
+                formatter: (params: { value: number }) => `${params.value}`, // emission values
             },
         },
         {
@@ -102,13 +103,13 @@ const CaseCO2Tab = () => {
                 text: "Year-by-year CO2 intensity",
             },
             label: {
-                formatter: (params: any) => `${params.value}`, // intensity values
+                formatter: (params: { value: number }) => `${params.value}`, // intensity values
             },
         },
     ]
 
     useEffect(() => {
-        (async () => {
+        (async (): Promise<void> => {
             try {
                 if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
                     const co2DFFTotal = await GetGenerateProfileService().generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
@@ -142,7 +143,7 @@ const CaseCO2Tab = () => {
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
                 resourceName: ProfileTypes.Co2EmissionsOverride,
-                resourceId: drainageStrategyData?.id!,
+                resourceId: drainageStrategyData?.id ?? "",
                 resourcePropertyKey: ProfileTypes.Co2EmissionsOverride,
             },
             {
@@ -152,7 +153,7 @@ const CaseCO2Tab = () => {
                 overridable: false,
                 editable: false,
                 resourceName: ProfileTypes.Co2Intensity,
-                resourceId: drainageStrategyData?.id!,
+                resourceId: drainageStrategyData?.id ?? "",
                 resourcePropertyKey: ProfileTypes.Co2Intensity,
             },
         ]
@@ -165,16 +166,16 @@ const CaseCO2Tab = () => {
         co2DrillingFlaringFuelTotals,
     ])
 
-    const handleTableYearsClick = () => {
+    const handleTableYearsClick = (): void => {
         setTableYears([startYear, endYear])
     }
 
-    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
+    const formatValue = (num: number | null | undefined): number => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
 
-    const co2EmissionsChartData = () => {
+    const co2EmissionsChartData = (): { year: number, co2Emissions: number, co2Intensity: number }[] => {
         const dataArray = []
 
-        if (!caseData) { return [{}] }
+        if (!caseData) { return [{ year: 0, co2Emissions: 0, co2Intensity: 0 }] }
         const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
 
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
@@ -238,11 +239,11 @@ const CaseCO2Tab = () => {
         ])
     }, [drillingPortion, flaringPortion, fuelPortion])
 
-    if (!topsideData) {
+    if (!topsideData || !caseData) {
         return <CaseCo2TabSkeleton />
     }
 
-    if (activeTabCase !== 6 || !caseData) { return null }
+    if (activeTabCase !== 6) { return null }
 
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
@@ -256,7 +257,7 @@ const CaseCO2Tab = () => {
                     id={`topside-fuel-consumption-${topsideData.id}`}
                     integer={false}
                     unit="million Sm³ gas/sd"
-                    onSubmit={(newValue) => updateFuelConsumption(topsideData.id, newValue)}
+                    onSubmit={(newValue): Promise<void> => updateFuelConsumption(topsideData.id, newValue)}
                 />
             </div>
             <Grid size={12}>

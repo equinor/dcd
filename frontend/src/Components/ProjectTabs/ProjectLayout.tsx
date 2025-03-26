@@ -47,7 +47,7 @@ interface WarnedProjectInterface {
     [key: string]: string[]
 }
 
-const NoAccessBanner = () => (
+const NoAccessBanner = (): React.ReactNode => (
     <Banner>
         <Banner.Icon variant="info">
             <Icon data={info_circle} />
@@ -107,7 +107,7 @@ const ProjectLayout = (): JSX.Element => {
 
     // Project initialization
     useEffect(() => {
-        const initializeProject = async () => {
+        const initializeProject = async (): Promise<void> => {
             if (!currentContext?.externalId) { return }
 
             setIsLoading(true)
@@ -190,7 +190,7 @@ const ProjectLayout = (): JSX.Element => {
         }
     }, [revisionAndProjectData?.projectId])
 
-    function addVisitedProject() {
+    function addVisitedProject(): void {
         if (revisionAndProjectData && currentContext?.externalId) {
             if (warnedProjects && warnedProjects[currentContext.externalId]) {
                 const wp = { ...warnedProjects }
@@ -238,7 +238,7 @@ const ProjectLayout = (): JSX.Element => {
                                 </Typography>
                             )}
                             actions={
-                                <Button key="ok" onClick={() => addVisitedProject()}>OK</Button>
+                                <Button key="ok" onClick={(): void => addVisitedProject()}>OK</Button>
                             }
                         />
                     )}

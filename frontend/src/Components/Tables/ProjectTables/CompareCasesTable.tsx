@@ -8,6 +8,7 @@ import styled from "styled-components"
 
 import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
 import { useDataFetch } from "@/Hooks/useDataFetch"
+import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
 import { cellStyleRightAlign } from "@/Utils/commonUtils"
 
 const MenuIcon = styled(Icon)`
@@ -297,6 +298,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     rowData={rowData}
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
+                    getContextMenuItems={getCustomContextMenuItems}
                     animateRows
                     domLayout="autoHeight"
                     onGridReady={onGridReady}

@@ -10,13 +10,13 @@ interface CaseTabsProps {
     caseId: string
 }
 
-const CaseTabs = ({ caseId }: CaseTabsProps) => {
+const CaseTabs = ({ caseId }: CaseTabsProps): React.ReactNode => {
     const { revisionId } = useParams()
     const { navigateToCaseTab } = useAppNavigation()
     const { activeTabCase } = useCaseStore()
     const { width } = useWindowSize()
 
-    const handleTabChange = (_: any, index: number) => {
+    const handleTabChange = (_: any, index: number): void => {
         navigateToCaseTab(caseId, caseTabNames[index], revisionId)
     }
 

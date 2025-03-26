@@ -37,7 +37,7 @@ const InputGroup = styled.div`
     gap: 10px;
 `
 
-const CaseDrillingScheduleTab = () => {
+const CaseDrillingScheduleTab = (): React.ReactNode => {
     const { canEdit } = useCanUserEdit()
     const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
@@ -132,29 +132,20 @@ const CaseDrillingScheduleTab = () => {
         }
     }, [apiData, wells, activeTabCase])
 
-    if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
-
     const {
         case: caseData,
         developmentCampaigns,
         explorationCampaigns,
-    } = apiData
+    } = apiData as Components.Schemas.CaseWithAssetsDto
 
-    const developmentWellsData = developmentCampaigns.flatMap((x) => x.campaignWells)
-    const explorationWellsData = explorationCampaigns.flatMap((x) => x.campaignWells)
+    const developmentWellsData = developmentCampaigns?.flatMap((x) => x.campaignWells)
+    const explorationWellsData = explorationCampaigns?.flatMap((x) => x.campaignWells)
 
-    if (
-        activeTabCase !== 3
-        || !caseData
-        || !developmentWellsData
-        || !explorationWellsData
-    ) { return (<CaseProductionProfilesTabSkeleton />) }
-
-    const handleTableYearsClick = () => {
+    const handleTableYearsClick = (): void => {
         setTableYears([startYear, endYear])
     }
 
-    const createCampaign = async (campaignType: CampaignType) => {
+    const createCampaign = async (campaignType: CampaignType): Promise<void> => {
         setIsSaving(true)
 
         await GetDrillingCampaignsService().createCampaign(
@@ -167,6 +158,15 @@ const CaseDrillingScheduleTab = () => {
         setIsSaving(false)
     }
 
+    if (
+        !caseData
+        || !developmentWellsData
+        || !explorationWellsData
+        || !apiData
+    ) { return (<CaseProductionProfilesTabSkeleton />) }
+
+    if (activeTabCase !== 3) { return null }
+
     return (
         <Grid container spacing={2}>
             <CampaignHeader $isSmallScreen={isSmallScreen}>
@@ -177,7 +177,7 @@ const CaseDrillingScheduleTab = () => {
                             To edit the well costs go to
                             {" "}
                         </Typography>
-                        <CampaignLink variant="body_short_link" onClick={() => navigateToProjectTab(2)}>Technical input</CampaignLink>
+                        <CampaignLink variant="body_short_link" onClick={(): number => navigateToProjectTab(2)}>Technical input</CampaignLink>
                     </LinkText>
                     <FieldsAndDatePickerContainer>
                         <Grid container size={12} justifyContent="flex-start">
@@ -189,7 +189,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-exploration-wells-${caseData.caseId}`}
-                                        onSubmit={() => { }}
+                                        onSubmit={():void => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -199,7 +199,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-oil-producer-wells-${caseData.caseId}`}
-                                        onSubmit={() => { }}
+                                        onSubmit={():void => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -209,7 +209,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-water-injector-wells-${caseData.caseId}`}
-                                        onSubmit={() => { }}
+                                        onSubmit={():void => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -219,7 +219,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-appraisal-wells-${caseData.caseId}`}
-                                        onSubmit={() => { }}
+                                        onSubmit={():void => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -229,7 +229,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-gas-producer-wells-${caseData.caseId}`}
-                                        onSubmit={() => { }}
+                                        onSubmit={():void => { }}
                                     />
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -239,7 +239,7 @@ const CaseDrillingScheduleTab = () => {
                                         integer
                                         disabled
                                         id={`case-gas-injector-wells-${caseData.caseId}`}
-                                        onSubmit={() => { }}
+                                        onSubmit={():void => { }}
                                     />
                                 </Grid>
                             </Grid>
@@ -256,10 +256,10 @@ const CaseDrillingScheduleTab = () => {
                         <Grid>
                             <Grid>
                                 <InputGroup>
-                                    <Button onClick={() => createCampaign(CampaignType.ExplorationCampaign)} variant="contained" disabled={isSaving}>
+                                    <Button onClick={(): Promise<void> => createCampaign(CampaignType.ExplorationCampaign)} variant="contained" disabled={isSaving}>
                                         Create exploration campaign
                                     </Button>
-                                    <Button onClick={() => createCampaign(CampaignType.DevelopmentCampaign)} variant="contained" disabled={isSaving}>
+                                    <Button onClick={(): Promise<void> => createCampaign(CampaignType.DevelopmentCampaign)} variant="contained" disabled={isSaving}>
                                         Create development campaign
                                     </Button>
                                 </InputGroup>

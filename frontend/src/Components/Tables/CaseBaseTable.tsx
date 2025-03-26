@@ -33,7 +33,7 @@ import {
 } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { gridRefArrayToAlignedGrid, profilesToRowData } from "@/Utils/AgGridUtils"
+import { getCustomContextMenuItems, gridRefArrayToAlignedGrid, profilesToRowData } from "@/Utils/AgGridUtils"
 import {
     tableCellisEditable,
     numberValueParser,
@@ -324,12 +324,13 @@ const CaseBaseTable = memo(({
                     <AgGridReact
                         ref={gridRef}
                         {...gridConfig}
+                        getContextMenuItems={getCustomContextMenuItems}
                     />
                 </div>
             </div>
             <SidesheetWrapper
                 isOpen={isSidesheetOpen}
-                onClose={() => setIsSidesheetOpen(false)}
+                onClose={(): void => setIsSidesheetOpen(false)}
                 rowData={selectedRow}
                 dg4Year={dg4Year}
                 allTimeSeriesData={timeSeriesData}

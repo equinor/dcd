@@ -20,7 +20,7 @@ import SidesheetWrapper from "@/Components/TableSidesheet/SidesheetWrapper"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
-import { gridRefArrayToAlignedGrid } from "@/Utils/AgGridUtils"
+import { getCustomContextMenuItems, gridRefArrayToAlignedGrid } from "@/Utils/AgGridUtils"
 import { formatColumnSum, tableCellisEditable } from "@/Utils/commonUtils"
 
 interface Props {
@@ -191,7 +191,7 @@ const CaseTableWithGrouping = ({
     const getContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
         const defaultItems = params.defaultItems || []
 
-        return defaultItems.map((item) => {
+        return defaultItems.filter((item) => item.toLowerCase() !== "paste").map((item) => {
             if (item === "copy") {
                 return {
                     name: "Copy",

@@ -6,13 +6,15 @@ import {
     useMemo, useRef, useState,
 } from "react"
 
+import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
+
 interface Props {
     topside: Components.Schemas.TopsideDto,
 }
 
 const CaseCO2DistributionTable = ({
     topside,
-}: Props) => {
+}: Props): React.ReactElement => {
     // Show data as percentages
     const co2Data = [
         {
@@ -94,6 +96,7 @@ const CaseCO2DistributionTable = ({
                 rowData={rowData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
+                getContextMenuItems={getCustomContextMenuItems}
                 animateRows
                 domLayout="autoHeight"
                 rowSelection={{

@@ -12,6 +12,7 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { ChangeLogCategory } from "@/Models/enums"
 import { changeLogQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
 import { formatDateAndTime } from "@/Utils/DateUtils"
 
 interface IRow {
@@ -126,6 +127,7 @@ const ProjectChangeLog = () => {
                     rowData={rowData}
                     columnDefs={colDefs}
                     defaultColDef={defaultColDef}
+                    getContextMenuItems={getCustomContextMenuItems}
                 />
             </div>
         </ChangeLogWrapper>

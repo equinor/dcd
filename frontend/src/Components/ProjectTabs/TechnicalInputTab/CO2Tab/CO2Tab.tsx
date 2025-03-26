@@ -18,6 +18,7 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
 import { cellStyleRightAlign } from "@/Utils/commonUtils"
 
 const StyledContainer = styled.div`
@@ -295,6 +296,7 @@ const CO2Tab = () => {
                         rowData={rowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
+                        getContextMenuItems={getCustomContextMenuItems}
                         animateRows
                         domLayout="autoHeight"
                         onGridReady={onGridReady}

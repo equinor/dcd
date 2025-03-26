@@ -1,3 +1,4 @@
+import { GetContextMenuItemsParams, MenuItemDef } from "@ag-grid-community/core"
 import { Dispatch, SetStateAction } from "react"
 
 import { ITimeSeriesTableData, ITimeSeriesTableDataWithSet, ITimeSeries } from "@/Models/ITimeSeries"
@@ -11,6 +12,12 @@ interface IAssetWell {
         startYear: number
         values: number[]
     }
+}
+
+export const getCustomContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
+    const defaultItems = params.defaultItems || []
+
+    return defaultItems.filter((item) => item.toLowerCase() !== "paste")
 }
 
 export const separateProfileObjects = (barProfiles: string[], barNames: string[], xKey: string) => {
