@@ -1032,6 +1032,21 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdProspCheckForUpdate {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = boolean;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdSubstructure {
         namespace Put {
             namespace Parameters {
