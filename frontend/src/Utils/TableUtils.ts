@@ -505,30 +505,21 @@ export const SetTableYearsFromProfiles = (
         }
     })
 
-    if (firstYear !== undefined) {
-        setStartYear(firstYear)
-    }
-    if (lastYear !== undefined) {
-        setEndYear(lastYear)
-    }
+    if (firstYear !== undefined && lastYear !== undefined) {
+        const totalYears = lastYear - firstYear + 1
+        const desiredYears = 11
 
-    const totalYears = (lastYear !== undefined && firstYear !== undefined) ? lastYear - firstYear + 1 : 0
-    const desiredYears = 11
+        if (totalYears < desiredYears) {
+            const additionalYears = desiredYears - totalYears
+            const additionalYearsBefore = Math.floor(additionalYears / 2)
+            const additionalYearsAfter = additionalYears - additionalYearsBefore
 
-    if (totalYears < desiredYears) {
-        const additionalYears = desiredYears - totalYears
-        const additionalYearsBefore = Math.floor(additionalYears / 2)
-        const additionalYearsAfter = additionalYears - additionalYearsBefore
-
-        if (firstYear !== undefined && lastYear !== undefined) {
             firstYear -= additionalYearsBefore
             lastYear += additionalYearsAfter
-            setStartYear(firstYear)
-            setEndYear(lastYear)
-            setTableYears([firstYear, lastYear])
         }
-    }
-    if (firstYear !== undefined && lastYear !== undefined) {
+
+        setStartYear(firstYear)
+        setEndYear(lastYear)
         setTableYears([firstYear, lastYear])
     }
 }
