@@ -62,7 +62,7 @@ public static class CessationCostProfileService
 
         var totalCost = sumDrilledWells * pluggingAndAbandonment;
         cessationWells.StartYear = lastYear;
-        cessationWells.Values = [totalCost / 2, totalCost / 2];
+        cessationWells.Values = [totalCost / 2.0, totalCost / 2.0];
     }
 
     private static void GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear, TimeSeriesProfile cessationOffshoreFacilities)
@@ -70,6 +70,6 @@ public static class CessationCostProfileService
         var surfCessationCost = surf.CessationCost;
 
         cessationOffshoreFacilities.StartYear = lastYear + 1;
-        cessationOffshoreFacilities.Values = [surfCessationCost / 2, surfCessationCost / 2];
+        cessationOffshoreFacilities.Values = [surfCessationCost / 2.0, surfCessationCost / 2.0];
     }
 }
