@@ -294,14 +294,21 @@ public static class SteaCaseDtoBuilder
 
         var costProfileDtos = new List<TimeSeries>
         {
-            new(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
             new(caseItem.GetProfileOrNull(ProfileTypes.ProjectSpecificDrillingCostProfile)),
             new(caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)),
             new(caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost)),
 
-            caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)?.Values.Length > 0
-                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile))
+            caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride)?.Override == true
+                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride))
+                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
+
+            caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride)?.Override == true
+                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride))
                 : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
+
+            caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride)?.Override == true
+                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride))
+                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
 
             caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)?.Override == true
                 ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride))

@@ -94,8 +94,11 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OnshorePowerSupplyCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride)),
 
             ExplorationWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
+            ExplorationWellCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride)),
             AppraisalWellCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
+            AppraisalWellCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride)),
             SidetrackCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
+            SidetrackCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride)),
             GAndGAdminCost = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCost)),
             GAndGAdminCostOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.GAndGAdminCostOverride)),
             SeismicAcquisitionAndProcessing = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)),
