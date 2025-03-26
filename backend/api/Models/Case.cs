@@ -92,6 +92,7 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
 
+
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);
 
     public TimeSeriesProfile CreateProfileIfNotExists(string profileType)
@@ -107,5 +108,13 @@ public class Case : IChangeTrackable, IDateTrackedEntity
         TimeSeriesProfiles.Add(newProfile);
 
         return newProfile;
+    }
+
+    public TimeSeriesProfile? GetOverrideProfileOrProfile(string profileType)
+    {
+        var profileTypeOverride = $"{profileType}Override";
+        var profileOverride = GetProfileOrNull(profileTypeOverride);
+
+        return profileOverride?.Override == true ? profileOverride : GetProfileOrNull(profileType);
     }
 }

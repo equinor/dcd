@@ -45,7 +45,7 @@ public static class NetSaleGasProfileService
 
         var fuelFlaringLosses = TimeSeriesMerger.MergeTimeSeries(fuelConsumption, flarings, losses);
 
-        if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
+        if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true) // TODO look into this
         {
             fuelFlaringLosses.StartYear = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).StartYear;
             fuelFlaringLosses.Values = caseItem.GetProfile(ProfileTypes.FuelFlaringAndLossesOverride).Values;

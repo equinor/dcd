@@ -76,13 +76,6 @@ public static class Co2IntensityProfileService
         return TimeSeriesMerger.MergeTimeSeries(oilProfile, additionalOilProfile);
     }
 
-    public static TimeSeries GetCo2EmissionsProfile(Case caseItem)
-    {
-        var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
-        var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
-
-        return co2EmissionsOverrideProfile?.Override == true
-            ? new TimeSeries(co2EmissionsOverrideProfile)
-            : new TimeSeries(co2EmissionsProfile);
-    }
+    public static TimeSeries GetCo2EmissionsProfile(Case caseItem) =>
+        new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions));
 }

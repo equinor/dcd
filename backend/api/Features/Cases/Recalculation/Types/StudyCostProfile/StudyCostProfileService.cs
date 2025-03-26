@@ -120,11 +120,11 @@ public static class StudyCostProfileService
     {
         var sumFacilityCost = 0.0;
 
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride));
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SubstructureCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SurfCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.TopsideCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.TransportCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.OnshorePowerSupplyCostProfile)?.Values.Sum() ?? 0;
 
         return sumFacilityCost;
     }
@@ -133,10 +133,10 @@ public static class StudyCostProfileService
     {
         var sumWellCost = 0.0;
 
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride));
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.OilProducerCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.GasProducerCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.WaterInjectorCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.GasInjectorCostProfile)?.Values.Sum() ?? 0;
 
         return sumWellCost;
     }
@@ -144,20 +144,5 @@ public static class StudyCostProfileService
     private static bool DateIsEqual(DateTime date1, DateTime date2)
     {
         return date1.Year == date2.Year && date1.DayOfYear == date2.DayOfYear;
-    }
-
-    private static double SumOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
-    {
-        if (profileOverride?.Override == true)
-        {
-            return profileOverride.Values.Sum();
-        }
-
-        if (profile != null)
-        {
-            return profile.Values.Sum();
-        }
-
-        return 0;
     }
 }
