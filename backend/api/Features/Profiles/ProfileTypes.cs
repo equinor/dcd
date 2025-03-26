@@ -138,6 +138,7 @@ public static class ProfileTypes
     public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
 
     public const string Co2Intensity = "Co2Intensity";
+    public const string Co2IntensityOverride = "Co2IntensityOverride";
 
     public const string ProductionProfileNgl = "ProductionProfileNgl";
     public const string ProductionProfileNglOverride = "ProductionProfileNglOverride";

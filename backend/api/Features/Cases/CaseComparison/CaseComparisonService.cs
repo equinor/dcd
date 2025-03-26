@@ -37,12 +37,19 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
-            var profile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride) ?? caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+            var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)?.Override == true
+                ? caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride)
+                : caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
 
-            var generateCo2EmissionsProfile = new TimeSeries(profile);
+            var generateCo2EmissionsProfile = new TimeSeries(co2EmissionsProfile);
 
             var totalCo2Emissions = generateCo2EmissionsProfile.Values.Sum();
-            var co2Intensity = caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity)?.Values.Sum() ?? 0;
+
+            var co2IntensityProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride)?.Override == true
+                ? caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride)
+                : caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity);
+
+            var co2Intensity = co2IntensityProfile?.Values.Sum() ?? 0;
 
             var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
 

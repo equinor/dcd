@@ -17,6 +17,7 @@ export enum ProfileTypes {
     Co2Emissions = "Co2Emissions",
     Co2EmissionsOverride = "Co2EmissionsOverride",
     Co2Intensity = "Co2Intensity",
+    Co2IntensityOverride = "Co2IntensityOverride",
     CondensateProduction = "CondensateProduction",
     CondensateProductionOverride = "CondensateProductionOverride",
     CountryOfficeCost = "CountryOfficeCost",
