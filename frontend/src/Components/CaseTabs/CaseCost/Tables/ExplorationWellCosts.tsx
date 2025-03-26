@@ -71,7 +71,6 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -80,10 +79,8 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
         }: CreateProfileDataParams): ITimeSeriesTableData => {
             const isCalculatedField = calculatedFields.includes(resourceName)
-            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
 
             return ({
                 profileName,
@@ -93,7 +90,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
                 resourceId: caseId,
                 resourcePropertyKey: resourceName,
                 editable,
-                overridable: isOverridable,
+                overridable: isCalculatedField,
                 ...(overrideProfile && { overrideProfile }),
             })
         }

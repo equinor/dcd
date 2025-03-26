@@ -48,7 +48,6 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -57,10 +56,8 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
         }: CreateProfileDataParams): ITimeSeriesTableData => {
             const isCalculatedField = calculatedFields.includes(resourceName)
-            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
 
             return ({
                 profileName,
@@ -70,7 +67,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
                 resourceId: caseData.caseId,
                 resourcePropertyKey: resourceName,
                 editable,
-                overridable: isOverridable,
+                overridable: isCalculatedField,
                 ...(overrideProfile && { overrideProfile }),
             })
         }

@@ -45,7 +45,6 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -54,10 +53,8 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
         }: CreateProfileDataParams): ITimeSeriesTableData => {
             const isCalculatedField = calculatedFields.includes(resourceName)
-            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
 
             return ({
                 profileName,
@@ -67,7 +64,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 resourceId: caseData.caseId,
                 resourcePropertyKey: resourceName,
                 editable,
-                overridable: isOverridable,
+                overridable: isCalculatedField,
                 ...(overrideProfile && { overrideProfile }),
             })
         }

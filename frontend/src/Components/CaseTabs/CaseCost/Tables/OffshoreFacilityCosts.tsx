@@ -64,7 +64,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             resourceId: string;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -74,10 +73,8 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             resourceId,
             overrideProfile,
             editable = true,
-            overridable,
         }: CreateProfileDataParams): ITimeSeriesTableData => {
             const isCalculatedField = calculatedFields.includes(resourceName)
-            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
 
             return ({
                 profileName,
@@ -87,7 +84,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 resourceId,
                 resourcePropertyKey: resourceName,
                 editable,
-                overridable: isOverridable,
+                overridable: isCalculatedField,
                 ...(overrideProfile && { overrideProfile }),
             })
         }

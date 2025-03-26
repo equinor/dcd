@@ -44,7 +44,6 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -53,10 +52,8 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
         }: CreateProfileDataParams): ITimeSeriesTableData => {
             const isCalculatedField = calculatedFields.includes(resourceName)
-            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
 
             return ({
                 profileName,
@@ -66,7 +63,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
                 resourceId: caseData.caseId,
                 resourcePropertyKey: resourceName,
                 editable,
-                overridable: isOverridable,
+                overridable: isCalculatedField,
                 ...(overrideProfile && { overrideProfile }),
             })
         }
