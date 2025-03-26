@@ -58,17 +58,22 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             overrideProfile,
             editable = true,
             overridable,
-        }: CreateProfileDataParams): ITimeSeriesTableData => ({
-            profileName,
-            unit: getUnitByProfileName(profileName, physUnit, currency),
-            profile,
-            resourceName,
-            resourceId: caseData.caseId,
-            resourcePropertyKey: resourceName,
-            editable,
-            overridable: overridable ?? !!overrideProfile,
-            ...(overrideProfile && { overrideProfile }),
-        })
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseData.caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isOverridable,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
 
         const newStudyTimeSeriesData: ITimeSeriesTableData[] = [
             createProfileData({
@@ -91,7 +96,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         ]
 
         setStudyTimeSeriesData(newStudyTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable

@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from "react"
 
 import { ITimeSeries, ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { EditInstance } from "@/Models/Interfaces"
-import { TABLE_VALIDATION_RULES } from "@/Utils/Config/constants"
+import { DEFAULT_TABLE_UTILS_YEARS, TABLE_VALIDATION_RULES } from "@/Utils/Config/constants"
 import { parseDecimalInput, roundToDecimals, sumAndRound } from "@/Utils/FormatingUtils"
 
 /**
@@ -139,13 +139,19 @@ export const GetTimeSeriesLastYear = (
         }
         | undefined,
 ): number | undefined => {
+    if (!timeSeries) {
+        return undefined
+    }
+
     if (
         timeSeries
         && timeSeries.startYear !== undefined
         && timeSeries.values
         && timeSeries.values.length > 0
     ) {
-        return timeSeries.startYear + timeSeries.values.length - 1
+        const result = timeSeries.startYear + timeSeries.values.length - 1
+
+        return result
     }
 
     return undefined
@@ -454,14 +460,12 @@ export const generateTableCellEdit = (params: ITableCellChangeParams, config: IT
 }
 
 /**
- * Sets table year range based on profiles
+ * Calculates table year range based on profiles without state management
  * @param profiles - Array of time series profiles
  * @param dg4Year - Base year for DG4
- * @param setStartYear - Start year setter
- * @param setEndYear - End year setter
- * @param setTableYears - Table years range setter
+ * @returns Tuple with [firstYear, lastYear] or undefined if can't calculate
  */
-export const SetTableYearsFromProfiles = (
+export const calculateTableYears = (
     profiles: (
         | {
             id?: string;
@@ -473,14 +477,20 @@ export const SetTableYearsFromProfiles = (
         | undefined
     )[],
     dg4Year: number,
-    setStartYear: Dispatch<SetStateAction<number>>,
-    setEndYear: Dispatch<SetStateAction<number>>,
-    setTableYears: Dispatch<SetStateAction<[number, number]>>,
-) => {
+): [number, number] | undefined => {
     let firstYear: number | undefined
     let lastYear: number | undefined
 
-    profiles.forEach((profile) => {
+    // Filter out undefined or empty profiles
+    const validProfiles = profiles.filter((p) => p !== undefined)
+
+    if (validProfiles.length === 0) {
+        const defaultYears: [number, number] = DEFAULT_TABLE_UTILS_YEARS
+
+        return defaultYears
+    }
+
+    validProfiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
             const { startYear } = profile
             const profileStartYear: number = startYear + dg4Year
@@ -518,9 +528,55 @@ export const SetTableYearsFromProfiles = (
             lastYear += additionalYearsAfter
         }
 
+        const calculatedYears: [number, number] = [firstYear, lastYear]
+
+        return calculatedYears
+    }
+
+    const defaultYears: [number, number] = DEFAULT_TABLE_UTILS_YEARS
+
+    return defaultYears
+}
+
+/**
+ * Sets table year range based on profiles
+ * @param profiles - Array of time series profiles
+ * @param dg4Year - Base year for DG4
+ * @param setStartYear - Start year setter
+ * @param setEndYear - End year setter
+ * @param setTableYears - Table years range setter
+ */
+export const SetTableYearsFromProfiles = (
+    profiles: (
+        | {
+            id?: string;
+            startYear?: number;
+            name?: string;
+            values?: number[] | null;
+            sum?: number | undefined;
+        }
+        | undefined
+    )[],
+    dg4Year: number,
+    setStartYear: Dispatch<SetStateAction<number>>,
+    setEndYear: Dispatch<SetStateAction<number>>,
+    setTableYears: Dispatch<SetStateAction<[number, number]>>,
+) => {
+    const years = calculateTableYears(profiles, dg4Year)
+
+    if (years) {
+        const [firstYear, lastYear] = years
+
         setStartYear(firstYear)
         setEndYear(lastYear)
         setTableYears([firstYear, lastYear])
+    } else {
+        const [defaultStart, defaultEnd] = DEFAULT_TABLE_UTILS_YEARS
+        const defaultYears: [number, number] = [defaultStart, defaultEnd]
+
+        setStartYear(defaultStart)
+        setEndYear(defaultEnd)
+        setTableYears(defaultYears)
     }
 }
 
@@ -537,6 +593,16 @@ export const SetSummaryTableYearsFromProfiles = (
 ) => {
     let firstYear: number | undefined
     let lastYear: number | undefined
+
+    const validProfiles = profiles.filter((p) => p !== undefined)
+
+    if (validProfiles.length === 0) {
+        const defaultYears: [number, number] = DEFAULT_TABLE_UTILS_YEARS
+
+        setTableYears(defaultYears)
+
+        return
+    }
 
     profiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
@@ -564,7 +630,13 @@ export const SetSummaryTableYearsFromProfiles = (
     })
 
     if (firstYear !== undefined && lastYear !== undefined) {
-        setTableYears([firstYear, lastYear])
+        const calculatedYears: [number, number] = [firstYear, lastYear]
+
+        setTableYears(calculatedYears)
+    } else {
+        const defaultYears: [number, number] = DEFAULT_TABLE_UTILS_YEARS
+
+        setTableYears(defaultYears)
     }
 }
 

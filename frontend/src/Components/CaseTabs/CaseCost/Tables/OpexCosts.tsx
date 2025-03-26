@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
@@ -19,6 +19,11 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
 }) => {
     const revisionAndProjectData = useDataFetch()
     const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
+
+    const calculatedFields = useMemo(() => [
+        ProfileTypes.WellInterventionCostProfileOverride,
+        ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
+    ], [])
 
     useEffect(() => {
         const historicCostCostProfileData = apiData.historicCostCostProfile
@@ -49,17 +54,22 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             overrideProfile,
             editable = true,
             overridable,
-        }: CreateProfileDataParams): ITimeSeriesTableData => ({
-            profileName,
-            unit: getUnitByProfileName(profileName, physUnit, currency),
-            profile,
-            resourceName,
-            resourceId: caseData.caseId,
-            resourcePropertyKey: resourceName,
-            editable,
-            overridable: overridable ?? !!overrideProfile,
-            ...(overrideProfile && { overrideProfile }),
-        })
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseData.caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isOverridable,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
 
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
             createProfileData({
@@ -92,7 +102,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         ]
 
         setOpexTimeSeriesData(newOpexTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
@@ -104,6 +114,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            calculatedFields={calculatedFields}
             decimalPrecision={1}
         />
     )

@@ -20,8 +20,9 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
 import { useCaseStore } from "@/Store/CaseStore"
+import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { SetTableYearsFromProfiles } from "@/Utils/TableUtils"
+import { calculateTableYears } from "@/Utils/TableUtils"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -51,11 +52,10 @@ const CaseCO2Tab = () => {
     ])
 
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [startYear, setStartYear] = useState<number>(DEFAULT_CO2_EMISSIONS_YEARS[0])
+    const [endYear, setEndYear] = useState<number>(DEFAULT_CO2_EMISSIONS_YEARS[1])
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_CO2_EMISSIONS_YEARS)
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
     const co2GridRef = useRef<any>(null)
     const averageCo2IntensityData = apiData?.case.averageCo2Intensity
 
@@ -118,32 +118,32 @@ const CaseCO2Tab = () => {
 
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
-                    if (!yearRangeSetFromProfiles) {
-                        SetTableYearsFromProfiles(
-                            [
-                                co2EmissionsData,
-                                co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined,
-                                co2IntensityData,
-                                co2IntensityOverrideData?.override ? co2IntensityOverrideData : undefined,
-                            ],
-                            getYearFromDateString(caseData.dg4Date),
-                            setStartYear,
-                            setEndYear,
-                            setTableYears,
-                        )
-                        setYearRangeSetFromProfiles(true)
+                    const profiles = [
+                        co2EmissionsData,
+                        co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined,
+                        co2IntensityData,
+                        co2IntensityOverrideData?.override ? co2IntensityOverrideData : undefined,
+                    ]
+                    const dg4Year = getYearFromDateString(caseData.dg4Date)
+                    const years = calculateTableYears(profiles, dg4Year)
+
+                    if (years) {
+                        const [firstYear, lastYear] = years
+
+                        setStartYear(firstYear)
+                        setEndYear(lastYear)
+                        setTableYears([firstYear, lastYear])
+                    } else {
+                        setStartYear(DEFAULT_CO2_EMISSIONS_YEARS[0])
+                        setEndYear(DEFAULT_CO2_EMISSIONS_YEARS[1])
+                        setTableYears(DEFAULT_CO2_EMISSIONS_YEARS)
                     }
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase, caseData])
-
-    // Add effect to reset yearRangeSetFromProfiles when case changes
-    useEffect(() => {
-        setYearRangeSetFromProfiles(false)
-    }, [caseData?.caseId])
+    }, [activeTabCase, caseData, co2EmissionsData, co2IntensityData, co2EmissionsOverrideData, revisionAndProjectData])
 
     useEffect(() => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [

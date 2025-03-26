@@ -188,6 +188,10 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         }
     }
 
+    const onApplyButtonClick = () => {
+        handleTableYearsClick()
+    }
+
     return (
         <StyledContainer container spacing={2}>
             {labelText && labelValue && (
@@ -230,7 +234,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                     </ResetButton>
                     <Button
                         variant="contained"
-                        onClick={handleTableYearsClick}
+                        onClick={onApplyButtonClick}
                     >
                         Apply
                     </Button>
