@@ -70,6 +70,8 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            sharepointUrl: string | null;
+            sharepointUpdatedTimestampUtc: string | null; // date-time
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
@@ -517,6 +519,7 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            sharepointUrl: string | null;
         }
         export interface UpdateDevelopmentOperationalWellCostsDto {
             rigUpgrading: number; // double

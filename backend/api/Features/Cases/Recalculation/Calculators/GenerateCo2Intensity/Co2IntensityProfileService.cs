@@ -83,6 +83,7 @@ public static class Co2IntensityProfileService
             ? new TimeSeries(co2EmissionsOverrideProfile)
             : new TimeSeries(co2EmissionsProfile);
     }
+
     public static TimeSeries GetCo2IntensityProfile(Case caseItem)
     {
         var co2IntensityOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride);

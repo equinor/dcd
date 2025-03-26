@@ -58,7 +58,9 @@ public static class CaseMapper
             OnshorePowerSupplyId = caseItem.OnshorePowerSupplyId,
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,
-            SharepointFileUrl = caseItem.SharepointFileUrl
+            SharepointFileUrl = caseItem.SharepointFileUrl,
+            SharepointUrl = caseItem.SharepointUrl,
+            SharepointUpdatedTimestampUtc = caseItem.SharepointUpdatedTimestampUtc
         };
     }
 }
