@@ -1,4 +1,6 @@
-import { Icon, Input, NativeSelect, Typography } from "@equinor/eds-core-react"
+import {
+    Icon, Input, NativeSelect, Typography,
+} from "@equinor/eds-core-react"
 import { help_outline } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
 import { useState, ChangeEventHandler, useEffect } from "react"
