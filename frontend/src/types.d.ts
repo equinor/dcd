@@ -137,8 +137,11 @@ declare namespace Components {
             onshorePowerSupplyCostProfile: TimeSeriesDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
             explorationWellCostProfile: TimeSeriesDto;
+            explorationWellCostProfileOverride: TimeSeriesOverrideDto;
             appraisalWellCostProfile: TimeSeriesDto;
+            appraisalWellCostProfileOverride: TimeSeriesOverrideDto;
             sidetrackCostProfile: TimeSeriesDto;
+            sidetrackCostProfileOverride: TimeSeriesOverrideDto;
             gAndGAdminCost: TimeSeriesDto;
             gAndGAdminCostOverride: TimeSeriesOverrideDto;
             seismicAcquisitionAndProcessing: TimeSeriesDto;
