@@ -71,7 +71,7 @@ const NumberInputWithValidation = ({
         if (min !== undefined && max !== undefined) {
             const isWithinRange = (num: number, lower: number, upper: number): boolean => num >= lower && num <= upper
 
-            if (!isWithinRange(numValue, min, max)) {
+            if (!isWithinRange(Number(numValue), min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
 
@@ -97,7 +97,7 @@ const NumberInputWithValidation = ({
         const numValue = parseDecimalInput(value)
 
         if (validateInput(value)) {
-            onSubmit(numValue)
+            onSubmit(Number(numValue))
         } else {
             setSnackBarMessage(`The input for ${label} was not saved, because it's outside the allowed range (min: ${min}, max: ${max}).`)
         }
