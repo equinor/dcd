@@ -60,6 +60,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             Co2Emissions = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), ProfileTypes.Co2Emissions, physicalUnit),
             Co2EmissionsOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), ProfileTypes.Co2EmissionsOverride, physicalUnit),
             Co2Intensity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), ProfileTypes.Co2Intensity, physicalUnit),
+            Co2IntensityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride), ProfileTypes.Co2IntensityOverride, physicalUnit),
             ProductionProfileNgl = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), ProfileTypes.ProductionProfileNgl, physicalUnit),
             ProductionProfileNglOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride), ProfileTypes.ProductionProfileNglOverride, physicalUnit),
             CondensateProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction), ProfileTypes.CondensateProduction, physicalUnit),

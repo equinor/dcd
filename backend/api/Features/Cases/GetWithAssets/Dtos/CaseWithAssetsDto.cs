@@ -56,6 +56,7 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? ImportedElectricity { get; set; }
     public required TimeSeriesOverrideDto? ImportedElectricityOverride { get; set; }
     public required TimeSeriesDto? Co2Intensity { get; set; }
+    public required TimeSeriesOverrideDto? Co2IntensityOverride { get; set; }
     public required TimeSeriesDto? DeferredOilProduction { get; set; }
     public required TimeSeriesDto? DeferredGasProduction { get; set; }
 

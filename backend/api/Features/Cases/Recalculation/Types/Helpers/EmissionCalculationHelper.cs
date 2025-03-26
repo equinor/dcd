@@ -86,6 +86,7 @@ public static class EmissionCalculationHelper
         var facilitiesAvailabilityDecimal = facilitiesAvailability / 100;
         var shareTimesMax = co2ShareProfile * co2OnMaxProfile;
         var rateProductionOfDesign = grossProductionProfile.Values.Select(v => v / (Cd * facilitiesAvailabilityDecimal) / capacity);
+
         var rateShareOfPowerOnMax = rateProductionOfDesign
             .Select(v => v == 0
                         ? 0

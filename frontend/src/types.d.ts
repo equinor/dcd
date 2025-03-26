@@ -119,6 +119,7 @@ declare namespace Components {
             importedElectricity: TimeSeriesDto;
             importedElectricityOverride: TimeSeriesOverrideDto;
             co2Intensity: TimeSeriesDto;
+            co2IntensityOverride: TimeSeriesOverrideDto;
             deferredOilProduction: TimeSeriesDto;
             deferredGasProduction: TimeSeriesDto;
             substructure: SubstructureDto;
