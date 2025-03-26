@@ -86,7 +86,6 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 profileName: "CAPEX - Cessation - Onshore facilities",
                 profile: cessationOnshoreFacilitiesCostProfileData,
                 resourceName: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
-                overridable: false,
             }),
         ]
 
