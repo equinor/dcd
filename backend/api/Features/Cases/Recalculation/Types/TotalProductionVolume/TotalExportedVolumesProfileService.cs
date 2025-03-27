@@ -37,8 +37,6 @@ public static class TotalExportedVolumesProfileService
     private static TimeSeries GetCondensateProduction(Case caseItem) =>
         new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.CondensateProduction));
 
-
     private static TimeSeries GetNetSalesGas(Case caseItem) =>
         new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.NetSalesGas));
-
 }

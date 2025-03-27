@@ -77,6 +77,6 @@ public static class Co2IntensityProfileService
     public static TimeSeries GetCo2EmissionsProfile(Case caseItem) =>
         new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions));
 
-    public static TimeSeries GetCo2IntensityProfile(Case caseItem) => 
+    public static TimeSeries GetCo2IntensityProfile(Case caseItem) =>
         new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Intensity));
 }

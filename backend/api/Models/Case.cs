@@ -94,7 +94,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
     public TimeSeriesProfile? GetProfileOrNull(string profileType) => TimeSeriesProfiles.SingleOrDefault(x => x.ProfileType == profileType);
 
-
     public TimeSeriesProfile GetProfile(string profileType) => TimeSeriesProfiles.Single(x => x.ProfileType == profileType);
 
     public TimeSeriesProfile CreateProfileIfNotExists(string profileType)
