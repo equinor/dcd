@@ -160,7 +160,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
             "New Functionalities": [
                 {
                     description: "When a user clicks on a case table row in view mode, a side sheet with detailed information appears. "
-                    + "(e.g. last updated time, source of data, calculation explanations, data visualization)",
+                        + "(e.g. last updated time, source of data, calculation explanations, data visualization)",
                 },
                 { description: "When changing classification to restricted/confidential, users are set to being project members to not be locked out of the project" },
                 { description: "Landing page for Concept app with basic information & release notes" },
@@ -172,6 +172,32 @@ export const whatsNewUpdates: WhatsNewUpdates = {
             Bugfixes: [
                 { description: "The start & end year hides some data in the tables by default" },
                 { description: "Fuel flaring & losses and CO2 emissions adjusted according to BCCST formulas" },
+                { description: "Misc minor bugfixes" },
+            ],
+        },
+    },
+    "2.5.0": {
+        date: "2025-03-27",
+        updates: {
+            "New Functionalities": [
+                { description: "Replace drilling schedule with drilling campaigns, including rig upgrade and rig mob/demob" },
+                { description: "Set facilities availability to 90% by default when creating a new case" },
+                { description: "Make exploration well costs and year by year CO2 intensisty overridable" },
+                { description: "Add changelog to project view" },
+                { description: "Add helper text to physical unit setting" },
+                { description: "Add ability to switch role for PMT members in access management" },
+                { description: "Add ability to add multiple drilling campaigns" },
+                { description: "Add ability to adjust start and end year of well intervention cost" },
+                { description: "Add NGL production to production profiles" },
+                { description: "Add total exported volumes to production profiles" },
+            ],
+            "UI Improvements": [
+                { description: "Reworked PROSP import UI" },
+            ],
+            Bugfixes: [
+                { description: "Exploration wells not showing up in well cost" },
+                { description: "Read cost profile years from PROSP table in PROSP import" },
+                { description: "Importing PROSP sets toggle to manual input" },
                 { description: "Misc minor bugfixes" },
             ],
         },
