@@ -43,7 +43,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
             var totalCo2Emissions = generateCo2EmissionsProfile.Values.Sum();
 
-            var co2IntensityProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2IntensityOverride);
+            var co2IntensityProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Intensity);
 
             var co2Intensity = co2IntensityProfile?.Values.Sum() ?? 0;
 
