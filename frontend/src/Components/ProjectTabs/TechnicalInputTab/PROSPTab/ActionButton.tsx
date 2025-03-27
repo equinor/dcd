@@ -7,7 +7,7 @@ import { cloud_download, check_circle_outlined, error_filled } from "@equinor/ed
 import React from "react"
 import styled from "styled-components"
 
-export type FeedbackStatus = "none" | "success" | "error";
+import { FeedbackStatus } from "@/Utils/ProspUtils"
 
 export interface ActionButtonProps {
     isLoading: boolean;
