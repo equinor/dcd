@@ -31,7 +31,6 @@ public static class OpexCostProfileService
             return;
         }
 
-        var firstYear = firstYearOfProduction ?? 0;
         var lastYear = lastYearOfProduction ?? 0;
 
         var initialYearsWithoutWellInterventionCost = caseItem.InitialYearsWithoutWellInterventionCost;
