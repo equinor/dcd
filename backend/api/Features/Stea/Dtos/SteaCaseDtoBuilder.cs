@@ -250,22 +250,12 @@ public static class SteaCaseDtoBuilder
             new(caseItem.GetProfileOrNull(ProfileTypes.SeismicAcquisitionAndProcessing)),
             new(caseItem.GetProfileOrNull(ProfileTypes.CountryOfficeCost)),
 
-            caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride)?.Override == true
-                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride))
-                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile)),
-
-            caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride)?.Override == true
-                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride))
-                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile)),
-
-            caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride)?.Override == true
-                ? new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride))
-                : new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile)),
+            new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ExplorationWellCostProfile)),
+            new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.AppraisalWellCostProfile)),
+            new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.SidetrackCostProfile)),
 
             new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.GAndGAdminCost)),
-
             new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ExplorationRigUpgradingCostProfile)),
-
             new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ExplorationRigMobDemob))
         };
 

@@ -43,9 +43,7 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
             var totalCo2Emissions = generateCo2EmissionsProfile.Values.Sum();
 
-            var co2IntensityProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride)?.Override == true
-                ? caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride)
-                : caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity);
+            var co2IntensityProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2IntensityOverride);
 
             var co2Intensity = co2IntensityProfile?.Values.Sum() ?? 0;
 
@@ -158,9 +156,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SeismicAcquisitionAndProcessing).Values.Sum();
         }
 
-        sumExplorationWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile), caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride));
-        sumExplorationWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile), caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride));
-        sumExplorationWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride));
+        sumExplorationWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.ExplorationWellCostProfile)?.Values.Sum() ?? 0;
+        sumExplorationWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.AppraisalWellCostProfile)?.Values.Sum() ?? 0;
+        sumExplorationWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SidetrackCostProfile)?.Values.Sum() ?? 0;
 
         return sumExplorationWellCost;
     }
