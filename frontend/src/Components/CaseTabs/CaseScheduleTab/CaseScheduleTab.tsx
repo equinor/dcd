@@ -2,6 +2,8 @@ import Grid from "@mui/material/Grid2"
 import { useCallback, useMemo } from "react"
 import styled from "styled-components"
 
+import GantChart from "./Gant/GantChart"
+
 import SwitchableDateInput from "@/Components/Input/SwitchableDateInput"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { useCaseApiData } from "@/Hooks"
@@ -14,7 +16,12 @@ import {
 } from "@/Utils/DateUtils"
 
 const TabContainer = styled(Grid)`
+    width: 100%;
+`
+
+const MilestonesContainer = styled(Grid)`
     max-width: 800px;
+    margin: 0 auto;
 `
 
 interface CaseMilestoneDate {
@@ -110,16 +117,24 @@ const CaseScheduleTab = () => {
 
     return (
         <TabContainer container spacing={2}>
-            {visibleMilestoneDates.map((milestone) => (
-                <Grid size={{ xs: 12, md: 6, lg: 6 }} key={milestone.key}>
-                    <SwitchableDateInput
-                        required={milestone.required}
-                        label={milestone.label}
-                        value={getDateValue(milestone.key)}
-                        onChange={getChangeHandler(milestone.key)}
-                    />
-                </Grid>
-            ))}
+            <Grid size={{ xs: 12 }}>
+                <MilestonesContainer container spacing={2}>
+                    {visibleMilestoneDates.map((milestone) => (
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }} key={milestone.key}>
+                            <SwitchableDateInput
+                                required={milestone.required}
+                                label={milestone.label}
+                                value={getDateValue(milestone.key)}
+                                onChange={getChangeHandler(milestone.key)}
+                            />
+                        </Grid>
+                    ))}
+                </MilestonesContainer>
+            </Grid>
+
+            <Grid size={{ xs: 12 }} sx={{ mt: 4 }}>
+                <GantChart />
+            </Grid>
         </TabContainer>
     )
 }
