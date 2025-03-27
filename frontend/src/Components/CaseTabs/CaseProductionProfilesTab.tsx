@@ -16,8 +16,9 @@ import { useCaseApiData, useDataFetch } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 import { PhysUnit } from "@/Models/enums"
 import { useCaseStore } from "@/Store/CaseStore"
+import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { SetTableYearsFromProfiles } from "@/Utils/TableUtils"
+import { calculateTableYears } from "@/Utils/TableUtils"
 
 const defaultAxesData = [
     {
@@ -47,10 +48,9 @@ const defaultAxesData = [
 
 const CaseProductionProfilesTab = () => {
     const { activeTabCase } = useCaseStore()
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
+    const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_PRODUCTION_PROFILES_YEARS)
     const revisionAndProjectData = useDataFetch()
     const {
         updateGasSolution,
@@ -92,39 +92,47 @@ const CaseProductionProfilesTab = () => {
     const { apiData } = useCaseApiData()
 
     useEffect(() => {
-        if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
-            SetTableYearsFromProfiles(
-                [
-                    apiData.drainageStrategy,
-                    apiData.productionProfileOil,
-                    apiData.additionalProductionProfileOil,
-                    apiData.productionProfileGas,
-                    apiData.additionalProductionProfileGas,
-                    apiData.productionProfileWater,
-                    apiData.productionProfileWaterInjection,
-                    apiData.productionProfileNgl,
-                    apiData.productionProfileNglOverride,
-                    apiData.condensateProduction,
-                    apiData.condensateProductionOverride,
-                    apiData.fuelFlaringAndLosses,
-                    apiData.fuelFlaringAndLossesOverride,
-                    apiData.netSalesGas,
-                    apiData.netSalesGasOverride,
-                    apiData.totalExportedVolumes,
-                    apiData.totalExportedVolumesOverride,
-                    apiData.importedElectricity,
-                    apiData.importedElectricityOverride,
-                    apiData.deferredOilProduction,
-                    apiData.deferredGasProduction,
-                ],
-                getYearFromDateString(apiData.case.dg4Date),
-                setStartYear,
-                setEndYear,
-                setTableYears,
-            )
-            setYearRangeSetFromProfiles(true)
+        if (apiData && activeTabCase === 1) {
+            const profiles = [
+                apiData.drainageStrategy,
+                apiData.productionProfileOil,
+                apiData.additionalProductionProfileOil,
+                apiData.productionProfileGas,
+                apiData.additionalProductionProfileGas,
+                apiData.productionProfileWater,
+                apiData.productionProfileWaterInjection,
+                apiData.productionProfileNgl,
+                apiData.productionProfileNglOverride,
+                apiData.condensateProduction,
+                apiData.condensateProductionOverride,
+                apiData.fuelFlaringAndLosses,
+                apiData.fuelFlaringAndLossesOverride,
+                apiData.netSalesGas,
+                apiData.netSalesGasOverride,
+                apiData.totalExportedVolumes,
+                apiData.totalExportedVolumesOverride,
+                apiData.importedElectricity,
+                apiData.importedElectricityOverride,
+                apiData.deferredOilProduction,
+                apiData.deferredGasProduction,
+            ]
+
+            const dg4Year = getYearFromDateString(apiData.case.dg4Date)
+            const years = calculateTableYears(profiles, dg4Year)
+
+            if (years) {
+                const [firstYear, lastYear] = years
+
+                setStartYear(firstYear)
+                setEndYear(lastYear)
+                setTableYears([firstYear, lastYear])
+            } else {
+                setStartYear(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
+                setEndYear(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
+                setTableYears(DEFAULT_PRODUCTION_PROFILES_YEARS)
+            }
         }
-    }, [apiData, activeTabCase, tableYears])
+    }, [apiData, activeTabCase])
 
     if (activeTabCase !== 1) { return null }
 

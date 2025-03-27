@@ -37,12 +37,17 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
-            var profile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions);
+            var co2EmissionsProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions);
 
-            var generateCo2EmissionsProfile = new TimeSeries(profile);
+            var generateCo2EmissionsProfile = new TimeSeries(co2EmissionsProfile);
 
             var totalCo2Emissions = generateCo2EmissionsProfile.Values.Sum();
-            var co2Intensity = caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity)?.Values.Sum() ?? 0;
+
+            var co2IntensityProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride)?.Override == true
+                ? caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride)
+                : caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity);
+
+            var co2Intensity = co2IntensityProfile?.Values.Sum() ?? 0;
 
             var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
 
@@ -153,20 +158,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SeismicAcquisitionAndProcessing).Values.Sum();
         }
 
-        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile) != null)
-        {
-            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile).Values.Sum();
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile) != null)
-        {
-            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.AppraisalWellCostProfile).Values.Sum();
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile) != null)
-        {
-            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SidetrackCostProfile).Values.Sum();
-        }
+        sumExplorationWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile), caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride));
+        sumExplorationWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile), caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride));
+        sumExplorationWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride));
 
         return sumExplorationWellCost;
     }

@@ -167,7 +167,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 OnshorePowerSupplyId = x.OnshorePowerSupplyId,
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
-                SharepointFileUrl = x.SharepointFileUrl
+                SharepointFileUrl = x.SharepointFileUrl,
+                SharepointUrl = x.SharepointUrl,
+                SharepointUpdatedTimestampUtc = x.SharepointUpdatedTimestampUtc
             })
             .ToListAsync();
     }

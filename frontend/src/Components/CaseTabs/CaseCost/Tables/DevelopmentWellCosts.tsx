@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
@@ -22,6 +22,15 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
 }) => {
     const revisionAndProjectData = useDataFetch()
     const [developmentTimeSeriesData, setDevelopmentTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
+
+    const calculatedFields = useMemo(() => [
+        ProfileTypes.DevelopmentRigUpgradingCostProfileOverride,
+        ProfileTypes.DevelopmentRigMobDemobOverride,
+        ProfileTypes.OilProducerCostProfileOverride,
+        ProfileTypes.WaterInjectorCostProfileOverride,
+        ProfileTypes.GasProducerCostProfileOverride,
+        ProfileTypes.GasInjectorCostProfileOverride,
+    ], [])
 
     useEffect(() => {
         const caseId = apiData?.case.caseId
@@ -53,7 +62,6 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -62,18 +70,21 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
-        }: CreateProfileDataParams): ITimeSeriesTableData => ({
-            profileName,
-            unit: getUnitByProfileName(profileName, physUnit, currency),
-            profile,
-            resourceName,
-            resourceId: caseId,
-            resourcePropertyKey: resourceName,
-            editable,
-            overridable: overridable ?? !!overrideProfile,
-            ...(overrideProfile && { overrideProfile }),
-        })
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isCalculatedField,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
 
         const newDevelopmentTimeSeriesData: ITimeSeriesTableData[] = [
             createProfileData({
@@ -115,7 +126,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         ]
 
         setDevelopmentTimeSeriesData(newDevelopmentTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
@@ -127,6 +138,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            calculatedFields={calculatedFields}
             decimalPrecision={1}
         />
     )

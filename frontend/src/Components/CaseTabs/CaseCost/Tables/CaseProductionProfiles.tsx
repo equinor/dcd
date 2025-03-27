@@ -75,18 +75,23 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             editable = true,
             overridable,
             hideIfEmpty,
-        }: CreateProfileDataParams): ITimeSeriesTableData => ({
-            profileName,
-            unit: getUnitByProfileName(profileName, physUnit, currency),
-            profile,
-            resourceName,
-            resourceId: drainageStrategyData?.id,
-            resourcePropertyKey: resourceName,
-            editable,
-            overridable: overridable ?? !!overrideProfile,
-            ...(overrideProfile && { overrideProfile }),
-            ...(hideIfEmpty && { hideIfEmpty }),
-        })
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
+
+            return {
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: drainageStrategyData?.id,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isOverridable,
+                ...(overrideProfile && { overrideProfile }),
+                ...(hideIfEmpty && { hideIfEmpty }),
+            }
+        }
 
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             createProfileData({
@@ -172,7 +177,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         ]
 
         setCaseProductionProfilesData(newTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable

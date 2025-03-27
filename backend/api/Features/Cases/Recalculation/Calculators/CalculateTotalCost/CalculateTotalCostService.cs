@@ -192,17 +192,20 @@ public static class CalculateTotalCostService
 
         var countryOfficeCostProfile = new TimeSeries(countryOfficeTimeSeries);
 
-        var explorationWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile);
+        var explorationWellCostProfile = UseOverrideOrProfile(
+            caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfileOverride)
+        );
 
-        var explorationWellCostProfile = new TimeSeries(explorationWellTimeSeries);
+        var appraisalWellCostProfile = UseOverrideOrProfile(
+            caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfileOverride)
+        );
 
-        var appraisalWellTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile);
-
-        var appraisalWellCostProfile = new TimeSeries(appraisalWellTimeSeries);
-
-        var sidetrackTimeSeries = caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile);
-
-        var sidetrackCostProfile = new TimeSeries(sidetrackTimeSeries);
+        var sidetrackCostProfile = UseOverrideOrProfile(
+            caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile),
+            caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfileOverride)
+        );
 
         var totalExploration = TimeSeriesMerger.MergeTimeSeries(
             gAndGAdminCostProfile,

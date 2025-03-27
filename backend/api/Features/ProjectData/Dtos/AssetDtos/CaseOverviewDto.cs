@@ -56,4 +56,6 @@ public class CaseOverviewDto
     public required string? SharepointFileId { get; set; }
     public required string? SharepointFileName { get; set; }
     public required string? SharepointFileUrl { get; set; }
+    public required string? SharepointUrl { get; set; }
+    public required DateTime? SharepointUpdatedTimestampUtc { get; set; }
 }

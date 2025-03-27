@@ -18,16 +18,19 @@ import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
 import { useCaseApiData } from "@/Hooks"
 import { useCaseStore } from "@/Store/CaseStore"
+import { DEFAULT_CASE_COST_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { SetTableYearsFromProfiles } from "@/Utils/TableUtils"
+import { calculateTableYears } from "@/Utils/TableUtils"
 
 const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()
 
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const [startYear, setStartYear] = useState<number>(DEFAULT_CASE_COST_YEARS[0])
+    const [endYear, setEndYear] = useState<number>(DEFAULT_CASE_COST_YEARS[1])
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_CASE_COST_YEARS)
+
+    const isMounted = useRef(false)
+    const [currentCaseId, setCurrentCaseId] = useState<string | undefined>()
 
     const studyGridRef = useRef<any>(null)
     const opexGridRef = useRef<any>(null)
@@ -58,60 +61,94 @@ const CaseCostTab = () => {
     const { apiData } = useCaseApiData()
 
     useEffect(() => {
-        if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
-            const caseData = apiData?.case
+        isMounted.current = true
 
-            SetTableYearsFromProfiles(
-                [
-                    apiData.totalFeasibilityAndConceptStudies,
-                    apiData.totalFeedStudies,
-                    apiData.totalOtherStudiesCostProfile,
-                    apiData.wellInterventionCostProfile,
-                    apiData.offshoreFacilitiesOperationsCostProfile,
-                    apiData.cessationWellsCost,
-                    apiData.cessationOffshoreFacilitiesCost,
-                    apiData.cessationOnshoreFacilitiesCostProfile,
-                    apiData.totalFeasibilityAndConceptStudiesOverride,
-                    apiData.totalFeedStudiesOverride,
-                    apiData.wellInterventionCostProfileOverride,
-                    apiData.offshoreFacilitiesOperationsCostProfileOverride,
-                    apiData.cessationWellsCostOverride,
-                    apiData.cessationOffshoreFacilitiesCostOverride,
-                    apiData.surfCostProfile,
-                    apiData.surfCostProfileOverride?.values?.length ? apiData.surfCostProfileOverride : undefined,
-                    apiData.topsideCostProfile,
-                    apiData.topsideCostProfileOverride?.values?.length ? apiData.topsideCostProfileOverride : undefined,
-                    apiData.substructureCostProfile,
-                    apiData.substructureCostProfileOverride?.values?.length ? apiData.substructureCostProfileOverride : undefined,
-                    apiData.transportCostProfile,
-                    apiData.transportCostProfileOverride?.values?.length ? apiData.transportCostProfileOverride : undefined,
-                    apiData.onshorePowerSupplyCostProfile,
-                    apiData.onshorePowerSupplyCostProfileOverride?.values?.length ? apiData.onshorePowerSupplyCostProfileOverride : undefined,
-                    apiData.oilProducerCostProfile,
-                    apiData.gasProducerCostProfile,
-                    apiData.waterInjectorCostProfile,
-                    apiData.gasInjectorCostProfile,
-                    apiData.oilProducerCostProfileOverride,
-                    apiData.gasProducerCostProfileOverride,
-                    apiData.waterInjectorCostProfileOverride,
-                    apiData.gasInjectorCostProfileOverride,
-                    apiData.explorationWellCostProfile,
-                    apiData.seismicAcquisitionAndProcessing,
-                    apiData.countryOfficeCost,
-                    apiData.gAndGAdminCost,
-                    apiData.gAndGAdminCostOverride,
-                    apiData.historicCostCostProfile,
-                    apiData.onshoreRelatedOpexCostProfile,
-                    apiData.additionalOpexCostProfile,
-                    apiData.appraisalWellCostProfile,
-                    apiData.sidetrackCostProfile,
-                ],
-                getYearFromDateString(caseData.dg4Date),
-                setStartYear,
-                setEndYear,
-                setTableYears,
-            )
-            setYearRangeSetFromProfiles(true)
+        return () => {
+            isMounted.current = false
+        }
+    }, [])
+
+    useEffect(() => {
+        if (activeTabCase === 5 && apiData) {
+            const caseData = apiData.case
+
+            // Check if we're switching to a different case
+            if (currentCaseId !== caseData.caseId) {
+                setCurrentCaseId(caseData.caseId)
+                const defaultYears: [number, number] = DEFAULT_CASE_COST_YEARS
+
+                setStartYear(defaultYears[0])
+                setEndYear(defaultYears[1])
+                setTableYears(defaultYears)
+            }
+            const profiles = [
+                apiData.totalFeasibilityAndConceptStudies,
+                apiData.totalFeedStudies,
+                apiData.totalOtherStudiesCostProfile,
+                apiData.wellInterventionCostProfile,
+                apiData.offshoreFacilitiesOperationsCostProfile,
+                apiData.cessationWellsCost,
+                apiData.cessationOffshoreFacilitiesCost,
+                apiData.cessationOnshoreFacilitiesCostProfile,
+                apiData.totalFeasibilityAndConceptStudiesOverride,
+                apiData.totalFeedStudiesOverride,
+                apiData.wellInterventionCostProfileOverride,
+                apiData.offshoreFacilitiesOperationsCostProfileOverride,
+                apiData.cessationWellsCostOverride,
+                apiData.cessationOffshoreFacilitiesCostOverride,
+                apiData.surfCostProfile,
+                apiData.surfCostProfileOverride?.values?.length ? apiData.surfCostProfileOverride : undefined,
+                apiData.topsideCostProfile,
+                apiData.topsideCostProfileOverride?.values?.length ? apiData.topsideCostProfileOverride : undefined,
+                apiData.substructureCostProfile,
+                apiData.substructureCostProfileOverride?.values?.length ? apiData.substructureCostProfileOverride : undefined,
+                apiData.transportCostProfile,
+                apiData.transportCostProfileOverride?.values?.length ? apiData.transportCostProfileOverride : undefined,
+                apiData.onshorePowerSupplyCostProfile,
+                apiData.onshorePowerSupplyCostProfileOverride?.values?.length ? apiData.onshorePowerSupplyCostProfileOverride : undefined,
+                apiData.oilProducerCostProfile,
+                apiData.gasProducerCostProfile,
+                apiData.waterInjectorCostProfile,
+                apiData.gasInjectorCostProfile,
+                apiData.oilProducerCostProfileOverride,
+                apiData.gasProducerCostProfileOverride,
+                apiData.waterInjectorCostProfileOverride,
+                apiData.gasInjectorCostProfileOverride,
+                apiData.explorationWellCostProfile,
+                apiData.seismicAcquisitionAndProcessing,
+                apiData.countryOfficeCost,
+                apiData.gAndGAdminCost,
+                apiData.gAndGAdminCostOverride,
+                apiData.historicCostCostProfile,
+                apiData.onshoreRelatedOpexCostProfile,
+                apiData.additionalOpexCostProfile,
+                apiData.appraisalWellCostProfile,
+                apiData.sidetrackCostProfile,
+            ]
+
+            console.log("Number of profiles provided to calculateTableYears:", profiles.length)
+
+            const dg4Year = getYearFromDateString(caseData.dg4Date)
+
+            console.log("dg4Year:", dg4Year)
+
+            const years = calculateTableYears(profiles, dg4Year)
+
+            console.log("calculateTableYears returned:", years)
+
+            if (years && isMounted.current) {
+                const [firstYear, lastYear] = years
+
+                setStartYear(firstYear)
+                setEndYear(lastYear)
+                setTableYears([firstYear, lastYear])
+            } else if (isMounted.current) {
+                const defaultYears = DEFAULT_CASE_COST_YEARS
+
+                setStartYear(defaultYears[0])
+                setEndYear(defaultYears[1])
+                setTableYears(defaultYears)
+            }
         }
     }, [activeTabCase, apiData])
 

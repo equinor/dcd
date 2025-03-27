@@ -8,7 +8,7 @@ namespace api.Features.Cases.Recalculation.Types.Helpers;
 public static class EmissionCalculationHelper
 {
     private const double Cd = 365.25;
-    private const int ConversionFactorFromMtoG = 1000;
+    private const int GasToLiquidConversionFactor = 1000;
 
     public static TimeSeries CalculateTotalFuelConsumptions(Case caseItem)
     {
@@ -86,6 +86,7 @@ public static class EmissionCalculationHelper
         var facilitiesAvailabilityDecimal = facilitiesAvailability / 100;
         var shareTimesMax = co2ShareProfile * co2OnMaxProfile;
         var rateProductionOfDesign = grossProductionProfile.Values.Select(v => v / (Cd * facilitiesAvailabilityDecimal) / capacity);
+
         var rateShareOfPowerOnMax = rateProductionOfDesign
             .Select(v => v == 0
                         ? 0
@@ -104,7 +105,7 @@ public static class EmissionCalculationHelper
         var oilRateTs = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil));
         var additionalOilRateTs = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil));
 
-        var gasRate = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
+        var gasRate = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Select(v => v / GasToLiquidConversionFactor).ToArray() ?? [];
 
         var gasRateTs = new TimeSeries
         {
@@ -112,7 +113,7 @@ public static class EmissionCalculationHelper
             StartYear = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.StartYear ?? 0
         };
 
-        var additionalGasRate = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
+        var additionalGasRate = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Select(v => v / GasToLiquidConversionFactor).ToArray() ?? [];
 
         var additionalGasRateTs = new TimeSeries
         {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
@@ -21,8 +21,12 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     apiData,
 }) => {
     const revisionAndProjectData = useDataFetch()
-
     const [cessationTimeSeriesData, setCessationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
+
+    const calculatedFields = useMemo(() => [
+        ProfileTypes.CessationWellsCostOverride,
+        ProfileTypes.CessationOffshoreFacilitiesCostOverride,
+    ], [])
 
     useEffect(() => {
         const cessationWellsCostData = apiData.cessationWellsCost
@@ -41,7 +45,6 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -50,18 +53,21 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
-        }: CreateProfileDataParams): ITimeSeriesTableData => ({
-            profileName,
-            unit: getUnitByProfileName(profileName, physUnit, currency),
-            profile,
-            resourceName,
-            resourceId: caseData.caseId,
-            resourcePropertyKey: resourceName,
-            editable,
-            overridable: overridable ?? !!overrideProfile,
-            ...(overrideProfile && { overrideProfile }),
-        })
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseData.caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isCalculatedField,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
 
         const newCessationTimeSeriesData: ITimeSeriesTableData[] = [
             createProfileData({
@@ -80,12 +86,11 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
                 profileName: "CAPEX - Cessation - Onshore facilities",
                 profile: cessationOnshoreFacilitiesCostProfileData,
                 resourceName: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
-                overridable: false,
             }),
         ]
 
         setCessationTimeSeriesData(newCessationTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
@@ -97,6 +102,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            calculatedFields={calculatedFields}
             decimalPrecision={1}
         />
     )

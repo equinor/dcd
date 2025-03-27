@@ -70,6 +70,8 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            sharepointUrl: string | null;
+            sharepointUpdatedTimestampUtc: string | null; // date-time
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
@@ -119,6 +121,7 @@ declare namespace Components {
             importedElectricity: TimeSeriesDto;
             importedElectricityOverride: TimeSeriesOverrideDto;
             co2Intensity: TimeSeriesDto;
+            co2IntensityOverride: TimeSeriesOverrideDto;
             deferredOilProduction: TimeSeriesDto;
             deferredGasProduction: TimeSeriesDto;
             substructure: SubstructureDto;
@@ -137,8 +140,11 @@ declare namespace Components {
             onshorePowerSupplyCostProfile: TimeSeriesDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
             explorationWellCostProfile: TimeSeriesDto;
+            explorationWellCostProfileOverride: TimeSeriesOverrideDto;
             appraisalWellCostProfile: TimeSeriesDto;
+            appraisalWellCostProfileOverride: TimeSeriesOverrideDto;
             sidetrackCostProfile: TimeSeriesDto;
+            sidetrackCostProfileOverride: TimeSeriesOverrideDto;
             gAndGAdminCost: TimeSeriesDto;
             gAndGAdminCostOverride: TimeSeriesOverrideDto;
             seismicAcquisitionAndProcessing: TimeSeriesDto;
@@ -513,6 +519,7 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            sharepointUrl: string | null;
         }
         export interface UpdateDevelopmentOperationalWellCostsDto {
             rigUpgrading: number; // double
@@ -1022,6 +1029,21 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdProspCheckForUpdate {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = boolean;
             }
         }
     }

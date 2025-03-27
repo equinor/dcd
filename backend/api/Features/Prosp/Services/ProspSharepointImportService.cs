@@ -5,6 +5,7 @@ using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Prosp.Models;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 
 namespace api.Features.Prosp.Services;
@@ -15,6 +16,41 @@ public class ProspSharepointImportService(
     RecalculationService recalculationService,
     DcdDbContext context)
 {
+    public async Task<bool> CheckForUpdate(Guid projectId, Guid caseId)
+    {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var caseItem = await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == caseId)
+            .SingleAsync();
+
+        if (caseItem.SharepointUrl == null)
+        {
+            return false;
+        }
+
+        var sharepointChangeDateUtc = GetSharepointChangeDateUtc(caseItem.SharepointUrl);
+
+        if (sharepointChangeDateUtc == null)
+        {
+            return false;
+        }
+
+        if (caseItem.SharepointUpdatedTimestampUtc == null)
+        {
+            return true;
+        }
+
+        return caseItem.SharepointUpdatedTimestampUtc < sharepointChangeDateUtc;
+    }
+
+    private DateTime? GetSharepointChangeDateUtc(string sharepointUrl)
+    {
+        // TODO: implement logics
+        return DateTime.UtcNow;
+    }
+
     public async Task<List<SharePointFileDto>> GetFilesFromSharePoint(string url)
     {
         var (success, siteId, driveId, itemPath) = await GetSharepointInfo(url);

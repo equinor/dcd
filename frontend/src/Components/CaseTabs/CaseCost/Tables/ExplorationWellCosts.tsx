@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
@@ -24,6 +24,15 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
     const [explorationTimeSeriesData, setExplorationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
+    const calculatedFields = useMemo(() => [
+        ProfileTypes.GAndGAdminCostOverride,
+        ProfileTypes.ExplorationRigUpgradingCostProfileOverride,
+        ProfileTypes.ExplorationRigMobDemobOverride,
+        ProfileTypes.ExplorationWellCostProfileOverride,
+        ProfileTypes.AppraisalWellCostProfileOverride,
+        ProfileTypes.SidetrackCostProfileOverride,
+    ], [])
+
     useEffect(() => {
         const caseId = apiData?.case.caseId
         const gAndGAdminCostData = apiData.gAndGAdminCost
@@ -39,8 +48,13 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         const rigMobDemobCostOverrideData = apiData.explorationRigMobDemobOverride
 
         const explorationWellCostProfileData = apiData.explorationWellCostProfile
+        const explorationWellCostProfileOverrideData = apiData.explorationWellCostProfileOverride
+
         const appraisalWellCostProfileData = apiData.appraisalWellCostProfile
+        const appraisalWellCostProfileOverrideData = apiData.appraisalWellCostProfileOverride
+
         const sidetrackCostProfileData = apiData.sidetrackCostProfile
+        const sidetrackCostProfileOverrideData = apiData.sidetrackCostProfileOverride
 
         if (!caseId) {
             console.error("No exploration data")
@@ -57,7 +71,6 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceName: ProfileTypes;
             overrideProfile?: any;
             editable?: boolean;
-            overridable?: boolean;
         }
 
         const createProfileData = ({
@@ -66,18 +79,21 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceName,
             overrideProfile,
             editable = true,
-            overridable,
-        }: CreateProfileDataParams): ITimeSeriesTableData => ({
-            profileName,
-            unit: getUnitByProfileName(profileName, physUnit, currency),
-            profile,
-            resourceName,
-            resourceId: caseId,
-            resourcePropertyKey: resourceName,
-            editable,
-            overridable: overridable ?? !!overrideProfile,
-            ...(overrideProfile && { overrideProfile }),
-        })
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isCalculatedField,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
 
         const newExplorationTimeSeriesData: ITimeSeriesTableData[] = [
             createProfileData({
@@ -116,20 +132,20 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             createProfileData({
                 profileName: "Exploration well",
                 profile: explorationWellCostProfileData,
-                resourceName: ProfileTypes.ExplorationWellCostProfile,
-                editable: false,
+                resourceName: ProfileTypes.ExplorationWellCostProfileOverride,
+                overrideProfile: explorationWellCostProfileOverrideData,
             }),
             createProfileData({
                 profileName: "Appraisal well",
                 profile: appraisalWellCostProfileData,
-                resourceName: ProfileTypes.AppraisalWellCostProfile,
-                editable: false,
+                resourceName: ProfileTypes.AppraisalWellCostProfileOverride,
+                overrideProfile: appraisalWellCostProfileOverrideData,
             }),
             createProfileData({
                 profileName: "Sidetrack well",
                 profile: sidetrackCostProfileData,
-                resourceName: ProfileTypes.SidetrackCostProfile,
-                editable: false,
+                resourceName: ProfileTypes.SidetrackCostProfileOverride,
+                overrideProfile: sidetrackCostProfileOverrideData,
             }),
         ]
 
