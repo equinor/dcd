@@ -1,6 +1,4 @@
-import {
-    Typography,
-} from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import React, { useState } from "react"
 
 import ActionButton from "./ActionButton"
@@ -12,7 +10,8 @@ import {
     StyledSelect,
     TextDisplay,
 } from "./SharedStyledComponents"
-import { useFeedbackStatus } from "./useFeedbackStatus"
+
+import { useFeedbackStatus } from "@/Utils/ProspUtils"
 
 export interface SharePointFileDropdownProps {
     caseItem: any;

@@ -1,13 +1,20 @@
 import { Typography } from "@equinor/eds-core-react"
 import React, {
-    useState, useCallback, useMemo, useEffect,
+    useState, useMemo, useEffect, useCallback,
 } from "react"
 import styled from "styled-components"
 
 import { useDataFetch } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import { GetProspService } from "@/Services/ProspService"
 import { useAppStore } from "@/Store/AppStore"
+import {
+    FeedbackStatus,
+    useFeedbackStatus,
+    createSharePointFileOptions,
+    getFileNameById,
+    loadSharePointFiles,
+    importFromSharePoint,
+} from "@/Utils/ProspUtils"
 
 // Styled components for SharePoint section
 const SharePointSection = styled.div`
@@ -73,9 +80,6 @@ const TextDisplay = styled(Typography)`
     padding: 8px 0;
 `
 
-// Feedback status type
-type FeedbackStatus = "none" | "success" | "error"
-
 // Component to show feedback states (success, error, loading)
 const FeedbackIndicator = ({ status, isLoading }: { status: FeedbackStatus, isLoading: boolean }) => {
     if (isLoading) {
@@ -91,52 +95,6 @@ const FeedbackIndicator = ({ status, isLoading }: { status: FeedbackStatus, isLo
     }
 
     return null
-}
-
-// Hook to manage feedback status
-const useFeedbackStatus = (resetDelay = 3000) => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [feedbackStatus, setFeedbackStatus] = useState<FeedbackStatus>("none")
-
-    const resetStatus = useCallback(() => {
-        setFeedbackStatus("none")
-    }, [])
-
-    const setSuccess = useCallback(() => {
-        setFeedbackStatus("success")
-        setTimeout(resetStatus, resetDelay)
-    }, [resetDelay, resetStatus])
-
-    const setError = useCallback(() => {
-        setFeedbackStatus("error")
-        setTimeout(resetStatus, resetDelay)
-    }, [resetDelay, resetStatus])
-
-    const withFeedback = useCallback(async <T, >(promise: Promise<T>): Promise<T> => {
-        setIsLoading(true)
-        try {
-            const result = await promise
-
-            setSuccess()
-
-            return result
-        } catch (error) {
-            setError()
-            throw error
-        } finally {
-            setIsLoading(false)
-        }
-    }, [setSuccess, setError])
-
-    return {
-        isLoading,
-        feedbackStatus,
-        setLoading: setIsLoading,
-        setSuccess,
-        setError,
-        resetStatus,
-        withFeedback,
-    }
 }
 
 interface SharePointFileSelectorProps {
@@ -167,34 +125,17 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
     )
 
     // SharePoint file options converted to a map
-    const sharePointFileOptions = useMemo(() => {
-        const options: { [key: string]: string } = { "": "Select a file" }
-
-        sharePointFiles.forEach((file) => {
-            if (file.id && file.name) {
-                options[file.id] = file.name
-            }
-        })
-
-        return options
-    }, [sharePointFiles])
-
-    // Get file name by ID
-    const getFileNameById = useCallback((fileId: string | null): string | null => {
-        if (!fileId) { return null }
-
-        return sharePointFiles.find((f) => f.id === fileId)?.name || null
-    }, [sharePointFiles])
+    const sharePointFileOptions = useMemo(
+        () => createSharePointFileOptions(sharePointFiles, "Select a file"),
+        [sharePointFiles],
+    )
 
     // Load SharePoint files
-    const loadSharePointFiles = useCallback(async () => {
+    const fetchSharePointFiles = useCallback(async () => {
         if (!projectId || !sharepointSiteUrl) { return }
 
         try {
-            const result = await GetProspService().getSharePointFileNamesAndId(
-                { url: sharepointSiteUrl },
-                projectId,
-            )
+            const result = await loadSharePointFiles(sharepointSiteUrl, projectId)
 
             setSharePointFiles(result)
 
@@ -228,18 +169,22 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
         try {
             setIsSaving(true)
 
-            const dto = {
-                caseId,
-                sharePointFileId: fileId,
-                sharePointFileName: getFileNameById(fileId) || "",
-                sharePointSiteUrl: sharepointSiteUrl,
-            }
+            const fileName = getFileNameById(fileId, sharePointFiles) || ""
 
-            await GetProspService().importFromSharePoint(projectId, [dto])
-            setSnackBarMessage(`Successfully imported data from ${getFileNameById(fileId)}`)
-        } catch (error) {
+            await importFromSharePoint(projectId, caseId, fileId, fileName, sharepointSiteUrl)
+
+            setSnackBarMessage(`Successfully imported data from ${fileName}`)
+        } catch (error: any) {
             console.error("[SharePointFileSelector] error while importing file data", error)
-            setSnackBarMessage("Failed to import file data")
+            const errorMessage = error.message || "Failed to import file data. The server might be experiencing issues."
+
+            setSnackBarMessage(errorMessage)
+
+            // If this fails, revert the selection to the previous value
+            setSelectedSharePointFileId(currentSharePointFileId)
+            if (onSharePointFileSelected) {
+                onSharePointFileSelected(currentSharePointFileId)
+            }
         } finally {
             setIsSaving(false)
         }
@@ -253,23 +198,27 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
             const importPromise = (async () => {
                 setIsSaving(true)
 
-                const dto = {
-                    caseId,
-                    sharePointFileId: selectedSharePointFileId,
-                    sharePointFileName: getFileNameById(selectedSharePointFileId) || "",
-                    sharePointSiteUrl: sharepointSiteUrl,
-                }
+                const fileName = getFileNameById(selectedSharePointFileId, sharePointFiles) || ""
 
-                await GetProspService().importFromSharePoint(projectId, [dto])
-                setSnackBarMessage(`Successfully refreshed data from ${getFileNameById(selectedSharePointFileId)}`)
+                await importFromSharePoint(
+                    projectId,
+                    caseId,
+                    selectedSharePointFileId,
+                    fileName,
+                    sharepointSiteUrl,
+                )
+
+                setSnackBarMessage(`Successfully refreshed data from ${fileName}`)
 
                 return true
             })()
 
             await withFeedback(importPromise)
-        } catch (error) {
+        } catch (error: any) {
             console.error("[SharePointFileSelector] error while refreshing file data", error)
-            setSnackBarMessage("Failed to refresh file data")
+            const errorMessage = error.message || "Failed to refresh file data. The server might be experiencing issues."
+
+            setSnackBarMessage(errorMessage)
         } finally {
             setIsSaving(false)
         }
@@ -278,9 +227,9 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
     // Load SharePoint files when component mounts
     useEffect(() => {
         if (projectId) {
-            loadSharePointFiles()
+            fetchSharePointFiles()
         }
-    }, [projectId, loadSharePointFiles])
+    }, [projectId, fetchSharePointFiles])
 
     // Update selected file ID when prop changes
     useEffect(() => {
@@ -295,7 +244,7 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
     }
 
     const isDisabled = !canEdit() || isSaving || isLoading
-    const selectedOptionText = selectedSharePointFileId ? sharePointFileOptions[selectedSharePointFileId] || "" : ""
+    const fileName = selectedSharePointFileId ? getFileNameById(selectedSharePointFileId, sharePointFiles) : null
 
     return (
         <SharePointSection>
@@ -312,9 +261,7 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
                 <SharePointInput>
                     {isDisabled ? (
                         <TextDisplay>
-                            {selectedSharePointFileId
-                                ? getFileNameById(selectedSharePointFileId) || "Unknown file"
-                                : "No file selected"}
+                            {fileName || (selectedSharePointFileId ? "Unknown file" : "No file selected")}
                         </TextDisplay>
                     ) : (
                         <StyledSelect
