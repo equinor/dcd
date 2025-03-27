@@ -164,7 +164,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Name = x.Name,
                 WellCategory = x.WellCategory,
                 WellCost = x.WellCost,
-                DrillingDays = x.DrillingDays
+                DrillingDays = x.DrillingDays,
+                PlugingAndAbandonmentCost = x.PlugingAndAbandonmentCost,
+                WellInterventionCost = x.WellInterventionCost
             })
             .ToListAsync();
     }
