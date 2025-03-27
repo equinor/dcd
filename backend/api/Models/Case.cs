@@ -110,4 +110,12 @@ public class Case : IChangeTrackable, IDateTrackedEntity
 
         return newProfile;
     }
+
+    public TimeSeriesProfile? GetOverrideProfileOrProfile(string profileType)
+    {
+        var profileTypeOverride = $"{profileType}Override";
+        var profileOverride = GetProfileOrNull(profileTypeOverride);
+
+        return profileOverride?.Override == true ? profileOverride : GetProfileOrNull(profileType);
+    }
 }
