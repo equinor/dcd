@@ -9,8 +9,9 @@ interface Props {
     barProfiles: string[]
     barNames: string[]
     unit?: string
-    lineChart?: object
+    lineChart?: object | object[]
     axesData?: any
+    crossLines?: any[]
 }
 
 export const setValueToCorrespondingYear = (profile: any, year: number, dg4Year: number) => {
@@ -25,7 +26,7 @@ export const setValueToCorrespondingYear = (profile: any, year: number, dg4Year:
 }
 
 export const TimeSeriesChart = ({
-    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, axesData,
+    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, axesData, crossLines,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -39,6 +40,17 @@ export const TimeSeriesChart = ({
                 },
             },
         },
+    }
+
+    // Handle both single lineChart object and array of lineChart objects
+    let lineChartSeries: object[] = []
+
+    if (lineChart) {
+        if (Array.isArray(lineChart)) {
+            lineChartSeries = lineChart
+        } else {
+            lineChartSeries = [lineChart]
+        }
     }
 
     const defaultOptions: object = {
@@ -55,9 +67,10 @@ export const TimeSeriesChart = ({
         theme: figmaTheme,
         series: [
             ...separateProfileObjects(barProfiles, barNames, "year"),
-            ...insertIf(lineChart !== undefined, false, axesData, lineChart),
+            ...lineChartSeries,
         ],
         ...insertIf(axesData !== undefined, true, axesData, lineChart),
+        ...(crossLines ? { crossLines } : {}),
         legend: { position: "bottom", spacing: 40 },
     }
 

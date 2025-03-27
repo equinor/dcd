@@ -66,6 +66,25 @@ const CaseCO2Tab = () => {
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
+    const thresholdLine = {
+        type: "line",
+        xKey: "year",
+        yKey: "threshold",
+        yName: "Average threshold (0.1)",
+        stroke: {
+            width: 2,
+            color: "#EB0037",
+            dash: [4, 2],
+        },
+        tooltip: {
+            enabled: true,
+            renderer: (params: any) => ({
+                title: "Average CO2 threshold",
+                content: "0.1 - Industry average",
+            }),
+        },
+    }
+
     const chartAxes = [
         {
             type: "category",
@@ -89,7 +108,7 @@ const CaseCO2Tab = () => {
         {
             type: "number",
             position: "left",
-            keys: ["co2Emissions"],
+            keys: ["co2Emissions", "threshold"],
             title: {
                 text: "CO2 emissions",
             },
@@ -210,6 +229,7 @@ const CaseCO2Tab = () => {
                         getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
+                threshold: 0.1,
             })
         }
 
@@ -275,7 +295,7 @@ const CaseCO2Tab = () => {
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    lineChart={co2IntensityLine}
+                    lineChart={[co2IntensityLine, thresholdLine]}
                     axesData={chartAxes}
                 />
             </Grid>
