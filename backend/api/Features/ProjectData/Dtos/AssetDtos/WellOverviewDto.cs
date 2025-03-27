@@ -11,4 +11,6 @@ public class WellOverviewDto
     [Required] public required WellCategory WellCategory { get; set; }
     [Required] public required double WellCost { get; set; }
     [Required] public required double DrillingDays { get; set; }
+    [Required] public required double PlugingAndAbandonmentCost { get; set; }
+    [Required] public required double WellInterventionCost { get; set; }
 }

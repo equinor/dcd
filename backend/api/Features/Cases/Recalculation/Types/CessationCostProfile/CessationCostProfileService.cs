@@ -30,7 +30,7 @@ public static class CessationCostProfileService
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CessationWellsCost);
 
-        GenerateCessationWellsCost(caseItem.Project, developmentWells, lastYear.Value, profile);
+        GenerateCessationWellsCost(developmentWells, lastYear.Value, profile);
     }
 
     private static void GetCessationOffshoreFacilitiesCost(Case caseItem, int? lastYear)
@@ -52,17 +52,20 @@ public static class CessationCostProfileService
         GenerateCessationOffshoreFacilitiesCost(caseItem.Surf, lastYear.Value, profile);
     }
 
-    private static void GenerateCessationWellsCost(Project project, List<CampaignWell> developmentWells, int lastYear, TimeSeriesProfile cessationWells)
+    public static void GenerateCessationWellsCost(
+        List<CampaignWell> developmentWells,
+        int lastYear,
+        TimeSeriesProfile cessationWells)
     {
-        var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts.PluggingAndAbandonment;
+        var totalPluggingAndAbandonmentCost = developmentWells
+            .Sum(campaignWell => campaignWell.Values.Sum() * campaignWell.Well.PlugingAndAbandonmentCost);
 
-        var sumDrilledWells = developmentWells
-            .Select(x => x.Values.Sum())
-            .Sum();
-
-        var totalCost = sumDrilledWells * pluggingAndAbandonment;
         cessationWells.StartYear = lastYear;
-        cessationWells.Values = [totalCost / 2.0, totalCost / 2.0];
+        cessationWells.Values =
+        [
+            totalPluggingAndAbandonmentCost / 2,
+            totalPluggingAndAbandonmentCost / 2
+        ];
     }
 
     private static void GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear, TimeSeriesProfile cessationOffshoreFacilities)

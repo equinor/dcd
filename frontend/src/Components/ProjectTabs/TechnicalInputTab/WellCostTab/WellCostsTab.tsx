@@ -1,5 +1,3 @@
-import DevelopmentCosts from "./Components/Costs/DevelopmentCosts"
-import ExplorationCosts from "./Components/Costs/ExplorationCosts"
 import { Section } from "./Components/Shared/SharedWellStyles"
 import Wells from "./Components/Shared/Wells"
 
@@ -16,8 +14,8 @@ const WellCostsTab = () => (
                 defaultWellCategory={WellCategory.ExplorationWell}
                 wellOptions={explorationWellOptions}
                 filterWells={isExplorationWell}
+                isExplorationWellTable
             />
-            <ExplorationCosts />
         </Section>
         <Section>
             <Wells
@@ -26,8 +24,8 @@ const WellCostsTab = () => (
                 defaultWellCategory={WellCategory.OilProducer}
                 wellOptions={developmentWellOptions}
                 filterWells={(well) => !isExplorationWell(well)}
+                isExplorationWellTable={false}
             />
-            <DevelopmentCosts />
         </Section>
     </div>
 )
