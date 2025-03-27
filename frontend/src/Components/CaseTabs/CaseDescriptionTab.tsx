@@ -3,6 +3,7 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
 import { useState, useEffect } from "react"
 
+import SharePointFileSelector from "@/Components/CaseTabs/SharePointFileSelector"
 import Gallery from "@/Components/Gallery/Gallery"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
@@ -50,6 +51,7 @@ const CaseDescriptionTab = () => {
         updateDescription(newValue)
         setDescription(newValue)
     }
+
     const debouncedAddEdit = useDebouncedCallback((newValue: string) => {
         if (!apiData || !projectId) {
             return
@@ -68,11 +70,6 @@ const CaseDescriptionTab = () => {
         }
     }, [apiData])
 
-    if (!apiData || !projectId) {
-        return <CaseDescriptionTabSkeleton />
-    }
-    const caseData = apiData.case
-
     const handleChange = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
@@ -81,9 +78,24 @@ const CaseDescriptionTab = () => {
         debouncedAddEdit(newValue)
     }
 
+    if (!apiData || !projectId) {
+        return <CaseDescriptionTabSkeleton />
+    }
+    const caseData = apiData.case
+
     return (
         <Grid container spacing={2}>
             <Gallery />
+
+            {/* SharePoint File Selector Component */}
+            <Grid size={12}>
+                <SharePointFileSelector
+                    projectId={projectId}
+                    caseId={caseData.caseId}
+                    currentSharePointFileId={caseData.sharepointFileId || null}
+                />
+            </Grid>
+
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={12} sx={{ marginBottom: canEdit() ? "32px" : 0 }}>
