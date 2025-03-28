@@ -331,7 +331,7 @@ public class EmissionCalculationHelperTests
     {
         var productionOfDesignGas = EmissionCalculationHelper.CalculateProductionOfDesign(GrossProductionGasProfile, GasCapacity, FacilitiesAvailability);
 
-        var totalUseOfGasPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignGas,productionOfDesignGas, Co2ShareGasProfile, Co2OnMaxGasProfile);
+        var totalUseOfGasPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignGas, productionOfDesignGas, Co2ShareGasProfile, Co2OnMaxGasProfile);
 
         CompareResultAndExpectedValues(TotalUseOfGasPowerExpectedValues, totalUseOfGasPower);
     }
@@ -341,7 +341,7 @@ public class EmissionCalculationHelperTests
     {
         var productionOfDesignWi = EmissionCalculationHelper.CalculateProductionOfDesign(GrossProductionWiProfile, WaterInjectionCapacity, FacilitiesAvailability);
 
-        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, productionOfDesignWi, Co2ShareWiProfile,  Co2OnMaxWiProfile);
+        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, productionOfDesignWi, Co2ShareWiProfile, Co2OnMaxWiProfile);
 
         CompareResultAndExpectedValues(TotalUseOfWiPowerExpectedValues, totalUseOfWiPower);
     }
@@ -359,7 +359,6 @@ public class EmissionCalculationHelperTests
     [Fact]
     public void CalculateTotalUseOfPower_where_numbers_are_from_bccst_file()
     {
-
         var productionOfDesignOil = EmissionCalculationHelper.CalculateProductionOfDesign(GrossProductionOilProfile, OilCapacity, FacilitiesAvailability);
         var productionOfDesignGas = EmissionCalculationHelper.CalculateProductionOfDesign(GrossProductionGasProfile, GasCapacity, FacilitiesAvailability);
         var productionOfDesignWi = EmissionCalculationHelper.CalculateProductionOfDesign(GrossProductionWiProfile, WaterInjectionCapacity, FacilitiesAvailability);
@@ -370,7 +369,7 @@ public class EmissionCalculationHelperTests
 
         CompareResultAndExpectedValues(TotalUseOfOilPowerExpectedValues, totalUseOfOilPower);
 
-        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile,  Co2OnMaxWiProfile);
+        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile, Co2OnMaxWiProfile);
 
         CompareResultAndExpectedValues(TotalUseOfWiPowerExpectedValues, totalUseOfWiPower);
 
@@ -396,7 +395,7 @@ public class EmissionCalculationHelperTests
 
         CompareResultAndExpectedValues(TotalUseOfOilPowerExpectedValues, totalUseOfOilPower);
 
-        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile,  Co2OnMaxWiProfile);
+        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile, Co2OnMaxWiProfile);
 
         CompareResultAndExpectedValues(TotalUseOfWiPowerExpectedValuesWhenNoWiProduction, totalUseOfWiPower);
 
@@ -413,18 +412,19 @@ public class EmissionCalculationHelperTests
             StartYear = GrossProductionOilProfile.StartYear,
             Values = (double[])GrossProductionOilProfile.Values.Select(v => v).ToArray()
         };
+
         var modifiedTotalUseOfOilPowerExpectedValues = TotalUseOfOilPowerExpectedValues.Select(v => v).ToArray();
         modifiedGrossProductionOilProfile.Values[4] = 0;
         modifiedGrossProductionOilProfile.Values[5] = 0;
         modifiedTotalUseOfOilPowerExpectedValues[4] = 0;
         modifiedTotalUseOfOilPowerExpectedValues[5] = 0;
 
-
         var modifiedGrossProductionGasProfile = new TimeSeries
         {
             StartYear = GrossProductionGasProfile.StartYear,
             Values = GrossProductionGasProfile.Values.Select(v => v).ToArray()
         };
+
         var modifiedTotalUseOfGasPowerExpectedValues = TotalUseOfGasPowerExpectedValues.Select(v => v).ToArray();
         modifiedGrossProductionGasProfile.Values[4] = 0;
         modifiedGrossProductionGasProfile.Values[5] = 0;
@@ -436,6 +436,7 @@ public class EmissionCalculationHelperTests
             StartYear = GrossProductionWiProfile.StartYear,
             Values = GrossProductionWiProfile.Values.Select(v => v).ToArray(),
         };
+
         var modifiedTotalUseOfWiPowerExpectedValues = TotalUseOfWiPowerExpectedValues.Select(v => v).ToArray();
         modifiedGrossProductionWiProfile.Values[4] = 0;
         modifiedGrossProductionWiProfile.Values[5] = 0;
@@ -452,7 +453,7 @@ public class EmissionCalculationHelperTests
 
         CompareResultAndExpectedValues(modifiedTotalUseOfOilPowerExpectedValues, totalUseOfOilPower);
 
-        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile,  Co2OnMaxWiProfile);
+        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile, Co2OnMaxWiProfile);
 
         CompareResultAndExpectedValues(modifiedTotalUseOfWiPowerExpectedValues, totalUseOfWiPower);
 
@@ -469,15 +470,16 @@ public class EmissionCalculationHelperTests
             StartYear = GrossProductionOilProfile.StartYear,
             Values = GrossProductionOilProfile.Values.Take(3).ToArray()
         };
+
         var modifiedTotalUseOfOilPowerExpectedValues = TotalUseOfOilPowerExpectedValues
             .Select((v, i) => i < 3 ? v : Co2ShareOilProfile * Co2OnMaxOilProfile).ToArray();
 
-
         var modifiedGrossProductionGasProfile = new TimeSeries
         {
-            StartYear = GrossProductionGasProfile.StartYear+6,
+            StartYear = GrossProductionGasProfile.StartYear + 6,
             Values = GrossProductionGasProfile.Values.TakeLast(3).ToArray()
         };
+
         var modifiedTotalUseOfGasPowerExpectedValues = TotalUseOfGasPowerExpectedValues
             .Select((v, i) => i >= 6 ? v : Co2ShareGasProfile * Co2OnMaxGasProfile).ToArray();
 
@@ -486,9 +488,9 @@ public class EmissionCalculationHelperTests
             StartYear = GrossProductionWiProfile.StartYear + 3,
             Values = GrossProductionWiProfile.Values.Take(6).TakeLast(3).ToArray()
         };
+
         var modifiedTotalUseOfWiPowerExpectedValues = TotalUseOfWiPowerExpectedValues
             .Select((v, i) => i is < 6 and >= 3 ? v : Co2ShareWiProfile * Co2OnMaxWiProfile).ToArray();
-
 
         var productionOfDesignOil = EmissionCalculationHelper.CalculateProductionOfDesign(modifiedGrossProductionOilProfile, OilCapacity, FacilitiesAvailability);
         var productionOfDesignGas = EmissionCalculationHelper.CalculateProductionOfDesign(modifiedGrossProductionGasProfile, GasCapacity, FacilitiesAvailability);
@@ -500,7 +502,7 @@ public class EmissionCalculationHelperTests
 
         CompareResultAndExpectedValues(modifiedTotalUseOfOilPowerExpectedValues, totalUseOfOilPower);
 
-        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile,  Co2OnMaxWiProfile);
+        var totalUseOfWiPower = EmissionCalculationHelper.CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, Co2ShareWiProfile, Co2OnMaxWiProfile);
 
         CompareResultAndExpectedValues(modifiedTotalUseOfWiPowerExpectedValues, totalUseOfWiPower);
 
@@ -509,7 +511,7 @@ public class EmissionCalculationHelperTests
         CompareResultAndExpectedValues(modifiedTotalUseOfGasPowerExpectedValues, totalUseOfGasPower);
     }
 
-    private static void CompareResultAndExpectedValues( double[] expectedValues, TimeSeries result, int precision = 3)
+    private static void CompareResultAndExpectedValues(double[] expectedValues, TimeSeries result, int precision = 3)
     {
         for (var i = 0; i < expectedValues.Length; i++)
         {
