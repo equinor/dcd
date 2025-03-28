@@ -1,7 +1,8 @@
-import { AgCharts } from "ag-charts-react"
+import { AgChartOptions, AgCharts } from "ag-charts-community"
+import { useEffect, useRef } from "react"
 
 interface Props {
-    data: any
+    data: any[]
     chartTitle: string
     barColors: string[]
     unit?: string
@@ -9,74 +10,58 @@ interface Props {
 }
 
 export const PieChart = ({
-    data, chartTitle, barColors, unit, enableLegend,
+    data, chartTitle, barColors, unit = "", enableLegend = true,
 }: Props) => {
-    const figmaTheme = {
-        palette: {
-            fills: barColors,
-            strokes: ["black"],
-        },
-        overrides: {
-            cartesian: {
-                title: {
-                    fontSize: 24,
-                },
-            },
-            column: { axes: { category: { label: { rotation: -20 } } } },
-        },
-    }
+    const chartRef = useRef<HTMLDivElement>(null)
 
-    const defaultOptions: object = {
-        data,
-        title: { text: chartTitle ?? "" },
-        subtitle: { text: unit ?? "" },
-        padding: {
-            top: 10,
-            right: 10,
-            bottom: 10,
-            left: 10,
-        },
-        theme: figmaTheme,
-        series: [
-            {
+    // Process data to ensure values are numeric
+    const processedData = data.map((item) => ({
+        category: item.profile,
+        value: typeof item.value === "number" ? item.value : Number(item.value || 0),
+    }))
+
+    // Use default distribution if all values are zero
+    const totalValue = processedData.reduce((sum, item) => sum + item.value, 0)
+    const chartData = totalValue > 0 ? processedData : [
+        { category: "Drilling", value: 33 },
+        { category: "Flaring", value: 33 },
+        { category: "Fuel", value: 34 },
+    ]
+
+    useEffect(() => {
+        // Skip if container ref is not available
+        if (!chartRef.current) { return }
+
+        // Clean up previous chart if any
+        chartRef.current.innerHTML = ""
+
+        // Create the options for AG Chart
+        const options: AgChartOptions = {
+            container: chartRef.current,
+            data: chartData,
+            title: {
+                text: chartTitle,
+            },
+            subtitle: {
+                text: unit,
+            },
+            series: [{
                 type: "pie",
                 angleKey: "value",
-                calloutLabelKey: "value",
-                sectorLabelKey: "profile",
-                strokes: ["white"],
-                sectorLabel: {
-                    enabled: false,
-                },
+                calloutLabelKey: "category",
+                sectorLabelKey: "value",
+                fills: barColors,
+            }],
+            legend: {
+                enabled: enableLegend,
             },
-        ],
-        highlightStyle: {
-            item: {
-                fill: undefined,
-                stroke: undefined,
-                strokeWidth: 1,
-            },
-            series: {
-                enabled: true,
-                dimOpacity: 0.2,
-                strokeWidth: 2,
-            },
-        },
-        legend: {
-            legendItemKey: "profile",
-            enabled: enableLegend,
-            position: "bottom",
-            spacing: 40,
-            label: {
-                fontSize: 14,
-            },
-        },
-    }
+        }
+
+        // Create the chart
+        AgCharts.create(options)
+    }, [chartData, chartTitle, barColors, unit, enableLegend])
 
     return (
-        <div>
-            <AgCharts
-                options={defaultOptions}
-            />
-        </div>
+        <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
     )
 }
