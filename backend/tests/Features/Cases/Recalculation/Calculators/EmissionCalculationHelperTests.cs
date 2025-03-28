@@ -410,7 +410,7 @@ public class EmissionCalculationHelperTests
         var modifiedGrossProductionOilProfile = new TimeSeries
         {
             StartYear = GrossProductionOilProfile.StartYear,
-            Values = (double[])GrossProductionOilProfile.Values.Select(v => v).ToArray()
+            Values = GrossProductionOilProfile.Values.Select(v => v).ToArray()
         };
 
         var modifiedTotalUseOfOilPowerExpectedValues = TotalUseOfOilPowerExpectedValues.Select(v => v).ToArray();
@@ -434,7 +434,7 @@ public class EmissionCalculationHelperTests
         var modifiedGrossProductionWiProfile = new TimeSeries
         {
             StartYear = GrossProductionWiProfile.StartYear,
-            Values = GrossProductionWiProfile.Values.Select(v => v).ToArray(),
+            Values = GrossProductionWiProfile.Values.Select(v => v).ToArray()
         };
 
         var modifiedTotalUseOfWiPowerExpectedValues = TotalUseOfWiPowerExpectedValues.Select(v => v).ToArray();
