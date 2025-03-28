@@ -62,7 +62,7 @@ public class ProspSharepointImportService(
             {
                 Name = x.Name,
                 Id = x.Id,
-                LastModifiedUtc = x.LastModifiedDateTime!.Value.UtcDateTime
+                LastModifiedUtc = DateTime.SpecifyKind(x.LastModifiedDateTime!.Value.UtcDateTime, DateTimeKind.Unspecified)
             })
             .ToList();
     }
