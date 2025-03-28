@@ -18,9 +18,9 @@ public class ProspExcelImportService(DcdDbContext context)
 {
     private const string SheetName = "main";
 
-    public async Task ClearImportedProspData(Guid projectId, List<Guid> caseIds)
+    public async Task ClearImportedProspData(Guid projectId, Guid caseId)
     {
-        var caseItems = await LoadCaseData(projectId, caseIds);
+        var caseItems = await LoadCaseData(projectId, caseId);
 
         foreach (var caseItem in caseItems)
         {
@@ -65,7 +65,7 @@ public class ProspExcelImportService(DcdDbContext context)
         OnshorePowerSupplyProspService.ImportOnshorePowerSupply(cellData, caseItem);
     }
 
-    private async Task<List<Case>> LoadCaseData(Guid projectId, params List<Guid> caseIds)
+    private async Task<List<Case>> LoadCaseData(Guid projectId, Guid caseId)
     {
         var profileTypes = new List<string>
         {
@@ -82,11 +82,11 @@ public class ProspExcelImportService(DcdDbContext context)
             .Include(x => x.Substructure)
             .Include(x => x.Topside)
             .Include(x => x.Surf)
-            .Where(x => x.ProjectId == projectId && caseIds.Contains(x.Id))
+            .Where(x => x.ProjectId == projectId && x.Id == caseId)
             .ToListAsync();
 
         await context.TimeSeriesProfiles
-            .Where(x => caseIds.Contains(x.CaseId))
+            .Where(x => x.CaseId == caseId)
             .Where(x => profileTypes.Contains(x.ProfileType))
             .LoadAsync();
 
