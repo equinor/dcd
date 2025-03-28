@@ -1,6 +1,7 @@
 import {
     Slider, Autocomplete, TextField,
 } from "@mui/material"
+import { useState, useEffect, useCallback } from "react"
 
 import BaseGantEntry, { getDisplayText } from "./BaseGantEntry"
 
@@ -15,6 +16,8 @@ export interface MileStoneEntryProps {
         year: number;
     }[];
     onChange: (newValue: number) => void;
+    onClear?: () => void;
+    disabled?: boolean;
 }
 
 const MileStoneEntry = ({
@@ -23,8 +26,24 @@ const MileStoneEntry = ({
     value,
     periodsData,
     onChange,
+    onClear,
+    disabled = false,
 }: MileStoneEntryProps) => {
-    const handleChange = (_event: Event, newValue: number | number[]) => {
+    // Local state to track the slider value during dragging
+    const [localValue, setLocalValue] = useState<number>(value)
+
+    // Update local value when prop value changes
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
+
+    // Handle local state updates during dragging (doesn't trigger API call)
+    const handleDragChange = (_event: Event, newValue: number | number[]) => {
+        setLocalValue(newValue as number)
+    }
+
+    // Only commit the change to the API when the slider drag is complete
+    const handleChangeCommitted = (_event: React.SyntheticEvent | Event, newValue: number | number[]) => {
         onChange(newValue as number)
     }
 
@@ -54,6 +73,7 @@ const MileStoneEntry = ({
             )}
             disableClearable
             fullWidth
+            disabled={disabled}
         />
     )
 
@@ -62,11 +82,15 @@ const MileStoneEntry = ({
             title={title}
             description={description}
             selectComponent={selectComponent}
+            onClear={onClear}
+            canClear={Boolean(onClear)}
+            disabled={disabled}
         >
             <Slider
                 getAriaLabel={() => "Milestone date"}
-                value={value}
-                onChange={handleChange}
+                value={localValue}
+                onChange={handleDragChange}
+                onChangeCommitted={handleChangeCommitted}
                 valueLabelDisplay="on"
                 valueLabelFormat={getValueText}
                 getAriaValueText={getValueText}
@@ -75,6 +99,7 @@ const MileStoneEntry = ({
                 max={periodsData.length - 1}
                 step={1}
                 track={false}
+                disabled={disabled}
                 sx={{
                     "& .MuiSlider-thumb": {
                         backgroundColor: "#d32f2f",

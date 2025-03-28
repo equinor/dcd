@@ -1,10 +1,11 @@
 import {
     Slider, Autocomplete, TextField, Stack,
 } from "@mui/material"
+import { useState, useEffect, useCallback } from "react"
 
 import BaseGantEntry, { getDisplayText } from "./BaseGantEntry"
 
-export interface RangeEntryProps {
+export interface PhaseEntryProps {
     title: string;
     description: string;
     value: number[];
@@ -15,16 +16,34 @@ export interface RangeEntryProps {
         year: number;
     }[];
     onChange: (newValue: number[]) => void;
+    onClear?: () => void;
+    disabled?: boolean;
 }
 
-const RangeEntry = ({
+const PhaseEntry = ({
     title,
     description,
     value,
     periodsData,
     onChange,
-}: RangeEntryProps) => {
-    const handleChange = (_event: Event, newValue: number | number[]) => {
+    onClear,
+    disabled = false,
+}: PhaseEntryProps) => {
+    // Local state to track the slider value during dragging
+    const [localValue, setLocalValue] = useState<number[]>(value)
+
+    // Update local value when prop value changes
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
+
+    // Handle local state updates during dragging (doesn't trigger API call)
+    const handleDragChange = (_event: Event, newValue: number | number[]) => {
+        setLocalValue(newValue as number[])
+    }
+
+    // Only commit the change to the API when the slider drag is complete
+    const handleChangeCommitted = (_event: React.SyntheticEvent | Event, newValue: number | number[]) => {
         onChange(newValue as number[])
     }
 
@@ -78,6 +97,7 @@ const RangeEntry = ({
                 )}
                 disableClearable
                 fullWidth
+                disabled={disabled}
             />
             <Autocomplete
                 value={endPeriod}
@@ -94,6 +114,7 @@ const RangeEntry = ({
                 )}
                 disableClearable
                 fullWidth
+                disabled={disabled}
             />
         </Stack>
     )
@@ -103,11 +124,15 @@ const RangeEntry = ({
             title={title}
             description={description}
             selectComponent={selectComponent}
+            onClear={onClear}
+            canClear={Boolean(onClear)}
+            disabled={disabled}
         >
             <Slider
                 getAriaLabel={() => "Quarter range"}
-                value={value}
-                onChange={handleChange}
+                value={localValue}
+                onChange={handleDragChange}
+                onChangeCommitted={handleChangeCommitted}
                 valueLabelDisplay="on"
                 valueLabelFormat={getValueText}
                 getAriaValueText={getValueText}
@@ -115,6 +140,7 @@ const RangeEntry = ({
                 min={0}
                 max={periodsData.length - 1}
                 step={1}
+                disabled={disabled}
                 sx={{
                     "& .MuiSlider-thumb": {
                         width: 16,
@@ -126,4 +152,4 @@ const RangeEntry = ({
     )
 }
 
-export default RangeEntry
+export default PhaseEntry

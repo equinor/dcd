@@ -1,7 +1,7 @@
 import { Icon } from "@equinor/eds-core-react"
-import { info_circle } from "@equinor/eds-icons"
+import { info_circle, delete_to_trash } from "@equinor/eds-icons"
 import {
-    Box, Typography, Divider, Tooltip,
+    Box, Typography, IconButton, Tooltip, Button,
 } from "@mui/material"
 import { ReactNode } from "react"
 import styled from "styled-components"
@@ -33,6 +33,17 @@ export const HeaderSection = styled(Box)`
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+`
+
+export const HeaderLeft = styled(Box)`
+  display: flex;
+  align-items: center;
+`
+
+export const HeaderRight = styled(Box)`
+  display: flex;
+  align-items: center;
 `
 
 export const SelectSection = styled(Box)`
@@ -55,6 +66,9 @@ interface BaseGantEntryProps {
     description: string;
     children: ReactNode;
     selectComponent?: ReactNode;
+    onClear?: () => void;
+    canClear?: boolean;
+    disabled?: boolean;
 }
 
 const BaseGantEntry = ({
@@ -62,17 +76,43 @@ const BaseGantEntry = ({
     description,
     children,
     selectComponent,
+    onClear,
+    canClear = false,
+    disabled = false,
 }: BaseGantEntryProps) => (
     <ChartContainer>
         <HeaderSection>
-            <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                {title}
-            </Typography>
-            <Tooltip title={description} arrow placement="top">
-                <span style={{ marginLeft: "8px", cursor: "pointer" }}>
-                    <Icon data={info_circle} size={16} />
-                </span>
-            </Tooltip>
+            <HeaderLeft>
+                <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                    {title}
+                </Typography>
+                <Tooltip title={description} arrow placement="top">
+                    <span style={{ marginLeft: "8px", cursor: "pointer" }}>
+                        <Icon data={info_circle} size={16} />
+                    </span>
+                </Tooltip>
+            </HeaderLeft>
+
+            {onClear && canClear && (
+                <HeaderRight>
+                    <Button
+                        onClick={onClear}
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        disabled={disabled}
+                        startIcon={<Icon data={delete_to_trash} size={16} />}
+                        sx={{
+                            minWidth: "auto",
+                            "&:hover": {
+                                backgroundColor: "rgba(211, 47, 47, 0.08)",
+                            },
+                        }}
+                    >
+                        Remove
+                    </Button>
+                </HeaderRight>
+            )}
         </HeaderSection>
 
         <ContentContainer>
