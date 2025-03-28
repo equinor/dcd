@@ -67,7 +67,8 @@ public class ProspSharepointImportService(
         return driveItemsDelta.Select(x => new SharePointFileDto
             {
                 Name = x.Name,
-                Id = x.Id
+                Id = x.Id,
+                LastModifiedUtc = x.LastModifiedDateTime?.UtcDateTime ?? DateTime.UtcNow
             })
             .ToList();
     }
