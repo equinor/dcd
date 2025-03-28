@@ -3,7 +3,6 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid2"
 import { useState, useEffect } from "react"
 
-import SharePointFileSelector from "@/Components/CaseTabs/SharePointFileSelector"
 import Gallery from "@/Components/Gallery/Gallery"
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
@@ -13,7 +12,6 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import { useDebouncedCallback } from "@/Hooks/useDebounce"
 import { useProjectContext } from "@/Store/ProjectContext"
-import PROSPBar, { BottomPadding } from "./Components/PROSPBar"
 
 const productionStrategyOptions = {
     0: "Depletion",
