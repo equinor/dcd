@@ -12,8 +12,8 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { ChangeLogCategory } from "@/Models/enums"
 import { changeLogQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
 import { formatDateAndTime } from "@/Utils/DateUtils"
+import { getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 interface IRow {
     entityDescription: string | null;
