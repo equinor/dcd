@@ -1,4 +1,3 @@
-import { GridApi } from "@ag-grid-community/core"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import {
@@ -8,10 +7,10 @@ import {
 } from "react"
 
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import Co2EmissionsTable from "./Co2EmissionsTable"
 
 import { PieChart } from "@/Components/CaseTabs/Co2Emissions/PieChart"
 import { TimeSeriesChart, setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
-import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
@@ -21,15 +20,16 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
 import { useCaseStore } from "@/Store/CaseStore"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
+import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { calculateTableYears } from "@/Utils/TableUtils"
 
 interface ICo2DistributionChartData {
     profile: string
     value: number | undefined
 }
 
-const CaseCO2Tab = (): React.ReactNode => {
+const CaseCO2Tab = () => {
     const { activeTabCase } = useCaseStore()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
@@ -38,9 +38,12 @@ const CaseCO2Tab = (): React.ReactNode => {
     const caseData = apiData?.case
     const topsideData = apiData?.topside
     const drainageStrategyData = apiData?.drainageStrategy
-    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
+
     const co2EmissionsData = apiData?.co2Emissions
+    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
+
     const co2IntensityData = apiData?.co2Intensity
+    const co2IntensityOverrideData = apiData?.co2IntensityOverride
 
     const [co2DistributionChartData, setCo2DistributionChartData] = useState<ICo2DistributionChartData[]>([
         { profile: "Drilling", value: 0 },
@@ -49,12 +52,11 @@ const CaseCO2Tab = (): React.ReactNode => {
     ])
 
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [startYear, setStartYear] = useState<number>(DEFAULT_CO2_EMISSIONS_YEARS[0])
+    const [endYear, setEndYear] = useState<number>(DEFAULT_CO2_EMISSIONS_YEARS[1])
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_CO2_EMISSIONS_YEARS)
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const co2GridRef = useRef<GridApi | null>(null)
+    const co2GridRef = useRef<any>(null)
     const averageCo2IntensityData = apiData?.case.averageCo2Intensity
 
     const co2IntensityLine = {
@@ -62,16 +64,6 @@ const CaseCO2Tab = (): React.ReactNode => {
         xKey: "year",
         yKey: "co2Intensity",
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
-    }
-
-    const averageCo2IntensityLine = {
-        type: "line",
-        xKey: "year",
-        yKey: "averageIntensity",
-        yName: "Average CO2 intensity (kg CO2/boe)",
-        stroke: "#326ba8",
-        strokeWidth: 2,
-        strokeDasharray: [5, 5],
     }
 
     const chartAxes = [
@@ -91,7 +83,7 @@ const CaseCO2Tab = (): React.ReactNode => {
                 ],
             },
             label: {
-                formatter: (label: { value: number }) => Math.floor(Number(label.value)),
+                formatter: (label: any) => Math.floor(Number(label.value)),
             },
         },
         {
@@ -102,7 +94,7 @@ const CaseCO2Tab = (): React.ReactNode => {
                 text: "CO2 emissions",
             },
             label: {
-                formatter: (params: { value: number }) => `${params.value}`, // emission values
+                formatter: (params: any) => `${params.value}`, // emission values
             },
         },
         {
@@ -113,46 +105,45 @@ const CaseCO2Tab = (): React.ReactNode => {
                 text: "Year-by-year CO2 intensity",
             },
             label: {
-                formatter: (params: { value: number }) => `${params.value}`, // intensity values
-            },
-        },
-        {
-            type: "number",
-            position: "top",
-            title: {
-                text: "Average CO2 intensity",
-            },
-            keys: ["averageIntensity"],
-            label: {
-                formatter: (params: { value: number }) => `${params.value}`, // intensity values
+                formatter: (params: any) => `${params.value}`, // intensity values
             },
         },
     ]
 
     useEffect(() => {
-        (async (): Promise<void> => {
+        (async () => {
             try {
                 if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
                     const co2DFFTotal = await GetGenerateProfileService().generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
-                    if (!yearRangeSetFromProfiles) {
-                        SetTableYearsFromProfiles(
-                            [co2EmissionsData, await co2IntensityData, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
-                            getYearFromDateString(caseData.dg4Date),
-                            setStartYear,
-                            setEndYear,
-                            setTableYears,
-                        )
-                        setYearRangeSetFromProfiles(true)
+                    const profiles = [
+                        co2EmissionsData,
+                        co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined,
+                        co2IntensityData,
+                        co2IntensityOverrideData?.override ? co2IntensityOverrideData : undefined,
+                    ]
+                    const dg4Year = getYearFromDateString(caseData.dg4Date)
+                    const years = calculateTableYears(profiles, dg4Year)
+
+                    if (years) {
+                        const [firstYear, lastYear] = years
+
+                        setStartYear(firstYear)
+                        setEndYear(lastYear)
+                        setTableYears([firstYear, lastYear])
+                    } else {
+                        setStartYear(DEFAULT_CO2_EMISSIONS_YEARS[0])
+                        setEndYear(DEFAULT_CO2_EMISSIONS_YEARS[1])
+                        setTableYears(DEFAULT_CO2_EMISSIONS_YEARS)
                     }
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase, caseData])
+    }, [activeTabCase, caseData, co2EmissionsData, co2IntensityData, co2EmissionsOverrideData, revisionAndProjectData])
 
     useEffect(() => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
@@ -164,18 +155,19 @@ const CaseCO2Tab = (): React.ReactNode => {
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
                 resourceName: ProfileTypes.Co2EmissionsOverride,
-                resourceId: drainageStrategyData?.id ?? "",
+                resourceId: drainageStrategyData?.id!,
                 resourcePropertyKey: ProfileTypes.Co2EmissionsOverride,
             },
             {
                 profileName: "Year-by-year CO2 intensity",
                 unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2IntensityData,
-                overridable: false,
-                editable: false,
-                resourceName: ProfileTypes.Co2Intensity,
-                resourceId: drainageStrategyData?.id ?? "",
-                resourcePropertyKey: ProfileTypes.Co2Intensity,
+                overridable: true,
+                editable: true,
+                overrideProfile: co2IntensityOverrideData,
+                resourceName: ProfileTypes.Co2IntensityOverride,
+                resourceId: drainageStrategyData?.id!,
+                resourcePropertyKey: ProfileTypes.Co2IntensityOverride,
             },
         ]
 
@@ -184,46 +176,45 @@ const CaseCO2Tab = (): React.ReactNode => {
         co2EmissionsData,
         co2EmissionsOverrideData,
         co2IntensityData,
+        co2IntensityOverrideData,
         co2DrillingFlaringFuelTotals,
     ])
 
-    const handleTableYearsClick = (): void => {
+    const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
 
-    const formatValue = (num: number | null | undefined): number => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
+    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
 
-    const co2EmissionsChartData = (): { year: number, co2Emissions: number, co2Intensity: number }[] => {
+    const co2EmissionsChartData = () => {
         const dataArray = []
 
-        if (!caseData) { return [{ year: 0, co2Emissions: 0, co2Intensity: 0 }] }
-        const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
+        if (!caseData) { return [{}] }
+        const useCo2EmissionOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
+        const useCo2IntensityOverride = co2IntensityOverrideData && co2IntensityOverrideData.override
 
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
                 co2Emissions: formatValue(
                     setValueToCorrespondingYear(
-                        useOverride ? co2EmissionsOverrideData : co2EmissionsData,
+                        useCo2EmissionOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
                         getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
                 co2Intensity: formatValue(
                     setValueToCorrespondingYear(
-                        co2IntensityData,
+                        useCo2IntensityOverride ? co2IntensityOverrideData : co2IntensityData,
                         i,
                         getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
-                averageIntensity: formatValue(averageCo2IntensityData),
             })
         }
 
         return dataArray
     }
-
-    console.log("co2EmissionsChartData: ", co2EmissionsChartData())
 
     const [drillingPortion, setDrillingPortion] = useState(0)
     const [flaringPortion, setFlaringPortion] = useState(0)
@@ -263,27 +254,17 @@ const CaseCO2Tab = (): React.ReactNode => {
         ])
     }, [drillingPortion, flaringPortion, fuelPortion])
 
-    if (!topsideData || !caseData) {
+    if (!topsideData) {
         return <CaseCo2TabSkeleton />
     }
 
-    if (activeTabCase !== 6) { return null }
+    if (activeTabCase !== 6 || !caseData) { return null }
 
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
             <Grid size={12}>
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
-            <div>
-                <SwitchableNumberInput
-                    label="Fuel consumption"
-                    value={topsideData.fuelConsumption}
-                    id={`topside-fuel-consumption-${topsideData.id}`}
-                    integer={false}
-                    unit="million Sm³ gas/sd"
-                    onSubmit={(newValue): Promise<void> => updateFuelConsumption(topsideData.id, newValue)}
-                />
-            </div>
             <Grid size={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
@@ -294,8 +275,7 @@ const CaseCO2Tab = (): React.ReactNode => {
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    co2IntensityLine={co2IntensityLine}
-                    averageCo2IntensityLine={averageCo2IntensityLine}
+                    lineChart={co2IntensityLine}
                     axesData={chartAxes}
                 />
             </Grid>
@@ -335,7 +315,11 @@ const CaseCO2Tab = (): React.ReactNode => {
                     tableName="CO2 emissions"
                     includeFooter={false}
                     gridRef={co2GridRef}
+                    decimalPrecision={4}
                 />
+            </Grid>
+            <Grid size={12}>
+                <Co2EmissionsTable />
             </Grid>
         </Grid>
     )
