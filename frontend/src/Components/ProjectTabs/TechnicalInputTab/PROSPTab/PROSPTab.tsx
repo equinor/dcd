@@ -20,14 +20,19 @@ import {
     TextDisplay,
     UrlLink,
 } from "./SharedStyledComponents"
-import { useFeedbackStatus } from "./useFeedbackStatus"
 
 import { useDataFetch } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
 import { GetProjectService } from "@/Services/ProjectService"
-import { GetProspService } from "@/Services/ProspService"
 import { useAppStore } from "@/Store/AppStore"
+import {
+    useFeedbackStatus,
+    createSharePointFileOptions,
+    getFileNameById,
+    loadSharePointFiles,
+    importFromSharePoint,
+} from "@/Utils/ProspUtils"
 
 // Card styled components
 const StyledCard = styled(Card)`
@@ -71,27 +76,15 @@ const PROSPTab = () => {
     const cases = revisionAndProjectData?.commonProjectAndRevisionData.cases || []
     const currentSharePointSiteUrl = revisionAndProjectData?.commonProjectAndRevisionData.sharepointSiteUrl
 
-    const sharePointFileOptions = useMemo(() => {
-        const options: { [key: string]: string } = { "": "" }
+    // SharePoint file options converted to a map
+    const sharePointFileOptions = useMemo(
+        () => createSharePointFileOptions(sharePointFiles, ""),
+        [sharePointFiles],
+    )
 
-        sharePointFiles.forEach((file) => {
-            if (file.id && file.name) {
-                options[file.id] = file.name
-            }
-        })
-
-        return options
-    }, [sharePointFiles])
-
-    const getFileNameById = useCallback((fileId: string | null): string | null => {
-        if (!fileId) { return null }
-
-        return sharePointFiles.find((f) => f.id === fileId)?.name || null
-    }, [sharePointFiles])
-
-    const loadSharePointFiles = async (url: string) => {
+    const fetchSharePointFiles = async (url: string) => {
         try {
-            const result = await GetProspService().getSharePointFileNamesAndId({ url }, projectId!)
+            const result = await loadSharePointFiles(url, projectId!)
 
             setSharePointFiles(result)
         } catch (error) {
@@ -116,7 +109,7 @@ const PROSPTab = () => {
             setSharepointUrl(currentSharePointSiteUrl)
 
             if (currentSharePointSiteUrl !== "") {
-                loadSharePointFiles(currentSharePointSiteUrl)
+                fetchSharePointFiles(currentSharePointSiteUrl)
             }
         }
     }, [projectId, currentSharePointSiteUrl])
@@ -130,7 +123,7 @@ const PROSPTab = () => {
         try {
             await withFeedback(
                 (async () => {
-                    await loadSharePointFiles(sharepointUrl)
+                    await fetchSharePointFiles(sharepointUrl)
 
                     if (sharepointUrl !== currentSharePointSiteUrl) {
                         const newProject: Components.Schemas.UpdateProjectDto = {
@@ -172,14 +165,14 @@ const PROSPTab = () => {
         }))
 
         try {
-            const dto = {
+            const fileName = getFileNameById(fileId, sharePointFiles) || ""
+            const newProject = await importFromSharePoint(
+                projectId,
                 caseId,
-                sharePointFileId: fileId || "",
-                sharePointFileName: getFileNameById(fileId) || "",
-                sharePointSiteUrl: currentSharePointSiteUrl,
-            }
-
-            const newProject = await GetProspService().importFromSharePoint(projectId, [dto])
+                fileId,
+                fileName,
+                currentSharePointSiteUrl,
+            )
 
             addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
 
@@ -188,17 +181,38 @@ const PROSPTab = () => {
                     return {
                         ...item,
                         sharePointFileId: fileId || null,
-                        sharePointFileName: getFileNameById(fileId),
+                        sharePointFileName: getFileNameById(fileId, sharePointFiles),
                     }
                 }
 
                 return item
             }))
 
-            setSnackBarMessage(`Successfully updated file selection to ${getFileNameById(fileId)}`)
-        } catch (error) {
+            setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
+        } catch (error: any) {
             console.error("[PROSPTab] error while submitting file change", error)
-            setSnackBarMessage("Failed to update file selection. Please try again.")
+
+            // Revert the local state changes
+            setCaseMappings((prev) => prev.map((item) => {
+                if (item.caseId === caseId) {
+                    // Revert to the original values
+                    const originalMapping = cases.find((c) => c.caseId === caseId)
+
+                    return {
+                        caseId,
+                        sharePointFileId: originalMapping?.sharepointFileId || null,
+                        sharePointFileName: originalMapping?.sharepointFileName || null,
+                    }
+                }
+
+                return item
+            }))
+
+            const errorMessage = error.message || "Failed to update file selection. Please try again."
+
+            setSnackBarMessage(errorMessage)
+        } finally {
+            setIsSaving(false)
         }
     }
 
@@ -208,23 +222,25 @@ const PROSPTab = () => {
         setIsSaving(true)
 
         try {
-            const dto = {
+            const fileName = getFileNameById(fileId, sharePointFiles) || ""
+            const newProject = await importFromSharePoint(
+                projectId,
                 caseId,
-                sharePointFileId: fileId,
-                sharePointFileName: getFileNameById(fileId) || "",
-                sharePointSiteUrl: currentSharePointSiteUrl,
-            }
-
-            const newProject = await GetProspService().importFromSharePoint(projectId, [dto])
+                fileId,
+                fileName,
+                currentSharePointSiteUrl,
+            )
 
             addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
 
-            setSnackBarMessage(`Successfully imported data from ${getFileNameById(fileId)}`)
+            setSnackBarMessage(`Successfully imported data from ${fileName}`)
 
             return true
-        } catch (error) {
+        } catch (error: any) {
             console.error("[PROSPTab] error while refreshing file data", error)
-            setSnackBarMessage("Failed to import file data. Please try again.")
+            const errorMessage = error.message || "Failed to import file data. Please try again."
+
+            setSnackBarMessage(errorMessage)
 
             return false
         } finally {
@@ -285,7 +301,7 @@ const PROSPTab = () => {
                 <Header size={12}>
                     <Typography variant="h3">PROSP Import</Typography>
                     <Typography>
-                        This import tool collects data from the “Main” worksheet in each PROSP file and displays it in the Development Parameters -, Cost - and CO2 emissions pages.
+                        This import tool collects data from the &quot;Main&quot; worksheet in each PROSP file and displays it in the Development Parameters -, Cost - and CO2 emissions pages.
                     </Typography>
                 </Header>
                 <ConfigCard>

@@ -46,10 +46,11 @@ const CaseDescriptionTab = (): React.ReactNode => {
     } = useCaseMutation()
 
     // Save the description to the API
-    const saveDescription = (newValue: string):void => {
+    const saveDescription = (newValue: string): void => {
         updateDescription(newValue)
         setDescription(newValue)
     }
+
     const debouncedAddEdit = useDebouncedCallback((newValue: string) => {
         if (!apiData || !projectId) {
             return
@@ -68,18 +69,19 @@ const CaseDescriptionTab = (): React.ReactNode => {
         }
     }, [apiData])
 
-    if (!apiData || !projectId) {
-        return <CaseDescriptionTabSkeleton />
-    }
-    const caseData = apiData.case
-
-    const handleChange = (e: any):void => {
+    const handleChange = (e: any): void => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
 
         setDescription(newValue) // Update local state immediately
         debouncedAddEdit(newValue)
     }
+
+    if (!apiData || !projectId) {
+        return <CaseDescriptionTabSkeleton />
+    }
+
+    const caseData = apiData.case
 
     return (
         <Grid container spacing={2}>
