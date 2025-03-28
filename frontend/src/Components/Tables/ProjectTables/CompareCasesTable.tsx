@@ -8,8 +8,7 @@ import styled from "styled-components"
 
 import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
 import { useDataFetch } from "@/Hooks/useDataFetch"
-import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};

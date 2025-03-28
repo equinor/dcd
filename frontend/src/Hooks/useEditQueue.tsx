@@ -4,12 +4,12 @@ import { useParams } from "react-router-dom"
 import { useCampaignMutation } from "./Mutations/useCampaignMutation"
 import { useTimeSeriesMutation } from "./Mutations/useTimeSeriesMutation"
 
+import { CampaignProfileType } from "@/Components/CaseTabs/CaseDrillingSchedule/Components/CampaignProfileTypes"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { EditInstance } from "@/Models/Interfaces"
 import { useAppStore } from "@/Store/AppStore"
 import { useEditQueue } from "@/Store/EditQueueContext"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { CampaignProfileType } from "@/Utils/commonUtils"
 
 // Queue processing utilities
 const getLatestEdits = (queue: EditInstance[], keySelector: (edit: EditInstance) => string): EditInstance[] => {

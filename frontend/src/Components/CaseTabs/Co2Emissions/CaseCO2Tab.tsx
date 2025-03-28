@@ -64,6 +64,16 @@ const CaseCO2Tab = (): React.ReactNode => {
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
+    const averageCo2IntensityLine = {
+        type: "line",
+        xKey: "year",
+        yKey: "averageIntensity",
+        yName: "Average CO2 intensity (kg CO2/boe)",
+        stroke: "#326ba8",
+        strokeWidth: 2,
+        strokeDasharray: [5, 5],
+    }
+
     const chartAxes = [
         {
             type: "category",
@@ -102,6 +112,17 @@ const CaseCO2Tab = (): React.ReactNode => {
             title: {
                 text: "Year-by-year CO2 intensity",
             },
+            label: {
+                formatter: (params: { value: number }) => `${params.value}`, // intensity values
+            },
+        },
+        {
+            type: "number",
+            position: "top",
+            title: {
+                text: "Average CO2 intensity",
+            },
+            keys: ["averageIntensity"],
             label: {
                 formatter: (params: { value: number }) => `${params.value}`, // intensity values
             },
@@ -195,11 +216,14 @@ const CaseCO2Tab = (): React.ReactNode => {
                         getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
+                averageIntensity: formatValue(averageCo2IntensityData),
             })
         }
 
         return dataArray
     }
+
+    console.log("co2EmissionsChartData: ", co2EmissionsChartData())
 
     const [drillingPortion, setDrillingPortion] = useState(0)
     const [flaringPortion, setFlaringPortion] = useState(0)
@@ -270,7 +294,8 @@ const CaseCO2Tab = (): React.ReactNode => {
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    lineChart={co2IntensityLine}
+                    co2IntensityLine={co2IntensityLine}
+                    averageCo2IntensityLine={averageCo2IntensityLine}
                     axesData={chartAxes}
                 />
             </Grid>

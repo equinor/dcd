@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid2"
 import { useMemo, useRef } from "react"
 
+import { CampaignProfileType } from "./CampaignProfileTypes"
 import { CampaignFullWidthContainer, CampaignInputsContainer, CampaignTableContainer } from "./SharedCampaignStyles"
 
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
@@ -13,13 +14,32 @@ import { useDataFetch } from "@/Hooks/useDataFetch"
 import { ITimeSeriesTableData, ItimeSeriesTableDataWithWell } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
+import { developmentWellOptions, explorationWellOptions } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { filterWells, CampaignProfileType } from "@/Utils/commonUtils"
+import { isExplorationWell } from "@/Utils/TableUtils"
 
 export interface CampaignProps {
     campaign: Components.Schemas.CampaignDto
     title: string
     tableYears: [number, number]
+}
+
+const filterWells = (wells: Components.Schemas.WellOverviewDto[]) => {
+    if (!wells) {
+        return {
+            explorationWells: [],
+            developmentWells: [],
+            developmentWellOptions,
+            explorationWellOptions,
+        }
+    }
+
+    return {
+        explorationWells: wells.filter((well) => isExplorationWell(well)),
+        developmentWells: wells.filter((well) => !isExplorationWell(well)),
+        developmentWellOptions,
+        explorationWellOptions,
+    }
 }
 
 /**
@@ -182,6 +202,7 @@ const Campaign = ({ tableYears, campaign, title }: CampaignProps) => {
                         totalRowName="Total"
                         gridRef={campaignGridRef}
                         includeFooter={false}
+                        decimalPrecision={1}
                     />
                 </CampaignTableContainer>
             </Grid>

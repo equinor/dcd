@@ -96,6 +96,41 @@ export const useCaseMutation = () => {
         localCaseId: caseId,
     })
 
+    const updateCo2RemovedFromGas = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "co2RemovedFromGas",
+    })
+
+    const updateCo2EmissionFromFuelGas = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "co2EmissionFromFuelGas",
+    })
+
+    const updateFlaredGasPerProducedVolume = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "flaredGasPerProducedVolume",
+    })
+
+    const updateCo2EmissionsFromFlaredGas = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "co2EmissionsFromFlaredGas",
+    })
+
+    const updateCo2Vented = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "co2Vented",
+    })
+
+    const updateAverageDevelopmentDrillingDays = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "averageDevelopmentDrillingDays",
+    })
+
+    const updateDailyEmissionFromDrillingRig = (newValue: number) => mutation.mutateAsync({
+        updatedValue: newValue,
+        propertyKey: "dailyEmissionFromDrillingRig",
+    })
+
     return {
         updateFacilitiesAvailability,
         updateHost,
@@ -114,6 +149,13 @@ export const useCaseMutation = () => {
         updateMilestoneDate,
         updateName,
         updateArchived,
+        updateCo2RemovedFromGas,
+        updateCo2EmissionFromFuelGas,
+        updateFlaredGasPerProducedVolume,
+        updateCo2EmissionsFromFlaredGas,
+        updateCo2Vented,
+        updateAverageDevelopmentDrillingDays,
+        updateDailyEmissionFromDrillingRig,
         isLoading: mutation.isPending,
     }
 }

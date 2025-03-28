@@ -5,6 +5,7 @@ using api.Context.Extensions;
 using api.Features.Cases.Recalculation;
 using api.Features.Prosp.Models;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 
 namespace api.Features.Prosp.Services;
@@ -15,6 +16,35 @@ public class ProspSharepointImportService(
     RecalculationService recalculationService,
     DcdDbContext context)
 {
+    public async Task<bool> CheckForUpdate(Guid projectId, Guid caseId)
+    {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var caseItem = await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == caseId)
+            .SingleAsync();
+
+        if (caseItem.SharepointFileUrl == null || caseItem.SharepointFileId == null)
+        {
+            return false;
+        }
+
+        var sharepointChangeDateUtc = await GetLastModifiedDate(caseItem.SharepointFileUrl, caseItem.SharepointFileId);
+
+        if (sharepointChangeDateUtc == null)
+        {
+            return false;
+        }
+
+        if (caseItem.SharepointUpdatedTimestampUtc == null)
+        {
+            return true;
+        }
+
+        return caseItem.SharepointUpdatedTimestampUtc < sharepointChangeDateUtc;
+    }
+
     public async Task<List<SharePointFileDto>> GetFilesFromSharePoint(string url)
     {
         var (success, siteId, driveId, itemPath) = await GetSharepointInfo(url);
@@ -31,56 +61,91 @@ public class ProspSharepointImportService(
         return driveItemsDelta.Select(x => new SharePointFileDto
             {
                 Name = x.Name,
-                Id = x.Id
+                Id = x.Id,
+                LastModifiedUtc = x.LastModifiedDateTime!.Value.UtcDateTime
             })
             .ToList();
     }
 
-    public async Task ImportFilesFromSharePoint(Guid projectId, SharePointImportDto[] dtos)
+    public async Task ImportFileFromSharePoint(Guid projectId, SharePointImportDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
-        await prospExcelImportService.ClearImportedProspData(projectPk, dtos.Select(x => x.CaseId).ToList());
+        if (string.IsNullOrEmpty(dto.SharePointFileId))
+        {
+            await prospExcelImportService.ClearImportedProspData(projectPk, dto.CaseId);
 
-        var (success, siteId, driveId, _) = await GetSharepointInfo(dtos.First().SharePointSiteUrl);
+            return;
+        }
+
+        var (success, siteId, driveId, _) = await GetSharepointInfo(dto.SharePointSiteUrl);
 
         if (!success)
         {
             return;
         }
 
-        foreach (var dto in dtos)
+        if (string.IsNullOrWhiteSpace(dto.SharePointFileId) || string.IsNullOrWhiteSpace(dto.SharePointFileName))
         {
-            if (string.IsNullOrWhiteSpace(dto.SharePointFileId) || string.IsNullOrWhiteSpace(dto.SharePointFileName))
-            {
-                continue;
-            }
-
-            var driveItemStream = await graphServiceClient.Sites[siteId]
-                .Drives[driveId]
-                .Items[dto.SharePointFileId]
-                .Content.Request()
-                .GetAsync();
-
-            await prospExcelImportService.ImportProsp(driveItemStream, projectPk, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
+            return;
         }
 
-        await context.SaveChangesAsync();
+        var driveItemStream = await graphServiceClient.Sites[siteId]
+            .Drives[driveId]
+            .Items[dto.SharePointFileId]
+            .Content
+            .Request()
+            .GetAsync();
 
-        foreach (var dto in dtos)
+        var lastModified = await GetLastModifiedDate(dto.SharePointSiteUrl, dto.SharePointFileId);
+
+        await prospExcelImportService.ImportProsp(driveItemStream, projectPk, dto.CaseId, dto.SharePointFileId, dto.SharePointFileName);
+
+        var caseItem = await context.Cases
+            .Where(x => x.ProjectId == projectPk)
+            .Where(x => x.Id == dto.CaseId)
+            .SingleAsync();
+
+        caseItem.SharepointUpdatedTimestampUtc = lastModified;
+
+        await context.UpdateCaseUpdatedUtc(dto.CaseId);
+        await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
+    }
+
+    private async Task<DateTime?> GetLastModifiedDate(string url, string sharepointFileId)
+    {
+        var (success, siteId, driveId, itemPath) = await GetSharepointInfo(url);
+
+        if (!success)
         {
-            await context.UpdateCaseUpdatedUtc(dto.CaseId);
-            await recalculationService.SaveChangesAndRecalculateCase(dto.CaseId);
+            return null;
         }
+
+        var driveItemsDelta = string.IsNullOrWhiteSpace(itemPath)
+            ? await graphServiceClient.Sites[siteId].Drives[driveId].Root.Delta().Request().GetAsync()
+            : await graphServiceClient.Sites[siteId].Drives[driveId].Root.ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
+
+        return driveItemsDelta
+            .Where(x => x.Id == sharepointFileId)
+            .Select(x => x.LastModifiedDateTime!.Value.UtcDateTime)
+            .Single();
     }
 
     private async Task<(bool Success, string SiteId, string DriveId, string ItemPath)> GetSharepointInfo(string url)
     {
         var validatedUri = new Uri(url);
 
-        var site = await GetSite(validatedUri);
+        Site? site;
 
-        if (site == null)
+        try
+        {
+            site = await graphServiceClient
+                .Sites
+                .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
+                .Request()
+                .GetAsync();
+        }
+        catch (Exception)
         {
             return (false, "", "", "");
         }
@@ -102,21 +167,5 @@ public class ProspSharepointImportService(
         var itemPath = string.Join('/', path.Split('/').Skip(4));
 
         return (true, site.Id, driveId, itemPath);
-    }
-
-    private async Task<Site?> GetSite(Uri validatedUri)
-    {
-        try
-        {
-            return await graphServiceClient
-                .Sites
-                .GetByPath($"/sites/{validatedUri.AbsolutePath.Split('/')[2]}", validatedUri.Host)
-                .Request()
-                .GetAsync();
-        }
-        catch (Exception)
-        {
-            return null;
-        }
     }
 }

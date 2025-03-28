@@ -3,9 +3,10 @@ import { useEffect, useMemo, useState } from "react"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { PhysUnit, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
@@ -53,161 +54,130 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         const deferredOilData = apiData.deferredOilProduction
         const deferredGasData = apiData.deferredGasProduction
 
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+            overridable?: boolean;
+            hideIfEmpty?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+            overridable,
+            hideIfEmpty,
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+            const isOverridable = overridable ?? (isCalculatedField || !!overrideProfile)
+
+            return {
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: drainageStrategyData?.id,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isOverridable,
+                ...(overrideProfile && { overrideProfile }),
+                ...(hideIfEmpty && { hideIfEmpty }),
+            }
+        }
+
         const newTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Oil production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: oilProductionData,
                 resourceName: ProfileTypes.ProductionProfileOil,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.ProductionProfileOil,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Additional Oil production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: additionalOilProductionData,
                 resourceName: ProfileTypes.AdditionalProductionProfileOil,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.AdditionalProductionProfileOil,
-                editable: true,
-                overridable: false,
                 hideIfEmpty: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Rich gas production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: gasProductionData,
                 resourceName: ProfileTypes.ProductionProfileGas,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.ProductionProfileGas,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Additional rich gas production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: additionalGasProductionData,
                 resourceName: ProfileTypes.AdditionalProductionProfileGas,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.AdditionalProductionProfileGas,
-                editable: true,
-                overridable: false,
                 hideIfEmpty: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Water production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: waterProductionData,
                 resourceName: ProfileTypes.ProductionProfileWater,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.ProductionProfileWater,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Water injection",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: waterInjectionData,
                 resourceName: ProfileTypes.ProductionProfileWaterInjection,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.ProductionProfileWaterInjection,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "NGL Production",
-                unit: "MTPA",
                 profile: productionProfileNglData,
                 resourceName: ProfileTypes.ProductionProfileNglOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.ProductionProfileNglOverride,
                 overrideProfile: productionProfileNglOverrideData,
-                editable: true,
-                overridable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Condensate production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: condensateProductionData,
                 resourceName: ProfileTypes.CondensateProductionOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.CondensateProductionOverride,
                 overrideProfile: condensateProductionOverrideData,
-                editable: true,
-                overridable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Fuel, flaring and losses",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: fuelFlaringAndLossesData,
                 resourceName: ProfileTypes.FuelFlaringAndLossesOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.FuelFlaringAndLossesOverride,
                 overrideProfile: fuelFlaringAndLossesOverrideData,
-                editable: true,
-                overridable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Net sales gas",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: netSalesGasData,
                 resourceName: ProfileTypes.NetSalesGasOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.NetSalesGasOverride,
                 overrideProfile: netSalesGasOverrideData,
-                editable: true,
-                overridable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Imported electricity",
-                unit: "GWh",
                 profile: importedElectricityData,
                 resourceName: ProfileTypes.ImportedElectricityOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.ImportedElectricityOverride,
                 overrideProfile: importedElectricityOverrideData,
-                editable: true,
-                overridable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Deferred oil production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: deferredOilData,
                 resourceName: ProfileTypes.DeferredOilProduction,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.DeferredOilProduction,
-                editable: true,
-                overridable: false,
                 hideIfEmpty: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Deferred gas production",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: deferredGasData,
                 resourceName: ProfileTypes.DeferredGasProduction,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.DeferredGasProduction,
-                editable: true,
-                overridable: false,
                 hideIfEmpty: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Total exported volumes",
-                unit: "MBoE/yr",
                 profile: totalExportedVolumesData,
                 resourceName: ProfileTypes.TotalExportedVolumesOverride,
-                resourceId: drainageStrategyData?.id,
-                resourcePropertyKey: ProfileTypes.TotalExportedVolumesOverride,
                 overrideProfile: totalExportedVolumesOverrideData,
-                editable: true,
-                overridable: true,
-            },
+            }),
         ]
 
         setCaseProductionProfilesData(newTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
@@ -219,6 +189,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             gridRef={alignedGridsRef}
             calculatedFields={calculatedFields}
             ongoingCalculation={isCalculatingProductionOverrides}
+            decimalPrecision={4}
         />
     )
 }

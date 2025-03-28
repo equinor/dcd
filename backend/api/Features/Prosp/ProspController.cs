@@ -33,9 +33,16 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
         EnsureNotEmpty(dtos);
         EnsureValidUrl(dtos.First().SharePointSiteUrl);
 
-        await prospSharepointImportImportService.ImportFilesFromSharePoint(projectId, dtos);
+        await prospSharepointImportImportService.ImportFileFromSharePoint(projectId, dtos.First());
 
         return await getProjectDataService.GetProjectData(projectId);
+    }
+
+    [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/prosp/check-for-update")]
+    [AuthorizeActionType(ActionType.Read)]
+    public async Task<bool> CheckForUpdate(Guid projectId, Guid caseId)
+    {
+        return await prospSharepointImportImportService.CheckForUpdate(projectId, caseId);
     }
 
     private static void EnsureNotEmpty(SharePointImportDto[] dtos)

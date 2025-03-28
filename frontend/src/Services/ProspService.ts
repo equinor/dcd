@@ -15,6 +15,15 @@ export class ProspService extends __BaseService {
 
         return res
     }
+
+    public async checkForUpdate(
+        projectId: string,
+        caseId: string,
+    ): Promise<boolean> {
+        const res: boolean = await this.get(`projects/${projectId}/cases/${caseId}/prosp/check-for-update`)
+
+        return res
+    }
 }
 
 export const GetProspService = () => new ProspService()

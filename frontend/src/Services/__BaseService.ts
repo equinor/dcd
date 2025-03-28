@@ -3,11 +3,16 @@ import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios"
 import { config } from "./config"
 
 import { dateStringToDateUtc } from "@/Utils/DateUtils"
-import {
-    getToken,
-    getLastForcedReloadDate,
-    setLastForcedReloadDate,
-} from "@/Utils/commonUtils"
+
+const getToken = (): Promise<string | undefined> => {
+    const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
+
+    return window.Fusion.modules.auth.acquireAccessToken({ scopes })
+}
+
+const getLastForcedReloadDate = (): string | null => window.localStorage.getItem("forcedReloadDate")
+
+const setLastForcedReloadDate = (date: string): void => window.localStorage.setItem("forcedReloadDate", date)
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -26,6 +31,7 @@ type RequestOptions = {
 }
 export class __BaseService {
     private client: AxiosInstance
+
     constructor() {
         this.client = axios.create({ baseURL: config.BaseUrl.BASE_URL })
         this.client.interceptors.response.use(
@@ -42,13 +48,21 @@ export class __BaseService {
         )
     }
 
-    private async request(path: string, options?: RequestOptions): Promise<any> {
-        const token = await getToken()!
+    private async setAuthHeaders(): Promise<void> {
+        const token = await getToken()
+
+        if (!token) {
+            throw new Error("Failed to acquire access token")
+        }
 
         this.client.defaults.headers.common = {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
         }
+    }
+
+    private async request(path: string, options?: RequestOptions): Promise<any> {
+        await this.setAuthHeaders()
 
         const { data } = await this.client.request({
             method: options?.method,
@@ -62,12 +76,7 @@ export class __BaseService {
     }
 
     private async requestExcel(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
-        const token = await getToken()!
-
-        this.client.defaults.headers.common = {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        }
+        await this.setAuthHeaders()
 
         const { data } = await this.client.request({
             method: options?.method,
@@ -86,12 +95,7 @@ export class __BaseService {
         options?: RequestOptions,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
-        const token = await getToken()!
-
-        this.client.defaults.headers.common = {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        }
+        await this.setAuthHeaders()
 
         const { data } = await this.client.post(path, options?.body, requestQuery)
 
@@ -103,12 +107,7 @@ export class __BaseService {
         options?: RequestOptions,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
-        const token = await getToken()!
-
-        this.client.defaults.headers.common = {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        }
+        await this.setAuthHeaders()
 
         const { data } = await this.client.put(path, options?.body, requestQuery)
 
@@ -119,12 +118,7 @@ export class __BaseService {
         path: string,
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
-        const token = await getToken()!
-
-        this.client.defaults.headers.common = {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        }
+        await this.setAuthHeaders()
 
         const { data } = await this.client.get(path, requestQuery)
 

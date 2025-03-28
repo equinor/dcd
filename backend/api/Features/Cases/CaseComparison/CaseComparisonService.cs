@@ -37,12 +37,15 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
-            var profile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride) ?? caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+            var co2EmissionsProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions);
 
-            var generateCo2EmissionsProfile = new TimeSeries(profile);
+            var generateCo2EmissionsProfile = new TimeSeries(co2EmissionsProfile);
 
             var totalCo2Emissions = generateCo2EmissionsProfile.Values.Sum();
-            var co2Intensity = caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity)?.Values.Sum() ?? 0;
+
+            var co2IntensityProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Intensity);
+
+            var co2Intensity = co2IntensityProfile?.Values.Sum() ?? 0;
 
             var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
 
@@ -72,15 +75,11 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
     private static double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        var feasibilityProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudiesOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.TotalFeasibilityAndConceptStudies);
+        var feasibilityProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalFeasibilityAndConceptStudies);
 
         var feasibility = new TimeSeries(feasibilityProfile);
 
-        var feedProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies);
+        var feedProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalFeedStudies);
 
         var feed = new TimeSeries(feedProfile);
 
@@ -89,15 +88,11 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
         var studyTimeSeries = TimeSeriesMerger.MergeTimeSeries(feasibility, feed, otherStudies);
 
-        var wellInterventionProfile = caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfileOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.WellInterventionCostProfile);
+        var wellInterventionProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.WellInterventionCostProfile);
 
         var wellIntervention = new TimeSeries(wellInterventionProfile);
 
-        var offshoreFacilitiesProfile = caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
+        var offshoreFacilitiesProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.OffshoreFacilitiesOperationsCostProfile);
 
         var offshoreFacilities = new TimeSeries(offshoreFacilitiesProfile);
 
@@ -126,15 +121,11 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 
     private static double CalculateTotalCessationCosts(Case caseItem)
     {
-        var cessationWellsCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCostOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.CessationWellsCost);
+        var cessationWellsCostProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.CessationWellsCost);
 
         var cessationWellsCost = new TimeSeries(cessationWellsCostProfile);
 
-        var cessationOffshoreFacilitiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)?.Override == true
-            ? caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCostOverride)
-            : caseItem.GetProfileOrNull(ProfileTypes.CessationOffshoreFacilitiesCost);
+        var cessationOffshoreFacilitiesCostProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.CessationOffshoreFacilitiesCost);
 
         var cessationOffshoreFacilitiesCost = new TimeSeries(cessationOffshoreFacilitiesCostProfile);
 
@@ -165,20 +156,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SeismicAcquisitionAndProcessing).Values.Sum();
         }
 
-        if (caseItem.GetProfileOrNull(ProfileTypes.ExplorationWellCostProfile) != null)
-        {
-            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.ExplorationWellCostProfile).Values.Sum();
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.AppraisalWellCostProfile) != null)
-        {
-            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.AppraisalWellCostProfile).Values.Sum();
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.SidetrackCostProfile) != null)
-        {
-            sumExplorationWellCost += caseItem.GetProfile(ProfileTypes.SidetrackCostProfile).Values.Sum();
-        }
+        sumExplorationWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.ExplorationWellCostProfile)?.Values.Sum() ?? 0;
+        sumExplorationWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.AppraisalWellCostProfile)?.Values.Sum() ?? 0;
+        sumExplorationWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SidetrackCostProfile)?.Values.Sum() ?? 0;
 
         return sumExplorationWellCost;
     }
@@ -187,10 +167,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     {
         var sumWellCost = 0.0;
 
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride));
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.OilProducerCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.GasProducerCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.WaterInjectorCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.GasInjectorCostProfile)?.Values.Sum() ?? 0;
 
         return sumWellCost;
     }
@@ -199,27 +179,12 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     {
         var sumFacilityCost = 0.0;
 
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride));
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SubstructureCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SurfCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.TopsideCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.TransportCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.OnshorePowerSupplyCostProfile)?.Values.Sum() ?? 0;
 
         return sumFacilityCost;
-    }
-
-    private static double SumOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
-    {
-        if (profileOverride?.Override == true)
-        {
-            return profileOverride.Values.Sum();
-        }
-
-        if (profile != null)
-        {
-            return profile.Values.Sum();
-        }
-
-        return 0;
     }
 }

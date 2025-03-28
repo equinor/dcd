@@ -20,8 +20,7 @@ import styled from "styled-components"
 import { useDataFetch } from "@/Hooks"
 import { useRevisions } from "@/Hooks/useRevision"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/Config/constants"
-import { getProjectPhaseName } from "@/Utils/commonUtils"
+import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION, PROJECT_PHASE } from "@/Utils/Config/constants"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -93,7 +92,7 @@ const CreateRevisionModal: React.FC<Props> = ({
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => {
         if (disableAfterDG0()) {
-            return <option key={key}>{getProjectPhaseName(revisionAndProjectData.commonProjectAndRevisionData.projectPhase)}</option>
+            return <option key={key}>{PROJECT_PHASE[revisionAndProjectData.commonProjectAndRevisionData.projectPhase]}</option>
         }
 
         return <option key={key} value={key}>{value.label}</option>

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import { useAppStore } from "../../../Store/AppStore"
-import { preventNonDigitInput, isWithinRange } from "../../../Utils/commonUtils"
+
+import { parseDecimalInput } from "@/Utils/FormatingUtils"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -35,6 +36,10 @@ interface Props {
     max?: number;
 }
 
+const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!/\d/.test(e.key)) { e.preventDefault() }
+}
+
 const NumberInputWithValidation = ({
     label,
     id,
@@ -61,10 +66,12 @@ const NumberInputWithValidation = ({
             return true
         }
 
-        const numValue = Number(value)
+        const numValue = parseDecimalInput(value)
 
         if (min !== undefined && max !== undefined) {
-            if (!isWithinRange(numValue, min, max)) {
+            const isWithinRange = (num: number, lower: number, upper: number): boolean => num >= lower && num <= upper
+
+            if (!isWithinRange(Number(numValue), min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
 
@@ -87,10 +94,10 @@ const NumberInputWithValidation = ({
             return
         }
 
-        const numValue = Number(value)
+        const numValue = parseDecimalInput(value)
 
         if (validateInput(value)) {
-            onSubmit(numValue)
+            onSubmit(Number(numValue))
         } else {
             setSnackBarMessage(`The input for ${label} was not saved, because it's outside the allowed range (min: ${min}, max: ${max}).`)
         }

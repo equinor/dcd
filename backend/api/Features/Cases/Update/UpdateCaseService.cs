@@ -26,8 +26,8 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.GasInjectorCount = updateCaseDto.GasInjectorCount;
         existingCase.WaterInjectorCount = updateCaseDto.WaterInjectorCount;
         existingCase.FacilitiesAvailability = updateCaseDto.FacilitiesAvailability;
-        existingCase.CapexFactorFeasibilityStudies = updateCaseDto.CapexFactorFeasibilityStudies;
-        existingCase.CapexFactorFeedStudies = updateCaseDto.CapexFactorFeedStudies;
+        existingCase.CapexFactorFeasibilityStudies = updateCaseDto.CapexFactorFeasibilityStudies / 100;
+        existingCase.CapexFactorFeedStudies = updateCaseDto.CapexFactorFeedStudies / 100;
         existingCase.InitialYearsWithoutWellInterventionCost = updateCaseDto.InitialYearsWithoutWellInterventionCost;
         existingCase.FinalYearsWithoutWellInterventionCost = updateCaseDto.FinalYearsWithoutWellInterventionCost;
         existingCase.Npv = updateCaseDto.Npv;
@@ -37,6 +37,13 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.Host = updateCaseDto.Host;
         existingCase.AverageCo2Intensity = updateCaseDto.AverageCo2Intensity;
         existingCase.DiscountedCashflow = updateCaseDto.DiscountedCashflow;
+        existingCase.Co2RemovedFromGas = updateCaseDto.Co2RemovedFromGas;
+        existingCase.Co2EmissionFromFuelGas = updateCaseDto.Co2EmissionFromFuelGas;
+        existingCase.FlaredGasPerProducedVolume = updateCaseDto.FlaredGasPerProducedVolume;
+        existingCase.Co2EmissionsFromFlaredGas = updateCaseDto.Co2EmissionsFromFlaredGas;
+        existingCase.Co2Vented = updateCaseDto.Co2Vented;
+        existingCase.DailyEmissionFromDrillingRig = updateCaseDto.DailyEmissionFromDrillingRig;
+        existingCase.AverageDevelopmentDrillingDays = updateCaseDto.AverageDevelopmentDrillingDays;
         existingCase.DgaDate = updateCaseDto.DgaDate;
         existingCase.DgbDate = updateCaseDto.DgbDate;
         existingCase.DgcDate = updateCaseDto.DgcDate;

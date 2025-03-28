@@ -26,9 +26,8 @@ import styled from "styled-components"
 import { useDataFetch } from "@/Hooks"
 import { GetProjectService } from "@/Services/ProjectService"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/Config/constants"
+import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE, PROJECT_PHASE } from "@/Utils/Config/constants"
 import { formatFullDate } from "@/Utils/DateUtils"
-import { getProjectPhaseName } from "@/Utils/commonUtils"
 
 type RevisionDetailsModalProps = {
     isMenuOpen: boolean;
@@ -163,7 +162,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const isAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(revisionAndProjectData?.commonProjectAndRevisionData.projectPhase)
 
     const displayedPhase = isAfterDG0()
-        ? getProjectPhaseName(revisionAndProjectData.commonProjectAndRevisionData.projectPhase)
+        ? PROJECT_PHASE[revisionAndProjectData.commonProjectAndRevisionData.projectPhase]
         : INTERNAL_PROJECT_PHASE[revisionAndProjectData.commonProjectAndRevisionData.internalProjectPhase]?.label ?? "N/A"
 
     return (

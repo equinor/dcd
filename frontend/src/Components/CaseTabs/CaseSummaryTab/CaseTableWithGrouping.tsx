@@ -20,8 +20,13 @@ import SidesheetWrapper from "@/Components/TableSidesheet/SidesheetWrapper"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import { useAppStore } from "@/Store/AppStore"
-import { getCustomContextMenuItems, gridRefArrayToAlignedGrid } from "@/Utils/AgGridUtils"
-import { formatColumnSum, tableCellisEditable } from "@/Utils/commonUtils"
+import { roundToDecimals } from "@/Utils/FormatingUtils"
+import {
+    gridRefArrayToAlignedGrid,
+    formatColumnSum,
+    tableCellisEditable,
+    getCustomContextMenuItems,
+} from "@/Utils/TableUtils"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -31,6 +36,7 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    decimalPrecision: number
 }
 
 const CaseTableWithGrouping = ({
@@ -41,15 +47,16 @@ const CaseTableWithGrouping = ({
     gridRef,
     includeFooter,
     totalRowName,
-}: Props) => {
+    decimalPrecision,
+}: Props): React.ReactNode => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
-    const { setShowRevisionReminder, isSaving } = useAppStore()
+    const { setShowRevisionReminder, isSaving, editMode } = useAppStore()
     const [isSidesheetOpen, setIsSidesheetOpen] = useState(false)
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const { canEdit } = useCanUserEdit()
 
-    const profilesToRowData = () => {
+    const profilesToRowData = (): ITimeSeriesTableDataWithSet[] => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
         const timeSeriesData = allTimeSeriesData?.flat()
 
@@ -77,18 +84,17 @@ const CaseTableWithGrouping = ({
                 for (let i = rowObject.profile.startYear; i < rowObject.profile.startYear + rowObject.profile.values.length; i += 1) {
                     const yearKey = (dg4Year + i).toString()
                     const value = rowObject.profile.values[j]
-                    const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
 
-                    rowObject[yearKey] = roundedValue
+                    rowObject[yearKey] = roundToDecimals(value, decimalPrecision)
 
                     j += 1
                 }
 
                 const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
 
-                rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
+                rowObject.total = roundToDecimals(totalValue, decimalPrecision)
                 if (ts.total !== undefined) {
-                    rowObject.total = Math.round(Number(ts.total) * 100) / 100
+                    rowObject.total = roundToDecimals(Number(ts.total), decimalPrecision)
                 }
             }
             tableRows.push(rowObject)
@@ -97,7 +103,7 @@ const CaseTableWithGrouping = ({
         return tableRows
     }
 
-    const getRowStyle = (params: any) => {
+    const getRowStyle = (params: any): { fontWeight: string } | undefined => {
         if (params.node.footer) {
             return { fontWeight: "bold" }
         }
@@ -105,7 +111,7 @@ const CaseTableWithGrouping = ({
         return undefined
     }
 
-    const handleCopy = (gridEvent: CellKeyDownEvent) => {
+    const handleCopy = (gridEvent: CellKeyDownEvent): void => {
         const keyboardEvent = gridEvent.event as KeyboardEvent
 
         if ((keyboardEvent.ctrlKey || keyboardEvent.metaKey) && keyboardEvent.key === "c") {
@@ -113,7 +119,7 @@ const CaseTableWithGrouping = ({
         }
     }
 
-    const generateTableYearColDefs = () => {
+    const generateTableYearColDefs = (): ColDef[] => {
         const columnPinned: any[] = [
             {
                 field: "group",
@@ -147,7 +153,7 @@ const CaseTableWithGrouping = ({
                 editable: false,
                 pinned: "right",
                 width: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: (params: any) => formatColumnSum(params, decimalPrecision),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
         ]
@@ -160,7 +166,7 @@ const CaseTableWithGrouping = ({
                 flex: 1,
                 editable: (params: any) => tableCellisEditable(params, canEdit(), isSaving),
                 minWidth: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: (params: any) => formatColumnSum(params, decimalPrecision),
                 cellClass: (params: any) => (tableCellisEditable(params, canEdit(), isSaving) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
@@ -243,6 +249,7 @@ const CaseTableWithGrouping = ({
                         rowData={rowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
+                        getContextMenuItems={getCustomContextMenuItems}
                         animateRows
                         domLayout="autoHeight"
                         rowSelection={{
@@ -263,15 +270,15 @@ const CaseTableWithGrouping = ({
                         groupDefaultExpanded={groupDefaultExpanded}
                         stopEditingWhenCellsLoseFocus
                         defaultExcelExportParams={defaultExcelExportParams}
-                        getContextMenuItems={getContextMenuItems}
                         onCellKeyDown={handleCopy}
                         onCellClicked={handleCellClicked}
+                        key={`grid-${editMode ? "edit" : "view"}-${decimalPrecision}`}
                     />
                 </div>
             </div>
             <SidesheetWrapper
                 isOpen={isSidesheetOpen}
-                onClose={() => setIsSidesheetOpen(false)}
+                onClose={(): void => setIsSidesheetOpen(false)}
                 rowData={selectedRow}
                 dg4Year={dg4Year}
                 allTimeSeriesData={allTimeSeriesData}

@@ -1,6 +1,6 @@
 import { visibility, lock, type IconData } from "@equinor/eds-icons"
 
-import { ProfileTypes } from "@/Models/enums"
+import { ProfileTypes, WellCategory } from "@/Models/enums"
 
 export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number } } = {
     // production profiles
@@ -16,6 +16,15 @@ export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number
     "Annual CO2 emissions": { min: 0, max: 1_000_000 },
     "Year-by-year CO2 intensity": { min: 0, max: 1_000_000 },
 }
+
+// Default year ranges for various components
+export const DEFAULT_CO2_EMISSIONS_YEARS: [number, number] = [2020, 2030]
+export const DEFAULT_DRILLING_SCHEDULE_YEARS: [number, number] = [2020, 2030]
+export const DEFAULT_CASE_COST_YEARS: [number, number] = [2023, 2033]
+export const DEFAULT_PRODUCTION_PROFILE_YEARS: [number, number] = [2020, 2030]
+export const DEFAULT_EXPLORATION_COST_YEARS: [number, number] = [2020, 2030]
+export const DEFAULT_TABLE_UTILS_YEARS: [number, number] = [2020, 2030]
+export const DEFAULT_PRODUCTION_PROFILES_YEARS: [number, number] = [2020, 2030]
 
 interface ProjectClassification {
     label: string,
@@ -119,3 +128,65 @@ export const INTERNAL_PROJECT_PHASE: { [key: number]: ProjectClassification } = 
         warn: true,
     },
 }
+
+export const PROJECT_CATEGORY: { [key: number]: string } = {
+    0: "Unknown",
+    1: "Brownfield",
+    2: "Cessation",
+    3: "Drilling upgrade",
+    4: "Onshore",
+    5: "Pipeline",
+    6: "Platform FPSO",
+    7: "Subsea",
+    8: "Solar",
+    9: "CO2 storage",
+    10: "Efuel",
+    11: "Nuclear",
+    12: "CO2 Capture",
+    13: "FPSO",
+    14: "Hydrogen",
+    15: "Hse",
+    16: "Offshore wind",
+    17: "Platform",
+    18: "Power from shore",
+    19: "Tie-in",
+    20: "Renewable other",
+    21: "CCS",
+}
+
+export const PROJECT_PHASE: { [key: number]: string } = {
+    0: "Unknown",
+    1: "Bid preparations",
+    2: "Business identification",
+    3: "Business planning",
+    4: "Concept planning",
+    5: "Concessions / Negotiations",
+    6: "Defintion",
+    7: "Execution",
+    8: "Operation",
+    9: "Screening business opportunities",
+}
+
+export const PRODUCTION_STRATEGY: { [key: number]: string } = {
+    0: "Depletion",
+    1: "Water injection",
+    2: "Gas injection",
+    3: "WAG",
+    4: "Mixed",
+}
+
+export const loginAccessTokenKey = "loginAccessToken"
+export const FusionAccessTokenKey = "fusionAccessToken"
+
+export const developmentWellOptions = [
+    { key: "0", value: WellCategory.OilProducer, label: "Oil producer" },
+    { key: "1", value: WellCategory.GasProducer, label: "Gas producer" },
+    { key: "2", value: WellCategory.WaterInjector, label: "Water injector" },
+    { key: "3", value: WellCategory.GasInjector, label: "Gas injector" },
+]
+
+export const explorationWellOptions = [
+    { key: "4", value: WellCategory.ExplorationWell, label: "Exploration well" },
+    { key: "5", value: WellCategory.AppraisalWell, label: "Appraisal well" },
+    { key: "6", value: WellCategory.Sidetrack, label: "Sidetrack" },
+]

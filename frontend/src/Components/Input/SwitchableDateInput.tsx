@@ -8,15 +8,13 @@ import React, {
     useMemo,
 } from "react"
 
-import {
-    isWithinRange,
-} from "../../Utils/commonUtils"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 
 import { useAppStore } from "@/Store/AppStore"
 import {
     formatDate,
     dateStringToDateUtc,
+    dateToUtcDateStringWithZeroTimePart,
 } from "@/Utils/DateUtils"
 
 interface SwitchableDateInputProps {
@@ -78,7 +76,9 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
         }
     }, [value, localValue])
 
-    const validateInput = useCallback((newValue: number) => {
+    const validateInput = useCallback((newValue: number): boolean => {
+        const isWithinRange = (num: number, lower: number, upper: number): boolean => num >= lower && num <= upper
+
         if (!isWithinRange(newValue, 2010, 2110)) {
             setHelperText(`(min: ${2010}, max: ${2110})`)
             setHasError(true)
@@ -105,7 +105,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
             return
         }
 
-        const dateString = date.toISOString()
+        const dateString = dateToUtcDateStringWithZeroTimePart(date)
 
         setLocalValue(dateString)
         onChange({ target: { value: dateString } } as React.ChangeEvent<HTMLInputElement>)
@@ -129,7 +129,6 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = memo(({
                     maxValue={maxValue}
                     formatOptions={{ day: "2-digit", month: "long", year: "numeric" }}
                     locale="nb-NO"
-                    timezone="Europe/Oslo"
                     hideClearButton={required}
                 />
             </InputSwitcher>

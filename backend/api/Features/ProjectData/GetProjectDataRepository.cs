@@ -80,13 +80,6 @@ public class GetProjectDataRepository(DcdDbContext context)
                 ProjectPhase = x.ProjectPhase,
                 InternalProjectPhase = x.InternalProjectPhase,
                 ProjectCategory = x.ProjectCategory,
-                Co2RemovedFromGas = x.Co2RemovedFromGas,
-                Co2EmissionFromFuelGas = x.Co2EmissionFromFuelGas,
-                FlaredGasPerProducedVolume = x.FlaredGasPerProducedVolume,
-                Co2EmissionsFromFlaredGas = x.Co2EmissionsFromFlaredGas,
-                Co2Vented = x.Co2Vented,
-                DailyEmissionFromDrillingRig = x.DailyEmissionFromDrillingRig,
-                AverageDevelopmentDrillingDays = x.AverageDevelopmentDrillingDays,
                 OilPriceUsd = x.OilPriceUsd,
                 GasPriceNok = x.GasPriceNok,
                 NglPriceUsd = x.NglPriceUsd,
@@ -147,6 +140,13 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Host = x.Host,
                 AverageCo2Intensity = x.AverageCo2Intensity,
                 DiscountedCashflow = x.DiscountedCashflow,
+                Co2RemovedFromGas = x.Co2RemovedFromGas,
+                Co2EmissionFromFuelGas = x.Co2EmissionFromFuelGas,
+                FlaredGasPerProducedVolume = x.FlaredGasPerProducedVolume,
+                Co2EmissionsFromFlaredGas = x.Co2EmissionsFromFlaredGas,
+                Co2Vented = x.Co2Vented,
+                DailyEmissionFromDrillingRig = x.DailyEmissionFromDrillingRig,
+                AverageDevelopmentDrillingDays = x.AverageDevelopmentDrillingDays,
                 DgaDate = x.DgaDate,
                 DgbDate = x.DgbDate,
                 DgcDate = x.DgcDate,
@@ -167,7 +167,8 @@ public class GetProjectDataRepository(DcdDbContext context)
                 OnshorePowerSupplyId = x.OnshorePowerSupplyId,
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
-                SharepointFileUrl = x.SharepointFileUrl
+                SharepointFileUrl = x.SharepointFileUrl,
+                SharepointUpdatedTimestampUtc = x.SharepointUpdatedTimestampUtc
             })
             .ToListAsync();
     }

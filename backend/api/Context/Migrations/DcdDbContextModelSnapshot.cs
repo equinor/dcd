@@ -132,6 +132,9 @@ namespace api.Migrations
                     b.Property<double>("AverageCo2Intensity")
                         .HasColumnType("float");
 
+                    b.Property<double>("AverageDevelopmentDrillingDays")
+                        .HasColumnType("float");
+
                     b.Property<DateTime?>("BorDate")
                         .HasColumnType("datetime2");
 
@@ -147,11 +150,26 @@ namespace api.Migrations
                     b.Property<double>("CapexFactorFeedStudies")
                         .HasColumnType("float");
 
+                    b.Property<double>("Co2EmissionFromFuelGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2EmissionsFromFlaredGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2RemovedFromGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Co2Vented")
+                        .HasColumnType("float");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<double>("DailyEmissionFromDrillingRig")
+                        .HasColumnType("float");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -191,6 +209,9 @@ namespace api.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("FinalYearsWithoutWellInterventionCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FlaredGasPerProducedVolume")
                         .HasColumnType("float");
 
                     b.Property<int>("GasInjectorCount")
@@ -235,6 +256,9 @@ namespace api.Migrations
 
                     b.Property<string>("SharepointFileUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SharepointUpdatedTimestampUtc")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("SubstructureId")
                         .HasColumnType("uniqueidentifier");
@@ -732,23 +756,8 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("AverageDevelopmentDrillingDays")
-                        .HasColumnType("float");
-
                     b.Property<int>("Classification")
                         .HasColumnType("int");
-
-                    b.Property<double>("Co2EmissionFromFuelGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Co2EmissionsFromFlaredGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Co2RemovedFromGas")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Co2Vented")
-                        .HasColumnType("float");
 
                     b.Property<string>("CommonLibraryName")
                         .IsRequired()
@@ -767,9 +776,6 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<double>("DailyEmissionFromDrillingRig")
-                        .HasColumnType("float");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -778,9 +784,6 @@ namespace api.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("ExchangeRateUsdToNok")
-                        .HasColumnType("float");
-
-                    b.Property<double>("FlaredGasPerProducedVolume")
                         .HasColumnType("float");
 
                     b.Property<Guid>("FusionProjectId")

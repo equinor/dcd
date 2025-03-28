@@ -70,16 +70,14 @@ public static class StudyCostProfileService
         profile.Values = valuesList.ToArray();
     }
 
-    private static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public static void CalculateTotalFeedStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudiesOverride)?.Override == true)
         {
             return;
         }
 
-        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeedStudies;
-
-        if (caseItem.Dg2Date == null || caseItem.Dg3Date == null)
+        if (caseItem.Dg2Date == null || caseItem.Dg3Date == null || caseItem.Dg3Date.Value < caseItem.Dg2Date.Value)
         {
             CalculationHelper.ResetTimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalFeedStudies));
 
@@ -97,48 +95,36 @@ public static class StudyCostProfileService
 
         var totalDays = (dg3 - dg2).Days + 1;
 
-        if (totalDays == 0) // Might want to throw an exception here
+        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeedStudies;
+
+        var costPerDay = totalFeedStudies / totalDays;
+
+        var costsPerYear = new List<double>();
+
+        for (var year = dg2.Year; year <= dg3.Year; year++)
         {
-            totalDays = 1;
+            var startDateForYear = dg2.Year == year ? dg2 : new DateTime(year, 1, 1);
+            var endDateForYear = dg3.Year == year ? dg3 : new DateTime(year, 12, 31);
+
+            var daysInYear = (endDateForYear - startDateForYear).TotalDays + 1;
+            costsPerYear.Add(daysInYear * costPerDay);
         }
-
-        var firstYearDays = DateTime.IsLeapYear(dg2.Year) ? 366 : 365;
-        var firstYearPercentage = firstYearDays / (double)totalDays;
-
-        var lastYearDays = dg3.DayOfYear;
-        var lastYearPercentage = lastYearDays / (double)totalDays;
-
-        var percentageOfYearList = new List<double>
-        {
-            firstYearPercentage
-        };
-
-        for (var i = dg2.Year + 1; i < dg3.Year; i++)
-        {
-            var days = DateTime.IsLeapYear(i) ? 366 : 365;
-            var percentage = days / (double)totalDays;
-            percentageOfYearList.Add(percentage);
-        }
-
-        percentageOfYearList.Add(lastYearPercentage);
-
-        var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeedStudies);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeedStudies);
 
         profile.StartYear = dg2.Year - caseItem.Dg4Date.Year;
-        profile.Values = valuesList.ToArray();
+        profile.Values = costsPerYear.ToArray();
     }
 
     private static double SumAllCostFacility(Case caseItem)
     {
         var sumFacilityCost = 0.0;
 
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SubstructureCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfile), caseItem.GetProfileOrNull(ProfileTypes.SurfCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfile), caseItem.GetProfileOrNull(ProfileTypes.TransportCostProfileOverride));
-        sumFacilityCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OnshorePowerSupplyCostProfileOverride));
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SubstructureCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.SurfCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.TopsideCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.TransportCostProfile)?.Values.Sum() ?? 0;
+        sumFacilityCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.OnshorePowerSupplyCostProfile)?.Values.Sum() ?? 0;
 
         return sumFacilityCost;
     }
@@ -147,10 +133,10 @@ public static class StudyCostProfileService
     {
         var sumWellCost = 0.0;
 
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.OilProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasProducerCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.WaterInjectorCostProfileOverride));
-        sumWellCost += SumOverrideOrProfile(caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfile), caseItem.GetProfileOrNull(ProfileTypes.GasInjectorCostProfileOverride));
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.OilProducerCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.GasProducerCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.WaterInjectorCostProfile)?.Values.Sum() ?? 0;
+        sumWellCost += caseItem.GetOverrideProfileOrProfile(ProfileTypes.GasInjectorCostProfile)?.Values.Sum() ?? 0;
 
         return sumWellCost;
     }
@@ -158,20 +144,5 @@ public static class StudyCostProfileService
     private static bool DateIsEqual(DateTime date1, DateTime date2)
     {
         return date1.Year == date2.Year && date1.DayOfYear == date2.DayOfYear;
-    }
-
-    private static double SumOverrideOrProfile(TimeSeriesProfile? profile, TimeSeriesProfile? profileOverride)
-    {
-        if (profileOverride?.Override == true)
-        {
-            return profileOverride.Values.Sum();
-        }
-
-        if (profile != null)
-        {
-            return profile.Values.Sum();
-        }
-
-        return 0;
     }
 }

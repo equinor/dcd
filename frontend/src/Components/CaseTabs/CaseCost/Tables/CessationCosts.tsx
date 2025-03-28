@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -20,8 +21,12 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     apiData,
 }) => {
     const revisionAndProjectData = useDataFetch()
-
     const [cessationTimeSeriesData, setCessationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
+
+    const calculatedFields = useMemo(() => [
+        ProfileTypes.CessationWellsCostOverride,
+        ProfileTypes.CessationOffshoreFacilitiesCostOverride,
+    ], [])
 
     useEffect(() => {
         const cessationWellsCostData = apiData.cessationWellsCost
@@ -31,43 +36,61 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         const cessationOnshoreFacilitiesCostProfileData = apiData.cessationOnshoreFacilitiesCostProfile
         const caseData = apiData.case
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseData.caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isCalculatedField,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
+
         const newCessationTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Cessation - Development wells",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: cessationWellsCostData,
                 resourceName: ProfileTypes.CessationWellsCostOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.CessationWellsCostOverride,
-                overridable: true,
                 overrideProfile: cessationWellsCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Cessation - Offshore facilities",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: cessationOffshoreFacilitiesCostData,
                 resourceName: ProfileTypes.CessationOffshoreFacilitiesCostOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.CessationOffshoreFacilitiesCostOverride,
-                overridable: true,
                 overrideProfile: cessationOffshoreFacilitiesCostOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "CAPEX - Cessation - Onshore facilities",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: cessationOnshoreFacilitiesCostProfileData,
                 resourceName: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.CessationOnshoreFacilitiesCostProfile,
-                editable: true,
-                overridable: false,
-            },
+            }),
         ]
 
         setCessationTimeSeriesData(newCessationTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
@@ -79,6 +102,8 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            calculatedFields={calculatedFields}
+            decimalPrecision={1}
         />
     )
 }

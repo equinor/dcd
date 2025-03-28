@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -16,19 +17,18 @@ public static class OnshorePowerSupplyProspService
         asset.CostYear = 0;
         asset.ProspVersion = null;
 
-        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, []);
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportOnshorePowerSupply(List<Cell> cellData, Case caseItem)
     {
         List<string> costProfileCoords = ["J114", "K114", "L114", "M114", "N114", "O114", "P114"];
 
-        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.OnshorePowerSupply.Dg4Date);
+        var firstYearInCostProfile = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.MainSheet.CostProfilesFirstYear);
 
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.OnshorePowerSupply.CostProfileStartYear);
-        var startYear = costProfileStartYear - dG4Date.Year;
+        var startYear = firstYearInCostProfile - caseItem.Dg4Date.Year;
         var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
 
-        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, startYear, values);
+        OnshorePowerSupplyCostProfileService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem, startYear, values, false);
     }
 }

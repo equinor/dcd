@@ -27,8 +27,9 @@ import { CampaignType, WellCategory } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { SetTableYearsFromProfiles } from "@/Utils/AgGridUtils"
+import { DEFAULT_DRILLING_SCHEDULE_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { calculateTableYears } from "@/Utils/TableUtils"
 
 const InputGroup = styled.div`
     display: flex;
@@ -47,10 +48,9 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, isSaving, setIsSaving } = useAppStore()
 
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const [startYear, setStartYear] = useState<number>(DEFAULT_DRILLING_SCHEDULE_YEARS[0])
+    const [endYear, setEndYear] = useState<number>(DEFAULT_DRILLING_SCHEDULE_YEARS[1])
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_DRILLING_SCHEDULE_YEARS)
     const isSmallScreen = useMediaQuery("(max-width: 768px)")
 
     const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
@@ -70,18 +70,25 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
     const wells = revisionAndProjectData?.commonProjectAndRevisionData.wells
 
     useEffect(() => {
-        if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {
+        if (activeTabCase === 3 && apiData) {
             const explorationDrillingSchedule = apiData.explorationCampaigns.flatMap((ew) => ew.campaignWells) ?? []
             const developmentDrillingSchedule = apiData.developmentCampaigns.flatMap((ew) => ew.campaignWells) ?? []
+            const profiles = [...explorationDrillingSchedule, ...developmentDrillingSchedule]
 
-            SetTableYearsFromProfiles(
-                [...explorationDrillingSchedule, ...developmentDrillingSchedule],
-                getYearFromDateString(apiData.case.dg4Date),
-                setStartYear,
-                setEndYear,
-                setTableYears,
-            )
-            setYearRangeSetFromProfiles(true)
+            const dg4Year = getYearFromDateString(apiData.case.dg4Date)
+            const years = calculateTableYears(profiles, dg4Year)
+
+            if (years) {
+                const [firstYear, lastYear] = years
+
+                setStartYear(firstYear)
+                setEndYear(lastYear)
+                setTableYears([firstYear, lastYear])
+            } else {
+                setStartYear(DEFAULT_DRILLING_SCHEDULE_YEARS[0])
+                setEndYear(DEFAULT_DRILLING_SCHEDULE_YEARS[1])
+                setTableYears(DEFAULT_DRILLING_SCHEDULE_YEARS)
+            }
         }
     }, [activeTabCase, apiData])
 

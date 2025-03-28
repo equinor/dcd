@@ -76,9 +76,7 @@ public static class TimeSeriesMerger
             return t1;
         }
 
-        var offset = t1Year < t2Year
-            ? t2Year - t1Year
-            : t1Year - t2Year;
+        var offset = Math.Abs(t1Year - t2Year);
 
         var values = t1Year < t2Year
             ? MergeTimeSeriesData(t1Values.ToList(), t2Values.ToList(), offset)

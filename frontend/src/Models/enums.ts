@@ -5,6 +5,7 @@ export enum ProfileTypes {
     AdditionalProductionProfileGas = "AdditionalProductionProfileGas",
     AdditionalProductionProfileOil = "AdditionalProductionProfileOil",
     AppraisalWellCostProfile = "AppraisalWellCostProfile",
+    AppraisalWellCostProfileOverride = "AppraisalWellCostProfileOverride",
     CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService",
     CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd",
     CalculatedTotalIncomeCostProfileUsd = "CalculatedTotalIncomeCostProfileUsd",
@@ -16,6 +17,7 @@ export enum ProfileTypes {
     Co2Emissions = "Co2Emissions",
     Co2EmissionsOverride = "Co2EmissionsOverride",
     Co2Intensity = "Co2Intensity",
+    Co2IntensityOverride = "Co2IntensityOverride",
     CondensateProduction = "CondensateProduction",
     CondensateProductionOverride = "CondensateProductionOverride",
     CountryOfficeCost = "CountryOfficeCost",
@@ -30,6 +32,7 @@ export enum ProfileTypes {
     ExplorationRigUpgradingCostProfile = "ExplorationRigUpgradingCostProfile",
     ExplorationRigUpgradingCostProfileOverride = "ExplorationRigUpgradingCostProfileOverride",
     ExplorationWellCostProfile = "ExplorationWellCostProfile",
+    ExplorationWellCostProfileOverride = "ExplorationWellCostProfileOverride",
     FuelFlaringAndLosses = "FuelFlaringAndLosses",
     FuelFlaringAndLossesOverride = "FuelFlaringAndLossesOverride",
     GAndGAdminCost = "GAndGAdminCost",
@@ -59,6 +62,7 @@ export enum ProfileTypes {
     ProjectSpecificDrillingCostProfile = "ProjectSpecificDrillingCostProfile",
     SeismicAcquisitionAndProcessing = "SeismicAcquisitionAndProcessing",
     SidetrackCostProfile = "SidetrackCostProfile",
+    SidetrackCostProfileOverride = "SidetrackCostProfileOverride",
     SubstructureCessationCostProfile = "SubstructureCessationCostProfile",
     SubstructureCostProfile = "SubstructureCostProfile",
     SubstructureCostProfileOverride = "SubstructureCostProfileOverride",
@@ -104,11 +108,10 @@ export enum CampaignType {
 export enum ChangeLogCategory {
     None = 0,
     WellCostTab = 1,
-    Co2Tab = 2,
-    AccessManagementTab = 3,
-    SettingsTab = 4,
-    ProjectOverviewTab = 5,
-    ProspTab = 6,
+    AccessManagementTab = 2,
+    SettingsTab = 3,
+    ProjectOverviewTab = 4,
+    ProspTab = 5,
 }
 
 export enum Concept {

@@ -4,8 +4,6 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
-using static api.Features.Profiles.VolumeConstants;
-
 namespace api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
 
 public static class Co2IntensityProfileService
@@ -76,13 +74,9 @@ public static class Co2IntensityProfileService
         return TimeSeriesMerger.MergeTimeSeries(oilProfile, additionalOilProfile);
     }
 
-    public static TimeSeries GetCo2EmissionsProfile(Case caseItem)
-    {
-        var co2EmissionsOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride);
-        var co2EmissionsProfile = caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions);
+    public static TimeSeries GetCo2EmissionsProfile(Case caseItem) =>
+        new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions));
 
-        return co2EmissionsOverrideProfile?.Override == true
-            ? new TimeSeries(co2EmissionsOverrideProfile)
-            : new TimeSeries(co2EmissionsProfile);
-    }
+    public static TimeSeries GetCo2IntensityProfile(Case caseItem) =>
+        new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Intensity));
 }

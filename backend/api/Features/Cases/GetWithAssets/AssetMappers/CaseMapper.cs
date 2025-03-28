@@ -25,12 +25,19 @@ public static class CaseMapper
             BreakEvenOverride = caseItem.BreakEvenOverride,
             DiscountedCashflow = caseItem.DiscountedCashflow,
             FacilitiesAvailability = caseItem.FacilitiesAvailability,
-            CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies,
-            CapexFactorFeedStudies = caseItem.CapexFactorFeedStudies,
+            CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies * 100,
+            CapexFactorFeedStudies = caseItem.CapexFactorFeedStudies * 100,
             InitialYearsWithoutWellInterventionCost = caseItem.InitialYearsWithoutWellInterventionCost,
             FinalYearsWithoutWellInterventionCost = caseItem.FinalYearsWithoutWellInterventionCost,
             Host = caseItem.Host,
             AverageCo2Intensity = caseItem.AverageCo2Intensity,
+            Co2RemovedFromGas = caseItem.Co2RemovedFromGas,
+            Co2EmissionFromFuelGas = caseItem.Co2EmissionFromFuelGas,
+            FlaredGasPerProducedVolume = caseItem.FlaredGasPerProducedVolume,
+            Co2EmissionsFromFlaredGas = caseItem.Co2EmissionsFromFlaredGas,
+            Co2Vented = caseItem.Co2Vented,
+            DailyEmissionFromDrillingRig = caseItem.DailyEmissionFromDrillingRig,
+            AverageDevelopmentDrillingDays = caseItem.AverageDevelopmentDrillingDays,
             DgaDate = caseItem.DgaDate,
             DgbDate = caseItem.DgbDate,
             DgcDate = caseItem.DgcDate,
@@ -51,7 +58,8 @@ public static class CaseMapper
             OnshorePowerSupplyId = caseItem.OnshorePowerSupplyId,
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,
-            SharepointFileUrl = caseItem.SharepointFileUrl
+            SharepointFileUrl = caseItem.SharepointFileUrl,
+            SharepointUpdatedTimestampUtc = caseItem.SharepointUpdatedTimestampUtc
         };
     }
 }

@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -34,14 +35,15 @@ public static class TopsideProspService
         asset.PeakElectricityImported = 0;
         asset.ProspVersion = null;
 
-        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, 0, []);
+        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportTopside(List<Cell> cellData, Case caseItem)
     {
         List<string> costProfileCoords = ["J104", "K104", "L104", "M104", "N104", "O104", "P104"];
 
-        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.Dg4Date);
+        var firstYearInCostProfile = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.MainSheet.CostProfilesFirstYear);
+
         var artificialLiftInt = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.ArtificialLiftInt);
         var artificialLift = ParseHelpers.MapArtificialLift(artificialLiftInt);
         var dryWeight = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.TopSide.DryWeight);
@@ -64,8 +66,7 @@ public static class TopsideProspService
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.TopSide.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.CostYear);
 
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.TopSide.CostProfileStartYear);
-        var startYear = costProfileStartYear - dG4Date.Year;
+        var startYear = firstYearInCostProfile - caseItem.Dg4Date.Year;
         var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
 
         var asset = caseItem.Topside;
@@ -92,6 +93,6 @@ public static class TopsideProspService
         asset.PeakElectricityImported = peakElectricityImported;
         asset.ProspVersion = versionDate;
 
-        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, startYear, values);
+        TopsideCostProfileService.AddOrUpdateTopsideCostProfile(caseItem, startYear, values, false);
     }
 }

@@ -5,9 +5,10 @@ import React, { useEffect, useMemo, useState } from "react"
 import { setValueToCorrespondingYear } from "@/Components/Charts/TimeSeriesChart"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/commonUtils"
+import { formatCurrencyUnit, formatNumberWithDecimals, formatProfileName } from "@/Utils/FormatingUtils"
+import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/TableUtils"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -109,13 +110,13 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             Object.entries(costProfiles).forEach(([profileName, profileData]) => {
                 const updatedProfile = {
                     ...profileData,
-                    values: profileData.values?.map((value) => -Math.abs(value)) || [],
+                    values: profileData.values?.map((value: number) => -Math.abs(value)) || [],
                 }
                 const resourceName: ProfileTypes = profileName as ProfileTypes
 
                 newTimeSeriesData.push({
-                    profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
-                    unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD",
+                    profileName: formatProfileName(profileName),
+                    unit: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency),
                     profile: updatedProfile,
                     resourceName,
                     resourceId: apiData.case.caseId,
@@ -129,8 +130,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 const resourceName: ProfileTypes = profileName as ProfileTypes
 
                 newTimeSeriesData.push({
-                    profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
-                    unit: revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD",
+                    profileName: formatProfileName(profileName),
+                    unit: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency),
                     profile: {
                         startYear: profileData[0]?.startYear ?? 0,
                         values: profileData.flatMap((p) => p.values ?? []),
@@ -318,7 +319,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "number",
                 position: "left",
-                title: { text: `${revisionAndProjectData?.commonProjectAndRevisionData?.currency === Currency.Nok ? "MNOK" : "MUSD"}` },
+                title: { text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency) },
             },
         ],
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
@@ -340,7 +341,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             text: "Cost Distribution",
             fontSize: 22,
         },
-        subtitle: { text: "(MNOK)" },
+        subtitle: { text: `(${formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency)})` },
         padding: {
             top: 10,
             right: 10,
@@ -358,12 +359,12 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 strokes: ["white"],
                 innerLabels: [
                     {
-                        text: `${totalValue.toFixed(2)}`,
+                        text: formatNumberWithDecimals(totalValue),
                         fontSize: 18,
                         color: "#000000",
                     },
                     {
-                        text: unit ?? "",
+                        text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency),
                         fontSize: 14,
                         color: "#B4B4B4",
                     },

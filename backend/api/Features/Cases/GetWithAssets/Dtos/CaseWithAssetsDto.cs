@@ -56,6 +56,7 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? ImportedElectricity { get; set; }
     public required TimeSeriesOverrideDto? ImportedElectricityOverride { get; set; }
     public required TimeSeriesDto? Co2Intensity { get; set; }
+    public required TimeSeriesOverrideDto? Co2IntensityOverride { get; set; }
     public required TimeSeriesDto? DeferredOilProduction { get; set; }
     public required TimeSeriesDto? DeferredGasProduction { get; set; }
 
@@ -79,8 +80,11 @@ public class CaseWithAssetsDto
     public required TimeSeriesOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
     public required TimeSeriesDto? ExplorationWellCostProfile { get; set; }
+    public required TimeSeriesOverrideDto? ExplorationWellCostProfileOverride { get; set; }
     public required TimeSeriesDto? AppraisalWellCostProfile { get; set; }
+    public required TimeSeriesOverrideDto? AppraisalWellCostProfileOverride { get; set; }
     public required TimeSeriesDto? SidetrackCostProfile { get; set; }
+    public required TimeSeriesOverrideDto? SidetrackCostProfileOverride { get; set; }
     public required TimeSeriesDto? GAndGAdminCost { get; set; }
     public required TimeSeriesOverrideDto? GAndGAdminCostOverride { get; set; }
     public required TimeSeriesDto? SeismicAcquisitionAndProcessing { get; set; }

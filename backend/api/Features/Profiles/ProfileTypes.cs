@@ -70,10 +70,13 @@ public static class ProfileTypes
     public const string GAndGAdminCostOverride = "GAndGAdminCostOverride";
 
     public const string ExplorationWellCostProfile = "ExplorationWellCostProfile";
+    public const string ExplorationWellCostProfileOverride = "ExplorationWellCostProfileOverride";
 
     public const string AppraisalWellCostProfile = "AppraisalWellCostProfile";
+    public const string AppraisalWellCostProfileOverride = "AppraisalWellCostProfileOverride";
 
     public const string SidetrackCostProfile = "SidetrackCostProfile";
+    public const string SidetrackCostProfileOverride = "SidetrackCostProfileOverride";
 
     public const string SeismicAcquisitionAndProcessing = "SeismicAcquisitionAndProcessing";
 
@@ -135,6 +138,7 @@ public static class ProfileTypes
     public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
 
     public const string Co2Intensity = "Co2Intensity";
+    public const string Co2IntensityOverride = "Co2IntensityOverride";
 
     public const string ProductionProfileNgl = "ProductionProfileNgl";
     public const string ProductionProfileNglOverride = "ProductionProfileNglOverride";

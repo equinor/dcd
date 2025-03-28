@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { Currency, ProfileTypes } from "@/Models/enums"
+import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { getUnitByProfileName } from "@/Utils/FormatingUtils"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -19,6 +20,11 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
     const revisionAndProjectData = useDataFetch()
     const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
+    const calculatedFields = useMemo(() => [
+        ProfileTypes.WellInterventionCostProfileOverride,
+        ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
+    ], [])
+
     useEffect(() => {
         const historicCostCostProfileData = apiData.historicCostCostProfile
         const wellInterventionCostProfileData = apiData.wellInterventionCostProfile
@@ -29,74 +35,84 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const additionalOpexCostProfileData = apiData.additionalOpexCostProfile
         const caseData = apiData.case
 
+        const currency = revisionAndProjectData?.commonProjectAndRevisionData.currency
+        const physUnit = revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit
+
+        interface CreateProfileDataParams {
+            profileName: string;
+            profile: any;
+            resourceName: ProfileTypes;
+            overrideProfile?: any;
+            editable?: boolean;
+        }
+
+        const createProfileData = ({
+            profileName,
+            profile,
+            resourceName,
+            overrideProfile,
+            editable = true,
+        }: CreateProfileDataParams): ITimeSeriesTableData => {
+            const isCalculatedField = calculatedFields.includes(resourceName)
+
+            return ({
+                profileName,
+                unit: getUnitByProfileName(profileName, physUnit, currency),
+                profile,
+                resourceName,
+                resourceId: caseData.caseId,
+                resourcePropertyKey: resourceName,
+                editable,
+                overridable: isCalculatedField,
+                ...(overrideProfile && { overrideProfile }),
+            })
+        }
+
         const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
-            {
+            createProfileData({
                 profileName: "Historic cost",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: historicCostCostProfileData,
                 resourceName: ProfileTypes.HistoricCostCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.HistoricCostCostProfile,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Well intervention",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: wellInterventionCostProfileData,
                 resourceName: ProfileTypes.WellInterventionCostProfileOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.WellInterventionCostProfileOverride,
-                overridable: true,
                 overrideProfile: wellInterventionCostProfileOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Offshore facilities operations",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: offshoreFacilitiesOperationsCostProfileData,
                 resourceName: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride,
-                overridable: true,
                 overrideProfile: offshoreFacilitiesOperationsCostProfileOverrideData,
-                editable: true,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Onshore related OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: onshoreRelatedOpexCostProfileData,
                 resourceName: ProfileTypes.OnshoreRelatedOpexCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.OnshoreRelatedOpexCostProfile,
-                editable: true,
-                overridable: false,
-            },
-            {
+            }),
+            createProfileData({
                 profileName: "Additional OPEX (input req.)",
-                unit: `${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok ? "MNOK" : "MUSD"}`,
                 profile: additionalOpexCostProfileData,
                 resourceName: ProfileTypes.AdditionalOpexCostProfile,
-                resourceId: caseData.caseId,
-                resourcePropertyKey: ProfileTypes.AdditionalOpexCostProfile,
-                editable: true,
-                overridable: false,
-            },
+            }),
         ]
 
         setOpexTimeSeriesData(newOpexTimeSeriesData)
-    }, [apiData, revisionAndProjectData, tableYears])
+    }, [apiData, revisionAndProjectData, tableYears, calculatedFields])
 
     return (
         <CaseBaseTable
             timeSeriesData={opexTimeSeriesData}
             dg4Year={getYearFromDateString(apiData.case.dg4Date)}
             tableYears={tableYears}
-            tableName="OPEX cost"
+            tableName="Opex costs"
             gridRef={opexGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            calculatedFields={calculatedFields}
+            decimalPrecision={1}
         />
     )
 }

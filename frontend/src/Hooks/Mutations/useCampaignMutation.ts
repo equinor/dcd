@@ -2,10 +2,10 @@ import { useParams } from "react-router"
 
 import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
+import { CampaignProfileType } from "@/Components/CaseTabs/CaseDrillingSchedule/Components/CampaignProfileTypes"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { CampaignProfileType } from "@/Utils/commonUtils"
 
 export interface CampaignWellUpdate {
     wellId: string
@@ -13,15 +13,10 @@ export interface CampaignWellUpdate {
     values: number[]
 }
 
-export enum CampaignCostType {
-    RigUpgradingCost = "rigUpgradingCost",
-    RigMobDemobCost = "rigMobDemobCost"
-}
-
 export interface CampaignMutationParams {
     campaignId: string;
-    [CampaignCostType.RigUpgradingCost]?: number;
-    [CampaignCostType.RigMobDemobCost]?: number;
+    rigUpgradingCost?: number;
+    rigMobDemobCost?: number;
     [CampaignProfileType.RigUpgrading]?: ITimeSeries;
     [CampaignProfileType.RigMobDemob]?: ITimeSeries;
     wells?: CampaignWellUpdate[];
@@ -65,8 +60,8 @@ export const useCampaignMutation = () => {
     ) => {
         const {
             campaignId,
-            [CampaignCostType.RigUpgradingCost]: rigUpgradingCost,
-            [CampaignCostType.RigMobDemobCost]: rigMobDemobCost,
+            rigUpgradingCost,
+            rigMobDemobCost,
             [CampaignProfileType.RigUpgrading]: rigUpgradingProfile,
             [CampaignProfileType.RigMobDemob]: rigMobDemobProfile,
             wells,
@@ -140,17 +135,17 @@ export const useCampaignMutation = () => {
     const updateRigUpgradingCost = (campaignId: string, cost: number) => mutation.mutateAsync({
         updatedValue: {
             campaignId,
-            [CampaignCostType.RigUpgradingCost]: cost,
+            rigUpgradingCost: cost,
         },
-        propertyKey: CampaignCostType.RigUpgradingCost,
+        propertyKey: "rigUpgradingCost",
     })
 
     const updateRigMobDemobCost = (campaignId: string, cost: number) => mutation.mutateAsync({
         updatedValue: {
             campaignId,
-            [CampaignCostType.RigMobDemobCost]: cost,
+            rigMobDemobCost: cost,
         },
-        propertyKey: CampaignCostType.RigMobDemobCost,
+        propertyKey: "rigMobDemobCost",
     })
 
     // Profile updates - from table edits

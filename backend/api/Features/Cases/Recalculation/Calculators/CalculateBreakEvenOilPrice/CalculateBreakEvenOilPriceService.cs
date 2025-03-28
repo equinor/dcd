@@ -29,12 +29,9 @@ public static class CalculateBreakEvenOilPriceService
 
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
-        var netSalesGasProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas);
-        var netSalesGasOverrideProfile = caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride);
+        var netSalesGasProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.NetSalesGas);
 
-        var netSalesGasVolume = netSalesGasOverrideProfile?.Override == true
-            ? new TimeSeries(netSalesGasOverrideProfile)
-            : new TimeSeries(netSalesGasProfile);
+        var netSalesGasVolume = new TimeSeries(netSalesGasProfile);
 
         netSalesGasVolume.Values = netSalesGasVolume.Values.Select(v => v / 1_000_000_000).ToArray();
 

@@ -42,6 +42,13 @@ declare namespace Components {
             host: string | null;
             averageCo2Intensity: number; // double
             discountedCashflow: number; // double
+            co2RemovedFromGas: number; // double
+            co2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            co2EmissionsFromFlaredGas: number; // double
+            co2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
             dgaDate: string | null; // date-time
             dgbDate: string | null; // date-time
             dgcDate: string | null; // date-time
@@ -63,6 +70,8 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            sharepointUrl: string | null;
+            sharepointUpdatedTimestampUtc: string | null; // date-time
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
@@ -112,6 +121,7 @@ declare namespace Components {
             importedElectricity: TimeSeriesDto;
             importedElectricityOverride: TimeSeriesOverrideDto;
             co2Intensity: TimeSeriesDto;
+            co2IntensityOverride: TimeSeriesOverrideDto;
             deferredOilProduction: TimeSeriesDto;
             deferredGasProduction: TimeSeriesDto;
             substructure: SubstructureDto;
@@ -130,8 +140,11 @@ declare namespace Components {
             onshorePowerSupplyCostProfile: TimeSeriesDto;
             onshorePowerSupplyCostProfileOverride: TimeSeriesOverrideDto;
             explorationWellCostProfile: TimeSeriesDto;
+            explorationWellCostProfileOverride: TimeSeriesOverrideDto;
             appraisalWellCostProfile: TimeSeriesDto;
+            appraisalWellCostProfileOverride: TimeSeriesOverrideDto;
             sidetrackCostProfile: TimeSeriesDto;
+            sidetrackCostProfileOverride: TimeSeriesOverrideDto;
             gAndGAdminCost: TimeSeriesDto;
             gAndGAdminCostOverride: TimeSeriesOverrideDto;
             seismicAcquisitionAndProcessing: TimeSeriesDto;
@@ -156,7 +169,7 @@ declare namespace Components {
             developmentRigMobDemob: TimeSeriesDto;
             developmentRigMobDemobOverride: TimeSeriesOverrideDto;
         }
-        export type ChangeLogCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
+        export type ChangeLogCategory = 0 | 1 | 2 | 3 | 4 | 5; // int32
         export interface Co2DrillingFlaringFuelTotalsDto {
             co2Drilling: number; // double
             co2Fuel: number; // double
@@ -176,13 +189,6 @@ declare namespace Components {
             internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl: string | null;
-            co2RemovedFromGas: number; // double
-            co2EmissionFromFuelGas: number; // double
-            flaredGasPerProducedVolume: number; // double
-            co2EmissionsFromFlaredGas: number; // double
-            co2Vented: number; // double
-            dailyEmissionFromDrillingRig: number; // double
-            averageDevelopmentDrillingDays: number; // double
             oilPriceUsd: number; // double
             gasPriceNok: number; // double
             nglPriceUsd: number; // double
@@ -492,6 +498,13 @@ declare namespace Components {
             host: string | null;
             averageCo2Intensity: number; // double
             discountedCashflow: number; // double
+            co2RemovedFromGas: number; // double
+            co2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            co2EmissionsFromFlaredGas: number; // double
+            co2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
             dgaDate: string | null; // date-time
             dgbDate: string | null; // date-time
             dgcDate: string | null; // date-time
@@ -506,6 +519,7 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            sharepointUrl: string | null;
         }
         export interface UpdateDevelopmentOperationalWellCostsDto {
             rigUpgrading: number; // double
@@ -549,13 +563,6 @@ declare namespace Components {
             internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl: string | null;
-            co2RemovedFromGas: number; // double
-            co2EmissionFromFuelGas: number; // double
-            flaredGasPerProducedVolume: number; // double
-            co2EmissionsFromFlaredGas: number; // double
-            co2Vented: number; // double
-            dailyEmissionFromDrillingRig: number; // double
-            averageDevelopmentDrillingDays: number; // double
             oilPriceUsd: number; // double
             gasPriceNok: number; // double
             nglPriceUsd: number; // double
@@ -1022,6 +1029,21 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdProspCheckForUpdate {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = boolean;
             }
         }
     }

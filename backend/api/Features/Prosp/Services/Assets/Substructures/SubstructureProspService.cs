@@ -1,3 +1,4 @@
+using api.Features.Profiles;
 using api.Features.Prosp.Constants;
 using api.Models;
 using api.Models.Enums;
@@ -18,22 +19,22 @@ public static class SubstructureProspService
         asset.Concept = Concept.NoConcept;
         asset.ProspVersion = null;
 
-        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, 0, []);
+        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, 0, [], true);
     }
 
     public static void ImportSubstructure(List<Cell> cellData, Case caseItem)
     {
         List<string> costProfileCoords = ["J105", "K105", "L105", "M105", "N105", "O105", "P105"];
 
-        var dG4Date = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Substructure.Dg4Date);
+        var firstYearInCostProfile = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.MainSheet.CostProfilesFirstYear);
+
         var dryWeight = ParseHelpers.ReadDoubleValue(cellData, ProspCellReferences.Substructure.DryWeight);
         var concept = ParseHelpers.MapSubstructureConcept(ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Substructure.ConceptInt));
         var versionDate = ParseHelpers.ReadDateValue(cellData, ProspCellReferences.Substructure.VersionDate);
         var costYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Substructure.CostYear);
 
-        var costProfileStartYear = ParseHelpers.ReadIntValue(cellData, ProspCellReferences.Substructure.CostProfileStartYear);
         var values = ParseHelpers.ReadDoubleValues(cellData, costProfileCoords);
-        var startYear = costProfileStartYear - dG4Date.Year;
+        var startYear = firstYearInCostProfile - caseItem.Dg4Date.Year;
 
         var asset = caseItem.Substructure;
 
@@ -43,6 +44,6 @@ public static class SubstructureProspService
         asset.Concept = concept;
         asset.ProspVersion = versionDate;
 
-        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, startYear, values);
+        SubstructureCostProfileService.AddOrUpdateSubstructureCostProfile(caseItem, startYear, values, false);
     }
 }

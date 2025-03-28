@@ -14,8 +14,7 @@ import { useDataFetch } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import useEditProject from "@/Hooks/useEditProject"
 import { useModalContext } from "@/Store/ModalContext"
-import { INTERNAL_PROJECT_PHASE } from "@/Utils/Config/constants"
-import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/commonUtils"
+import { INTERNAL_PROJECT_PHASE, PROJECT_CATEGORY, PROJECT_PHASE } from "@/Utils/Config/constants"
 
 const ProjectOverviewTab = () => {
     const { addProjectEdit } = useEditProject()
@@ -63,7 +62,7 @@ const ProjectOverviewTab = () => {
         const { projectPhase, internalProjectPhase } = revisionAndProjectData?.commonProjectAndRevisionData ?? {}
 
         if (projectPhase !== undefined && [3, 4, 5, 6, 7, 8].includes(projectPhase)) {
-            return getProjectPhaseName(projectPhase)
+            return PROJECT_PHASE[projectPhase]
         }
 
         const phaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
@@ -103,7 +102,7 @@ const ProjectOverviewTab = () => {
                         <Grid size={4}>
                             <Typography group="input" variant="label">Project Category</Typography>
                             <Typography aria-label="Project category">
-                                {getProjectCategoryName(revisionAndProjectData.commonProjectAndRevisionData.projectCategory)}
+                                {PROJECT_CATEGORY[revisionAndProjectData.commonProjectAndRevisionData.projectCategory]}
                             </Typography>
                         </Grid>
                         <Grid size={4}>

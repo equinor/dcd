@@ -13,13 +13,12 @@ import React, {
 } from "react"
 import styled from "styled-components"
 
-import { useDataFetch } from "@/Hooks"
+import { useCaseApiData, useCaseMutation, useTopsideMutation } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
-import useEditProject from "@/Hooks/useEditProject"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { parseDecimalInput, roundToDecimals } from "@/Utils/FormatingUtils"
+import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 const StyledContainer = styled.div`
     display: flex;
@@ -44,15 +43,30 @@ const Header = styled(Grid)`
     align-items: flex-start;
 `
 
-const CO2Tab = () => {
+const Co2EmissionsTable = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const { isRevision } = useProjectContext()
     const { canEdit, isEditDisabled, getEditDisabledText } = useCanUserEdit()
-    const revisionAndProjectData = useDataFetch()
+    const { apiData } = useCaseApiData()
+
+    const {
+        updateCo2RemovedFromGas,
+        updateCo2EmissionFromFuelGas,
+        updateFlaredGasPerProducedVolume,
+        updateCo2EmissionsFromFlaredGas,
+        updateCo2Vented,
+        updateAverageDevelopmentDrillingDays,
+        updateDailyEmissionFromDrillingRig,
+    } = useCaseMutation()
+
+    const {
+        updateFuelConsumption,
+    } = useTopsideMutation()
 
     const [check, setCheck] = useState(false)
 
+    const [fuelConsumption, setFuelConsumption] = useState<number>()
     const [co2RemovedFromGas, setCo2RemovedFromGas] = useState<number>()
     const [co2EmissionsFromFuelGas, setCo2EmissionsFromFuelGas] = useState<number>()
     const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>()
@@ -62,7 +76,6 @@ const CO2Tab = () => {
     const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>()
 
     const { editMode } = useAppStore()
-    const { addProjectEdit } = useEditProject()
 
     let co2VentedRow = true
 
@@ -90,26 +103,33 @@ const CO2Tab = () => {
     ] as ColDef[], [editMode, isEditDisabled])
 
     useEffect(() => {
-        if (revisionAndProjectData) {
-            setCo2RemovedFromGas(revisionAndProjectData.commonProjectAndRevisionData.co2RemovedFromGas)
-            setCo2EmissionsFromFuelGas(revisionAndProjectData.commonProjectAndRevisionData.co2EmissionFromFuelGas)
-            setFlaredGasPerProducedVolume(revisionAndProjectData.commonProjectAndRevisionData.flaredGasPerProducedVolume)
-            setCo2EmissionsFromFlaredGas(revisionAndProjectData.commonProjectAndRevisionData.co2EmissionsFromFlaredGas)
-            setCo2Vented(revisionAndProjectData.commonProjectAndRevisionData.co2Vented)
-            setAverageDevelopmentWellDrillingDays(revisionAndProjectData.commonProjectAndRevisionData.averageDevelopmentDrillingDays)
-            setDailyEmissionsFromDrillingRig(revisionAndProjectData.commonProjectAndRevisionData.dailyEmissionFromDrillingRig)
+        if (apiData) {
+            setFuelConsumption(apiData.topside.fuelConsumption)
+            setCo2RemovedFromGas(apiData.case.co2RemovedFromGas)
+            setCo2EmissionsFromFuelGas(apiData.case.co2EmissionFromFuelGas)
+            setFlaredGasPerProducedVolume(apiData.case.flaredGasPerProducedVolume)
+            setCo2EmissionsFromFlaredGas(apiData.case.co2EmissionsFromFlaredGas)
+            setCo2Vented(apiData.case.co2Vented)
+            setAverageDevelopmentWellDrillingDays(apiData.case.averageDevelopmentDrillingDays)
+            setDailyEmissionsFromDrillingRig(apiData.case.dailyEmissionFromDrillingRig)
         }
-    }, [revisionAndProjectData])
+    }, [apiData])
 
     const toRowValue = (value: number | undefined) => {
         if (value !== undefined) {
-            return Math.round(value * 100) / 100
+            return roundToDecimals(value, 2)
         }
 
         return value
     }
 
     const rowData = useMemo(() => [
+        {
+            profile: "Fuel gas consumption from Prosp (Scope 1)",
+            unit: "million Sm³ gas/sd",
+            set: setFuelConsumption,
+            value: toRowValue(fuelConsumption),
+        },
         {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
@@ -153,6 +173,7 @@ const CO2Tab = () => {
             value: toRowValue(dailyEmissionsFromDrillingRig),
         },
     ] as CO2Data[], [
+        fuelConsumption,
         co2RemovedFromGas,
         co2EmissionsFromFuelGas,
         flaredGasPerProducedVolume,
@@ -192,7 +213,7 @@ const CO2Tab = () => {
     const handleCellValueChange = (p: any) => {
         const value = p.data.value === null ? 0 : p.data.value
 
-        p.data.set(Number(value.toString().replace(/,/g, ".")))
+        p.data.set(parseDecimalInput(value))
     }
 
     const defaultColDef = useMemo(() => ({
@@ -221,48 +242,68 @@ const CO2Tab = () => {
     }
 
     useEffect(() => {
-        if (revisionAndProjectData
-            && canEdit()
-            && co2RemovedFromGas !== undefined
-            && co2EmissionsFromFlaredGas !== undefined
-            && co2EmissionsFromFuelGas !== undefined
-            && co2Vented !== undefined
-            && averageDevelopmentWellDrillingDays !== undefined
-            && dailyEmissionsFromDrillingRig !== undefined
-            && flaredGasPerProducedVolume !== undefined
-            && (
-                co2RemovedFromGas !== revisionAndProjectData.commonProjectAndRevisionData.co2RemovedFromGas
-                || co2EmissionsFromFlaredGas !== revisionAndProjectData.commonProjectAndRevisionData.co2EmissionsFromFlaredGas
-                || co2EmissionsFromFuelGas !== revisionAndProjectData.commonProjectAndRevisionData.co2EmissionFromFuelGas
-                || co2Vented !== revisionAndProjectData.commonProjectAndRevisionData.co2Vented
-                || averageDevelopmentWellDrillingDays !== revisionAndProjectData.commonProjectAndRevisionData.averageDevelopmentDrillingDays
-                || dailyEmissionsFromDrillingRig !== revisionAndProjectData.commonProjectAndRevisionData.dailyEmissionFromDrillingRig
-                || flaredGasPerProducedVolume !== revisionAndProjectData.commonProjectAndRevisionData.flaredGasPerProducedVolume
-            )
-        ) {
-            const newProject: Components.Schemas.UpdateProjectDto = { ...revisionAndProjectData.commonProjectAndRevisionData }
-
-            newProject.co2RemovedFromGas = co2RemovedFromGas
-            newProject.co2EmissionFromFuelGas = co2EmissionsFromFuelGas
-            newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume
-            newProject.co2EmissionsFromFlaredGas = co2EmissionsFromFlaredGas
-            newProject.co2Vented = co2Vented
-            newProject.averageDevelopmentDrillingDays = averageDevelopmentWellDrillingDays
-            newProject.dailyEmissionFromDrillingRig = dailyEmissionsFromDrillingRig
-            addProjectEdit(revisionAndProjectData.projectId, newProject)
+        if (apiData && canEdit() && fuelConsumption !== undefined) {
+            if (fuelConsumption !== apiData.topside.fuelConsumption) {
+                updateFuelConsumption(apiData.topside.id, fuelConsumption)
+            }
         }
-    }, [
-        co2RemovedFromGas,
-        co2EmissionsFromFlaredGas,
-        flaredGasPerProducedVolume,
-        co2EmissionsFromFuelGas,
-        co2Vented,
-        averageDevelopmentWellDrillingDays,
-        dailyEmissionsFromDrillingRig,
-        isRevision,
-    ])
+    }, [fuelConsumption])
 
-    if (!revisionAndProjectData) { return null }
+    useEffect(() => {
+        if (apiData && canEdit() && co2RemovedFromGas !== undefined) {
+            if (co2RemovedFromGas !== apiData.case.co2RemovedFromGas) {
+                updateCo2RemovedFromGas(co2RemovedFromGas)
+            }
+        }
+    }, [co2RemovedFromGas])
+
+    useEffect(() => {
+        if (apiData && canEdit() && co2EmissionsFromFlaredGas !== undefined) {
+            if (co2EmissionsFromFlaredGas !== apiData.case.co2EmissionsFromFlaredGas) {
+                updateCo2EmissionsFromFlaredGas(co2EmissionsFromFlaredGas)
+            }
+        }
+    }, [co2EmissionsFromFlaredGas])
+
+    useEffect(() => {
+        if (apiData && canEdit() && co2EmissionsFromFuelGas !== undefined) {
+            if (co2EmissionsFromFuelGas !== apiData.case.co2EmissionFromFuelGas) {
+                updateCo2EmissionFromFuelGas(co2EmissionsFromFuelGas)
+            }
+        }
+    }, [co2EmissionsFromFuelGas])
+
+    useEffect(() => {
+        if (apiData && canEdit() && co2Vented !== undefined) {
+            if (co2Vented !== apiData.case.co2Vented) {
+                updateCo2Vented(co2Vented)
+            }
+        }
+    }, [co2Vented])
+
+    useEffect(() => {
+        if (apiData && canEdit() && averageDevelopmentWellDrillingDays !== undefined) {
+            if (averageDevelopmentWellDrillingDays !== apiData.case.averageDevelopmentDrillingDays) {
+                updateAverageDevelopmentDrillingDays(averageDevelopmentWellDrillingDays)
+            }
+        }
+    }, [averageDevelopmentWellDrillingDays])
+
+    useEffect(() => {
+        if (apiData && canEdit() && dailyEmissionsFromDrillingRig !== undefined) {
+            if (dailyEmissionsFromDrillingRig !== apiData.case.dailyEmissionFromDrillingRig) {
+                updateDailyEmissionFromDrillingRig(dailyEmissionsFromDrillingRig)
+            }
+        }
+    }, [dailyEmissionsFromDrillingRig])
+
+    useEffect(() => {
+        if (apiData && canEdit() && flaredGasPerProducedVolume !== undefined) {
+            if (flaredGasPerProducedVolume !== apiData.case.flaredGasPerProducedVolume) {
+                updateFlaredGasPerProducedVolume(flaredGasPerProducedVolume)
+            }
+        }
+    }, [flaredGasPerProducedVolume])
 
     return (
         <Grid container spacing={1} justifyContent="flex-end">
@@ -311,4 +352,4 @@ const CO2Tab = () => {
     )
 }
 
-export default CO2Tab
+export default Co2EmissionsTable

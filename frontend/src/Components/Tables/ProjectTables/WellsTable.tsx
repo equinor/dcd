@@ -14,8 +14,7 @@ import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableH
 import { TableWell } from "@/Models/Interfaces"
 import { Currency, WellCategory } from "@/Models/enums"
 import { GetWellService } from "@/Services/WellService"
-import { getCustomContextMenuItems } from "@/Utils/AgGridUtils"
-import { cellStyleRightAlign } from "@/Utils/commonUtils"
+import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 interface WellsTableProps {
     rowData: TableWell[]
@@ -24,9 +23,9 @@ interface WellsTableProps {
     wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
-      projectId: string,
-      fusionProjectId: string,
-      updatePayload: Components.Schemas.UpdateWellsDto,
+        projectId: string,
+        fusionProjectId: string,
+        updatePayload: Components.Schemas.UpdateWellsDto,
     ) => void
     defaultWellCategory: WellCategory
     wellStagedForDeletion: any
@@ -134,7 +133,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
             },
             {
                 field: "drillingDays",
-                headerName: "Drilling days",
+                headerName: "Drilling and completion days",
                 flex: 1,
                 cellStyle: cellStyleRightAlign,
                 editable: editMode && !isEditDisabled,
@@ -145,7 +144,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                     ? "mill NOK"
                     : "mill USD"
-                })`,
+                    })`,
                 flex: 1,
                 headerComponent: SecondaryTableHeader,
                 headerComponentParams: {

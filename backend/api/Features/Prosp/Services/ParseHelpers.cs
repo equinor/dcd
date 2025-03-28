@@ -9,7 +9,7 @@ public static class ParseHelpers
     public static double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
     {
         return double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText, out var value)
-            ? Math.Round(value, 3)
+            ? Math.Round(value, 10)
             : 0;
     }
 
