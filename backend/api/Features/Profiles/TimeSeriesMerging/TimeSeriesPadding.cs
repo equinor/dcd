@@ -12,7 +12,7 @@ public static class TimeSeriesPadding
         return paddedStartAndEnd;
     }
 
-    private static TimeSeries PadTimeSeriesStart(TimeSeries target, TimeSeries timeSeries)
+    public static TimeSeries PadTimeSeriesStart(TimeSeries target, TimeSeries timeSeries)
     {
         if (target.Values.Length == 0)
         {
@@ -40,7 +40,7 @@ public static class TimeSeriesPadding
         };
     }
 
-    private static TimeSeries PadTimeSeriesEnd(TimeSeries target, TimeSeries timeSeries)
+    public static TimeSeries PadTimeSeriesEnd(TimeSeries target, TimeSeries timeSeries)
     {
         if (target.Values.Length == 0)
         {
