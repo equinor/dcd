@@ -13,6 +13,7 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useCaseApiData } from "@/Hooks/useCaseApiData"
 import { useDebouncedCallback } from "@/Hooks/useDebounce"
 import { useProjectContext } from "@/Store/ProjectContext"
+import PROSPBar, { BottomPadding } from "./Components/PROSPBar"
 
 const productionStrategyOptions = {
     0: "Depletion",
@@ -86,16 +87,6 @@ const CaseDescriptionTab = () => {
     return (
         <Grid container spacing={2}>
             <Gallery />
-
-            {/* SharePoint File Selector Component */}
-            <Grid size={12}>
-                <SharePointFileSelector
-                    projectId={projectId}
-                    caseId={caseData.caseId}
-                    currentSharePointFileId={caseData.sharepointFileId || null}
-                />
-            </Grid>
-
             <Grid container size={12} justifyContent="flex-start">
                 <Grid container size={{ xs: 12, md: 10, lg: 8 }} spacing={2}>
                     <Grid size={12} sx={{ marginBottom: canEdit() ? "32px" : 0 }}>

@@ -23,6 +23,8 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
+import PROSPBar from "../Components/PROSPBar"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -31,6 +33,7 @@ interface ICo2DistributionChartData {
 
 const CaseCO2Tab = () => {
     const { activeTabCase } = useCaseStore()
+    const { projectId } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
     const { updateFuelConsumption } = useTopsideMutation()
@@ -321,6 +324,11 @@ const CaseCO2Tab = () => {
             <Grid size={12}>
                 <Co2EmissionsTable />
             </Grid>
+            <PROSPBar 
+                projectId={projectId} 
+                caseId={caseData.caseId} 
+                currentSharePointFileId={caseData.sharepointFileId || null} 
+            />
         </Grid>
     )
 }

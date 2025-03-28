@@ -16,6 +16,8 @@ import {
 } from "@/Hooks/Mutations"
 import { Concept, Source } from "@/Models/enums"
 import { formatCurrencyUnit, roundToDecimals } from "@/Utils/FormatingUtils"
+import { useProjectContext } from "@/Store/ProjectContext"
+import PROSPBar from "./Components/PROSPBar"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
@@ -23,6 +25,7 @@ const TabContainer = styled(Grid)`
 
 const CaseFacilitiesTab = () => {
     const revisionAndProjectData = useDataFetch()
+    const { projectId } = useProjectContext()
     const { apiData } = useCaseApiData()
     const {
         updateFacilityOpex,
@@ -401,6 +404,11 @@ const CaseFacilitiesTab = () => {
                     onSubmit={(newValue) => updateSubstructureDryWeight(substructureData.id, newValue)}
                 />
             </Grid>
+            <PROSPBar 
+                projectId={projectId} 
+                caseId={caseData.caseId} 
+                currentSharePointFileId={caseData.sharepointFileId || null} 
+            />
         </TabContainer>
     )
 }

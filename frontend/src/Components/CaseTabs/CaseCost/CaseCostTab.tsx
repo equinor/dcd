@@ -21,9 +21,12 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { DEFAULT_CASE_COST_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
+import PROSPBar from "../Components/PROSPBar"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()
+    const { projectId } = useProjectContext()
 
     const [startYear, setStartYear] = useState<number>(DEFAULT_CASE_COST_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_CASE_COST_YEARS[1])
@@ -157,6 +160,8 @@ const CaseCostTab = () => {
     if (!apiData) {
         return <CaseCostSkeleton />
     }
+    
+    const caseData = apiData.case
 
     return (
         <Grid container spacing={2}>
@@ -169,6 +174,7 @@ const CaseCostTab = () => {
                 caseData={apiData.case}
                 surfData={apiData.surf}
             />
+            
             <Grid size={12}>
                 <AggregatedTotals
                     apiData={apiData}
@@ -236,6 +242,11 @@ const CaseCostTab = () => {
 
                 />
             </Grid>
+            <PROSPBar 
+                projectId={projectId} 
+                caseId={caseData.caseId} 
+                currentSharePointFileId={caseData.sharepointFileId || null} 
+            />
         </Grid>
     )
 }

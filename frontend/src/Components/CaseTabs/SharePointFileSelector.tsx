@@ -18,8 +18,6 @@ import {
 
 // Styled components for SharePoint section
 const SharePointSection = styled.div`
-    margin-bottom: 24px;
-    border: 1px solid #E6E6E6;
     border-radius: 4px;
     padding: 16px;
 `
@@ -248,16 +246,11 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
     return (
         <SharePointSection>
-            <Typography variant="h5">PROSP Integration</Typography>
-            <Typography variant="body_short" style={{ marginBottom: "16px" }}>
-                Link this case to a PROSP file to import production, cost, and CO2 emissions data.
+            <Typography variant="body_short" style={{ marginBottom: "8px" }}>
+                Import PROSP file from SharePoint
             </Typography>
 
             <SharePointContainer>
-                <SharePointLabel>
-                    <Typography>SharePoint File</Typography>
-                </SharePointLabel>
-
                 <SharePointInput>
                     {isDisabled ? (
                         <TextDisplay>
