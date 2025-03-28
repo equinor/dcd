@@ -107,7 +107,7 @@ public static class SteaCaseDtoBuilder
 
             new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.DevelopmentRigUpgradingCostProfile)),
 
-            new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.DevelopmentRigMobDemob)),
+            new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.DevelopmentRigMobDemob))
         };
 
         costProfileDtos.AddRange(caseItem.Campaigns
