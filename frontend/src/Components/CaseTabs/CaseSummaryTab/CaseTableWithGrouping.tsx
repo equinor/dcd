@@ -25,6 +25,7 @@ import {
     gridRefArrayToAlignedGrid,
     formatColumnSum,
     tableCellisEditable,
+    getCustomContextMenuItems,
 } from "@/Utils/TableUtils"
 
 interface Props {
@@ -47,7 +48,7 @@ const CaseTableWithGrouping = ({
     includeFooter,
     totalRowName,
     decimalPrecision,
-}: Props) => {
+}: Props): React.ReactNode => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const { setShowRevisionReminder, isSaving, editMode } = useAppStore()
@@ -55,7 +56,7 @@ const CaseTableWithGrouping = ({
     const [selectedRow, setSelectedRow] = useState<any>(null)
     const { canEdit } = useCanUserEdit()
 
-    const profilesToRowData = () => {
+    const profilesToRowData = (): ITimeSeriesTableDataWithSet[] => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
         const timeSeriesData = allTimeSeriesData?.flat()
 
@@ -102,7 +103,7 @@ const CaseTableWithGrouping = ({
         return tableRows
     }
 
-    const getRowStyle = (params: any) => {
+    const getRowStyle = (params: any): { fontWeight: string } | undefined => {
         if (params.node.footer) {
             return { fontWeight: "bold" }
         }
@@ -110,7 +111,7 @@ const CaseTableWithGrouping = ({
         return undefined
     }
 
-    const handleCopy = (gridEvent: CellKeyDownEvent) => {
+    const handleCopy = (gridEvent: CellKeyDownEvent): void => {
         const keyboardEvent = gridEvent.event as KeyboardEvent
 
         if ((keyboardEvent.ctrlKey || keyboardEvent.metaKey) && keyboardEvent.key === "c") {
@@ -118,7 +119,7 @@ const CaseTableWithGrouping = ({
         }
     }
 
-    const generateTableYearColDefs = () => {
+    const generateTableYearColDefs = (): ColDef[] => {
         const columnPinned: any[] = [
             {
                 field: "group",
@@ -196,7 +197,7 @@ const CaseTableWithGrouping = ({
     const getContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
         const defaultItems = params.defaultItems || []
 
-        return defaultItems.map((item) => {
+        return defaultItems.filter((item) => item.toLowerCase() !== "paste").map((item) => {
             if (item === "copy") {
                 return {
                     name: "Copy",
@@ -248,6 +249,7 @@ const CaseTableWithGrouping = ({
                         rowData={rowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
+                        getContextMenuItems={getCustomContextMenuItems}
                         animateRows
                         domLayout="autoHeight"
                         rowSelection={{
@@ -268,7 +270,6 @@ const CaseTableWithGrouping = ({
                         groupDefaultExpanded={groupDefaultExpanded}
                         stopEditingWhenCellsLoseFocus
                         defaultExcelExportParams={defaultExcelExportParams}
-                        getContextMenuItems={getContextMenuItems}
                         onCellKeyDown={handleCopy}
                         onCellClicked={handleCellClicked}
                         key={`grid-${editMode ? "edit" : "view"}-${decimalPrecision}`}
@@ -277,7 +278,7 @@ const CaseTableWithGrouping = ({
             </div>
             <SidesheetWrapper
                 isOpen={isSidesheetOpen}
-                onClose={() => setIsSidesheetOpen(false)}
+                onClose={(): void => setIsSidesheetOpen(false)}
                 rowData={selectedRow}
                 dg4Year={dg4Year}
                 allTimeSeriesData={allTimeSeriesData}

@@ -30,6 +30,7 @@ import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { roundToDecimals } from "@/Utils/FormatingUtils"
 import {
+    getCustomContextMenuItems,
     gridRefArrayToAlignedGrid,
     profilesToRowData,
     tableCellisEditable,
@@ -356,12 +357,13 @@ const CaseBaseTable = memo(({
                         ref={gridRef}
                         key={key}
                         {...gridConfigWithoutKey}
+                        getContextMenuItems={getCustomContextMenuItems}
                     />
                 </div>
             </div>
             <SidesheetWrapper
                 isOpen={isSidesheetOpen}
-                onClose={() => setIsSidesheetOpen(false)}
+                onClose={(): void => setIsSidesheetOpen(false)}
                 rowData={selectedRow}
                 dg4Year={dg4Year}
                 allTimeSeriesData={timeSeriesData}
