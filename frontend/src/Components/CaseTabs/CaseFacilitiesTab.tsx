@@ -2,6 +2,8 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import styled from "styled-components"
 
+import PROSPBar from "./Components/PROSPBar"
+
 import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import SwitchableStringInput from "@/Components/Input/SwitchableStringInput"
@@ -15,9 +17,8 @@ import {
     useSubstructureMutation,
 } from "@/Hooks/Mutations"
 import { Concept, Source } from "@/Models/enums"
-import { formatCurrencyUnit, roundToDecimals } from "@/Utils/FormatingUtils"
 import { useProjectContext } from "@/Store/ProjectContext"
-import PROSPBar from "./Components/PROSPBar"
+import { formatCurrencyUnit, roundToDecimals } from "@/Utils/FormatingUtils"
 
 const TabContainer = styled(Grid)`
     max-width: 1000px;
@@ -185,7 +186,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={100}
                     id="case-facilities-availability"
-                    onSubmit={() => {}}
+                    onSubmit={() => { }}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -404,10 +405,10 @@ const CaseFacilitiesTab = () => {
                     onSubmit={(newValue) => updateSubstructureDryWeight(substructureData.id, newValue)}
                 />
             </Grid>
-            <PROSPBar 
-                projectId={projectId} 
-                caseId={caseData.caseId} 
-                currentSharePointFileId={caseData.sharepointFileId || null} 
+            <PROSPBar
+                projectId={projectId}
+                caseId={caseData.caseId}
+                currentSharePointFileId={caseData.sharepointFileId || null}
             />
         </TabContainer>
     )

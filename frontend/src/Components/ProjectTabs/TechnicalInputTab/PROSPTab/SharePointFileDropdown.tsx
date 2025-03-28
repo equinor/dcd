@@ -14,7 +14,7 @@ import {
 import { useFeedbackStatus } from "@/Utils/ProspUtils"
 
 export interface SharePointFileDropdownProps {
-    caseItem: any;
+    caseItem: Components.Schemas.CaseOverviewDto;
     value: string | null;
     options: Record<string, string>;
     onChange: (caseId: string, fileId: string) => Promise<void>;

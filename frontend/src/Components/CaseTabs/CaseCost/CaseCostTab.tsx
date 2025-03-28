@@ -6,6 +6,8 @@ import {
     useMemo,
 } from "react"
 
+import PROSPBar from "../Components/PROSPBar"
+
 import AggregatedTotals from "./AggregatedTotalsChart"
 import CaseCostHeader from "./CaseCostHeader"
 import CessationCosts from "./Tables/CessationCosts"
@@ -18,11 +20,10 @@ import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
 import { useCaseApiData } from "@/Hooks"
 import { useCaseStore } from "@/Store/CaseStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { DEFAULT_CASE_COST_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
-import PROSPBar from "../Components/PROSPBar"
-import { useProjectContext } from "@/Store/ProjectContext"
 
 const CaseCostTab = () => {
     const { activeTabCase } = useCaseStore()
@@ -160,7 +161,7 @@ const CaseCostTab = () => {
     if (!apiData) {
         return <CaseCostSkeleton />
     }
-    
+
     const caseData = apiData.case
 
     return (
@@ -174,7 +175,7 @@ const CaseCostTab = () => {
                 caseData={apiData.case}
                 surfData={apiData.surf}
             />
-            
+
             <Grid size={12}>
                 <AggregatedTotals
                     apiData={apiData}
@@ -242,10 +243,10 @@ const CaseCostTab = () => {
 
                 />
             </Grid>
-            <PROSPBar 
-                projectId={projectId} 
-                caseId={caseData.caseId} 
-                currentSharePointFileId={caseData.sharepointFileId || null} 
+            <PROSPBar
+                projectId={projectId}
+                caseId={caseData.caseId}
+                currentSharePointFileId={caseData.sharepointFileId || null}
             />
         </Grid>
     )

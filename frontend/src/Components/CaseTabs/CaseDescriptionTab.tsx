@@ -46,7 +46,7 @@ const CaseDescriptionTab = (): React.ReactNode => {
     } = useCaseMutation()
 
     // Save the description to the API
-    const saveDescription = (newValue: string):void => {
+    const saveDescription = (newValue: string): void => {
         updateDescription(newValue)
         setDescription(newValue)
     }
@@ -69,9 +69,7 @@ const CaseDescriptionTab = (): React.ReactNode => {
         }
     }, [apiData])
 
-    const caseData = apiData.case
-
-    const handleChange = (e: any):void => {
+    const handleChange = (e: any): void => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
 
@@ -82,6 +80,7 @@ const CaseDescriptionTab = (): React.ReactNode => {
     if (!apiData || !projectId) {
         return <CaseDescriptionTabSkeleton />
     }
+
     const caseData = apiData.case
 
     return (

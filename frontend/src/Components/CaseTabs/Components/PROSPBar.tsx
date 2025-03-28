@@ -1,8 +1,9 @@
-import { Container} from "@/Components/ProjectTabs/TechnicalInputTab/PROSPTab/SharedStyledComponents";
-import SharePointFileSelector from "../SharePointFileSelector";
-import styled from "styled-components";
-import { useAppStore } from "@/Store/AppStore";
+import styled from "styled-components"
 
+import SharePointFileSelector from "../SharePointFileSelector"
+
+import { Container } from "@/Components/ProjectTabs/TechnicalInputTab/PROSPTab/SharedStyledComponents"
+import { useAppStore } from "@/Store/AppStore"
 
 const PROSPBarWrapper = styled(Container)`
     position: fixed;
@@ -12,35 +13,37 @@ const PROSPBarWrapper = styled(Container)`
     background-color:  #d7ebf5;
     z-index: 10;
     height: 115px;
-`;
+`
 
 export const BottomMargin = styled.div`
     margin-bottom: 165px;
 `
 
 interface PROSPBarProps {
-    projectId: any;
-    caseId: any;
-    currentSharePointFileId: any;
+    projectId: string;
+    caseId: string;
+    currentSharePointFileId: string | null
 }
 
-const PROSPBar: React.FC<PROSPBarProps> = ({projectId, caseId, currentSharePointFileId}) => {
+const PROSPBar: React.FC<PROSPBarProps> = ({ projectId, caseId, currentSharePointFileId }) => {
     const { sidebarOpen, editMode } = useAppStore()
 
-    if(!editMode) {
-        return null; 
+    if (!editMode) {
+        return null
     }
 
-    return <>
-        <BottomMargin />
-        <PROSPBarWrapper style={sidebarOpen ? {left: 257} : {left: 73}}>
-        <SharePointFileSelector
-            projectId={projectId}
-            caseId={caseId}
-            currentSharePointFileId={currentSharePointFileId || null}
-        />
-    </PROSPBarWrapper></>
-
+    return (
+        <>
+            <BottomMargin />
+            <PROSPBarWrapper style={sidebarOpen ? { left: 257 } : { left: 73 }}>
+                <SharePointFileSelector
+                    projectId={projectId}
+                    caseId={caseId}
+                    currentSharePointFileId={currentSharePointFileId || null}
+                />
+            </PROSPBarWrapper>
+        </>
+    )
 }
 
-export default PROSPBar;
+export default PROSPBar

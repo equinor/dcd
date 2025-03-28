@@ -6,6 +6,8 @@ import {
     useRef,
 } from "react"
 
+import PROSPBar from "../Components/PROSPBar"
+
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import Co2EmissionsTable from "./Co2EmissionsTable"
 
@@ -20,11 +22,10 @@ import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
 import { useCaseStore } from "@/Store/CaseStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
-import PROSPBar from "../Components/PROSPBar"
-import { useProjectContext } from "@/Store/ProjectContext"
 
 interface ICo2DistributionChartData {
     profile: string
@@ -324,10 +325,10 @@ const CaseCO2Tab = () => {
             <Grid size={12}>
                 <Co2EmissionsTable />
             </Grid>
-            <PROSPBar 
-                projectId={projectId} 
-                caseId={caseData.caseId} 
-                currentSharePointFileId={caseData.sharepointFileId || null} 
+            <PROSPBar
+                projectId={projectId}
+                caseId={caseData.caseId}
+                currentSharePointFileId={caseData.sharepointFileId || null}
             />
         </Grid>
     )
