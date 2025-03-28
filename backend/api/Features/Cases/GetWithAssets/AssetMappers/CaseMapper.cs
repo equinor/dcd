@@ -59,7 +59,6 @@ public static class CaseMapper
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,
             SharepointFileUrl = caseItem.SharepointFileUrl,
-            SharepointUrl = caseItem.SharepointUrl,
             SharepointUpdatedTimestampUtc = caseItem.SharepointUpdatedTimestampUtc
         };
     }

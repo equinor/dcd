@@ -124,7 +124,6 @@ public static class ProjectDuplicator
             SharepointFileId = existingCaseItem.SharepointFileId,
             SharepointFileName = existingCaseItem.SharepointFileName,
             SharepointFileUrl = existingCaseItem.SharepointFileUrl,
-            SharepointUrl = existingCaseItem.SharepointUrl,
             SharepointUpdatedTimestampUtc = existingCaseItem.SharepointUpdatedTimestampUtc,
             Co2RemovedFromGas = existingCaseItem.Co2RemovedFromGas,
             Co2EmissionFromFuelGas = existingCaseItem.Co2EmissionFromFuelGas,

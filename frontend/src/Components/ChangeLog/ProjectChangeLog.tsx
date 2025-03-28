@@ -13,6 +13,7 @@ import { ChangeLogCategory } from "@/Models/enums"
 import { changeLogQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { formatDateAndTime } from "@/Utils/DateUtils"
+import { getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 interface IRow {
     entityDescription: string | null;
@@ -126,6 +127,7 @@ const ProjectChangeLog = () => {
                     rowData={rowData}
                     columnDefs={colDefs}
                     defaultColDef={defaultColDef}
+                    getContextMenuItems={getCustomContextMenuItems}
                 />
             </div>
         </ChangeLogWrapper>

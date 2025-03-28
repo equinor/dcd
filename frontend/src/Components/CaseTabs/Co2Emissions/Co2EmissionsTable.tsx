@@ -18,7 +18,7 @@ import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { parseDecimalInput, roundToDecimals } from "@/Utils/FormatingUtils"
-import { cellStyleRightAlign } from "@/Utils/TableUtils"
+import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 const StyledContainer = styled.div`
     display: flex;
@@ -337,6 +337,7 @@ const Co2EmissionsTable = () => {
                         rowData={rowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
+                        getContextMenuItems={getCustomContextMenuItems}
                         animateRows
                         domLayout="autoHeight"
                         onGridReady={onGridReady}
