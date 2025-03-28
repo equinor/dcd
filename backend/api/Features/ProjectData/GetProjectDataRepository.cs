@@ -168,7 +168,6 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
                 SharepointFileUrl = x.SharepointFileUrl,
-                SharepointUrl = x.SharepointUrl,
                 SharepointUpdatedTimestampUtc = x.SharepointUpdatedTimestampUtc
             })
             .ToListAsync();

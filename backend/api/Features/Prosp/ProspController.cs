@@ -33,7 +33,7 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
         EnsureNotEmpty(dtos);
         EnsureValidUrl(dtos.First().SharePointSiteUrl);
 
-        await prospSharepointImportImportService.ImportFilesFromSharePoint(projectId, dtos);
+        await prospSharepointImportImportService.ImportFileFromSharePoint(projectId, dtos.First());
 
         return await getProjectDataService.GetProjectData(projectId);
     }

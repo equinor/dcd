@@ -16,7 +16,6 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-    public string? SharepointUrl { get; set; }
     public DateTime? SharepointUpdatedTimestampUtc { get; set; }
     public DateTime? DgaDate { get; set; }
     public DateTime? DgbDate { get; set; }

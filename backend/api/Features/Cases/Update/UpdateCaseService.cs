@@ -59,12 +59,6 @@ public class UpdateCaseService(DcdDbContext context, RecalculationService recalc
         existingCase.SharepointFileName = updateCaseDto.SharepointFileName;
         existingCase.SharepointFileUrl = updateCaseDto.SharepointFileUrl;
 
-        if (existingCase.SharepointUrl != updateCaseDto.SharepointUrl || updateCaseDto.SharepointUrl == null)
-        {
-            existingCase.SharepointUrl = updateCaseDto.SharepointUrl;
-            existingCase.SharepointUpdatedTimestampUtc = null;
-        }
-
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
 }
