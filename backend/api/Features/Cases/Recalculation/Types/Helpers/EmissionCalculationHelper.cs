@@ -27,28 +27,79 @@ public static class EmissionCalculationHelper
     {
         var topside = caseItem.Topside;
 
-        var totalPowerOil = CalculateTotalUseOfPowerOil(caseItem, topside, facilitiesAvailability);
-        var totalPowerGas = CalculateTotalUseOfPowerGas(caseItem, topside, facilitiesAvailability);
-        var totalPowerWi = CalculateTotalUseOfPowerWi(caseItem, topside, facilitiesAvailability);
+        var productionOfDesignOil = CalculateProductionOfDesignOil(caseItem, topside, facilitiesAvailability);
+        var productionOfDesignGas = CalculateProductionOfDesignGas(caseItem, topside, facilitiesAvailability);
+        var productionOfDesignWi = CalculateProductionOfDesignWi(caseItem, topside, facilitiesAvailability);
+
+        var totalProductionOfDesign = TimeSeriesMerger.MergeTimeSeries(productionOfDesignOil, productionOfDesignGas, productionOfDesignWi);
+
+        var totalPowerOil = CalculateTotalUseOfPowerOil(productionOfDesignOil, totalProductionOfDesign, topside);
+        var totalPowerGas = CalculateTotalUseOfPowerGas(productionOfDesignGas, totalProductionOfDesign, topside);
+        var totalPowerWi = CalculateTotalUseOfPowerWi(productionOfDesignWi, totalProductionOfDesign, topside);
 
         return TimeSeriesMerger.MergeTimeSeries(totalPowerOil, totalPowerGas, totalPowerWi);
     }
 
-    private static TimeSeries CalculateTotalUseOfPowerWi(Case caseItem, Topside topside, double facilitiesAvailability)
+    private static TimeSeries CalculateTotalUseOfPowerWi(TimeSeries productionOfDesignWi, TimeSeries totalProductionOfDesign, Topside topside)
     {
-        var waterInjectionCapacity = topside.WaterInjectionCapacity;
         var co2ShareWaterInjectionProfile = topside.Co2ShareWaterInjectionProfile;
         var co2OnMaxWaterInjectionProfile = topside.Co2OnMaxWaterInjectionProfile;
-        var grossProductionProfileWaterInjection = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection));
 
-        return CalculateUseOfPower(grossProductionProfileWaterInjection, co2ShareWaterInjectionProfile, co2OnMaxWaterInjectionProfile, waterInjectionCapacity, facilitiesAvailability);
+        return CalculateUseOfPower(productionOfDesignWi, totalProductionOfDesign, co2ShareWaterInjectionProfile, co2OnMaxWaterInjectionProfile);
     }
 
-    private static TimeSeries CalculateTotalUseOfPowerGas(Case caseItem, Topside topside, double facilitiesAvailability)
+    private static TimeSeries CalculateTotalUseOfPowerGas(TimeSeries productionOfDesignGas, TimeSeries totalProductionOfDesign, Topside topside)
     {
-        var gasCapacity = topside.GasCapacity;
         var co2ShareGasProfile = topside.Co2ShareGasProfile;
         var co2OnMaxGasProfile = topside.Co2OnMaxGasProfile;
+
+        return CalculateUseOfPower(productionOfDesignGas, totalProductionOfDesign, co2ShareGasProfile, co2OnMaxGasProfile);
+    }
+
+    private static TimeSeries CalculateTotalUseOfPowerOil(TimeSeries productionOfDesignOil, TimeSeries totalProductionOfDesign, Topside topside)
+    {
+        var co2ShareOilProfile = topside.Co2ShareOilProfile;
+        var co2OnMaxOilProfile = topside.Co2OnMaxOilProfile;
+
+        return CalculateUseOfPower(productionOfDesignOil, totalProductionOfDesign, co2ShareOilProfile, co2OnMaxOilProfile);
+    }
+
+    public static TimeSeries CalculateUseOfPower(TimeSeries productionOfDesign, TimeSeries totalProductionOfDesign, double co2ShareProfile, double co2OnMaxProfile)
+    {
+        if (totalProductionOfDesign.Values.Length == 0)
+        {
+            return new TimeSeries();
+        }
+
+        var paddedProductionOfDesign = TimeSeriesPadding.PadTimeSeries(productionOfDesign, totalProductionOfDesign);
+
+        var shareOfPowerOnMax = paddedProductionOfDesign.Values
+            .Select((v, i) =>
+                        totalProductionOfDesign.Values[i] == 0
+                            ? 0
+                            : co2ShareProfile * co2OnMaxProfile + v * co2ShareProfile * (1 - co2OnMaxProfile))
+            .ToArray();
+
+        return new TimeSeries
+        {
+            Values = shareOfPowerOnMax,
+            StartYear = paddedProductionOfDesign.StartYear
+        };
+    }
+
+    private static TimeSeries CalculateProductionOfDesignOil(Case caseItem, Topside topside, double facilitiesAvailability)
+    {
+        var oilCapacity = topside.OilCapacity;
+        var productionProfileOil = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil));
+        var additionalProductionProfileOil = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil));
+        var grossProductionProfileOil = TimeSeriesMerger.MergeTimeSeries(productionProfileOil, additionalProductionProfileOil);
+
+        return CalculateProductionOfDesign(grossProductionProfileOil, oilCapacity, facilitiesAvailability);
+    }
+
+    private static TimeSeries CalculateProductionOfDesignGas(Case caseItem, Topside topside, double facilitiesAvailability)
+    {
+        var gasCapacity = topside.GasCapacity;
 
         var productionProfileGas = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas));
         var additionalProductionProfileGas = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas));
@@ -60,23 +111,18 @@ public static class EmissionCalculationHelper
             StartYear = grossProductionProfileGas.StartYear
         };
 
-        return CalculateUseOfPower(unitAdjustedGrossProductionProfileGas, co2ShareGasProfile, co2OnMaxGasProfile, gasCapacity, facilitiesAvailability);
+        return CalculateProductionOfDesign(unitAdjustedGrossProductionProfileGas, gasCapacity, facilitiesAvailability);
     }
 
-    private static TimeSeries CalculateTotalUseOfPowerOil(Case caseItem, Topside topside, double facilitiesAvailability)
+    private static TimeSeries CalculateProductionOfDesignWi(Case caseItem, Topside topside, double facilitiesAvailability)
     {
-        var oilCapacity = topside.OilCapacity;
-        var co2ShareOilProfile = topside.Co2ShareOilProfile;
-        var co2OnMaxOilProfile = topside.Co2OnMaxOilProfile;
+        var waterInjectionCapacity = topside.WaterInjectionCapacity;
+        var grossProductionProfileWaterInjection = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection));
 
-        var productionProfileOil = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil));
-        var additionalProductionProfileOil = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil));
-        var grossProductionProfileOil = TimeSeriesMerger.MergeTimeSeries(productionProfileOil, additionalProductionProfileOil);
-
-        return CalculateUseOfPower(grossProductionProfileOil, co2ShareOilProfile, co2OnMaxOilProfile, oilCapacity, facilitiesAvailability);
+        return CalculateProductionOfDesign(grossProductionProfileWaterInjection, waterInjectionCapacity, facilitiesAvailability);
     }
 
-    public static TimeSeries CalculateUseOfPower(TimeSeries grossProductionProfile, double co2ShareProfile, double co2OnMaxProfile, double capacity, double facilitiesAvailability)
+    public static TimeSeries CalculateProductionOfDesign(TimeSeries grossProductionProfile, double capacity, double facilitiesAvailability)
     {
         if (grossProductionProfile.Values.Length == 0 || capacity == 0 || facilitiesAvailability == 0)
         {
@@ -84,19 +130,12 @@ public static class EmissionCalculationHelper
         }
 
         var facilitiesAvailabilityDecimal = facilitiesAvailability / 100;
-        var shareTimesMax = co2ShareProfile * co2OnMaxProfile;
-        var rateProductionOfDesign = grossProductionProfile.Values.Select(v => v / (Cd * facilitiesAvailabilityDecimal) / capacity);
-
-        var rateShareOfPowerOnMax = rateProductionOfDesign
-            .Select(v => v == 0
-                        ? 0
-                        : shareTimesMax + v * co2ShareProfile * (1 - co2OnMaxProfile))
-            .ToArray();
+        var productionOfDesign = grossProductionProfile.Values.Select(v => v / (Cd * facilitiesAvailabilityDecimal) / capacity).ToArray();
 
         return new TimeSeries
         {
-            Values = rateShareOfPowerOnMax,
-            StartYear = grossProductionProfile.StartYear
+            StartYear = grossProductionProfile.StartYear,
+            Values = productionOfDesign
         };
     }
 

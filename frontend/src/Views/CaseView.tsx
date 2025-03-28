@@ -19,7 +19,7 @@ import { caseTabNames } from "@/Utils/Config/constants"
 const Wrapper = styled(Grid2)`
     padding: 0 16px 16px;
 `
-const CaseView = () => {
+const CaseView = (): React.ReactNode => {
     const { caseId, tab } = useParams()
     const revisionAndProjectData = useDataFetch()
     const {

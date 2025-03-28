@@ -13,7 +13,7 @@ interface Props {
     axesData?: any
 }
 
-export const setValueToCorrespondingYear = (profile: any, year: number, dg4Year: number) => {
+export const setValueToCorrespondingYear = (profile: any, year: number, dg4Year: number): number => {
     if (profile && profile.values) {
         const profileStartYear: number = Number(profile.startYear) + dg4Year
         const valueYearIndex = year - profileStartYear
@@ -26,7 +26,7 @@ export const setValueToCorrespondingYear = (profile: any, year: number, dg4Year:
 
 export const TimeSeriesChart = ({
     data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, axesData,
-}: Props) => {
+}: Props): React.ReactNode => {
     const figmaTheme = {
         palette: {
             fills: barColors,

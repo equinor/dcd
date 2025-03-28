@@ -14,7 +14,7 @@ import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableH
 import { TableWell } from "@/Models/Interfaces"
 import { Currency, WellCategory } from "@/Models/enums"
 import { GetWellService } from "@/Services/WellService"
-import { cellStyleRightAlign } from "@/Utils/TableUtils"
+import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 interface WellsTableProps {
     rowData: TableWell[]
@@ -189,6 +189,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 rowData={rowData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
+                getContextMenuItems={getCustomContextMenuItems}
                 animateRows
                 editType="fullRow"
                 domLayout="autoHeight"
@@ -204,8 +205,8 @@ const WellsTable: React.FC<WellsTableProps> = ({
             />
             <DeleteWellInUseModal
                 isOpen={!!wellStagedForDeletion}
-                onClose={() => setWellStagedForDeletion(undefined)}
-                onConfirm={() => handleDeleteWell(wellStagedForDeletion)}
+                onClose={(): void => setWellStagedForDeletion(undefined)}
+                onConfirm={(): Promise<void> => handleDeleteWell(wellStagedForDeletion)}
             />
         </>
     )

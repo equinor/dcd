@@ -28,7 +28,7 @@ const artificialLiftOptions = {
     3: "Subsea booster pumps",
 }
 
-const CaseDescriptionTab = () => {
+const CaseDescriptionTab = (): React.ReactNode => {
     const { projectId } = useProjectContext()
     const { apiData } = useCaseApiData()
     const { canEdit } = useCanUserEdit()
@@ -46,7 +46,7 @@ const CaseDescriptionTab = () => {
     } = useCaseMutation()
 
     // Save the description to the API
-    const saveDescription = (newValue: string) => {
+    const saveDescription = (newValue: string):void => {
         updateDescription(newValue)
         setDescription(newValue)
     }
@@ -69,7 +69,9 @@ const CaseDescriptionTab = () => {
         }
     }, [apiData])
 
-    const handleChange = (e: any) => {
+    const caseData = apiData.case
+
+    const handleChange = (e: any):void => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
 
@@ -125,7 +127,7 @@ const CaseDescriptionTab = () => {
                             min={0}
                             max={100000}
                             id={`case-producer-count-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateProducerCount(newValue)}
+                            onSubmit={(newValue): Promise<void> => updateProducerCount(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -136,7 +138,7 @@ const CaseDescriptionTab = () => {
                             min={0}
                             max={100000}
                             id={`case-water-injector-count-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateWaterInjectorCount(newValue)}
+                            onSubmit={(newValue): Promise<void> => updateWaterInjectorCount(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -147,7 +149,7 @@ const CaseDescriptionTab = () => {
                             min={0}
                             max={100000}
                             id={`case-gas-injector-count-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateGasInjectorCount(newValue)}
+                            onSubmit={(newValue): Promise<void> => updateGasInjectorCount(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -156,7 +158,7 @@ const CaseDescriptionTab = () => {
                             options={productionStrategyOptions}
                             label="Production strategy overview"
                             id={`case-production-strategy-overview-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateProductionStrategyOverview(newValue)}
+                            onSubmit={(newValue): Promise<void> => updateProductionStrategyOverview(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -165,7 +167,7 @@ const CaseDescriptionTab = () => {
                             options={artificialLiftOptions}
                             label="Artificial lift"
                             id={`case-artificial-lift-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateArtificialLift(newValue)}
+                            onSubmit={(newValue): Promise<void> => updateArtificialLift(newValue)}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -177,7 +179,7 @@ const CaseDescriptionTab = () => {
                             min={0}
                             max={100}
                             id={`case-facilities-availability-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateFacilitiesAvailability(newValue)}
+                            onSubmit={(newValue): Promise<void> => updateFacilitiesAvailability(newValue)}
                         />
                     </Grid>
                 </Grid>

@@ -1,3 +1,4 @@
+import { GetContextMenuItemsParams, MenuItemDef } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { Dispatch, SetStateAction } from "react"
 
@@ -5,6 +6,17 @@ import { ITimeSeries, ITimeSeriesTableData, ITimeSeriesTableDataWithSet } from "
 import { EditInstance } from "@/Models/Interfaces"
 import { DEFAULT_TABLE_UTILS_YEARS, TABLE_VALIDATION_RULES } from "@/Utils/Config/constants"
 import { parseDecimalInput, roundToDecimals, sumAndRound } from "@/Utils/FormatingUtils"
+
+/**
+ * Filters default context menu items to remove paste option
+ * @param params - Context menu parameters from AG Grid
+ * @returns Array of menu items with paste option removed
+ */
+export const getCustomContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
+    const defaultItems = params.defaultItems || []
+
+    return defaultItems.filter((item) => item.toLowerCase() !== "paste")
+}
 
 /**
  * Checks if a well is an exploration well based on its category

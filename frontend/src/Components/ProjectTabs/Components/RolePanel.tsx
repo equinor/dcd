@@ -79,7 +79,7 @@ const RolePanel = ({
                                         <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
                                             <Button
                                                 variant="ghost_icon"
-                                                onClick={() => handleSwitchPerson(p.azureAdUserId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
+                                                onClick={(): void => handleSwitchPerson(p.azureAdUserId, isViewers ? ProjectMemberRole.Editor : ProjectMemberRole.Observer)}
                                             >
                                                 <Icon data={swap_horizontal} />
                                             </Button>

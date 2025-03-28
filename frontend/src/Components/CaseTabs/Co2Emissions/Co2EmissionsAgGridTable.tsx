@@ -7,6 +7,7 @@ import {
 } from "react"
 
 import { roundToDecimals } from "@/Utils/FormatingUtils"
+import { getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -14,7 +15,7 @@ interface Props {
 
 const CaseCO2DistributionTable = ({
     topside,
-}: Props) => {
+}: Props): React.ReactElement => {
     // Show data as percentages
     const co2Data = [
         {
@@ -81,7 +82,7 @@ const CaseCO2DistributionTable = ({
         enableCellChangeFlash: true,
     }), [])
 
-    const onGridReady = (params: any) => {
+    const onGridReady = (params: any): void => {
         gridRef.current = params.api
     }
 
@@ -96,6 +97,7 @@ const CaseCO2DistributionTable = ({
                 rowData={rowData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
+                getContextMenuItems={getCustomContextMenuItems}
                 animateRows
                 domLayout="autoHeight"
                 rowSelection={{
