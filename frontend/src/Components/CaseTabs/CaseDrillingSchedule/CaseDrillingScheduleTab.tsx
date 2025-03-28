@@ -132,11 +132,13 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
         }
     }, [apiData, wells, activeTabCase])
 
+    if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
+
     const {
         case: caseData,
         developmentCampaigns,
         explorationCampaigns,
-    } = apiData as Components.Schemas.CaseWithAssetsDto
+    } = apiData
 
     const developmentWellsData = developmentCampaigns?.flatMap((x) => x.campaignWells)
     const explorationWellsData = explorationCampaigns?.flatMap((x) => x.campaignWells)
@@ -162,7 +164,6 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
         !caseData
         || !developmentWellsData
         || !explorationWellsData
-        || !apiData
     ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     if (activeTabCase !== 3) { return null }
