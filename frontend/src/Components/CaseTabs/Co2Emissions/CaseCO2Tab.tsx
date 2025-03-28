@@ -17,7 +17,6 @@ import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
 import { useDataFetch, useCaseApiData } from "@/Hooks"
-import { useTopsideMutation } from "@/Hooks/Mutations"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
@@ -37,7 +36,6 @@ const CaseCO2Tab = () => {
     const { projectId } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
-    const { updateFuelConsumption } = useTopsideMutation()
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside
@@ -70,6 +68,25 @@ const CaseCO2Tab = () => {
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
+    const averageCo2IntensityLine = {
+        type: "line",
+        xKey: "year",
+        yKey: "averageCo2IntensityLine",
+        yName: "Average lifetime CO2 intensity",
+        stroke: {
+            width: 2,
+            color: "#EB0037",
+            dash: [4, 2],
+        },
+        tooltip: {
+            enabled: true,
+            renderer: (params: any) => ({
+                title: "Average lifetime CO2 intensity",
+                content: params.value,
+            }),
+        },
+    }
+
     const chartAxes = [
         {
             type: "category",
@@ -93,7 +110,7 @@ const CaseCO2Tab = () => {
         {
             type: "number",
             position: "left",
-            keys: ["co2Emissions"],
+            keys: ["co2Emissions", "averageCo2IntensityLine"],
             title: {
                 text: "CO2 emissions",
             },
@@ -184,11 +201,11 @@ const CaseCO2Tab = () => {
         co2DrillingFlaringFuelTotals,
     ])
 
-    const handleTableYearsClick = () => {
+    const handleTableYearsClick = (): void => {
         setTableYears([startYear, endYear])
     }
 
-    const formatValue = (num: number | null | undefined) => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
+    const formatValue = (num: number | null | undefined): number => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
 
     const co2EmissionsChartData = () => {
         const dataArray = []
@@ -214,6 +231,7 @@ const CaseCO2Tab = () => {
                         getYearFromDateString(caseData.dg4Date),
                     ),
                 ),
+                averageCo2IntensityLine: averageCo2IntensityData,
             })
         }
 
@@ -279,7 +297,7 @@ const CaseCO2Tab = () => {
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    lineChart={co2IntensityLine}
+                    lineChart={[co2IntensityLine, averageCo2IntensityLine]}
                     axesData={chartAxes}
                 />
             </Grid>
