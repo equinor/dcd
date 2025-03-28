@@ -20,6 +20,7 @@ interface WellsTableProps {
     rowData: TableWell[]
     editMode: boolean
     isEditDisabled: boolean
+    isExplorationWellTable: boolean
     wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     revisionAndProjectData: Components.Schemas.ProjectDataDto | Components.Schemas.RevisionDataDto | null | undefined
     addWellsEdit: (
@@ -36,6 +37,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
     rowData,
     editMode,
     isEditDisabled,
+    isExplorationWellTable,
     wellOptions,
     revisionAndProjectData,
     addWellsEdit,
@@ -111,63 +113,112 @@ const WellsTable: React.FC<WellsTableProps> = ({
     )
 
     const columnDefs = useMemo<ColDef[]>(
-        () => [
-            {
-                field: "name",
-                flex: 2,
-                editable: editMode && !isEditDisabled,
-                singleClickEdit: true,
-            },
-            {
-                field: "wellCategory",
-                headerName: "Well type",
-                cellEditor: "agSelectCellEditor",
-                cellEditorParams: {
-                    values: wellOptions.map((option) => option.value),
-                    formatValue: (value: number) => wellOptions.find((opt) => opt.value === value)?.label || "",
+        () => {
+            const commonColumns: ColDef[] = [
+                {
+                    field: "name",
+                    flex: 2,
+                    editable: editMode && !isEditDisabled,
+                    singleClickEdit: true,
                 },
-                valueFormatter: (params) => wellOptions.find((opt) => opt.value === params.value)?.label || "",
-                editable: editMode && !isEditDisabled,
-                flex: 2,
-                singleClickEdit: true,
-            },
-            {
-                field: "drillingDays",
-                headerName: "Drilling and completion days",
-                flex: 1,
-                cellStyle: cellStyleRightAlign,
-                editable: editMode && !isEditDisabled,
-                singleClickEdit: true,
-            },
-            {
-                field: "wellCost",
-                headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                    ? "mill NOK"
-                    : "mill USD"
-                    })`,
-                flex: 1,
-                headerComponent: SecondaryTableHeader,
-                headerComponentParams: {
-                    columnHeader: "Cost",
-                    unit:
-                        revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                {
+                    field: "wellCategory",
+                    headerName: "Well type",
+                    cellEditor: "agSelectCellEditor",
+                    cellEditorParams: {
+                        values: wellOptions.map((option) => option.value),
+                        formatValue: (value: number) => wellOptions.find((opt) => opt.value === value)?.label || "",
+                    },
+                    valueFormatter: (params) => wellOptions.find((opt) => opt.value === params.value)?.label || "",
+                    editable: editMode && !isEditDisabled,
+                    flex: 2,
+                    singleClickEdit: true,
+                },
+                {
+                    field: "drillingDays",
+                    headerName: "Drilling and completion days",
+                    flex: 1,
+                    cellStyle: cellStyleRightAlign,
+                    editable: editMode && !isEditDisabled,
+                    singleClickEdit: true,
+                },
+                {
+                    field: "wellCost",
+                    headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                        ? "mill NOK"
+                        : "mill USD"
+                        })`,
+                    flex: 1,
+                    headerComponent: SecondaryTableHeader,
+                    headerComponentParams: {
+                        columnHeader: "Cost",
+                        unit:
+                            revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                                ? "mill NOK"
+                                : "mill USD",
+                    },
+                    cellStyle: cellStyleRightAlign,
+                    editable: editMode && !isEditDisabled,
+                    singleClickEdit: true,
+                },
+                {
+                    field: "delete",
+                    headerName: "",
+                    cellRenderer: deleteWellRenderer,
+                    editable: false,
+                    width: 80,
+                    singleClickEdit: false,
+                },
+            ]
+
+            if (!isExplorationWellTable) {
+                const additionalColumns: ColDef[] = [
+                    {
+                        field: "wellInterventionCost",
+                        headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                             ? "mill NOK"
-                            : "mill USD",
-                },
-                cellStyle: cellStyleRightAlign,
-                editable: editMode && !isEditDisabled,
-                singleClickEdit: true,
-            },
-            {
-                field: "delete",
-                headerName: "",
-                cellRenderer: deleteWellRenderer,
-                editable: false,
-                width: 80,
-                singleClickEdit: false,
-            },
-        ],
-        [editMode, isEditDisabled, revisionAndProjectData],
+                            : "mill USD"
+                            })`,
+                        flex: 2,
+                        headerComponent: SecondaryTableHeader,
+                        headerComponentParams: {
+                            columnHeader: "Well intervention cost",
+                            unit:
+                                revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                                    ? "mill NOK"
+                                    : "mill USD",
+                        },
+                        cellStyle: cellStyleRightAlign,
+                        editable: editMode && !isEditDisabled,
+                        singleClickEdit: true,
+                    },
+                    {
+                        field: "plugingAndAbandonmentCost",
+                        headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                            ? "mill NOK"
+                            : "mill USD"
+                            })`,
+                        flex: 2,
+                        headerComponent: SecondaryTableHeader,
+                        headerComponentParams: {
+                            columnHeader: "Pluging and abandonment cost",
+                            unit:
+                                revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
+                                    ? "mill NOK"
+                                    : "mill USD",
+                        },
+                        cellStyle: cellStyleRightAlign,
+                        editable: editMode && !isEditDisabled,
+                        singleClickEdit: true,
+                    },
+                ]
+
+                commonColumns.splice(commonColumns.length - 1, 0, ...additionalColumns)
+            }
+
+            return commonColumns
+        },
+        [editMode, isEditDisabled, revisionAndProjectData, isExplorationWellTable],
     )
 
     const defaultColDef = useMemo<ColDef>(

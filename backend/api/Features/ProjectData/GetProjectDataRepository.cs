@@ -87,25 +87,6 @@ public class GetProjectDataRepository(DcdDbContext context)
                 ExchangeRateUsdToNok = x.ExchangeRateUsdToNok,
                 NpvYear = x.NpvYear,
                 SharepointSiteUrl = x.SharepointSiteUrl,
-                ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsOverviewDto
-                {
-                    ProjectId = x.ExplorationOperationalWellCosts.ProjectId,
-                    ExplorationOperationalWellCostsId = x.ExplorationOperationalWellCosts.Id,
-                    ExplorationRigUpgrading = x.ExplorationOperationalWellCosts.ExplorationRigUpgrading,
-                    ExplorationRigMobDemob = x.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
-                    ExplorationProjectDrillingCosts = x.ExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,
-                    AppraisalRigMobDemob = x.ExplorationOperationalWellCosts.AppraisalRigMobDemob,
-                    AppraisalProjectDrillingCosts = x.ExplorationOperationalWellCosts.AppraisalProjectDrillingCosts
-                },
-                DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCostsOverviewDto
-                {
-                    ProjectId = x.DevelopmentOperationalWellCosts.ProjectId,
-                    DevelopmentOperationalWellCostsId = x.DevelopmentOperationalWellCosts.Id,
-                    RigUpgrading = x.DevelopmentOperationalWellCosts.RigUpgrading,
-                    RigMobDemob = x.DevelopmentOperationalWellCosts.RigMobDemob,
-                    AnnualWellInterventionCostPerWell = x.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell,
-                    PluggingAndAbandonment = x.DevelopmentOperationalWellCosts.PluggingAndAbandonment
-                },
                 Cases = new List<CaseOverviewDto>(),
                 Wells = new List<WellOverviewDto>()
             })
@@ -183,7 +164,9 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Name = x.Name,
                 WellCategory = x.WellCategory,
                 WellCost = x.WellCost,
-                DrillingDays = x.DrillingDays
+                DrillingDays = x.DrillingDays,
+                PlugingAndAbandonmentCost = x.PlugingAndAbandonmentCost,
+                WellInterventionCost = x.WellInterventionCost
             })
             .ToListAsync();
     }

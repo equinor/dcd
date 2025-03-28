@@ -65,27 +65,6 @@ public static class ProjectDuplicator
             ExchangeRateUsdToNok = existingProject.ExchangeRateUsdToNok,
             NpvYear = existingProject.NpvYear,
 
-            ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts
-            {
-                Id = Guid.NewGuid(),
-                ProjectId = projectId,
-                ExplorationRigUpgrading = existingProject.ExplorationOperationalWellCosts.ExplorationRigUpgrading,
-                ExplorationRigMobDemob = existingProject.ExplorationOperationalWellCosts.ExplorationRigMobDemob,
-                ExplorationProjectDrillingCosts = existingProject.ExplorationOperationalWellCosts.ExplorationProjectDrillingCosts,
-                AppraisalRigMobDemob = existingProject.ExplorationOperationalWellCosts.AppraisalRigMobDemob,
-                AppraisalProjectDrillingCosts = existingProject.ExplorationOperationalWellCosts.AppraisalProjectDrillingCosts
-            },
-
-            DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts
-            {
-                Id = Guid.NewGuid(),
-                ProjectId = projectId,
-                RigUpgrading = existingProject.DevelopmentOperationalWellCosts.RigUpgrading,
-                RigMobDemob = existingProject.DevelopmentOperationalWellCosts.RigMobDemob,
-                AnnualWellInterventionCostPerWell = existingProject.DevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell,
-                PluggingAndAbandonment = existingProject.DevelopmentOperationalWellCosts.PluggingAndAbandonment
-            },
-
             Wells = wells,
             Cases = cases,
 

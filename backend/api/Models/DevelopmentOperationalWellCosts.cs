@@ -9,10 +9,10 @@ public class DevelopmentOperationalWellCosts : IChangeTrackable, IDateTrackedEnt
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
 
-    public required double RigUpgrading { get; set; }
+    /*public required double RigUpgrading { get; set; }
     public required double RigMobDemob { get; set; }
     public required double AnnualWellInterventionCostPerWell { get; set; }
-    public required double PluggingAndAbandonment { get; set; }
+    public required double PluggingAndAbandonment { get; set; }*/
 
     #region Change tracking
 

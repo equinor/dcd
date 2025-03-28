@@ -5,8 +5,6 @@ using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Assets.CaseAssets.Surfs;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
-using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
-using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.BackgroundServices.ProjectRecalculation.Services;
 using api.Features.Campaigns.Create;
@@ -114,10 +112,6 @@ public static class DcdIocConfiguration
         /* Background jobs */
         services.AddScoped<UpdateProjectFromProjectMasterService>();
         services.AddScoped<RecalculateProjectService>();
-
-        /* Project assets */
-        services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();
-        services.AddScoped<UpdateExplorationOperationalWellCostsService>();
 
         /* Recalculation services */
         services.AddScoped<RecalculationService>();

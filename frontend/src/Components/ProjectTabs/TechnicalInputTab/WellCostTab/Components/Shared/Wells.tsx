@@ -33,6 +33,7 @@ interface WellsProps {
     defaultWellCategory: WellCategory
     wellOptions: Array<{ key: string; value: WellCategory; label: string }>
     filterWells: (well: Components.Schemas.WellOverviewDto) => boolean
+    isExplorationWellTable: boolean
 }
 
 const Wells: React.FC<WellsProps> = ({
@@ -41,6 +42,7 @@ const Wells: React.FC<WellsProps> = ({
     defaultWellCategory,
     wellOptions,
     filterWells,
+    isExplorationWellTable,
 }) => {
     const revisionAndProjectData = useDataFetch()
     const { addWellsEdit } = useTechnicalInputEdits()
@@ -62,6 +64,8 @@ const Wells: React.FC<WellsProps> = ({
             wellCategory: w.wellCategory || defaultWellCategory,
             drillingDays: w.drillingDays ?? 0,
             wellCost: w.wellCost ?? 0,
+            wellInterventionCost: w.wellInterventionCost ?? 0,
+            plugingAndAbandonmentCost: w.plugingAndAbandonmentCost ?? 0,
             well: w,
             wells,
         }))
@@ -125,6 +129,7 @@ const Wells: React.FC<WellsProps> = ({
                         rowData={rowData}
                         editMode={editMode}
                         isEditDisabled={isEditDisabled}
+                        isExplorationWellTable={isExplorationWellTable}
                         wellOptions={wellOptions}
                         revisionAndProjectData={revisionAndProjectData && revisionAndProjectData}
                         addWellsEdit={addWellsEdit}
