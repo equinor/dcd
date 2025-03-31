@@ -43,7 +43,7 @@ public class CalculateWellInterventionCostProfileTests
         {
             TimeSeriesProfiles =
             [
-                new TimeSeriesProfile()
+                new TimeSeriesProfile
                 {
                     ProfileType = ProfileTypes.WellInterventionCostProfile,
                     Values = [100, 200, 300],

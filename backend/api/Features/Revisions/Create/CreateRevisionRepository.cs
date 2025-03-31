@@ -10,8 +10,6 @@ public class CreateRevisionRepository(DcdDbContext context)
     public async Task<Project> GetFullProjectGraph(Guid projectPk)
     {
         var project = await context.Projects
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .Include(p => p.ExplorationOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
         await context.ProjectMembers
