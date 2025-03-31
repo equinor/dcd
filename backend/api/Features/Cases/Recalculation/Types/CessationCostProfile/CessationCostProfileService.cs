@@ -61,6 +61,7 @@ public static class CessationCostProfileService
             .Sum(campaignWell => campaignWell.Values.Sum() * campaignWell.Well.PlugingAndAbandonmentCost);
 
         cessationWells.StartYear = lastYear;
+
         cessationWells.Values =
         [
             totalPluggingAndAbandonmentCost / 2,
