@@ -53,7 +53,7 @@ public static class OpexCostProfileService
             var wellInterventionCost = new TimeSeries
             {
                 StartYear = cumulativeDrillingSchedule.StartYear,
-                Values = [.. cumulativeDrillingSchedule.Values.Select(value => value * well.WellInterventionCost)]
+                Values = cumulativeDrillingSchedule.Values.Select(value => value * well.WellInterventionCost).ToArray()
             };
 
             wellInterventionCosts.Add(wellInterventionCost);
@@ -63,13 +63,13 @@ public static class OpexCostProfileService
 
         if (initialYearsWithoutWellInterventionCost > 0 && caseWellInterventionCost.Values.Length > initialYearsWithoutWellInterventionCost)
         {
-            caseWellInterventionCost.Values = [.. caseWellInterventionCost.Values.Skip((int)initialYearsWithoutWellInterventionCost)];
+            caseWellInterventionCost.Values = caseWellInterventionCost.Values.Skip((int)initialYearsWithoutWellInterventionCost).ToArray();
             caseWellInterventionCost.StartYear += (int)initialYearsWithoutWellInterventionCost;
         }
 
         if (finalYearsWithoutWellInterventionCost > 0 && caseWellInterventionCost.Values.Length > finalYearsWithoutWellInterventionCost)
         {
-            caseWellInterventionCost.Values = [.. caseWellInterventionCost.Values.Take(caseWellInterventionCost.Values.Length - (int)finalYearsWithoutWellInterventionCost)];
+            caseWellInterventionCost.Values = caseWellInterventionCost.Values.Take(caseWellInterventionCost.Values.Length - (int)finalYearsWithoutWellInterventionCost).ToArray();
         }
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.WellInterventionCostProfile);

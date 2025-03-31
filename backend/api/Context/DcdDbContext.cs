@@ -18,8 +18,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<RevisionDetails> RevisionDetails => Set<RevisionDetails>();
     public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
-    public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts => Set<ExplorationOperationalWellCosts>();
-    public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts => Set<DevelopmentOperationalWellCosts>();
     public DbSet<Well> Wells => Set<Well>();
 
     // Case entities

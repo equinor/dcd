@@ -128,16 +128,6 @@ public static class ChangeLogService
             return (entity as ProjectMember)!.ProjectId;
         }
 
-        if (entity.GetType() == typeof(DevelopmentOperationalWellCosts))
-        {
-            return (entity as DevelopmentOperationalWellCosts)!.ProjectId;
-        }
-
-        if (entity.GetType() == typeof(ExplorationOperationalWellCosts))
-        {
-            return (entity as ExplorationOperationalWellCosts)!.ProjectId;
-        }
-
         if (entity.GetType() == typeof(Well))
         {
             return (entity as Well)!.ProjectId;

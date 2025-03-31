@@ -18,7 +18,7 @@ public class RecalculationRepository(DcdDbContext context)
     public async Task<List<CaseWithCampaignWells>> LoadCaseData(List<Guid> caseIds)
     {
         var caseItems = await context.Cases
-            .Include(x => x.Project).ThenInclude(x => x.DevelopmentOperationalWellCosts)
+            .Include(x => x.Project)
             .Include(x => x.DrainageStrategy)
             .Include(x => x.Surf)
             .Include(x => x.Topside)
