@@ -287,20 +287,18 @@ const CaseProductionProfilesTab = () => {
                             onSubmit={(newValue) => updateCondensateYield(drainageStrategyData.id, newValue)}
                         />
                     </Grid>
-                    {(drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
-                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                            <SwitchableNumberInput
-                                label="Gas shrinkage factor"
-                                value={drainageStrategyData.gasShrinkageFactor}
-                                id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
-                                integer
-                                min={0}
-                                max={100}
-                                unit="%"
-                                onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
-                            />
-                        </Grid>
-                    )}
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <SwitchableNumberInput
+                            label="Gas shrinkage factor"
+                            value={drainageStrategyData.gasShrinkageFactor}
+                            id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
+                            integer
+                            min={0}
+                            max={100}
+                            unit="%"
+                            onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
 
