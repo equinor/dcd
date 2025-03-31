@@ -16,7 +16,6 @@ import styled from "styled-components"
 import { useCaseApiData, useCaseMutation, useTopsideMutation } from "@/Hooks"
 import useCanUserEdit from "@/Hooks/useCanUserEdit"
 import { useAppStore } from "@/Store/AppStore"
-import { useProjectContext } from "@/Store/ProjectContext"
 import { parseDecimalInput, roundToDecimals } from "@/Utils/FormatingUtils"
 import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
@@ -46,7 +45,6 @@ const Header = styled(Grid)`
 const Co2EmissionsTable = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
-    const { isRevision } = useProjectContext()
     const { canEdit, isEditDisabled, getEditDisabledText } = useCanUserEdit()
     const { apiData } = useCaseApiData()
 
@@ -64,7 +62,7 @@ const Co2EmissionsTable = () => {
         updateFuelConsumption,
     } = useTopsideMutation()
 
-    const [check, setCheck] = useState(false)
+    const [isCo2Reinjected, setIsCo2Reinjected] = useState(false)
 
     const [fuelConsumption, setFuelConsumption] = useState<number>()
     const [co2RemovedFromGas, setCo2RemovedFromGas] = useState<number>()
@@ -110,10 +108,18 @@ const Co2EmissionsTable = () => {
             setFlaredGasPerProducedVolume(apiData.case.flaredGasPerProducedVolume)
             setCo2EmissionsFromFlaredGas(apiData.case.co2EmissionsFromFlaredGas)
             setCo2Vented(apiData.case.co2Vented)
+            setIsCo2Reinjected(apiData.case.co2Vented === 0)
             setAverageDevelopmentWellDrillingDays(apiData.case.averageDevelopmentDrillingDays)
             setDailyEmissionsFromDrillingRig(apiData.case.dailyEmissionFromDrillingRig)
         }
     }, [apiData])
+
+    const handleSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked
+
+        setIsCo2Reinjected(isChecked)
+        setCo2Vented(isChecked ? 0 : 1.96)
+    }
 
     const toRowValue = (value: number | undefined) => {
         if (value !== undefined) {
@@ -234,7 +240,7 @@ const Co2EmissionsTable = () => {
     }), [])
 
     const switchRow = () => {
-        if (check) {
+        if (isCo2Reinjected) {
             return externalFilterChanged(true)
         }
 
@@ -318,11 +324,11 @@ const Co2EmissionsTable = () => {
                     <Switch
                         disabled={!canEdit()}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            setCheck(e.target.checked)
+                            handleSwitchChange(e)
                         }}
                         onClick={switchRow}
-                        checked={check}
-                        label={check ? "CO2 re-injected" : "CO2 vented"}
+                        checked={isCo2Reinjected}
+                        label={isCo2Reinjected ? "CO2 re-injected" : "CO2 vented"}
                     />
                 </Tooltip>
             </StyledContainer>
