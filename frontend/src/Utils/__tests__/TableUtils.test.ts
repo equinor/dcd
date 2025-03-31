@@ -18,7 +18,7 @@ describe("numberValueParser", () => {
     it("should convert string with dot decimal to number", () => {
         const params = {
             newValue: "123.45",
-            oldValue: "0",
+            oldValue: "",
             data: {},
         }
 
@@ -31,7 +31,7 @@ describe("numberValueParser", () => {
     it("should convert string with comma decimal to number", () => {
         const params = {
             newValue: "123,45",
-            oldValue: "0",
+            oldValue: "",
             data: {},
         }
 
@@ -58,7 +58,7 @@ describe("numberValueParser", () => {
         mockSetSnackBarMessage.mockClear()
         const params = {
             newValue: "123abc45",
-            oldValue: "0",
+            oldValue: "",
             data: {},
         }
 
@@ -71,20 +71,20 @@ describe("numberValueParser", () => {
     it("should handle empty string input", () => {
         const params = {
             newValue: "",
-            oldValue: "0",
+            oldValue: "",
             data: {},
         }
 
         const result = numberValueParser(mockSetSnackBarMessage, params)
 
-        expect(result).toBe(0)
+        expect(result).toBe("")
         expect(mockSetSnackBarMessage).not.toHaveBeenCalled()
     })
 
     it("should handle negative numbers", () => {
         const params = {
             newValue: "-123.45",
-            oldValue: "0",
+            oldValue: "",
             data: {},
         }
 

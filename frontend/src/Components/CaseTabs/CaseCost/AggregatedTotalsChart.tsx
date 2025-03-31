@@ -75,6 +75,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 ]),
             }
 
+            console.log("DEBUG - Setting merged cost profiles:", costProfiles)
             setMergedCostProfiles(costProfiles)
             const incomeProfiles = {
                 liquidRevenue: [
@@ -317,9 +318,17 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         tooltip: {
-            renderer: (params: any) => ({
-                content: `${params.yName || params.title}: ${formatChartNumber(params.yValue)}`,
-            }),
+            // Use format instead of renderer for AG-Charts compatibility
+            format: "{label}: {value}",
+            // Add a custom formatter to properly display values
+            formatter: (params: any) => {
+                // Only format the value part
+                if (params.key === "value") {
+                    return formatChartNumber(params.value)
+                }
+
+                return params.value
+            },
         },
         axes: [
             axesConfig,
@@ -336,17 +345,62 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }
 
     const pieChartData = [
-        { label: "Study Costs", value: mergedCostProfiles.studyProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "OPEX", value: mergedCostProfiles.opexProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Cessation", value: mergedCostProfiles.cessationProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Offshore Facilities", value: mergedCostProfiles.offshoreFacilityProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Development Wells", value: mergedCostProfiles.developmentWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Exploration Wells", value: mergedCostProfiles.explorationWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        {
+            label: "Study Costs",
+            value: Math.abs(mergedCostProfiles.studyProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "OPEX",
+            value: Math.abs(mergedCostProfiles.opexProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Cessation",
+            value: Math.abs(mergedCostProfiles.cessationProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Offshore Facilities",
+            value: Math.abs(mergedCostProfiles.offshoreFacilityProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Development Wells",
+            value: Math.abs(mergedCostProfiles.developmentWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Exploration Wells",
+            value: Math.abs(mergedCostProfiles.explorationWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
     ]
-    const totalValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0)
+    const totalValue = pieChartData.reduce((acc, curr) => acc + (curr.value || 0), 0)
+
+    // Debug logs for pie chart data
+    console.log("DEBUG - Pie chart data:", pieChartData)
+    console.log("DEBUG - Total value:", totalValue)
+    console.log("DEBUG - Raw cost profiles:", {
+        studyProfiles: mergedCostProfiles.studyProfiles?.values,
+        opexProfiles: mergedCostProfiles.opexProfiles?.values,
+        cessationProfiles: mergedCostProfiles.cessationProfiles?.values,
+        offshoreFacilityProfiles: mergedCostProfiles.offshoreFacilityProfiles?.values,
+        developmentWellCostProfiles: mergedCostProfiles.developmentWellCostProfiles?.values,
+        explorationWellCostProfiles: mergedCostProfiles.explorationWellCostProfiles?.values,
+    })
+
+    // Filter out zero values from the pie chart data
+    const filteredPieChartData = pieChartData.filter((item) => item.value > 0)
+
+    // Use default data if all values are zero
+    const finalPieChartData = filteredPieChartData.length > 0
+        ? filteredPieChartData
+        : [
+            { label: "Study Costs", value: 1 },
+            { label: "OPEX", value: 1 },
+            { label: "Cessation", value: 1 },
+        ]
+
+    // Debug logs for final pie chart data
+    console.log("DEBUG - Filtered/Final pie chart data:", finalPieChartData)
 
     const pieChartOptions: object = {
-        data: pieChartData,
+        data: finalPieChartData,
         title: {
             text: "Cost Distribution",
             fontSize: 22,
@@ -364,17 +418,35 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "donut",
                 calloutLabelKey: "label",
                 angleKey: "value",
-                calloutLabel: { enabled: false },
+                sectorLabelKey: "value",
+                calloutLabel: {
+                    enabled: true,
+                    formatter: (params: any) => {
+                        console.log("DEBUG - Callout label params:", params)
+
+                        // Important: Look at params.datum for the actual data point
+                        const dataPoint = params.datum
+
+                        if (!dataPoint) {
+                            console.log("DEBUG - No datum in params")
+
+                            return "0"
+                        }
+
+                        const value = typeof dataPoint.value === "number"
+                            ? Math.abs(dataPoint.value)
+                            : Math.abs(parseFloat(dataPoint.value || "0"))
+
+                        console.log("DEBUG - Corrected value from datum:", value, dataPoint)
+
+                        return formatChartNumber(value)
+                    },
+                },
                 innerRadiusOffset: -25,
                 strokes: ["white"],
-                formatter: (params: any) => {
-                    const value = typeof params.datum.value === "number" ? params.datum.value : parseFloat(params.datum.value)
-
-                    return formatChartNumber(value)
-                },
                 innerLabels: [
                     {
-                        text: formatChartNumber(totalValue),
+                        text: formatChartNumber(Math.abs(totalValue)),
                         fontSize: 18,
                         color: "#000000",
                     },
@@ -399,13 +471,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         tooltip: {
-            renderer: (params: any) => {
-                const value = typeof params.datum.value === "number" ? params.datum.value : parseFloat(params.datum.value)
-
-                return {
-                    content: `${params.datum.label}: ${formatChartNumber(value)}`,
-                }
-            },
+            // Use format property instead of renderer
+            format: "{label}: {value}",
         },
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }
