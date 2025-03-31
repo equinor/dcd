@@ -6,32 +6,6 @@ class TechnicalInputService extends __BaseService {
 
         return res
     }
-
-    public async updateDevelopmentOperationalWellCosts(
-        projectId: string,
-        developmentOperationalWellCostsId: string,
-        body: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto,
-    ): Promise<Components.Schemas.UpdateDevelopmentOperationalWellCostsDto> {
-        const res: Components.Schemas.UpdateDevelopmentOperationalWellCostsDto = await this.put(
-            `projects/${projectId}/development-operational-well-costs/${developmentOperationalWellCostsId}`,
-            { body },
-        )
-
-        return res
-    }
-
-    public async updateExplorationOperationalWellCosts(
-        projectId: string,
-        explorationOperationalWellCostsId: string,
-        body: Components.Schemas.UpdateExplorationOperationalWellCostsDto,
-    ): Promise<Components.Schemas.UpdateExplorationOperationalWellCostsDto> {
-        const res: Components.Schemas.UpdateExplorationOperationalWellCostsDto = await this.put(
-            `projects/${projectId}/exploration-operational-well-costs/${explorationOperationalWellCostsId}`,
-            { body },
-        )
-
-        return res
-    }
 }
 
 export const GetTechnicalInputService = () => new TechnicalInputService()

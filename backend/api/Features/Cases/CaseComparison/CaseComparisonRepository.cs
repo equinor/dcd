@@ -16,8 +16,6 @@ public class CaseComparisonRepository(DcdDbContext context)
     public async Task<Project> LoadProject(Guid projectPk)
     {
         var project = await context.Projects
-            .Include(x => x.ExplorationOperationalWellCosts)
-            .Include(x => x.DevelopmentOperationalWellCosts)
             .SingleAsync(p => p.Id == projectPk);
 
         await context.Wells

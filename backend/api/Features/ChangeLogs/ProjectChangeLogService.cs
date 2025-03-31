@@ -20,8 +20,6 @@ public class ProjectChangeLogService(DcdDbContext context)
             .ToListAsync();
 
         var liveData = await context.Projects
-            .Include(x => x.DevelopmentOperationalWellCosts)
-            .Include(x => x.ExplorationOperationalWellCosts)
             .Where(x => x.Id == projectPk)
             .SingleAsync();
 

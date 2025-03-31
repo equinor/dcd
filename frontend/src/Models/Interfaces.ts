@@ -59,6 +59,8 @@ export interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
+    wellInterventionCost: number,
+    plugingAndAbandonmentCost: number,
     well: Components.Schemas.WellOverviewDto
     wells: Components.Schemas.WellOverviewDto[]
 }

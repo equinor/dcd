@@ -26,8 +26,6 @@ public class CommonProjectAndRevisionDto
     [Required] public required double DiscountRate { get; set; }
     [Required] public required double ExchangeRateUsdToNok { get; set; }
     [Required] public required int NpvYear { get; set; }
-    [Required] public required ExplorationOperationalWellCostsOverviewDto ExplorationOperationalWellCosts { get; set; }
-    [Required] public required DevelopmentOperationalWellCostsOverviewDto DevelopmentOperationalWellCosts { get; set; }
     [Required] public required List<CaseOverviewDto> Cases { get; set; }
     [Required] public required List<WellOverviewDto> Wells { get; set; }
 }

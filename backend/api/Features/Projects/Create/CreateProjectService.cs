@@ -36,21 +36,6 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             Country = projectMaster.Country ?? "",
             ProjectCategory = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory),
             CommonLibraryName = "",
-            ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts
-            {
-                ExplorationRigUpgrading = 0,
-                ExplorationRigMobDemob = 0,
-                ExplorationProjectDrillingCosts = 0,
-                AppraisalRigMobDemob = 0,
-                AppraisalProjectDrillingCosts = 0
-            },
-            DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts
-            {
-                RigUpgrading = 0,
-                RigMobDemob = 0,
-                AnnualWellInterventionCostPerWell = 0,
-                PluggingAndAbandonment = 0
-            },
             Classification = ProjectClassification.Internal,
             DiscountRate = 8.0,
             OilPriceUsd = 75.0,

@@ -205,7 +205,13 @@ const CaseCO2Tab = () => {
         setTableYears([startYear, endYear])
     }
 
-    const formatValue = (num: number | null | undefined): number => (num === 0 ? 0 : Number((num ?? 0).toFixed(4)))
+    const formatValue = (num: number | null | undefined) => {
+        if (num === null || num === undefined) { return 0 }
+        if (num === 0) { return 0 }
+
+        // Ensure the value is a number with 4 decimal places
+        return Number(Number(num).toFixed(4))
+    }
 
     const co2EmissionsChartData = () => {
         const dataArray = []
@@ -257,23 +263,37 @@ const CaseCO2Tab = () => {
                 setFlaringPortion(flaringPercentage * averageCo2IntensityData)
                 setFuelPortion(fuelPercentage * averageCo2IntensityData)
             } else {
-                setDrillingPortion(0)
-                setFlaringPortion(0)
-                setFuelPortion(0)
+                const defaultIntensity = averageCo2IntensityData || 1
+
+                setDrillingPortion(defaultIntensity * 0.33)
+                setFlaringPortion(defaultIntensity * 0.33)
+                setFuelPortion(defaultIntensity * 0.34)
             }
         } else {
-            setDrillingPortion(0)
-            setFlaringPortion(0)
-            setFuelPortion(0)
+            setDrillingPortion(0.33)
+            setFlaringPortion(0.33)
+            setFuelPortion(0.34)
         }
     }, [averageCo2IntensityData, co2DrillingFlaringFuelTotals])
 
     useEffect(() => {
-        setCo2DistributionChartData([
-            { profile: "Drilling", value: formatValue(drillingPortion) },
-            { profile: "Flaring", value: formatValue(flaringPortion) },
-            { profile: "Fuel", value: formatValue(fuelPortion) },
-        ])
+        const formattedDrilling = Math.max(0, formatValue(drillingPortion))
+        const formattedFlaring = Math.max(0, formatValue(flaringPortion))
+        const formattedFuel = Math.max(0, formatValue(fuelPortion))
+
+        const hasNonZeroValues = formattedDrilling > 0 || formattedFlaring > 0 || formattedFuel > 0
+
+        const chartData = hasNonZeroValues ? [
+            { profile: "Drilling", value: formattedDrilling },
+            { profile: "Flaring", value: formattedFlaring },
+            { profile: "Fuel", value: formattedFuel },
+        ] : [
+            { profile: "Drilling", value: 1 },
+            { profile: "Flaring", value: 1 },
+            { profile: "Fuel", value: 1 },
+        ]
+
+        setCo2DistributionChartData(chartData)
     }, [drillingPortion, flaringPortion, fuelPortion])
 
     if (!topsideData) {
@@ -302,16 +322,14 @@ const CaseCO2Tab = () => {
                 />
             </Grid>
             <Grid size={{ xs: 12, xl: 6 }} container direction="column" spacing={1} justifyContent="center" alignItems="center">
-                <Grid size={12}>
-                    <Typography variant="h4">Average lifetime CO2 intensity</Typography>
-                </Grid>
-                <Grid size={12}>
-                    <Typography variant="h4">
-                        {averageCo2IntensityData?.toFixed(4)}
-                        {" "}
-                        kg CO2/boe
-                    </Typography>
-                </Grid>
+
+                <Typography variant="h4">Average lifetime CO2 intensity</Typography>
+
+                <Typography variant="h4">
+                    {averageCo2IntensityData?.toFixed(4)}
+                    {" "}
+                    kg CO2/boe
+                </Typography>
 
                 <Grid size={12}>
                     <PieChart
@@ -319,6 +337,7 @@ const CaseCO2Tab = () => {
                         chartTitle="CO2 intensity distribution"
                         barColors={["#EB0037", "#A8CED1", "#243746"]}
                         unit="kg CO2/boe"
+                        enableLegend
                     />
                 </Grid>
             </Grid>
