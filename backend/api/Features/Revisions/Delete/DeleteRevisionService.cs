@@ -42,8 +42,6 @@ public class DeleteRevisionService(DcdDbContext context, DeleteCaseImageService 
 
         context.ProjectMembers.RemoveRange(await context.ProjectMembers.Where(x => x.ProjectId == revisionId).ToListAsync());
         context.Wells.RemoveRange(await context.Wells.Where(x => x.ProjectId == revisionId).ToListAsync());
-        context.DevelopmentOperationalWellCosts.Remove(await context.DevelopmentOperationalWellCosts.Where(x => x.ProjectId == revisionId).SingleAsync());
-        context.ExplorationOperationalWellCosts.Remove(await context.ExplorationOperationalWellCosts.Where(x => x.ProjectId == revisionId).SingleAsync());
         context.RevisionDetails.Remove(await context.RevisionDetails.Where(x => x.RevisionId == revisionId).SingleAsync());
 
         context.Projects.Remove(await context.Projects.Where(x => x.Id == revisionId).SingleAsync());

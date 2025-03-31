@@ -139,8 +139,6 @@ public static class ProjectChangeLogDtoMapperService
                 return ChangeLogCategory.AccessManagementTab;
 
             case nameof(Well):
-            case nameof(DevelopmentOperationalWellCosts):
-            case nameof(ExplorationOperationalWellCosts):
                 return ChangeLogCategory.WellCostTab;
         }
 

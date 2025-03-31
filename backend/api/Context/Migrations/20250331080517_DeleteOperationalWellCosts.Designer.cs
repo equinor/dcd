@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331080517_DeleteOperationalWellCosts")]
+    partial class DeleteOperationalWellCosts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,6 +262,9 @@ namespace api.Migrations
 
                     b.Property<DateTime?>("SharepointUpdatedTimestampUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SharepointUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("SubstructureId")
                         .HasColumnType("uniqueidentifier");
