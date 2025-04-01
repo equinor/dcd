@@ -160,12 +160,12 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     },
                     {
                         field: "totalExportedVolumes",
-                        headerName: `Total exported volumes (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe"})`,
+                        headerName: `Production & sales volumes (${revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe"})`,
                         width: 175,
                         editable: false,
                         headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
-                            columnHeader: "Total exported volumes",
+                            columnHeader: "Production & sales volumes",
                             unit: revisionAndProjectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe",
                         },
                         cellStyle: cellStyleRightAlign,

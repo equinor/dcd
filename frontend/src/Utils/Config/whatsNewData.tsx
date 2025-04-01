@@ -189,7 +189,7 @@ export const whatsNewUpdates: WhatsNewUpdates = {
                 { description: "Add ability to add multiple drilling campaigns" },
                 { description: "Add ability to adjust start and end year of well intervention cost" },
                 { description: "Add NGL production to production profiles" },
-                { description: "Add total exported volumes to production profiles" },
+                { description: "Add production & sales volumes to production profiles" },
             ],
             "UI Improvements": [
                 { description: "Reworked PROSP import UI" },
