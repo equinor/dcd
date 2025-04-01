@@ -178,11 +178,13 @@ public static class SteaCaseDtoBuilder
         var startYearsProductionSalesAndVolumes = new List<int>();
 
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil) != null ||
-            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil) != null)
+            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil) != null ||
+            caseItem.GetOverrideProfileOrProfile(ProfileTypes.CondensateProduction) != null)
         {
             var dto = TimeSeriesMerger.MergeTimeSeries(
                 new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)),
-                new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil))
+                new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)),
+                new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.CondensateProduction))
             );
 
             dto.StartYear = caseItem.Dg4Date.Year;
