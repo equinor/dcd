@@ -10,7 +10,6 @@ public class BusinessCase
     public List<ExcelTableCell> Cessation { get; set; } = [];
     public List<ExcelTableCell> NglProduction { get; set; } = [];
     public List<ExcelTableCell> Drilling { get; set; } = [];
-    public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;
     public List<ExcelTableCell> TotalAndAnnualOil { get; set; } = [];
     public List<ExcelTableCell> NetSalesGas { get; set; } = [];
     public List<ExcelTableCell> Co2Emissions { get; set; } = [];

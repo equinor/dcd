@@ -57,9 +57,6 @@ public static class ExportToExcelService
             businessCase.NglProduction = CreateExcelRow("NGL Production [MTPA]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.NglProduction, 1_000_000), rowCount, 1);
 
             rowCount++;
-            businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount, "Production And Sales Volumes");
-
-            rowCount++;
             businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil, 1_000_000), rowCount, 1);
 
             rowCount++;
@@ -221,8 +218,6 @@ public static class ExportToExcelService
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
-
-            ws.Cell(businessCase.ProductionAndSalesVolumes.CellNo).Value = businessCase.ProductionAndSalesVolumes.Value;
 
             foreach (var etc in businessCase.TotalAndAnnualOil)
             {
