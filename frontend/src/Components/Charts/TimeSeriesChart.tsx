@@ -1,6 +1,6 @@
 import { AgCharts } from "ag-charts-react"
 
-import { formatChartNumber } from "@/Utils/FormatingUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { insertIf, separateProfileObjects } from "@/Utils/TableUtils"
 
 interface Props {
@@ -61,7 +61,7 @@ export const TimeSeriesChart = ({
         ...insertIf(axesData !== undefined, true, axesData, lineChart),
         tooltip: {
             renderer: (params: any) => ({
-                content: `${params.title}: ${formatChartNumber(params.yValue)}`,
+                content: `${params.title}: ${formatNumberForView(roundToDecimals(params.yValue, 4))}`,
             }),
         },
         axes: axesData ? undefined : [
@@ -73,7 +73,7 @@ export const TimeSeriesChart = ({
                 type: "number",
                 position: "left",
                 label: {
-                    formatter: (params: any) => formatChartNumber(params.value),
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
                 },
             },
         ],

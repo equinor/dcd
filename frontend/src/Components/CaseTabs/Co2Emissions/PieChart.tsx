@@ -1,8 +1,6 @@
 import { AgChartOptions, AgCharts } from "ag-charts-community"
 import { useEffect, useRef } from "react"
 
-import { formatChartNumber } from "@/Utils/FormatingUtils"
-
 interface Props {
     data: any[]
     chartTitle: string
@@ -12,7 +10,11 @@ interface Props {
 }
 
 export const PieChart = ({
-    data, chartTitle, barColors, unit = "", enableLegend = true,
+    data,
+    chartTitle,
+    barColors,
+    unit = "",
+    enableLegend = true,
 }: Props) => {
     const chartRef = useRef<HTMLDivElement>(null)
 

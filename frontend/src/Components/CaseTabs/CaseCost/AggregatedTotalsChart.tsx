@@ -8,7 +8,10 @@ import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import {
-    formatCurrencyUnit, formatNumberWithDecimals, formatProfileName, formatChartNumber,
+    formatCurrencyUnit,
+    formatProfileName,
+    formatNumberForView,
+    roundToDecimals,
 } from "@/Utils/FormatingUtils"
 import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/TableUtils"
 
@@ -16,14 +19,12 @@ interface AggregatedTotalsProps {
     tableYears: [number, number];
     apiData: Components.Schemas.CaseWithAssetsDto;
     barColors: string[];
-    unit?: string;
     enableLegend?: boolean;
 }
 
 const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     apiData,
     barColors,
-    unit,
     enableLegend,
     tableYears,
 }) => {
@@ -75,7 +76,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 ]),
             }
 
-            console.log("DEBUG - Setting merged cost profiles:", costProfiles)
             setMergedCostProfiles(costProfiles)
             const incomeProfiles = {
                 liquidRevenue: [
@@ -324,7 +324,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             formatter: (params: any) => {
                 // Only format the value part
                 if (params.key === "value") {
-                    return formatChartNumber(params.value)
+                    return formatNumberForView(roundToDecimals(params.value, 4))
                 }
 
                 return params.value
@@ -337,7 +337,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 position: "left",
                 title: { text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency) },
                 label: {
-                    formatter: (params: any) => formatChartNumber(params.value),
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
                 },
             },
         ],
@@ -372,18 +372,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     ]
     const totalValue = pieChartData.reduce((acc, curr) => acc + (curr.value || 0), 0)
 
-    // Debug logs for pie chart data
-    console.log("DEBUG - Pie chart data:", pieChartData)
-    console.log("DEBUG - Total value:", totalValue)
-    console.log("DEBUG - Raw cost profiles:", {
-        studyProfiles: mergedCostProfiles.studyProfiles?.values,
-        opexProfiles: mergedCostProfiles.opexProfiles?.values,
-        cessationProfiles: mergedCostProfiles.cessationProfiles?.values,
-        offshoreFacilityProfiles: mergedCostProfiles.offshoreFacilityProfiles?.values,
-        developmentWellCostProfiles: mergedCostProfiles.developmentWellCostProfiles?.values,
-        explorationWellCostProfiles: mergedCostProfiles.explorationWellCostProfiles?.values,
-    })
-
     // Filter out zero values from the pie chart data
     const filteredPieChartData = pieChartData.filter((item) => item.value > 0)
 
@@ -395,9 +383,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             { label: "OPEX", value: 1 },
             { label: "Cessation", value: 1 },
         ]
-
-    // Debug logs for final pie chart data
-    console.log("DEBUG - Filtered/Final pie chart data:", finalPieChartData)
 
     const pieChartOptions: object = {
         data: finalPieChartData,
@@ -415,21 +400,28 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         theme: figmaTheme,
         series: [
             {
-                type: "donut",
+                type: "pie",
+                title: {
+                    text: formatNumberForView(roundToDecimals(Math.abs(totalValue), 4)),
+                    showInLegend: false,
+                    fontSize: 20,
+                },
+                subtitle: {
+                    text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency),
+                    showInLegend: false,
+                    fontSize: 14,
+                },
+                innerRadiusRatio: 0.7,
+                centerTitle: true,
                 calloutLabelKey: "label",
                 angleKey: "value",
-                sectorLabelKey: "value",
                 calloutLabel: {
                     enabled: true,
                     formatter: (params: any) => {
-                        console.log("DEBUG - Callout label params:", params)
-
                         // Important: Look at params.datum for the actual data point
                         const dataPoint = params.datum
 
                         if (!dataPoint) {
-                            console.log("DEBUG - No datum in params")
-
                             return "0"
                         }
 
@@ -437,37 +429,13 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                             ? Math.abs(dataPoint.value)
                             : Math.abs(parseFloat(dataPoint.value || "0"))
 
-                        console.log("DEBUG - Corrected value from datum:", value, dataPoint)
-
-                        return formatChartNumber(value)
+                        return formatNumberForView(roundToDecimals(value, 4))
                     },
                 },
-                innerRadiusOffset: -25,
+                fills: barColors,
                 strokes: ["white"],
-                innerLabels: [
-                    {
-                        text: formatChartNumber(Math.abs(totalValue)),
-                        fontSize: 18,
-                        color: "#000000",
-                    },
-                    {
-                        text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency),
-                        fontSize: 14,
-                        color: "#B4B4B4",
-                    },
-                ],
-                highlightStyle: {
-                    item: {
-                        fill: undefined,
-                        stroke: undefined,
-                        strokeWidth: 1,
-                    },
-                    series: {
-                        enabled: true,
-                        dimOpacity: 0.2,
-                        strokeWidth: 2,
-                    },
-                },
+                strokeWidth: 1,
+                legendItemKey: "label",
             },
         ],
         tooltip: {

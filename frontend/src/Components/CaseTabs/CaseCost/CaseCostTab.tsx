@@ -130,15 +130,9 @@ const CaseCostTab = () => {
                 apiData.sidetrackCostProfile,
             ]
 
-            console.log("Number of profiles provided to calculateTableYears:", profiles.length)
-
             const dg4Year = getYearFromDateString(caseData.dg4Date)
 
-            console.log("dg4Year:", dg4Year)
-
             const years = calculateTableYears(profiles, dg4Year)
-
-            console.log("calculateTableYears returned:", years)
 
             if (years && isMounted.current) {
                 const [firstYear, lastYear] = years

@@ -14,7 +14,7 @@ import {
     roundToDecimals,
     sumAndRound,
     truncateText,
-    formatChartNumber,
+    formatNumberForView,
 } from "../FormatingUtils"
 
 // Mock enums to avoid @/Models/enums dependency
@@ -187,175 +187,175 @@ describe("getUnitByProfileName", () => {
 describe("formatChartNumber", () => {
     // Edge cases and invalid inputs
     it("should handle null, undefined and empty values", () => {
-        expect(formatChartNumber(null as any)).toBe("0")
-        expect(formatChartNumber(undefined as any)).toBe("0")
-        expect(formatChartNumber("")).toBe("0")
+        expect(formatNumberForView(null as any)).toBe("0")
+        expect(formatNumberForView(undefined as any)).toBe("0")
+        expect(formatNumberForView("")).toBe("0")
     })
 
     it("should handle NaN and zero", () => {
-        expect(formatChartNumber(NaN)).toBe("0")
-        expect(formatChartNumber(0)).toBe("0")
-        expect(formatChartNumber("0")).toBe("0")
+        expect(formatNumberForView(NaN)).toBe("0")
+        expect(formatNumberForView(0)).toBe("0")
+        expect(formatNumberForView("0")).toBe("0")
     })
 
     // Numbers less than 1
     it("should preserve full precision for very small numbers", () => {
-        expect(formatChartNumber(0.12345)).toBe("0,12345") // Preserved with Norwegian format
-        expect(formatChartNumber(0.0001)).toBe("0,0001") // Preserved with Norwegian format
-        expect(formatChartNumber(0.00001)).toBe("0,00001") // Preserved with Norwegian format
-        expect(formatChartNumber(0.9999)).toBe("0,9999") // Preserved with Norwegian format
+        expect(formatNumberForView(0.12345)).toBe("0,12345") // Preserved with Norwegian format
+        expect(formatNumberForView(0.0001)).toBe("0,0001") // Preserved with Norwegian format
+        expect(formatNumberForView(0.00001)).toBe("0,00001") // Preserved with Norwegian format
+        expect(formatNumberForView(0.9999)).toBe("0,9999") // Preserved with Norwegian format
     })
 
     // Single digit integers
     it("should format small integers (1-9) without changes", () => {
-        expect(formatChartNumber(1)).toBe("1")
-        expect(formatChartNumber(5)).toBe("5")
-        expect(formatChartNumber(9)).toBe("9")
+        expect(formatNumberForView(1)).toBe("1")
+        expect(formatNumberForView(5)).toBe("5")
+        expect(formatNumberForView(9)).toBe("9")
     })
 
     // Regular numbers without 3 trailing zeros (not abbreviated)
     it("should format regular numbers using Norwegian locale", () => {
-        expect(formatChartNumber(123)).toBe("123")
-        expect(formatChartNumber(1234)).toEqual(expect.stringMatching(/1.234/)) // Match pattern to avoid encoding issues
-        expect(formatChartNumber(12345)).toEqual(expect.stringMatching(/12.345/))
-        expect(formatChartNumber(123456)).toEqual(expect.stringMatching(/123.456/))
-        expect(formatChartNumber(1234567)).toEqual(expect.stringMatching(/1.234.567/))
-        expect(formatChartNumber(12345678)).toEqual(expect.stringMatching(/12.345.678/))
-        expect(formatChartNumber(123456789)).toEqual(expect.stringMatching(/123.456.789/))
+        expect(formatNumberForView(123)).toBe("123")
+        expect(formatNumberForView(1234)).toEqual(expect.stringMatching(/1.234/)) // Match pattern to avoid encoding issues
+        expect(formatNumberForView(12345)).toEqual(expect.stringMatching(/12.345/))
+        expect(formatNumberForView(123456)).toEqual(expect.stringMatching(/123.456/))
+        expect(formatNumberForView(1234567)).toEqual(expect.stringMatching(/1.234.567/))
+        expect(formatNumberForView(12345678)).toEqual(expect.stringMatching(/12.345.678/))
+        expect(formatNumberForView(123456789)).toEqual(expect.stringMatching(/123.456.789/))
     })
 
     // Decimal numbers
     it("should format decimal numbers using Norwegian locale", () => {
-        expect(formatChartNumber(12.34)).toEqual(expect.stringMatching(/12,34/)) // Match pattern to avoid encoding issues
-        expect(formatChartNumber(1234.56)).toEqual(expect.stringMatching(/1.234,56/))
-        expect(formatChartNumber(1234567.89)).toEqual(expect.stringMatching(/1.234.567,89/))
+        expect(formatNumberForView(12.34)).toEqual(expect.stringMatching(/12,34/)) // Match pattern to avoid encoding issues
+        expect(formatNumberForView(1234.56)).toEqual(expect.stringMatching(/1.234,56/))
+        expect(formatNumberForView(1234567.89)).toEqual(expect.stringMatching(/1.234.567,89/))
     })
 
     // Numbers with 3 trailing zeros - should be abbreviated
     it("should abbreviate thousands with 3+ trailing zeros", () => {
-        expect(formatChartNumber(1000)).toBe("1K")
-        expect(formatChartNumber(5000)).toBe("5K")
-        expect(formatChartNumber(10000)).toBe("10K")
-        expect(formatChartNumber(100000)).toBe("100K")
-        expect(formatChartNumber(999000)).toBe("999K")
+        expect(formatNumberForView(1000)).toBe("1K")
+        expect(formatNumberForView(5000)).toBe("5K")
+        expect(formatNumberForView(10000)).toBe("10K")
+        expect(formatNumberForView(100000)).toBe("100K")
+        expect(formatNumberForView(999000)).toBe("999K")
     })
 
     it("should abbreviate millions with 3+ trailing zeros", () => {
-        expect(formatChartNumber(1000000)).toBe("1M")
-        expect(formatChartNumber(5000000)).toBe("5M")
-        expect(formatChartNumber(10000000)).toBe("10M")
-        expect(formatChartNumber(100000000)).toBe("100M")
-        expect(formatChartNumber(999000000)).toBe("999M")
+        expect(formatNumberForView(1000000)).toBe("1M")
+        expect(formatNumberForView(5000000)).toBe("5M")
+        expect(formatNumberForView(10000000)).toBe("10M")
+        expect(formatNumberForView(100000000)).toBe("100M")
+        expect(formatNumberForView(999000000)).toBe("999M")
     })
 
     it("should abbreviate billions with 3+ trailing zeros", () => {
-        expect(formatChartNumber(1000000000)).toBe("1B")
-        expect(formatChartNumber(5000000000)).toBe("5B")
-        expect(formatChartNumber(10000000000)).toBe("10B")
-        expect(formatChartNumber(100000000000)).toBe("100B")
+        expect(formatNumberForView(1000000000)).toBe("1B")
+        expect(formatNumberForView(5000000000)).toBe("5B")
+        expect(formatNumberForView(10000000000)).toBe("10B")
+        expect(formatNumberForView(100000000000)).toBe("100B")
     })
 
     // Edge cases for abbreviation
     it("should not abbreviate numbers without exactly 3+ trailing zeros", () => {
-        expect(formatChartNumber(1001)).toEqual(expect.stringMatching(/1.001/)) // Match pattern to avoid encoding issues
-        expect(formatChartNumber(1000001)).toEqual(expect.stringMatching(/1.000.001/))
-        expect(formatChartNumber(1000000001)).toEqual(expect.stringMatching(/1.000.000.001/))
+        expect(formatNumberForView(1001)).toEqual(expect.stringMatching(/1.001/)) // Match pattern to avoid encoding issues
+        expect(formatNumberForView(1000001)).toEqual(expect.stringMatching(/1.000.001/))
+        expect(formatNumberForView(1000000001)).toEqual(expect.stringMatching(/1.000.000.001/))
     })
 
     // Negative numbers
     it("should handle negative numbers correctly", () => {
-        expect(formatChartNumber(-5)).toBe("-5") // Single digits don't use toLocaleString
-        expect(formatChartNumber(-1234)).toEqual(expect.stringMatching(/[−-]1.?234/)) // Match any minus sign and thousands separator
-        expect(formatChartNumber(-1000)).toBe("-1K") // K/M/B abbreviations use hyphen
-        expect(formatChartNumber(-1000000)).toBe("-1M")
-        expect(formatChartNumber(-1000000000)).toBe("-1B")
+        expect(formatNumberForView(-5)).toBe("-5") // Single digits don't use toLocaleString
+        expect(formatNumberForView(-1234)).toEqual(expect.stringMatching(/[−-]1.?234/)) // Match any minus sign and thousands separator
+        expect(formatNumberForView(-1000)).toBe("-1K") // K/M/B abbreviations use hyphen
+        expect(formatNumberForView(-1000000)).toBe("-1M")
+        expect(formatNumberForView(-1000000000)).toBe("-1B")
     })
 
     // String inputs
     it("should handle string inputs correctly", () => {
-        expect(formatChartNumber("123")).toBe("123")
-        expect(formatChartNumber("1000")).toBe("1K")
-        expect(formatChartNumber("1000000")).toBe("1M")
-        expect(formatChartNumber("0.1234")).toBe("0,1234")
+        expect(formatNumberForView("123")).toBe("123")
+        expect(formatNumberForView("1000")).toBe("1K")
+        expect(formatNumberForView("1000000")).toBe("1M")
+        expect(formatNumberForView("0.1234")).toBe("0,1234")
     })
 
     // Specific values from the requirements
     it("should match specific examples from the requirements", () => {
         // Format small whole numbers (1-9) without decimal places
-        expect(formatChartNumber(5)).toBe("5")
+        expect(formatNumberForView(5)).toBe("5")
 
         // Display very small values (<1) with full precision
-        expect(formatChartNumber(0.1234)).toEqual(expect.stringMatching(/0,1234/))
+        expect(formatNumberForView(0.1234)).toEqual(expect.stringMatching(/0,1234/))
 
         // Abbreviate numbers with trailing zeros
-        expect(formatChartNumber(1000)).toBe("1K")
-        expect(formatChartNumber(10000)).toBe("10K")
-        expect(formatChartNumber(1000000)).toBe("1M")
-        expect(formatChartNumber(1000000000)).toBe("1B")
+        expect(formatNumberForView(1000)).toBe("1K")
+        expect(formatNumberForView(10000)).toBe("10K")
+        expect(formatNumberForView(1000000)).toBe("1M")
+        expect(formatNumberForView(1000000000)).toBe("1B")
 
         // Preserve full notation with separators for non-round numbers
-        expect(formatChartNumber(1234)).toEqual(expect.stringMatching(/1.234/)) // Norwegian locale uses spaces or dots
-        expect(formatChartNumber(10123)).toEqual(expect.stringMatching(/10.123/))
-        expect(formatChartNumber(1000123)).toEqual(expect.stringMatching(/1.000.123/))
+        expect(formatNumberForView(1234)).toEqual(expect.stringMatching(/1.234/)) // Norwegian locale uses spaces or dots
+        expect(formatNumberForView(10123)).toEqual(expect.stringMatching(/10.123/))
+        expect(formatNumberForView(1000123)).toEqual(expect.stringMatching(/1.000.123/))
 
         // The example for 15000000 should be correctly abbreviated
-        expect(formatChartNumber(15000000)).toBe("15M")
+        expect(formatNumberForView(15000000)).toBe("15M")
     })
 
     // More detailed edge cases
     it("should handle complex number patterns correctly", () => {
         // Numbers with non-zero values after initial zeros
-        expect(formatChartNumber(130001)).toEqual(expect.stringMatching(/130.001/)) // No abbreviation - not divisible by 1000
+        expect(formatNumberForView(130001)).toEqual(expect.stringMatching(/130.001/)) // No abbreviation - not divisible by 1000
 
         // Numbers with zeros but not exactly divisible by 1000
-        expect(formatChartNumber(54000230)).toEqual(expect.stringMatching(/54.000.230/)) // No abbreviation
+        expect(formatNumberForView(54000230)).toEqual(expect.stringMatching(/54.000.230/)) // No abbreviation
 
         // Numbers exactly divisible by 1000 but without trailing zeros
-        expect(formatChartNumber(10001000)).toBe("10.001M") // Abbreviated because divisible by 1000
+        expect(formatNumberForView(10001000)).toBe("10.001M") // Abbreviated because divisible by 1000
 
         // Numbers at the edge of abbreviation thresholds
-        expect(formatChartNumber(120000012)).toEqual(expect.stringMatching(/120.000.012/)) // No abbreviation
+        expect(formatNumberForView(120000012)).toEqual(expect.stringMatching(/120.000.012/)) // No abbreviation
 
         // Verify numbers with exact 1000 multiples are abbreviated
-        expect(formatChartNumber(130000)).toBe("130K") // Should be abbreviated (exact multiple of 1000)
-        expect(formatChartNumber(54000000)).toBe("54M") // Should be abbreviated (exact multiple of 1000000)
+        expect(formatNumberForView(130000)).toBe("130K") // Should be abbreviated (exact multiple of 1000)
+        expect(formatNumberForView(54000000)).toBe("54M") // Should be abbreviated (exact multiple of 1000000)
 
         // Numbers that look like they should be abbreviated but aren't
-        expect(formatChartNumber(1234000)).toBe("1.234M") // Divisible by 1000, so abbreviated
-        expect(formatChartNumber(999000000)).toBe("999M") // Divisible by 1000, so abbreviated
+        expect(formatNumberForView(1234000)).toBe("1.234M") // Divisible by 1000, so abbreviated
+        expect(formatNumberForView(999000000)).toBe("999M") // Divisible by 1000, so abbreviated
 
         // Numbers divisible by 1000 with non-trailing zeros
-        expect(formatChartNumber(1001000)).toBe("1.001M") // Divisible by 1000, so abbreviated
-        expect(formatChartNumber(3400500000)).toBe("3.4005B") // Divisible by 1000, in billions range
+        expect(formatNumberForView(1001000)).toBe("1.001M") // Divisible by 1000, so abbreviated
+        expect(formatNumberForView(3400500000)).toBe("3.4005B") // Divisible by 1000, in billions range
 
         // Numbers at transition thresholds
-        expect(formatChartNumber(999999000)).toBe("999.999M") // Abbreviated as M because it's in millions range
-        expect(formatChartNumber(1000000000)).toBe("1B") // Abbreviated as B because it's 1×1000000000
+        expect(formatNumberForView(999999000)).toBe("999.999M") // Abbreviated as M because it's in millions range
+        expect(formatNumberForView(1000000000)).toBe("1B") // Abbreviated as B because it's 1×1000000000
 
         // Numbers with decimal parts and exact thousands
-        expect(formatChartNumber(5000.123)).toEqual(expect.stringMatching(/5.000,123/)) // Not abbreviated due to decimal part
-        expect(formatChartNumber(1000000.5)).toEqual(expect.stringMatching(/1.000.000,5/)) // Not abbreviated due to decimal part
+        expect(formatNumberForView(5000.123)).toEqual(expect.stringMatching(/5.000,123/)) // Not abbreviated due to decimal part
+        expect(formatNumberForView(1000000.5)).toEqual(expect.stringMatching(/1.000.000,5/)) // Not abbreviated due to decimal part
     })
 
     // Edge cases with various divisibility patterns
     it("should handle divisibility edge cases correctly", () => {
         // Divisible by 1000 but not 1000000
-        expect(formatChartNumber(123000)).toBe("123K") // Abbreviated as K
-        expect(formatChartNumber(123000000)).toBe("123M") // Abbreviated as M
+        expect(formatNumberForView(123000)).toBe("123K") // Abbreviated as K
+        expect(formatNumberForView(123000000)).toBe("123M") // Abbreviated as M
 
         // Numbers with complex internal zeros
-        expect(formatChartNumber(10100100)).toEqual(expect.stringMatching(/10.100.100/)) // Not divisible by 1000
-        expect(formatChartNumber(10100000)).toBe("10.1M") // Divisible by 1000, so abbreviated
+        expect(formatNumberForView(10100100)).toEqual(expect.stringMatching(/10.100.100/)) // Not divisible by 1000
+        expect(formatNumberForView(10100000)).toBe("10.1M") // Divisible by 1000, so abbreviated
 
         // Near-threshold numbers
-        expect(formatChartNumber(999999)).toEqual(expect.stringMatching(/999.999/)) // Not abbreviated
-        expect(formatChartNumber(999999000)).toBe("999.999M") // Abbreviated as M because it's in millions range
+        expect(formatNumberForView(999999)).toEqual(expect.stringMatching(/999.999/)) // Not abbreviated
+        expect(formatNumberForView(999999000)).toBe("999.999M") // Abbreviated as M because it's in millions range
 
         // Very large numbers
-        expect(formatChartNumber(1234567890000)).toBe("1234.56789B") // Abbreviated as B with proper formatting
-        expect(formatChartNumber(1230000000000)).toBe("1230B") // Abbreviated more concisely
+        expect(formatNumberForView(1234567890000)).toBe("1234.56789B") // Abbreviated as B with proper formatting
+        expect(formatNumberForView(1230000000000)).toBe("1230B") // Abbreviated more concisely
 
         // Numbers with multiple internal zero patterns
-        expect(formatChartNumber(10010010000)).toBe("10.01001B") // Abbreviated because divisible by 1000 and in billions range
+        expect(formatNumberForView(10010010000)).toBe("10.01001B") // Abbreviated because divisible by 1000 and in billions range
     })
 })

@@ -177,7 +177,7 @@ export function getUnitByProfileName(
  * @param value The number to format
  * @returns Formatted string with appropriate precision
  */
-export function formatChartNumber(value: number | string): string {
+export function formatNumberForView(value: number | string): string {
     if (value === null || value === undefined || value === "") {
         return "0"
     }

@@ -25,7 +25,7 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
-import { formatChartNumber } from "@/Utils/FormatingUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
 
 interface ICo2DistributionChartData {
@@ -100,7 +100,7 @@ const CaseCO2Tab = () => {
                     text: "CO2 emissions",
                 },
                 label: {
-                    formatter: (params: any) => formatChartNumber(params.value), // emission values
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)), // emission values
                 },
             },
             {
@@ -111,7 +111,7 @@ const CaseCO2Tab = () => {
                     text: "Year-by-year CO2 intensity",
                 },
                 label: {
-                    formatter: (params: any) => formatChartNumber(params.value), // intensity values
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)), // intensity values
                 },
             },
         ],
@@ -311,7 +311,7 @@ const CaseCO2Tab = () => {
                 <Typography variant="h4">Average lifetime CO2 intensity</Typography>
 
                 <Typography variant="h4">
-                    {averageCo2IntensityData ? formatChartNumber(averageCo2IntensityData) : "0"}
+                    {averageCo2IntensityData ? formatNumberForView(averageCo2IntensityData) : "0"}
                     {" "}
                     kg CO2/boe
                 </Typography>
