@@ -71,51 +71,53 @@ const CaseCO2Tab = () => {
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
-    const chartAxes = {
-        axes: [
-            {
-                type: "category",
-                position: "bottom",
-                gridLine: {
-                    style: [
-                        {
-                            stroke: "rgba(0, 0, 0, 0.2)",
-                            lineDash: [3, 2],
-                        },
-                        {
-                            stroke: "rgba(0, 0, 0, 0.2)",
-                            lineDash: [3, 2],
-                        },
-                    ],
-                },
-                label: {
-                    formatter: (label: any) => Math.floor(Number(label.value)),
-                },
+    // Special configuration for CO2 chart with dual axes
+    const dualAxesData = [
+        {
+            type: "category",
+            position: "bottom",
+            nice: true,
+            gridLine: {
+                style: [
+                    {
+                        stroke: "rgba(0, 0, 0, 0.2)",
+                        lineDash: [3, 2],
+                    },
+                    {
+                        stroke: "rgba(0, 0, 0, 0.2)",
+                        lineDash: [3, 2],
+                    },
+                ],
             },
-            {
-                type: "number",
-                position: "left",
-                keys: ["co2Emissions"],
-                title: {
-                    text: "CO2 emissions",
-                },
-                label: {
-                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)), // emission values
-                },
+            label: {
+                formatter: (label: any) => Math.floor(Number(label.value)),
             },
-            {
-                type: "number",
-                position: "right",
-                keys: ["co2Intensity"],
-                title: {
-                    text: "Year-by-year CO2 intensity",
-                },
-                label: {
-                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)), // intensity values
-                },
+        },
+        {
+            type: "number",
+            position: "left",
+            keys: ["co2Emissions"],
+            title: {
+                text: "CO2 emissions",
             },
-        ],
-    }
+            nice: true,
+            label: {
+                formatter: (params: any) => formatNumberForView(params.value),
+            },
+        },
+        {
+            type: "number",
+            position: "right",
+            keys: ["co2Intensity"],
+            title: {
+                text: "Year-by-year CO2 intensity",
+            },
+            nice: true,
+            label: {
+                formatter: (params: any) => formatNumberForView(params.value),
+            },
+        },
+    ]
 
     useEffect(() => {
         (async () => {
@@ -195,7 +197,7 @@ const CaseCO2Tab = () => {
         if (num === null || num === undefined) { return 0 }
         if (num === 0) { return 0 }
 
-        return Number(Number(num).toFixed(4))
+        return Number(num)
     }
 
     const co2EmissionsChartData = () => {
@@ -206,22 +208,23 @@ const CaseCO2Tab = () => {
         const useCo2IntensityOverride = co2IntensityOverrideData && co2IntensityOverrideData.override
 
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
+            // Get raw values without any pre-formatting or rounding
+            const emissionsValue = setValueToCorrespondingYear(
+                useCo2EmissionOverride ? co2EmissionsOverrideData : co2EmissionsData,
+                i,
+                getYearFromDateString(caseData.dg4Date),
+            )
+
+            const intensityValue = setValueToCorrespondingYear(
+                useCo2IntensityOverride ? co2IntensityOverrideData : co2IntensityData,
+                i,
+                getYearFromDateString(caseData.dg4Date),
+            )
+
             dataArray.push({
                 year: i,
-                co2Emissions: formatValue(
-                    setValueToCorrespondingYear(
-                        useCo2EmissionOverride ? co2EmissionsOverrideData : co2EmissionsData,
-                        i,
-                        getYearFromDateString(caseData.dg4Date),
-                    ),
-                ),
-                co2Intensity: formatValue(
-                    setValueToCorrespondingYear(
-                        useCo2IntensityOverride ? co2IntensityOverrideData : co2IntensityData,
-                        i,
-                        getYearFromDateString(caseData.dg4Date),
-                    ),
-                ),
+                co2Emissions: emissionsValue || 0,
+                co2Intensity: intensityValue || 0,
             })
         }
 
@@ -302,7 +305,7 @@ const CaseCO2Tab = () => {
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
                     lineChart={co2IntensityLine}
-                    axesData={chartAxes}
+                    axesData={dualAxesData}
                 />
             </Grid>
             <Grid size={{ xs: 12, xl: 6 }} container direction="column" spacing={1} justifyContent="center" alignItems="center">

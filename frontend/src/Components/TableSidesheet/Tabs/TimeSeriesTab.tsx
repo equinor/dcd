@@ -1,8 +1,9 @@
-import { Typography } from "@mui/material"
+import { Typography } from "@equinor/eds-core-react"
 import { grey } from "@mui/material/colors"
 import styled from "styled-components"
 
 import { TimeSeriesChart } from "@/Components/Charts/TimeSeriesChart"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 
 const Container = styled.div`
     padding: 20px;
@@ -81,6 +82,46 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
         year: dg4Year + profile.startYear + index,
         [rowData.profileName]: value,
     }))
+
+    const defaultAxesData = [
+        {
+            type: "category",
+            position: "bottom",
+            nice: true,
+            gridLine: {
+                style: [
+                    {
+                        stroke: "rgba(0, 0, 0, 0.2)",
+                        lineDash: [3, 2],
+                    },
+                    {
+                        stroke: "rgba(0, 0, 0, 0.2)",
+                        lineDash: [3, 2],
+                    },
+                ],
+            },
+        },
+        {
+            type: "number",
+            position: "left",
+            nice: true,
+            label: {
+                formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
+            },
+            gridLine: {
+                style: [
+                    {
+                        stroke: "rgba(0, 0, 0, 0.1)",
+                        lineDash: [3, 2],
+                    },
+                    {
+                        stroke: "rgba(0, 0, 0, 0.1)",
+                        lineDash: [3, 2],
+                    },
+                ],
+            },
+        },
+    ]
 
     const calculatePercentageChange = (newValue: number, oldValue: number): string => {
         if (oldValue === 0 || !oldValue) {
@@ -205,6 +246,7 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
                     barProfiles={[rowData.profileName]}
                     barNames={[rowData.profileName]}
                     unit={rowData.unit}
+                    axesData={defaultAxesData}
                 />
             </Section>
 

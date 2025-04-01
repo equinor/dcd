@@ -149,7 +149,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                     headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                         ? "mill NOK"
                         : "mill USD"
-                        })`,
+                    })`,
                     flex: 1,
                     headerComponent: SecondaryTableHeader,
                     headerComponentParams: {
@@ -180,7 +180,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                         headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                             ? "mill NOK"
                             : "mill USD"
-                            })`,
+                        })`,
                         flex: 2,
                         headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
@@ -199,7 +199,7 @@ const WellsTable: React.FC<WellsTableProps> = ({
                         headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
                             ? "mill NOK"
                             : "mill USD"
-                            })`,
+                        })`,
                         flex: 2,
                         headerComponent: SecondaryTableHeader,
                         headerComponentParams: {

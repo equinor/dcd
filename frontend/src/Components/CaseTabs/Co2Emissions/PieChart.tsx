@@ -1,6 +1,8 @@
 import { AgChartOptions, AgCharts } from "ag-charts-community"
 import { useEffect, useRef } from "react"
 
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
+
 interface Props {
     data: any[]
     chartTitle: string
@@ -49,6 +51,12 @@ export const PieChart = ({
                 angleKey: "value",
                 calloutLabelKey: "category",
                 sectorLabelKey: "value",
+                sectorLabel: {
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.datum.value, 4)),
+                },
+                calloutLabel: {
+                    formatter: (params: any) => `${params.datum.category}: ${formatNumberForView(roundToDecimals(params.datum.value, 4))}`,
+                },
                 fills: barColors,
             }],
             legend: {

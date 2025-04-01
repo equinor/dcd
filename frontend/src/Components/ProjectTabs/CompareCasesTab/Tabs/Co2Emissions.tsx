@@ -1,5 +1,4 @@
 import Grid from "@mui/material/Grid2"
-import React from "react"
 
 import { CompareCasesChart } from "@/Components/Charts/CompareCasesChart"
 

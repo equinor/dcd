@@ -18,12 +18,14 @@ import { PhysUnit } from "@/Models/enums"
 import { useCaseStore } from "@/Store/CaseStore"
 import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
 
 const defaultAxesData = [
     {
         type: "category",
         position: "bottom",
+        nice: true,
         gridLine: {
             style: [
                 {
@@ -36,13 +38,26 @@ const defaultAxesData = [
                 },
             ],
         },
-        label: {
-            formatter: (label: any) => Math.floor(Number(label.value)),
-        },
     },
     {
         type: "number",
         position: "left",
+        nice: true,
+        label: {
+            formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
+        },
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.1)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.1)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
     },
 ]
 
@@ -157,6 +172,7 @@ const CaseProductionProfilesTab = () => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
@@ -175,11 +191,11 @@ const CaseProductionProfilesTab = () => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
-                waterInjection:
-                    setValueToCorrespondingYear(waterInjectionData, i, getYearFromDateString(caseData.dg4Date)),
+                waterInjection: setValueToCorrespondingYear(waterInjectionData, i, getYearFromDateString(caseData.dg4Date)),
             })
         }
 
