@@ -8,6 +8,7 @@ public class BusinessCase
     public List<ExcelTableCell> OffshoreFacilities { get; set; } = [];
     public List<ExcelTableCell> OnshorePowerSupply { get; set; } = [];
     public List<ExcelTableCell> Cessation { get; set; } = [];
+    public List<ExcelTableCell> NglProduction { get; set; } = [];
     public List<ExcelTableCell> Drilling { get; set; } = [];
     public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;
     public List<ExcelTableCell> TotalAndAnnualOil { get; set; } = [];
@@ -16,4 +17,5 @@ public class BusinessCase
     public List<ExcelTableCell> StudyCost { get; set; } = [];
     public List<ExcelTableCell> Opex { get; set; } = [];
     public List<ExcelTableCell> ImportedElectricity { get; set; } = [];
+    public List<ExcelTableCell> TotalExportedVolumes { get; set; } = [];
 }

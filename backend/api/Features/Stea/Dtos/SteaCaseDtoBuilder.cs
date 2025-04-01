@@ -171,7 +171,8 @@ public static class SteaCaseDtoBuilder
             TotalAndAnnualSalesGas = new TimeSeries(),
             Co2Emissions = new TimeSeries(),
             AdditionalOil = new TimeSeries(),
-            AdditionalGas = new TimeSeries()
+            AdditionalGas = new TimeSeries(),
+            NglProduction = new TimeSeries()
         };
 
         var startYearsProductionSalesAndVolumes = new List<int>();
@@ -237,6 +238,16 @@ public static class SteaCaseDtoBuilder
             dto.StartYear += caseItem.Dg4Date.Year;
 
             steaCaseDto.ProductionAndSalesVolumes.AdditionalGas = dto;
+        }
+
+        var nglProfile = caseItem.GetOverrideProfileOrProfile(ProfileTypes.ProductionProfileNgl);
+
+        if (nglProfile != null)
+        {
+            var dto = new TimeSeries(nglProfile);
+            dto.StartYear += caseItem.Dg4Date.Year;
+
+            steaCaseDto.ProductionAndSalesVolumes.NglProduction = dto;
         }
     }
 

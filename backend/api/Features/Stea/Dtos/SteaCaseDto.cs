@@ -31,4 +31,6 @@ public class ProductionAndSalesVolumesDto
     public TimeSeries ImportedElectricity { get; set; } = new();
     public TimeSeries AdditionalOil { get; set; } = new();
     public TimeSeries AdditionalGas { get; set; } = new();
+    public TimeSeries NglProduction { get; set; } = new();
+    public TimeSeries TotalExportedVolumes { get; set; } = new();
 }
