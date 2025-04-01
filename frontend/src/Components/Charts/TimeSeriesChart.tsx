@@ -1,7 +1,7 @@
 import { AgCharts } from "ag-charts-react"
 
-import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
-import { insertIf, separateProfileObjects } from "@/Utils/TableUtils"
+import { formatNumberForView } from "@/Utils/FormatingUtils"
+import { separateProfileObjects } from "@/Utils/TableUtils"
 
 interface Props {
     data: object
