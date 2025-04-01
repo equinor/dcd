@@ -20,7 +20,7 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ productionProfi
                 "Additional oil production (MSm3)",
                 "Rich gas production (GSm3)",
                 "Additional rich gas production (GSm3)",
-                "Total exported volumes (MSm3)",
+                "Production & sales volumes (MSm3)",
             ]}
         />
     )

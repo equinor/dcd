@@ -151,7 +151,7 @@ export function getUnitByProfileName(
     const fixedUnitProfiles: Record<string, string> = {
         "NGL Production": "MTPA",
         "Imported electricity": "GWh",
-        "Total exported volumes": "MBoE/yr",
+        "Production & sales volumes": "MBoE/yr",
     }
 
     if (oilProfiles.includes(profileName)) {
