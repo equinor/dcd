@@ -218,7 +218,6 @@ export const tableCellisEditable = (params: any, editAllowed: boolean, isSaving?
 export const validateInput = (params: any, editAllowed: boolean, isSaving?: boolean) => {
     const { value, data } = params
 
-    // Empty strings are valid input
     if (value === "") {
         return null
     }
@@ -246,7 +245,6 @@ export const numberValueParser = (
 ) => {
     const { oldValue, newValue } = params
 
-    // Allow empty string to clear cell value
     if (newValue === "") {
         return ""
     }

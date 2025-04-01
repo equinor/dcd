@@ -195,7 +195,6 @@ const CaseCO2Tab = () => {
         if (num === null || num === undefined) { return 0 }
         if (num === 0) { return 0 }
 
-        // Ensure the value is a number with 4 decimal places
         return Number(Number(num).toFixed(4))
     }
 

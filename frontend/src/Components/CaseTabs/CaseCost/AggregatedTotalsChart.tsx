@@ -318,11 +318,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         tooltip: {
-            // Use format instead of renderer for AG-Charts compatibility
             format: "{label}: {value}",
-            // Add a custom formatter to properly display values
             formatter: (params: any) => {
-                // Only format the value part
                 if (params.key === "value") {
                     return formatNumberForView(roundToDecimals(params.value, 4))
                 }
@@ -418,7 +415,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 calloutLabel: {
                     enabled: true,
                     formatter: (params: any) => {
-                        // Important: Look at params.datum for the actual data point
                         const dataPoint = params.datum
 
                         if (!dataPoint) {
@@ -439,7 +435,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         tooltip: {
-            // Use format property instead of renderer
             format: "{label}: {value}",
         },
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },

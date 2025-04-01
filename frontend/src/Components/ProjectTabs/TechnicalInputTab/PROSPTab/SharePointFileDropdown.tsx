@@ -66,7 +66,6 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
         }
     }
 
-    // Get the display text for the selected value
     const selectedOptionText = value ? options[value] || "" : ""
 
     return (

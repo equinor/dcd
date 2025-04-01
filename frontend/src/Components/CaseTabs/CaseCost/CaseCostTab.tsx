@@ -76,7 +76,6 @@ const CaseCostTab = () => {
         if (activeTabCase === 5 && apiData) {
             const caseData = apiData.case
 
-            // Check if we're switching to a different case
             if (currentCaseId !== caseData.caseId) {
                 setCurrentCaseId(caseData.caseId)
                 const defaultYears: [number, number] = DEFAULT_CASE_COST_YEARS

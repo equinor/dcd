@@ -83,7 +83,6 @@ const TimeSeriesTab = ({ rowData, dg4Year }: Props) => {
     }))
 
     const calculatePercentageChange = (newValue: number, oldValue: number): string => {
-        // Handle cases where old value is 0 or missing
         if (oldValue === 0 || !oldValue) {
             if (newValue === 0) { return "0%" }
 

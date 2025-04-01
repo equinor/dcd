@@ -18,13 +18,11 @@ export const PieChart = ({
 }: Props) => {
     const chartRef = useRef<HTMLDivElement>(null)
 
-    // Process data to ensure values are numeric
     const processedData = data.map((item) => ({
         category: item.profile,
         value: typeof item.value === "number" ? item.value : Number(item.value || 0),
     }))
 
-    // Use default distribution if all values are zero
     const totalValue = processedData.reduce((sum, item) => sum + item.value, 0)
     const chartData = totalValue > 0 ? processedData : [
         { category: "Drilling", value: 33 },
@@ -35,7 +33,6 @@ export const PieChart = ({
     useEffect(() => {
         if (!chartRef.current) { return }
 
-        // Clean up previous chart if any
         chartRef.current.innerHTML = ""
 
         const options: AgChartOptions = {
