@@ -7,11 +7,16 @@ var preprod = environmentName == 'ci' || environmentName == 'qa'
 var roughtechsEntraGroupObjectId = 'a64069dd-12fd-422b-8c1e-2093fa32819d'
 
 var commonTags = {
+  'iac': 'bicep'
+  'pipeline': 'azurePipelines'
+  'projectName': 'dcd'
   'environment': environmentName
+  'responsible': 'roughtechs'
+  'area': 'fapp'
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
-  name: preprod ? 'dcdkeyvault-preprod' : 'dcdkeyvault-prod'
+  name: preprod ? 'kvfappdcdpreprod' : 'kvfappdcdfprd'
   location: location
   properties: {
     tenantId: subscription().tenantId
@@ -34,7 +39,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: 'dcdstorage${environmentName}'
+  name: preprod ? 'stdcdpreprod' : 'stdcdfprd'
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -66,7 +71,7 @@ module appconfig './appconfig.bicep' = {
 }
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = if (!preprod) {
-  name: 'dcdcr'
+  name: 'crfappdcd'
   location: location
   sku: {
     name: 'Standard'

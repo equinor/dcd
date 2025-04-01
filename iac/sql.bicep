@@ -31,35 +31,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
 }
 
-resource generatePassword 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-    name: 'generateSqlPassword'
-    location: location
-    kind: 'AzurePowerShell'
-    properties: {
-      azPowerShellVersion: '7.2'
-      scriptContent: '''
-        Write-Host "Key Vault Name: ${keyVaultName}"
-
-        # Generate a secure password
-        $Password = (-join ((33..126) | Get-Random -Count 16 | ForEach-Object { [char]$_ }))
-
-        # Authenticate with Azure and set the secret in Key Vault
-        Set-AzKeyVaultSecret -VaultName "${keyVaultName}" -Name "sqlAdminPassword" -SecretValue (ConvertTo-SecureString -String $Password -AsPlainText -Force)
-      '''
-      timeout: 'PT5M'
-      retentionInterval: 'P1D'
-    }
-    dependsOn: [keyVault]
-  }
-
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
-  name: preprod ? 'dcdsql-preprod' : 'dcdsql-prod'
+  name: preprod ? 'sql-fapp-dcd-preprod' : 'sql-fapp-dcd-fprd'
   location: location
   properties: {
     administratorLogin: 'sqladmin'
     administratorLoginPassword: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/sqlAdminPassword)'
   }
-  dependsOn: [generatePassword]
 }
 
 /*

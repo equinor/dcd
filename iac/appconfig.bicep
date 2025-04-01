@@ -3,7 +3,7 @@ param preprod bool
 
 resource appConfig 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
   location: location
-  name: preprod ? 'dcdappconfig-preprod' : 'dcdappconfig-prod'
+  name: preprod ? 'appcs-fapp-dcd-preprod' : 'appcs-fapp-dcd-fprd'
   sku: {
     name: 'standard'
   }
