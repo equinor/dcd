@@ -1,6 +1,11 @@
 @allowed(['ci', 'qa', 'prod'])
-param environmentName string = 'ci'
+param environmentName string
 param location string = 'norwayeast'
+@secure()
+param sqlAdminPassword string
+@secure()
+param clientSecret string
+
 
 var preprod = environmentName == 'ci' || environmentName == 'qa'
 
@@ -15,12 +20,38 @@ var commonTags = {
   'area': 'fapp'
 }
 
+resource appConfig 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
+  location: location
+  name: preprod ? 'appcs-fapp-dcd-preprod2' : 'appcs-fapp-dcd-fprd'
+  sku: {
+    name: 'standard'
+  }
+  properties: {
+    disableLocalAuth: false
+    encryption: {}
+    softDeleteRetentionInDays: 7
+    enablePurgeProtection: false
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+}
+
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: preprod ? 'kvfappdcdpreprod' : 'kvfappdcdfprd'
   location: location
   properties: {
     tenantId: subscription().tenantId
     accessPolicies: [
+      {
+        tenantId: subscription().tenantId
+        objectId: appConfig.identity.principalId
+        permissions: {
+          keys: []
+          secrets: ['get', 'list']
+          certificates: []
+        }
+      }
       {
         tenantId: subscription().tenantId
         objectId: roughtechsEntraGroupObjectId
@@ -35,11 +66,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       family: 'A'
       name: 'standard'
     }
+    enabledForTemplateDeployment: true
   }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: preprod ? 'stdcdpreprod' : 'stdcdfprd'
+  name: 'stdcd${environmentName}'
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -50,25 +82,38 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   }
 }
 
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-05-01' = {
+    parent: storageAccount
+    name: 'default'
+  }
+
+resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+    parent: blobService
+    name: 'image-storage'
+    properties: {
+      publicAccess: 'Container'
+    }
+  }
+
 var storageAccountKey = storageAccount.listKeys().keys[0].value
 
 var connectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKey};EndpointSuffix=core.windows.net'
 
-resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource keyVaultSecretStorageAccount 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: keyVault
-  name: 'storageAccountConnectionString'
+  name: 'storage-account-connection-string'
   properties: {
     value: connectionString
   }
 }
 
-module appconfig './appconfig.bicep' = {
-  name: 'appconfig'
-  params: {
-    location: location
-    preprod: preprod
+resource keyVaultSecretClientSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+    parent: keyVault
+    name: preprod ? 'dcd-backend-client-secret-fusion-preprod' : 'dcd-backend-client-secret-fusion-prod'
+    properties: {
+      value: clientSecret
+    }
   }
-}
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = if (!preprod) {
   name: 'crfappdcd'
@@ -85,24 +130,17 @@ module sql './sql.bicep' = {
     preprod: preprod
     keyVaultName: keyVault.name
     environmentName: environmentName
+    sqlAdminPassword: sqlAdminPassword
   }
 }
 
-/*
-// TODO: Fix this reference
-resource appConfigKeyVaultReference 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
-    parent: appConfig
-    name: 'AppSettings:StorageAccountConnectionString'
-    properties: {
-        value: '@Microsoft.KeyVault(SecretUri=https://${keyVault.properties.vaultUri}secrets/storageAccountConnectionString)'
-    }
+module appconfig './appconfig.bicep' = {
+  name: 'appconfig'
+  params: {
+    location: location
+    environmentName: environmentName
+    preprod: preprod
+    keyVaultName: keyVault.name
+    appConfigName: appConfig.name
   }
-
-resource appConfigItem3 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
-    parent: appConfig
-    name: 'AppSettings:Setting3'
-    properties: {
-      value: 'Value3'
-    }
-  }
-*/
+}
