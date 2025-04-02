@@ -16,11 +16,7 @@ public static class NetSaleGasProfileService
             return;
         }
 
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
-        var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
-
-        var calculateNetSaleGas = CalculateNetSaleGas(caseItem, fuelConsumptions, flarings, losses);
+        var calculateNetSaleGas = CalculateNetSaleGas(caseItem);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.NetSalesGas);
 
@@ -28,10 +24,7 @@ public static class NetSaleGasProfileService
         profile.Values = calculateNetSaleGas.Values;
     }
 
-    private static TimeSeries CalculateNetSaleGas(Case caseItem,
-                                                  TimeSeries fuelConsumption,
-                                                  TimeSeries flarings,
-                                                  TimeSeries losses)
+    private static TimeSeries CalculateNetSaleGas(Case caseItem)
     {
         if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas) == null)
         {
@@ -43,7 +36,7 @@ public static class NetSaleGasProfileService
             return new TimeSeries();
         }
 
-        var fuelFlaringLosses = TimeSeriesMerger.MergeTimeSeries(fuelConsumption, flarings, losses);
+        var fuelFlaringLosses = EmissionCalculationHelper.CalculateFuelFlaringAndLosses(caseItem);
 
         if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
         {

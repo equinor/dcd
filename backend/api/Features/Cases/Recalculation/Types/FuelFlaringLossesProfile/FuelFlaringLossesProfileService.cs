@@ -14,15 +14,11 @@ public static class FuelFlaringLossesProfileService
             return;
         }
 
-        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
-        var flaring = EmissionCalculationHelper.CalculateFlaring(caseItem);
-        var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
-
-        var total = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
+        var fuelFlaringAndLosses = EmissionCalculationHelper.CalculateFuelFlaringAndLosses(caseItem);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.FuelFlaringAndLosses);
 
-        profile.StartYear = total.StartYear;
-        profile.Values = total.Values;
+        profile.StartYear = fuelFlaringAndLosses.StartYear;
+        profile.Values = fuelFlaringAndLosses.Values;
     }
 }

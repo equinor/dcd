@@ -15,9 +15,9 @@ public static class Co2EmissionsProfileService
             return;
         }
 
-        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(caseItem);
-        var flaringsProfile = GetFlaringsProfile(caseItem);
-        var lossesProfile = GetLossesProfile(caseItem);
+        var fuelConsumptionsProfile = GetCo2FromFuelConsumptions(caseItem);
+        var flaringsProfile = GetCo2FromFlaring(caseItem);
+        var lossesProfile = GetCo2FromLosses(caseItem);
 
         var tempProfile = TimeSeriesMerger.MergeTimeSeries(fuelConsumptionsProfile, flaringsProfile, lossesProfile);
 
@@ -39,7 +39,7 @@ public static class Co2EmissionsProfileService
         co2Emissions.StartYear = totalProfile.StartYear;
     }
 
-    private static TimeSeries GetLossesProfile(Case caseItem)
+    private static TimeSeries GetCo2FromLosses(Case caseItem)
     {
         var losses = EmissionCalculationHelper.CalculateLosses(caseItem);
 
@@ -50,7 +50,7 @@ public static class Co2EmissionsProfileService
         };
     }
 
-    private static TimeSeries GetFlaringsProfile(Case caseItem)
+    private static TimeSeries GetCo2FromFlaring(Case caseItem)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
 
@@ -61,7 +61,7 @@ public static class Co2EmissionsProfileService
         };
     }
 
-    private static TimeSeries GetFuelConsumptionsProfile(Case caseItem)
+    private static TimeSeries GetCo2FromFuelConsumptions(Case caseItem)
     {
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
 

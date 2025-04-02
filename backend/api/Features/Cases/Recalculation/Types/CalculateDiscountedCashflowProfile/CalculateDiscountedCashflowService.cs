@@ -92,10 +92,7 @@ public static class CalculatedDiscountedCashflowService
 
     private static TimeSeries CalculateDiscountedGasRevenue(Case caseItem, double discountRate)
     {
-        var gasProduction = TimeSeriesMerger.MergeTimeSeries(
-            new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)),
-            new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas))
-        );
+        var gasProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileGas);
 
         var convertCurrency = caseItem.Project.Currency == Models.Enums.Currency.Nok
             ? 1

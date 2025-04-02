@@ -95,12 +95,4 @@ public static class EconomicsHelper
             Values = cashFlowValues
         };
     }
-
-    public static TimeSeries MergeProductionAndAdditionalProduction(TimeSeriesProfile? t1, TimeSeriesProfile? t2)
-    {
-        return TimeSeriesMerger.MergeTimeSeries(
-            new TimeSeries(t1),
-            new TimeSeries(t2)
-        );
-    }
 }

@@ -15,17 +15,13 @@ public static class CalculateTotalIncomeService
         var gasPriceNok = caseItem.Project.GasPriceNok;
         var oilPrice = caseItem.Project.OilPriceUsd;
 
-        var totalOilProductionInMegaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
-            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)
-        );
+        var totalOilProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);
 
-        // Convert oil production from million sm³ to barrels in millions
-        var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * BarrelsPerCubicMeter).ToArray();
+        var oilProductionInMillionsOfBarrels = totalOilProduction.Values.Select(v => v * BarrelsPerCubicMeter).ToArray();
 
         var oilIncome = new TimeSeries
         {
-            StartYear = totalOilProductionInMegaCubics.StartYear,
+            StartYear = totalOilProduction.StartYear,
             Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray()
         };
 
@@ -38,21 +34,18 @@ public static class CalculateTotalIncomeService
             nglIncome.Values = nglProduction.Values.Select(v => v * caseItem.Project.NglPriceUsd).ToArray();
         }
 
-        var totalGasProductionInGigaCubics = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas),
-            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)
-        );
+        var totalGasProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileGas);
 
         var gasIncome = new TimeSeries
         {
-            StartYear = totalGasProductionInGigaCubics.StartYear,
-            Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUsdToNok).ToArray()
+            StartYear = totalGasProduction.StartYear,
+            Values = totalGasProduction.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUsdToNok).ToArray()
         };
 
         var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, nglIncome, gasIncome);
 
         // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfileUsd to get correct unit
-        var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();
+        var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray(); //TODO unit conversion should be done in the front end, not backend
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalIncomeCostProfileUsd);
 

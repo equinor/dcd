@@ -188,4 +188,34 @@ public static class EmissionCalculationHelper
 
         return TimeSeriesMerger.MergeTimeSeries(gasLossesTs, additionalGasLossesTs);
     }
+
+    private static TimeSeries AdjustWhenNoGasProduction(TimeSeries total, Case caseItem)
+    {
+        var totalGasProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileGas);
+        var paddedTotalGasProduction = TimeSeriesPadding.PadTimeSeries(totalGasProduction, total);
+        var totalValuesWhenNoGasProduction = total.Values
+            .Select((value, i) =>
+                        paddedTotalGasProduction.Values[i] == 0
+                            ? 0
+                            : value)
+            .ToArray();
+
+        return new TimeSeries
+        {
+            Values = totalValuesWhenNoGasProduction,
+            StartYear = total.StartYear
+        };
+    }
+
+    public static TimeSeries CalculateFuelFlaringAndLosses(Case caseItem)
+    {
+        var fuelConsumptions = CalculateTotalFuelConsumptions(caseItem);
+        var flaring = CalculateFlaring(caseItem);
+        var losses = CalculateLosses(caseItem);
+
+        var totalFuelFlaringLosses = TimeSeriesMerger.MergeTimeSeries(fuelConsumptions, flaring, losses);
+        var adjustedTotalFuelFlaringLosses = AdjustWhenNoGasProduction(totalFuelFlaringLosses, caseItem);
+
+        return adjustedTotalFuelFlaringLosses;
+    }
 }

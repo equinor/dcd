@@ -1,3 +1,5 @@
+using api.Features.Profiles.Dtos;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models.Enums;
 using api.Models.Interfaces;
 
@@ -116,5 +118,17 @@ public class Case : IChangeTrackable, IDateTrackedEntity
         var profileOverride = GetProfileOrNull(profileTypeOverride);
 
         return profileOverride?.Override == true ? profileOverride : GetProfileOrNull(profileType);
+    }
+
+    public TimeSeries GetProductionAndAdditionalProduction(string profileType)
+    {
+        var additionalProfileType = $"Additional{profileType}";
+
+        var profile = new TimeSeries(GetProfileOrNull(profileType));
+        var additionalProfile = new TimeSeries(GetProfileOrNull(additionalProfileType));
+
+        var totalProfile = TimeSeriesMerger.MergeTimeSeries(profile, additionalProfile);
+
+        return totalProfile;
     }
 }

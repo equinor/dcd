@@ -17,10 +17,7 @@ public static class CalculateBreakEvenOilPriceService
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUsdToNok;
         var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
 
-        var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
-            caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil),
-            caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)
-        );
+        var oilVolume = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);
 
         if (oilVolume.Values.Length == 0)
         {
