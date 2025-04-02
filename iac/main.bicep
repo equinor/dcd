@@ -97,13 +97,13 @@ resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/contai
 
 var storageAccountKey = storageAccount.listKeys().keys[0].value
 
-var connectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKey};EndpointSuffix=core.windows.net'
+var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKey};EndpointSuffix=core.windows.net'
 
 resource keyVaultSecretStorageAccount 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: keyVault
   name: 'storage-account-connection-string'
   properties: {
-    value: connectionString
+    value: storageAccountConnectionString
   }
 }
 
