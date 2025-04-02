@@ -24,9 +24,9 @@ import {
     quarterIndexToStartDate,
 } from "@/Utils/DateUtils"
 
-const GantContainer = styled(Box)`
+const GantContainer = styled(Box)<{ isReadOnly?: boolean }>`
   width: 100%;
-  padding-bottom: 20px;
+  padding-bottom: ${({ isReadOnly }) => (isReadOnly ? "10px" : "20px")};
 `
 
 const SectionTitle = styled(Typography)`
@@ -44,11 +44,12 @@ const EmptyStateContainer = styled(Box)`
   gap: 16px;
 `
 
-const HeaderContainer = styled(Box)`
+const HeaderContainer = styled(Box)<{ isReadOnly?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: ${({ isReadOnly }) => (isReadOnly ? "8px" : "16px")};
+  padding-bottom: ${({ isReadOnly }) => (isReadOnly ? "4px" : "0")};
   flex-wrap: wrap;
   gap: 12px;
 `
@@ -65,31 +66,38 @@ const HeaderRight = styled(Box)`
   gap: 8px;
 `
 
+const CompactGrid = styled(Grid)<{ isReadOnly?: boolean }>`
+  margin-top: ${({ isReadOnly }) => (isReadOnly ? "-8px" : "0")};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ isReadOnly }) => (isReadOnly ? "2px" : "0")};
+`
+
 const GantChart = () => {
     // Get case data and mutation function
     const { apiData } = useCaseApiData()
     const { updateMilestoneDate, isLoading } = useCaseMutation()
     const { canEdit } = useCanUserEdit()
 
-    // Get DG4 date to center the timeline
+    // Get DG4 date for display purposes only
     const dg4Date = useMemo(() => {
         if (!apiData?.case?.dg4Date) { return null }
 
         return dateStringToDateUtc(String(apiData.case.dg4Date))
     }, [apiData])
 
-    // Calculate the start year for our timeline
-    const timelineStartYear = useMemo(() => {
-        if (dg4Date) {
-            return dg4Date.getFullYear() - GANTT_CONFIG.YEARS_BEFORE_DG4
-        }
+    // Calculate the start year for our timeline - use fixed current year rather than DG4
+    const currentYear = new Date().getFullYear()
+    // Use current year as a fixed reference point
+    const timelineStartYear = currentYear - 20
 
-        // Use default if no DG4 date
-        return GANTT_CONFIG.DEFAULT_DG4_YEAR - GANTT_CONFIG.YEARS_BEFORE_DG4
-    }, [dg4Date])
+    // Shared data for all entry components - fixed range based on current year
+    const quarterlyPeriods = useMemo(() => {
+        // Create a Date with current year as reference
+        const fixedReferenceDate = new Date()
 
-    // Shared data for all entry components - dynamically generated based on DG4 date
-    const quarterlyPeriods = useMemo(() => generateDynamicQuarterlyPeriods(dg4Date), [dg4Date])
+        return generateDynamicQuarterlyPeriods(fixedReferenceDate)
+    }, [])
 
     // Function to handle milestone date changes from the Gantt chart
     const handleMilestoneDateChange = useCallback((dateKey: string, newQuarterIndex: number) => {
@@ -161,28 +169,20 @@ const GantChart = () => {
         [milestoneDates],
     )
 
+    const isReadOnly = !canEdit()
+
     if (!apiData?.case) {
         return null
     }
 
     return (
-        <GantContainer>
-            <HeaderContainer>
+        <GantContainer isReadOnly={isReadOnly}>
+            <HeaderContainer isReadOnly={isReadOnly}>
                 <HeaderLeft>
                     <Typography variant="caption" color="text.secondary">
-                        Timeline based on
-                        {" "}
-                        {dg4Date ? `actual DG4 date (${dg4Date.getFullYear()})` : `estimated DG4 year (${GANTT_CONFIG.DEFAULT_DG4_YEAR})`}
-                        .
-                        Showing
-                        {" "}
-                        {GANTT_CONFIG.YEARS_BEFORE_DG4}
-                        {" "}
-                        years before and
-                        {" "}
-                        {GANTT_CONFIG.YEARS_AFTER_DG4}
-                        {" "}
-                        years after.
+                        {canEdit()
+                            ? `Timeline showing from ${currentYear - 20} to ${currentYear + 40}. Milestones can be adjusted by dragging or using the dropdown.`
+                            : `Timeline showing project milestones from ${currentYear - 20} to ${currentYear + 40}.`}
                     </Typography>
                 </HeaderLeft>
 
@@ -205,7 +205,7 @@ const GantChart = () => {
                 )}
             </HeaderContainer>
 
-            <Divider sx={{ mb: 2 }} />
+            <Divider sx={{ mb: isReadOnly ? 1 : 2 }} />
 
             {!hasMilestones ? (
                 <EmptyStateContainer>
@@ -224,7 +224,7 @@ const GantChart = () => {
                     </Alert>
                 </EmptyStateContainer>
             ) : (
-                <Grid container spacing={0}>
+                <CompactGrid container spacing={0} isReadOnly={isReadOnly}>
                     {CASE_MILESTONE_DATES.map((milestone: CaseMilestoneDate) => {
                         // If the milestone exists in API data, display it
                         const quarterIndex = milestoneDates[milestone.key]
@@ -242,11 +242,12 @@ const GantChart = () => {
                                     onClear={canEdit() && !milestone.required ? () => handleClearMilestone(milestone.key) : undefined}
                                     periodsData={quarterlyPeriods}
                                     disabled={isLoading}
+                                    readOnly={isReadOnly}
                                 />
                             </Grid>
                         )
                     })}
-                </Grid>
+                </CompactGrid>
             )}
         </GantContainer>
     )

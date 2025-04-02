@@ -7,31 +7,34 @@ import { ReactNode } from "react"
 import styled from "styled-components"
 
 // Shared styled components
-export const ChartContainer = styled(Box)`
-  padding: 16px 20px;
-  margin-bottom: 16px;
+export const ChartContainer = styled(Box)<{ isReadOnly?: boolean }>`
+  padding: ${({ isReadOnly }) => (isReadOnly ? "8px 20px" : "16px 20px")};
+  margin-bottom: ${({ isReadOnly }) => (isReadOnly ? "8px" : "16px")};
   width: 100%;
   overflow: visible;
   border-bottom: 1px solid #eaeaea;
 `
 
-export const SliderBox = styled(Box)`
+export const SliderBox = styled(Box)<{ isReadOnly?: boolean }>`
   width: 100%;
-  padding: 0 10px;
-  margin-top: 1.5rem;
+  padding: ${({ isReadOnly }) => (isReadOnly ? "0 0 0 10px" : "0 10px")};
+  margin-top: ${({ isReadOnly }) => (isReadOnly ? "0" : "1.5rem")};
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  height: ${({ isReadOnly }) => (isReadOnly ? "32px" : "auto")};
 `
 
-export const ContentContainer = styled(Box)`
+export const ContentContainer = styled(Box)<{ isReadOnly?: boolean }>`
   display: flex;
-  align-items: flex-start;
+  align-items: ${({ isReadOnly }) => (isReadOnly ? "center" : "flex-start")};
   width: 100%;
 `
 
-export const HeaderSection = styled(Box)`
-  margin-bottom: 1rem;
-  display: flex;
+export const HeaderSection = styled(Box)<{ isReadOnly?: boolean }>`
+  margin-bottom: ${({ isReadOnly }) => (isReadOnly ? "0" : "1rem")};
+  display: ${({ isReadOnly }) => (isReadOnly ? "none" : "flex")};
   align-items: center;
   justify-content: space-between;
 `
@@ -47,15 +50,28 @@ export const HeaderRight = styled(Box)`
 `
 
 export const SelectSection = styled(Box)`
-  flex: 0 0 300px;
-  padding-right: 20px;
+  flex: 0 0 200px;
+  padding-right: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 `
 
-export const SliderSection = styled(Box)`
+export const SliderSection = styled(Box)<{ isFullWidth?: boolean; isReadOnly?: boolean }>`
   flex: 1;
+  ${({ isFullWidth }) => isFullWidth && `
+    flex: 1 0 100%;
+  `}
+`
+
+export const ViewModeHeader = styled(Box)`
+  display: flex;
+  align-items: center;
+  width: 80px;
+  min-width: 80px;
+  margin-right: 16px;
+  padding-left: 8px;
+  height: 32px; /* Match the slider height */
 `
 
 // Helper function to get display text for a period value
@@ -69,6 +85,7 @@ interface BaseGantEntryProps {
     onClear?: () => void;
     canClear?: boolean;
     disabled?: boolean;
+    readOnly?: boolean;
 }
 
 const BaseGantEntry = ({
@@ -79,9 +96,10 @@ const BaseGantEntry = ({
     onClear,
     canClear = false,
     disabled = false,
+    readOnly = false,
 }: BaseGantEntryProps) => (
-    <ChartContainer>
-        <HeaderSection>
+    <ChartContainer isReadOnly={readOnly}>
+        <HeaderSection isReadOnly={readOnly}>
             <HeaderLeft>
                 <Typography variant="h6" sx={{ fontWeight: 500 }}>
                     {title}
@@ -115,15 +133,28 @@ const BaseGantEntry = ({
             )}
         </HeaderSection>
 
-        <ContentContainer>
-            {selectComponent && (
+        <ContentContainer isReadOnly={readOnly}>
+            {readOnly && (
+                <ViewModeHeader>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {title}
+                    </Typography>
+                    <Tooltip title={description} arrow placement="top">
+                        <span style={{ marginLeft: "4px", cursor: "help" }}>
+                            <Icon data={info_circle} size={16} />
+                        </span>
+                    </Tooltip>
+                </ViewModeHeader>
+            )}
+
+            {!readOnly && selectComponent && (
                 <SelectSection>
                     {selectComponent}
                 </SelectSection>
             )}
 
-            <SliderSection>
-                <SliderBox>
+            <SliderSection isFullWidth={!selectComponent && !readOnly} isReadOnly={readOnly}>
+                <SliderBox isReadOnly={readOnly}>
                     {children}
                 </SliderBox>
             </SliderSection>
