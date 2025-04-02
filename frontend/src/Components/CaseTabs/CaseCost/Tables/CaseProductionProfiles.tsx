@@ -169,7 +169,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 hideIfEmpty: true,
             }),
             createProfileData({
-                profileName: "Total exported volumes",
+                profileName: "Production & sales volumes",
                 profile: totalExportedVolumesData,
                 resourceName: ProfileTypes.TotalExportedVolumesOverride,
                 overrideProfile: totalExportedVolumesOverrideData,

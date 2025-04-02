@@ -54,7 +54,7 @@ public static class ExportToExcelService
             businessCase.Cessation = CreateExcelRow("Cessation - Offshore Facilities", startYear, steaCaseDto.Capex.CessationCost, rowCount, 1);
 
             rowCount++;
-            businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount, "Production And Sales Volumes");
+            businessCase.NglProduction = CreateExcelRow("NGL Production [MTPA]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.NglProduction, 1_000_000), rowCount, 1);
 
             rowCount++;
             businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", startYear, DivideTimeSeriesValuesByFactor(steaCaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil, 1_000_000), rowCount, 1);
@@ -68,6 +68,8 @@ public static class ExportToExcelService
             rowCount++;
             businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", startYear, steaCaseDto.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
 
+            rowCount++;
+            businessCase.TotalExportedVolumes = CreateExcelRow("Total exported volumes [MBoE/yr]", startYear, steaCaseDto.ProductionAndSalesVolumes.TotalExportedVolumes, rowCount, 1);
             rowCount += 2;
 
             var allRows = new List<int>
@@ -212,7 +214,10 @@ public static class ExportToExcelService
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
 
-            ws.Cell(businessCase.ProductionAndSalesVolumes.CellNo).Value = businessCase.ProductionAndSalesVolumes.Value;
+            foreach (var etc in businessCase.NglProduction)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
 
             foreach (var etc in businessCase.TotalAndAnnualOil)
             {
@@ -230,6 +235,11 @@ public static class ExportToExcelService
             }
 
             foreach (var etc in businessCase.ImportedElectricity)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+
+            foreach (var etc in businessCase.TotalExportedVolumes)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
