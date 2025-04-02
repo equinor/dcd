@@ -20,6 +20,7 @@ import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
+import { useAppStore } from "@/Store/AppStore"
 
 const defaultAxesData = [
     {
@@ -62,6 +63,7 @@ const defaultAxesData = [
 ]
 
 const CaseProductionProfilesTab = () => {
+    const { editMode } = useAppStore();
     const { activeTabCase } = useCaseStore()
     const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
@@ -304,7 +306,17 @@ const CaseProductionProfilesTab = () => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
+                        {editMode ? <SwitchableNumberInput
+                            label="Gas shrinkage factor"
+                            value={drainageStrategyData.gasShrinkageFactor}
+                            id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
+                            integer
+                            min={0}
+                            max={100}
+                            unit="%"
+                            onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
+                        /> : (drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
+                            <SwitchableNumberInput
                             label="Gas shrinkage factor"
                             value={drainageStrategyData.gasShrinkageFactor}
                             id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
@@ -314,6 +326,7 @@ const CaseProductionProfilesTab = () => {
                             unit="%"
                             onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
                         />
+                        )}
                     </Grid>
                 </Grid>
             </Grid>
