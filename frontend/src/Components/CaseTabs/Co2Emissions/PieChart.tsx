@@ -1,7 +1,7 @@
 import { AgChartOptions, AgCharts } from "ag-charts-community"
 import { useEffect, useRef } from "react"
 
-import { formatChartNumber } from "@/Utils/FormatingUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 
 interface Props {
     data: any[]
@@ -12,17 +12,19 @@ interface Props {
 }
 
 export const PieChart = ({
-    data, chartTitle, barColors, unit = "", enableLegend = true,
+    data,
+    chartTitle,
+    barColors,
+    unit = "",
+    enableLegend = true,
 }: Props) => {
     const chartRef = useRef<HTMLDivElement>(null)
 
-    // Process data to ensure values are numeric
     const processedData = data.map((item) => ({
         category: item.profile,
         value: typeof item.value === "number" ? item.value : Number(item.value || 0),
     }))
 
-    // Use default distribution if all values are zero
     const totalValue = processedData.reduce((sum, item) => sum + item.value, 0)
     const chartData = totalValue > 0 ? processedData : [
         { category: "Drilling", value: 33 },
@@ -33,7 +35,6 @@ export const PieChart = ({
     useEffect(() => {
         if (!chartRef.current) { return }
 
-        // Clean up previous chart if any
         chartRef.current.innerHTML = ""
 
         const options: AgChartOptions = {
@@ -50,6 +51,12 @@ export const PieChart = ({
                 angleKey: "value",
                 calloutLabelKey: "category",
                 sectorLabelKey: "value",
+                sectorLabel: {
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.datum.value, 4)),
+                },
+                calloutLabel: {
+                    formatter: (params: any) => `${params.datum.category}: ${formatNumberForView(roundToDecimals(params.datum.value, 4))}`,
+                },
                 fills: barColors,
             }],
             legend: {

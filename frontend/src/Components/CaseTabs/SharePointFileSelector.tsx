@@ -16,7 +16,6 @@ import {
     importFromSharePoint,
 } from "@/Utils/ProspUtils"
 
-// Styled components for SharePoint section
 const SharePointSection = styled.div`
     border-radius: 4px;
     padding: 16px;
@@ -78,7 +77,6 @@ const TextDisplay = styled(Typography)`
     padding: 8px 0;
 `
 
-// Component to show feedback states (success, error, loading)
 const FeedbackIndicator = ({ status, isLoading }: { status: FeedbackStatus, isLoading: boolean }) => {
     if (isLoading) {
         return <span style={{ color: "#6F6F6F", marginLeft: "8px" }}>Loading...</span>
@@ -116,19 +114,16 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
     const [selectedSharePointFileId, setSelectedSharePointFileId] = useState<string | null>(currentSharePointFileId)
     const { isLoading, feedbackStatus, withFeedback } = useFeedbackStatus()
 
-    // Get the SharePoint URL from project data
     const sharepointSiteUrl = useMemo(
         () => projectData?.commonProjectAndRevisionData?.sharepointSiteUrl || "",
         [projectData],
     )
 
-    // SharePoint file options converted to a map
     const sharePointFileOptions = useMemo(
         () => createSharePointFileOptions(sharePointFiles, "Select a file"),
         [sharePointFiles],
     )
 
-    // Load SharePoint files
     const fetchSharePointFiles = useCallback(async () => {
         if (!projectId || !sharepointSiteUrl) { return }
 
@@ -137,7 +132,6 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
             setSharePointFiles(result)
 
-            // Update selectedSharePointFileId if the current one is not in the options
             if (selectedSharePointFileId && !result.some((f) => f.id === selectedSharePointFileId)) {
                 setSelectedSharePointFileId(null)
                 if (onSharePointFileSelected) {
@@ -150,7 +144,6 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
         }
     }, [projectId, sharepointSiteUrl, selectedSharePointFileId, onSharePointFileSelected, setSnackBarMessage])
 
-    // Handle file selection change
     const handleFileChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const fileId = e.target.value || null
 
@@ -188,7 +181,6 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
         }
     }
 
-    // Refresh data from the selected file
     const handleRefreshFile = async () => {
         if (!projectId || !selectedSharePointFileId || !sharepointSiteUrl) { return }
 
@@ -222,21 +214,18 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
         }
     }
 
-    // Load SharePoint files when component mounts
     useEffect(() => {
         if (projectId) {
             fetchSharePointFiles()
         }
     }, [projectId, fetchSharePointFiles])
 
-    // Update selected file ID when prop changes
     useEffect(() => {
         if (currentSharePointFileId !== selectedSharePointFileId) {
             setSelectedSharePointFileId(currentSharePointFileId)
         }
     }, [currentSharePointFileId])
 
-    // If there's no SharePoint URL configured, don't render anything
     if (!sharepointSiteUrl) {
         return null
     }

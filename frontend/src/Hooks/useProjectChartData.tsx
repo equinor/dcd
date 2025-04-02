@@ -93,19 +93,21 @@ export const useProjectChartData = () => {
 
         const totalCo2EmissionsObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
+            const co2EmissionsValue = compareCase?.totalCo2Emissions ?? 0
 
             return {
                 cases: caseItem.name,
-                totalCO2Emissions: compareCase?.totalCo2Emissions,
+                totalCO2Emissions: co2EmissionsValue,
             }
         })
 
         const co2IntensityObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
+            const co2IntensityValue = compareCase?.co2Intensity ?? 0
 
             return {
                 cases: caseItem.name,
-                co2Intensity: compareCase?.co2Intensity,
+                co2Intensity: co2IntensityValue,
             }
         })
 

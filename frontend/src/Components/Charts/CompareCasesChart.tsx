@@ -1,6 +1,6 @@
 import { AgCharts } from "ag-charts-react"
 
-import { formatChartNumber } from "@/Utils/FormatingUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { insertIf, separateProfileObjects } from "@/Utils/TableUtils"
 
 interface Props {
@@ -87,7 +87,7 @@ export const CompareCasesChart = ({
                 position: "left",
                 nice: true,
                 label: {
-                    formatter: (params: any) => formatChartNumber(params.value),
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
                 },
                 gridLine: {
                     style: [
@@ -110,7 +110,7 @@ export const CompareCasesChart = ({
         ],
         tooltip: {
             renderer: (params: any) => ({
-                content: `${params.title}: ${formatChartNumber(params.yValue)}`,
+                content: `${params.title}: ${formatNumberForView(roundToDecimals(params.yValue, 4))}`,
             }),
         },
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },

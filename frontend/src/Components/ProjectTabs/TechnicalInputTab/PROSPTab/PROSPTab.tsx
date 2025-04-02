@@ -34,7 +34,6 @@ import {
     importFromSharePoint,
 } from "@/Utils/ProspUtils"
 
-// Card styled components
 const StyledCard = styled(Card)`
     padding: 0 16px;
 `
@@ -76,7 +75,6 @@ const PROSPTab = () => {
     const cases = revisionAndProjectData?.commonProjectAndRevisionData.cases || []
     const currentSharePointSiteUrl = revisionAndProjectData?.commonProjectAndRevisionData.sharepointSiteUrl
 
-    // SharePoint file options converted to a map
     const sharePointFileOptions = useMemo(
         () => createSharePointFileOptions(sharePointFiles, ""),
         [sharePointFiles],
@@ -152,7 +150,6 @@ const PROSPTab = () => {
 
         setIsSaving(true)
 
-        // Immediately update local state for better UI responsiveness
         setCaseMappings((prev) => prev.map((item) => {
             if (item.caseId === caseId) {
                 return {
@@ -192,7 +189,6 @@ const PROSPTab = () => {
         } catch (error: any) {
             console.error("[PROSPTab] error while submitting file change", error)
 
-            // Revert the local state changes
             setCaseMappings((prev) => prev.map((item) => {
                 if (item.caseId === caseId) {
                     // Revert to the original values

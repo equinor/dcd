@@ -8,7 +8,10 @@ import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { ProfileTypes } from "@/Models/enums"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import {
-    formatCurrencyUnit, formatNumberWithDecimals, formatProfileName, formatChartNumber,
+    formatCurrencyUnit,
+    formatProfileName,
+    formatNumberForView,
+    roundToDecimals,
 } from "@/Utils/FormatingUtils"
 import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/TableUtils"
 
@@ -16,14 +19,12 @@ interface AggregatedTotalsProps {
     tableYears: [number, number];
     apiData: Components.Schemas.CaseWithAssetsDto;
     barColors: string[];
-    unit?: string;
     enableLegend?: boolean;
 }
 
 const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     apiData,
     barColors,
-    unit,
     enableLegend,
     tableYears,
 }) => {
@@ -317,9 +318,14 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             },
         ],
         tooltip: {
-            renderer: (params: any) => ({
-                content: `${params.yName || params.title}: ${formatChartNumber(params.yValue)}`,
-            }),
+            format: "{label}: {value}",
+            formatter: (params: any) => {
+                if (params.key === "value") {
+                    return formatNumberForView(roundToDecimals(params.value, 4))
+                }
+
+                return params.value
+            },
         },
         axes: [
             axesConfig,
@@ -328,7 +334,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 position: "left",
                 title: { text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency) },
                 label: {
-                    formatter: (params: any) => formatChartNumber(params.value),
+                    formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
                 },
             },
         ],
@@ -336,17 +342,47 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }
 
     const pieChartData = [
-        { label: "Study Costs", value: mergedCostProfiles.studyProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "OPEX", value: mergedCostProfiles.opexProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Cessation", value: mergedCostProfiles.cessationProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Offshore Facilities", value: mergedCostProfiles.offshoreFacilityProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Development Wells", value: mergedCostProfiles.developmentWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
-        { label: "Exploration Wells", value: mergedCostProfiles.explorationWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + value, 0) ?? 0 },
+        {
+            label: "Study Costs",
+            value: Math.abs(mergedCostProfiles.studyProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "OPEX",
+            value: Math.abs(mergedCostProfiles.opexProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Cessation",
+            value: Math.abs(mergedCostProfiles.cessationProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Offshore Facilities",
+            value: Math.abs(mergedCostProfiles.offshoreFacilityProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Development Wells",
+            value: Math.abs(mergedCostProfiles.developmentWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
+        {
+            label: "Exploration Wells",
+            value: Math.abs(mergedCostProfiles.explorationWellCostProfiles?.values?.reduce((sum: any, value: any) => sum + (typeof value === "number" ? value : 0), 0) ?? 0),
+        },
     ]
-    const totalValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0)
+    const totalValue = pieChartData.reduce((acc, curr) => acc + (curr.value || 0), 0)
+
+    // Filter out zero values from the pie chart data
+    const filteredPieChartData = pieChartData.filter((item) => item.value > 0)
+
+    // Use default data if all values are zero
+    const finalPieChartData = filteredPieChartData.length > 0
+        ? filteredPieChartData
+        : [
+            { label: "Study Costs", value: 1 },
+            { label: "OPEX", value: 1 },
+            { label: "Cessation", value: 1 },
+        ]
 
     const pieChartOptions: object = {
-        data: pieChartData,
+        data: finalPieChartData,
         title: {
             text: "Cost Distribution",
             fontSize: 22,
@@ -361,51 +397,45 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         theme: figmaTheme,
         series: [
             {
-                type: "donut",
+                type: "pie",
+                title: {
+                    text: formatNumberForView(roundToDecimals(Math.abs(totalValue), 4)),
+                    showInLegend: false,
+                    fontSize: 20,
+                },
+                subtitle: {
+                    text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency),
+                    showInLegend: false,
+                    fontSize: 14,
+                },
+                innerRadiusRatio: 0.7,
+                centerTitle: true,
                 calloutLabelKey: "label",
                 angleKey: "value",
-                calloutLabel: { enabled: false },
-                innerRadiusOffset: -25,
-                strokes: ["white"],
-                formatter: (params: any) => {
-                    const value = typeof params.datum.value === "number" ? params.datum.value : parseFloat(params.datum.value)
+                calloutLabel: {
+                    enabled: true,
+                    formatter: (params: any) => {
+                        const dataPoint = params.datum
 
-                    return formatChartNumber(value)
-                },
-                innerLabels: [
-                    {
-                        text: formatChartNumber(totalValue),
-                        fontSize: 18,
-                        color: "#000000",
-                    },
-                    {
-                        text: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData?.currency),
-                        fontSize: 14,
-                        color: "#B4B4B4",
-                    },
-                ],
-                highlightStyle: {
-                    item: {
-                        fill: undefined,
-                        stroke: undefined,
-                        strokeWidth: 1,
-                    },
-                    series: {
-                        enabled: true,
-                        dimOpacity: 0.2,
-                        strokeWidth: 2,
+                        if (!dataPoint) {
+                            return "0"
+                        }
+
+                        const value = typeof dataPoint.value === "number"
+                            ? Math.abs(dataPoint.value)
+                            : Math.abs(parseFloat(dataPoint.value || "0"))
+
+                        return formatNumberForView(roundToDecimals(value, 4))
                     },
                 },
+                fills: barColors,
+                strokes: ["white"],
+                strokeWidth: 1,
+                legendItemKey: "label",
             },
         ],
         tooltip: {
-            renderer: (params: any) => {
-                const value = typeof params.datum.value === "number" ? params.datum.value : parseFloat(params.datum.value)
-
-                return {
-                    content: `${params.datum.label}: ${formatChartNumber(value)}`,
-                }
-            },
+            format: "{label}: {value}",
         },
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }

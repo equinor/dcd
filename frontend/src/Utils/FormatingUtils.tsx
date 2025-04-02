@@ -172,13 +172,12 @@ export function getUnitByProfileName(
 
 /**
  * Formats a number for display in charts, adding thousands separators
- * Abbreviates numbers with trailing zeros (100000 -> 100K, 2000000 -> 2M)
- * But keeps precise numbers with separators (100123 -> 100,123)
- * Handles small decimal values for CO2 intensity metrics
+ * Abbreviates numbers only when they have at least three trailing zeros
+ * Preserves full precision for small values
  * @param value The number to format
  * @returns Formatted string with appropriate precision
  */
-export function formatChartNumber(value: number | string): string {
+export function formatNumberForView(value: number | string): string {
     if (value === null || value === undefined || value === "") {
         return "0"
     }
@@ -193,43 +192,58 @@ export function formatChartNumber(value: number | string): string {
         return "0"
     }
 
-    // For very small decimal values (like fractional CO2 intensity values)
-    if (Math.abs(numericValue) < 1) {
-        // Use fixed 4 decimal places for very small values
-        return numericValue.toFixed(4)
-    }
-
     // For small whole numbers (1-9)
     if (Math.abs(numericValue) < 10 && Number.isInteger(numericValue)) {
         return numericValue.toString()
     }
 
-    // For small decimal numbers between 1 and 10
-    if (Math.abs(numericValue) < 10) {
-        return numericValue.toFixed(2)
-    }
-
-    // Check if number has only trailing zeros in thousands
     const absValue = Math.abs(numericValue)
 
-    // For thousands with trailing zeros (1000, 2000, 10000, etc.)
-    if (absValue >= 1000 && absValue < 1000000 && absValue % 1000 === 0) {
-        return `${(numericValue / 1000)}K`
+    // Check if the number has at least 3 trailing zeros by division and checking remainder
+    const hasThreeTrailingZeros = (absValue % 1000) === 0
+
+    // Only abbreviate numbers with at least three trailing zeros
+    if (hasThreeTrailingZeros) {
+        // For billions (1B+) with trailing zeros
+        if (absValue >= 1000000000) {
+            // Use standard abbreviation with B suffix
+            return numericValue < 0
+                ? `-${(absValue / 1000000000)}B`
+                : `${(absValue / 1000000000)}B`
+        }
+
+        // For millions (1M+) with trailing zeros
+        if (absValue >= 1000000) {
+            // Use standard abbreviation with M suffix
+            return numericValue < 0
+                ? `-${(absValue / 1000000)}M`
+                : `${(absValue / 1000000)}M`
+        }
+
+        // For thousands (1K+) with trailing zeros
+        if (absValue >= 1000) {
+            // Use standard abbreviation with K suffix
+            return numericValue < 0
+                ? `-${(absValue / 1000)}K`
+                : `${(absValue / 1000)}K`
+        }
     }
 
-    // For millions with trailing zeros (1000000, 2000000, etc.)
-    if (absValue >= 1000000 && absValue < 1000000000 && absValue % 1000000 === 0) {
-        return `${(numericValue / 1000000)}M`
-    }
+    // For all non-abbreviated numbers, use Norwegian locale
+    try {
+        // Use Norwegian locale with full precision
+        return numericValue.toLocaleString("no-NO", {
+            maximumFractionDigits: 20, // High value to preserve all decimal places
+            minimumFractionDigits: 0,
+        })
+    } catch (e) {
+        // Fall back to manual formatting if toLocaleString fails
+        const parts = numericValue.toString().split(".")
+        const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        const decimalPart = parts.length > 1 ? parts[1] : ""
 
-    // For billions with trailing zeros (1000000000, 2000000000, etc.)
-    if (absValue >= 1000000000 && absValue % 1000000000 === 0) {
-        return `${(numericValue / 1000000000)}B`
+        return decimalPart
+            ? `${integerPart},${decimalPart}`
+            : integerPart
     }
-
-    // For numbers that are not round, use localeString with commas
-    return numericValue.toLocaleString("en-US", {
-        maximumFractionDigits: 1,
-        minimumFractionDigits: 0,
-    })
 }
