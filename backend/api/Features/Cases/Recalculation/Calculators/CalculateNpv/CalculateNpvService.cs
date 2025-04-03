@@ -11,13 +11,6 @@ public static class CalculateNpvService
     {
         var cashflowProfile = GetCashflowProfile(caseItem);
 
-        if (cashflowProfile == null)
-        {
-            caseItem.Npv = 0;
-
-            return;
-        }
-
         var discountRate = caseItem.Project.DiscountRate;
 
         if (discountRate == 0)
@@ -40,14 +33,8 @@ public static class CalculateNpvService
         caseItem.Npv = npvValue;
     }
 
-    private static TimeSeries? GetCashflowProfile(Case caseItem)
+    private static TimeSeries GetCashflowProfile(Case caseItem)
     {
-        if (caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd) == null ||
-            caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd) == null)
-        {
-            return null;
-        }
-
         var calculatedTotalIncomeCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfileUsd));
         var calculatedTotalCostCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfileUsd));
 
