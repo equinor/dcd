@@ -22,7 +22,7 @@ stages:
     parameters:
       workSpace: $(Pipeline.Workspace)
       buildId: $(Build.BuildId)
-      azAppConfig: $(azureAppConfig)
+      azAppConfig: $(azureAppConfigConnString)
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
 
