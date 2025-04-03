@@ -88,9 +88,6 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-05-01'
 resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   parent: blobService
   name: 'image-storage'
-  properties: {
-    publicAccess: 'Container'
-  }
 }
 
 var storageAccountKey = storageAccount.listKeys().keys[0].value
