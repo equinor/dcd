@@ -46,7 +46,7 @@ public class EconomicsHelperTests
         const double discountRatePercentage = 8.0;
         const int numYears = 10;
 
-        var expectedValues = new [] { 1.00000, 0.92593, 0.85734, 0.79383, 0.73503, 0.68058, 0.63017, 0.58349, 0.54027, 0.50025 };
+        var expectedValues = new[] { 1.00000, 0.92593, 0.85734, 0.79383, 0.73503, 0.68058, 0.63017, 0.58349, 0.54027, 0.50025 };
 
         var rates = EconomicsHelper.GetDiscountFactors(discountRatePercentage, numYears);
 

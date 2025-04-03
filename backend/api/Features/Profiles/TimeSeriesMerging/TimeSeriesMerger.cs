@@ -36,7 +36,7 @@ public static class TimeSeriesMerger
 
         return timeSeriesItems.Count == 1
             ? new TimeSeries(firstTimeSeries)
-            : timeSeriesItems.TakeLast(timeSeriesItems.Count-1)
+            : timeSeriesItems.TakeLast(timeSeriesItems.Count - 1)
                 .Aggregate(firstTimeSeries, (t1, t2) => MergeTwoTimeSeries(t1, t2, mergeOption));
     }
 
@@ -91,12 +91,14 @@ public static class TimeSeriesMerger
             MergeOption.Divide => HandleDivision(t1, t2),
         };
     }
+
     private static double[] HandleDivision(double[] t1, double[] t2)
     {
         if (t2.Any(v => v == 0))
         {
             throw new Exception("Cannot divide by zero, check the time series data");
         }
+
         return t1.Zip(t2, (v1, v2) => v1 / v2).ToArray();
     }
 
