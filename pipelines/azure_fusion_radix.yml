@@ -18,14 +18,6 @@ variables:
   - group: DCD-KeyVault
 
 stages:
-  - template: templates/stage-build-fusion.yml
-    parameters:
-      workSpace: $(Pipeline.Workspace)
-      buildId: $(Build.BuildId)
-      azAppConfig: $(azureAppConfigConnString)
-      sourcesDirectory: $(Build.SourcesDirectory)
-      name: "DCD"
-
   - template: templates/stage-deploy-fusion.yml
     parameters:
         appName: Deploy_CI
@@ -40,6 +32,9 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
+        ResourceGroupName: rg-fapps-dcd-preprod
+        SqlAdminPassword: $(SqlAdminPassword)
+        ClientSecret: $(ClientSecret)
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -55,6 +50,9 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
+        ResourceGroupName: rg-fapps-dcd-preprod
+        SqlAdminPassword: $(SqlAdminPassword)
+        ClientSecret: $(ClientSecret)
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -70,3 +68,6 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
+        ResourceGroupName: rg-fapps-dcd-preprod
+        SqlAdminPassword: $(SqlAdminPassword)
+        ClientSecret: $(ClientSecret)
