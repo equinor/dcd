@@ -37,6 +37,10 @@ public static class ProfileTypes
 
     public const string CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService";
 
+    public const string CalculatedTotalOilIncomeCostProfileUsd = "CalculatedTotalOilIncomeCostProfileUsd";
+
+    public const string CalculatedTotalGasIncomeCostProfileUsd = "CalculatedTotalGasIncomeCostProfileUsd";
+
     /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";
     public const string TopsideCostProfileOverride = "TopsideCostProfileOverride";
@@ -116,6 +120,7 @@ public static class ProfileTypes
     public const string NetSalesGas = "NetSalesGas";
     public const string NetSalesGasOverride = "NetSalesGasOverride";
 
+    /// <summary>bbl</summary>
     public const string TotalExportedVolumes = "TotalExportedVolumes";
     public const string TotalExportedVolumesOverride = "TotalExportedVolumesOverride";
 

@@ -10,7 +10,7 @@ public static class Co2IntensityProfileService
 {
     public static void RunCalculation(Case caseItem)
     {
-        var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem);
+        var totalExportedVolumes = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalExportedVolumes));
         var co2EmissionsProfile = GetCo2EmissionsProfile(caseItem);
 
         var co2IntensityValues = new List<double>();
@@ -42,36 +42,6 @@ public static class Co2IntensityProfileService
 
         co2IntensityProfile.StartYear = co2EmissionsProfile.StartYear - co2YearOffset;
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
-    }
-
-    public static TimeSeries GetOilProfile(Case caseItem)
-    {
-        const double million = 1E6;
-        var oilValues = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
-        var additionalOilValues = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Select(v => v / million).ToArray() ?? [];
-
-        var oilProfile = new TimeSeries();
-        var additionalOilProfile = new TimeSeries();
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil) != null)
-        {
-            oilProfile = new TimeSeries
-            {
-                StartYear = caseItem.GetProfile(ProfileTypes.ProductionProfileOil).StartYear,
-                Values = oilValues
-            };
-        }
-
-        if (caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil) != null)
-        {
-            additionalOilProfile = new TimeSeries
-            {
-                StartYear = caseItem.GetProfile(ProfileTypes.AdditionalProductionProfileOil).StartYear,
-                Values = additionalOilValues
-            };
-        }
-
-        return TimeSeriesMerger.MergeTimeSeries(oilProfile, additionalOilProfile);
     }
 
     public static TimeSeries GetCo2EmissionsProfile(Case caseItem) =>

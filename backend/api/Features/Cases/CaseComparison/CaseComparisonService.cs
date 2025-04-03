@@ -3,6 +3,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using static api.Features.Profiles.VolumeConstants;
 
 namespace api.Features.Cases.CaseComparison;
 
@@ -28,11 +29,11 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
                 continue;
             }
 
-            var totalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
-            var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / 1_000_000 ?? 0;
-            var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
-            var additionalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Sum() / 1_000_000_000 ?? 0;
-            var totalExportedVolumes = TotalExportedVolumesProfileService.GetTotalExportedVolumes(caseItem).Values.Sum() / 1_000_000;
+            var totalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil)?.Values.Sum() / Mega ?? 0;
+            var additionalOilProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil)?.Values.Sum() / Mega ?? 0;
+            var totalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas)?.Values.Sum() / Giga ?? 0;
+            var additionalGasProduction = caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas)?.Values.Sum() / Giga ?? 0;
+            var totalExportedVolumes = caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalExportedVolumes)?.Values.Sum() / Mega ?? 0;
 
             var explorationCosts = CalculateExplorationWellCosts(caseItem);
             var developmentCosts = SumWellCostWithPreloadedData(caseItem);

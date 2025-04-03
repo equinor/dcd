@@ -60,7 +60,7 @@ public static class CalculatedDiscountedCashflowService
             new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil))
         );
 
-        var nglProduction = TotalProductionVolume.TotalExportedVolumesProfileService.GetNglProduction(caseItem);
+        var nglProduction = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ProductionProfileNgl));
 
         var convertCurrency = caseItem.Project.Currency == Models.Enums.Currency.Nok
             ? caseItem.Project.ExchangeRateUsdToNok
