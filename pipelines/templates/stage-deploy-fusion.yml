@@ -16,7 +16,7 @@ parameters:
   - name: ClientSecret
 
 stages:
-  - stage: Deploy_IaC
+  - stage: Deploy_IaC_${{ parameters.envshortname }}
     displayName: "Deploy Infrastructure as Code for ${{ parameters.envfullname }}"
     jobs:
       - job: Deploy_Bicep
@@ -37,7 +37,6 @@ stages:
 
   - stage: ${{ parameters.appName }}
     displayName: "Deploy ${{ parameters.envshortname }}"
-    dependsOn: Deploy_IaC
     jobs:
       - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
         environment: ${{ parameters.envfullname }}
