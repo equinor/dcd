@@ -6,6 +6,18 @@ public class TimeSeries
 {
     public TimeSeries() { }
 
+    public TimeSeries(TimeSeries timeSeries)
+    {
+        StartYear = timeSeries.StartYear;
+        Values = timeSeries.Values;
+    }
+
+    public TimeSeries(int startYear, double[] values)
+    {
+        StartYear = startYear;
+        Values = values;
+    }
+
     public TimeSeries(TimeSeriesProfile? timeSeriesProfile)
     {
         if (timeSeriesProfile == null)
