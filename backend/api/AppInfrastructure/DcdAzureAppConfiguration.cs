@@ -15,8 +15,22 @@ public static class DcdAzureAppConfiguration
                 .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential()))
                 .Select(KeyFilter.Any)
                 .Select(KeyFilter.Any, DcdEnvironments.CurrentEnvironment)
-        ).Build();
+        );
 
-        builder.Configuration.AddConfiguration(configuration);
+        try
+        {
+            var builtConfiguration = configuration.Build();
+
+            builder.Configuration.AddConfiguration(builtConfiguration);
+        }
+        catch (KeyVaultReferenceException)
+        {
+            if (DcdEnvironments.ThrowCustomExceptionWhenNotLoggedInToAzure)
+            {
+                throw new Exception("You need to run \"az login\" in a terminal on your developer machine.");
+            }
+
+            throw;
+        }
     }
 }
