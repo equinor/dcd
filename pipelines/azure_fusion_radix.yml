@@ -59,7 +59,7 @@ stages:
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
         ResourceGroupName: rg-fapps-dcd-preprod
-        SqlAdminPassworda: $(SqlAdminPasswordQa)
+        SqlAdminPassword: $(SqlAdminPasswordQa)
         ClientSecret: $(ApiClientSecretPreprod)
 
   - template: templates/stage-deploy-fusion.yml
