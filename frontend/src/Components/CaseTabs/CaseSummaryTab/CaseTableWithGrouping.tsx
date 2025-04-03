@@ -138,8 +138,6 @@ const CaseTableWithGrouping = ({
                 cellRenderer: (params: any) => (
                     profileAndUnitInSameCell(params, rowData)
                 ),
-                // pinned: "left",
-                // aggFunc: () => totalRowName,
             },
             {
                 field: "unit",

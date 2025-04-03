@@ -141,8 +141,6 @@ const CreateCaseModal = () => {
                 )
                 setIsLoading(false)
             }
-            // this is probably unnecessary as the project service is already called to update the project. uncomment if needed
-            // addProjectEdit(apiData.id, projectResult)
             setCaseModalIsOpen(false)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

@@ -25,6 +25,7 @@ import { useCaseStore } from "@/Store/CaseStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { DEFAULT_CO2_EMISSIONS_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
 
 interface ICo2DistributionChartData {
@@ -70,10 +71,12 @@ const CaseCO2Tab = () => {
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
-    const chartAxes = [
+    // Special configuration for CO2 chart with dual axes
+    const dualAxesData = [
         {
             type: "category",
             position: "bottom",
+            nice: true,
             gridLine: {
                 style: [
                     {
@@ -97,8 +100,9 @@ const CaseCO2Tab = () => {
             title: {
                 text: "CO2 emissions",
             },
+            nice: true,
             label: {
-                formatter: (params: any) => `${params.value}`, // emission values
+                formatter: (params: any) => formatNumberForView(params.value),
             },
         },
         {
@@ -108,8 +112,9 @@ const CaseCO2Tab = () => {
             title: {
                 text: "Year-by-year CO2 intensity",
             },
+            nice: true,
             label: {
-                formatter: (params: any) => `${params.value}`, // intensity values
+                formatter: (params: any) => formatNumberForView(params.value),
             },
         },
     ]
@@ -192,8 +197,7 @@ const CaseCO2Tab = () => {
         if (num === null || num === undefined) { return 0 }
         if (num === 0) { return 0 }
 
-        // Ensure the value is a number with 4 decimal places
-        return Number(Number(num).toFixed(4))
+        return Number(num)
     }
 
     const co2EmissionsChartData = () => {
@@ -204,22 +208,23 @@ const CaseCO2Tab = () => {
         const useCo2IntensityOverride = co2IntensityOverrideData && co2IntensityOverrideData.override
 
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
+            // Get raw values without any pre-formatting or rounding
+            const emissionsValue = setValueToCorrespondingYear(
+                useCo2EmissionOverride ? co2EmissionsOverrideData : co2EmissionsData,
+                i,
+                getYearFromDateString(caseData.dg4Date),
+            )
+
+            const intensityValue = setValueToCorrespondingYear(
+                useCo2IntensityOverride ? co2IntensityOverrideData : co2IntensityData,
+                i,
+                getYearFromDateString(caseData.dg4Date),
+            )
+
             dataArray.push({
                 year: i,
-                co2Emissions: formatValue(
-                    setValueToCorrespondingYear(
-                        useCo2EmissionOverride ? co2EmissionsOverrideData : co2EmissionsData,
-                        i,
-                        getYearFromDateString(caseData.dg4Date),
-                    ),
-                ),
-                co2Intensity: formatValue(
-                    setValueToCorrespondingYear(
-                        useCo2IntensityOverride ? co2IntensityOverrideData : co2IntensityData,
-                        i,
-                        getYearFromDateString(caseData.dg4Date),
-                    ),
-                ),
+                co2Emissions: emissionsValue || 0,
+                co2Intensity: intensityValue || 0,
             })
         }
 
@@ -300,7 +305,7 @@ const CaseCO2Tab = () => {
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
                     lineChart={co2IntensityLine}
-                    axesData={chartAxes}
+                    axesData={dualAxesData}
                 />
             </Grid>
             <Grid size={{ xs: 12, xl: 6 }} container direction="column" spacing={1} justifyContent="center" alignItems="center">
@@ -308,7 +313,7 @@ const CaseCO2Tab = () => {
                 <Typography variant="h4">Average lifetime CO2 intensity</Typography>
 
                 <Typography variant="h4">
-                    {averageCo2IntensityData?.toFixed(4)}
+                    {averageCo2IntensityData ? formatNumberForView(averageCo2IntensityData) : "0"}
                     {" "}
                     kg CO2/boe
                 </Typography>

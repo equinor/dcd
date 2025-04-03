@@ -18,12 +18,15 @@ import { PhysUnit } from "@/Models/enums"
 import { useCaseStore } from "@/Store/CaseStore"
 import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
+import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
+import { useAppStore } from "@/Store/AppStore"
 
 const defaultAxesData = [
     {
         type: "category",
         position: "bottom",
+        nice: true,
         gridLine: {
             style: [
                 {
@@ -36,17 +39,31 @@ const defaultAxesData = [
                 },
             ],
         },
-        label: {
-            formatter: (label: any) => Math.floor(Number(label.value)),
-        },
     },
     {
         type: "number",
         position: "left",
+        nice: true,
+        label: {
+            formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
+        },
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.1)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.1)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
     },
 ]
 
 const CaseProductionProfilesTab = () => {
+    const { editMode } = useAppStore();
     const { activeTabCase } = useCaseStore()
     const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
@@ -157,6 +174,7 @@ const CaseProductionProfilesTab = () => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
@@ -175,11 +193,11 @@ const CaseProductionProfilesTab = () => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
+
         for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
             dataArray.push({
                 year: i,
-                waterInjection:
-                    setValueToCorrespondingYear(waterInjectionData, i, getYearFromDateString(caseData.dg4Date)),
+                waterInjection: setValueToCorrespondingYear(waterInjectionData, i, getYearFromDateString(caseData.dg4Date)),
             })
         }
 
@@ -288,7 +306,17 @@ const CaseProductionProfilesTab = () => {
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <SwitchableNumberInput
+                        {editMode ? <SwitchableNumberInput
+                            label="Gas shrinkage factor"
+                            value={drainageStrategyData.gasShrinkageFactor}
+                            id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
+                            integer
+                            min={0}
+                            max={100}
+                            unit="%"
+                            onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
+                        /> : (drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
+                            <SwitchableNumberInput
                             label="Gas shrinkage factor"
                             value={drainageStrategyData.gasShrinkageFactor}
                             id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
@@ -298,6 +326,7 @@ const CaseProductionProfilesTab = () => {
                             unit="%"
                             onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
                         />
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

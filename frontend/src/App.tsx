@@ -48,8 +48,6 @@ const App: FC = () => {
     storeAppId(config.APP_ID)
     storeAppScope(config.BACKEND_APP_SCOPE[0])
 
-    console.log("Concept App version: ", APP_VERSION)
-
     return (
         <QueryClientProvider client={queryClient}>
             <FeatureContextProvider>

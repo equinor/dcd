@@ -55,7 +55,7 @@ public static class EconomicsHelper
         };
     }
 
-    private static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
+    public static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {
         var discountFactors = new List<double>();
         var discountRate = 1 + discountRatePercentage / 100;
@@ -71,28 +71,6 @@ public static class EconomicsHelper
 
     public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries totalCost)
     {
-        var startYear = Math.Min(income.StartYear, totalCost.StartYear);
-        var endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
-
-        var numberOfYears = endYear - startYear + 1;
-        var cashFlowValues = new double[numberOfYears];
-
-        for (var yearIndex = 0; yearIndex < numberOfYears; yearIndex++)
-        {
-            var currentYear = startYear + yearIndex;
-            var incomeIndex = currentYear - income.StartYear;
-            var costIndex = currentYear - totalCost.StartYear;
-
-            var incomeValue = incomeIndex >= 0 && incomeIndex < income.Values.Length ? income.Values[incomeIndex] : 0;
-            var costValue = costIndex >= 0 && costIndex < totalCost.Values.Length ? totalCost.Values[costIndex] : 0;
-
-            cashFlowValues[yearIndex] = incomeValue - costValue;
-        }
-
-        return new TimeSeries
-        {
-            StartYear = startYear,
-            Values = cashFlowValues
-        };
+        return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(income, totalCost);
     }
 }

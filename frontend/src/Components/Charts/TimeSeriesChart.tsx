@@ -1,6 +1,7 @@
 import { AgCharts } from "ag-charts-react"
 
-import { insertIf, separateProfileObjects } from "@/Utils/TableUtils"
+import { formatNumberForView } from "@/Utils/FormatingUtils"
+import { separateProfileObjects } from "@/Utils/TableUtils"
 
 interface Props {
     data: object
@@ -41,7 +42,27 @@ export const TimeSeriesChart = ({
         },
     }
 
-    const defaultOptions: object = {
+    const tooltipRenderer = (params: any) => ({
+        content: `${params.title}: ${formatNumberForView(params.yValue)}`,
+    })
+
+    const defaultAxes = [
+        {
+            type: "category",
+            position: "bottom",
+            nice: true,
+        },
+        {
+            type: "number",
+            position: "left",
+            nice: true,
+            label: {
+                formatter: (params: any) => formatNumberForView(params.value),
+            },
+        },
+    ]
+
+    const defaultOptions = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },
@@ -55,11 +76,14 @@ export const TimeSeriesChart = ({
         theme: figmaTheme,
         series: [
             ...separateProfileObjects(barProfiles, barNames, "year"),
-            ...insertIf(lineChart !== undefined, false, axesData, lineChart),
+            ...(lineChart ? [lineChart] : []),
         ],
-        ...insertIf(axesData !== undefined, true, axesData, lineChart),
+        tooltip: {
+            renderer: tooltipRenderer,
+        },
+        axes: axesData || defaultAxes,
         legend: { position: "bottom", spacing: 40 },
-    }
+    } as any
 
     return (
         <div>

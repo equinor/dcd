@@ -76,7 +76,6 @@ const CaseCostTab = () => {
         if (activeTabCase === 5 && apiData) {
             const caseData = apiData.case
 
-            // Check if we're switching to a different case
             if (currentCaseId !== caseData.caseId) {
                 setCurrentCaseId(caseData.caseId)
                 const defaultYears: [number, number] = DEFAULT_CASE_COST_YEARS
@@ -130,15 +129,9 @@ const CaseCostTab = () => {
                 apiData.sidetrackCostProfile,
             ]
 
-            console.log("Number of profiles provided to calculateTableYears:", profiles.length)
-
             const dg4Year = getYearFromDateString(caseData.dg4Date)
 
-            console.log("dg4Year:", dg4Year)
-
             const years = calculateTableYears(profiles, dg4Year)
-
-            console.log("calculateTableYears returned:", years)
 
             if (years && isMounted.current) {
                 const [firstYear, lastYear] = years
