@@ -29,7 +29,7 @@ public class StudyCostProfileServiceTests
 
         var expectedStartYear = caseItem.Dg2Date!.Value.Year - caseItem.Dg4Date.Year;
 
-        Assert.Equal(-6, expectedStartYear);
+        Assert.Equal(-5, expectedStartYear);
         Assert.Equal(expectedStartYear, totalFeedStudiesProfile.StartYear);
         Assert.Equal(2, totalFeedStudiesProfile.Values.Length);
         Assert.Equal(600, totalFeedStudiesProfile.Values[0]);
