@@ -31,9 +31,9 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 az deployment group create \
-                  --resource-group ${ResourceGroupName} \
+                  --resource-group ${parameters.ResourceGroupName} \
                   --template-file iac/main.bicep \
-                  --parameters environmentName=ci sqlAdminPassword=$(SqlAdminPassword) clientSecret=$(ClientSecret)
+                  --parameters environmentName=ci sqlAdminPassword=$(parameters.SqlAdminPassword) clientSecret=$(parameters.ClientSecret)
 
   - stage: ${{ parameters.appName }}
     displayName: "Deploy ${{ parameters.envshortname }}"
