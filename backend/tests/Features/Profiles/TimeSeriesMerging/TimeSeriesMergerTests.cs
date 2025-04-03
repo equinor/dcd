@@ -12,6 +12,7 @@ public class TimeSeriesMergerTests
     public void Creating_time_series_from_null__should_generate_default_time_series()
     {
         TimeSeriesProfile timeSeriesProfile = null;
+        // ReSharper disable once ExpressionIsAlwaysNull
         var timeSeries = new TimeSeries(timeSeriesProfile);
 
         Assert.Equal(0, timeSeries.StartYear);
@@ -248,14 +249,6 @@ public class TimeSeriesMergerTests
             Values = [0]
         };
 
-        try
-        {
-            TimeSeriesMerger.MergeTimeSeriesWithDivision(series1, series2);
-            Assert.Fail();
-        }
-        catch (Exception e)
-        {
-            Assert.Equal("Cannot divide by zero, check the time series data", e.Message);
-        }
+        Assert.Throws<Exception>(() => TimeSeriesMerger.MergeTimeSeriesWithDivision(series1, series2));
     }
 }

@@ -1,5 +1,3 @@
-using System.Numerics;
-
 using api.Features.Profiles.Dtos;
 
 namespace api.Features.Profiles.TimeSeriesMerging;
@@ -88,7 +86,7 @@ public static class TimeSeriesMerger
             MergeOption.Add => t1.Zip(t2, (v1, v2) => v1 + v2).ToArray(),
             MergeOption.Subtract => t1.Zip(t2, (v1, v2) => v1 - v2).ToArray(),
             MergeOption.Multiply => t1.Zip(t2, (v1, v2) => v1 * v2).ToArray(),
-            MergeOption.Divide => HandleDivision(t1, t2),
+            MergeOption.Divide => HandleDivision(t1, t2)
         };
     }
 
