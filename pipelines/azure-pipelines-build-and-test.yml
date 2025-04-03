@@ -42,7 +42,7 @@ jobs:
           command: "custom"
           workingDir: "frontend"
           customCommand: "run-script build"
-          
+
   - job: Test_Backend
     steps:
       - task: UseDotNet@2
@@ -59,10 +59,3 @@ jobs:
           workingDirectory: "$(Build.SourcesDirectory)/backend/tests/"
         env:
           AppConfiguration__ConnectionString: $(azureAppConfigConnString)
-      - script: |
-          dotnet tool install JetBrains.dotCover.GlobalTool -g
-          cd $(Build.SourcesDirectory)/backend/tests/
-          dotnet dotcover test
-          dotnet dotcover report --source=dotCover.Output.dcvr --reportType=DetailedXml
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r dotCover.Output.xml
-        displayName: "Backend Tests With Code Coverage"
