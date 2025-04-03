@@ -6,7 +6,6 @@ param keyVaultName string
 @secure()
 param sqlAdminPassword string
 
-
 var sqlServerSkuMap = {
   ci: {
     name: 'S2'
@@ -35,13 +34,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-    parent: keyVault
-    name: 'sql-connection-string-${environmentName}'
-    properties: {
-      value: sqlConnectionString
-    }
+  parent: keyVault
+  name: 'sql-connection-string-${environmentName}'
+  properties: {
+    value: sqlConnectionString
   }
-
+}
 
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: sqlServerName
@@ -58,4 +56,3 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-11-01' = {
   parent: sqlServer
   sku: sqlServerSkuMap[environmentName]
 }
-

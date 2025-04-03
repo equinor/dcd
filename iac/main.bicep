@@ -6,9 +6,7 @@ param sqlAdminPassword string
 @secure()
 param clientSecret string
 
-
 var preprod = environmentName == 'ci' || environmentName == 'qa'
-
 var roughtechsEntraGroupObjectId = 'a64069dd-12fd-422b-8c1e-2093fa32819d'
 
 var commonTags = {
@@ -83,20 +81,19 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
 }
 
 resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-05-01' = {
-    parent: storageAccount
-    name: 'default'
-  }
+  parent: storageAccount
+  name: 'default'
+}
 
 resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
-    parent: blobService
-    name: 'image-storage'
-    properties: {
-      publicAccess: 'Container'
-    }
+  parent: blobService
+  name: 'image-storage'
+  properties: {
+    publicAccess: 'Container'
   }
+}
 
 var storageAccountKey = storageAccount.listKeys().keys[0].value
-
 var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKey};EndpointSuffix=core.windows.net'
 
 resource keyVaultSecretStorageAccount 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
@@ -108,12 +105,12 @@ resource keyVaultSecretStorageAccount 'Microsoft.KeyVault/vaults/secrets@2023-07
 }
 
 resource keyVaultSecretClientSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-    parent: keyVault
-    name: preprod ? 'dcd-backend-client-secret-fusion-preprod' : 'dcd-backend-client-secret-fusion-prod'
-    properties: {
-      value: clientSecret
-    }
+  parent: keyVault
+  name: preprod ? 'dcd-backend-client-secret-fusion-preprod' : 'dcd-backend-client-secret-fusion-prod'
+  properties: {
+    value: clientSecret
   }
+}
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = if (!preprod) {
   name: 'crfappdcd'
