@@ -32,7 +32,7 @@ stages:
         SpAzureClientId: $(SpPreProdAzureClientId)
         SpAzureClientSecret: $(SpPreProdAzureClientSecret)
         AzureTenantId: $(SpAzureTenantId)
-        ResourceGroupName: rg-fapps-dcd-preprod
+        ResourceGroupName: "rg-fapps-dcd-preprod"
         SqlAdminPassword: $(SqlAdminPassword)
         ClientSecret: $(ClientSecret)
 
