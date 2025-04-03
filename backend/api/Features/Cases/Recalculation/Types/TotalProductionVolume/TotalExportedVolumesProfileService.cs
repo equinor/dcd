@@ -29,7 +29,8 @@ public static class TotalExportedVolumesProfileService
         profile.StartYear = totalExportedVolumes.StartYear;
     }
 
-    public static TimeSeries GetTotalExportedVolumes(Case caseItem) => new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumes));
+    public static TimeSeries GetTotalExportedVolumes(Case caseItem) =>
+        new (caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalExportedVolumes));
 
     public static TimeSeries GetNglProduction(Case caseItem) =>
         new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ProductionProfileNgl));
