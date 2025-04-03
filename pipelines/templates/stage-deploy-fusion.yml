@@ -16,13 +16,14 @@ parameters:
   - name: ClientSecret
 
 stages:
-  - stage: Deploy_IaC_${{ parameters.envshortname }}
-    displayName: "Deploy Infrastructure as Code for ${{ parameters.envfullname }}"
+  - stage: ${{ parameters.appName }}
+    displayName: "Deploy ${{ parameters.envshortname }}"
     jobs:
       - job: Deploy_Bicep
         displayName: "Deploy Bicep Files"
         steps:
           - checkout: self
+
           - task: AzureCLI@2
             displayName: "Deploy main.bicep"
             inputs:
@@ -37,10 +38,8 @@ stages:
                                 sqlAdminPassword=${{ parameters.SqlAdminPassword }} \
                                 clientSecret=${{ parameters.ClientSecret }}
 
-  - stage: ${{ parameters.appName }}
-    displayName: "Deploy ${{ parameters.envshortname }}"
-    jobs:
       - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
+        dependsOn: Deploy_Bicep
         environment: ${{ parameters.envfullname }}
         strategy:
           runOnce:
