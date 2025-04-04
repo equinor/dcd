@@ -1,13 +1,13 @@
 import {
-    Slider, Autocomplete, TextField,
+    Slider,
 } from "@mui/material"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
+import styled from "styled-components"
 
 import BaseGantEntry, { getDisplayText } from "./BaseGantEntry"
 
 export interface MileStoneEntryProps {
     title: string;
-    description: string;
     value: number;
     periodsData: {
         value: number;
@@ -17,90 +17,90 @@ export interface MileStoneEntryProps {
     }[];
     onChange: (newValue: number) => void;
     onClear?: () => void;
+    isRequired?: boolean;
     disabled?: boolean;
     readOnly?: boolean;
 }
 
+const StyledSlider = styled(Slider)<{ $readOnly?: boolean }>`
+  & .MuiSlider-thumb {
+    background-color: #d32f2f;
+    border-radius: 2px;
+    width: ${({ $readOnly }): string => ($readOnly ? "12px" : "20px")};
+    height: ${({ $readOnly }): string => ($readOnly ? "12px" : "20px")};
+  }
+  
+  & .MuiSlider-markLabel {
+    font-size: 0.75rem;
+  }
+  
+  ${({ $readOnly }): string => ($readOnly ? `
+    pointer-events: none;
+    height: 32px;
+    margin-top: 0;
+    
+    & .MuiSlider-valueLabel {
+      background-color: transparent;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: bold;
+      top: -2px;
+      padding: 0 4px;
+    }
+    
+    & .MuiSlider-rail {
+      opacity: 0.5;
+      height: 4px;
+    }
+    
+    & .MuiSlider-mark {
+      opacity: 0.4;
+      height: 8px;
+    }
+  ` : "")}
+`
+
 const MileStoneEntry = ({
     title,
-    description,
     value,
     periodsData,
     onChange,
     onClear,
+    isRequired = false,
     disabled = false,
     readOnly = false,
-}: MileStoneEntryProps) => {
-    // Local state to track the slider value during dragging
+}: MileStoneEntryProps): JSX.Element => {
     const [localValue, setLocalValue] = useState<number>(value)
 
-    // Update local value when prop value changes
     useEffect(() => {
         setLocalValue(value)
     }, [value])
 
-    // Handle local state updates during dragging (doesn't trigger API call)
-    const handleDragChange = (_event: Event, newValue: number | number[]) => {
-        // Only update local state during drag, don't call the API
-        // No-op in readOnly mode
+    const handleDragChange = (_event: Event, newValue: number | number[]): void => {
         if (!readOnly) {
             setLocalValue(newValue as number)
         }
     }
 
-    // Only commit the change to the API when the slider drag is complete
-    const handleChangeCommitted = (_event: React.SyntheticEvent | Event, newValue: number | number[]) => {
-        // Only after drag is complete do we update the parent
-        // No-op in readOnly mode
+    const handleChangeCommitted = (_event: React.SyntheticEvent | Event, newValue: number | number[]): void => {
         if (!readOnly) {
             onChange(newValue as number)
         }
     }
 
-    const handleSelectChange = (_event: React.SyntheticEvent, option: { value: number; quarter: number; year: number } | null) => {
-        if (option && !readOnly) {
-            onChange(option.value)
-        }
-    }
-
-    const getValueText = (val: number) => getDisplayText(periodsData[val])
-
-    const selectedPeriod = periodsData[value]
-
-    // Only show the select component in edit mode
-    const selectComponent = !readOnly ? (
-        <Autocomplete
-            value={selectedPeriod}
-            onChange={handleSelectChange}
-            options={periodsData}
-            getOptionLabel={(option) => `Q${option.quarter} ${option.year}`}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Select date"
-                    variant="outlined"
-                    size="small"
-                    sx={{ width: "130px" }}
-                />
-            )}
-            disableClearable
-            fullWidth
-            disabled={disabled}
-        />
-    ) : null
+    const getValueText = (val: number): string => getDisplayText(periodsData[val])
 
     return (
         <BaseGantEntry
             title={title}
-            description={description}
-            selectComponent={selectComponent}
-            onClear={!readOnly && onClear ? onClear : undefined}
-            canClear={Boolean(onClear)}
+            onClear={!readOnly ? onClear : undefined}
+            isRequired={isRequired}
             disabled={disabled || readOnly}
             readOnly={readOnly}
         >
-            <Slider
-                getAriaLabel={() => "Milestone date"}
+            <StyledSlider
+                $readOnly={readOnly}
+                getAriaLabel={(): string => "Milestone date"}
                 value={localValue}
                 onChange={handleDragChange}
                 onChangeCommitted={handleChangeCommitted}
@@ -113,45 +113,6 @@ const MileStoneEntry = ({
                 step={1}
                 track={false}
                 disabled={disabled || readOnly}
-                sx={{
-                    "& .MuiSlider-thumb": {
-                        backgroundColor: "#d32f2f",
-                        borderRadius: "2px",
-                        width: 20,
-                        height: 20,
-                    },
-                    "& .MuiSlider-markLabel": {
-                        fontSize: "0.75rem",
-                    },
-                    // Make the slider look more presentable in view mode
-                    ...(readOnly && {
-                        pointerEvents: "none",
-                        height: 32, // More compact height
-                        marginTop: 0,
-                        "& .MuiSlider-thumb": {
-                            backgroundColor: "#d32f2f",
-                            borderRadius: "2px",
-                            width: 12,
-                            height: 12,
-                        },
-                        "& .MuiSlider-valueLabel": {
-                            backgroundColor: "transparent",
-                            color: "#000",
-                            fontSize: "0.75rem",
-                            fontWeight: "bold",
-                            top: -2,
-                            padding: "0 4px",
-                        },
-                        "& .MuiSlider-rail": {
-                            opacity: 0.5,
-                            height: 4,
-                        },
-                        "& .MuiSlider-mark": {
-                            opacity: 0.4,
-                            height: 8,
-                        },
-                    }),
-                }}
             />
         </BaseGantEntry>
     )

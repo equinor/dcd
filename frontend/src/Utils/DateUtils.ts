@@ -140,21 +140,38 @@ export const GANTT_CONFIG = {
     DEFAULT_DG4_YEAR: new Date().getFullYear(), // Use current year as default
 }
 
+interface QuarterPeriod {
+    value: number
+    label: string
+    quarter: number
+    year: number
+}
+
 /**
- * Generates quarterly periods based on the current year
- * @param _ - Ignored parameter (kept for backward compatibility)
+ * Generates quarterly periods based on specified parameters
+ * @param referenceDate - Reference date for calculations (defaults to current date)
+ * @param customRangeYears - Optional custom range in years (overrides GANTT_CONFIG)
  * @returns Array of quarterly periods
  */
-export const generateDynamicQuarterlyPeriods = (_?: Date | null) => {
-    const quarters = []
+export const generateDynamicQuarterlyPeriods = (referenceDate?: Date | null, customRangeYears?: number): QuarterPeriod[] => {
+    const quarters: QuarterPeriod[] = []
     let index = 0
 
-    // Always use current year as the center point
-    const currentYear = new Date().getFullYear()
+    // Get reference year from parameter or use current year
+    const referenceYear = referenceDate ? referenceDate.getFullYear() : new Date().getFullYear()
 
-    // Calculate start and end years based on configuration
-    const startYear = currentYear - GANTT_CONFIG.YEARS_BEFORE_DG4
-    const endYear = currentYear + GANTT_CONFIG.YEARS_AFTER_DG4
+    let startYear: number
+    let endYear: number
+
+    if (customRangeYears !== undefined) {
+        // If custom range is provided, use the reference year as start and calculate end year based on the custom range
+        startYear = referenceYear
+        endYear = referenceYear + customRangeYears - 1
+    } else {
+        // Otherwise use the default config values
+        startYear = referenceYear - GANTT_CONFIG.YEARS_BEFORE_DG4
+        endYear = referenceYear + GANTT_CONFIG.YEARS_AFTER_DG4
+    }
 
     for (let year = startYear; year <= endYear; year += 1) {
         for (let quarter = 1; quarter <= 4; quarter += 1) {
@@ -190,14 +207,12 @@ export const dateToQuarterIndex = (date: Date | undefined | null, startYear?: nu
     const currentYear = new Date().getFullYear()
     const fixedStartYear = startYear || (currentYear - GANTT_CONFIG.YEARS_BEFORE_DG4)
 
-    // Only support dates within our calculated range
     const fixedEndYear = fixedStartYear + GANTT_CONFIG.YEARS_BEFORE_DG4 + GANTT_CONFIG.YEARS_AFTER_DG4
 
     if (year < fixedStartYear || year > fixedEndYear) {
         return undefined
     }
 
-    // Calculate quarter (0-based)
     const quarter = Math.floor(month / 3)
 
     // Calculate index: 4 quarters per year, starting from our fixed start year
@@ -278,3 +293,22 @@ export const getCurrentQuarterIndex = (startYear?: number): number => {
     // Ensure the index is within valid bounds for the chart
     return Math.max(0, Math.min(quarterIndex, (GANTT_CONFIG.YEARS_BEFORE_DG4 + GANTT_CONFIG.YEARS_AFTER_DG4) * 4))
 }
+
+/**
+ * Creates a Date object from a year and quarter
+ * @param year - Year for the date
+ * @param quarter - Quarter (1-4)
+ * @returns Date object for the first day of the specified quarter
+ */
+export const createDateFromYearAndQuarter = (year: number, quarter: number): Date => {
+    const month = (quarter - 1) * 3 // Convert quarter to month (0-based)
+
+    return dateFromTimestamp(Date.UTC(year, month, 1, 0, 0, 0, 0))
+}
+
+/**
+ * Creates a Date object from an ISO string
+ * @param isoString - ISO date string
+ * @returns Date object from the ISO string
+ */
+export const createDateFromISOString = (isoString: string): Date => dateStringToDateUtc(isoString)
