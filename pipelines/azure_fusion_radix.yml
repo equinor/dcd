@@ -27,9 +27,9 @@ stages:
       name: "DCD"
 
   - stage: Deploy_CI
-      variables:
-        - group: DCD-CI
-  - template: templates/stage-deploy-fusion.yml
+    variables:
+      - group: DCD-CI
+    template: templates/stage-deploy-fusion.yml
     parameters:
         appName: Deploy_CI
         fusionEnvironment: ci
