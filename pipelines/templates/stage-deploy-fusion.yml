@@ -113,6 +113,7 @@ jobs:
     dependsOn:
         - Deploy_${{ parameters.envshortname }}_Frontend
         - Update_${{ parameters.envshortname }}_Tags
+        - Deploy_Bicep
     displayName: Trigger Radix Deploy
     cancelTimeoutInMinutes: 60
     timeoutInMinutes: 60

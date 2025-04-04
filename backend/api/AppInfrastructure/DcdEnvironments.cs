@@ -30,7 +30,7 @@ public static class DcdEnvironments
     {
         RadixProd => "prod-image-storage",
         RadixQa => "qa-image-storage",
-        _ => "ci-image-storage"
+        _ => "image-storage"
     };
 
     public static class FeatureToggles
