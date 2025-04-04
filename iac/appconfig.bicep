@@ -103,3 +103,11 @@ resource appConfigFusionPeopleScopes 'Microsoft.AppConfiguration/configurationSt
     value: configEnvMap[environmentName].FusionPeopleScopes
   }
 }
+
+resource appConfigGraphScopes 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
+    parent: appConfig
+    name: 'Graph:Scopes:0'
+    properties: {
+      value: 'Sites.Read.All'
+    }
+  }
