@@ -29,23 +29,24 @@ stages:
   - stage: Deploy_CI
     variables:
       - group: DCD-CI
-    template: templates/stage-deploy-fusion.yml
-    parameters:
-        appName: Deploy_CI
-        fusionEnvironment: ci
-        envshortname: ci
-        envfullname: CI
-        FusionEnvId: $(FusionAppId)
-        buildId: $(Build.BuildId)
-        radixToken: $(RadixToken)
-        branch: main
-        ContainerTag: "release"
-        SpAzureClientId: $(SpPreProdAzureClientId)
-        SpAzureClientSecret: $(SpPreProdAzureClientSecret)
-        AzureTenantId: $(SpAzureTenantId)
-        ResourceGroupName: "rg-fapps-dcd-preprod"
-        SqlAdminPassword: $(SqlAdminPassword)
-        ClientSecret: $(ApiClientSecret)
+    jobs:
+      - template: templates/stage-deploy-fusion.yml
+        parameters:
+            appName: Deploy_CI
+            fusionEnvironment: ci
+            envshortname: ci
+            envfullname: CI
+            FusionEnvId: $(FusionAppId)
+            buildId: $(Build.BuildId)
+            radixToken: $(RadixToken)
+            branch: main
+            ContainerTag: "release"
+            SpAzureClientId: $(SpPreProdAzureClientId)
+            SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+            AzureTenantId: $(SpAzureTenantId)
+            ResourceGroupName: "rg-fapps-dcd-preprod"
+            SqlAdminPassword: $(SqlAdminPassword)
+            ClientSecret: $(ApiClientSecret)
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
