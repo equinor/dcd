@@ -57,36 +57,14 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
 
     private static bool ShouldTriggerRecalculation(Project existingProject, UpdateProjectDto projectDto)
     {
-        if (existingProject.ExchangeRateUsdToNok != projectDto.ExchangeRateUsdToNok)
-        {
-            return true;
-        }
+        const double tolerance = 0.000000001;
 
-        if (existingProject.NpvYear != projectDto.NpvYear)
-        {
-            return true;
-        }
-
-        if (existingProject.DiscountRate != projectDto.DiscountRate)
-        {
-            return true;
-        }
-
-        if (existingProject.GasPriceNok != projectDto.GasPriceNok)
-        {
-            return true;
-        }
-
-        if (existingProject.NglPriceUsd != projectDto.NglPriceUsd)
-        {
-            return true;
-        }
-
-        if (existingProject.OilPriceUsd != projectDto.OilPriceUsd)
-        {
-            return true;
-        }
-
-        return false;
+        return Math.Abs(existingProject.ExchangeRateUsdToNok - projectDto.ExchangeRateUsdToNok) > tolerance
+               || Math.Abs(existingProject.DiscountRate - projectDto.DiscountRate) > tolerance
+               || Math.Abs(existingProject.GasPriceNok - projectDto.GasPriceNok) > tolerance
+               || Math.Abs(existingProject.NglPriceUsd - projectDto.NglPriceUsd) > tolerance
+               || Math.Abs(existingProject.OilPriceUsd - projectDto.OilPriceUsd) > tolerance
+               || existingProject.NpvYear != projectDto.NpvYear
+               || existingProject.Currency != projectDto.Currency;
     }
 }
