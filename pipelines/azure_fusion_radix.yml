@@ -32,18 +32,50 @@ stages:
     jobs:
       - template: templates/stage-deploy-fusion.yml
         parameters:
-            appName: Deploy_CI
             fusionEnvironment: ci
             envshortname: ci
             envfullname: CI
             FusionEnvId: $(FusionAppId)
             buildId: $(Build.BuildId)
-            radixToken: $(RadixToken)
             branch: main
-            ContainerTag: "release"
-            SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)
             ResourceGroupName: "rg-fapps-dcd-preprod"
+            SqlAdminPassword: $(SqlAdminPassword)
+            ClientSecret: $(ApiClientSecret)
+
+  - stage: Deploy_QA
+    variables:
+      - group: DCD-QA
+    jobs:
+      - template: templates/stage-deploy-fusion.yml
+        parameters:
+            fusionEnvironment: fqa
+            envshortname: qa
+            envfullname: QA
+            FusionEnvId: $(FusionAppIdQA)
+            buildId: $(Build.BuildId)
+            branch: main
+            SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+            AzureTenantId: $(SpAzureTenantId)
+            ResourceGroupName: "rg-fapps-dcd-preprod"
+            SqlAdminPassword: $(SqlAdminPassword)
+            ClientSecret: $(ApiClientSecret)
+
+  - stage: Deploy_Prod
+    variables:
+      - group: DCD-Prod
+    jobs:
+      - template: templates/stage-deploy-fusion.yml
+        parameters:
+            fusionEnvironment: fprd
+            envshortname: prod
+            envfullname: Production
+            FusionEnvId: $(FusionAppIdFPRD)
+            buildId: $(Build.BuildId)
+            branch: main
+            SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+            AzureTenantId: $(SpAzureTenantId)
+            ResourceGroupName: "rg-fapps-dcd-prod"
             SqlAdminPassword: $(SqlAdminPassword)
             ClientSecret: $(ApiClientSecret)

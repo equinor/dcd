@@ -1,19 +1,19 @@
 parameters:
-  - name: appName
   - name: fusionEnvironment
   - name: envshortname
   - name: envfullname
-  - name: buildId
-  - name: radixToken
-  - name: branch
   - name: FusionEnvId
-  - name: ContainerTag
-  - name: SpAzureClientId
+  - name: buildId
+  - name: branch
   - name: SpAzureClientSecret
   - name: AzureTenantId
   - name: ResourceGroupName
   - name: SqlAdminPassword
   - name: ClientSecret
+
+variables:
+  - group: DCD
+  - group: DCD-KeyVault
 
 jobs:
   - job: Deploy_Bicep
@@ -31,7 +31,7 @@ jobs:
             az deployment group create \
               --resource-group ${{ parameters.ResourceGroupName }} \
               --template-file iac/main.bicep \
-              --parameters environmentName=${{ parameters.fusionEnvironment }} \
+              --parameters environmentName=${{ parameters.envshortname }} \
                             sqlAdminPassword=${{ parameters.SqlAdminPassword }} \
                             clientSecret=${{ parameters.ClientSecret }}
 
@@ -72,7 +72,7 @@ jobs:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
+                  az login --service-principal -u $(SpPreProdAzureClientId) -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
                   FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
                   echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
 
@@ -112,7 +112,7 @@ jobs:
                           envshortname: ${{ parameters.envshortname }}
                           registry: "crdcd.azurecr.io"
                           repository: "backend"
-                          tag: ${{ parameters.ContainerTag }}
+                          tag: "release"
 
   - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
     dependsOn:
@@ -127,7 +127,7 @@ jobs:
           inputs:
               targetType: "inline"
               script: |
-                  $AzureClientId = "${{ parameters.SpAzureClientId }}"
+                  $AzureClientId = "$(SpPreProdAzureClientId)"
                   $AzureTenantId = "${{ parameters.AzureTenantId }}"
                   $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
 
@@ -153,7 +153,7 @@ jobs:
           inputs:
               targetType: "inline"
               script: |
-                  $AzureClientId = "${{ parameters.SpAzureClientId }}"
+                  $AzureClientId = "$(SpPreProdAzureClientId)"
                   $AzureTenantId = "${{ parameters.AzureTenantId }}"
                   $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
                   $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
