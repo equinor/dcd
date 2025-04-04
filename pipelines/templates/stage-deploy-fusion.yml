@@ -15,183 +15,179 @@ parameters:
   - name: SqlAdminPassword
   - name: ClientSecret
 
-stages:
-  - stage: ${{ parameters.appName }}
-    displayName: "Deploy ${{ parameters.envshortname }}"
-    jobs:
-      - job: Deploy_Bicep
-        displayName: "Deploy Bicep Files"
-        steps:
-          - checkout: self
+jobs:
+  - job: Deploy_Bicep
+    displayName: "Deploy Bicep Files"
+    steps:
+      - checkout: self
 
-          - task: AzureCLI@2
-            displayName: "Deploy main.bicep"
-            inputs:
-              azureSubscription: "dcd-pipeline-sp"
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                az deployment group create \
-                  --resource-group ${{ parameters.ResourceGroupName }} \
-                  --template-file iac/main.bicep \
-                  --parameters environmentName=${{ parameters.fusionEnvironment }} \
-                                sqlAdminPassword=${{ parameters.SqlAdminPassword }} \
-                                clientSecret=${{ parameters.ClientSecret }}
+      - task: AzureCLI@2
+        displayName: "Deploy main.bicep"
+        inputs:
+          azureSubscription: "dcd-pipeline-sp"
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az deployment group create \
+              --resource-group ${{ parameters.ResourceGroupName }} \
+              --template-file iac/main.bicep \
+              --parameters environmentName=${{ parameters.fusionEnvironment }} \
+                            sqlAdminPassword=${{ parameters.SqlAdminPassword }} \
+                            clientSecret=${{ parameters.ClientSecret }}
 
-      - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
-        environment: ${{ parameters.envfullname }}
-        strategy:
-          runOnce:
+  - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
+    environment: ${{ parameters.envfullname }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+
+            - task: DownloadPipelineArtifact@2
+              displayName: "Download ConceptApp Artifact"
+              inputs:
+                artifact: ConceptApp
+
+            - task: Bash@3
+              displayName: "Extract app-manifest.json"
+              inputs:
+                targetType: 'inline'
+                script: |
+                  unzip $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -d $(Pipeline.Workspace)/ConceptApp
+                  cat $(Pipeline.Workspace)/ConceptApp/app-manifest.json
+
+            - task: Bash@3
+              displayName: "Read version from app-manifest.json"
+              inputs:
+                targetType: 'inline'
+                script: |
+                  version=$(jq -r '.version' $(Pipeline.Workspace)/ConceptApp/app-manifest.json)
+                  echo "##vso[task.setvariable variable=frontendVersion]$version"
+                  echo "Frontend Version: $version"
+
+            - task: AzureCLI@2
+              displayName: 'Get Fusion Token'
+              inputs:
+                azureSubscription: "dcd-pipeline-sp"
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
+                  FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
+                  echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
+
+            - task: Bash@3
+              displayName: 'Install fusion-framework-cli and Upload to Fusion'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Change to the frontend directory
+                  cd $(Build.SourcesDirectory)/frontend
+                  # List files in the current directory
+                  ls -la
+                  # Install fusion-framework-cli
+                  npm install -g @equinor/fusion-framework-cli
+                  # Run the npx command to upload the app
+                  npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.fusionEnvironment }}
+                  # Tag build with latest
+                  echo "fusionEnvironment: ${{ parameters.fusionEnvironment }}"
+                  echo "frontendVersion: $(frontendVersion)"
+                  npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.fusionEnvironment }} -v $(frontendVersion)
+                env:
+                  FUSION_TOKEN: $(FUSION_TOKEN)
+
+  - deployment: "Update_${{ parameters.envshortname }}_Tags"
+    environment: ${{ parameters.envfullname }}
+    strategy:
+        runOnce:
             deploy:
-              steps:
-                - checkout: self
+                steps:
+                    - task: Docker@2
+                      inputs:
+                          containerRegistry: "DCD Registry"
+                          command: "login"
+                    - template: step-tag-dockerimage.yml
+                      parameters:
+                          buildid: ${{ parameters.buildid }}
+                          envshortname: ${{ parameters.envshortname }}
+                          registry: "crdcd.azurecr.io"
+                          repository: "backend"
+                          tag: ${{ parameters.ContainerTag }}
 
-                - task: DownloadPipelineArtifact@2
-                  displayName: "Download ConceptApp Artifact"
-                  inputs:
-                    artifact: ConceptApp
+  - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+    dependsOn:
+        - Deploy_${{ parameters.envshortname }}_Frontend
+        - Update_${{ parameters.envshortname }}_Tags
+    displayName: Trigger Radix Deploy
+    cancelTimeoutInMinutes: 60
+    timeoutInMinutes: 60
+    steps:
+        - task: PowerShell@2
+          displayName: "Trigger Radix Build-Deploy"
+          inputs:
+              targetType: "inline"
+              script: |
+                  $AzureClientId = "${{ parameters.SpAzureClientId }}"
+                  $AzureTenantId = "${{ parameters.AzureTenantId }}"
+                  $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
 
-                - task: Bash@3
-                  displayName: "Extract app-manifest.json"
-                  inputs:
-                    targetType: 'inline'
-                    script: |
-                      unzip $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -d $(Pipeline.Workspace)/ConceptApp
-                      cat $(Pipeline.Workspace)/ConceptApp/app-manifest.json
+                  $url = "https://api.radix.equinor.com/api/v1/applications/dcd/pipelines/build-deploy"
+                  az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId  --allow-no-subscriptions
+                  $radixToken = az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv
 
-                - task: Bash@3
-                  displayName: "Read version from app-manifest.json"
-                  inputs:
-                    targetType: 'inline'
-                    script: |
-                      version=$(jq -r '.version' $(Pipeline.Workspace)/ConceptApp/app-manifest.json)
-                      echo "##vso[task.setvariable variable=frontendVersion]$version"
-                      echo "Frontend Version: $version"
+                  $Headers = @{"Authorization" = "Bearer $radixToken"}
 
-                - task: AzureCLI@2
-                  displayName: 'Get Fusion Token'
-                  inputs:
-                    azureSubscription: "dcd-pipeline-sp"
-                    scriptType: 'bash'
-                    scriptLocation: 'inlineScript'
-                    inlineScript: |
-                      az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
-                      FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
-                      echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
+                  $body = @'
+                  {"branch":"${{ parameters.branch }}",
+                  "triggeredBy":"${{ parameters.buildId }}-${{ parameters.branch }}"
+                  }
+                  '@
 
-                - task: Bash@3
-                  displayName: 'Install fusion-framework-cli and Upload to Fusion'
-                  inputs:
-                    targetType: 'inline'
-                    script: |
-                      # Change to the frontend directory
-                      cd $(Build.SourcesDirectory)/frontend
-                      # List files in the current directory
-                      ls -la
-                      # Install fusion-framework-cli
-                      npm install -g @equinor/fusion-framework-cli
-                      # Run the npx command to upload the app
-                      npx fusion-framework-cli app build-upload -b $(Pipeline.Workspace)/ConceptApp/conceptapp.zip -e ${{ parameters.fusionEnvironment }}
-                      # Tag build with latest
-                      echo "fusionEnvironment: ${{ parameters.fusionEnvironment }}"
-                      echo "frontendVersion: $(frontendVersion)"
-                      npx fusion-framework-cli app build-tag -t latest -e ${{ parameters.fusionEnvironment }} -v $(frontendVersion)
-                  env:
-                    FUSION_TOKEN: $(FUSION_TOKEN)
+                  $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post
+                  $pipelineName = $result.name
+                  Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
+                  Write-Host "Done. JobName:" $(radixJobName)
 
-      - deployment: "Update_${{ parameters.envshortname }}_Tags"
-        environment: ${{ parameters.envfullname }}
-        strategy:
-            runOnce:
-                deploy:
-                    steps:
-                        - task: Docker@2
-                          inputs:
-                              containerRegistry: "DCD Registry"
-                              command: "login"
-                        - template: step-tag-dockerimage.yml
-                          parameters:
-                              buildid: ${{ parameters.buildid }}
-                              envshortname: ${{ parameters.envshortname }}
-                              registry: "crdcd.azurecr.io"
-                              repository: "backend"
-                              tag: ${{ parameters.ContainerTag }}
+        - task: PowerShell@2
+          displayName: "Wait for Radix Build-Deploy job"
+          inputs:
+              targetType: "inline"
+              script: |
+                  $AzureClientId = "${{ parameters.SpAzureClientId }}"
+                  $AzureTenantId = "${{ parameters.AzureTenantId }}"
+                  $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
+                  $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
+                  az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId  --allow-no-subscriptions
+                  $radixToken = az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv
 
-      - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
-        dependsOn:
-            - Deploy_${{ parameters.envshortname }}_Frontend
-            - Update_${{ parameters.envshortname }}_Tags
-        displayName: Trigger Radix Deploy
-        cancelTimeoutInMinutes: 60
-        timeoutInMinutes: 60
-        steps:
-            - task: PowerShell@2
-              displayName: "Trigger Radix Build-Deploy"
-              inputs:
-                  targetType: "inline"
-                  script: |
-                      $AzureClientId = "${{ parameters.SpAzureClientId }}"
-                      $AzureTenantId = "${{ parameters.AzureTenantId }}"
-                      $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
+                  $Headers = @{"Authorization" = "Bearer $radixToken"}
 
-                      $url = "https://api.radix.equinor.com/api/v1/applications/dcd/pipelines/build-deploy"
-                      az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId  --allow-no-subscriptions
-                      $radixToken = az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv
+                  $TimeoutAfter = New-TimeSpan -Minutes 60
+                  $WaitBetweenPolling = New-TimeSpan -Seconds 10
 
-                      $Headers = @{"Authorization" = "Bearer $radixToken"}
+                  $Timeout = (Get-Date).Add($TimeoutAfter)
+                  $stepCounter = 0
+                  do
+                  {
+                      $result = Invoke-RestMethod -Uri $url -Headers $Headers
+                      $steps = $result.steps |  where { $_.status -eq "Succeeded" }
+                      if ($stepCounter -eq $steps.Length) {
 
-                      $body = @'
-                      {"branch":"${{ parameters.branch }}",
-                      "triggeredBy":"${{ parameters.buildId }}-${{ parameters.branch }}"
-                      }
-                      '@
-
-                      $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post
-                      $pipelineName = $result.name
-                      Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
-                      Write-Host "Done. JobName:" $(radixJobName)
-
-            - task: PowerShell@2
-              displayName: "Wait for Radix Build-Deploy job"
-              inputs:
-                  targetType: "inline"
-                  script: |
-                      $AzureClientId = "${{ parameters.SpAzureClientId }}"
-                      $AzureTenantId = "${{ parameters.AzureTenantId }}"
-                      $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
-                      $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
-                      az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId  --allow-no-subscriptions
-                      $radixToken = az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv
-
-                      $Headers = @{"Authorization" = "Bearer $radixToken"}
-
-                      $TimeoutAfter = New-TimeSpan -Minutes 60
-                      $WaitBetweenPolling = New-TimeSpan -Seconds 10
-
-                      $Timeout = (Get-Date).Add($TimeoutAfter)
-                      $stepCounter = 0
-                      do
-                      {
-                          $result = Invoke-RestMethod -Uri $url -Headers $Headers
-                          $steps = $result.steps |  where { $_.status -eq "Succeeded" }
-                          if ($stepCounter -eq $steps.Length) {
-
-                          } else {
-                              $stepCounter = $steps.Length
-                              Write-Host "Steps:" $steps.Length "of" $result.steps.length
-                          }
-                          Start-Sleep -Seconds $WaitBetweenPolling.Seconds
-
-                      }
-                      while ((($result.status -eq "Running") -or ($result.status -eq "Waiting")) -and ((Get-Date) -lt $Timeout))
-
-                      if ($result.status -eq "Succeeded")
-                      {
-                          Write-Host "Build-deploy Success"
-                          Write-Host $result
-                          [Environment]::Exit(0)
                       } else {
-                          Write-Host "Build-deploy Non-success"
-                          Write-Host $result
-                          [Environment]::Exit(1)
+                          $stepCounter = $steps.Length
+                          Write-Host "Steps:" $steps.Length "of" $result.steps.length
                       }
+                      Start-Sleep -Seconds $WaitBetweenPolling.Seconds
+
+                  }
+                  while ((($result.status -eq "Running") -or ($result.status -eq "Waiting")) -and ((Get-Date) -lt $Timeout))
+
+                  if ($result.status -eq "Succeeded")
+                  {
+                      Write-Host "Build-deploy Success"
+                      Write-Host $result
+                      [Environment]::Exit(0)
+                  } else {
+                      Write-Host "Build-deploy Non-success"
+                      Write-Host $result
+                      [Environment]::Exit(1)
