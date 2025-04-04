@@ -192,37 +192,29 @@ export function formatNumberForView(value: number | string): string {
         return "0"
     }
 
-    // For small whole numbers (1-9)
     if (Math.abs(numericValue) < 10 && Number.isInteger(numericValue)) {
         return numericValue.toString()
     }
 
     const absValue = Math.abs(numericValue)
 
-    // Check if the number has at least 3 trailing zeros by division and checking remainder
     const hasThreeTrailingZeros = (absValue % 1000) === 0
 
     // Only abbreviate numbers with at least three trailing zeros
     if (hasThreeTrailingZeros) {
-        // For billions (1B+) with trailing zeros
         if (absValue >= 1000000000) {
-            // Use standard abbreviation with B suffix
             return numericValue < 0
                 ? `-${(absValue / 1000000000)}B`
                 : `${(absValue / 1000000000)}B`
         }
 
-        // For millions (1M+) with trailing zeros
         if (absValue >= 1000000) {
-            // Use standard abbreviation with M suffix
             return numericValue < 0
                 ? `-${(absValue / 1000000)}M`
                 : `${(absValue / 1000000)}M`
         }
 
-        // For thousands (1K+) with trailing zeros
         if (absValue >= 1000) {
-            // Use standard abbreviation with K suffix
             return numericValue < 0
                 ? `-${(absValue / 1000)}K`
                 : `${(absValue / 1000)}K`
@@ -231,13 +223,11 @@ export function formatNumberForView(value: number | string): string {
 
     // For all non-abbreviated numbers, use Norwegian locale
     try {
-        // Use Norwegian locale with full precision
         return numericValue.toLocaleString("no-NO", {
             maximumFractionDigits: 20, // High value to preserve all decimal places
             minimumFractionDigits: 0,
         })
     } catch (e) {
-        // Fall back to manual formatting if toLocaleString fails
         const parts = numericValue.toString().split(".")
         const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         const decimalPart = parts.length > 1 ? parts[1] : ""

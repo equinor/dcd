@@ -26,6 +26,13 @@ export const DEFAULT_EXPLORATION_COST_YEARS: [number, number] = [2020, 2030]
 export const DEFAULT_TABLE_UTILS_YEARS: [number, number] = [2020, 2030]
 export const DEFAULT_PRODUCTION_PROFILES_YEARS: [number, number] = [2020, 2030]
 
+// Gantt chart configuration
+export const GANTT_CHART_CONFIG = {
+    MAX_VISIBLE_RANGE_YEARS: 50,
+    MIN_ALLOWED_YEAR: 2000,
+    MAX_ALLOWED_YEAR: 2150,
+}
+
 interface ProjectClassification {
     label: string,
     description: string,

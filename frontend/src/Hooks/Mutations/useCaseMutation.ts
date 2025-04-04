@@ -2,7 +2,34 @@ import { useBaseMutation } from "./useBaseMutation"
 
 import { GetCaseService } from "@/Services/CaseService"
 
-export const useCaseMutation = () => {
+export const useCaseMutation = (): {
+    updateWholeCase: (caseObject: Components.Schemas.UpdateCaseDto) => Promise<void>
+    updateFacilitiesAvailability: (newValue: number) => Promise<void>
+    updateHost: (newValue: string) => Promise<void>
+    updateInitialYearsWithoutWellInterventionCost: (newValue: number) => Promise<void>
+    updateFinalYearsWithoutWellInterventionCost: (newValue: number) => Promise<void>
+    updateProductionStrategyOverview: (newValue: number) => Promise<void>
+    updateArtificialLift: (newValue: number) => Promise<void>
+    updateProducerCount: (newValue: number) => Promise<void>
+    updateWaterInjectorCount: (newValue: number) => Promise<void>
+    updateGasInjectorCount: (newValue: number) => Promise<void>
+    updateCapexFactorFeedStudies: (newValue: number) => Promise<void>
+    updateCapexFactorFeasibilityStudies: (newValue: number) => Promise<void>
+    updateNpvOverride: (newValue: number) => Promise<void>
+    updateBreakEvenOverride: (newValue: number) => Promise<void>
+    updateDescription: (newValue: string) => Promise<void>
+    updateMilestoneDate: (dateKey: string, newDate: Date | null) => Promise<void>
+    updateName: (newValue: string) => Promise<void>
+    updateArchived: (newValue: boolean, caseId: string) => Promise<void>
+    updateCo2RemovedFromGas: (newValue: number) => Promise<void>
+    updateCo2EmissionFromFuelGas: (newValue: number) => Promise<void>
+    updateFlaredGasPerProducedVolume: (newValue: number) => Promise<void>
+    updateCo2EmissionsFromFlaredGas: (newValue: number) => Promise<void>
+    updateCo2Vented: (newValue: number) => Promise<void>
+    updateAverageDevelopmentDrillingDays: (newValue: number) => Promise<void>
+    updateDailyEmissionFromDrillingRig: (newValue: number) => Promise<void>
+    isLoading: boolean
+} => {
     const mutation = useBaseMutation({
         resourceName: "case",
         getService: GetCaseService,
@@ -10,128 +37,135 @@ export const useCaseMutation = () => {
         getResourceFromApiData: (apiData) => apiData?.case,
     })
 
-    const updateFacilitiesAvailability = (newValue: number) => mutation.mutateAsync({
+    const updateWholeCase = (caseObject: Components.Schemas.UpdateCaseDto): Promise<void> => mutation.mutateAsync({
+        updatedValue: caseObject,
+        propertyKey: "_fullUpdate",
+        isFullUpdate: true,
+    })
+
+    const updateFacilitiesAvailability = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "facilitiesAvailability",
     })
 
-    const updateHost = (newValue: string) => mutation.mutateAsync({
+    const updateHost = (newValue: string): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "host",
     })
 
-    const updateInitialYearsWithoutWellInterventionCost = (newValue: number) => mutation.mutateAsync({
+    const updateInitialYearsWithoutWellInterventionCost = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "initialYearsWithoutWellInterventionCost",
     })
 
-    const updateFinalYearsWithoutWellInterventionCost = (newValue: number) => mutation.mutateAsync({
+    const updateFinalYearsWithoutWellInterventionCost = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "finalYearsWithoutWellInterventionCost",
     })
 
-    const updateProductionStrategyOverview = (newValue: number) => mutation.mutateAsync({
+    const updateProductionStrategyOverview = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "productionStrategyOverview",
     })
 
-    const updateArtificialLift = (newValue: number) => mutation.mutateAsync({
+    const updateArtificialLift = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "artificialLift",
     })
 
-    const updateProducerCount = (newValue: number) => mutation.mutateAsync({
+    const updateProducerCount = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "producerCount",
     })
 
-    const updateWaterInjectorCount = (newValue: number) => mutation.mutateAsync({
+    const updateWaterInjectorCount = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "waterInjectorCount",
     })
 
-    const updateGasInjectorCount = (newValue: number) => mutation.mutateAsync({
+    const updateGasInjectorCount = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "gasInjectorCount",
     })
 
-    const updateCapexFactorFeedStudies = (newValue: number) => mutation.mutateAsync({
+    const updateCapexFactorFeedStudies = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "capexFactorFeedStudies",
     })
 
-    const updateCapexFactorFeasibilityStudies = (newValue: number) => mutation.mutateAsync({
+    const updateCapexFactorFeasibilityStudies = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "capexFactorFeasibilityStudies",
     })
 
-    const updateNpvOverride = (newValue: number) => mutation.mutateAsync({
+    const updateNpvOverride = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "npvOverride",
     })
 
-    const updateBreakEvenOverride = (newValue: number) => mutation.mutateAsync({
+    const updateBreakEvenOverride = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "breakEvenOverride",
     })
 
-    const updateDescription = (newValue: string) => mutation.mutateAsync({
+    const updateDescription = (newValue: string): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "description",
     })
 
-    const updateMilestoneDate = (dateKey: string, newDate: Date | null) => mutation.mutateAsync({
+    const updateMilestoneDate = (dateKey: string, newDate: Date | null): Promise<void> => mutation.mutateAsync({
         updatedValue: newDate ? newDate.toISOString() : null,
         propertyKey: dateKey,
     })
 
-    const updateName = (newValue: string) => mutation.mutateAsync({
+    const updateName = (newValue: string): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "name",
     })
 
-    const updateArchived = (newValue: boolean, caseId: string) => mutation.mutateAsync({
+    const updateArchived = (newValue: boolean, caseId: string): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "archived",
         localCaseId: caseId,
     })
 
-    const updateCo2RemovedFromGas = (newValue: number) => mutation.mutateAsync({
+    const updateCo2RemovedFromGas = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "co2RemovedFromGas",
     })
 
-    const updateCo2EmissionFromFuelGas = (newValue: number) => mutation.mutateAsync({
+    const updateCo2EmissionFromFuelGas = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "co2EmissionFromFuelGas",
     })
 
-    const updateFlaredGasPerProducedVolume = (newValue: number) => mutation.mutateAsync({
+    const updateFlaredGasPerProducedVolume = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "flaredGasPerProducedVolume",
     })
 
-    const updateCo2EmissionsFromFlaredGas = (newValue: number) => mutation.mutateAsync({
+    const updateCo2EmissionsFromFlaredGas = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "co2EmissionsFromFlaredGas",
     })
 
-    const updateCo2Vented = (newValue: number) => mutation.mutateAsync({
+    const updateCo2Vented = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "co2Vented",
     })
 
-    const updateAverageDevelopmentDrillingDays = (newValue: number) => mutation.mutateAsync({
+    const updateAverageDevelopmentDrillingDays = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "averageDevelopmentDrillingDays",
     })
 
-    const updateDailyEmissionFromDrillingRig = (newValue: number) => mutation.mutateAsync({
+    const updateDailyEmissionFromDrillingRig = (newValue: number): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "dailyEmissionFromDrillingRig",
     })
 
     return {
+        updateWholeCase,
         updateFacilitiesAvailability,
         updateHost,
         updateInitialYearsWithoutWellInterventionCost,

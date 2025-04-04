@@ -12,8 +12,9 @@ import React, {
 import DeleteWellInUseModal from "@/Components/Modal/deleteWellInUseModal"
 import SecondaryTableHeader from "@/Components/Tables/Components/SecondaryTableHeader"
 import { TableWell } from "@/Models/Interfaces"
-import { Currency, WellCategory } from "@/Models/enums"
+import { WellCategory } from "@/Models/enums"
 import { GetWellService } from "@/Services/WellService"
+import { formatCurrencyUnit } from "@/Utils/FormatingUtils"
 import { cellStyleRightAlign, getCustomContextMenuItems } from "@/Utils/TableUtils"
 
 interface WellsTableProps {
@@ -146,18 +147,12 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 },
                 {
                     field: "wellCost",
-                    headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                        ? "mill NOK"
-                        : "mill USD"
-                    })`,
+                    headerName: `Cost (${formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency)})`,
                     flex: 1,
                     headerComponent: SecondaryTableHeader,
                     headerComponentParams: {
                         columnHeader: "Cost",
-                        unit:
-                            revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                                ? "mill NOK"
-                                : "mill USD",
+                        unit: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency),
                     },
                     cellStyle: cellStyleRightAlign,
                     editable: editMode && !isEditDisabled,
@@ -177,18 +172,12 @@ const WellsTable: React.FC<WellsTableProps> = ({
                 const additionalColumns: ColDef[] = [
                     {
                         field: "wellInterventionCost",
-                        headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                            ? "mill NOK"
-                            : "mill USD"
-                        })`,
+                        headerName: `Cost (${formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency)})`,
                         flex: 2,
                         headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Well intervention cost",
-                            unit:
-                                revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                                    ? "mill NOK"
-                                    : "mill USD",
+                            unit: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency),
                         },
                         cellStyle: cellStyleRightAlign,
                         editable: editMode && !isEditDisabled,
@@ -196,18 +185,12 @@ const WellsTable: React.FC<WellsTableProps> = ({
                     },
                     {
                         field: "plugingAndAbandonmentCost",
-                        headerName: `Cost (${revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                            ? "mill NOK"
-                            : "mill USD"
-                        })`,
+                        headerName: `Cost (${formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency)})`,
                         flex: 2,
                         headerComponent: SecondaryTableHeader,
                         headerComponentParams: {
                             columnHeader: "Pluging and abandonment cost",
-                            unit:
-                                revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok
-                                    ? "mill NOK"
-                                    : "mill USD",
+                            unit: formatCurrencyUnit(revisionAndProjectData?.commonProjectAndRevisionData.currency),
                         },
                         cellStyle: cellStyleRightAlign,
                         editable: editMode && !isEditDisabled,

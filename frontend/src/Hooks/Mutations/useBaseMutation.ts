@@ -9,6 +9,7 @@ export interface MutationParams<T = any> {
   updatedValue: T;
   propertyKey: string;
   localCaseId?: string;
+  isFullUpdate?: boolean;
   [key: string]: any; // Allow additional custom parameters
 }
 
@@ -78,9 +79,15 @@ export const useBaseMutation = <T = any, R = any>({
                     throw new Error(`${resourceName} not found`)
                 }
 
-                const updatedResource = {
-                    ...resource,
-                    [params.propertyKey]: params.updatedValue,
+                let updatedResource
+
+                if (params.isFullUpdate) {
+                    updatedResource = params.updatedValue
+                } else {
+                    updatedResource = {
+                        ...resource,
+                        [params.propertyKey]: params.updatedValue,
+                    }
                 }
 
                 let result
