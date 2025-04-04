@@ -19,11 +19,7 @@ variables:
 stages:
   - template: templates/stage-build-fusion.yml
     parameters:
-      workSpace: $(Pipeline.Workspace)
-      buildId: $(Build.BuildId)
       azAppConfig: $(azureAppConfigConnString)
-      sourcesDirectory: $(Build.SourcesDirectory)
-      name: "DCD"
 
   - stage: Deploy_CI
     variables:
