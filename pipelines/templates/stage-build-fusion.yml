@@ -1,6 +1,3 @@
-parameters:
-  - name: azAppConfig
-
 stages:
   - stage: "DCD"
     displayName: "Build App"
@@ -43,7 +40,6 @@ stages:
         steps:
           - template: step-dockerbuild.yml
             parameters:
-              azAppConfig: ${{ parameters.azAppConfig }}
               buildId: $(Build.BuildId)
               sourcesDirectory: $(Build.SourcesDirectory)
               appName: "backend"
