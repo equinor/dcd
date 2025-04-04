@@ -1,5 +1,6 @@
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Helpers;
 
@@ -72,7 +73,10 @@ public static class EconomicsHelper
     {
         return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(income, totalCost);
     }
-
+    /// <summary>production * price</summary>
+    /// <param name="totalGasProduction"> production in m3 </param>
+    /// <param name="gasPriceNok"> price per m3 </param>
+    /// <returns>Values in Nok</returns>
     public static TimeSeries CalculateTotalGasIncome(TimeSeries totalGasProduction, double gasPriceNok)
     {
         return new TimeSeries(
@@ -81,5 +85,18 @@ public static class EconomicsHelper
                 .Select((value) => value * gasPriceNok)
                 .ToArray()
             );
+    }
+    /// <summary>production * price</summary>
+    /// <param name="totalOilProduction"> production in m3 </param>
+    /// <param name="oilPriceUsd"> price per barrel </param>
+    /// <returns>Values in USD</returns>
+    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, double oilPriceUsd)
+    {
+        return new TimeSeries(
+            totalOilProduction.StartYear,
+            totalOilProduction.Values
+                .Select((value) => value * BarrelsPerCubicMeter * oilPriceUsd)
+                .ToArray()
+        );
     }
 }

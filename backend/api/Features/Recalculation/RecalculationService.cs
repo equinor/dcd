@@ -64,5 +64,7 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         CondensateProductionProfileService.RunCalculation(caseItem);
         TotalExportedVolumesProfileService.RunCalculation(caseItem);
         CalculatedDiscountedCashflowService.RunCalculation(caseItem);
+        CalculateTotalOilIncomeService.RunCalculation(caseItem);
+        CalculateTotalGasIncomeService.RunCalculation(caseItem);
     }
 }

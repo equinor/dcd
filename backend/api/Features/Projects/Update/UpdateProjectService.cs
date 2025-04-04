@@ -64,7 +64,6 @@ public class UpdateProjectService(DcdDbContext context, CurrentUser? currentUser
                || Math.Abs(existingProject.GasPriceNok - projectDto.GasPriceNok) > tolerance
                || Math.Abs(existingProject.NglPriceUsd - projectDto.NglPriceUsd) > tolerance
                || Math.Abs(existingProject.OilPriceUsd - projectDto.OilPriceUsd) > tolerance
-               || existingProject.NpvYear != projectDto.NpvYear
-               || existingProject.Currency != projectDto.Currency;
+               || existingProject.NpvYear != projectDto.NpvYear;
     }
 }
