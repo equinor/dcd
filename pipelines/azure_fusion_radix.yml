@@ -15,7 +15,6 @@ pr: none
 
 variables:
   - group: DCD
-  - group: DCD-KeyVault
 
 stages:
   - template: templates/stage-build-fusion.yml
@@ -36,7 +35,6 @@ stages:
             envshortname: ci
             envfullname: CI
             FusionEnvId: $(FusionAppId)
-            buildId: $(Build.BuildId)
             SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)
@@ -54,7 +52,6 @@ stages:
             envshortname: qa
             envfullname: QA
             FusionEnvId: $(FusionAppIdQA)
-            buildId: $(Build.BuildId)
             SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)
@@ -72,7 +69,6 @@ stages:
             envshortname: prod
             envfullname: Production
             FusionEnvId: $(FusionAppIdFPRD)
-            buildId: $(Build.BuildId)
             SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)

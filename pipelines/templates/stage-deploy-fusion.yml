@@ -3,7 +3,6 @@ parameters:
   - name: envshortname
   - name: envfullname
   - name: FusionEnvId
-  - name: buildId
   - name: SpAzureClientId
   - name: SpAzureClientSecret
   - name: AzureTenantId
@@ -104,7 +103,7 @@ jobs:
                           command: "login"
                     - template: step-tag-dockerimage.yml
                       parameters:
-                          buildid: ${{ parameters.buildid }}
+                          buildid: $(Build.BuildId)
                           envshortname: ${{ parameters.envshortname }}
                           registry: "crdcd.azurecr.io"
                           repository: "backend"
@@ -135,7 +134,7 @@ jobs:
 
                   $body = @'
                   {"branch":"main",
-                  "triggeredBy":"${{ parameters.buildId }}-main"
+                  "triggeredBy":"$(Build.BuildId)-main"
                   }
                   '@
 
