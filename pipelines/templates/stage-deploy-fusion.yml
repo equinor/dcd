@@ -5,15 +5,12 @@ parameters:
   - name: FusionEnvId
   - name: buildId
   - name: branch
+  - name: SpAzureClientId
   - name: SpAzureClientSecret
   - name: AzureTenantId
   - name: ResourceGroupName
   - name: SqlAdminPassword
   - name: ClientSecret
-
-variables:
-  - group: DCD
-  - group: DCD-KeyVault
 
 jobs:
   - job: Deploy_Bicep
@@ -72,7 +69,7 @@ jobs:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az login --service-principal -u $(SpPreProdAzureClientId) -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
+                  az login --service-principal -u ${{ parameters.SpAzureClientId }} -p ${{ parameters.SpAzureClientSecret }} --tenant ${{ parameters.AzureTenantId }} --allow-no-subscriptions
                   FUSION_TOKEN=$(az account get-access-token --resource ${{ parameters.FusionEnvId }} --query accessToken -o tsv)
                   echo "##vso[task.setvariable variable=FUSION_TOKEN]$FUSION_TOKEN"
 
@@ -127,7 +124,7 @@ jobs:
           inputs:
               targetType: "inline"
               script: |
-                  $AzureClientId = "$(SpPreProdAzureClientId)"
+                  $AzureClientId = "${{ parameters.SpAzureClientId }}"
                   $AzureTenantId = "${{ parameters.AzureTenantId }}"
                   $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
 
@@ -153,7 +150,7 @@ jobs:
           inputs:
               targetType: "inline"
               script: |
-                  $AzureClientId = "$(SpPreProdAzureClientId)"
+                  $AzureClientId = "${{ parameters.SpAzureClientId }}"
                   $AzureTenantId = "${{ parameters.AzureTenantId }}"
                   $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
                   $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'

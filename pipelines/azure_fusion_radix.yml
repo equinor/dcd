@@ -38,6 +38,7 @@ stages:
             FusionEnvId: $(FusionAppId)
             buildId: $(Build.BuildId)
             branch: main
+            SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)
             ResourceGroupName: "rg-fapps-dcd-preprod"
@@ -56,6 +57,7 @@ stages:
             FusionEnvId: $(FusionAppIdQA)
             buildId: $(Build.BuildId)
             branch: main
+            SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)
             ResourceGroupName: "rg-fapps-dcd-preprod"
@@ -74,6 +76,7 @@ stages:
             FusionEnvId: $(FusionAppIdFPRD)
             buildId: $(Build.BuildId)
             branch: main
+            SpAzureClientId: $(SpPreProdAzureClientId)
             SpAzureClientSecret: $(SpPreProdAzureClientSecret)
             AzureTenantId: $(SpAzureTenantId)
             ResourceGroupName: "rg-fapps-dcd-prod"
