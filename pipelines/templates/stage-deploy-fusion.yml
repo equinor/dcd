@@ -157,7 +157,7 @@ jobs:
                   $AzureTenantId = "${{ parameters.AzureTenantId }}"
                   $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
                   $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
-                  az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId  --allow-no-subscriptions
+                  az login --service-principal -u $AzureClientId -p $AzureClientSecret --tenant $AzureTenantId --allow-no-subscriptions
                   $radixToken = az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv
 
                   $Headers = @{"Authorization" = "Bearer $radixToken"}
@@ -167,23 +167,17 @@ jobs:
 
                   $Timeout = (Get-Date).Add($TimeoutAfter)
                   $stepCounter = 0
-                  do
-                  {
+                  do {
                       $result = Invoke-RestMethod -Uri $url -Headers $Headers
-                      $steps = $result.steps |  where { $_.status -eq "Succeeded" }
-                      if ($stepCounter -eq $steps.Length) {
-
-                      } else {
+                      $steps = $result.steps | where { $_.status -eq "Succeeded" }
+                      if ($stepCounter -ne $steps.Length) {
                           $stepCounter = $steps.Length
                           Write-Host "Steps:" $steps.Length "of" $result.steps.length
                       }
                       Start-Sleep -Seconds $WaitBetweenPolling.Seconds
+                  } while ((($result.status -eq "Running") -or ($result.status -eq "Waiting")) -and ((Get-Date) -lt $Timeout))
 
-                  }
-                  while ((($result.status -eq "Running") -or ($result.status -eq "Waiting")) -and ((Get-Date) -lt $Timeout))
-
-                  if ($result.status -eq "Succeeded")
-                  {
+                  if ($result.status -eq "Succeeded") {
                       Write-Host "Build-deploy Success"
                       Write-Host $result
                       [Environment]::Exit(0)
@@ -191,3 +185,4 @@ jobs:
                       Write-Host "Build-deploy Non-success"
                       Write-Host $result
                       [Environment]::Exit(1)
+                  }
