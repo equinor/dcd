@@ -120,8 +120,9 @@ public static class ProfileTypes
     public const string NetSalesGas = "NetSalesGas";
     public const string NetSalesGasOverride = "NetSalesGasOverride";
 
-    /// <summary>bbl</summary>
+    /// <summary>BoE</summary>
     public const string TotalExportedVolumes = "TotalExportedVolumes";
+
     public const string TotalExportedVolumesOverride = "TotalExportedVolumesOverride";
 
     public const string Co2Emissions = "Co2Emissions";
