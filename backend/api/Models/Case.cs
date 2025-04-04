@@ -41,9 +41,13 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public double CapexFactorFeedStudies { get; set; }
     public double InitialYearsWithoutWellInterventionCost { get; set; }
     public double FinalYearsWithoutWellInterventionCost { get; set; }
+    /// <summary> million USD </summary>
     public double Npv { get; set; }
+    /// <summary> million USD </summary>
     public double? NpvOverride { get; set; }
+    /// <summary> USD/bbl </summary>
     public double BreakEven { get; set; }
+    /// <summary> USD/bbl </summary>
     public double? BreakEvenOverride { get; set; }
 
     public double Co2RemovedFromGas { get; set; }

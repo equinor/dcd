@@ -1,10 +1,10 @@
-using api.Features.Cases.Recalculation.RevenuesAndCashflow;
 using api.Features.Profiles;
+using api.Features.Recalculation.RevenuesAndCashflow;
 using api.Models;
 
 using Xunit;
 
-using static api.Features.Profiles.VolumeConstants;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace tests.Features.Cases.Recalculation.Calculators;
 

@@ -1,6 +1,6 @@
 using api.Models.Enums;
 
-using static api.Features.Profiles.VolumeConstants;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Profiles;
 

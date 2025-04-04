@@ -1,5 +1,5 @@
-using api.Features.Cases.Recalculation.BreakEven;
 using api.Features.Profiles;
+using api.Features.Recalculation.BreakEven;
 using api.Models;
 
 using Xunit;

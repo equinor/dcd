@@ -1,5 +1,5 @@
-using api.Features.Cases.Recalculation.Cost;
 using api.Features.Profiles;
+using api.Features.Recalculation.Cost;
 using api.Models;
 
 using Xunit;

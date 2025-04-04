@@ -37,9 +37,9 @@ public static class ProfileTypes
 
     public const string CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService";
 
-    public const string CalculatedTotalOilIncomeCostProfileUsd = "CalculatedTotalOilIncomeCostProfileUsd";
+    public const string CalculatedTotalOilIncomeCostProfile = "CalculatedTotalOilIncomeCostProfile";
 
-    public const string CalculatedTotalGasIncomeCostProfileUsd = "CalculatedTotalGasIncomeCostProfileUsd";
+    public const string CalculatedTotalGasIncomeCostProfile = "CalculatedTotalGasIncomeCostProfile";
 
     /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";

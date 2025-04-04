@@ -1,5 +1,5 @@
 using api.Context;
-using api.Features.Cases.Recalculation;
+using api.Features.Recalculation;
 using api.Models.Infrastructure.ProjectRecalculation;
 
 using Microsoft.EntityFrameworkCore;

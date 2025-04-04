@@ -3,7 +3,7 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 
-using static api.Features.Profiles.VolumeConstants;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Cases.CaseComparison;
 

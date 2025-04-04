@@ -1,5 +1,5 @@
-using api.Features.Cases.Recalculation.Co2;
 using api.Features.Profiles;
+using api.Features.Recalculation.Co2;
 using api.Models;
 
 using Xunit;

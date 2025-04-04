@@ -1,5 +1,5 @@
 using api.AppInfrastructure.Authorization;
-using api.Features.Cases.Recalculation;
+using api.Features.Recalculation;
 using api.Models;
 using api.Models.Infrastructure;
 using api.Models.Infrastructure.BackgroundJobs;
