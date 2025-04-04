@@ -4,7 +4,6 @@ parameters:
   - name: envfullname
   - name: FusionEnvId
   - name: buildId
-  - name: branch
   - name: SpAzureClientId
   - name: SpAzureClientSecret
   - name: AzureTenantId
@@ -135,8 +134,8 @@ jobs:
                   $Headers = @{"Authorization" = "Bearer $radixToken"}
 
                   $body = @'
-                  {"branch":"${{ parameters.branch }}",
-                  "triggeredBy":"${{ parameters.buildId }}-${{ parameters.branch }}"
+                  {"branch":"main",
+                  "triggeredBy":"${{ parameters.buildId }}-main"
                   }
                   '@
 
