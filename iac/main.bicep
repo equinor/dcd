@@ -1,3 +1,12 @@
+/*
+    In the case of disaster recovery, this script needs to be run manually
+    az deployment group create \
+        --resource-group ${{ parameters.ResourceGroupName }} \
+        --template-file iac/main.bicep \
+        --parameters environmentName=${{ parameters.fusionEnvironment }} \
+                    sqlAdminPassword=${{ parameters.SqlAdminPassword }} \
+                    clientSecret=${{ parameters.ClientSecret }}
+*/
 @allowed(['ci', 'qa', 'prod'])
 param environmentName string
 param location string = 'norwayeast'

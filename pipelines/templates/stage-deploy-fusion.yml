@@ -39,7 +39,6 @@ stages:
                                 clientSecret=${{ parameters.ClientSecret }}
 
       - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
-        dependsOn: Deploy_Bicep
         environment: ${{ parameters.envfullname }}
         strategy:
           runOnce:
@@ -101,7 +100,6 @@ stages:
                     FUSION_TOKEN: $(FUSION_TOKEN)
 
       - deployment: "Update_${{ parameters.envshortname }}_Tags"
-        dependsOn: Deploy_Bicep
         environment: ${{ parameters.envfullname }}
         strategy:
             runOnce:
