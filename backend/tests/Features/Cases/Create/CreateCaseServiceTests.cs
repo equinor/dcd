@@ -7,17 +7,17 @@ namespace tests.Features.Cases.Create;
 public class CreateCaseServiceTests
 {
     [Fact]
-    public void DgDates__ShouldBeCalculatedFrom2030__WhenDtoDateIsDateTimeMinValue()
+    public void DgDates__ShouldBeCalculatedFromProvidedDate__WhenDtoDateIsCloseToMinDate()
     {
-        var dg4DateFromDto = DateTime.MinValue;
+        var dg4DateFromDto = new DateTime(2001, 1, 1);
 
         var dgDates = CreateCaseService.CalculateDgDates(dg4DateFromDto);
 
-        Assert.Equal(new DateTime(2030, 1, 1), dgDates.dg4);
-        Assert.Equal(new DateTime(2027, 1, 1), dgDates.dg3);
-        Assert.Equal(new DateTime(2026, 1, 1), dgDates.dg2);
-        Assert.Equal(new DateTime(2025, 1, 1), dgDates.dg1);
-        Assert.Equal(new DateTime(2024, 1, 1), dgDates.dg0);
+        Assert.Equal(new DateTime(2001, 1, 1), dgDates.dg4);
+        Assert.Null(dgDates.dg3);
+        Assert.Null(dgDates.dg2);
+        Assert.Null(dgDates.dg1);
+        Assert.Null(dgDates.dg0);
     }
 
     [Fact]

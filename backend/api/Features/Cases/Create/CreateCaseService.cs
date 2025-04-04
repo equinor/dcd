@@ -1,5 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Cases.Update;
 using api.Features.Profiles;
 using api.Models;
 using api.Models.Enums;
@@ -230,9 +231,12 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-    public static (DateTime dg4, DateTime dg3, DateTime dg2, DateTime dg1, DateTime dg0) CalculateDgDates(DateTime dg4DateFromDto)
+    public static (DateTime dg4, DateTime? dg3, DateTime? dg2, DateTime? dg1, DateTime? dg0) CalculateDgDates(DateTime dg4date)
     {
-        var dg4date = dg4DateFromDto == DateTime.MinValue ? new DateTime(2030, 1, 1) : new DateTime(dg4DateFromDto.Year, dg4DateFromDto.Month, 1);
+        if (dg4date <= UpdateCaseDtoValidator.MinAllowedDgDate.AddMonths(72))
+        {
+            return (dg4date, null, null, null, null);
+        }
 
         var dg3Date = dg4date.AddMonths(-36);
         var dg2Date = dg3Date.AddMonths(-12);
