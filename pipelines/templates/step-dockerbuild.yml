@@ -2,7 +2,6 @@ parameters:
   - name: buildId
   - name: sourcesDirectory
   - name: appName
-  - name: azAppConfig
 
 steps:
   - script: |
