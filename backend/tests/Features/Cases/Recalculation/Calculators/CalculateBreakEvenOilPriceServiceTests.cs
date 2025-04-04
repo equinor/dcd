@@ -1,4 +1,4 @@
-using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
+using api.Features.Cases.Recalculation.BreakEven;
 using api.Features.Profiles;
 using api.Models;
 

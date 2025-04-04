@@ -1,23 +1,9 @@
 using api.Context;
-using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
-using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
-using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
-using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
-using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
-using api.Features.Cases.Recalculation.Types.CalculateDiscountedCashflowProfile;
-using api.Features.Cases.Recalculation.Types.CessationCostProfile;
-using api.Features.Cases.Recalculation.Types.Co2EmissionsProfile;
-using api.Features.Cases.Recalculation.Types.CondensateProduction;
-using api.Features.Cases.Recalculation.Types.FuelFlaringLossesProfile;
-using api.Features.Cases.Recalculation.Types.GenerateGAndGAdminCostProfile;
-using api.Features.Cases.Recalculation.Types.ImportedElectricityProfile;
-using api.Features.Cases.Recalculation.Types.NetSaleGasProfile;
-using api.Features.Cases.Recalculation.Types.OpexCostProfile;
-using api.Features.Cases.Recalculation.Types.ProductionProfileNgl;
-using api.Features.Cases.Recalculation.Types.RigCostProfile;
-using api.Features.Cases.Recalculation.Types.StudyCostProfile;
-using api.Features.Cases.Recalculation.Types.TotalProductionVolume;
-using api.Features.Cases.Recalculation.Types.WellCostProfile;
+using api.Features.Cases.Recalculation.BreakEven;
+using api.Features.Cases.Recalculation.Co2;
+using api.Features.Cases.Recalculation.Cost;
+using api.Features.Cases.Recalculation.Production;
+using api.Features.Cases.Recalculation.RevenuesAndCashflow;
 
 using Microsoft.EntityFrameworkCore;
 

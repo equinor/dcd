@@ -1,4 +1,4 @@
-using api.Features.Cases.Recalculation.Calculators.GenerateCo2Intensity;
+using api.Features.Cases.Recalculation.Co2;
 using api.Features.Profiles;
 using api.Models;
 

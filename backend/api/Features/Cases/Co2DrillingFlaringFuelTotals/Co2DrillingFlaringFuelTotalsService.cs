@@ -1,7 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Cases.Recalculation.Types.Helpers;
+using api.Features.Cases.Recalculation.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;

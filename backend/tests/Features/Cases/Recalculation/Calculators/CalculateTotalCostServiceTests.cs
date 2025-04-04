@@ -1,4 +1,4 @@
-using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Cases.Recalculation.Cost;
 using api.Features.Profiles;
 using api.Models;
 

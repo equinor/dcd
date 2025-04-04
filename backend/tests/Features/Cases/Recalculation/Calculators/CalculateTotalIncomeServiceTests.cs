@@ -1,4 +1,4 @@
-using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.RevenuesAndCashflow;
 using api.Features.Profiles;
 using api.Models;
 

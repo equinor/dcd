@@ -1,4 +1,4 @@
-using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Cost;
 using api.Features.Profiles;
 using api.Models;
 using api.Models.Enums;
