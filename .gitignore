@@ -51,4 +51,5 @@ backend/*.DotSettings.user
 /playwright/.cache/
 tests/auth.json
 
+#iac
 /iac/parameters.json
