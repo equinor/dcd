@@ -33,7 +33,7 @@ public class CalculateBreakEvenOilPriceServiceTests
             [
                 new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfileUsd,
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = -3,
                     Values = [63.112300000000005, 2.4, 68.1772, 112.5595, 181.9396, 15.2671, 3, 4, 4, 4, 4, 4, 3, 3, 3, 7, 9, 2]
                 },

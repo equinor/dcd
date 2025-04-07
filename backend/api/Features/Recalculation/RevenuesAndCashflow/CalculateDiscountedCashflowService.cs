@@ -12,7 +12,7 @@ public static class CalculatedDiscountedCashflowService
     {
         var discountRate = caseItem.Project.DiscountRate;
 
-        var totalCost = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        var totalCost = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
 
         if (caseItem.Project.Currency == Models.Enums.Currency.Nok && totalCost != null)
         {
@@ -38,7 +38,7 @@ public static class CalculatedDiscountedCashflowService
             new TimeSeries { StartYear = discountedGasRevenue.StartYear, Values = discountedGasRevenue.Values }
         ).Values;
 
-        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedDiscountedCashflowService);
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedDiscountedCashflow);
         profile.Values = calculateDiscountedCashflow;
         profile.StartYear = Math.Min(discountedTotalCost.StartYear, Math.Min(discountedLiquidsRevenue.StartYear, discountedGasRevenue.StartYear));
     }

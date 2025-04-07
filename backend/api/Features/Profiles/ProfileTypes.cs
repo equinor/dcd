@@ -15,10 +15,14 @@ public static class ProfileTypes
     public const string OffshoreFacilitiesOperationsCostProfile = "OffshoreFacilitiesOperationsCostProfile";
     public const string OffshoreFacilitiesOperationsCostProfileOverride = "OffshoreFacilitiesOperationsCostProfileOverride";
 
+    /// <summary> Mega </summary>
     public const string TotalFeasibilityAndConceptStudies = "TotalFeasibilityAndConceptStudies";
+    /// <summary> Mega </summary>
     public const string TotalFeasibilityAndConceptStudiesOverride = "TotalFeasibilityAndConceptStudiesOverride";
 
+    /// <summary> Mega </summary>
     public const string TotalFeedStudies = "TotalFeedStudies";
+    /// <summary> Mega </summary>
     public const string TotalFeedStudiesOverride = "TotalFeedStudiesOverride";
 
     public const string CessationOnshoreFacilitiesCostProfile = "CessationOnshoreFacilitiesCostProfile";
@@ -29,17 +33,21 @@ public static class ProfileTypes
 
     public const string AdditionalOpexCostProfile = "AdditionalOpexCostProfile";
 
+    /// <summary> Mega </summary>
     public const string TotalOtherStudiesCostProfile = "TotalOtherStudiesCostProfile";
 
-    public const string CalculatedTotalIncomeCostProfileUsd = "CalculatedTotalIncomeCostProfileUsd";
+    public const string CalculatedTotalIncomeCostProfile = "CalculatedTotalIncomeCostProfile";
 
-    public const string CalculatedTotalCostCostProfileUsd = "CalculatedTotalCostCostProfileUsd";
+    /// <summary> Mega </summary>
+    public const string CalculatedTotalCostCostProfile = "CalculatedTotalCostCostProfile";
 
-    public const string CalculatedDiscountedCashflowService = "CalculatedDiscountedCashflowService";
+    public const string CalculatedTotalCashflow = "CalculatedTotalCashflow";
 
-    public const string CalculatedTotalOilIncomeCostProfileUsd = "CalculatedTotalOilIncomeCostProfileusd";
+    public const string CalculatedDiscountedCashflow = "CalculatedDiscountedCashflow";
 
-    public const string CalculatedTotalGasIncomeCostProfileNok = "CalculatedTotalGasIncomeCostProfileNok";
+    public const string CalculatedTotalOilIncomeCostProfile = "CalculatedTotalOilIncomeCostProfile";
+
+    public const string CalculatedTotalGasIncomeCostProfile = "CalculatedTotalGasIncomeCostProfile";
 
     /* Topside profiles */
     public const string TopsideCostProfile = "TopsideCostProfile";

@@ -70,7 +70,7 @@ public class CalculateTotalIncomeServiceTests
         var expectedSecondYearIncome = (4 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 4 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUsdToNok;
         var expectedThirdYearIncome = (3 * 1000000.0 * 75 * BarrelsPerCubicMeter * 10 + 3 * 1000000000.0 * 3) / 1000000 / caseItem.Project.ExchangeRateUsdToNok;
 
-        var calculatedTotalIncomeCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfileUsd);
+        var calculatedTotalIncomeCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile);
         Assert.NotNull(calculatedTotalIncomeCostProfileUsd);
         Assert.Equal(2020, calculatedTotalIncomeCostProfileUsd.StartYear);
         Assert.Equal(3, calculatedTotalIncomeCostProfileUsd.Values.Length);

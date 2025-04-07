@@ -177,7 +177,7 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.RunCalculation(caseItem);
 
         // Assert
-        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
         Assert.NotNull(calculatedTotalCostCostProfileUsd);
         Assert.Equal(2020, calculatedTotalCostCostProfileUsd.StartYear);
         Assert.Equal(3, calculatedTotalCostCostProfileUsd.Values.Length);

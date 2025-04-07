@@ -10,9 +10,11 @@ public static class CalculateTotalOilIncomeService
     {
         var oilProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);
         var oilPriceUsd = caseItem.Project.OilPriceUsd;
+        var usdToNok = caseItem.Project.ExchangeRateUsdToNok;
+        var currency = caseItem.Project.Currency;
 
-        var totalOilIncome = EconomicsHelper.CalculateTotalOilIncome(oilProduction, oilPriceUsd);
-        var oilIncomeProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalOilIncomeCostProfileUsd);
+        var totalOilIncome = EconomicsHelper.CalculateTotalOilIncome(oilProduction, oilPriceUsd, usdToNok, currency);
+        var oilIncomeProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalOilIncomeCostProfile);
 
         oilIncomeProfile.StartYear = totalOilIncome.StartYear;
         oilIncomeProfile.Values = totalOilIncome.Values;

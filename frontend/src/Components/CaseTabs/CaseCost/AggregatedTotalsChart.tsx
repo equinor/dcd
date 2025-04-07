@@ -152,49 +152,12 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }, [apiData, tableYears, revisionAndProjectData])
 
     const dg4Year = getYearFromDateString(apiData.case.dg4Date)
-    const incomeProfile = apiData.calculatedTotalIncomeCostProfileUsd
-    const costProfile = apiData.calculatedTotalCostCostProfileUsd
+    const cashflowProfile = apiData.calculatedTotalCashflow
     const discountedCashflowData = apiData.calculatedDiscountedCashflowService
-    let minYear = dg4Year
-    let maxYear = dg4Year
 
-    if (incomeProfile && costProfile) {
-        minYear = Math.min(incomeProfile.startYear, costProfile.startYear)
-        maxYear = Math.max(
-            incomeProfile.startYear + incomeProfile.values.length,
-            costProfile.startYear + costProfile.values.length,
-        )
-    }
-
-    const yearRange = Array.from({ length: maxYear - minYear }, (_, i) => minYear + i)
-
-    const cashFlowData: ITimeSeries = {
-        startYear: minYear,
-        values: yearRange.map((year) => {
-            const incomeIndex = year - incomeProfile.startYear
-            const costIndex = year - costProfile.startYear
-            const income = incomeIndex >= 0 && incomeIndex < incomeProfile.values.length
-                ? incomeProfile.values[incomeIndex]
-                : 0
-            const cost = costIndex >= 0 && costIndex < costProfile.values.length
-                ? costProfile.values[costIndex]
-                : 0
-
-            const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
-
-            return income * exchangeRateUsdToNok - cost
-        }),
-    }
-
-    const cashFlow = {
-        startYear: minYear,
-        values: (cashFlowData?.values || []).map((v) => v) ?? [],
-    }
-    const totalIncomeData = apiData.calculatedTotalIncomeCostProfileUsd
-
-    const cashflow = {
-        startYear: Math.min(totalIncomeData?.startYear, costProfile?.startYear) + dg4Year,
-        values: (cashFlowData?.values || []).map((v) => v) ?? [],
+    const cashFlow: ITimeSeries = {
+        startYear: cashflowProfile.startYear,
+        values: cashflowProfile.values,
     }
 
     const discountedCashflow = {
@@ -213,26 +176,14 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
                 yearData[series.profileName] = value
             })
-            yearData.cashflow = (cashflow.values || []).reduce((acc, value, index) => {
-                if (cashflow.startYear + index === year) {
-                    return acc + value
-                }
-
-                return acc
-            }, 0)
-            yearData.discountedCashflow = (discountedCashflow?.values || []).reduce((acc, value, index) => {
-                if (discountedCashflow.startYear + index === year) {
-                    return acc + value
-                }
-
-                return acc
-            }, 0)
+            yearData.cashflow = setValueToCorrespondingYear(cashFlow, year, dg4Year)
+            yearData.discountedCashflow = setValueToCorrespondingYear(discountedCashflow, year, dg4Year)
 
             data.push(yearData)
         })
 
         return data
-    }, [aggregatedTimeSeriesData, tableYears, apiData, cashFlow])
+    }, [aggregatedTimeSeriesData, tableYears, apiData, dg4Year])
 
     const figmaTheme = {
         palette: {

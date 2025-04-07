@@ -1,5 +1,7 @@
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
+using api.Models.Enums;
+
 using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Helpers;
@@ -69,33 +71,56 @@ public static class EconomicsHelper
         return discountFactors;
     }
 
-    public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries totalCost)
+    /// <summary>
+    /// income - cost
+    /// </summary>
+    public static TimeSeries CalculateCashFlow(TimeSeries income, TimeSeries cost)
     {
-        return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(income, totalCost);
+        return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(income, cost);
     }
+
     /// <summary>production * price</summary>
     /// <param name="totalGasProduction"> production in m3 </param>
-    /// <param name="gasPriceNok"> price per m3 </param>
-    /// <returns>Values in Nok</returns>
-    public static TimeSeries CalculateTotalGasIncome(TimeSeries totalGasProduction, double gasPriceNok)
+    /// <param name="gasPriceNok"> nok price per m3 </param>
+    /// <param name="usdToNok"> currency rate usd to nok </param>
+    /// <param name='projectCurrency'> currency of the project </param>
+    public static TimeSeries CalculateTotalGasIncome(TimeSeries totalGasProduction, double gasPriceNok, double usdToNok, Currency projectCurrency)
     {
+        var rate = projectCurrency == Currency.Nok ? 1.0 : 1 / usdToNok;
         return new TimeSeries(
             totalGasProduction.StartYear,
             totalGasProduction.Values
-                .Select((value) => value * gasPriceNok)
+                .Select(value => value * gasPriceNok * rate)
                 .ToArray()
             );
     }
     /// <summary>production * price</summary>
     /// <param name="totalOilProduction"> production in m3 </param>
-    /// <param name="oilPriceUsd"> price per barrel </param>
-    /// <returns>Values in USD</returns>
-    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, double oilPriceUsd)
+    /// <param name="oilPriceUsd"> usd price per barrel </param>
+    /// <param name="usdToNok"> currency rate usd to nok </param>
+    /// <param name='projectCurrency'> currency of the project </param>
+    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, double oilPriceUsd, double usdToNok, Currency projectCurrency)
     {
+        var rate = projectCurrency == Currency.Usd ? 1.0 : usdToNok;
         return new TimeSeries(
             totalOilProduction.StartYear,
             totalOilProduction.Values
-                .Select((value) => value * BarrelsPerCubicMeter * oilPriceUsd)
+                .Select(value => value * BarrelsPerCubicMeter * oilPriceUsd * rate)
+                .ToArray()
+        );
+    }
+
+    /// <summary>production * price</summary>
+    /// <param name="totalNglProduction"> production in ton </param>
+    /// <param name="nglPriceUsd"> usd price per ton </param>
+    /// <param name="usdToNok"> currency rate usd to nok </param>
+    /// <param name='projectCurrency'> currency of the project </param>
+    public static TimeSeries CalculateTotalNglIncome(TimeSeries totalNglProduction, double nglPriceUsd, double usdToNok, Currency projectCurrency)
+    {
+        return new TimeSeries(
+            totalNglProduction.StartYear,
+            totalNglProduction.Values
+                .Select(value => value * nglPriceUsd)
                 .ToArray()
         );
     }

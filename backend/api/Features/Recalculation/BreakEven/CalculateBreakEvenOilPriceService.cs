@@ -15,7 +15,7 @@ public static class CalculateBreakEvenOilPriceService
         var oilPrice = caseItem.Project.OilPriceUsd;
         var gasPriceNok = caseItem.Project.GasPriceNok;
         var exchangeRateUsdToNok = caseItem.Project.ExchangeRateUsdToNok;
-        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
 
         var oilVolume = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);
 

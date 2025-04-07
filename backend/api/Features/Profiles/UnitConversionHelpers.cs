@@ -25,7 +25,10 @@ public static class UnitConversionHelpers
         { ProfileTypes.NetSalesGas, Giga },
         { ProfileTypes.NetSalesGasOverride, Giga },
         { ProfileTypes.TotalExportedVolumes, Mega },
-        { ProfileTypes.TotalExportedVolumesOverride, Mega }
+        { ProfileTypes.TotalExportedVolumesOverride, Mega },
+        { ProfileTypes.CalculatedTotalGasIncomeCostProfile, Mega },
+        { ProfileTypes.CalculatedTotalOilIncomeCostProfile, Mega },
+        { ProfileTypes.CalculatedTotalIncomeCostProfile, Mega }
     };
 
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, Currency currency, double usdToNok, string type)
@@ -57,8 +60,9 @@ public static class UnitConversionHelpers
 
     private static double GetConversionFactor(string type, PhysUnit unit, Currency currency, double usdToNok, bool toDto)
     {
-        var currencyFactor = GetCurrencyFactor(currency, type, usdToNok);
-        return currencyFactor * GetConversionFactor(type, unit, toDto);
+        //var currencyFactor = GetCurrencyFactor(currency, type, usdToNok);
+        //return currencyFactor * GetConversionFactor(type, unit, toDto);
+        return GetConversionFactor(type, unit, toDto);
     }
 
     public static readonly IReadOnlySet<string> ProfileTypesWithConversion = new HashSet<string>
@@ -130,15 +134,14 @@ public static class UnitConversionHelpers
             case Currency.Nok:
                 return type switch
                 {
-                    // ProfileTypes.CalculatedTotalCostCostProfileUsd => usdToNok,
-                    // ProfileTypes.CalculatedTotalIncomeCostProfileUsd => usdToNok,
-                    ProfileTypes.CalculatedTotalOilIncomeCostProfileUsd => usdToNok,
+                    ProfileTypes.CalculatedTotalIncomeCostProfile => usdToNok,
+                    ProfileTypes.CalculatedTotalOilIncomeCostProfile => usdToNok,
                     _ => 1.0
                 };
             case Currency.Usd:
                 return type switch
                 {
-                    ProfileTypes.CalculatedTotalGasIncomeCostProfileNok => 1 / usdToNok,
+                    ProfileTypes.CalculatedTotalGasIncomeCostProfile => 1 / usdToNok,
                     _ => 1.0
                 };
             default:

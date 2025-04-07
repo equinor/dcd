@@ -1,6 +1,7 @@
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
+using api.Features.Recalculation.Helpers;
 using api.Models;
 
 using static api.Features.Profiles.CalculationConstants;
@@ -9,45 +10,31 @@ namespace api.Features.Recalculation.RevenuesAndCashflow;
 
 public static class CalculateTotalIncomeService
 {
+    /// <summary>
+    /// sum oil, gas and ngl income in usd
+    /// </summary>
     public static void RunCalculation(Case caseItem)
     {
         var gasPriceNok = caseItem.Project.GasPriceNok;
-        var oilPrice = caseItem.Project.OilPriceUsd;
+        var oilPriceUsd = caseItem.Project.OilPriceUsd;
+        var nglPriceUsd = caseItem.Project.NglPriceUsd;
+        var usdToNok = caseItem.Project.ExchangeRateUsdToNok;
+        var currency = caseItem.Project.Currency;
 
         var totalOilProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);
+        var oilIncome = EconomicsHelper.CalculateTotalOilIncome(totalOilProduction, oilPriceUsd, usdToNok, currency);
 
-        var oilProductionInBarrels = totalOilProduction.Values.Select(v => v * BarrelsPerCubicMeter).ToArray();
-
-        var oilIncome = new TimeSeries
-        {
-            StartYear = totalOilProduction.StartYear,
-            Values = oilProductionInBarrels.Select(v => v * oilPrice).ToArray()
-        };
-
-        var nglProduction = caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl);
-        var nglIncome = new TimeSeries();
-
-        if (nglProduction != null && caseItem.Project.NglPriceUsd != 0)
-        {
-            nglIncome.StartYear = nglProduction.StartYear;
-            nglIncome.Values = nglProduction.Values.Select(v => v * caseItem.Project.NglPriceUsd).ToArray();
-        }
+        var totalNglProduction = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ProductionProfileNgl));
+        var nglIncome = EconomicsHelper.CalculateTotalNglIncome(totalNglProduction, nglPriceUsd, usdToNok, currency);
 
         var totalGasProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileGas);
-
-        var gasIncome = new TimeSeries
-        {
-            StartYear = totalGasProduction.StartYear,
-            Values = totalGasProduction.Values.Select(v => v * gasPriceNok / caseItem.Project.ExchangeRateUsdToNok).ToArray()
-        };
+        var gasIncome = EconomicsHelper.CalculateTotalGasIncome(totalGasProduction, gasPriceNok, usdToNok, currency);
 
         var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, nglIncome, gasIncome);
 
-        var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();
+        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalIncomeCostProfile);
 
-        var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalIncomeCostProfileUsd);
-
-        profile.Values = scaledTotalIncomeValues;
+        profile.Values = totalIncome.Values;
         profile.StartYear = totalIncome.StartYear;
     }
 }

@@ -62,7 +62,7 @@ public static class StudyCostProfileService
 
         percentageOfYearList.Add(lastYearPercentage);
 
-        var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
+        var valuesList = percentageOfYearList.Select(x => x * totalFeasibilityAndConceptStudies);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.TotalFeasibilityAndConceptStudies);
 

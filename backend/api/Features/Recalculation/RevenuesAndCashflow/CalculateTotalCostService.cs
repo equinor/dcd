@@ -7,88 +7,41 @@ namespace api.Features.Recalculation.Cost;
 
 public static class CalculateTotalCostService
 {
+    /// <summary>
+    /// sum cost for study, opex, cessation, offshore facility, development and exploration
+    /// </summary>
     public static void RunCalculation(Case caseItem)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
-
-        var studiesProfile = new TimeSeries
-        {
-            StartYear = totalStudyCost.StartYear,
-            Values = totalStudyCost.Values
-        };
-
         var totalOpexCost = CalculateOpexCost(caseItem);
-
-        var opexProfile = new TimeSeries
-        {
-            StartYear = totalOpexCost.StartYear,
-            Values = totalOpexCost.Values
-        };
-
         var totalCessationCost = CalculateCessationCost(caseItem);
 
-        var cessationProfile = new TimeSeries
-        {
-            StartYear = totalCessationCost.StartYear,
-            Values = totalCessationCost.Values
-        };
-
         var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem);
-
-        var totalOffshoreFacilityProfile = new TimeSeries
-        {
-            StartYear = totalOffshoreFacilityCost.StartYear,
-            Values = totalOffshoreFacilityCost.Values
-        };
-
         var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);
-
-        var developmentProfile = new TimeSeries
-        {
-            StartYear = totalDevelopmentCost.StartYear,
-            Values = totalDevelopmentCost.Values
-        };
-
         var explorationCost = CalculateTotalExplorationCost(caseItem);
 
-        var explorationProfile = new TimeSeries
-        {
-            StartYear = explorationCost.StartYear,
-            Values = explorationCost.Values
-        };
-
         var totalCost = TimeSeriesMerger.MergeTimeSeries(
-            studiesProfile,
-            opexProfile,
-            cessationProfile,
-            totalOffshoreFacilityProfile,
-            developmentProfile,
-            explorationProfile
+            totalStudyCost,
+            totalOpexCost,
+            totalCessationCost,
+            totalOffshoreFacilityCost,
+            totalDevelopmentCost,
+            explorationCost
         );
 
-        var totalCostUsd = new TimeSeries
-        {
-            StartYear = totalCost.StartYear,
-            Values = totalCost.Values.Select(v => v / caseItem.Project.ExchangeRateUsdToNok).ToArray()
-        };
+        var calculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfile);
 
-        var calculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfileUsd);
-
-        calculatedTotalCostCostProfileUsd.Values = totalCostUsd.Values;
-        calculatedTotalCostCostProfileUsd.StartYear = totalCostUsd.StartYear;
+        calculatedTotalCostCostProfileUsd.Values = totalCost.Values;
+        calculatedTotalCostCostProfileUsd.StartYear = totalCost.StartYear;
     }
 
     private static TimeSeries CalculateStudyCost(Case caseItem)
     {
         var feasibilityProfile = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalFeasibilityAndConceptStudies));
-
         var feedProfile = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalFeedStudies));
+        var totalOtherStudiesCostProfile = new TimeSeries(caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile));
 
-        var totalOtherStudiesCostProfile = caseItem.GetProfileOrNull(ProfileTypes.TotalOtherStudiesCostProfile);
-
-        var otherStudies = new TimeSeries(totalOtherStudiesCostProfile);
-
-        var totalStudyCost = TimeSeriesMerger.MergeTimeSeries(feasibilityProfile, feedProfile, otherStudies);
+        var totalStudyCost = TimeSeriesMerger.MergeTimeSeries(feasibilityProfile, feedProfile, totalOtherStudiesCostProfile);
 
         return totalStudyCost;
     }
