@@ -2,6 +2,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Recalculation.Helpers;
 using api.Models;
+using api.Models.Enums;
 
 namespace api.Features.Recalculation.RevenuesAndCashflow;
 
@@ -30,14 +31,16 @@ public static class CalculateNpvService
             npvYearInRelationToDg4Year
         );
 
-        caseItem.Npv = npvValue;
+        var rate = caseItem.Project.Currency == Currency.Usd ? 1 : caseItem.Project.ExchangeRateUsdToNok;
+
+        caseItem.Npv = npvValue / rate;
     }
 
     private static TimeSeries GetCashflowProfile(Case caseItem)
     {
-        var calculatedTotalIncomeCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
-        var calculatedTotalCostCostProfileUsd = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
+        var calculatedTotalIncomeCostProfile = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalIncomeCostProfile));
+        var calculatedTotalCostCostProfile = new TimeSeries(caseItem.GetProfile(ProfileTypes.CalculatedTotalCostCostProfile));
 
-        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfileUsd, calculatedTotalCostCostProfileUsd);
+        return EconomicsHelper.CalculateCashFlow(calculatedTotalIncomeCostProfile, calculatedTotalCostCostProfile);
     }
 }
