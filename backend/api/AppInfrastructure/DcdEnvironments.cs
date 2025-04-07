@@ -28,8 +28,6 @@ public static class DcdEnvironments
 
     public static string BlobStorageContainerName => CurrentEnvironment switch
     {
-        RadixProd => "prod-image-storage",
-        RadixQa => "qa-image-storage",
         _ => "image-storage"
     };
 
