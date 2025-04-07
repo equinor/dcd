@@ -18,6 +18,7 @@ param clientSecret string
 var preprod = environmentName == 'ci' || environmentName == 'qa'
 var roughtechsEntraGroupObjectId = 'a64069dd-12fd-422b-8c1e-2093fa32819d'
 var backendPreprodAppRegOid = '841af925-42eb-4f9f-9d7d-a1ff27a322af'
+var backendProdAppRegOid = '046f7e54-1da8-464b-9966-50ad6fafa1d0'
 
 var commonTags = {
   'iac': 'bicep'
@@ -62,7 +63,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       }
       {
         tenantId: subscription().tenantId
-        objectId: backendPreprodAppRegOid
+        objectId: preprod ? backendPreprodAppRegOid : backendProdAppRegOid
         permissions: {
           keys: []
           secrets: ['get', 'list']
