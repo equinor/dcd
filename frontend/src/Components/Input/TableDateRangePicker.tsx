@@ -9,6 +9,8 @@ import styled from "styled-components"
 
 import RangeSlider from "./RangeSlider"
 
+import { useAppStore } from "@/Store/AppStore"
+
 const Container = styled.div`
     display: flex;
     align-items: center;
@@ -75,6 +77,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     labelValue,
     handleTableYearsClick,
 }) => {
+    const { editMode } = useAppStore()
+
     const [initialStart] = useState(startYear)
     const [initialEnd] = useState(endYear)
 
@@ -102,6 +106,10 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             setStartYear(newStart)
             setEndYear(newEnd)
         }
+    }
+
+    if (!editMode) {
+        return null
     }
 
     return (
