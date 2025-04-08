@@ -4,40 +4,47 @@ import {
     Icon,
 } from "@equinor/eds-core-react"
 import { undo } from "@equinor/eds-icons"
-import Grid from "@mui/material/Grid2"
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import RangeSlider from "./RangeSlider"
 
-const StyledContainer = styled(Grid)`
-    width: 100%;
-    margin-top: 48px;
-    margin-right: 32px;
+const Container = styled.div`
     display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+    width: 100%;
     justify-content: flex-end;
-    align-items: baseline;
 `
 
-const HelperContainer = styled(Grid)`
+const ContentContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 25px 36px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+`
+
+const LabelContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    top: 11px;
-    margin-right: 20px;
+    min-width: 60px;
 `
 
-const RangeContainer = styled.div`
-    width: 380px;
+const SliderContainer = styled.div`
+    width: 300px;
+    margin-right: 24px;
+    position: relative;
+    top: 15px;
 `
 
 const ButtonContainer = styled.div`
     display: flex;
-    justify-content: flex-end;
     gap: 8px;
-    margin-top: 16px;
 `
 
 const ResetButton = styled(Button)`
@@ -70,6 +77,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 }) => {
     const [initialStart] = useState(startYear)
     const [initialEnd] = useState(endYear)
+
     const [isResetting, setIsResetting] = useState(false)
 
     const hasChanges = startYear !== initialStart || endYear !== initialEnd
@@ -96,36 +104,35 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         }
     }
 
-    const onApplyButtonClick = (): void => {
-        handleTableYearsClick()
-    }
-
     return (
-        <StyledContainer container spacing={2}>
-            {labelText && labelValue && (
-                <HelperContainer>
-                    <Typography variant="meta">
-                        {labelText}
-                    </Typography>
-                    <Typography variant="caption">
-                        {labelValue}
-                    </Typography>
-                </HelperContainer>
-            )}
-            <RangeContainer>
-                <RangeSlider
-                    startValue={startYear}
-                    endValue={endYear}
-                    minValue={MIN_YEAR}
-                    maxValue={MAX_YEAR}
-                    step={1}
-                    onChange={handleYearChange}
-                    marks={[
-                        { value: MIN_YEAR, label: MIN_YEAR.toString() },
-                        { value: MAX_YEAR, label: MAX_YEAR.toString() },
-                    ]}
-                    showTooltips
-                />
+        <Container>
+            <ContentContainer>
+                {labelText && labelValue && (
+                    <LabelContainer>
+                        <Typography variant="meta">
+                            {labelText}
+                        </Typography>
+                        <Typography variant="caption">
+                            {labelValue}
+                        </Typography>
+                    </LabelContainer>
+                )}
+                <SliderContainer>
+                    <RangeSlider
+                        startValue={startYear}
+                        endValue={endYear}
+                        minValue={MIN_YEAR}
+                        maxValue={MAX_YEAR}
+                        step={1}
+                        onChange={handleYearChange}
+                        marks={[
+                            { value: MIN_YEAR, label: MIN_YEAR.toString() },
+                            { value: MAX_YEAR, label: MAX_YEAR.toString() },
+                        ]}
+                        showTooltips
+                        minTooltipDistance={18}
+                    />
+                </SliderContainer>
                 <ButtonContainer>
                     <ResetButton
                         variant="outlined"
@@ -136,13 +143,13 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                     </ResetButton>
                     <Button
                         variant="contained"
-                        onClick={onApplyButtonClick}
+                        onClick={handleTableYearsClick}
                     >
                         Apply
                     </Button>
                 </ButtonContainer>
-            </RangeContainer>
-        </StyledContainer>
+            </ContentContainer>
+        </Container>
     )
 }
 
