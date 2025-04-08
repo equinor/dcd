@@ -12,12 +12,11 @@ import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { useCaseApiData, useDataFetch } from "@/Hooks"
+import { useCaseApiData, useDataFetch, useDefaultYearRanges } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 import { PhysUnit } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
@@ -45,7 +44,7 @@ const defaultAxesData = [
         position: "left",
         nice: true,
         label: {
-            formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
+            formatter: (params: { value: number }): string => formatNumberForView(roundToDecimals(params.value, 4)),
         },
         gridLine: {
             style: [
@@ -62,9 +61,10 @@ const defaultAxesData = [
     },
 ]
 
-const CaseProductionProfilesTab = () => {
+const CaseProductionProfilesTab = (): React.ReactNode => {
     const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
+    const { DEFAULT_PRODUCTION_PROFILES_YEARS } = useDefaultYearRanges()
     const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
     const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_PRODUCTION_PROFILES_YEARS)
@@ -135,19 +135,13 @@ const CaseProductionProfilesTab = () => {
             ]
 
             const dg4Year = getYearFromDateString(apiData.case.dg4Date)
-            const years = calculateTableYears(profiles, dg4Year)
+            const years = calculateTableYears(profiles, dg4Year, DEFAULT_PRODUCTION_PROFILES_YEARS)
 
-            if (years) {
-                const [firstYear, lastYear] = years
+            const [firstYear, lastYear] = years
 
-                setStartYear(firstYear)
-                setEndYear(lastYear)
-                setTableYears([firstYear, lastYear])
-            } else {
-                setStartYear(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
-                setEndYear(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
-                setTableYears(DEFAULT_PRODUCTION_PROFILES_YEARS)
-            }
+            setStartYear(firstYear)
+            setEndYear(lastYear)
+            setTableYears([firstYear, lastYear])
         }
     }, [apiData, activeTabCase])
 
@@ -166,11 +160,11 @@ const CaseProductionProfilesTab = () => {
     const waterProductionData = apiData.productionProfileWater
     const waterInjectionData = apiData.productionProfileWaterInjection
 
-    const handleTableYearsClick = () => {
+    const handleTableYearsClick = (): void => {
         setTableYears([startYear, endYear])
     }
 
-    const getProductionProfilesChartData = () => {
+    const getProductionProfilesChartData = (): object[] => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
@@ -189,7 +183,7 @@ const CaseProductionProfilesTab = () => {
         return dataArray
     }
 
-    const injectionProfilesChartData = () => {
+    const injectionProfilesChartData = (): object[] => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }

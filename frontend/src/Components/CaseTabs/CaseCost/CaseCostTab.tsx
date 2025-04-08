@@ -18,16 +18,17 @@ import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
 import CaseCostSkeleton from "@/Components//LoadingSkeletons/CaseCostTabSkeleton"
-import { useCaseApiData } from "@/Hooks"
+import { useCaseApiData, useDefaultYearRanges } from "@/Hooks"
 import { useCaseStore } from "@/Store/CaseStore"
 import { useProjectContext } from "@/Store/ProjectContext"
-import { DEFAULT_CASE_COST_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
 
-const CaseCostTab = () => {
+const CaseCostTab = (): React.ReactNode => {
     const { activeTabCase } = useCaseStore()
     const { projectId } = useProjectContext()
+    const { apiData } = useCaseApiData()
+    const { DEFAULT_CASE_COST_YEARS } = useDefaultYearRanges()
 
     const [startYear, setStartYear] = useState<number>(DEFAULT_CASE_COST_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_CASE_COST_YEARS[1])
@@ -62,8 +63,6 @@ const CaseCostTab = () => {
         totalIncomeColor: "#9F9F9F",
     }
 
-    const { apiData } = useCaseApiData()
-
     useEffect(() => {
         isMounted.current = true
 
@@ -78,11 +77,9 @@ const CaseCostTab = () => {
 
             if (currentCaseId !== caseData.caseId) {
                 setCurrentCaseId(caseData.caseId)
-                const defaultYears: [number, number] = DEFAULT_CASE_COST_YEARS
-
-                setStartYear(defaultYears[0])
-                setEndYear(defaultYears[1])
-                setTableYears(defaultYears)
+                setStartYear(DEFAULT_CASE_COST_YEARS[0])
+                setEndYear(DEFAULT_CASE_COST_YEARS[1])
+                setTableYears(DEFAULT_CASE_COST_YEARS)
             }
             const profiles = [
                 apiData.totalFeasibilityAndConceptStudies,
@@ -131,20 +128,14 @@ const CaseCostTab = () => {
 
             const dg4Year = getYearFromDateString(caseData.dg4Date)
 
-            const years = calculateTableYears(profiles, dg4Year)
+            const years = calculateTableYears(profiles, dg4Year, DEFAULT_CASE_COST_YEARS)
 
-            if (years && isMounted.current) {
+            if (isMounted.current) {
                 const [firstYear, lastYear] = years
 
                 setStartYear(firstYear)
                 setEndYear(lastYear)
                 setTableYears([firstYear, lastYear])
-            } else if (isMounted.current) {
-                const defaultYears = DEFAULT_CASE_COST_YEARS
-
-                setStartYear(defaultYears[0])
-                setEndYear(defaultYears[1])
-                setTableYears(defaultYears)
             }
         }
     }, [activeTabCase, apiData])

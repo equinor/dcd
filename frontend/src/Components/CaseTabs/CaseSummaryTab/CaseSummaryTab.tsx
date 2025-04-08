@@ -5,8 +5,9 @@ import {
 
 import CaseTableWithGrouping from "@/Components/CaseTabs/CaseSummaryTab/CaseTableWithGrouping"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
-import { useDataFetch, useCaseApiData } from "@/Hooks"
+import { useDataFetch, useCaseApiData, useDefaultYearRanges } from "@/Hooks"
 import { useCaseMutation } from "@/Hooks/Mutations"
 import {
     ITimeSeries,
@@ -23,10 +24,11 @@ const CaseSummaryTab = (): React.ReactNode => {
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
     const { updateNpvOverride, updateBreakEvenOverride } = useCaseMutation()
+    const { DEFAULT_SUMMARY_YEARS } = useDefaultYearRanges()
 
-    const [, setStartYear] = useState<number>(2020)
-    const [, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [startYear, setStartYear] = useState<number>(DEFAULT_SUMMARY_YEARS[0])
+    const [endYear, setEndYear] = useState<number>(DEFAULT_SUMMARY_YEARS[1])
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_SUMMARY_YEARS)
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
@@ -111,6 +113,10 @@ const CaseSummaryTab = (): React.ReactNode => {
         return undefined
     }
 
+    const handleTableYearsClick = () : void => {
+        setTableYears([startYear, endYear])
+    }
+
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
             const caseData = apiData?.case
@@ -138,6 +144,7 @@ const CaseSummaryTab = (): React.ReactNode => {
                 setStartYear,
                 setEndYear,
                 setTableYears,
+                DEFAULT_SUMMARY_YEARS,
             )
             setYearRangeSetFromProfiles(true)
         }
@@ -344,6 +351,14 @@ const CaseSummaryTab = (): React.ReactNode => {
                     </Grid>
                 </Grid>
             </Grid>
+
+            <DateRangePicker
+                setStartYear={setStartYear}
+                setEndYear={setEndYear}
+                startYear={startYear}
+                endYear={endYear}
+                handleTableYearsClick={handleTableYearsClick}
+            />
 
             <Grid size={12}>
                 <CaseTableWithGrouping

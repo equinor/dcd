@@ -21,13 +21,14 @@ import {
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { useDataFetch, useCaseApiData, useCanUserEdit } from "@/Hooks"
+import {
+    useDataFetch, useCaseApiData, useCanUserEdit, useDefaultYearRanges,
+} from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { CampaignType, WellCategory } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { DEFAULT_DRILLING_SCHEDULE_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
 
@@ -47,6 +48,7 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
     const { apiData } = useCaseApiData()
     const queryClient = useQueryClient()
     const { setSnackBarMessage, isSaving, setIsSaving } = useAppStore()
+    const { DEFAULT_DRILLING_SCHEDULE_YEARS } = useDefaultYearRanges()
 
     const [startYear, setStartYear] = useState<number>(DEFAULT_DRILLING_SCHEDULE_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_DRILLING_SCHEDULE_YEARS[1])
@@ -76,19 +78,13 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
             const profiles = [...explorationDrillingSchedule, ...developmentDrillingSchedule]
 
             const dg4Year = getYearFromDateString(apiData.case.dg4Date)
-            const years = calculateTableYears(profiles, dg4Year)
+            const years = calculateTableYears(profiles, dg4Year, DEFAULT_DRILLING_SCHEDULE_YEARS)
 
-            if (years) {
-                const [firstYear, lastYear] = years
+            const [firstYear, lastYear] = years
 
-                setStartYear(firstYear)
-                setEndYear(lastYear)
-                setTableYears([firstYear, lastYear])
-            } else {
-                setStartYear(DEFAULT_DRILLING_SCHEDULE_YEARS[0])
-                setEndYear(DEFAULT_DRILLING_SCHEDULE_YEARS[1])
-                setTableYears(DEFAULT_DRILLING_SCHEDULE_YEARS)
-            }
+            setStartYear(firstYear)
+            setEndYear(lastYear)
+            setTableYears([firstYear, lastYear])
         }
     }, [activeTabCase, apiData])
 
