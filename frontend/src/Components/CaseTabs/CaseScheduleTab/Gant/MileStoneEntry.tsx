@@ -71,7 +71,22 @@ const StyledSlider = styled(Slider)<{ $readOnly?: boolean }>`
       opacity: 0.4;
       height: 8px;
     }
-  ` : "")}
+  ` : `
+    /* Custom tooltip styling to match RangeSlider - only in edit mode */
+    & .MuiSlider-valueLabel {
+      background-color: #243746;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    & .MuiSlider-valueLabel::before {
+      display: none;
+    }
+  `)}
 `
 
 const DatePickerContainer = styled(Box)`

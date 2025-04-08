@@ -21,6 +21,7 @@ import MilestoneEntry from "./MileStoneEntry"
 import RangeChangeConfirmModal, { MilestoneToRemove, MilestoneToMove } from "./RangeChangeConfirmModal"
 import TimelineRangeSlider from "./TimelineRangeSlider"
 
+import RangeSlider from "@/Components/Input/RangeSlider"
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { useCaseApiData } from "@/Hooks"
 import { useCaseMutation } from "@/Hooks/Mutations"

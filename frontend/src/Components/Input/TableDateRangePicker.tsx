@@ -1,14 +1,14 @@
 import {
     Typography,
-    TextField,
     Button,
     Icon,
 } from "@equinor/eds-core-react"
 import { undo } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid2"
-import Slider from "@mui/material/Slider"
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
+
+import RangeSlider from "./RangeSlider"
 
 const StyledContainer = styled(Grid)`
     width: 100%;
@@ -33,22 +33,11 @@ const RangeContainer = styled.div`
     width: 380px;
 `
 
-const InputGroup = styled.div`
+const ButtonContainer = styled.div`
     display: flex;
-    align-items: center;
-    margin-bottom: 24px;
-    gap: 10px;
-`
-
-const YearInput = styled(TextField)`
-    width: 100px;
-    input {
-        text-align: center;
-    }
-`
-
-const YearSeparator = styled(Typography)`
-    color: #6F6F6F;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
 `
 
 const ResetButton = styled(Button)`
@@ -81,8 +70,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 }) => {
     const [initialStart] = useState(startYear)
     const [initialEnd] = useState(endYear)
-    const [localStartYear, setLocalStartYear] = useState(startYear.toString())
-    const [localEndYear, setLocalEndYear] = useState(endYear.toString())
     const [isResetting, setIsResetting] = useState(false)
 
     const hasChanges = startYear !== initialStart || endYear !== initialEnd
@@ -94,101 +81,22 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         }
     }, [startYear, endYear, initialStart, initialEnd, isResetting, handleTableYearsClick])
 
-    const handleReset = () => {
+    const handleReset = (): void => {
         setIsResetting(true)
         setStartYear(initialStart)
         setEndYear(initialEnd)
-        setLocalStartYear(initialStart.toString())
-        setLocalEndYear(initialEnd.toString())
     }
 
-    useEffect(() => {
-        setLocalStartYear(startYear.toString())
-        setLocalEndYear(endYear.toString())
-    }, [startYear, endYear])
+    const handleYearChange = (newValues: [number, number]): void => {
+        const [newStart, newEnd] = newValues
 
-    const handleYearChange = (_event: Event, newValue: number | number[]) => {
-        if (Array.isArray(newValue)) {
-            const [newStart, newEnd] = newValue
-
-            if (newStart <= newEnd) {
-                setStartYear(newStart)
-                setEndYear(newEnd)
-            }
+        if (newStart <= newEnd) {
+            setStartYear(newStart)
+            setEndYear(newEnd)
         }
     }
 
-    const handleStartYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value
-
-        setLocalStartYear(inputValue)
-
-        const value = parseInt(inputValue, 10)
-
-        if (!Number.isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
-            if (value <= endYear) {
-                setStartYear(value)
-            }
-        }
-    }
-
-    const handleEndYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value
-
-        setLocalEndYear(inputValue)
-
-        const value = parseInt(inputValue, 10)
-
-        if (!Number.isNaN(value) && value >= MIN_YEAR && value <= MAX_YEAR) {
-            if (value >= startYear) {
-                setEndYear(value)
-            }
-        }
-    }
-
-    const handleStartYearBlur = () => {
-        const value = parseInt(localStartYear, 10)
-
-        if (Number.isNaN(value)) {
-            setStartYear(MIN_YEAR)
-            setLocalStartYear(MIN_YEAR.toString())
-        } else if (value > endYear) {
-            setStartYear(endYear)
-            setLocalStartYear(endYear.toString())
-        } else if (value < MIN_YEAR) {
-            setStartYear(MIN_YEAR)
-            setLocalStartYear(MIN_YEAR.toString())
-        } else if (value > MAX_YEAR) {
-            setStartYear(MAX_YEAR)
-            setLocalStartYear(MAX_YEAR.toString())
-        } else {
-            setStartYear(value)
-            setLocalStartYear(value.toString())
-        }
-    }
-
-    const handleEndYearBlur = () => {
-        const value = parseInt(localEndYear, 10)
-
-        if (Number.isNaN(value)) {
-            setEndYear(MIN_YEAR)
-            setLocalEndYear(MIN_YEAR.toString())
-        } else if (value < startYear) {
-            setEndYear(startYear)
-            setLocalEndYear(startYear.toString())
-        } else if (value < MIN_YEAR) {
-            setEndYear(MIN_YEAR)
-            setLocalEndYear(MIN_YEAR.toString())
-        } else if (value > MAX_YEAR) {
-            setEndYear(MAX_YEAR)
-            setLocalEndYear(MAX_YEAR.toString())
-        } else {
-            setEndYear(value)
-            setLocalEndYear(value.toString())
-        }
-    }
-
-    const onApplyButtonClick = () => {
+    const onApplyButtonClick = (): void => {
         handleTableYearsClick()
     }
 
@@ -205,26 +113,20 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                 </HelperContainer>
             )}
             <RangeContainer>
-                <InputGroup>
-                    <YearInput
-                        id="start-year"
-                        type="number"
-                        value={localStartYear}
-                        onChange={handleStartYearInput}
-                        onBlur={handleStartYearBlur}
-                        min={MIN_YEAR}
-                        max={MAX_YEAR}
-                    />
-                    <YearSeparator variant="h6">-</YearSeparator>
-                    <YearInput
-                        id="end-year"
-                        type="number"
-                        value={localEndYear}
-                        onChange={handleEndYearInput}
-                        onBlur={handleEndYearBlur}
-                        min={MIN_YEAR}
-                        max={MAX_YEAR}
-                    />
+                <RangeSlider
+                    startValue={startYear}
+                    endValue={endYear}
+                    minValue={MIN_YEAR}
+                    maxValue={MAX_YEAR}
+                    step={1}
+                    onChange={handleYearChange}
+                    marks={[
+                        { value: MIN_YEAR, label: MIN_YEAR.toString() },
+                        { value: MAX_YEAR, label: MAX_YEAR.toString() },
+                    ]}
+                    showTooltips
+                />
+                <ButtonContainer>
                     <ResetButton
                         variant="outlined"
                         onClick={handleReset}
@@ -238,19 +140,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                     >
                         Apply
                     </Button>
-                </InputGroup>
-                <Slider
-                    value={[startYear, endYear]}
-                    onChange={handleYearChange}
-                    min={MIN_YEAR}
-                    max={MAX_YEAR}
-                    step={1}
-                    marks={[
-                        { value: MIN_YEAR, label: MIN_YEAR.toString() },
-                        { value: MAX_YEAR, label: MAX_YEAR.toString() },
-                    ]}
-                    valueLabelDisplay="auto"
-                />
+                </ButtonContainer>
             </RangeContainer>
         </StyledContainer>
     )
