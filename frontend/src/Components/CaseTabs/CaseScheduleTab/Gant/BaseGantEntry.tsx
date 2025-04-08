@@ -91,7 +91,6 @@ const BaseGantEntry = ({
                         <span>
                             <DeleteIconButton
                                 onClick={onClear}
-                                size="small"
                                 disabled={disabled || isRequired}
                             >
                                 <Icon data={delete_to_trash} size={16} />

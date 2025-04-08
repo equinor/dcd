@@ -1,7 +1,7 @@
-import { Icon } from "@equinor/eds-core-react"
-import { add } from "@equinor/eds-icons"
+import { Icon, Typography } from "@equinor/eds-core-react"
+import { add, info_circle } from "@equinor/eds-icons"
 import {
-    Box, Typography, Button, Slider,
+    Box, Button, Slider,
 } from "@mui/material"
 import Grid from "@mui/material/Grid2"
 import {
@@ -30,6 +30,13 @@ import {
     quarterIndexToStartDate,
 } from "@/Utils/DateUtils"
 
+const Header = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 46px;
+`
+
 const GantContainer = styled(Box)<{ $isReadOnly?: boolean }>`
   width: 100%;
   padding-bottom: ${({ $isReadOnly }): string => ($isReadOnly ? "10px" : "20px")};
@@ -55,12 +62,8 @@ const HeaderContainer = styled(Box)<{ $isReadOnly?: boolean }>`
   gap: 12px;
 `
 
-const HeaderLeft = styled(Box)`
-  display: flex;
-  align-items: center;
-`
-
-const HeaderRight = styled(Box)`
+const EntryChips = styled(Box)`
+  margin-top: 26px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -449,9 +452,13 @@ const GantChart = (): JSX.Element => {
         <GantContainer $isReadOnly={isReadOnly}>
             {canEdit() && (
                 <RangeSliderContainer>
-                    <Typography variant="subtitle2" gutterBottom>
-                        Adjust Timeline Range (Max 50 Years)
-                    </Typography>
+                    <Header>
+                        <Icon data={info_circle} size={18} />
+                        <Typography>
+                            Adjust Timeline Range (Max 50 Years)
+                        </Typography>
+                    </Header>
+
                     <Slider
                         value={visualSliderValues}
                         onChange={handleSliderDrag}
@@ -473,20 +480,12 @@ const GantChart = (): JSX.Element => {
             )}
 
             <HeaderContainer $isReadOnly={isReadOnly}>
-                <HeaderLeft>
-                    <Typography variant="caption" color="text.secondary">
-                        {((): string => (canEdit()
-                            ? `Timeline showing from ${rangeStartYear} to ${rangeEndYear}. Milestones can be adjusted by dragging.`
-                            : `Timeline showing project milestones from ${rangeStartYear} to ${rangeEndYear}.`))()}
-                    </Typography>
-                </HeaderLeft>
-
                 {canEdit() && missingMilestones.length > 0 && (
-                    <HeaderRight>
+                    <EntryChips>
                         {missingMilestones.map((milestone: CaseMilestoneDate): JSX.Element => (
                             <Button
                                 key={milestone.key}
-                                variant="outlined"
+                                variant="contained"
                                 color="primary"
                                 size="small"
                                 onClick={(): void => handleAddMilestone(milestone.key)}
@@ -496,7 +495,7 @@ const GantChart = (): JSX.Element => {
                                 {milestone.label}
                             </Button>
                         ))}
-                    </HeaderRight>
+                    </EntryChips>
                 )}
             </HeaderContainer>
 
