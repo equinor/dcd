@@ -1,12 +1,5 @@
-parameters:
-  - name: workSpace
-  - name: buildId
-  - name: sourcesDirectory
-  - name: name
-  - name: azAppConfig
-
 stages:
-  - stage: ${{ parameters.name }}
+  - stage: "DCD"
     displayName: "Build App"
     jobs:
       - job: "Build_Fusion_App"
@@ -40,14 +33,13 @@ stages:
 
           - task: PublishPipelineArtifact@1
             inputs:
-                targetPath: "${{ parameters.workSpace }}/s/frontend/conceptapp.zip"
+                targetPath: "$(Pipeline.Workspace)/s/frontend/conceptapp.zip"
                 artifactName: ConceptApp
 
       - job: "Build_backend_container_and_Push_To_acr"
         steps:
           - template: step-dockerbuild.yml
             parameters:
-              azAppConfig: ${{ parameters.azAppConfig }}
               buildId: $(Build.BuildId)
               sourcesDirectory: $(Build.SourcesDirectory)
               appName: "backend"
