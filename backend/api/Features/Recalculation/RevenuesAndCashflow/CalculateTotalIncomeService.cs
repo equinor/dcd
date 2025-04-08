@@ -22,13 +22,15 @@ public static class CalculateTotalIncomeService
         var currency = caseItem.Project.Currency;
 
         var totalOilProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);
-        var oilIncome = EconomicsHelper.CalculateTotalOilIncome(totalOilProduction, oilPriceUsd, usdToNok, currency);
+        var totalCondensateProduction = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.CondensateProduction));
+        var oilIncome = EconomicsHelper.CalculateTotalOilIncome(totalOilProduction, totalCondensateProduction, oilPriceUsd, usdToNok, currency);
 
         var totalNglProduction = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ProductionProfileNgl));
         var nglIncome = EconomicsHelper.CalculateTotalNglIncome(totalNglProduction, nglPriceUsd, usdToNok, currency);
 
         var totalGasProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileGas);
-        var gasIncome = EconomicsHelper.CalculateTotalGasIncome(totalGasProduction, gasPriceNok, usdToNok, currency);
+        var fuelFlaringAndLosses = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.FuelFlaringAndLosses));
+        var gasIncome = EconomicsHelper.CalculateTotalGasIncome(totalGasProduction, fuelFlaringAndLosses, gasPriceNok, usdToNok, currency);
 
         var totalIncome = TimeSeriesMerger.MergeTimeSeries(oilIncome, nglIncome, gasIncome);
 

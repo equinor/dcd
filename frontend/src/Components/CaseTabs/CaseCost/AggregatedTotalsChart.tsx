@@ -80,30 +80,15 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             const incomeProfiles = {
                 liquidRevenue: [
                     {
-                        startYear: apiData.productionProfileOil?.startYear,
-                        values: (() => {
-                            const mergedValues = mergeTimeseries(
-                                apiData.productionProfileOil,
-                                apiData.additionalProductionProfileOil,
-                            ).values
-
-                            if (!mergedValues) { return null }
-                            const oilPriceUsd = revisionAndProjectData?.commonProjectAndRevisionData?.oilPriceUsd ?? 0
-                            const exchangeRateUsdToNok = revisionAndProjectData?.commonProjectAndRevisionData?.exchangeRateUsdToNok ?? 1
-
-                            return mergedValues.map((v: number) => (v * 6.29 * oilPriceUsd) * exchangeRateUsdToNok)
-                        })(),
+                        startYear: apiData.calculatedTotalOilIncomeCostProfile?.startYear ?? 0,
+                        values: apiData.calculatedTotalOilIncomeCostProfile?.values ?? [],
                     },
 
                 ],
                 gasRevenue: [
                     {
-                        startYear: apiData.productionProfileGas?.startYear,
-                        values: mergeTimeseries(
-                            apiData.productionProfileGas,
-                            apiData.additionalProductionProfileGas,
-                        ).values?.map((v: number) => v * 1000 * ((revisionAndProjectData?.commonProjectAndRevisionData?.gasPriceNok ?? 0)
-                        )) ?? null,
+                        startYear: apiData.calculatedTotalGasIncomeCostProfile?.startYear ?? 0,
+                        values: apiData.calculatedTotalGasIncomeCostProfile?.values ?? [],
                     },
                 ],
             }
@@ -156,13 +141,13 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const discountedCashflowData = apiData.calculatedDiscountedCashflowService
 
     const cashFlow: ITimeSeries = {
-        startYear: cashflowProfile.startYear,
-        values: cashflowProfile.values,
+        startYear: cashflowProfile?.startYear ?? 0,
+        values: cashflowProfile?.values ?? [],
     }
 
     const discountedCashflow = {
-        startYear: (discountedCashflowData?.startYear ?? 0) + dg4Year,
-        values: (discountedCashflowData?.values || []).map((v) => v) ?? [],
+        startYear: discountedCashflowData?.startYear ?? 0,
+        values: discountedCashflowData?.values ?? [],
     }
     const chartData = useMemo(() => {
         const data: any[] = []

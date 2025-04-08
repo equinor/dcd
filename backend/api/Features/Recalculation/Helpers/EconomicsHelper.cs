@@ -79,32 +79,38 @@ public static class EconomicsHelper
         return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(income, cost);
     }
 
-    /// <summary>production * price</summary>
+    /// <summary>(gas production - flaring loss) * price</summary>
     /// <param name="totalGasProduction"> production in m3 </param>
+    /// <param name="fuelFlaringAndLosses"> gas loss in m3</param>
     /// <param name="gasPriceNok"> nok price per m3 </param>
     /// <param name="usdToNok"> currency rate usd to nok </param>
     /// <param name='projectCurrency'> currency of the project </param>
-    public static TimeSeries CalculateTotalGasIncome(TimeSeries totalGasProduction, double gasPriceNok, double usdToNok, Currency projectCurrency)
+    public static TimeSeries CalculateTotalGasIncome(TimeSeries totalGasProduction,TimeSeries fuelFlaringAndLosses, double gasPriceNok, double usdToNok, Currency projectCurrency)
     {
         var rate = projectCurrency == Currency.Nok ? 1.0 : 1 / usdToNok;
+        var totalGasSales = TimeSeriesMerger.MergeTimeSeriesWithSubtraction(totalGasProduction, fuelFlaringAndLosses);
+
         return new TimeSeries(
-            totalGasProduction.StartYear,
-            totalGasProduction.Values
+            totalGasSales.StartYear,
+            totalGasSales.Values
                 .Select(value => value * gasPriceNok * rate)
                 .ToArray()
             );
     }
-    /// <summary>production * price</summary>
+
+    /// <summary>(oil production + condensate production) * price</summary>
     /// <param name="totalOilProduction"> production in m3 </param>
+    /// <param name="totalCondensateProduction">condensate in m3</param>
     /// <param name="oilPriceUsd"> usd price per barrel </param>
     /// <param name="usdToNok"> currency rate usd to nok </param>
     /// <param name='projectCurrency'> currency of the project </param>
-    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, double oilPriceUsd, double usdToNok, Currency projectCurrency)
+    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, TimeSeries totalCondensateProduction,double oilPriceUsd, double usdToNok, Currency projectCurrency)
     {
         var rate = projectCurrency == Currency.Usd ? 1.0 : usdToNok;
+        var totalOilSales = TimeSeriesMerger.MergeTimeSeries(totalOilProduction, totalCondensateProduction);
         return new TimeSeries(
-            totalOilProduction.StartYear,
-            totalOilProduction.Values
+            totalOilSales.StartYear,
+            totalOilSales.Values
                 .Select(value => value * BarrelsPerCubicMeter * oilPriceUsd * rate)
                 .ToArray()
         );
