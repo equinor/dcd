@@ -2,6 +2,13 @@ namespace api.AppInfrastructure;
 
 public static class DcdEnvironments
 {
+    public static string AppConfigurationEnvironment => CurrentEnvironment switch
+    {
+        Ci => RadixDev,
+        LocalDev => RadixDev,
+        _ => CurrentEnvironment
+    };
+
     public static string CurrentEnvironment { get; set; } = null!;
 
     private const string LocalDev = "localdev";

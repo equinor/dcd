@@ -14,7 +14,7 @@ public static class DcdAzureAppConfiguration
             options => options.Connect(azureAppConfigConnectionString)
                 .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential()))
                 .Select(KeyFilter.Any)
-                .Select(KeyFilter.Any, DcdEnvironments.CurrentEnvironment)
+                .Select(KeyFilter.Any, DcdEnvironments.AppConfigurationEnvironment)
         );
 
         try
