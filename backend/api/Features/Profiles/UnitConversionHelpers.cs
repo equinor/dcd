@@ -29,7 +29,9 @@ public static class UnitConversionHelpers
         { ProfileTypes.CalculatedTotalGasIncomeCostProfile, Mega },
         { ProfileTypes.CalculatedTotalOilIncomeCostProfile, Mega },
         { ProfileTypes.CalculatedTotalIncomeCostProfile, Mega },
-        { ProfileTypes.CalculatedTotalCashflow, Mega }
+        { ProfileTypes.CalculatedTotalCashflow, Mega },
+        { ProfileTypes.CalculatedTotalCostCostProfile, Mega },
+        { ProfileTypes.CalculatedDiscountedCashflow, Mega }
     };
 
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, Currency currency, double usdToNok, string type)

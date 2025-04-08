@@ -33,7 +33,7 @@ public class CaseWithAssetsDto
     public required TimeSeriesDto? CalculatedTotalOilIncomeCostProfile { get; set; }
 
     public required TimeSeriesDto? CalculatedTotalGasIncomeCostProfile { get; set; }
-    public required TimeSeriesDto? CalculatedDiscountedCashflowService { get; set; }
+    public required TimeSeriesDto? CalculatedDiscountedCashflow { get; set; }
 
     [Required] public required TopsideDto Topside { get; set; }
     public required TimeSeriesDto? TopsideCostProfile { get; set; }

@@ -138,7 +138,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     const dg4Year = getYearFromDateString(apiData.case.dg4Date)
     const cashflowProfile = apiData.calculatedTotalCashflow
-    const discountedCashflowData = apiData.calculatedDiscountedCashflowService
+    const discountedCashflowData = apiData.calculatedDiscountedCashflow
 
     const cashFlow: ITimeSeries = {
         startYear: cashflowProfile?.startYear ?? 0,

@@ -51,7 +51,7 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         FuelFlaringLossesProfileService.RunCalculation(caseItem);
         GenerateGAndGAdminCostProfile.RunCalculation(caseItem, explorationWells);
         ImportedElectricityProfileService.RunCalculation(caseItem);
-        NetSaleGasProfileService.RunCalculation(caseItem);
+        NetSaleGasProfileService.RunCalculation(caseItem); // TODO look into this
         OpexCostProfileService.RunCalculation(caseItem, developmentWell);
         Co2EmissionsProfileService.RunCalculation(caseItem, developmentWell);
         Co2IntensityProfileService.RunCalculation(caseItem);
@@ -63,9 +63,9 @@ public class RecalculationService(DcdDbContext context, RecalculationRepository 
         ProductionProfileNglProfileService.RunCalculation(caseItem);
         CondensateProductionProfileService.RunCalculation(caseItem);
         TotalExportedVolumesProfileService.RunCalculation(caseItem);
-        CalculatedDiscountedCashflowService.RunCalculation(caseItem);
         CalculateTotalOilIncomeService.RunCalculation(caseItem);
         CalculateTotalGasIncomeService.RunCalculation(caseItem);
         CalculateCashflowService.RunCalculation(caseItem);
+        CalculatedDiscountedCashflowService.RunCalculation(caseItem);
     }
 }

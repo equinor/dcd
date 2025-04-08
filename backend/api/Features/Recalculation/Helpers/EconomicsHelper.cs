@@ -2,6 +2,8 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models.Enums;
 
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Helpers;
@@ -30,31 +32,21 @@ public static class EconomicsHelper
         return accumulatedVolume;
     }
 
-    public static TimeSeries CalculateDiscountedVolume(double[] values, double discountRatePercentage, int valuesStartYear, int discountYearInRelationToDg4Year)
+    public static TimeSeries CalculateWithDiscountFactor(double discountRatePercentage, int npvYear, int dg4Year, TimeSeries timeSeries)
     {
-        var discountFactors = GetDiscountFactors(discountRatePercentage, values.Length + Math.Abs(valuesStartYear + Math.Abs(discountYearInRelationToDg4Year)));
-
-        var discountedValues = new double[values.Length];
-
-        for (var i = 0; i < values.Length; i++)
+        var discountYear = npvYear - dg4Year;
+        var offset = timeSeries.StartYear - discountYear;
+        var discountFactors = GetDiscountFactors(discountRatePercentage, timeSeries.Values.Length + offset);
+        if(offset > 0)
         {
-            var discountFactorIndex = i + valuesStartYear + Math.Abs(discountYearInRelationToDg4Year);
-
-            if (discountFactorIndex < 0 || discountFactorIndex >= discountFactors.Count)
-            {
-                discountedValues[i] = 0;
-
-                continue;
-            }
-
-            discountedValues[i] = values[i] * discountFactors[discountFactorIndex];
+            discountFactors.InsertRange(0, Enumerable.Repeat(1.0, offset));
         }
 
-        return new TimeSeries
-        {
-            StartYear = valuesStartYear,
-            Values = discountedValues
-        };
+        var discountFactorsSeries = new TimeSeries(
+                discountYear,
+                discountFactors.ToArray()
+            );
+        return TimeSeriesMerger.MergeTimeSeriesWithMultiplication(discountFactorsSeries, timeSeries);
     }
 
     public static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)

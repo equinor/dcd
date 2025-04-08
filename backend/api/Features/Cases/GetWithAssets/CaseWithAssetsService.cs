@@ -49,7 +49,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             CalculatedTotalIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile),ProfileTypes.CalculatedTotalIncomeCostProfile, physicalUnit, currency, usdToNok),
             CalculatedTotalCostCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile),ProfileTypes.CalculatedTotalCostCostProfile, physicalUnit, currency, usdToNok),
             CalculatedTotalCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCashflow), ProfileTypes.CalculatedTotalCashflow, physicalUnit, currency, usdToNok),
-            CalculatedDiscountedCashflowService = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedDiscountedCashflow)),
+            CalculatedDiscountedCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedDiscountedCashflow), ProfileTypes.CalculatedDiscountedCashflow, physicalUnit, currency, usdToNok),
             CalculatedTotalOilIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalOilIncomeCostProfile), ProfileTypes.CalculatedTotalOilIncomeCostProfile, physicalUnit, currency, usdToNok),
             CalculatedTotalGasIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalGasIncomeCostProfile), ProfileTypes.CalculatedTotalGasIncomeCostProfile, physicalUnit, currency, usdToNok),
 

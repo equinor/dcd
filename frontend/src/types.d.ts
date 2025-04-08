@@ -96,7 +96,7 @@ declare namespace Components {
             calculatedTotalCashflow: TimeSeriesDto;
             calculatedTotalOilIncomeCostProfile: TimeSeriesDto;
             calculatedTotalGasIncomeCostProfile: TimeSeriesDto;
-            calculatedDiscountedCashflowService: TimeSeriesDto;
+            calculatedDiscountedCashflow: TimeSeriesDto;
             topside: TopsideDto;
             topsideCostProfile: TimeSeriesDto;
             topsideCostProfileOverride: TimeSeriesOverrideDto;

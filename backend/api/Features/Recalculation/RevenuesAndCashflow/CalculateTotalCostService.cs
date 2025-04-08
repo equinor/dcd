@@ -2,6 +2,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Cost;
 
@@ -9,18 +10,19 @@ public static class CalculateTotalCostService
 {
     /// <summary>
     /// sum cost for study, opex, cessation, offshore facility, development and exploration
+    /// Note: missing Co2 Tax, tariffs oil, tariffs ngl, tariffs sales gas, cost of electricity.
     /// </summary>
     public static void RunCalculation(Case caseItem)
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
         var totalOpexCost = CalculateOpexCost(caseItem);
-        var totalCessationCost = CalculateCessationCost(caseItem);
+        var totalCessationCost = CalculateCessationCost(caseItem);//TODO
 
         var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem);
         var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);
         var explorationCost = CalculateTotalExplorationCost(caseItem);
 
-        var totalCost = TimeSeriesMerger.MergeTimeSeries(
+        var totalCostMega = TimeSeriesMerger.MergeTimeSeries(
             totalStudyCost,
             totalOpexCost,
             totalCessationCost,
@@ -28,6 +30,11 @@ public static class CalculateTotalCostService
             totalDevelopmentCost,
             explorationCost
         );
+
+        var totalCost = new TimeSeries(
+                totalCostMega.StartYear,
+                totalCostMega.Values.Select(x => x * Mega).ToArray()
+            );
 
         var calculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfile);
 
