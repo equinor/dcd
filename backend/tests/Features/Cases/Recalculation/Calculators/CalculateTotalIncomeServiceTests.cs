@@ -57,6 +57,7 @@ public class CalculateTotalIncomeServiceTests
             FacilityOpex = 0,
             PeakElectricityImported = 0
         };
+
         var drainageStrategy = new DrainageStrategy
         {
             GasSolution = GasSolution.Export,
@@ -134,7 +135,6 @@ public class CalculateTotalIncomeServiceTests
         Assert.Equal(expectedFirstYearGasIncome, netSalesGas.Values[0], precision: 0);
         Assert.Equal(expectedSecondYearGasIncome, netSalesGas.Values[1], precision: 0);
         Assert.Equal(expectedThirdYearGasIncome, netSalesGas.Values[2], precision: 0);
-
 
         CalculateTotalIncomeService.RunCalculation(caseItem);
         var expectedFirstYearIncome = (2000000.0 * oilPriceUsd * BarrelsPerCubicMeter * currencyRate + 2000000000.0 * gasPriceNok) / currencyRate;
