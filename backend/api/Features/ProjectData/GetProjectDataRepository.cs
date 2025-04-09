@@ -2,6 +2,7 @@ using api.Context;
 using api.Features.ProjectData.Dtos;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.ProjectMembers.Get;
+using api.Features.Cases.GetWithAssets.AssetMappers;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -149,7 +150,8 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
                 SharepointFileUrl = x.SharepointFileUrl,
-                SharepointUpdatedTimestampUtc = x.SharepointUpdatedTimestampUtc
+                SharepointUpdatedTimestampUtc = x.SharepointUpdatedTimestampUtc,
+                TableRanges = TableRangesMapper.MapToDto(x)
             })
             .ToListAsync();
     }

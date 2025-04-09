@@ -116,6 +116,8 @@ public class CreateCaseService(DcdDbContext context)
             ]
         };
 
+        SetTableRanges(createdCase);
+
         context.Cases.Add(createdCase);
 
         await context.SaveChangesAsync();
@@ -244,5 +246,16 @@ public class CreateCaseService(DcdDbContext context)
         var dg0Date = dg1Date.AddMonths(-12);
 
         return (dg4date, dg3Date, dg2Date, dg1Date, dg0Date);
+    }
+
+    private static void SetTableRanges(Case caseItem)
+    {
+        var dg4Year = caseItem.Dg4Date.Year;
+        var currentYear = DateTime.UtcNow.Year;
+
+        caseItem.Co2EmissionsYears = [dg4Year - 1, dg4Year + 15];
+        caseItem.DrillingScheduleYears = [currentYear, dg4Year + 1];
+        caseItem.CaseCostYears = [currentYear, dg4Year + 15];
+        caseItem.ProductionProfilesYears = [dg4Year - 1, dg4Year + 15];
     }
 }
