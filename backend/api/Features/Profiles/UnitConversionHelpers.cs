@@ -34,9 +34,9 @@ public static class UnitConversionHelpers
         { ProfileTypes.CalculatedDiscountedCashflow, Mega }
     };
 
-    public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, Currency currency, double usdToNok, string type)
+    public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)
     {
-        var conversionFactor = GetConversionFactor(type, unit, currency, usdToNok, toDto: true);
+        var conversionFactor = GetConversionFactor(type, unit, toDto: true);
 
         return Array.ConvertAll(values, x => Math.Round(x * conversionFactor, 10));
     }
@@ -59,13 +59,6 @@ public static class UnitConversionHelpers
         var unitFactor = GetUnitFactor(unit, type, toDto);
 
         return prefixFactor * unitFactor;
-    }
-
-    private static double GetConversionFactor(string type, PhysUnit unit, Currency currency, double usdToNok, bool toDto)
-    {
-        //var currencyFactor = GetCurrencyFactor(currency, type, usdToNok);
-        //return currencyFactor * GetConversionFactor(type, unit, toDto);
-        return GetConversionFactor(type, unit, toDto);
     }
 
     public static readonly IReadOnlySet<string> ProfileTypesWithConversion = new HashSet<string>
@@ -129,27 +122,4 @@ public static class UnitConversionHelpers
         }
         return 1;
     }
-
-    private static double GetCurrencyFactor(Currency currency, string type, double usdToNok)
-    {
-        switch (currency)
-        {
-            case Currency.Nok:
-                return type switch
-                {
-                    ProfileTypes.CalculatedTotalIncomeCostProfile => usdToNok,
-                    ProfileTypes.CalculatedTotalOilIncomeCostProfile => usdToNok,
-                    _ => 1.0
-                };
-            case Currency.Usd:
-                return type switch
-                {
-                    ProfileTypes.CalculatedTotalGasIncomeCostProfile => 1 / usdToNok,
-                    _ => 1.0
-                };
-            default:
-                throw new Exception("Missing handling for currency dto conversion");
-        }
-    }
-
 }

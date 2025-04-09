@@ -15,14 +15,10 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
     public async Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
-        var projectData = await context.Projects
+        var physicalUnit = await context.Projects
             .Where(x => x.Id == projectPk)
-            .Select(x => new{ x.PhysicalUnit, x.Currency, x.ExchangeRateUsdToNok})
+            .Select(x => x.PhysicalUnit)
             .SingleAsync();
-
-        var physicalUnit = projectData.PhysicalUnit;
-        var currency = projectData.Currency;
-        var usdToNok = projectData.ExchangeRateUsdToNok;
 
         var caseItem = await caseWithAssetsRepository.GetCaseWithAssets(projectPk, caseId);
 
@@ -46,38 +42,38 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OffshoreFacilitiesOperationsCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)),
             OnshoreRelatedOpexCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOpexCostProfile)),
             AdditionalOpexCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOpexCostProfile)),
-            CalculatedTotalIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile),ProfileTypes.CalculatedTotalIncomeCostProfile, physicalUnit, currency, usdToNok),
-            CalculatedTotalCostCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile),ProfileTypes.CalculatedTotalCostCostProfile, physicalUnit, currency, usdToNok),
-            CalculatedTotalCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCashflow), ProfileTypes.CalculatedTotalCashflow, physicalUnit, currency, usdToNok),
-            CalculatedDiscountedCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedDiscountedCashflow), ProfileTypes.CalculatedDiscountedCashflow, physicalUnit, currency, usdToNok),
-            CalculatedTotalOilIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalOilIncomeCostProfile), ProfileTypes.CalculatedTotalOilIncomeCostProfile, physicalUnit, currency, usdToNok),
-            CalculatedTotalGasIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalGasIncomeCostProfile), ProfileTypes.CalculatedTotalGasIncomeCostProfile, physicalUnit, currency, usdToNok),
+            CalculatedTotalIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile),ProfileTypes.CalculatedTotalIncomeCostProfile, physicalUnit),
+            CalculatedTotalCostCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile),ProfileTypes.CalculatedTotalCostCostProfile, physicalUnit),
+            CalculatedTotalCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCashflow), ProfileTypes.CalculatedTotalCashflow, physicalUnit),
+            CalculatedDiscountedCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedDiscountedCashflow), ProfileTypes.CalculatedDiscountedCashflow, physicalUnit),
+            CalculatedTotalOilIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalOilIncomeCostProfile), ProfileTypes.CalculatedTotalOilIncomeCostProfile, physicalUnit),
+            CalculatedTotalGasIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalGasIncomeCostProfile), ProfileTypes.CalculatedTotalGasIncomeCostProfile, physicalUnit),
 
             DrainageStrategy = DrainageStrategyMapper.MapToDto(caseItem.DrainageStrategy),
-            ProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), ProfileTypes.ProductionProfileOil, physicalUnit, currency, usdToNok),
-            AdditionalProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil), ProfileTypes.AdditionalProductionProfileOil, physicalUnit, currency, usdToNok),
-            ProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas), ProfileTypes.ProductionProfileGas, physicalUnit, currency, usdToNok),
-            AdditionalProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas), ProfileTypes.AdditionalProductionProfileGas, physicalUnit, currency, usdToNok),
-            ProductionProfileWater = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWater), ProfileTypes.ProductionProfileWater, physicalUnit, currency, usdToNok),
-            ProductionProfileWaterInjection = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection), ProfileTypes.ProductionProfileWaterInjection, physicalUnit, currency, usdToNok),
-            FuelFlaringAndLosses = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLosses), ProfileTypes.FuelFlaringAndLosses, physicalUnit, currency, usdToNok),
-            FuelFlaringAndLossesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), ProfileTypes.FuelFlaringAndLossesOverride, physicalUnit, currency, usdToNok),
-            NetSalesGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas), ProfileTypes.NetSalesGas, physicalUnit, currency, usdToNok),
-            NetSalesGasOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride), ProfileTypes.NetSalesGasOverride, physicalUnit, currency, usdToNok),
-            TotalExportedVolumes = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumes), ProfileTypes.TotalExportedVolumes, physicalUnit, currency, usdToNok),
-            TotalExportedVolumesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumesOverride), ProfileTypes.TotalExportedVolumesOverride, physicalUnit, currency, usdToNok),
-            Co2Emissions = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), ProfileTypes.Co2Emissions, physicalUnit, currency, usdToNok),
-            Co2EmissionsOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), ProfileTypes.Co2EmissionsOverride, physicalUnit, currency, usdToNok),
-            Co2Intensity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), ProfileTypes.Co2Intensity, physicalUnit, currency, usdToNok),
-            Co2IntensityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride), ProfileTypes.Co2IntensityOverride, physicalUnit, currency, usdToNok),
-            ProductionProfileNgl = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), ProfileTypes.ProductionProfileNgl, physicalUnit, currency, usdToNok),
-            ProductionProfileNglOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride), ProfileTypes.ProductionProfileNglOverride, physicalUnit, currency, usdToNok),
-            CondensateProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction), ProfileTypes.CondensateProduction, physicalUnit, currency, usdToNok),
-            CondensateProductionOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProductionOverride), ProfileTypes.CondensateProductionOverride, physicalUnit, currency, usdToNok),
-            ImportedElectricity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), ProfileTypes.ImportedElectricity, physicalUnit, currency, usdToNok),
-            ImportedElectricityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), ProfileTypes.ImportedElectricityOverride, physicalUnit, currency, usdToNok),
-            DeferredOilProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), ProfileTypes.DeferredOilProduction, physicalUnit, currency, usdToNok),
-            DeferredGasProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredGasProduction), ProfileTypes.DeferredGasProduction, physicalUnit, currency, usdToNok),
+            ProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileOil), ProfileTypes.ProductionProfileOil, physicalUnit),
+            AdditionalProductionProfileOil = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileOil), ProfileTypes.AdditionalProductionProfileOil, physicalUnit),
+            ProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileGas), ProfileTypes.ProductionProfileGas, physicalUnit),
+            AdditionalProductionProfileGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalProductionProfileGas), ProfileTypes.AdditionalProductionProfileGas, physicalUnit),
+            ProductionProfileWater = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWater), ProfileTypes.ProductionProfileWater, physicalUnit),
+            ProductionProfileWaterInjection = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileWaterInjection), ProfileTypes.ProductionProfileWaterInjection, physicalUnit),
+            FuelFlaringAndLosses = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLosses), ProfileTypes.FuelFlaringAndLosses, physicalUnit),
+            FuelFlaringAndLossesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride), ProfileTypes.FuelFlaringAndLossesOverride, physicalUnit),
+            NetSalesGas = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGas), ProfileTypes.NetSalesGas, physicalUnit),
+            NetSalesGasOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.NetSalesGasOverride), ProfileTypes.NetSalesGasOverride, physicalUnit),
+            TotalExportedVolumes = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumes), ProfileTypes.TotalExportedVolumes, physicalUnit),
+            TotalExportedVolumesOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.TotalExportedVolumesOverride), ProfileTypes.TotalExportedVolumesOverride, physicalUnit),
+            Co2Emissions = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Emissions), ProfileTypes.Co2Emissions, physicalUnit),
+            Co2EmissionsOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2EmissionsOverride), ProfileTypes.Co2EmissionsOverride, physicalUnit),
+            Co2Intensity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.Co2Intensity), ProfileTypes.Co2Intensity, physicalUnit),
+            Co2IntensityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.Co2IntensityOverride), ProfileTypes.Co2IntensityOverride, physicalUnit),
+            ProductionProfileNgl = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNgl), ProfileTypes.ProductionProfileNgl, physicalUnit),
+            ProductionProfileNglOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ProductionProfileNglOverride), ProfileTypes.ProductionProfileNglOverride, physicalUnit),
+            CondensateProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProduction), ProfileTypes.CondensateProduction, physicalUnit),
+            CondensateProductionOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.CondensateProductionOverride), ProfileTypes.CondensateProductionOverride, physicalUnit),
+            ImportedElectricity = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricity), ProfileTypes.ImportedElectricity, physicalUnit),
+            ImportedElectricityOverride = ConversionMapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.ImportedElectricityOverride), ProfileTypes.ImportedElectricityOverride, physicalUnit),
+            DeferredOilProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredOilProduction), ProfileTypes.DeferredOilProduction, physicalUnit),
+            DeferredGasProduction = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.DeferredGasProduction), ProfileTypes.DeferredGasProduction, physicalUnit),
 
             Topside = TopsideMapper.MapToDto(caseItem.Topside),
             TopsideCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.TopsideCostProfile)),
@@ -168,7 +164,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         };
     }
 
-    private static TimeSeriesDto? ConversionMapToDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit, Currency currency, double usdToNok)
+    private static TimeSeriesDto? ConversionMapToDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
     {
         if (entity == null)
         {
@@ -178,12 +174,12 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         return new TimeSeriesDto
         {
             StartYear = entity.StartYear,
-            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, currency, usdToNok, profileType),
+            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
             UpdatedUtc = entity.UpdatedUtc
         };
     }
 
-    private static TimeSeriesOverrideDto? ConversionMapToOverrideDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit, Currency currency, double usdToNok)
+    private static TimeSeriesOverrideDto? ConversionMapToOverrideDto(TimeSeriesProfile? entity, string profileType, PhysUnit physUnit)
     {
         if (entity == null)
         {
@@ -194,7 +190,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
         {
             StartYear = entity.StartYear,
             Override = entity.Override,
-            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, currency, usdToNok, profileType),
+            Values = UnitConversionHelpers.ConvertValuesToDto(entity.Values, physUnit, profileType),
             UpdatedUtc = entity.UpdatedUtc
         };
     }
