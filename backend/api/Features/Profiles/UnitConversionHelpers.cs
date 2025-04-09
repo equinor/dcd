@@ -91,6 +91,7 @@ public static class UnitConversionHelpers
         {
             return toDto ? 1.0 / conversionFactor : conversionFactor;
         }
+
         return 1.0;
     }
 
@@ -120,6 +121,7 @@ public static class UnitConversionHelpers
                         : 1.0 / CubicFeetPerCubicMeter;
             }
         }
+
         return 1;
     }
 }
