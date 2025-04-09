@@ -26,5 +26,4 @@ public static class CalculatedDiscountedCashflowService
         profile.Values = discountedCashFlow.Values;
         profile.StartYear = discountedCashFlow.StartYear;
     }
-
 }

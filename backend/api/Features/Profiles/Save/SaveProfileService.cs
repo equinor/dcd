@@ -89,7 +89,7 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
 
         var projectData = await context.Projects
             .Where(x => x.Id == projectPk)
-            .Select(x => new { x.PhysicalUnit})
+            .Select(x => new { x.PhysicalUnit })
             .SingleAsync();
 
         return UnitConversionHelpers.ConvertValuesFromDto(dtoValues, projectData.PhysicalUnit, profileType);

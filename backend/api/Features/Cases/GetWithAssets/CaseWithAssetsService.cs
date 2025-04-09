@@ -15,6 +15,7 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
     public async Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId)
     {
         var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
+
         var physicalUnit = await context.Projects
             .Where(x => x.Id == projectPk)
             .Select(x => x.PhysicalUnit)
@@ -42,8 +43,8 @@ public class CaseWithAssetsService(DcdDbContext context, CaseWithAssetsRepositor
             OffshoreFacilitiesOperationsCostProfileOverride = MapToOverrideDto(caseItem.GetProfileOrNull(ProfileTypes.OffshoreFacilitiesOperationsCostProfileOverride)),
             OnshoreRelatedOpexCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.OnshoreRelatedOpexCostProfile)),
             AdditionalOpexCostProfile = MapToDto(caseItem.GetProfileOrNull(ProfileTypes.AdditionalOpexCostProfile)),
-            CalculatedTotalIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile),ProfileTypes.CalculatedTotalIncomeCostProfile, physicalUnit),
-            CalculatedTotalCostCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile),ProfileTypes.CalculatedTotalCostCostProfile, physicalUnit),
+            CalculatedTotalIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalIncomeCostProfile), ProfileTypes.CalculatedTotalIncomeCostProfile, physicalUnit),
+            CalculatedTotalCostCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile), ProfileTypes.CalculatedTotalCostCostProfile, physicalUnit),
             CalculatedTotalCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCashflow), ProfileTypes.CalculatedTotalCashflow, physicalUnit),
             CalculatedDiscountedCashflow = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedDiscountedCashflow), ProfileTypes.CalculatedDiscountedCashflow, physicalUnit),
             CalculatedTotalOilIncomeCostProfile = ConversionMapToDto(caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalOilIncomeCostProfile), ProfileTypes.CalculatedTotalOilIncomeCostProfile, physicalUnit),

@@ -38,15 +38,17 @@ public static class EconomicsHelper
         var discountYear = npvYear - dg4Year;
         var offset = timeSeries.StartYear - discountYear;
         var discountFactors = GetDiscountFactors(discountRatePercentage, timeSeries.Values.Length + offset);
-        if(offset < 0)
+
+        if (offset < 0)
         {
             discountFactors.InsertRange(0, Enumerable.Repeat(1.0, offset));
         }
 
         var discountFactorsSeries = new TimeSeries(
-                discountYear,
-                discountFactors.ToArray()
-            );
+            discountYear,
+            discountFactors.ToArray()
+        );
+
         return TimeSeriesMerger.MergeTimeSeriesWithMultiplication(discountFactorsSeries, timeSeries);
     }
 
@@ -86,7 +88,7 @@ public static class EconomicsHelper
             netSalesGas.Values
                 .Select(value => value * gasPriceNok * rate)
                 .ToArray()
-            );
+        );
     }
 
     /// <summary>(gas production - flaring loss)</summary>
@@ -125,10 +127,11 @@ public static class EconomicsHelper
     /// <param name="oilPriceUsd"> usd price per barrel </param>
     /// <param name="usdToNok"> currency rate usd to nok </param>
     /// <param name='projectCurrency'> currency of the project </param>
-    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, TimeSeries totalCondensateProduction,double oilPriceUsd, double usdToNok, Currency projectCurrency)
+    public static TimeSeries CalculateTotalOilIncome(TimeSeries totalOilProduction, TimeSeries totalCondensateProduction, double oilPriceUsd, double usdToNok, Currency projectCurrency)
     {
         var rate = projectCurrency == Currency.Usd ? 1.0 : usdToNok;
         var totalOilSales = TimeSeriesMerger.MergeTimeSeries(totalOilProduction, totalCondensateProduction);
+
         return new TimeSeries(
             totalOilSales.StartYear,
             totalOilSales.Values

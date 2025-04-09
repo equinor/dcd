@@ -62,7 +62,7 @@ public static class CalculateBreakEvenOilPriceService
 
         var gor = discountedNetSalesGasVolume / discountedOilVolume;
 
-        var pa = gasPriceNok * (Giga/Mega) / (exchangeRateUsdToNok * BarrelsPerCubicMeter * oilPrice);
+        var pa = gasPriceNok * (Giga / Mega) / (exchangeRateUsdToNok * BarrelsPerCubicMeter * oilPrice);
 
         var rate = caseItem.Project.Currency == Currency.Usd ? 1 : exchangeRateUsdToNok;
 

@@ -24,8 +24,10 @@ public class Project : IChangeTrackable, IDateTrackedEntity
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public string? SharepointSiteUrl { get; set; }
+
     /// <summary>Usd/bbl</summary>
     public double OilPriceUsd { get; set; }
+
     public double GasPriceNok { get; set; }
     public double NglPriceUsd { get; set; }
     public double DiscountRate { get; set; }

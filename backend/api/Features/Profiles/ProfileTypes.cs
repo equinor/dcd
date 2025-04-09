@@ -17,11 +17,13 @@ public static class ProfileTypes
 
     /// <summary> Mega </summary>
     public const string TotalFeasibilityAndConceptStudies = "TotalFeasibilityAndConceptStudies";
+
     /// <summary> Mega </summary>
     public const string TotalFeasibilityAndConceptStudiesOverride = "TotalFeasibilityAndConceptStudiesOverride";
 
     /// <summary> Mega </summary>
     public const string TotalFeedStudies = "TotalFeedStudies";
+
     /// <summary> Mega </summary>
     public const string TotalFeedStudiesOverride = "TotalFeedStudiesOverride";
 
@@ -51,6 +53,7 @@ public static class ProfileTypes
     /* Topside profiles */
     /// <summary> Mega </summary>
     public const string TopsideCostProfile = "TopsideCostProfile";
+
     /// <summary> Mega </summary>
     public const string TopsideCostProfileOverride = "TopsideCostProfileOverride";
 
@@ -59,6 +62,7 @@ public static class ProfileTypes
     /* Transport profiles */
     /// <summary> Mega </summary>
     public const string TransportCostProfile = "TransportCostProfile";
+
     /// <summary> Mega </summary>
     public const string TransportCostProfileOverride = "TransportCostProfileOverride";
 
@@ -67,6 +71,7 @@ public static class ProfileTypes
     /* Surf profiles */
     /// <summary> Mega </summary>
     public const string SurfCostProfile = "SurfCostProfile";
+
     /// <summary> Mega </summary>
     public const string SurfCostProfileOverride = "SurfCostProfileOverride";
 
@@ -75,6 +80,7 @@ public static class ProfileTypes
     /* Substructure profiles */
     /// <summary> Mega </summary>
     public const string SubstructureCostProfile = "SubstructureCostProfile";
+
     /// <summary> Mega </summary>
     public const string SubstructureCostProfileOverride = "SubstructureCostProfileOverride";
 
@@ -83,27 +89,32 @@ public static class ProfileTypes
     /* Onshore power supply profiles */
     /// <summary> Mega </summary>
     public const string OnshorePowerSupplyCostProfile = "OnshorePowerSupplyCostProfile";
+
     /// <summary> Mega </summary>
     public const string OnshorePowerSupplyCostProfileOverride = "OnshorePowerSupplyCostProfileOverride";
 
     /* Exploration profiles */
     /// <summary> Mega </summary>
     public const string GAndGAdminCost = "GAndGAdminCost";
+
     /// <summary> Mega </summary>
     public const string GAndGAdminCostOverride = "GAndGAdminCostOverride";
 
     /// <summary> Mega </summary>
     public const string ExplorationWellCostProfile = "ExplorationWellCostProfile";
+
     /// <summary> Mega </summary>
     public const string ExplorationWellCostProfileOverride = "ExplorationWellCostProfileOverride";
 
     /// <summary> Mega </summary>
     public const string AppraisalWellCostProfile = "AppraisalWellCostProfile";
+
     /// <summary> Mega </summary>
     public const string AppraisalWellCostProfileOverride = "AppraisalWellCostProfileOverride";
 
     /// <summary> Mega </summary>
     public const string SidetrackCostProfile = "SidetrackCostProfile";
+
     /// <summary> Mega </summary>
     public const string SidetrackCostProfileOverride = "SidetrackCostProfileOverride";
 
@@ -124,21 +135,25 @@ public static class ProfileTypes
     /* Well project profiles */
     /// <summary> Mega </summary>
     public const string OilProducerCostProfile = "OilProducerCostProfile";
+
     /// <summary> Mega </summary>
     public const string OilProducerCostProfileOverride = "OilProducerCostProfileOverride";
 
     /// <summary> Mega </summary>
     public const string GasProducerCostProfile = "GasProducerCostProfile";
+
     /// <summary> Mega </summary>
     public const string GasProducerCostProfileOverride = "GasProducerCostProfileOverride";
 
     /// <summary> Mega </summary>
     public const string WaterInjectorCostProfile = "WaterInjectorCostProfile";
+
     /// <summary> Mega </summary>
     public const string WaterInjectorCostProfileOverride = "WaterInjectorCostProfileOverride";
 
     /// <summary> Mega </summary>
     public const string GasInjectorCostProfile = "GasInjectorCostProfile";
+
     /// <summary> Mega </summary>
     public const string GasInjectorCostProfileOverride = "GasInjectorCostProfileOverride";
 

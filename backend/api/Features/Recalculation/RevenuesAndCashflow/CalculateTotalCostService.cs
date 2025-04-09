@@ -34,9 +34,9 @@ public static class CalculateTotalCostService
         );
 
         var totalCost = new TimeSeries(
-                totalCostMega.StartYear,
-                totalCostMega.Values.Select(x => x * Mega).ToArray()
-            );
+            totalCostMega.StartYear,
+            totalCostMega.Values.Select(x => x * Mega).ToArray()
+        );
 
         var calculatedTotalCostCostProfileUsd = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalCostCostProfile);
 
