@@ -38,7 +38,7 @@ public static class EconomicsHelper
         var discountYear = npvYear - dg4Year;
         var offset = timeSeries.StartYear - discountYear;
         var discountFactors = GetDiscountFactors(discountRatePercentage, timeSeries.Values.Length + offset);
-        if(offset > 0)
+        if(offset < 0)
         {
             discountFactors.InsertRange(0, Enumerable.Repeat(1.0, offset));
         }
