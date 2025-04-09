@@ -4,15 +4,11 @@ using api.Models;
 
 namespace api.Features.Recalculation.Production;
 
+// dependency order 1
 public static class FuelFlaringLossesProfileService
 {
     public static void RunCalculation(Case caseItem)
     {
-        if (caseItem.GetProfileOrNull(ProfileTypes.FuelFlaringAndLossesOverride)?.Override == true)
-        {
-            return;
-        }
-
         var fuelFlaringAndLosses = EmissionCalculationHelper.CalculateFuelFlaringAndLosses(caseItem);
 
         var profile = caseItem.CreateProfileIfNotExists(ProfileTypes.FuelFlaringAndLosses);

@@ -4,6 +4,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Cost;
 
+// dependency order 2
 public static class StudyCostProfileService
 {
     public static void RunCalculation(Case caseItem)

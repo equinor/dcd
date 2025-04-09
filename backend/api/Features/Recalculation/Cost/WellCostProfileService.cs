@@ -6,6 +6,7 @@ using api.Models.Enums;
 
 namespace api.Features.Recalculation.Cost;
 
+// dependency order 1
 public static class WellCostProfileService
 {
     public static void RunCalculation(Case caseItem)

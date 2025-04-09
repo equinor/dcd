@@ -6,6 +6,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Cost;
 
+// dependency order 1
 public static class OpexCostProfileService
 {
     public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)

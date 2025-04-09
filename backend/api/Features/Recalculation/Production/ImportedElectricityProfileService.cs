@@ -5,6 +5,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Production;
 
+// dependency order 1
 public static class ImportedElectricityProfileService
 {
     public static void RunCalculation(Case caseItem)

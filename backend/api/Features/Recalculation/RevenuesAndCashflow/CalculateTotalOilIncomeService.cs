@@ -5,11 +5,12 @@ using api.Models;
 
 namespace api.Features.Recalculation.RevenuesAndCashflow;
 
-/// <summary>
-/// (oil production + condensate Production) * gas price
-/// </summary>
+// dependency order 2
 public static class CalculateTotalOilIncomeService
 {
+    /// <summary>
+    /// (oil production + condensate Production) * gas price
+    /// </summary>
     public static void RunCalculation(Case caseItem)
     {
         var oilProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileOil);

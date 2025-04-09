@@ -4,6 +4,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Cost;
 
+// dependency order 1
 public static class CessationCostProfileService
 {
     public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)

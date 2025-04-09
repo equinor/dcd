@@ -3,6 +3,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Cost;
 
+// dependency order 1
 public static class GenerateGAndGAdminCostProfile
 {
     public static void RunCalculation(Case caseItem, List<CampaignWell> explorationWells)

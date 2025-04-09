@@ -5,6 +5,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Production;
 
+// dependency order 1
 public static class ProductionProfileNglProfileService
 {
     public static void RunCalculation(Case caseItem)

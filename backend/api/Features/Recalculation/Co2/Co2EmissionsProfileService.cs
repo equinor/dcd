@@ -6,6 +6,7 @@ using api.Models;
 
 namespace api.Features.Recalculation.Co2;
 
+// dependency order 1
 public static class Co2EmissionsProfileService
 {
     public static void RunCalculation(Case caseItem, List<CampaignWell> developmentWells)

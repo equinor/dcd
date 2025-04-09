@@ -4,12 +4,13 @@ using api.Models;
 
 namespace api.Features.Recalculation.Co2;
 
+// dependency order 4
 public static class Co2IntensityProfileService
 {
     public static void RunCalculation(Case caseItem)
     {
         var totalExportedVolumes = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalExportedVolumes));
-        var co2EmissionsProfile = GetCo2EmissionsProfile(caseItem);
+        var co2EmissionsProfile = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions));
 
         var co2IntensityValues = new List<double>();
 
@@ -41,10 +42,4 @@ public static class Co2IntensityProfileService
         co2IntensityProfile.StartYear = co2EmissionsProfile.StartYear - co2YearOffset;
         co2IntensityProfile.Values = co2IntensityValues.ToArray();
     }
-
-    public static TimeSeries GetCo2EmissionsProfile(Case caseItem) =>
-        new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Emissions));
-
-    public static TimeSeries GetCo2IntensityProfile(Case caseItem) =>
-        new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.Co2Intensity));
 }

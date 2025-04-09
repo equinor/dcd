@@ -1,5 +1,6 @@
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
+using api.Models;
 using api.Models.Enums;
 
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -72,22 +73,50 @@ public static class EconomicsHelper
     }
 
     /// <summary>(gas production - flaring loss) * price</summary>
-    /// <param name="totalGasProduction"> production in m3 </param>
-    /// <param name="fuelFlaringAndLosses"> gas loss in m3</param>
+    /// <param name="netSalesGas"> net gas sales in m3 </param>
     /// <param name="gasPriceNok"> nok price per m3 </param>
     /// <param name="usdToNok"> currency rate usd to nok </param>
     /// <param name='projectCurrency'> currency of the project </param>
-    public static TimeSeries CalculateTotalGasIncome(TimeSeries totalGasProduction,TimeSeries fuelFlaringAndLosses, double gasPriceNok, double usdToNok, Currency projectCurrency)
+    public static TimeSeries CalculateTotalGasIncome(TimeSeries netSalesGas, double gasPriceNok, double usdToNok, Currency projectCurrency)
     {
         var rate = projectCurrency == Currency.Nok ? 1.0 : 1 / usdToNok;
-        var totalGasSales = TimeSeriesMerger.MergeTimeSeriesWithSubtraction(totalGasProduction, fuelFlaringAndLosses);
 
         return new TimeSeries(
-            totalGasSales.StartYear,
-            totalGasSales.Values
+            netSalesGas.StartYear,
+            netSalesGas.Values
                 .Select(value => value * gasPriceNok * rate)
                 .ToArray()
             );
+    }
+
+    /// <summary>(gas production - flaring loss)</summary>
+    /// <param name="totalGasProduction"> production in m3 </param>
+    /// <param name="fuelFlaringAndLosses"> gas loss in m3</param>
+    /// <param name="strategy"> case drainage strategy </param>
+    public static TimeSeries CalculateTotalGasSales(TimeSeries totalGasProduction, TimeSeries fuelFlaringAndLosses, DrainageStrategy strategy)
+    {
+        var gasSolution = strategy.GasSolution;
+        var nglYield = strategy.NglYield;
+        var condensateYield = strategy.CondensateYield;
+        var gasShrinkageFactor = strategy.GasShrinkageFactor;
+
+        if (gasSolution == GasSolution.Injection)
+        {
+            return new TimeSeries();
+        }
+
+        if (nglYield + condensateYield <= 0)
+        {
+            return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(totalGasProduction, fuelFlaringAndLosses);
+        }
+
+        var gasAdjustedForShrinkageFactor = new TimeSeries
+        {
+            StartYear = totalGasProduction.StartYear,
+            Values = totalGasProduction.Values.Select(value => value * (gasShrinkageFactor / 100)).ToArray()
+        };
+
+        return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(gasAdjustedForShrinkageFactor, fuelFlaringAndLosses);
     }
 
     /// <summary>(oil production + condensate production) * price</summary>

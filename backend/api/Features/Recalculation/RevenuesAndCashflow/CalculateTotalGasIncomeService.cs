@@ -4,6 +4,7 @@ using api.Features.Recalculation.Helpers;
 using api.Models;
 
 namespace api.Features.Recalculation.RevenuesAndCashflow;
+// dependency order 3
 
 public static class CalculateTotalGasIncomeService
 {
@@ -12,13 +13,12 @@ public static class CalculateTotalGasIncomeService
     /// </summary>
     public static void RunCalculation(Case caseItem)
     {
-        var gasProduction = caseItem.GetProductionAndAdditionalProduction(ProfileTypes.ProductionProfileGas);
-        var fuelFlaringAndLosses = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.FuelFlaringAndLosses));
+        var netGasSales = new TimeSeries(caseItem.GetOverrideProfileOrProfile(ProfileTypes.NetSalesGas));
         var gasPriceNok = caseItem.Project.GasPriceNok;
         var usdToNok = caseItem.Project.ExchangeRateUsdToNok;
         var currency = caseItem.Project.Currency;
 
-        var totalGasIncome = EconomicsHelper.CalculateTotalGasIncome(gasProduction, fuelFlaringAndLosses, gasPriceNok, usdToNok, currency);
+        var totalGasIncome = EconomicsHelper.CalculateTotalGasIncome(netGasSales, gasPriceNok, usdToNok, currency);
         var gasIncomeProfile = caseItem.CreateProfileIfNotExists(ProfileTypes.CalculatedTotalGasIncomeCostProfile);
 
         gasIncomeProfile.StartYear = totalGasIncome.StartYear;

@@ -6,6 +6,7 @@ using api.Models.Enums;
 
 namespace api.Features.Recalculation.RevenuesAndCashflow;
 
+// dependency order 4
 public static class CalculateNpvService
 {
     public static void RunCalculation(Case caseItem)

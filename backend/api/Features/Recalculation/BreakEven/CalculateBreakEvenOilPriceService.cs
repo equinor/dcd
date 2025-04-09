@@ -8,6 +8,7 @@ using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.BreakEven;
 
+// dependency order 4
 public static class CalculateBreakEvenOilPriceService
 {
     public static void RunCalculation(Case caseItem)

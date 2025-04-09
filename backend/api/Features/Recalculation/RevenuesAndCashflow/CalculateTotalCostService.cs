@@ -6,6 +6,7 @@ using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Cost;
 
+// dependency order 3
 public static class CalculateTotalCostService
 {
     /// <summary>
@@ -16,7 +17,7 @@ public static class CalculateTotalCostService
     {
         var totalStudyCost = CalculateStudyCost(caseItem);
         var totalOpexCost = CalculateOpexCost(caseItem);
-        var totalCessationCost = CalculateCessationCost(caseItem);//TODO
+        var totalCessationCost = CalculateCessationCost(caseItem);
 
         var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(caseItem);
         var totalDevelopmentCost = CalculateTotalDevelopmentCost(caseItem);

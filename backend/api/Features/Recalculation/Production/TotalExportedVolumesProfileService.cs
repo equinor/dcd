@@ -7,6 +7,7 @@ using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Production;
 
+// dependency order 3
 public static class TotalExportedVolumesProfileService
 {
     public static void RunCalculation(Case caseItem)
