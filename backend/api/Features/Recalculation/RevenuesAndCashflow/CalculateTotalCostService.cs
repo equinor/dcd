@@ -2,9 +2,10 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
+
 using static api.Features.Profiles.CalculationConstants;
 
-namespace api.Features.Recalculation.Cost;
+namespace api.Features.Recalculation.RevenuesAndCashflow;
 
 // dependency order 3
 public static class CalculateTotalCostService
