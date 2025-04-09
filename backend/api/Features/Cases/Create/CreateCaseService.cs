@@ -250,8 +250,8 @@ public class CreateCaseService(DcdDbContext context)
 
     private static void SetTableRanges(Case caseItem)
     {
-        int dg4Year = caseItem.Dg4Date.Year;
-        int currentYear = DateTime.UtcNow.Year;
+        var dg4Year = caseItem.Dg4Date.Year;
+        var currentYear = DateTime.UtcNow.Year;
 
         caseItem.Co2EmissionsYears = [dg4Year - 1, dg4Year + 15];
         caseItem.DrillingScheduleYears = [currentYear, dg4Year + 1];

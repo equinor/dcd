@@ -22,4 +22,4 @@ public class UpdateTableRangesService(DcdDbContext context, RecalculationService
         await context.UpdateCaseUpdatedUtc(caseId);
         await recalculationService.SaveChangesAndRecalculateCase(caseId);
     }
-} 
+}

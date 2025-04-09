@@ -30,7 +30,7 @@ public static class TotalExportedVolumesProfileService
     }
 
     public static TimeSeries GetTotalExportedVolumes(Case caseItem) =>
-        new (caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalExportedVolumes));
+        new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.TotalExportedVolumes));
 
     public static TimeSeries GetNglProduction(Case caseItem) =>
         new(caseItem.GetOverrideProfileOrProfile(ProfileTypes.ProductionProfileNgl));

@@ -37,6 +37,14 @@ namespace api.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "[]");
+
+            migrationBuilder.Sql("""
+                                 update cases set Co2EmissionsYears = '[' + str(DATEPART(year, Dg4Date) - 1) + ',' + str(DATEPART(year, Dg4Date) + 15) + ']';
+                                 update cases set ProductionProfilesYears = '[' + str(DATEPART(year, Dg4Date) - 1) + ',' + str(DATEPART(year, Dg4Date) + 15) + ']';
+
+                                 update cases set DrillingScheduleYears = '[2025,' + str(DATEPART(year, Dg4Date) + 1) + ']';
+                                 update cases set CaseCostYears = '[2025,' + str(DATEPART(year, Dg4Date) + 15) + ']';
+                                 """);
         }
 
         /// <inheritdoc />

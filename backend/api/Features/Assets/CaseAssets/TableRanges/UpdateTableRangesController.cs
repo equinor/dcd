@@ -14,4 +14,4 @@ public class UpdateTableRangesController(UpdateTableRangesService updateTableRan
 
         return NoContent();
     }
-} 
+}
