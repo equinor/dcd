@@ -12,11 +12,11 @@ const PROSPBarWrapper = styled(Container)`
     right: 11px;
     background-color:  #d7ebf5;
     z-index: 10;
-    height: 115px;
+    height: 95px;
 `
 
 export const BottomMargin = styled.div`
-    margin-bottom: 165px;
+    margin-bottom: 100px;
 `
 
 interface PROSPBarProps {
