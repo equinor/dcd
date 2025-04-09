@@ -11,4 +11,5 @@ public static class CalculationConstants
     public const double Giga = 1_000_000_000;
 
     public const double CalendarDays = 365.25;
+    public const double Percentage = 100;
 }

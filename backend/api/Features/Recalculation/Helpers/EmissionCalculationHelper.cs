@@ -11,7 +11,7 @@ public static class EmissionCalculationHelper
 {
     public static TimeSeries CalculateTotalFuelConsumptions(Case caseItem)
     {
-        var factor = caseItem.Topside.FuelConsumption * CalendarDays * caseItem.FacilitiesAvailability / 100 * 1_000_000;
+        var factor = caseItem.Topside.FuelConsumption * CalendarDays * caseItem.FacilitiesAvailability / Percentage * 1_000_000;
         var totalUseOfPower = CalculateTotalUseOfPower(caseItem, caseItem.FacilitiesAvailability);
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
 
@@ -128,7 +128,7 @@ public static class EmissionCalculationHelper
             return new TimeSeries();
         }
 
-        var facilitiesAvailabilityDecimal = facilitiesAvailability / 100;
+        var facilitiesAvailabilityDecimal = facilitiesAvailability / Percentage;
         var productionOfDesign = grossProductionProfile.Values.Select(v => v / (CalendarDays * facilitiesAvailabilityDecimal) / capacity).ToArray();
 
         return new TimeSeries

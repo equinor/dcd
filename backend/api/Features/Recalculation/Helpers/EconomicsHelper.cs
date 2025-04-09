@@ -2,6 +2,7 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 using api.Models.Enums;
+using static api.Features.Profiles.CalculationConstants;
 
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -55,7 +56,7 @@ public static class EconomicsHelper
     public static List<double> GetDiscountFactors(double discountRatePercentage, int numYears)
     {
         var discountFactors = new List<double>();
-        var discountRate = 1 + discountRatePercentage / 100;
+        var discountRate = 1 + discountRatePercentage / Percentage;
 
         for (var year = 0; year < numYears; year++)
         {
@@ -115,7 +116,7 @@ public static class EconomicsHelper
         var gasAdjustedForShrinkageFactor = new TimeSeries
         {
             StartYear = totalGasProduction.StartYear,
-            Values = totalGasProduction.Values.Select(value => value * (gasShrinkageFactor / 100)).ToArray()
+            Values = totalGasProduction.Values.Select(value => value * (gasShrinkageFactor / Percentage)).ToArray()
         };
 
         return TimeSeriesMerger.MergeTimeSeriesWithSubtraction(gasAdjustedForShrinkageFactor, fuelFlaringAndLosses);

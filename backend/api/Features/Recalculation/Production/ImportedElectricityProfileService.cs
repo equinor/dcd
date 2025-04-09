@@ -2,6 +2,7 @@ using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Recalculation.Helpers;
 using api.Models;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Recalculation.Production;
 
@@ -36,7 +37,7 @@ public static class ImportedElectricityProfileService
         {
             StartYear = totalUseOfPower.StartYear,
             Values = totalUseOfPower.Values
-                .Select(value => peakElectricityImportedFromGrid * facilityAvailability / 100 * hoursInOneYear * value / 1000)
+                .Select(value => peakElectricityImportedFromGrid * facilityAvailability / Percentage * hoursInOneYear * value / 1000)
                 .ToArray()
         };
     }

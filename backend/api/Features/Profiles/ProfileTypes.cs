@@ -193,7 +193,9 @@ public static class ProfileTypes
 
     public const string ProductionProfileWaterInjection = "ProductionProfileWaterInjection";
 
+    /// <summary> kg co2/BoE</summary>
     public const string Co2Intensity = "Co2Intensity";
+    /// <summary> kg co2/BoE</summary>
     public const string Co2IntensityOverride = "Co2IntensityOverride";
 
     public const string ProductionProfileNgl = "ProductionProfileNgl";
