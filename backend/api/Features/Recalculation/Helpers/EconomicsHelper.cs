@@ -2,9 +2,6 @@ using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
 using api.Models;
 using api.Models.Enums;
-using static api.Features.Profiles.CalculationConstants;
-
-using DocumentFormat.OpenXml.Spreadsheet;
 
 using static api.Features.Profiles.CalculationConstants;
 

@@ -41,8 +41,10 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public int ProducerCount { get; set; }
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
+
     /// <summary> Percentage </summary>
     public double FacilitiesAvailability { get; set; }
+
     public double CapexFactorFeasibilityStudies { get; set; }
     public double CapexFactorFeedStudies { get; set; }
     public double InitialYearsWithoutWellInterventionCost { get; set; }
