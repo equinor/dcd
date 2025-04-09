@@ -1,6 +1,7 @@
 using api.Features.Profiles;
 using api.Features.Recalculation.RevenuesAndCashflow;
 using api.Models;
+using api.Models.Enums;
 
 using Xunit;
 
@@ -20,7 +21,8 @@ public class CalculateNpvServiceTests
             OilPriceUsd = 75,
             GasPriceNok = 3,
             ExchangeRateUsdToNok = 10,
-            NpvYear = 2020
+            NpvYear = 2020,
+            Currency = Currency.Usd
         };
 
         var caseItem = new Case

@@ -20,7 +20,7 @@ public class CalculateTotalCostServiceTests
             OilPriceUsd = 75,
             GasPriceNok = 3,
             ExchangeRateUsdToNok = 10,
-            Currency = api.Models.Enums.Currency.Nok
+            Currency = api.Models.Enums.Currency.Usd
         };
 
         var caseItem = new Case
@@ -183,7 +183,7 @@ public class CalculateTotalCostServiceTests
         Assert.Equal(2020, calculatedTotalCostCostProfileUsd.StartYear);
         Assert.Equal(3, calculatedTotalCostCostProfileUsd.Values.Length);
 
-        var expectedValues = new[] { 295, 415, 498 };
+        var expectedValues = new[] { 2950000000, 4150000000, 4980000000 };
 
         for (var i = 0; i < expectedValues.Length; i++)
         {

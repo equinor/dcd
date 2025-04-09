@@ -1,6 +1,7 @@
 using api.Features.Profiles;
 using api.Features.Recalculation.BreakEven;
 using api.Models;
+using api.Models.Enums;
 
 using Xunit;
 
@@ -20,7 +21,8 @@ public class CalculateBreakEvenOilPriceServiceTests
             OilPriceUsd = 70,
             GasPriceNok = 3.59,
             ExchangeRateUsdToNok = 10,
-            NpvYear = 2024
+            NpvYear = 2024,
+            Currency = Currency.Usd
         };
 
         var caseItem = new Case
