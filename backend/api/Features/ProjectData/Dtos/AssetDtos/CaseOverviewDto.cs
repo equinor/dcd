@@ -57,4 +57,5 @@ public class CaseOverviewDto
     public required string? SharepointFileName { get; set; }
     public required string? SharepointFileUrl { get; set; }
     public required DateTime? SharepointUpdatedTimestampUtc { get; set; }
+    [Required] public required TableRangesDto TableRanges { get; set; }
 }

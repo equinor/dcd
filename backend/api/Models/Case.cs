@@ -29,6 +29,11 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public DateTime? Dg3Date { get; set; }
     public DateTime Dg4Date { get; set; }
 
+    public int[] Co2EmissionsYears { get; set; } = new int[2];
+    public int[] DrillingScheduleYears { get; set; } = new int[2];
+    public int[] CaseCostYears { get; set; } = new int[2];
+    public int[] ProductionProfilesYears { get; set; } = new int[2];
+
     public ArtificialLift ArtificialLift { get; set; }
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
     public int ProducerCount { get; set; }

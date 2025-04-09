@@ -59,7 +59,8 @@ public static class CaseMapper
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,
             SharepointFileUrl = caseItem.SharepointFileUrl,
-            SharepointUpdatedTimestampUtc = caseItem.SharepointUpdatedTimestampUtc
+            SharepointUpdatedTimestampUtc = caseItem.SharepointUpdatedTimestampUtc,
+            TableRanges = TableRangesMapper.MapToDto(caseItem)
         };
     }
 }
