@@ -1,3 +1,5 @@
+using api.Features.Profiles.Dtos;
+using api.Features.Profiles.TimeSeriesMerging;
 using api.Models.Enums;
 using api.Models.Interfaces;
 
@@ -39,14 +41,25 @@ public class Case : IChangeTrackable, IDateTrackedEntity
     public int ProducerCount { get; set; }
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
+
+    /// <summary> Percentage </summary>
     public double FacilitiesAvailability { get; set; }
+
     public double CapexFactorFeasibilityStudies { get; set; }
     public double CapexFactorFeedStudies { get; set; }
     public double InitialYearsWithoutWellInterventionCost { get; set; }
     public double FinalYearsWithoutWellInterventionCost { get; set; }
+
+    /// <summary> million USD </summary>
     public double Npv { get; set; }
+
+    /// <summary> million USD </summary>
     public double? NpvOverride { get; set; }
+
+    /// <summary> USD/bbl </summary>
     public double BreakEven { get; set; }
+
+    /// <summary> USD/bbl </summary>
     public double? BreakEvenOverride { get; set; }
 
     public double Co2RemovedFromGas { get; set; }
@@ -121,5 +134,17 @@ public class Case : IChangeTrackable, IDateTrackedEntity
         var profileOverride = GetProfileOrNull(profileTypeOverride);
 
         return profileOverride?.Override == true ? profileOverride : GetProfileOrNull(profileType);
+    }
+
+    public TimeSeries GetProductionAndAdditionalProduction(string profileType)
+    {
+        var additionalProfileType = $"Additional{profileType}";
+
+        var profile = new TimeSeries(GetProfileOrNull(profileType));
+        var additionalProfile = new TimeSeries(GetProfileOrNull(additionalProfileType));
+
+        var totalProfile = TimeSeriesMerger.MergeTimeSeries(profile, additionalProfile);
+
+        return totalProfile;
     }
 }

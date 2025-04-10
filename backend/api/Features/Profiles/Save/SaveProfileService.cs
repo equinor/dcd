@@ -1,6 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
-using api.Features.Cases.Recalculation;
+using api.Features.Recalculation;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -87,7 +87,7 @@ public class SaveProfileService(DcdDbContext context, RecalculationService recal
             return dtoValues;
         }
 
-        var projectPhysicalUnit = await context.Projects
+        var projectPhysicalUnit  = await context.Projects
             .Where(x => x.Id == projectPk)
             .Select(x => x.PhysicalUnit)
             .SingleAsync();

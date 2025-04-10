@@ -1,5 +1,6 @@
-using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
 using api.Features.Profiles;
+using api.Features.Recalculation.Cost;
+using api.Features.Recalculation.RevenuesAndCashflow;
 using api.Models;
 
 using Xunit;
@@ -19,7 +20,7 @@ public class CalculateTotalCostServiceTests
             OilPriceUsd = 75,
             GasPriceNok = 3,
             ExchangeRateUsdToNok = 10,
-            Currency = api.Models.Enums.Currency.Nok
+            Currency = api.Models.Enums.Currency.Usd
         };
 
         var caseItem = new Case
@@ -177,12 +178,12 @@ public class CalculateTotalCostServiceTests
         CalculateTotalCostService.RunCalculation(caseItem);
 
         // Assert
-        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfileUsd);
+        var calculatedTotalCostCostProfileUsd = caseItem.GetProfileOrNull(ProfileTypes.CalculatedTotalCostCostProfile);
         Assert.NotNull(calculatedTotalCostCostProfileUsd);
         Assert.Equal(2020, calculatedTotalCostCostProfileUsd.StartYear);
         Assert.Equal(3, calculatedTotalCostCostProfileUsd.Values.Length);
 
-        var expectedValues = new[] { 295, 415, 498 };
+        var expectedValues = new[] { 2950000000, 4150000000, 4980000000 };
 
         for (var i = 0; i < expectedValues.Length; i++)
         {

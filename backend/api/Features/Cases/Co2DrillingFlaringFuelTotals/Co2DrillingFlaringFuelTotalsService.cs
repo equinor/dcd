@@ -1,10 +1,10 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.Cases.Recalculation.Types.Helpers;
 using api.Features.Profiles;
 using api.Features.Profiles.Dtos;
 using api.Features.Profiles.TimeSeriesMerging;
+using api.Features.Recalculation.Helpers;
 using api.Models;
 using api.Models.Enums;
 
@@ -48,8 +48,8 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
             .SelectMany(x => x.CampaignWells)
             .ToListAsync();
 
-        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(caseItem);
-        var flaringsTotal = GetFlaringsProfileTotal(caseItem);
+        var fuelConsumptionsTotal = GetCo2FromFuelConsumptionsTotal(caseItem);
+        var flaringsTotal = GetCo2FromFlaringsTotal(caseItem);
         var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(caseItem, developmentWells);
 
         return new Co2DrillingFlaringFuelTotalsDto
@@ -60,7 +60,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         };
     }
 
-    private static double GetFlaringsProfileTotal(Case caseItem)
+    private static double GetCo2FromFlaringsTotal(Case caseItem)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(caseItem);
 
@@ -73,7 +73,7 @@ public class Co2DrillingFlaringFuelTotalsService(DcdDbContext context)
         return flaringsProfile.Values.Sum() / 1000;
     }
 
-    private static double GetFuelConsumptionsProfileTotal(Case caseItem)
+    private static double GetCo2FromFuelConsumptionsTotal(Case caseItem)
     {
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem);
 

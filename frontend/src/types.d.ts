@@ -70,7 +70,6 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
-            sharepointUrl: string | null;
             sharepointUpdatedTimestampUtc: string | null; // date-time
         }
         export interface CaseWithAssetsDto {
@@ -92,9 +91,12 @@ declare namespace Components {
             offshoreFacilitiesOperationsCostProfileOverride: TimeSeriesOverrideDto;
             onshoreRelatedOpexCostProfile: TimeSeriesDto;
             additionalOpexCostProfile: TimeSeriesDto;
-            calculatedTotalIncomeCostProfileUsd: TimeSeriesDto;
-            calculatedTotalCostCostProfileUsd: TimeSeriesDto;
-            calculatedDiscountedCashflowService: TimeSeriesDto;
+            calculatedTotalIncomeCostProfile: TimeSeriesDto;
+            calculatedTotalCostCostProfile: TimeSeriesDto;
+            calculatedTotalCashflow: TimeSeriesDto;
+            calculatedTotalOilIncomeCostProfile: TimeSeriesDto;
+            calculatedTotalGasIncomeCostProfile: TimeSeriesDto;
+            calculatedDiscountedCashflow: TimeSeriesDto;
             topside: TopsideDto;
             topsideCostProfile: TimeSeriesDto;
             topsideCostProfileOverride: TimeSeriesOverrideDto;
@@ -364,6 +366,7 @@ declare namespace Components {
         export interface SharePointFileDto {
             name: string;
             id: string;
+            lastModifiedUtc: string; // date-time
         }
         export interface SharePointImportDto {
             caseId: string; // uuid
@@ -500,7 +503,6 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
-            sharepointUrl: string | null;
         }
         export interface UpdateDrainageStrategyDto {
             nglYield: number; // double

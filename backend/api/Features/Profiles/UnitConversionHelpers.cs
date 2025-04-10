@@ -1,6 +1,6 @@
 using api.Models.Enums;
 
-using static api.Features.Profiles.VolumeConstants;
+using static api.Features.Profiles.CalculationConstants;
 
 namespace api.Features.Profiles;
 
@@ -8,24 +8,30 @@ public static class UnitConversionHelpers
 {
     private static readonly Dictionary<string, double> ConversionFactors = new()
     {
-        { ProfileTypes.Co2Emissions, 1_000_000 },
-        { ProfileTypes.Co2EmissionsOverride, 1_000_000 },
-        { ProfileTypes.ProductionProfileNgl, 1_000_000 },
-        { ProfileTypes.ProductionProfileNglOverride, 1_000_000 },
-        { ProfileTypes.CondensateProduction, 1_000_000 },
-        { ProfileTypes.CondensateProductionOverride, 1_000_000 },
-        { ProfileTypes.ProductionProfileOil, 1_000_000 },
-        { ProfileTypes.AdditionalProductionProfileOil, 1_000_000 },
-        { ProfileTypes.ProductionProfileWater, 1_000_000 },
-        { ProfileTypes.ProductionProfileWaterInjection, 1_000_000 },
-        { ProfileTypes.ProductionProfileGas, 1_000_000_000 },
-        { ProfileTypes.AdditionalProductionProfileGas, 1_000_000_000 },
-        { ProfileTypes.FuelFlaringAndLosses, 1_000_000_000 },
-        { ProfileTypes.FuelFlaringAndLossesOverride, 1_000_000_000 },
-        { ProfileTypes.NetSalesGas, 1_000_000_000 },
-        { ProfileTypes.NetSalesGasOverride, 1_000_000_000 },
-        { ProfileTypes.TotalExportedVolumes, 1_000_000 },
-        { ProfileTypes.TotalExportedVolumesOverride, 1_000_000 }
+        { ProfileTypes.Co2Emissions, Mega },
+        { ProfileTypes.Co2EmissionsOverride, Mega },
+        { ProfileTypes.ProductionProfileNgl, Mega },
+        { ProfileTypes.ProductionProfileNglOverride, Mega },
+        { ProfileTypes.CondensateProduction, Mega },
+        { ProfileTypes.CondensateProductionOverride, Mega },
+        { ProfileTypes.ProductionProfileOil, Mega },
+        { ProfileTypes.AdditionalProductionProfileOil, Mega },
+        { ProfileTypes.ProductionProfileWater, Mega },
+        { ProfileTypes.ProductionProfileWaterInjection, Mega },
+        { ProfileTypes.ProductionProfileGas, Giga },
+        { ProfileTypes.AdditionalProductionProfileGas, Giga },
+        { ProfileTypes.FuelFlaringAndLosses, Giga },
+        { ProfileTypes.FuelFlaringAndLossesOverride, Giga },
+        { ProfileTypes.NetSalesGas, Giga },
+        { ProfileTypes.NetSalesGasOverride, Giga },
+        { ProfileTypes.TotalExportedVolumes, Mega },
+        { ProfileTypes.TotalExportedVolumesOverride, Mega },
+        { ProfileTypes.CalculatedTotalGasIncomeCostProfile, Mega },
+        { ProfileTypes.CalculatedTotalOilIncomeCostProfile, Mega },
+        { ProfileTypes.CalculatedTotalIncomeCostProfile, Mega },
+        { ProfileTypes.CalculatedTotalCashflow, Mega },
+        { ProfileTypes.CalculatedTotalCostCostProfile, Mega },
+        { ProfileTypes.CalculatedDiscountedCashflow, Mega }
     };
 
     public static double[] ConvertValuesToDto(double[] values, PhysUnit unit, string type)
@@ -49,39 +55,10 @@ public static class UnitConversionHelpers
 
     private static double GetConversionFactor(string type, PhysUnit unit, bool toDto)
     {
-        var returnValue = 1.0;
+        var prefixFactor = GetPrefixFactor(type, toDto);
+        var unitFactor = GetUnitFactor(unit, type, toDto);
 
-        if (ConversionFactors.TryGetValue(type, out var conversionFactor))
-        {
-            returnValue = toDto ? 1.0 / conversionFactor : conversionFactor;
-        }
-
-        if (unit == PhysUnit.OilField)
-        {
-            switch (type)
-            {
-                case ProfileTypes.ProductionProfileOil:
-                case ProfileTypes.AdditionalProductionProfileOil:
-                case ProfileTypes.ProductionProfileWater:
-                case ProfileTypes.ProductionProfileWaterInjection:
-                    return toDto
-                        ? BarrelsPerCubicMeter * returnValue
-                        : 1.0 / BarrelsPerCubicMeter * returnValue;
-                case ProfileTypes.ProductionProfileGas:
-                case ProfileTypes.AdditionalProductionProfileGas:
-                case ProfileTypes.FuelFlaringAndLosses:
-                case ProfileTypes.FuelFlaringAndLossesOverride:
-                case ProfileTypes.DeferredOilProduction:
-                case ProfileTypes.DeferredGasProduction:
-                case ProfileTypes.NetSalesGas:
-                case ProfileTypes.NetSalesGasOverride:
-                    return toDto
-                        ? CubicFeetPerCubicMeter * returnValue
-                        : 1.0 / CubicFeetPerCubicMeter * returnValue;
-            }
-        }
-
-        return returnValue;
+        return prefixFactor * unitFactor;
     }
 
     public static readonly IReadOnlySet<string> ProfileTypesWithConversion = new HashSet<string>
@@ -107,4 +84,44 @@ public static class UnitConversionHelpers
         ProfileTypes.ProductionProfileWater,
         ProfileTypes.ProductionProfileWaterInjection
     };
+
+    private static double GetPrefixFactor(string type, bool toDto)
+    {
+        if (ConversionFactors.TryGetValue(type, out var conversionFactor))
+        {
+            return toDto ? 1.0 / conversionFactor : conversionFactor;
+        }
+
+        return 1.0;
+    }
+
+    private static double GetUnitFactor(PhysUnit unit, string type, bool toDto)
+    {
+        if (unit == PhysUnit.OilField)
+        {
+            switch (type)
+            {
+                case ProfileTypes.ProductionProfileOil:
+                case ProfileTypes.AdditionalProductionProfileOil:
+                case ProfileTypes.ProductionProfileWater:
+                case ProfileTypes.ProductionProfileWaterInjection:
+                    return toDto
+                        ? BarrelsPerCubicMeter
+                        : 1.0 / BarrelsPerCubicMeter;
+                case ProfileTypes.ProductionProfileGas:
+                case ProfileTypes.AdditionalProductionProfileGas:
+                case ProfileTypes.FuelFlaringAndLosses:
+                case ProfileTypes.FuelFlaringAndLossesOverride:
+                case ProfileTypes.DeferredOilProduction:
+                case ProfileTypes.DeferredGasProduction:
+                case ProfileTypes.NetSalesGas:
+                case ProfileTypes.NetSalesGasOverride:
+                    return toDto
+                        ? CubicFeetPerCubicMeter
+                        : 1.0 / CubicFeetPerCubicMeter;
+            }
+        }
+
+        return 1;
+    }
 }

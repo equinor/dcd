@@ -1,6 +1,7 @@
-using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Profiles;
+using api.Features.Recalculation.RevenuesAndCashflow;
 using api.Models;
+using api.Models.Enums;
 
 using Xunit;
 
@@ -20,7 +21,8 @@ public class CalculateNpvServiceTests
             OilPriceUsd = 75,
             GasPriceNok = 3,
             ExchangeRateUsdToNok = 10,
-            NpvYear = 2020
+            NpvYear = 2020,
+            Currency = Currency.Usd
         };
 
         var caseItem = new Case
@@ -33,14 +35,14 @@ public class CalculateNpvServiceTests
             [
                 new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfileUsd,
+                    ProfileType = ProfileTypes.CalculatedTotalCostCostProfile,
                     StartYear = -10,
                     Values = [200.0, 400.0, 100.0, 100.0]
                 },
 
                 new TimeSeriesProfile
                 {
-                    ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfileUsd,
+                    ProfileType = ProfileTypes.CalculatedTotalIncomeCostProfile,
                     StartYear = -7,
                     Values = [4717.5, 4717.5, 4717.5, 4717.5, 2358.75, 2358.75]
                 }
