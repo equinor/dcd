@@ -67,7 +67,7 @@ public class CalculateTotalIncomeServiceTests
             ProducerCount = 0,
             GasInjectorCount = 0,
             WaterInjectorCount = 0,
-            ArtificialLift = ArtificialLift.NoArtificialLift,
+            ArtificialLift = ArtificialLift.NoArtificialLift
         };
 
         var caseItem = new Case
