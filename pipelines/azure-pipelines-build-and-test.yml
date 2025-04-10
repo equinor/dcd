@@ -59,3 +59,20 @@ jobs:
           workingDirectory: "$(Build.SourcesDirectory)/backend/tests/"
         env:
           AppConfiguration__ConnectionString: $(azureAppConfigConnString)
+
+  - job: Test_Frontend
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "20.x"
+      - task: Npm@1
+        displayName: "Npm Install"
+        inputs:
+          command: "install"
+          workingDir: "frontend"
+      - task: Npm@1
+        displayName: "Run Script Test"
+        inputs:
+          command: "custom"
+          workingDir: "frontend"
+          customCommand: "run-script test"
