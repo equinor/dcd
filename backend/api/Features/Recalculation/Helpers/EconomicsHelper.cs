@@ -39,7 +39,7 @@ public static class EconomicsHelper
 
         if (offset < 0)
         {
-            discountFactors.InsertRange(0, Enumerable.Repeat(1.0, offset));
+            discountFactors.InsertRange(0, Enumerable.Repeat(1.0, -offset));
         }
 
         var discountFactorsSeries = new TimeSeries(
