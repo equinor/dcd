@@ -200,6 +200,7 @@ const ProjectLayout = (): JSX.Element => {
             } else {
                 setWarnedProjects({ [currentContext.externalId]: [revisionAndProjectData.projectId] })
             }
+            setProjectClassificationWarning(false)
         }
     }
 
