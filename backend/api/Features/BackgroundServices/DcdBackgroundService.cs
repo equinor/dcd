@@ -36,7 +36,7 @@ public abstract class DcdBackgroundService(IServiceScopeFactory serviceScopeFact
             }
             catch (Exception ex)
             {
-                exceptionMessage = ex.Message;
+                exceptionMessage = ex.Message + "\n" + ex.StackTrace;
             }
 
             try
