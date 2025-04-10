@@ -10,7 +10,7 @@ import {
 describe("dateStringToDateUtc", () => {
     it("should convert \"0001-01-01\" to \"0001-01-01T00:00:00Z\"", () => {
         const dateString = "0001-01-01"
-        const expectedDate = new Date("0002-01-01T00:00:00Z")
+        const expectedDate = new Date("0001-01-01T00:00:00Z")
         const result = dateStringToDateUtc(dateString)
 
         expect(result.toISOString()).toBe(expectedDate.toISOString())
