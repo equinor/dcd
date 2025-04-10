@@ -1,4 +1,4 @@
-import { Typography } from "@equinor/eds-core-react"
+import { DotProgress, Typography } from "@equinor/eds-core-react"
 import React, {
     useState, useMemo, useEffect, useCallback,
 } from "react"
@@ -18,14 +18,13 @@ import {
 
 const SharePointSection = styled.div`
     border-radius: 4px;
-    padding: 16px;
+    padding: 10px 16px;
 `
 
 const SharePointContainer = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
-    margin-top: 12px;
 `
 
 const SharePointLabel = styled.div`
@@ -39,7 +38,7 @@ const SharePointInput = styled.div`
 `
 
 const SharePointAction = styled.div`
-    width: 100px;
+    width: 208px;
     text-align: right;
 `
 
@@ -47,29 +46,33 @@ const StyledSelect = styled.select`
     width: 100%;
     height: 36px;
     padding: 0 8px;
-    border: 1px solid #6F6F6F;
-    border-radius: 4px;
+    border: 2px solid #6F6F6F;
+    border-radius: 1px;
     background-color: white;
 `
 
 const ActionButton = styled.button`
-    background-color: #007079;
-    color: white;
-    border: none;
+    background-color: transparent;
+    color: black;
+    border: 1px solid black;
     border-radius: 4px;
-    padding: 8px 16px;
+    padding: 10px 18px;
+    width: 100%;
+    height: 36px;
     cursor: pointer;
     font-weight: 500;
     display: flex;
     align-items: center;
-    
+    justify-content: center;
+
     &:disabled {
         background-color: #BEBEBE;
         cursor: not-allowed;
     }
-    
+
     &:hover:not(:disabled) {
-        background-color: #006570;
+        background-color: black;
+        color: white;
     }
 `
 
@@ -77,17 +80,16 @@ const TextDisplay = styled(Typography)`
     padding: 8px 0;
 `
 
-const FeedbackIndicator = ({ status, isLoading }: { status: FeedbackStatus, isLoading: boolean }) => {
-    if (isLoading) {
-        return <span style={{ color: "#6F6F6F", marginLeft: "8px" }}>Loading...</span>
-    }
+const FeedbackIndicator = ({ status }: { status: FeedbackStatus }) => {
 
     if (status === "success") {
-        return <span style={{ color: "#4BB748", marginLeft: "8px" }}>✓</span>
+        return (<>
+         <span style={{ marginLeft: "8px" }}>Case has been updated </span><span style={{ color: "#4BB748", marginLeft: "8px"}}>✓</span>
+        </>)
     }
 
     if (status === "error") {
-        return <span style={{ color: "#EB0000", marginLeft: "8px" }}>✗</span>
+        return <span style={{ color: "#EB0000", marginLeft: "8px" }}>Error</span>
     }
 
     return null
@@ -157,32 +159,10 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
         if (!fileId || !sharepointSiteUrl) { return }
 
-        try {
-            setIsSaving(true)
-
-            const fileName = getFileNameById(fileId, sharePointFiles) || ""
-
-            await importFromSharePoint(projectId, caseId, fileId, fileName, sharepointSiteUrl)
-
-            setSnackBarMessage(`Successfully imported data from ${fileName}`)
-        } catch (error: any) {
-            console.error("[SharePointFileSelector] error while importing file data", error)
-            const errorMessage = error.message || "Failed to import file data. The server might be experiencing issues."
-
-            setSnackBarMessage(errorMessage)
-
-            // If this fails, revert the selection to the previous value
-            setSelectedSharePointFileId(currentSharePointFileId)
-            if (onSharePointFileSelected) {
-                onSharePointFileSelected(currentSharePointFileId)
-            }
-        } finally {
-            setIsSaving(false)
-        }
     }
 
     const handleRefreshFile = async () => {
-        if (!projectId || !selectedSharePointFileId || !sharepointSiteUrl) { return }
+        if (!projectId || !sharepointSiteUrl) { return }
 
         try {
             const importPromise = (async () => {
@@ -193,12 +173,10 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
                 await importFromSharePoint(
                     projectId,
                     caseId,
-                    selectedSharePointFileId,
+                    selectedSharePointFileId || "",
                     fileName,
                     sharepointSiteUrl,
                 )
-
-                setSnackBarMessage(`Successfully refreshed data from ${fileName}`)
 
                 return true
             })()
@@ -235,7 +213,7 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
     return (
         <SharePointSection>
-            <Typography variant="body_short" style={{ marginBottom: "8px" }}>
+            <Typography variant="caption" style={{ marginLeft: "8px", width: "fit-content" }}>
                 Import PROSP file from SharePoint
             </Typography>
 
@@ -261,15 +239,15 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
                 <SharePointAction>
                     {canEdit() && (
-                        <ActionButton
-                            onClick={handleRefreshFile}
-                            disabled={isDisabled || !selectedSharePointFileId}
-                        >
-                            Import
-                            <FeedbackIndicator status={feedbackStatus} isLoading={isLoading} />
-                        </ActionButton>
+                       <ActionButton
+                       onClick={handleRefreshFile}
+                       disabled={isDisabled}
+                   >
+                       {isLoading ? <DotProgress /> : !selectedSharePointFileId ? "Remove file" : "Import"}
+                   </ActionButton>
                     )}
                 </SharePointAction>
+                <FeedbackIndicator status={feedbackStatus} />
             </SharePointContainer>
         </SharePointSection>
     )
