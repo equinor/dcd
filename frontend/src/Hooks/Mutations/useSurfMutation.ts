@@ -25,8 +25,6 @@ export const useSurfMutation = () => {
             setIsSaving(true)
 
             try {
-                const service = GetSurfService()
-
                 const apiData = queryClient.getQueryData<Components.Schemas.CaseWithAssetsDto>(["caseApiData", projectId, caseId])
 
                 if (!apiData?.surf) {
@@ -56,7 +54,7 @@ export const useSurfMutation = () => {
                     maturity: updatedSurf.maturity,
                 }
 
-                return service.updateSurf(projectId, caseId, dto)
+                return GetSurfService().updateSurf(projectId, caseId, dto)
             } finally {
                 setIsSaving(false)
             }

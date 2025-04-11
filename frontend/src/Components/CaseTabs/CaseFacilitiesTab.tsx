@@ -375,7 +375,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`transport-oil-export-pipeline-length-${transportData.id}`}
-                    onSubmit={(newValue) => updateOilExportPipelineLength(transportData.id, newValue)}
+                    onSubmit={(newValue) => updateOilExportPipelineLength(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -387,7 +387,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`transport-gas-export-pipeline-length-${transportData.id}`}
-                    onSubmit={(newValue) => updateGasExportPipelineLength(transportData.id, newValue)}
+                    onSubmit={(newValue) => updateGasExportPipelineLength(newValue)}
                 />
             </Grid>
             <Grid size={12}>
