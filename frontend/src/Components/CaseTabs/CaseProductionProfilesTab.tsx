@@ -15,12 +15,12 @@ import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/Cas
 import { useCaseApiData, useDataFetch } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 import { PhysUnit } from "@/Models/enums"
+import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
 import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
 import { calculateTableYears } from "@/Utils/TableUtils"
-import { useAppStore } from "@/Store/AppStore"
 
 const defaultAxesData = [
     {
@@ -63,7 +63,7 @@ const defaultAxesData = [
 ]
 
 const CaseProductionProfilesTab = () => {
-    const { editMode } = useAppStore();
+    const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
     const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
     const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
@@ -208,7 +208,7 @@ const CaseProductionProfilesTab = () => {
         return (<CaseProductionProfilesTabSkeleton />)
     }
 
-    const getPhysicalUnit = () => (revisionAndProjectData.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "SI" : "Oil field")
+    const getPhysicalUnit = (): string => (revisionAndProjectData.commonProjectAndRevisionData.physicalUnit === PhysUnit.Si ? "SI" : "Oil field")
 
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
@@ -223,7 +223,7 @@ const CaseProductionProfilesTab = () => {
                             min={0}
                             max={100}
                             id={`case-facilities-availability-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateFacilitiesAvailability(newValue)}
+                            onSubmit={updateFacilitiesAvailability}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -232,7 +232,7 @@ const CaseProductionProfilesTab = () => {
                             options={gasSolutionOptions}
                             label="Gas solution"
                             id={`drainage-strategy-gas-solution-${drainageStrategyData.id}`}
-                            onSubmit={(newValue) => updateGasSolution(drainageStrategyData.id, newValue)}
+                            onSubmit={updateGasSolution}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -242,7 +242,7 @@ const CaseProductionProfilesTab = () => {
                             label="Production strategy overview"
                             disabled
                             id={`case-production-strategy-overview-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateProductionStrategyOverview(newValue)}
+                            onSubmit={updateProductionStrategyOverview}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -252,7 +252,7 @@ const CaseProductionProfilesTab = () => {
                             label="Artificial lift"
                             id={`case-artificial-lift-${caseData.caseId}`}
                             disabled
-                            onSubmit={(newValue) => updateArtificialLift(newValue)}
+                            onSubmit={updateArtificialLift}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -262,7 +262,7 @@ const CaseProductionProfilesTab = () => {
                             integer
                             disabled
                             id={`case-producer-count-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateProducerCount(newValue)}
+                            onSubmit={updateProducerCount}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -272,7 +272,7 @@ const CaseProductionProfilesTab = () => {
                             integer
                             disabled
                             id={`case-water-injector-count-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateWaterInjectorCount(newValue)}
+                            onSubmit={updateWaterInjectorCount}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -282,7 +282,7 @@ const CaseProductionProfilesTab = () => {
                             integer
                             disabled
                             id={`case-gas-injector-count-${caseData.caseId}`}
-                            onSubmit={(newValue) => updateGasInjectorCount(newValue)}
+                            onSubmit={updateGasInjectorCount}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -292,7 +292,7 @@ const CaseProductionProfilesTab = () => {
                             id={`drainage-strategy-ngl-yield-${drainageStrategyData.id}`}
                             integer
                             unit={getPhysicalUnit() === "SI" ? "tonnes/MSm³" : "tonnes/mmscf"}
-                            onSubmit={(newValue) => updateNglYield(drainageStrategyData.id, newValue)}
+                            onSubmit={updateNglYield}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -302,30 +302,32 @@ const CaseProductionProfilesTab = () => {
                             id={`drainage-strategy-condensate-yield-${drainageStrategyData.id}`}
                             integer
                             unit={getPhysicalUnit() === "SI" ? "Sm³/MSm³" : "bbls/mmscf"}
-                            onSubmit={(newValue) => updateCondensateYield(drainageStrategyData.id, newValue)}
+                            onSubmit={updateCondensateYield}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        {editMode ? <SwitchableNumberInput
-                            label="Gas shrinkage factor"
-                            value={drainageStrategyData.gasShrinkageFactor}
-                            id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
-                            integer
-                            min={0}
-                            max={100}
-                            unit="%"
-                            onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
-                        /> : (drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
+                        {editMode ? (
                             <SwitchableNumberInput
-                            label="Gas shrinkage factor"
-                            value={drainageStrategyData.gasShrinkageFactor}
-                            id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
-                            integer
-                            min={0}
-                            max={100}
-                            unit="%"
-                            onSubmit={(newValue) => updateGasShrinkageFactor(drainageStrategyData.id, newValue)}
-                        />
+                                label="Gas shrinkage factor"
+                                value={drainageStrategyData.gasShrinkageFactor}
+                                id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
+                                integer
+                                min={0}
+                                max={100}
+                                unit="%"
+                                onSubmit={updateGasShrinkageFactor}
+                            />
+                        ) : (drainageStrategyData.nglYield > 0 || drainageStrategyData.condensateYield > 0) && (
+                            <SwitchableNumberInput
+                                label="Gas shrinkage factor"
+                                value={drainageStrategyData.gasShrinkageFactor}
+                                id={`drainage-strategy-gas-shrinkage-factor-${drainageStrategyData.id}`}
+                                integer
+                                min={0}
+                                max={100}
+                                unit="%"
+                                onSubmit={updateGasShrinkageFactor}
+                            />
                         )}
                     </Grid>
                 </Grid>

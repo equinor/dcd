@@ -1,78 +1,84 @@
-import { useQueryClient } from "@tanstack/react-query"
-
-import { useBaseMutation, MutationParams } from "./useBaseMutation"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useParams } from "react-router"
 
 import { GetDrainageStrategyService } from "@/Services/DrainageStrategyService"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
+
+export interface Params {
+    updatedValue: string | number | boolean;
+    propertyKey: keyof Components.Schemas.UpdateDrainageStrategyDto;
+}
 
 export const useDrainageStrategyMutation = () => {
     const queryClient = useQueryClient()
+    const { caseId } = useParams()
+    const { projectId } = useProjectContext()
+    const { setIsSaving, setSnackBarMessage } = useAppStore()
 
-    // Custom mutation function that ensures we send a complete drainage strategy DTO
-    const drainageStrategyMutationFn = async (
-        service: ReturnType<typeof GetDrainageStrategyService>,
-        projectId: string,
-        caseId: string,
-        params: MutationParams<any>,
-    ) => {
-        const apiData = await queryClient.getQueryData<any>(["caseApiData", projectId, caseId])
+    const mutation = useMutation({
+        mutationFn: async (params: Params) => {
+            if (!projectId || !caseId) {
+                throw new Error("Project ID and Case ID are required")
+            }
 
-        if (!apiData?.drainageStrategy) {
-            throw new Error("Drainage strategy not found in cache")
-        }
+            setIsSaving(true)
 
-        const currentStrategy = apiData.drainageStrategy
-        const updatedStrategy = {
-            ...currentStrategy,
-            [params.propertyKey]: params.updatedValue,
-        }
+            try {
+                const apiData = queryClient.getQueryData<Components.Schemas.CaseWithAssetsDto>(["caseApiData", projectId, caseId])
 
-        // Make sure we're sending only the fields expected by the backend DTO
-        const dto = {
-            nglYield: updatedStrategy.nglYield,
-            condensateYield: updatedStrategy.condensateYield,
-            gasShrinkageFactor: updatedStrategy.gasShrinkageFactor,
-            producerCount: updatedStrategy.producerCount || 0,
-            gasInjectorCount: updatedStrategy.gasInjectorCount || 0,
-            waterInjectorCount: updatedStrategy.waterInjectorCount || 0,
-            artificialLift: updatedStrategy.artificialLift || 0,
-            gasSolution: updatedStrategy.gasSolution,
-        }
+                if (!apiData?.drainageStrategy) {
+                    throw new Error("Drainage strategy not found in cache")
+                }
 
-        return service.updateDrainageStrategy(
-            projectId,
-            caseId,
-            dto,
-        )
-    }
+                const currentStrategy = apiData.drainageStrategy
+                const updatedStrategy = {
+                    ...currentStrategy,
+                    [params.propertyKey]: params.updatedValue,
+                }
 
-    const mutation = useBaseMutation({
-        resourceName: "drainageStrategy",
-        getService: GetDrainageStrategyService,
-        updateMethod: "updateDrainageStrategy",
-        customMutationFn: drainageStrategyMutationFn,
-        getResourceFromApiData: (apiData) => apiData?.drainageStrategy,
+                const dto = {
+                    nglYield: updatedStrategy.nglYield,
+                    condensateYield: updatedStrategy.condensateYield,
+                    gasShrinkageFactor: updatedStrategy.gasShrinkageFactor,
+                    producerCount: updatedStrategy.producerCount || 0,
+                    gasInjectorCount: updatedStrategy.gasInjectorCount || 0,
+                    waterInjectorCount: updatedStrategy.waterInjectorCount || 0,
+                    artificialLift: updatedStrategy.artificialLift,
+                    gasSolution: updatedStrategy.gasSolution,
+                }
+
+                return GetDrainageStrategyService().updateDrainageStrategy(projectId, caseId, dto)
+            } finally {
+                setIsSaving(false)
+            }
+        },
+        onSuccess: () => {
+            if (projectId && caseId) {
+                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
+            }
+        },
+        onError: (error: any) => {
+            setSnackBarMessage(error.message || "Failed to update DrainageStrategy")
+        },
     })
 
-    const updateGasSolution = (drainageStrategyId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: drainageStrategyId,
+    const updateGasSolution = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "gasSolution",
     })
 
-    const updateNglYield = (drainageStrategyId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: drainageStrategyId,
+    const updateNglYield = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "nglYield",
     })
 
-    const updateCondensateYield = (drainageStrategyId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: drainageStrategyId,
+    const updateCondensateYield = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "condensateYield",
     })
 
-    const updateGasShrinkageFactor = (drainageStrategyId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: drainageStrategyId,
+    const updateGasShrinkageFactor = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "gasShrinkageFactor",
     })

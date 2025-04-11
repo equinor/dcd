@@ -25,7 +25,6 @@ export const useSubstructureMutation = () => {
             setIsSaving(true)
 
             try {
-                const service = GetSubstructureService()
                 const apiData = queryClient.getQueryData<Components.Schemas.CaseWithAssetsDto>(["caseApiData", projectId, caseId])
 
                 if (!apiData?.substructure) {
@@ -47,7 +46,7 @@ export const useSubstructureMutation = () => {
                     approvedBy: updatedSubstructure.approvedBy,
                 }
 
-                return service.updateSubstructure(projectId, caseId, dto)
+                return GetSubstructureService().updateSubstructure(projectId, caseId, dto)
             } finally {
                 setIsSaving(false)
             }
