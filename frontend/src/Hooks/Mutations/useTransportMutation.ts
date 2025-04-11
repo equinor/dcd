@@ -31,9 +31,8 @@ export const useTransportMutation = () => {
                     throw new Error("Transport data not found in cache")
                 }
 
-                const currentTransport = apiData.transport
                 const updatedTransport = {
-                    ...currentTransport,
+                    ...apiData.transport,
                     [params.propertyKey]: params.updatedValue,
                 }
 

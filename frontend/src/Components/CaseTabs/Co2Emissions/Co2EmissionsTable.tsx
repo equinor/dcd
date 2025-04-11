@@ -250,7 +250,7 @@ const Co2EmissionsTable = () => {
     useEffect(() => {
         if (apiData && canEdit() && fuelConsumption !== undefined) {
             if (fuelConsumption !== apiData.topside.fuelConsumption) {
-                updateFuelConsumption(apiData.topside.id, fuelConsumption)
+                updateFuelConsumption(fuelConsumption)
             }
         }
     }, [fuelConsumption])

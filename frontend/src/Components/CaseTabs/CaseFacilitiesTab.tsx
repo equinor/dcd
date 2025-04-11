@@ -148,7 +148,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit={formatCurrencyUnit(revisionAndProjectData.commonProjectAndRevisionData.currency)}
                     id={`topside-facility-opex-${topsideData.id}`}
-                    onSubmit={(newValue) => updateFacilityOpex(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateFacilityOpex(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -173,7 +173,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-dry-weight-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideDryWeight(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateTopsideDryWeight(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -198,7 +198,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-peak-electricity-imported-${topsideData.id}`}
-                    onSubmit={(newValue) => updatePeakElectricityImported(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updatePeakElectricityImported(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -210,7 +210,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-oil-capacity-${topsideData.id}`}
-                    onSubmit={(newValue) => updateOilCapacity(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateOilCapacity(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -222,7 +222,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-gas-capacity-${topsideData.id}`}
-                    onSubmit={(newValue) => updateGasCapacity(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateGasCapacity(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -232,7 +232,7 @@ const CaseFacilitiesTab = () => {
                     integer
                     unit="MSm³/sd"
                     id={`topside-water-injection-capacity-${topsideData.id}`}
-                    onSubmit={(newValue) => updateWaterInjectionCapacity(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateWaterInjectionCapacity(newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -246,7 +246,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-producer-count-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideProducerCount(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateTopsideProducerCount(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -257,7 +257,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-gas-injector-count-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideGasInjectorCount(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateTopsideGasInjectorCount(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -268,7 +268,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-water-injector-count-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideWaterInjectorCount(topsideData.id, newValue)}
+                    onSubmit={(newValue) => updateTopsideWaterInjectorCount(newValue)}
                 />
             </Grid>
             <Grid size={12}>

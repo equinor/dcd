@@ -31,9 +31,8 @@ export const useSurfMutation = () => {
                     throw new Error("Surf data not found in cache")
                 }
 
-                const currentSurf = apiData.surf
                 const updatedSurf = {
-                    ...currentSurf,
+                    ...apiData.surf,
                     [params.propertyKey]: params.updatedValue,
                 }
 
