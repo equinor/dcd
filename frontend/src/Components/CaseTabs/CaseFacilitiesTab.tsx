@@ -16,7 +16,7 @@ import {
     useCaseMutation,
     useSubstructureMutation,
 } from "@/Hooks/Mutations"
-import { Concept, Source } from "@/Models/enums"
+import { Concept } from "@/Models/enums"
 import { useProjectContext } from "@/Store/ProjectContext"
 import { formatCurrencyUnit, roundToDecimals } from "@/Utils/FormatingUtils"
 
@@ -96,11 +96,6 @@ const CaseFacilitiesTab = () => {
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const sourceValues: { [key: number]: string } = {
-        [Source.ConceptApp]: "Concept App",
-        [Source.Prosp]: "Prosp",
-    }
-
     const caseData = apiData?.case
     const topsideData = apiData?.topside
     const surfData = apiData?.surf
@@ -128,7 +123,7 @@ const CaseFacilitiesTab = () => {
                     options={platformConceptValues}
                     label="Platform concept"
                     id={`substructure-concept-${substructureData.id}`}
-                    onSubmit={(newValue) => updateConcept(substructureData.id, newValue)}
+                    onSubmit={updateConcept}
                 />
             </Grid>
             {substructureData.concept === Concept.TieBack && (
@@ -137,7 +132,7 @@ const CaseFacilitiesTab = () => {
                         label="Host"
                         value={caseData.host || ""}
                         id={`case-host-${caseData.caseId}`}
-                        onSubmit={(newValue) => updateHost(newValue)}
+                        onSubmit={updateHost}
                     />
                 </Grid>
             )}
@@ -148,7 +143,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit={formatCurrencyUnit(revisionAndProjectData.commonProjectAndRevisionData.currency)}
                     id={`topside-facility-opex-${topsideData.id}`}
-                    onSubmit={(newValue) => updateFacilityOpex(topsideData.id, newValue)}
+                    onSubmit={updateFacilityOpex}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -158,7 +153,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit={formatCurrencyUnit(revisionAndProjectData.commonProjectAndRevisionData.currency)}
                     id={`surf-cessation-cost-${surfData.id}`}
-                    onSubmit={(newValue) => updateCessationCost(surfData.id, newValue)}
+                    onSubmit={updateCessationCost}
                 />
             </Grid>
             <Grid size={12}>
@@ -173,7 +168,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-dry-weight-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideDryWeight(topsideData.id, newValue)}
+                    onSubmit={updateTopsideDryWeight}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -198,7 +193,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-peak-electricity-imported-${topsideData.id}`}
-                    onSubmit={(newValue) => updatePeakElectricityImported(topsideData.id, newValue)}
+                    onSubmit={updatePeakElectricityImported}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -210,7 +205,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-oil-capacity-${topsideData.id}`}
-                    onSubmit={(newValue) => updateOilCapacity(topsideData.id, newValue)}
+                    onSubmit={updateOilCapacity}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -222,7 +217,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-gas-capacity-${topsideData.id}`}
-                    onSubmit={(newValue) => updateGasCapacity(topsideData.id, newValue)}
+                    onSubmit={updateGasCapacity}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -232,7 +227,7 @@ const CaseFacilitiesTab = () => {
                     integer
                     unit="MSm³/sd"
                     id={`topside-water-injection-capacity-${topsideData.id}`}
-                    onSubmit={(newValue) => updateWaterInjectionCapacity(topsideData.id, newValue)}
+                    onSubmit={updateWaterInjectionCapacity}
                 />
             </Grid>
             <Grid size={12}>
@@ -246,7 +241,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-producer-count-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideProducerCount(topsideData.id, newValue)}
+                    onSubmit={updateTopsideProducerCount}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -257,7 +252,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-gas-injector-count-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideGasInjectorCount(topsideData.id, newValue)}
+                    onSubmit={updateTopsideGasInjectorCount}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -268,7 +263,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`topside-water-injector-count-${topsideData.id}`}
-                    onSubmit={(newValue) => updateTopsideWaterInjectorCount(topsideData.id, newValue)}
+                    onSubmit={updateTopsideWaterInjectorCount}
                 />
             </Grid>
             <Grid size={12}>
@@ -282,7 +277,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-template-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateTemplateCount(surfData.id, newValue)}
+                    onSubmit={updateTemplateCount}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -293,7 +288,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-riser-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateRiserCount(surfData.id, newValue)}
+                    onSubmit={updateRiserCount}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -305,7 +300,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-infield-pipeline-system-length-${surfData.id}`}
-                    onSubmit={(newValue) => updateInfieldPipelineSystemLength(surfData.id, newValue)}
+                    onSubmit={updateInfieldPipelineSystemLength}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -317,7 +312,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-umbilical-system-length-${surfData.id}`}
-                    onSubmit={(newValue) => updateUmbilicalSystemLength(surfData.id, newValue)}
+                    onSubmit={updateUmbilicalSystemLength}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -326,7 +321,7 @@ const CaseFacilitiesTab = () => {
                     options={productionFlowlineValues}
                     label="Production flowline"
                     id={`surf-production-flowline-${surfData.id}`}
-                    onSubmit={(newValue) => updateProductionFlowline(surfData.id, newValue)}
+                    onSubmit={updateProductionFlowline}
                 />
             </Grid>
             <Grid size={12}>
@@ -338,7 +333,7 @@ const CaseFacilitiesTab = () => {
                     value={surfData.producerCount}
                     integer
                     id={`surf-producer-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateSurfProducerCount(surfData.id, newValue)}
+                    onSubmit={updateSurfProducerCount}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -349,7 +344,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-gas-injector-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateSurfGasInjectorCount(surfData.id, newValue)}
+                    onSubmit={updateSurfGasInjectorCount}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -360,7 +355,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-water-injector-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateSurfWaterInjectorCount(surfData.id, newValue)}
+                    onSubmit={updateSurfWaterInjectorCount}
                 />
             </Grid>
             <Grid size={12}>
@@ -375,7 +370,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`transport-oil-export-pipeline-length-${transportData.id}`}
-                    onSubmit={(newValue) => updateOilExportPipelineLength(transportData.id, newValue)}
+                    onSubmit={updateOilExportPipelineLength}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -387,7 +382,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`transport-gas-export-pipeline-length-${transportData.id}`}
-                    onSubmit={(newValue) => updateGasExportPipelineLength(transportData.id, newValue)}
+                    onSubmit={updateGasExportPipelineLength}
                 />
             </Grid>
             <Grid size={12}>
@@ -402,7 +397,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`substructure-dry-weight-${substructureData.id}`}
-                    onSubmit={(newValue) => updateSubstructureDryWeight(substructureData.id, newValue)}
+                    onSubmit={updateSubstructureDryWeight}
                 />
             </Grid>
             <PROSPBar

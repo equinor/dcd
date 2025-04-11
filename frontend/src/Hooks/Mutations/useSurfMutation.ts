@@ -1,118 +1,119 @@
-import { useQueryClient } from "@tanstack/react-query"
-
-import { useBaseMutation, MutationParams } from "./useBaseMutation"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useParams } from "react-router"
 
 import { GetSurfService } from "@/Services/SurfService"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
+
+export interface Params {
+    updatedValue: string | number | boolean;
+    propertyKey: keyof Components.Schemas.UpdateSurfDto;
+}
 
 export const useSurfMutation = () => {
     const queryClient = useQueryClient()
+    const { caseId } = useParams()
+    const { projectId } = useProjectContext()
+    const { setIsSaving, setSnackBarMessage } = useAppStore()
 
-    const surfMutationFn = async (
-        service: ReturnType<typeof GetSurfService>,
-        projectIdParam: string,
-        caseIdParam: string,
-        params: MutationParams<any>,
-    ) => {
-        const apiData = await queryClient.getQueryData<any>(["caseApiData", projectIdParam, caseIdParam])
+    const mutation = useMutation({
+        mutationFn: async (params: Params) => {
+            if (!projectId || !caseId) {
+                throw new Error("Project ID and Case ID are required")
+            }
 
-        if (!apiData?.surf) {
-            throw new Error("Surf data not found in cache")
-        }
+            setIsSaving(true)
 
-        const currentSurf = apiData.surf
-        const updatedSurf = {
-            ...currentSurf,
-            [params.propertyKey]: params.updatedValue,
-        }
+            try {
+                const apiData = queryClient.getQueryData<Components.Schemas.CaseWithAssetsDto>(["caseApiData", projectId, caseId])
 
-        const dto = {
-            cessationCost: updatedSurf.cessationCost,
-            infieldPipelineSystemLength: updatedSurf.infieldPipelineSystemLength,
-            umbilicalSystemLength: updatedSurf.umbilicalSystemLength,
-            artificialLift: updatedSurf.artificialLift,
-            riserCount: updatedSurf.riserCount,
-            templateCount: updatedSurf.templateCount,
-            producerCount: updatedSurf.producerCount,
-            gasInjectorCount: updatedSurf.gasInjectorCount,
-            waterInjectorCount: updatedSurf.waterInjectorCount,
-            productionFlowline: updatedSurf.productionFlowline,
-            costYear: updatedSurf.costYear,
-            source: updatedSurf.source,
-            approvedBy: updatedSurf.approvedBy || "",
-            maturity: updatedSurf.maturity,
-        }
+                if (!apiData?.surf) {
+                    throw new Error("Surf data not found in cache")
+                }
 
-        return service.updateSurf(
-            projectIdParam,
-            caseIdParam,
-            dto,
-        )
-    }
+                const updatedSurf = {
+                    ...apiData.surf,
+                    [params.propertyKey]: params.updatedValue,
+                }
 
-    const mutation = useBaseMutation({
-        resourceName: "surf",
-        getService: GetSurfService,
-        updateMethod: "updateSurf",
-        customMutationFn: surfMutationFn,
-        getResourceFromApiData: (apiData) => apiData?.surf,
+                const dto = {
+                    cessationCost: updatedSurf.cessationCost,
+                    infieldPipelineSystemLength: updatedSurf.infieldPipelineSystemLength,
+                    umbilicalSystemLength: updatedSurf.umbilicalSystemLength,
+                    artificialLift: updatedSurf.artificialLift,
+                    riserCount: updatedSurf.riserCount,
+                    templateCount: updatedSurf.templateCount,
+                    producerCount: updatedSurf.producerCount,
+                    gasInjectorCount: updatedSurf.gasInjectorCount,
+                    waterInjectorCount: updatedSurf.waterInjectorCount,
+                    productionFlowline: updatedSurf.productionFlowline,
+                    costYear: updatedSurf.costYear,
+                    source: updatedSurf.source,
+                    approvedBy: updatedSurf.approvedBy,
+                    maturity: updatedSurf.maturity,
+                }
+
+                return GetSurfService().updateSurf(projectId, caseId, dto)
+            } finally {
+                setIsSaving(false)
+            }
+        },
+        onSuccess: () => {
+            if (projectId && caseId) {
+                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
+            }
+        },
+        onError: (error: Error) => {
+            setSnackBarMessage(error.message || "Failed to update surf")
+        },
     })
 
-    const updateProductionFlowline = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateProductionFlowline = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "productionFlowline",
     })
 
-    const updateCessationCost = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateCessationCost = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "cessationCost",
     })
 
-    const updateTemplateCount = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateTemplateCount = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "templateCount",
     })
 
-    const updateRiserCount = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateRiserCount = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "riserCount",
     })
 
-    const updateInfieldPipelineSystemLength = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateInfieldPipelineSystemLength = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "infieldPipelineSystemLength",
     })
 
-    const updateUmbilicalSystemLength = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateUmbilicalSystemLength = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "umbilicalSystemLength",
     })
 
-    const updateProducerCount = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateProducerCount = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "producerCount",
     })
 
-    const updateGasInjectorCount = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateGasInjectorCount = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "gasInjectorCount",
     })
 
-    const updateWaterInjectorCount = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateWaterInjectorCount = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "waterInjectorCount",
     })
 
-    const updateMaturity = (surfId: string, newValue: number) => mutation.mutateAsync({
-        resourceId: surfId,
+    const updateMaturity = (newValue: number) => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "maturity",
     })
