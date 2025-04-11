@@ -43,7 +43,7 @@ const CasesDetails: React.FC = () => {
                     <Typography variant="overline">Cases</Typography>
                 </Header>
                 {sidebarOpen && !isEditDisabled && (
-                    <Tooltip title="Add new case">
+                    <Tooltip title="Create a new case">
                         <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
                     </Tooltip>
                 )}

@@ -60,7 +60,7 @@ export const DeleteIconButton = styled(IconButton)`
   }
 `
 
-export const getDisplayText = (period: { quarter: number, year: number } | undefined): string => (period ? `Q${period.quarter} ${period.year}` : "")
+export const getDisplayText = (period: { quarter: number, year: number }): string => (`Q${period.quarter} ${period.year}`)
 
 interface BaseGantEntryProps {
     title: string;

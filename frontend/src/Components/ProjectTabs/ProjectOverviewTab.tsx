@@ -148,7 +148,7 @@ const ProjectOverviewTab = () => {
                             onClick={addNewCase}
                         >
                             <Icon data={add} size={24} />
-                            Add new Case
+                            Create a new Case
                         </Button>
                     </Tooltip>
                 </Grid>

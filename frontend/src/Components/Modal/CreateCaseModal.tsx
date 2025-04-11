@@ -20,6 +20,7 @@ import {
     useEffect,
     useMemo,
 } from "react"
+import styled from "styled-components"
 
 import BaseModal from "./BaseModal"
 import {
@@ -38,6 +39,8 @@ import {
     dateStringToDateUtc,
     createDateFromYearAndQuarter,
     createDateFromISOString,
+    getCurrentQuarterIndex,
+    quarterIndexToStartDate,
 } from "@/Utils/DateUtils"
 
 interface YearQuarterOption {
@@ -49,6 +52,11 @@ interface YearQuarterOption {
 
 const filter = createFilterOptions<YearQuarterOption>()
 
+const RequiredAsterisk = styled.span`
+    color: red;
+    margin-left: 2px;
+`
+
 const CreateCaseModal = (): JSX.Element => {
     const { isLoading, setIsLoading } = useAppStore()
     const revisionAndProjectData = useDataFetch()
@@ -59,16 +67,6 @@ const CreateCaseModal = (): JSX.Element => {
         caseModalEditMode,
         modalCaseId,
     } = useModalContext()
-
-    const [caseName, setCaseName] = useState<string | null>(null)
-    const [dg4Date, setDg4Date] = useState<Date | null>(null)
-    const [dg4Option, setDg4Option] = useState<YearQuarterOption | null>(null)
-    const [description, setDescription] = useState<string>("")
-    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
-    const [producerCount, setProducerWells] = useState<number>(0)
-    const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
-    const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
-    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseOverviewDto>()
 
     const getFullGanttYearRange = (): [number, number] => [
         GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR,
@@ -95,9 +93,31 @@ const CreateCaseModal = (): JSX.Element => {
         return options
     }, [])
 
-    const dateToOption = (date: Date | null): YearQuarterOption | null => {
-        if (!date) { return null }
+    const getDefaultQuarterYearOption = (): YearQuarterOption => {
+        const currentQuarterIndex = getCurrentQuarterIndex()
+        const currentQuarterDate = quarterIndexToStartDate(currentQuarterIndex)
 
+        const year = currentQuarterDate.getFullYear()
+        const month = currentQuarterDate.getMonth()
+        const quarter = Math.floor(month / 3) + 1
+
+        const option = dateOptions.find(
+            (opt) => opt.year === year && opt.quarter === quarter,
+        )
+
+        return option as YearQuarterOption
+    }
+
+    const [caseName, setCaseName] = useState<string | null>(null)
+    const [dg4Option, setDg4Option] = useState<YearQuarterOption>(getDefaultQuarterYearOption())
+    const [description, setDescription] = useState<string>("")
+    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
+    const [producerCount, setProducerWells] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
+    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseOverviewDto>()
+
+    const dateToOption = (date: Date): YearQuarterOption => {
         const year = date.getFullYear()
         const month = date.getMonth()
         const quarter = Math.floor(month / 3) + 1
@@ -106,33 +126,28 @@ const CreateCaseModal = (): JSX.Element => {
             (option) => option.year === year && option.quarter === quarter,
         )
 
-        return matchingOption || null
+        return matchingOption || getDefaultQuarterYearOption()
     }
 
-    const resetForm = (): void => {
-        setCaseName("")
-        setDg4Date(null)
-        setDg4Option(null)
-        setDescription("")
-        setProductionStrategy(0)
-        setProducerWells(0)
-        setGasInjectorWells(0)
-        setWaterInjectorWells(0)
-    }
-
+    // loads data from an existing case in scenarios where the user has clicked on "edit" in the case overview tables dropdown menu
     useEffect(() => {
+        const resetForm = (): void => {
+            setCaseName("")
+            setDg4Option(getDefaultQuarterYearOption())
+            setDescription("")
+            setProductionStrategy(0)
+            setProducerWells(0)
+            setGasInjectorWells(0)
+            setWaterInjectorWells(0)
+        }
+
         if (revisionAndProjectData) {
             const selectedCase = revisionAndProjectData.commonProjectAndRevisionData.cases?.find((c) => c.caseId === modalCaseId)
 
             if (selectedCase) {
                 setCaseItem(selectedCase)
                 setCaseName(selectedCase.name)
-
-                const date = dateStringToDateUtc(selectedCase.dg4Date)
-
-                setDg4Date(date)
-                setDg4Option(dateToOption(date))
-
+                setDg4Option(dateToOption(dateStringToDateUtc(selectedCase.dg4Date)))
                 setDescription(selectedCase.description)
                 setProductionStrategy(selectedCase.productionStrategyOverview ?? 0)
                 setProducerWells(selectedCase.producerCount ?? 0)
@@ -153,16 +168,9 @@ const CreateCaseModal = (): JSX.Element => {
     }
 
     const handleDG4Change = (_event: React.SyntheticEvent, newValue: YearQuarterOption | null): void => {
-        if (!newValue) {
-            setDg4Date(null)
-            setDg4Option(null)
-
-            return
+        if (newValue) {
+            setDg4Option(newValue)
         }
-
-        // Handle the selection
-        setDg4Option(newValue)
-        setDg4Date(createDateFromISOString(newValue.value))
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -173,7 +181,7 @@ const CreateCaseModal = (): JSX.Element => {
                 throw new Error("No project found")
             }
 
-            if (!caseName || !dg4Date) {
+            if (!caseName || !dg4Option) {
                 throw new Error("Missing required fields")
             }
 
@@ -184,7 +192,7 @@ const CreateCaseModal = (): JSX.Element => {
 
                 newCase.name = caseName
                 newCase.description = description
-                newCase.dg4Date = dg4Date.toISOString()
+                newCase.dg4Date = createDateFromISOString(dg4Option.value).toISOString()
                 newCase.producerCount = producerCount
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
@@ -202,7 +210,7 @@ const CreateCaseModal = (): JSX.Element => {
                     {
                         name: caseName,
                         description,
-                        dg4Date: dg4Date.toJSON(),
+                        dg4Date: createDateFromISOString(dg4Option.value).toJSON(),
                         producerCount,
                         gasInjectorCount,
                         waterInjectorCount,
@@ -218,7 +226,7 @@ const CreateCaseModal = (): JSX.Element => {
         }
     }
 
-    const disableCreateButton = (): boolean => !dg4Date || !caseName || caseName.trim() === ""
+    const disableCreateButton = (): boolean => !dg4Option || !caseName || caseName.trim() === ""
 
     const getButtonText = (): JSX.Element | string => {
         if (isLoading) { return <Progress.Dots /> }
@@ -229,11 +237,20 @@ const CreateCaseModal = (): JSX.Element => {
     return (
         <BaseModal
             isOpen={caseModalIsOpen}
-            title={caseModalEditMode ? "Edit case" : "Add new case"}
+            title={caseModalEditMode ? "Edit this case" : "Create a new case"}
             content={(
                 <ModalContent container spacing={2}>
-                    <FormSection size={{ xs: 12, md: 8 }}>
-                        <InputWrapper labelProps={{ label: "Name" }}>
+                    <FormSection size={{ xs: 12, md: 10 }}>
+                        <InputWrapper labelProps={{
+                            label: (
+                                <>
+                                    Name
+                                    {" "}
+                                    <RequiredAsterisk>*</RequiredAsterisk>
+                                </>
+                            ),
+                        }}
+                        >
                             <EdsTextField
                                 id="name"
                                 name="name"
@@ -243,8 +260,17 @@ const CreateCaseModal = (): JSX.Element => {
                             />
                         </InputWrapper>
                     </FormSection>
-                    <FormSection size={{ xs: 12, md: 4 }}>
-                        <InputWrapper labelProps={{ label: "DG4" }}>
+                    <FormSection size={{ xs: 12, md: 2 }}>
+                        <InputWrapper labelProps={{
+                            label: (
+                                <>
+                                    DG4
+                                    {" "}
+                                    <RequiredAsterisk>*</RequiredAsterisk>
+                                </>
+                            ),
+                        }}
+                        >
                             <Autocomplete
                                 id="dg4-date-selector"
                                 options={dateOptions}
@@ -266,7 +292,7 @@ const CreateCaseModal = (): JSX.Element => {
                                         size="small"
                                     />
                                 )}
-                                fullWidth
+                                disableClearable
                             />
                         </InputWrapper>
                     </FormSection>
@@ -283,7 +309,7 @@ const CreateCaseModal = (): JSX.Element => {
                             />
                         </InputWrapper>
                     </FormSection>
-                    <FormSection size={12}>
+                    <InputGroup size={{ xs: 12, md: 3 }}>
                         <NativeSelect
                             id="productionStrategy"
                             label="Production strategy overview"
@@ -296,8 +322,8 @@ const CreateCaseModal = (): JSX.Element => {
                             <option key={3} value={3}>WAG</option>
                             <option key={4} value={4}>Mixed</option>
                         </NativeSelect>
-                    </FormSection>
-                    <InputGroup size={{ xs: 12, md: 4 }}>
+                    </InputGroup>
+                    <InputGroup size={{ xs: 12, md: 3 }}>
                         <InputWrapper labelProps={{ label: "Producer wells" }}>
                             <Input
                                 id="producerWells"
@@ -313,7 +339,7 @@ const CreateCaseModal = (): JSX.Element => {
                             />
                         </InputWrapper>
                     </InputGroup>
-                    <InputGroup size={{ xs: 12, md: 4 }}>
+                    <InputGroup size={{ xs: 12, md: 3 }}>
                         <InputWrapper labelProps={{ label: "Gas injector wells" }}>
                             <Input
                                 id="gasInjector"
@@ -329,7 +355,7 @@ const CreateCaseModal = (): JSX.Element => {
                             />
                         </InputWrapper>
                     </InputGroup>
-                    <InputGroup size={{ xs: 12, md: 4 }}>
+                    <InputGroup size={{ xs: 12, md: 3 }}>
                         <InputWrapper labelProps={{ label: "Water injector wells" }}>
                             <Input
                                 id="waterInjector"

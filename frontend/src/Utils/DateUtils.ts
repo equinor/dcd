@@ -195,28 +195,14 @@ export const generateDynamicQuarterlyPeriods = (referenceDate?: Date | null, cus
  * @param startYear - The start year of the timeline (defaults to current year - YEARS_BEFORE_DG4)
  * @returns Quarter index (0-based)
  */
-export const dateToQuarterIndex = (date: Date | undefined | null, startYear?: number): number | undefined => {
-    if (!date || Number.isNaN(date.getTime())) {
-        return undefined
-    }
-
+export const dateToQuarterIndex = (date: Date, startYear: number): number => {
     const year = date.getFullYear()
     const month = date.getMonth()
-
-    // If no start year provided, use current year - YEARS_BEFORE_DG4
-    const currentYear = new Date().getFullYear()
-    const fixedStartYear = startYear || (currentYear - GANTT_CONFIG.YEARS_BEFORE_DG4)
-
-    const fixedEndYear = fixedStartYear + GANTT_CONFIG.YEARS_BEFORE_DG4 + GANTT_CONFIG.YEARS_AFTER_DG4
-
-    if (year < fixedStartYear || year > fixedEndYear) {
-        return undefined
-    }
 
     const quarter = Math.floor(month / 3)
 
     // Calculate index: 4 quarters per year, starting from our fixed start year
-    return (year - fixedStartYear) * 4 + quarter
+    return (year - startYear) * 4 + quarter
 }
 
 /**
@@ -225,11 +211,7 @@ export const dateToQuarterIndex = (date: Date | undefined | null, startYear?: nu
  * @param startYear - The start year of the timeline (defaults to current year - YEARS_BEFORE_DG4)
  * @returns Date object representing the first day of the quarter
  */
-export const quarterIndexToStartDate = (quarterIndex: number | undefined, startYear?: number): Date | null => {
-    if (quarterIndex === undefined) {
-        return null
-    }
-
+export const quarterIndexToStartDate = (quarterIndex: number, startYear?: number): Date => {
     // If no start year provided, use current year - YEARS_BEFORE_DG4
     const currentYear = new Date().getFullYear()
     const fixedStartYear = startYear || (currentYear - GANTT_CONFIG.YEARS_BEFORE_DG4)

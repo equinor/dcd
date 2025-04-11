@@ -112,7 +112,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 >
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
-                        Add New Case
+                        Create a new case
                     </Typography>
                 </Menu.Item>
                 <Menu.Item

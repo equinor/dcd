@@ -37,9 +37,9 @@ test.describe('GOM Project case operation Tests', () => {
 
 
   test('Create new case', async () => {
-    await expect(page.getByRole('button', { name: 'Add new Case' })).toBeVisible()
-    await page.getByRole('button', { name: 'Add new Case' }).click()
-    await expect(page.getByText('Add new case', { exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Create a new Case' })).toBeVisible()
+    await page.getByRole('button', { name: 'Create a new Case' }).click()
+    await expect(page.getByText('Create a new case', { exact: true })).toBeVisible()
     await page.getByPlaceholder('Enter a name').fill(testCaseName)
     await page.waitForTimeout(3000)
     await page.getByRole('button', { name: 'Create case' }).click()
