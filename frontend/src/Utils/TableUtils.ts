@@ -587,7 +587,7 @@ export const SetTableYearsFromProfiles = (
  * @param setTableYears - Table years range setter
  * @param defaultYears - Default year range to use if no valid profiles
  */
-export const SetSummaryTableYearsFromProfiles = (
+export const setSummaryTableYearsFromProfiles = (
     profiles: (ITimeSeries | undefined)[],
     dg4Year: number,
     setTableYears: Dispatch<SetStateAction<[number, number]>>,
