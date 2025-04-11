@@ -128,7 +128,7 @@ const CaseFacilitiesTab = () => {
                     options={platformConceptValues}
                     label="Platform concept"
                     id={`substructure-concept-${substructureData.id}`}
-                    onSubmit={(newValue) => updateConcept(substructureData.id, newValue)}
+                    onSubmit={(newValue) => updateConcept(newValue)}
                 />
             </Grid>
             {substructureData.concept === Concept.TieBack && (
@@ -402,7 +402,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`substructure-dry-weight-${substructureData.id}`}
-                    onSubmit={(newValue) => updateSubstructureDryWeight(substructureData.id, newValue)}
+                    onSubmit={(newValue) => updateSubstructureDryWeight(newValue)}
                 />
             </Grid>
             <PROSPBar
