@@ -158,7 +158,7 @@ const CaseFacilitiesTab = () => {
                     integer={false}
                     unit={formatCurrencyUnit(revisionAndProjectData.commonProjectAndRevisionData.currency)}
                     id={`surf-cessation-cost-${surfData.id}`}
-                    onSubmit={(newValue) => updateCessationCost(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateCessationCost(newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -282,7 +282,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-template-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateTemplateCount(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateTemplateCount(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -293,7 +293,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-riser-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateRiserCount(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateRiserCount(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -305,7 +305,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-infield-pipeline-system-length-${surfData.id}`}
-                    onSubmit={(newValue) => updateInfieldPipelineSystemLength(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateInfieldPipelineSystemLength(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -317,7 +317,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-umbilical-system-length-${surfData.id}`}
-                    onSubmit={(newValue) => updateUmbilicalSystemLength(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateUmbilicalSystemLength(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -326,7 +326,7 @@ const CaseFacilitiesTab = () => {
                     options={productionFlowlineValues}
                     label="Production flowline"
                     id={`surf-production-flowline-${surfData.id}`}
-                    onSubmit={(newValue) => updateProductionFlowline(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateProductionFlowline(newValue)}
                 />
             </Grid>
             <Grid size={12}>
@@ -338,7 +338,7 @@ const CaseFacilitiesTab = () => {
                     value={surfData.producerCount}
                     integer
                     id={`surf-producer-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateSurfProducerCount(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateSurfProducerCount(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -349,7 +349,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-gas-injector-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateSurfGasInjectorCount(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateSurfGasInjectorCount(newValue)}
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -360,7 +360,7 @@ const CaseFacilitiesTab = () => {
                     min={0}
                     max={1_000_000}
                     id={`surf-water-injector-count-${surfData.id}`}
-                    onSubmit={(newValue) => updateSurfWaterInjectorCount(surfData.id, newValue)}
+                    onSubmit={(newValue) => updateSurfWaterInjectorCount(newValue)}
                 />
             </Grid>
             <Grid size={12}>

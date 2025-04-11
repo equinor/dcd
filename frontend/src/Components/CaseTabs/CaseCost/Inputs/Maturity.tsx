@@ -23,7 +23,7 @@ const Maturity: React.FC<props> = ({ surfData }) => {
             options={maturityOptions}
             label="Maturity"
             id={`surf-maturity-${surfData.id}`}
-            onSubmit={(newValue) => updateMaturity(surfData.id, newValue)}
+            onSubmit={(newValue) => updateMaturity(newValue)}
         />
     )
 }
