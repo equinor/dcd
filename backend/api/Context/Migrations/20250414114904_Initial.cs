@@ -214,6 +214,7 @@ namespace api.Migrations
                     SharepointFileId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SharepointFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SharepointFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SharepointUpdatedTimestampUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DgaDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DgbDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DgcDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -225,6 +226,10 @@ namespace api.Migrations
                     Dg2Date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Dg3Date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Dg4Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Co2EmissionsYears = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DrillingScheduleYears = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CaseCostYears = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductionProfilesYears = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ArtificialLift = table.Column<int>(type: "int", nullable: false),
                     ProductionStrategyOverview = table.Column<int>(type: "int", nullable: false),
                     ProducerCount = table.Column<int>(type: "int", nullable: false),
@@ -239,6 +244,13 @@ namespace api.Migrations
                     NpvOverride = table.Column<double>(type: "float", nullable: true),
                     BreakEven = table.Column<double>(type: "float", nullable: false),
                     BreakEvenOverride = table.Column<double>(type: "float", nullable: true),
+                    Co2RemovedFromGas = table.Column<double>(type: "float", nullable: false),
+                    Co2EmissionFromFuelGas = table.Column<double>(type: "float", nullable: false),
+                    FlaredGasPerProducedVolume = table.Column<double>(type: "float", nullable: false),
+                    Co2EmissionsFromFlaredGas = table.Column<double>(type: "float", nullable: false),
+                    Co2Vented = table.Column<double>(type: "float", nullable: false),
+                    DailyEmissionFromDrillingRig = table.Column<double>(type: "float", nullable: false),
+                    AverageDevelopmentDrillingDays = table.Column<double>(type: "float", nullable: false),
                     Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AverageCo2Intensity = table.Column<double>(type: "float", nullable: false),
                     DiscountedCashflow = table.Column<double>(type: "float", nullable: false),
@@ -340,13 +352,6 @@ namespace api.Migrations
                     Classification = table.Column<int>(type: "int", nullable: false),
                     ProjectCategory = table.Column<int>(type: "int", nullable: false),
                     SharepointSiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Co2RemovedFromGas = table.Column<double>(type: "float", nullable: false),
-                    Co2EmissionFromFuelGas = table.Column<double>(type: "float", nullable: false),
-                    FlaredGasPerProducedVolume = table.Column<double>(type: "float", nullable: false),
-                    Co2EmissionsFromFlaredGas = table.Column<double>(type: "float", nullable: false),
-                    Co2Vented = table.Column<double>(type: "float", nullable: false),
-                    DailyEmissionFromDrillingRig = table.Column<double>(type: "float", nullable: false),
-                    AverageDevelopmentDrillingDays = table.Column<double>(type: "float", nullable: false),
                     OilPriceUsd = table.Column<double>(type: "float", nullable: false),
                     GasPriceNok = table.Column<double>(type: "float", nullable: false),
                     NglPriceUsd = table.Column<double>(type: "float", nullable: false),
@@ -541,59 +546,6 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DevelopmentOperationalWellCosts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RigUpgrading = table.Column<double>(type: "float", nullable: false),
-                    RigMobDemob = table.Column<double>(type: "float", nullable: false),
-                    AnnualWellInterventionCostPerWell = table.Column<double>(type: "float", nullable: false),
-                    PluggingAndAbandonment = table.Column<double>(type: "float", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DevelopmentOperationalWellCosts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DevelopmentOperationalWellCosts_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExplorationOperationalWellCosts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExplorationRigUpgrading = table.Column<double>(type: "float", nullable: false),
-                    ExplorationRigMobDemob = table.Column<double>(type: "float", nullable: false),
-                    ExplorationProjectDrillingCosts = table.Column<double>(type: "float", nullable: false),
-                    AppraisalRigMobDemob = table.Column<double>(type: "float", nullable: false),
-                    AppraisalProjectDrillingCosts = table.Column<double>(type: "float", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExplorationOperationalWellCosts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ExplorationOperationalWellCosts_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProjectImages",
                 columns: table => new
                 {
@@ -758,12 +710,6 @@ namespace api.Migrations
                 column: "TimestampUtc");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DevelopmentOperationalWellCosts_ProjectId",
-                table: "DevelopmentOperationalWellCosts",
-                column: "ProjectId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DrainageStrategies_CaseId",
                 table: "DrainageStrategies",
                 column: "CaseId",
@@ -773,12 +719,6 @@ namespace api.Migrations
                 name: "IX_ExceptionLogs_TimestampUtc",
                 table: "ExceptionLogs",
                 column: "TimestampUtc");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExplorationOperationalWellCosts_ProjectId",
-                table: "ExplorationOperationalWellCosts",
-                column: "ProjectId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OnshorePowerSupplies_CaseId",
@@ -921,16 +861,10 @@ namespace api.Migrations
                 name: "CompletedRecalculations");
 
             migrationBuilder.DropTable(
-                name: "DevelopmentOperationalWellCosts");
-
-            migrationBuilder.DropTable(
                 name: "DrainageStrategies");
 
             migrationBuilder.DropTable(
                 name: "ExceptionLogs");
-
-            migrationBuilder.DropTable(
-                name: "ExplorationOperationalWellCosts");
 
             migrationBuilder.DropTable(
                 name: "OnshorePowerSupplies");
