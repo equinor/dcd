@@ -4,7 +4,7 @@ import {
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid2"
 import React, {
-    useEffect, useState, useCallback, useMemo,
+    useEffect, useState, useMemo,
 } from "react"
 import styled from "styled-components"
 
@@ -53,6 +53,12 @@ interface CaseSharePointMapping {
     caseId: string;
     sharePointFileId: string | null;
     sharePointFileName: string | null;
+}
+
+export enum SharePointFileStatus {
+    NOT_IMPORTED = "NOT_IMPORTED",
+    CHANGED_IN_SHAREPOINT = "CHANGED_IN_SHAREPOINT",
+    NOT_CHANGED_IN_SHAREPOINT = "NOT_CHANGED_IN_SHAREPOINT",
 }
 
 const PROSPTab = () => {
@@ -244,12 +250,34 @@ const PROSPTab = () => {
         }
     }
 
+    const getSharePointFileStatus = (caseItem: Components.Schemas.CaseOverviewDto): SharePointFileStatus => {
+        const changeUtcOnCaseItemProspFile = caseItem.sharepointUpdatedTimestampUtc
+
+        if (!changeUtcOnCaseItemProspFile) {
+            return SharePointFileStatus.NOT_IMPORTED
+        }
+
+        const sharepointFile = sharePointFiles.find((f) => f.id === caseItem.sharepointFileId)
+
+        if (!sharepointFile) {
+            return SharePointFileStatus.NOT_IMPORTED
+        }
+
+        if (caseItem.sharepointUpdatedTimestampUtc === sharepointFile.lastModifiedUtc) {
+            return SharePointFileStatus.NOT_CHANGED_IN_SHAREPOINT
+        }
+
+        return SharePointFileStatus.CHANGED_IN_SHAREPOINT
+    }
+
     const renderCaseDropdown = (caseMapping: CaseSharePointMapping) => {
         const caseItem = cases.find((c) => c.caseId === caseMapping.caseId)
 
         if (!caseItem) { return null }
 
         const isInputDisabled = !canEdit() || isSaving
+
+        const sharePointFileStatus = getSharePointFileStatus(caseItem)
 
         return (
             <Grid size={12} key={caseMapping.caseId}>
@@ -260,6 +288,7 @@ const PROSPTab = () => {
                     onChange={handleFileChange}
                     onRefresh={handleRefreshFile}
                     disabled={isInputDisabled}
+                    sharePointFileStatus={sharePointFileStatus}
                 />
             </Grid>
         )

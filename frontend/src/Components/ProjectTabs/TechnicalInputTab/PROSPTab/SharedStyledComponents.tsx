@@ -26,8 +26,11 @@ export const MiddleColumn = styled.div`
 `
 
 export const RightColumn = styled.div`
-    width: 100px;
+    display: flex;
+    width: 280px;
     text-align: right;
+    gap: 10px;
+    align-items: center;
 `
 
 export const StyledSelect = styled(NativeSelect)`

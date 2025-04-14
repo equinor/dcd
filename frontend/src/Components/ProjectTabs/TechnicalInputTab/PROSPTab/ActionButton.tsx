@@ -40,7 +40,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     feedbackStatus,
     onClick,
     disabled,
-    buttonText = "Import",
+    buttonText = "Import changes",
 }) => {
     if (isLoading) {
         return (

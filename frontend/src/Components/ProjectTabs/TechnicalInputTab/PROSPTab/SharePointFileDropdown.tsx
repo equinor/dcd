@@ -2,6 +2,7 @@ import { Typography } from "@equinor/eds-core-react"
 import React, { useState } from "react"
 
 import ActionButton from "./ActionButton"
+import { SharePointFileStatus } from "./PROSPTab"
 import {
     Container,
     LeftColumn,
@@ -20,6 +21,7 @@ export interface SharePointFileDropdownProps {
     onChange: (caseId: string, fileId: string) => Promise<void>;
     onRefresh?: (caseId: string, fileId: string | null) => Promise<boolean>;
     disabled: boolean;
+    sharePointFileStatus: SharePointFileStatus;
 }
 
 /**
@@ -34,6 +36,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
     onChange,
     onRefresh,
     disabled,
+    sharePointFileStatus,
 }) => {
     const [isChanging, setIsChanging] = useState(false)
     const { isLoading: isRefreshing, feedbackStatus, withFeedback } = useFeedbackStatus()
@@ -95,12 +98,42 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
             </MiddleColumn>
 
             <RightColumn>
-                <ActionButton
-                    isLoading={isRefreshing}
-                    feedbackStatus={feedbackStatus}
-                    onClick={handleRefresh}
-                    disabled={isDisabled || !value}
-                />
+                {sharePointFileStatus === SharePointFileStatus.NOT_IMPORTED && (
+                    <ActionButton
+                        isLoading={isRefreshing}
+                        feedbackStatus={feedbackStatus}
+                        onClick={handleRefresh}
+                        disabled={isDisabled || !value}
+                    />
+                )}
+
+                {sharePointFileStatus === SharePointFileStatus.CHANGED_IN_SHAREPOINT && (
+                    <>
+                        <ActionButton
+                            isLoading={isRefreshing}
+                            feedbackStatus={feedbackStatus}
+                            onClick={handleRefresh}
+                            disabled={isDisabled || !value}
+                        />
+                        <Typography>
+                            Changes found
+                        </Typography>
+                    </>
+                )}
+
+                {sharePointFileStatus === SharePointFileStatus.NOT_CHANGED_IN_SHAREPOINT && (
+                    <>
+                        <ActionButton
+                            isLoading={isRefreshing}
+                            feedbackStatus={feedbackStatus}
+                            onClick={() => { }}
+                            disabled
+                        />
+                        <Typography>
+                            No changes found
+                        </Typography>
+                    </>
+                )}
             </RightColumn>
         </Container>
     )
