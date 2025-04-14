@@ -98,7 +98,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
             </MiddleColumn>
 
             <RightColumn>
-                {sharePointFileStatus === SharePointFileStatus.NOT_IMPORTED && (
+                {sharePointFileStatus === SharePointFileStatus.NO_FILE_SELECTED && (
                     <ActionButton
                         isLoading={isRefreshing}
                         feedbackStatus={feedbackStatus}
@@ -107,7 +107,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
                     />
                 )}
 
-                {sharePointFileStatus === SharePointFileStatus.CHANGED_IN_SHAREPOINT && (
+                {sharePointFileStatus === SharePointFileStatus.IMPORTABLE && (
                     <>
                         <ActionButton
                             isLoading={isRefreshing}
@@ -121,7 +121,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
                     </>
                 )}
 
-                {sharePointFileStatus === SharePointFileStatus.NOT_CHANGED_IN_SHAREPOINT && (
+                {sharePointFileStatus === SharePointFileStatus.UNCHANGED_IN_SHAREPOINT && (
                     <>
                         <ActionButton
                             isLoading={isRefreshing}

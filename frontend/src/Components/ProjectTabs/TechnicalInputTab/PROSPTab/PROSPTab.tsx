@@ -56,9 +56,9 @@ interface CaseSharePointMapping {
 }
 
 export enum SharePointFileStatus {
-    NOT_IMPORTED = "NOT_IMPORTED",
-    CHANGED_IN_SHAREPOINT = "CHANGED_IN_SHAREPOINT",
-    NOT_CHANGED_IN_SHAREPOINT = "NOT_CHANGED_IN_SHAREPOINT",
+    NO_FILE_SELECTED = "NO_FILE_SELECTED",
+    IMPORTABLE = "IMPORTABLE",
+    UNCHANGED_IN_SHAREPOINT = "UNCHANGED_IN_SHAREPOINT",
 }
 
 const PROSPTab = () => {
@@ -192,9 +192,7 @@ const PROSPTab = () => {
             }))
 
             setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
-        } catch (error: any) {
-            console.error("[PROSPTab] error while submitting file change", error)
-
+        } catch (error: unknown) {
             setCaseMappings((prev) => prev.map((item) => {
                 if (item.caseId === caseId) {
                     // Revert to the original values
@@ -210,9 +208,11 @@ const PROSPTab = () => {
                 return item
             }))
 
-            const errorMessage = error.message || "Failed to update file selection. Please try again."
+            if (error instanceof Error) {
+                const errorMessage = error.message || "Failed to update file selection. Please try again."
 
-            setSnackBarMessage(errorMessage)
+                setSnackBarMessage(errorMessage)
+            }
         } finally {
             setIsSaving(false)
         }
@@ -238,11 +238,12 @@ const PROSPTab = () => {
             setSnackBarMessage(`Successfully imported data from ${fileName}`)
 
             return true
-        } catch (error: any) {
-            console.error("[PROSPTab] error while refreshing file data", error)
-            const errorMessage = error.message || "Failed to import file data. Please try again."
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                const errorMessage = error.message || "Failed to import file data. Please try again."
 
-            setSnackBarMessage(errorMessage)
+                setSnackBarMessage(errorMessage)
+            }
 
             return false
         } finally {
@@ -250,24 +251,28 @@ const PROSPTab = () => {
         }
     }
 
-    const getSharePointFileStatus = (caseItem: Components.Schemas.CaseOverviewDto): SharePointFileStatus => {
+    const getSharePointFileStatus = (caseItem: Components.Schemas.CaseOverviewDto, selectedFileId: string | null): SharePointFileStatus => {
+        if (selectedFileId && selectedFileId !== caseItem.sharepointFileId) {
+            return SharePointFileStatus.IMPORTABLE
+        }
+
         const changeUtcOnCaseItemProspFile = caseItem.sharepointUpdatedTimestampUtc
 
         if (!changeUtcOnCaseItemProspFile) {
-            return SharePointFileStatus.NOT_IMPORTED
+            return SharePointFileStatus.NO_FILE_SELECTED
         }
 
         const sharepointFile = sharePointFiles.find((f) => f.id === caseItem.sharepointFileId)
 
         if (!sharepointFile) {
-            return SharePointFileStatus.NOT_IMPORTED
+            return SharePointFileStatus.NO_FILE_SELECTED
         }
 
         if (caseItem.sharepointUpdatedTimestampUtc === sharepointFile.lastModifiedUtc) {
-            return SharePointFileStatus.NOT_CHANGED_IN_SHAREPOINT
+            return SharePointFileStatus.UNCHANGED_IN_SHAREPOINT
         }
 
-        return SharePointFileStatus.CHANGED_IN_SHAREPOINT
+        return SharePointFileStatus.IMPORTABLE
     }
 
     const renderCaseDropdown = (caseMapping: CaseSharePointMapping) => {
@@ -277,7 +282,7 @@ const PROSPTab = () => {
 
         const isInputDisabled = !canEdit() || isSaving
 
-        const sharePointFileStatus = getSharePointFileStatus(caseItem)
+        const sharePointFileStatus = getSharePointFileStatus(caseItem, caseMapping.sharePointFileId)
 
         return (
             <Grid size={12} key={caseMapping.caseId}>
