@@ -47,7 +47,7 @@ const categorizeEdits = (queue: EditInstance[]): QueueStats => ({
 interface EditQueueHandlerProps {
     gridRef?: React.RefObject<any>
     onSubmitSuccess?: () => void
-    onSubmitError?: (error: any) => void
+    onSubmitError?: (error: Error) => void
     autoSubmitDelay?: number
 }
 
@@ -227,8 +227,10 @@ export const useEditQueueHandler = ({
             await processAllEdits(editQueue)
             clearQueue()
             onSubmitSuccess?.()
-        } catch (error: any) {
-            onSubmitError?.(error)
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                onSubmitError?.(error)
+            }
         } finally {
             setIsSaving(false)
         }

@@ -56,7 +56,7 @@ export const useSubstructureMutation = () => {
                 queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
             }
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
             setSnackBarMessage(error.message || "Failed to update Substructure")
         },
     })

@@ -84,7 +84,7 @@ const FeedbackIndicator = ({ status }: { status: FeedbackStatus }) => {
 
     if (status === "success") {
         return (<>
-         <span style={{ marginLeft: "8px" }}>Case has been updated </span><span style={{ color: "#4BB748", marginLeft: "8px"}}>✓</span>
+            <span style={{ marginLeft: "8px" }}>Case has been updated </span><span style={{ color: "#4BB748", marginLeft: "8px" }}>✓</span>
         </>)
     }
 
@@ -182,11 +182,12 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
             })()
 
             await withFeedback(importPromise)
-        } catch (error: any) {
-            console.error("[SharePointFileSelector] error while refreshing file data", error)
-            const errorMessage = error.message || "Failed to refresh file data. The server might be experiencing issues."
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                const errorMessage = error.message || "Failed to refresh file data. The server might be experiencing issues."
 
-            setSnackBarMessage(errorMessage)
+                setSnackBarMessage(errorMessage)
+            }
         } finally {
             setIsSaving(false)
         }
@@ -239,12 +240,12 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
                 <SharePointAction>
                     {canEdit() && (
-                       <ActionButton
-                       onClick={handleRefreshFile}
-                       disabled={isDisabled}
-                   >
-                       {isLoading ? <DotProgress /> : !selectedSharePointFileId ? "Remove file" : "Import"}
-                   </ActionButton>
+                        <ActionButton
+                            onClick={handleRefreshFile}
+                            disabled={isDisabled}
+                        >
+                            {isLoading ? <DotProgress /> : !selectedSharePointFileId ? "Remove file" : "Import"}
+                        </ActionButton>
                     )}
                 </SharePointAction>
                 <FeedbackIndicator status={feedbackStatus} />

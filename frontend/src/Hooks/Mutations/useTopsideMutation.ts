@@ -71,7 +71,7 @@ export const useTopsideMutation = () => {
                 queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
             }
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
             setSnackBarMessage(error.message || "Failed to update Topside")
         },
     })
