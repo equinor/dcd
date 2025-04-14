@@ -1,10 +1,11 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
-
-import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
 import { CampaignProfileType } from "@/Components/CaseTabs/CaseDrillingSchedule/Components/CampaignProfileTypes"
 import { ITimeSeries } from "@/Models/ITimeSeries"
+import { CampaignCostType } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
+import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
 
 export interface CampaignWellUpdate {
@@ -51,84 +52,94 @@ export const useCampaignMutation = () => {
         )
     }
 
-    // Custom mutation function for campaign operations
-    const campaignMutationFn = async (
-        service: ReturnType<typeof GetDrillingCampaignsService>,
-        projectIdParam: string,
-        caseIdParam: string,
-        params: MutationParams<CampaignMutationParams>,
-    ) => {
-        const {
-            campaignId,
-            rigUpgradingCost,
-            rigMobDemobCost,
-            [CampaignProfileType.RigUpgrading]: rigUpgradingProfile,
-            [CampaignProfileType.RigMobDemob]: rigMobDemobProfile,
-            wells,
-        } = params.updatedValue
+    const queryClient = useQueryClient()
+    const { setIsSaving, setSnackBarMessage } = useAppStore()
 
-        // Handle standalone cost input updates
-        if (rigUpgradingCost !== undefined) {
-            return service.updateRigUpgradingCost(
-                projectIdParam,
-                caseIdParam,
-                campaignId,
-                rigUpgradingCost,
-            )
-        }
+    const mutation = useMutation({
+        mutationFn: async (params: any) => {
+            if (!projectId || !caseId) {
+                throw new Error("Project ID and Case ID are required")
+            }
 
-        if (rigMobDemobCost !== undefined) {
-            return service.updateRigMobDemobCost(
-                projectIdParam,
-                caseIdParam,
-                campaignId,
-                rigMobDemobCost,
-            )
-        }
+            setIsSaving(true)
 
-        // Handle table profile updates
-        if (rigUpgradingProfile) {
-            return updateCampaignProfile(
-                service,
-                projectIdParam,
-                caseIdParam,
-                campaignId,
-                0 as Components.Schemas.CampaignCostType, // Rig upgrading profile
-                rigUpgradingProfile,
-            )
-        }
+            try {
+                const service = GetDrillingCampaignsService()
 
-        if (rigMobDemobProfile) {
-            return updateCampaignProfile(
-                service,
-                projectIdParam,
-                caseIdParam,
-                campaignId,
-                1 as Components.Schemas.CampaignCostType, // Rig mob/demob profile
-                rigMobDemobProfile,
-            )
-        }
+                const {
+                    campaignId,
+                    rigUpgradingCost,
+                    rigMobDemobCost,
+                    [CampaignProfileType.RigUpgrading]: rigUpgradingProfile,
+                    [CampaignProfileType.RigMobDemob]: rigMobDemobProfile,
+                    wells,
+                } = params.updatedValue
 
-        // Handle campaign well updates
-        if (wells) {
-            return service.updateCampaignWells(
-                projectIdParam,
-                caseIdParam,
-                campaignId,
-                wells,
-            )
-        }
+                // Handle standalone cost input updates
+                if (rigUpgradingCost !== undefined) {
+                    return service.updateRigUpgradingCost(
+                        projectId,
+                        caseId,
+                        campaignId,
+                        rigUpgradingCost,
+                    )
+                }
 
-        throw new Error("Invalid campaign mutation parameters")
-    }
+                if (rigMobDemobCost !== undefined) {
+                    return service.updateRigMobDemobCost(
+                        projectId,
+                        caseId,
+                        campaignId,
+                        rigMobDemobCost,
+                    )
+                }
 
-    const mutation = useBaseMutation({
-        resourceName: "campaign",
-        getService: GetDrillingCampaignsService,
-        updateMethod: "updateCampaign", // Not directly used with custom mutation function
-        customMutationFn: campaignMutationFn,
-        getResourceFromApiData: () => null, // Not used with custom mutation function
-        invalidateQueries: caseId && projectId ? [["caseApiData", projectId, caseId]] : [],
+                // Handle table profile updates
+                if (rigUpgradingProfile) {
+                    return updateCampaignProfile(
+                        service,
+                        projectId,
+                        caseId,
+                        campaignId,
+                        CampaignCostType.RigUpgrading,
+                        rigUpgradingProfile,
+                    )
+                }
+
+                if (rigMobDemobProfile) {
+                    return updateCampaignProfile(
+                        service,
+                        projectId,
+                        caseId,
+                        campaignId,
+                        CampaignCostType.RigMobDemob,
+                        rigMobDemobProfile,
+                    )
+                }
+
+                // Handle campaign well updates
+                if (wells) {
+                    return service.updateCampaignWells(
+                        projectId,
+                        caseId,
+                        campaignId,
+                        wells,
+                    )
+                }
+
+                throw new Error("Invalid campaign mutation parameters")
+            } finally {
+                setIsSaving(false)
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
+        },
+        onError: (error: unknown) => {
+            if (error instanceof Error) {
+                setSnackBarMessage(error.message || "Failed to update campaign")
+            }
+        },
     })
 
     // Cost updates - from standalone input fields

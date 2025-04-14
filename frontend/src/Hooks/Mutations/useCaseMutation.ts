@@ -1,6 +1,9 @@
-import { useBaseMutation } from "./useBaseMutation"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useParams } from "react-router-dom"
 
 import { GetCaseService } from "@/Services/CaseService"
+import { useAppStore } from "@/Store/AppStore"
+import { useProjectContext } from "@/Store/ProjectContext"
 
 export const useCaseMutation = (): {
     updateWholeCase: (caseObject: Components.Schemas.UpdateCaseDto) => Promise<void>
@@ -30,11 +33,72 @@ export const useCaseMutation = (): {
     updateDailyEmissionFromDrillingRig: (newValue: number) => Promise<void>
     isLoading: boolean
 } => {
-    const mutation = useBaseMutation({
-        resourceName: "case",
-        getService: GetCaseService,
-        updateMethod: "updateCase",
-        getResourceFromApiData: (apiData) => apiData?.case,
+    const queryClient = useQueryClient()
+    const { caseId } = useParams()
+    const { projectId } = useProjectContext()
+    const { setIsSaving, setSnackBarMessage } = useAppStore()
+
+    const mutation = useMutation({
+        mutationFn: async (params: any) => {
+            if (!projectId || !caseId) {
+                throw new Error("Project ID and Case ID are required")
+            }
+
+            setIsSaving(true)
+
+            try {
+                const service = GetCaseService()
+
+                let apiData = queryClient.getQueryData<Components.Schemas.CaseWithAssetsDto>(["caseApiData", projectId, caseId])
+
+                if (!apiData && caseId) {
+                    try {
+                        apiData = await service.getCaseWithAssets(projectId, caseId)
+                        queryClient.setQueryData(["caseApiData", projectId, caseId], apiData)
+                    } catch (error) {
+                        console.error("Error fetching case data directly:", error)
+                    }
+                }
+
+                const resource = apiData?.case
+
+                if (!resource) {
+                    throw new Error("case not found")
+                }
+
+                let updatedResource
+
+                if (params.isFullUpdate) {
+                    updatedResource = params.updatedValue
+                } else {
+                    updatedResource = {
+                        ...resource,
+                        [params.propertyKey]: params.updatedValue,
+                    }
+                }
+
+                return await service.updateCase(
+                    projectId,
+                    caseId,
+                    updatedResource,
+                )
+            } finally {
+                setIsSaving(false)
+            }
+        },
+        onSuccess: (_, variables) => {
+            const finalCaseId = variables.localCaseId || caseId
+
+            if (projectId && finalCaseId) {
+                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, finalCaseId] })
+                queryClient.invalidateQueries({ queryKey: ["projectApiData"] })
+            }
+        },
+        onError: (error: unknown) => {
+            if (error instanceof Error) {
+                setSnackBarMessage(error.message || "Failed to update case")
+            }
+        },
     })
 
     const updateWholeCase = (caseObject: Components.Schemas.UpdateCaseDto): Promise<void> => mutation.mutateAsync({
@@ -123,7 +187,7 @@ export const useCaseMutation = (): {
         propertyKey: "name",
     })
 
-    const updateArchived = (newValue: boolean, caseId: string): Promise<void> => mutation.mutateAsync({
+    const updateArchived = (newValue: boolean): Promise<void> => mutation.mutateAsync({
         updatedValue: newValue,
         propertyKey: "archived",
         localCaseId: caseId,

@@ -1,10 +1,15 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
-
-import { useBaseMutation, MutationParams } from "./useBaseMutation"
 
 import { EditInstance, ResourceName } from "@/Models/Interfaces"
 import { TimeSeriesService, TimeSeriesData } from "@/Services/TimeSeriesService"
+import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
+
+export interface Params {
+    updatedValue: string | number | boolean;
+    propertyKey: keyof Components.Schemas.SaveTimeSeriesDto | keyof Components.Schemas.SaveTimeSeriesOverrideDto;
+}
 
 const getLatestEdits = (queue: EditInstance[], keySelector: (edit: EditInstance) => string): EditInstance[] => {
     const latestEditsMap = new Map<string, EditInstance>()
@@ -39,90 +44,80 @@ export interface TimeSeriesMutationParams {
 export const useTimeSeriesMutation = () => {
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
+    const queryClient = useQueryClient()
+    const { setIsSaving, setSnackBarMessage } = useAppStore()
 
-    /**
-     * Processes time series edits to be sent to the backend
-     * Handles both regular edits and override edits
-     */
-    const timeSeriesMutationFn = async (
-        service: typeof TimeSeriesService,
-        projectIdParam: string,
-        caseIdParam: string,
-        params: MutationParams<TimeSeriesMutationParams>,
-    ) => {
-        const { timeSeriesEdits } = params.updatedValue
-
-        // Get the latest edit for each resource name
-        const uniqueEdits = getLatestEdits(timeSeriesEdits, (edit) => edit.resourceName)
-
-        // Pre-process edits to ensure they're directed to the correct profile type
-        const modifiedEdits = uniqueEdits.map((edit) => {
-            const resourceObj = edit.resourceObject as any
-
-            // Check two things:
-            // 1. If this edit is for a row with an active override profile
-            // 2. If the row is in override mode (override toggle is enabled)
-            const hasOverrideProfile = resourceObj?.overrideProfile !== undefined
-            const isOverrideActive = hasOverrideProfile && resourceObj.overrideProfile?.override === true
-
-            // If the row is in override mode and we're editing a regular profile,
-            // redirect the edit to the override profile
-            if (isOverrideActive && !edit.resourceName.endsWith("Override")) {
-                return {
-                    ...edit,
-                    resourceName: `${edit.resourceName}Override` as ResourceName,
-                }
+    const mutation = useMutation({
+        mutationFn: async (params: any) => {
+            if (!projectId || !caseId) {
+                throw new Error("Project ID and Case ID are required")
             }
 
-            // Otherwise, keep the edit as is
-            return edit
-        })
+            setIsSaving(true)
 
-        // Categorize into regular and override entries based on resource name
-        const { timeseriesEntries, overrideEntries } = categorizeTimeSeriesEntries(modifiedEdits)
+            try {
+                const { timeSeriesEdits } = params.updatedValue
 
-        // Convert EditInstance objects to TimeSeriesData format
-        const timeSeriesData: TimeSeriesData[] = [
-            // Regular profiles with override=false
-            ...timeseriesEntries.map((edit) => {
-                const resourceObj = edit.resourceObject as any
+                const uniqueEdits = getLatestEdits(timeSeriesEdits, (edit) => edit.resourceName)
 
-                return {
-                    profileType: edit.resourceName,
-                    startYear: resourceObj.startYear ?? 0,
-                    values: resourceObj.values ?? [],
-                    override: false,
-                }
-            }),
+                const modifiedEdits = uniqueEdits.map((edit) => {
+                    const resourceObj = edit.resourceObject as any
 
-            // Override profiles with override=true (or the value from overrideProfile)
-            ...overrideEntries.map((edit) => {
-                const resourceObj = edit.resourceObject as any
-                const override = resourceObj.overrideProfile?.override !== undefined
-                    ? resourceObj.overrideProfile.override
-                    : true
+                    const hasOverrideProfile = resourceObj?.overrideProfile !== undefined
+                    const isOverrideActive = hasOverrideProfile && resourceObj.overrideProfile?.override === true
 
-                return {
-                    // Keep the Override suffix
-                    profileType: edit.resourceName,
-                    startYear: resourceObj.startYear ?? 0,
-                    values: resourceObj.values ?? [],
-                    override,
-                }
-            }),
-        ]
+                    if (isOverrideActive && !edit.resourceName.endsWith("Override")) {
+                        return {
+                            ...edit,
+                            resourceName: `${edit.resourceName}Override` as ResourceName,
+                        }
+                    }
 
-        // Use the TimeSeriesService to save the profiles
-        return service.saveProfiles(projectIdParam, caseIdParam, timeSeriesData)
-    }
+                    return edit
+                })
 
-    const mutation = useBaseMutation({
-        resourceName: "timeSeries",
-        getService: () => TimeSeriesService,
-        updateMethod: "saveProfiles", // Not directly used with custom mutation function
-        customMutationFn: timeSeriesMutationFn,
-        getResourceFromApiData: () => null, // Not used with custom mutation function
-        invalidateQueries: caseId && projectId ? [["caseApiData", projectId, caseId]] : [],
+                const { timeseriesEntries, overrideEntries } = categorizeTimeSeriesEntries(modifiedEdits)
+
+                const timeSeriesData: TimeSeriesData[] = [
+                    ...timeseriesEntries.map((edit) => {
+                        const resourceObj = edit.resourceObject as any
+
+                        return {
+                            profileType: edit.resourceName,
+                            startYear: resourceObj.startYear ?? 0,
+                            values: resourceObj.values ?? [],
+                            override: false,
+                        }
+                    }),
+
+                    ...overrideEntries.map((edit) => {
+                        const resourceObj = edit.resourceObject as any
+                        const override = resourceObj.overrideProfile?.override !== undefined
+                            ? resourceObj.overrideProfile.override
+                            : true
+
+                        return {
+                            profileType: edit.resourceName,
+                            startYear: resourceObj.startYear ?? 0,
+                            values: resourceObj.values ?? [],
+                            override,
+                        }
+                    }),
+                ]
+
+                return TimeSeriesService.saveProfiles(projectId, caseId, timeSeriesData)
+            } finally {
+                setIsSaving(false)
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
+        },
+        onError: (error: unknown) => {
+            if (error instanceof Error) {
+                setSnackBarMessage(error.message || "Failed to update timeseriesprofile")
+            }
+        },
     })
 
     const submitTimeSeriesEdits = (timeSeriesEdits: EditInstance[]) => mutation.mutateAsync({
