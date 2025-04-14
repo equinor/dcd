@@ -33,6 +33,8 @@ import {
     loadSharePointFiles,
     importFromSharePoint,
 } from "@/Utils/ProspUtils"
+import { get } from "lodash"
+import { share } from "@equinor/eds-icons"
 
 const StyledCard = styled(Card)`
     padding: 0 16px;
@@ -169,57 +171,60 @@ const PROSPTab = () => {
             return item
         }))
 
-        try {
-            const fileName = getFileNameById(fileId, sharePointFiles) || ""
-            const newProject = await importFromSharePoint(
-                projectId,
-                caseId,
-                fileId,
-                fileName,
-                currentSharePointSiteUrl,
-            )
-
-            addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
-
-            setCaseMappings((prev) => prev.map((item) => {
-                if (item.caseId === caseId) {
-                    return {
-                        ...item,
-                        sharePointFileId: fileId || null,
-                        sharePointFileName: getFileNameById(fileId, sharePointFiles),
+        if(!fileId) {
+            setIsSaving(true)
+            try {
+                const fileName = getFileNameById(fileId, sharePointFiles) || ""
+                const newProject = await importFromSharePoint(
+                    projectId,
+                    caseId,
+                    fileId,
+                    fileName,
+                    currentSharePointSiteUrl,
+                )
+    
+                addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
+    
+                setCaseMappings((prev) => prev.map((item) => {
+                    if (item.caseId === caseId) {
+                        return {
+                            ...item,
+                            sharePointFileId: fileId || null,
+                            sharePointFileName: getFileNameById(fileId, sharePointFiles),
+                        }
                     }
-                }
-
-                return item
-            }))
-
-            setCaseIdBeingSaved(null)
-            setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
-        } catch (error: unknown) {
-            setCaseIdBeingSaved(null)
-            setCaseMappings((prev) => prev.map((item) => {
-                if (item.caseId === caseId) {
-                    // Revert to the original values
-                    const originalMapping = cases.find((c) => c.caseId === caseId)
-
-                    return {
-                        caseId,
-                        sharePointFileId: originalMapping?.sharepointFileId || null,
-                        sharePointFileName: originalMapping?.sharepointFileName || null,
+    
+                    return item
+                }))
+    
+                setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
+            } catch (error: any) {
+                console.error("[PROSPTab] error while submitting file change", error)
+    
+                setCaseMappings((prev) => prev.map((item) => {
+                    if (item.caseId === caseId) {
+                        // Revert to the original values
+                        const originalMapping = cases.find((c) => c.caseId === caseId)
+    
+                        return {
+                            caseId,
+                            sharePointFileId: originalMapping?.sharepointFileId || null,
+                            sharePointFileName: originalMapping?.sharepointFileName || null,
+                        }
                     }
-                }
-
-                return item
-            }))
-
-            if (error instanceof Error) {
+    
+                    return item
+                }))
+    
                 const errorMessage = error.message || "Failed to update file selection. Please try again."
-
+    
                 setSnackBarMessage(errorMessage)
+            } finally {
+                setIsSaving(false)
             }
-        } finally {
-            setIsSaving(false)
+
         }
+
     }
 
     const handleRefreshFile = async (caseId: string, fileId: string | null): Promise<boolean> => {
