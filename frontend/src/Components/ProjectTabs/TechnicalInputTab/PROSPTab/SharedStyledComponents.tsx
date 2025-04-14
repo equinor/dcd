@@ -27,7 +27,7 @@ export const MiddleColumn = styled.div`
 
 export const RightColumn = styled.div`
     display: flex;
-    width: 280px;
+    width: 290px;
     text-align: right;
     gap: 10px;
     align-items: center;
