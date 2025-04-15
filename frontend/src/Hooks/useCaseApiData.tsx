@@ -14,6 +14,8 @@ export const useCaseApiData = () => {
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
+        staleTime: 5000,
+        gcTime: 30000,
     })
 
     return {

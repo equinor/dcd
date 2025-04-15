@@ -84,7 +84,11 @@ export const useTableRanges = () => {
         },
         onSuccess: () => {
             if (projectId && caseId) {
-                queryClient.invalidateQueries({ queryKey: ["caseApiData", projectId, caseId] })
+                queryClient.invalidateQueries({
+                    queryKey: ["caseApiData", projectId, caseId],
+                    // Don't immediately refetch - wait for next render
+                    refetchType: "none",
+                })
             }
         },
         onError: (error: unknown) => {
