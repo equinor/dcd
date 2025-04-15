@@ -33,8 +33,6 @@ import {
     loadSharePointFiles,
     importFromSharePoint,
 } from "@/Utils/ProspUtils"
-import { get } from "lodash"
-import { share } from "@equinor/eds-icons"
 
 const StyledCard = styled(Card)`
     padding: 0 16px;
@@ -171,7 +169,7 @@ const PROSPTab = () => {
             return item
         }))
 
-        if(!fileId) {
+        if (!fileId) {
             setIsSaving(true)
             try {
                 const fileName = getFileNameById(fileId, sharePointFiles) || ""
@@ -182,9 +180,9 @@ const PROSPTab = () => {
                     fileName,
                     currentSharePointSiteUrl,
                 )
-    
+
                 addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
-    
+
                 setCaseMappings((prev) => prev.map((item) => {
                     if (item.caseId === caseId) {
                         return {
@@ -193,38 +191,36 @@ const PROSPTab = () => {
                             sharePointFileName: getFileNameById(fileId, sharePointFiles),
                         }
                     }
-    
+
                     return item
                 }))
-    
+
                 setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
             } catch (error: any) {
                 console.error("[PROSPTab] error while submitting file change", error)
-    
+
                 setCaseMappings((prev) => prev.map((item) => {
                     if (item.caseId === caseId) {
                         // Revert to the original values
                         const originalMapping = cases.find((c) => c.caseId === caseId)
-    
+
                         return {
                             caseId,
                             sharePointFileId: originalMapping?.sharepointFileId || null,
                             sharePointFileName: originalMapping?.sharepointFileName || null,
                         }
                     }
-    
+
                     return item
                 }))
-    
+
                 const errorMessage = error.message || "Failed to update file selection. Please try again."
-    
+
                 setSnackBarMessage(errorMessage)
             } finally {
                 setIsSaving(false)
             }
-
         }
-
     }
 
     const handleRefreshFile = async (caseId: string, fileId: string | null): Promise<boolean> => {

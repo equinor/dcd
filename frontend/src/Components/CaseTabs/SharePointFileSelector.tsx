@@ -81,11 +81,13 @@ const TextDisplay = styled(Typography)`
 `
 
 const FeedbackIndicator = ({ status }: { status: FeedbackStatus }) => {
-
     if (status === "success") {
-        return (<>
-            <span style={{ marginLeft: "8px" }}>Case has been updated </span><span style={{ color: "#4BB748", marginLeft: "8px" }}>✓</span>
-        </>)
+        return (
+            <>
+                <span style={{ marginLeft: "8px" }}>Case has been updated </span>
+                <span style={{ color: "#4BB748", marginLeft: "8px" }}>✓</span>
+            </>
+        )
     }
 
     if (status === "error") {
@@ -157,15 +159,13 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
             onSharePointFileSelected(fileId)
         }
 
-    
-
-        if (!fileId || !sharepointSiteUrl) { 
+        if (!fileId || !sharepointSiteUrl) {
             try {
                 const importPromise = (async () => {
                     setIsSaving(true)
-    
-                    const fileName =  "";
-    
+
+                    const fileName = ""
+
                     await importFromSharePoint(
                         projectId,
                         caseId,
@@ -173,21 +173,20 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
                         fileName,
                         sharepointSiteUrl,
                     )
-    
+
                     return true
                 })()
-    
+
                 await withFeedback(importPromise)
             } catch (error: any) {
                 console.error("[SharePointFileSelector] error while refreshing file data", error)
                 const errorMessage = error.message || "Failed to refresh file data. The server might be experiencing issues."
-    
+
                 setSnackBarMessage(errorMessage)
             } finally {
                 setIsSaving(false)
             }
-         }
-
+        }
     }
 
     const handleRefreshFile = async () => {
@@ -269,12 +268,12 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
 
                 <SharePointAction>
                     {canEdit() && (
-                       <ActionButton
-                       onClick={handleRefreshFile}
-                       disabled={isDisabled || !selectedSharePointFileId}
-                   >
-                       {isLoading ? <DotProgress /> : "Import"}
-                   </ActionButton>
+                        <ActionButton
+                            onClick={handleRefreshFile}
+                            disabled={isDisabled || !selectedSharePointFileId}
+                        >
+                            {isLoading ? <DotProgress /> : "Import"}
+                        </ActionButton>
                     )}
                 </SharePointAction>
                 <FeedbackIndicator status={feedbackStatus} />
