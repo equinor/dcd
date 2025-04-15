@@ -1,4 +1,4 @@
-import { Typography } from "@equinor/eds-core-react"
+import { Progress, Typography } from "@equinor/eds-core-react"
 import React, { useState } from "react"
 
 import ActionButton from "./ActionButton"
@@ -98,6 +98,19 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
             </MiddleColumn>
 
             <RightColumn>
+                {sharePointFileStatus === SharePointFileStatus.IMPORTING && (
+                    <>
+                        <ActionButton
+                            isLoading
+                            feedbackStatus={feedbackStatus}
+                            onClick={() => { }}
+                            disabled
+                        />
+                        <Typography>
+                            Importing...
+                        </Typography>
+                    </>
+                )}
                 {sharePointFileStatus === SharePointFileStatus.NO_FILE_SELECTED && (
                     <ActionButton
                         isLoading={isRefreshing}

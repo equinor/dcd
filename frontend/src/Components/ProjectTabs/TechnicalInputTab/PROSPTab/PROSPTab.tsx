@@ -56,6 +56,7 @@ interface CaseSharePointMapping {
 }
 
 export enum SharePointFileStatus {
+    IMPORTING = "IMPORTING",
     NO_FILE_SELECTED = "NO_FILE_SELECTED",
     IMPORTABLE = "IMPORTABLE",
     UNCHANGED_IN_SHAREPOINT = "UNCHANGED_IN_SHAREPOINT",
@@ -67,6 +68,7 @@ const PROSPTab = () => {
     const { canEdit } = useCanUserEdit()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>("")
+    const [caseIdBeingSaved, setCaseIdBeingSaved] = useState<string | null>(null)
     const [sharePointFiles, setSharePointFiles] = useState<Components.Schemas.SharePointFileDto[]>([])
     const {
         isLoading: isRefreshing,
@@ -144,7 +146,6 @@ const PROSPTab = () => {
                 })(),
             )
         } catch (error) {
-            console.error("[PROSPTab] error while submitting SharePoint URL", error)
             setSnackBarMessage("Failed to import SharePoint files. Please check the URL and your permissions.")
         } finally {
             setIsSaving(false)
@@ -155,6 +156,7 @@ const PROSPTab = () => {
         if (!projectId || !currentSharePointSiteUrl) { return }
 
         setIsSaving(true)
+        setCaseIdBeingSaved(caseId)
 
         setCaseMappings((prev) => prev.map((item) => {
             if (item.caseId === caseId) {
@@ -191,8 +193,10 @@ const PROSPTab = () => {
                 return item
             }))
 
+            setCaseIdBeingSaved(null)
             setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
         } catch (error: unknown) {
+            setCaseIdBeingSaved(null)
             setCaseMappings((prev) => prev.map((item) => {
                 if (item.caseId === caseId) {
                     // Revert to the original values
@@ -222,6 +226,7 @@ const PROSPTab = () => {
         if (!projectId || !currentSharePointSiteUrl || !fileId) { return false }
 
         setIsSaving(true)
+        setCaseIdBeingSaved(caseId)
 
         try {
             const fileName = getFileNameById(fileId, sharePointFiles) || ""
@@ -234,7 +239,6 @@ const PROSPTab = () => {
             )
 
             addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
-
             setSnackBarMessage(`Successfully imported data from ${fileName}`)
 
             return true
@@ -247,11 +251,16 @@ const PROSPTab = () => {
 
             return false
         } finally {
+            setCaseIdBeingSaved(null)
             setIsSaving(false)
         }
     }
 
     const getSharePointFileStatus = (caseItem: Components.Schemas.CaseOverviewDto, selectedFileId: string | null): SharePointFileStatus => {
+        if (caseItem.caseId === caseIdBeingSaved) {
+            return SharePointFileStatus.IMPORTING
+        }
+
         if (selectedFileId && selectedFileId !== caseItem.sharepointFileId) {
             return SharePointFileStatus.IMPORTABLE
         }
