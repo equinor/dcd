@@ -2,7 +2,7 @@ import {
     Typography,
     Button,
 } from "@equinor/eds-core-react"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import RangeSlider from "./RangeSlider"
@@ -48,28 +48,32 @@ const ButtonContainer = styled.div`
 `
 
 interface DateRangePickerProps {
-    setStartYear: (startYear: number) => void
-    setEndYear: (endYear: number) => void
     startYear: number
     endYear: number
     labelText?: string | undefined
     labelValue?: string | undefined | number
-    handleTableYearsClick: () => void
+    handleTableYearsClick: (startYear: number, endYear: number) => void
 }
 
 const MIN_YEAR = 2010
 const MAX_YEAR = 2100
 
 const DateRangePicker: React.FC<DateRangePickerProps> = ({
-    setStartYear,
-    setEndYear,
-    startYear,
-    endYear,
+    startYear: tableStartYear,
+    endYear: tableEndYear,
     labelText,
     labelValue,
     handleTableYearsClick,
 }) => {
     const { editMode } = useAppStore()
+
+    const [startYear, setStartYear] = useState<number>(tableStartYear)
+    const [endYear, setEndYear] = useState<number>(tableEndYear)
+
+    useEffect(() => {
+        setStartYear(tableStartYear)
+        setEndYear(tableEndYear)
+    }, [tableStartYear, tableEndYear])
 
     const handleYearChange = (newValues: [number, number]): void => {
         const [newStart, newEnd] = newValues
@@ -81,7 +85,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     }
 
     const handleApplyClick = (): void => {
-        handleTableYearsClick()
+        handleTableYearsClick(startYear, endYear)
     }
 
     if (!editMode) {
