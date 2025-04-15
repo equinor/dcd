@@ -71,6 +71,7 @@ declare namespace Components {
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
             sharepointUpdatedTimestampUtc: string | null; // date-time
+            tableRanges: TableRangesDto;
         }
         export interface CaseWithAssetsDto {
             case: CaseOverviewDto;
@@ -267,6 +268,12 @@ declare namespace Components {
             environmentName?: string | null;
         }
         export type GasSolution = 0 | 1; // int32
+        export interface GetTableRangesDto {
+            co2EmissionsYears?: number /* int32 */[] | null;
+            drillingScheduleYears?: number /* int32 */[] | null;
+            caseCostYears?: number /* int32 */[] | null;
+            productionProfilesYears?: number /* int32 */[] | null;
+        }
         export interface ImageDto {
             imageId: string; // uuid
             createTime: string; // date-time
@@ -407,6 +414,12 @@ declare namespace Components {
             source: Source /* int32 */;
             prospVersion: string | null; // date-time
             approvedBy: string;
+        }
+        export interface TableRangesDto {
+            co2EmissionsYears: number /* int32 */[];
+            drillingScheduleYears: number /* int32 */[];
+            caseCostYears: number /* int32 */[];
+            productionProfilesYears: number /* int32 */[];
         }
         export interface TimeSeriesDto {
             startYear: number; // int32
@@ -578,6 +591,12 @@ declare namespace Components {
             source: Source /* int32 */;
             approvedBy: string;
             maturity: Maturity /* int32 */;
+        }
+        export interface UpdateTableRangesDto {
+            co2EmissionsYears: number /* int32 */[];
+            drillingScheduleYears: number /* int32 */[];
+            caseCostYears: number /* int32 */[];
+            productionProfilesYears: number /* int32 */[];
         }
         export interface UpdateTopsideDto {
             dryWeight: number; // double
@@ -1047,6 +1066,36 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateSurfDto;
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdTableRanges {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.GetTableRangesDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateTableRangesDto;
             namespace Responses {
                 export interface $200 {
                 }

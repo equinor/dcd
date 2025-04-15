@@ -82,7 +82,13 @@ const OldSchedulePickers = () => {
             .filter((m) => Object.keys(apiData.case).includes(m.key))
             .filter((m) => m.visible
                 || canEdit()
-                || toScheduleValue(apiData.case[m.key as keyof typeof apiData.case]))
+                || (m.key !== "tableRanges"
+                    // Only pass primitive types to toScheduleValue
+                    && (typeof apiData.case[m.key as keyof typeof apiData.case] === "string"
+                     || typeof apiData.case[m.key as keyof typeof apiData.case] === "number"
+                     || typeof apiData.case[m.key as keyof typeof apiData.case] === "boolean"
+                     || apiData.case[m.key as keyof typeof apiData.case] === null)
+                    && toScheduleValue(apiData.case[m.key as keyof typeof apiData.case] as string | number | boolean | null | undefined)))
     }, [apiData, canEdit, toScheduleValue])
 
     if (!apiData) {

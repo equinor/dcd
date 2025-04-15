@@ -6,7 +6,7 @@ import {
 import CaseTableWithGrouping from "@/Components/CaseTabs/CaseSummaryTab/CaseTableWithGrouping"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
-import { useDataFetch, useCaseApiData, useDefaultYearRanges } from "@/Hooks"
+import { useDataFetch, useCaseApiData } from "@/Hooks"
 import { useCaseMutation } from "@/Hooks/Mutations"
 import {
     ITimeSeries,
@@ -23,7 +23,8 @@ const CaseSummaryTab = (): React.ReactNode => {
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
     const { updateNpvOverride, updateBreakEvenOverride } = useCaseMutation()
-    const { DEFAULT_SUMMARY_YEARS } = useDefaultYearRanges()
+
+    const DEFAULT_SUMMARY_YEARS = [2023, 2033] as [number, number]
 
     const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_SUMMARY_YEARS)
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])

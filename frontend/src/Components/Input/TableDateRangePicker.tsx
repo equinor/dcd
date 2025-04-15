@@ -108,6 +108,10 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         }
     }
 
+    const handleApplyClick = (): void => {
+        handleTableYearsClick()
+    }
+
     if (!editMode) {
         return null
     }
@@ -151,7 +155,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                     </ResetButton>
                     <Button
                         variant="contained"
-                        onClick={handleTableYearsClick}
+                        onClick={handleApplyClick}
                     >
                         Apply
                     </Button>

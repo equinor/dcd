@@ -16,7 +16,7 @@ import { TimeSeriesChart, setValueToCorrespondingYear } from "@/Components/Chart
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseCo2TabSkeleton from "@/Components/LoadingSkeletons/CaseCo2TabSkeleton"
 import CaseBaseTable from "@/Components/Tables/CaseBaseTable"
-import { useDataFetch, useCaseApiData, useDefaultYearRanges } from "@/Hooks"
+import { useDataFetch, useCaseApiData, useTableRanges } from "@/Hooks"
 import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import { PhysUnit, ProfileTypes } from "@/Models/enums"
 import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
@@ -36,7 +36,7 @@ const CaseCO2Tab = (): React.ReactNode => {
     const { projectId } = useProjectContext()
     const revisionAndProjectData = useDataFetch()
     const { apiData } = useCaseApiData()
-    const { DEFAULT_CO2_EMISSIONS_YEARS } = useDefaultYearRanges()
+    const { tableRanges, updateCo2EmissionsYears } = useTableRanges()
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside
@@ -55,9 +55,9 @@ const CaseCO2Tab = (): React.ReactNode => {
     ])
 
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
-    const [startYear, setStartYear] = useState<number>(DEFAULT_CO2_EMISSIONS_YEARS[0])
-    const [endYear, setEndYear] = useState<number>(DEFAULT_CO2_EMISSIONS_YEARS[1])
-    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_CO2_EMISSIONS_YEARS)
+    const [startYear, setStartYear] = useState<number>(0)
+    const [endYear, setEndYear] = useState<number>(0)
+    const [tableYears, setTableYears] = useState<[number, number]>([0, 0])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const co2GridRef = useRef<any>(null)
     const averageCo2IntensityData = apiData?.case.averageCo2Intensity
@@ -120,11 +120,26 @@ const CaseCO2Tab = (): React.ReactNode => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId) {
+                if (caseData && revisionAndProjectData && activeTabCase === 6 && caseData.caseId && tableRanges) {
                     const co2DFFTotal = await GetGenerateProfileService().generateCo2DrillingFlaringFuelTotals(revisionAndProjectData.projectId, caseData.caseId)
 
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
+                    // Check if we have valid CO2 emissions years from the backend
+                    const { co2EmissionsYears } = tableRanges
+
+                    if (co2EmissionsYears && co2EmissionsYears.length >= 2) {
+                        const firstYear = Math.min(...co2EmissionsYears)
+                        const lastYear = Math.max(...co2EmissionsYears)
+
+                        setStartYear(firstYear)
+                        setEndYear(lastYear)
+                        setTableYears([firstYear, lastYear])
+
+                        return
+                    }
+
+                    // If we don't have valid ranges, calculate based on data
                     const profiles = [
                         co2EmissionsData,
                         co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined,
@@ -132,7 +147,11 @@ const CaseCO2Tab = (): React.ReactNode => {
                         co2IntensityOverrideData?.override ? co2IntensityOverrideData : undefined,
                     ]
                     const dg4Year = getYearFromDateString(caseData.dg4Date)
-                    const years = calculateTableYears(profiles, dg4Year, DEFAULT_CO2_EMISSIONS_YEARS)
+                    const defaultYears: [number, number] = [
+                        tableRanges.co2EmissionsYears[0],
+                        tableRanges.co2EmissionsYears[tableRanges.co2EmissionsYears.length - 1],
+                    ]
+                    const years = calculateTableYears(profiles, dg4Year, defaultYears)
 
                     const [firstYear, lastYear] = years
 
@@ -144,7 +163,7 @@ const CaseCO2Tab = (): React.ReactNode => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase, caseData, co2EmissionsData, co2IntensityData, co2EmissionsOverrideData, revisionAndProjectData])
+    }, [activeTabCase, caseData, co2EmissionsData, co2IntensityData, co2EmissionsOverrideData, revisionAndProjectData, tableRanges])
 
     useEffect(() => {
         if (drainageStrategyData) {
@@ -183,8 +202,11 @@ const CaseCO2Tab = (): React.ReactNode => {
         co2DrillingFlaringFuelTotals,
     ])
 
-    const handleTableYearsClick = (): void => {
+    const handleTableYearsClick = async (): Promise<void> => {
         setTableYears([startYear, endYear])
+
+        // Update the backend with the new range
+        await updateCo2EmissionsYears(startYear, endYear)
     }
 
     const formatValue = (num: number | null | undefined): number => {

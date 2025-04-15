@@ -12,7 +12,7 @@ import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { useCaseApiData, useDataFetch, useDefaultYearRanges } from "@/Hooks"
+import { useCaseApiData, useDataFetch, useTableRanges } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 import { PhysUnit } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
@@ -61,13 +61,17 @@ const defaultAxesData = [
     },
 ]
 
+// Helper to check if a profile has values
+const hasProfileValues = (profile: any): boolean => profile && "values" in profile && Array.isArray(profile.values) && profile.values.length > 0
+
 const CaseProductionProfilesTab = (): React.ReactNode => {
     const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
-    const { DEFAULT_PRODUCTION_PROFILES_YEARS } = useDefaultYearRanges()
-    const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
-    const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
-    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_PRODUCTION_PROFILES_YEARS)
+    const { tableRanges, updateProductionProfilesYears } = useTableRanges()
+
+    const [startYear, setStartYear] = useState<number>(0)
+    const [endYear, setEndYear] = useState<number>(0)
+    const [tableYears, setTableYears] = useState<[number, number]>([0, 0])
     const revisionAndProjectData = useDataFetch()
     const {
         updateGasSolution,
@@ -109,7 +113,20 @@ const CaseProductionProfilesTab = (): React.ReactNode => {
     const { apiData } = useCaseApiData()
 
     useEffect(() => {
-        if (apiData && activeTabCase === 1) {
+        if (apiData && activeTabCase === 1 && tableRanges) {
+            // Check if we have productionProfilesYears from the backend
+            if (tableRanges.productionProfilesYears && tableRanges.productionProfilesYears.length >= 2) {
+                const firstYear = Math.min(...tableRanges.productionProfilesYears)
+                const lastYear = Math.max(...tableRanges.productionProfilesYears)
+
+                setStartYear(firstYear)
+                setEndYear(lastYear)
+                setTableYears([firstYear, lastYear])
+
+                return
+            }
+
+            // Fall back to calculating based on profiles if needed
             const profiles = [
                 apiData.drainageStrategy,
                 apiData.productionProfileOil,
@@ -135,15 +152,20 @@ const CaseProductionProfilesTab = (): React.ReactNode => {
             ]
 
             const dg4Year = getYearFromDateString(apiData.case.dg4Date)
-            const years = calculateTableYears(profiles, dg4Year, DEFAULT_PRODUCTION_PROFILES_YEARS)
 
-            const [firstYear, lastYear] = years
+            // Define initial years
+            let yearRange: [number, number] = [dg4Year - 5, dg4Year + 25]
 
-            setStartYear(firstYear)
-            setEndYear(lastYear)
-            setTableYears([firstYear, lastYear])
+            // Calculate years based on profile data if available
+            if (profiles.some((p) => hasProfileValues(p))) {
+                yearRange = calculateTableYears(profiles, dg4Year, yearRange)
+            }
+
+            setStartYear(yearRange[0])
+            setEndYear(yearRange[1])
+            setTableYears(yearRange)
         }
-    }, [apiData, activeTabCase])
+    }, [apiData, activeTabCase, tableRanges])
 
     if (activeTabCase !== 1) { return null }
 
@@ -160,8 +182,15 @@ const CaseProductionProfilesTab = (): React.ReactNode => {
     const waterProductionData = apiData.productionProfileWater
     const waterInjectionData = apiData.productionProfileWaterInjection
 
-    const handleTableYearsClick = (): void => {
+    const handleTableYearsClick = async (): Promise<void> => {
         setTableYears([startYear, endYear])
+
+        // Update the backend with the new range
+        try {
+            await updateProductionProfilesYears(startYear, endYear)
+        } catch (error) {
+            console.error("CaseProductionProfilesTab - Error updating production profiles years:", error)
+        }
     }
 
     const getProductionProfilesChartData = (): object[] => {

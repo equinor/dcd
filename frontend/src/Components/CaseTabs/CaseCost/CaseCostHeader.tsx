@@ -17,7 +17,8 @@ interface HeaderProps {
     setEndYear: (endYear: number) => void;
     setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseOverviewDto;
-    surfData: Components.Schemas.SurfDto
+    surfData: Components.Schemas.SurfDto;
+    handleTableYearsClick: () => Promise<void>;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -28,12 +29,9 @@ const Header: React.FC<HeaderProps> = ({
     setTableYears,
     caseData,
     surfData,
+    handleTableYearsClick,
 }) => {
     const revisionAndProjectData = useDataFetch()
-
-    const handleTableYearsClick = () => {
-        setTableYears([startYear, endYear])
-    }
 
     const datePickerValue = (() => {
         if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok) {
