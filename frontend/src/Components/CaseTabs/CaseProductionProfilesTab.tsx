@@ -119,8 +119,6 @@ const CaseProductionProfilesTab = (): React.ReactNode => {
                 const firstYear = Math.min(...tableRanges.productionProfilesYears)
                 const lastYear = Math.max(...tableRanges.productionProfilesYears)
 
-                setStartYear(firstYear)
-                setEndYear(lastYear)
                 setTableYears([firstYear, lastYear])
 
                 return
@@ -161,8 +159,6 @@ const CaseProductionProfilesTab = (): React.ReactNode => {
                 yearRange = calculateTableYears(profiles, dg4Year, yearRange)
             }
 
-            setStartYear(yearRange[0])
-            setEndYear(yearRange[1])
             setTableYears(yearRange)
         }
     }, [apiData, activeTabCase, tableRanges])

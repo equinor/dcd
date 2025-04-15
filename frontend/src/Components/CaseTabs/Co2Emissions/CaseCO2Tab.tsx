@@ -132,8 +132,6 @@ const CaseCO2Tab = (): React.ReactNode => {
                         const firstYear = Math.min(...co2EmissionsYears)
                         const lastYear = Math.max(...co2EmissionsYears)
 
-                        setStartYear(firstYear)
-                        setEndYear(lastYear)
                         setTableYears([firstYear, lastYear])
 
                         return
@@ -155,8 +153,6 @@ const CaseCO2Tab = (): React.ReactNode => {
 
                     const [firstYear, lastYear] = years
 
-                    setStartYear(firstYear)
-                    setEndYear(lastYear)
                     setTableYears([firstYear, lastYear])
                 }
             } catch (error) {

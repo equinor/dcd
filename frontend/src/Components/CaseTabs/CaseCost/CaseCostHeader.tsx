@@ -15,7 +15,6 @@ interface HeaderProps {
     setStartYear: (startYear: number) => void;
     endYear: number;
     setEndYear: (endYear: number) => void;
-    setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseOverviewDto;
     surfData: Components.Schemas.SurfDto;
     handleTableYearsClick: () => Promise<void>;
@@ -26,7 +25,6 @@ const Header: React.FC<HeaderProps> = ({
     setStartYear,
     endYear,
     setEndYear,
-    setTableYears,
     caseData,
     surfData,
     handleTableYearsClick,

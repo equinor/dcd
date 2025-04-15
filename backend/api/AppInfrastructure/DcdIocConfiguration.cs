@@ -3,6 +3,7 @@ using api.Features.Assets.CaseAssets.DrainageStrategies;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies;
 using api.Features.Assets.CaseAssets.Substructures;
 using api.Features.Assets.CaseAssets.Surfs;
+using api.Features.Assets.CaseAssets.TableRanges;
 using api.Features.Assets.CaseAssets.Topsides;
 using api.Features.Assets.CaseAssets.Transports;
 using api.Features.BackgroundServices.ProjectMaster.Services;
@@ -48,7 +49,6 @@ using api.Features.Stea;
 using api.Features.Videos.Get;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace api.AppInfrastructure;
@@ -149,6 +149,9 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateSurfService>();
         services.AddScoped<UpdateTopsideService>();
         services.AddScoped<UpdateTransportService>();
+
+        /* Table ranges */
+        services.AddScoped<UpdateTableRangesService>();
 
         /* Time series profiles */
         services.AddScoped<SaveProfileService>();

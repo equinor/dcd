@@ -86,8 +86,6 @@ const CaseCostTab = (): React.ReactNode => {
                     const firstYear = Math.min(...caseCostYears)
                     const lastYear = Math.max(...caseCostYears)
 
-                    setStartYear(firstYear)
-                    setEndYear(lastYear)
                     setTableYears([firstYear, lastYear])
 
                     return
@@ -146,8 +144,6 @@ const CaseCostTab = (): React.ReactNode => {
                 if (isMounted.current) {
                     const [firstYear, lastYear] = years
 
-                    setStartYear(firstYear)
-                    setEndYear(lastYear)
                     setTableYears([firstYear, lastYear])
                 }
             }
@@ -177,7 +173,6 @@ const CaseCostTab = (): React.ReactNode => {
                 endYear={endYear}
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
-                setTableYears={setTableYears}
                 caseData={apiData.case}
                 surfData={apiData.surf}
                 handleTableYearsClick={handleTableYearsClick}

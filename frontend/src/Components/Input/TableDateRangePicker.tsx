@@ -1,10 +1,8 @@
 import {
     Typography,
     Button,
-    Icon,
 } from "@equinor/eds-core-react"
-import { undo } from "@equinor/eds-icons"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 
 import RangeSlider from "./RangeSlider"
@@ -49,12 +47,6 @@ const ButtonContainer = styled.div`
     gap: 8px;
 `
 
-const ResetButton = styled(Button)`
-    min-width: 40px !important;
-    width: 40px;
-    padding: 0;
-`
-
 interface DateRangePickerProps {
     setStartYear: (startYear: number) => void
     setEndYear: (endYear: number) => void
@@ -78,26 +70,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     handleTableYearsClick,
 }) => {
     const { editMode } = useAppStore()
-
-    const [initialStart] = useState(startYear)
-    const [initialEnd] = useState(endYear)
-
-    const [isResetting, setIsResetting] = useState(false)
-
-    const hasChanges = startYear !== initialStart || endYear !== initialEnd
-
-    useEffect(() => {
-        if (isResetting && startYear === initialStart && endYear === initialEnd) {
-            handleTableYearsClick()
-            setIsResetting(false)
-        }
-    }, [startYear, endYear, initialStart, initialEnd, isResetting, handleTableYearsClick])
-
-    const handleReset = (): void => {
-        setIsResetting(true)
-        setStartYear(initialStart)
-        setEndYear(initialEnd)
-    }
 
     const handleYearChange = (newValues: [number, number]): void => {
         const [newStart, newEnd] = newValues
@@ -146,13 +118,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                     />
                 </SliderContainer>
                 <ButtonContainer>
-                    <ResetButton
-                        variant="outlined"
-                        onClick={handleReset}
-                        disabled={!hasChanges}
-                    >
-                        <Icon data={undo} size={24} />
-                    </ResetButton>
                     <Button
                         variant="contained"
                         onClick={handleApplyClick}

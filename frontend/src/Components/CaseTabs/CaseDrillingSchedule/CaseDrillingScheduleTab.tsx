@@ -80,8 +80,6 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
                 const firstYear = Math.min(...drillingScheduleYears)
                 const lastYear = Math.max(...drillingScheduleYears)
 
-                setStartYear(firstYear)
-                setEndYear(lastYear)
                 setTableYears([firstYear, lastYear])
 
                 return
@@ -101,8 +99,6 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
 
             const [firstYear, lastYear] = years
 
-            setStartYear(firstYear)
-            setEndYear(lastYear)
             setTableYears([firstYear, lastYear])
         }
     }, [activeTabCase, apiData, tableRanges])
