@@ -26,7 +26,13 @@ export const dateStringToDateUtc = (dateString: string): Date => {
     return new Date(dateString)
 }
 
-export const dateToUtcDateStringWithZeroTimePart = (date: Date): string => dateStringToDateUtc(date.toString()).toISOString()
+/**
+ * Converts a Date object to UTC date string with zero time part
+ * Now uses the consistent formatDateToUtcIsoString function
+ * @param date - Date to convert
+ * @returns UTC date string with zero time
+ */
+export const dateToUtcDateStringWithZeroTimePart = (date: Date): string => formatDateToUtcIsoString(date)
 
 /**
  * Extracts the year from a date string
@@ -64,8 +70,15 @@ export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
     }
-
-    return date?.toISOString().substring(0, 7)
+    
+    if (!date) {
+        return undefined
+    }
+    
+    const year = date.getUTCFullYear()
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
+    
+    return `${year}-${month}`
 }
 
 /**
@@ -294,3 +307,17 @@ export const createDateFromYearAndQuarter = (year: number, quarter: number): Dat
  * @returns Date object from the ISO string
  */
 export const createDateFromISOString = (isoString: string): Date => dateStringToDateUtc(isoString)
+
+/**
+ * Converts a Date object to UTC ISO string format 'YYYY-MM-DDT00:00:00Z'
+ * Used primarily for API requests and consistent date formatting
+ * @param date - Date object to convert
+ * @returns Formatted UTC date string
+ */
+export const formatDateToUtcIsoString = (date: Date): string => {
+    const year = date.getUTCFullYear()
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
+    const day = String(date.getUTCDate()).padStart(2, '0')
+    
+    return `${year}-${month}-${day}T00:00:00Z`
+}

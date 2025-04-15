@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom"
 import { GetCaseService } from "@/Services/CaseService"
 import { useAppStore } from "@/Store/AppStore"
 import { useProjectContext } from "@/Store/ProjectContext"
+import { formatDateToUtcIsoString } from "@/Utils/DateUtils"
 
 export const useCaseMutation = (): {
     updateWholeCase: (caseObject: Components.Schemas.UpdateCaseDto) => Promise<void>
@@ -178,7 +179,7 @@ export const useCaseMutation = (): {
     })
 
     const updateMilestoneDate = (dateKey: string, newDate: Date | null): Promise<void> => mutation.mutateAsync({
-        updatedValue: newDate ? newDate.toISOString() : null,
+        updatedValue: newDate ? formatDateToUtcIsoString(newDate) : null,
         propertyKey: dateKey,
     })
 

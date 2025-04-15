@@ -15,6 +15,7 @@ import {
     formatDate,
     dateStringToDateUtc,
     dateToUtcDateStringWithZeroTimePart,
+    formatDateToUtcIsoString,
 } from "@/Utils/DateUtils"
 
 interface SwitchableDateInputProps {
@@ -28,9 +29,9 @@ interface SwitchableDateInputProps {
 
 const toScheduleValue = (value: Date | undefined): string | undefined => {
     if (!value) { return undefined }
-    const dateString = value.toISOString()
+    const dateString = formatDateToUtcIsoString(value)
 
-    if (dateString === "0001-01-01T00:00:00.000Z") { return undefined }
+    if (dateString === "0001-01-01T00:00:00Z") { return undefined }
 
     return dateString
 }

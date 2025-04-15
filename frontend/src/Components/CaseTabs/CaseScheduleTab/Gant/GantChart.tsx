@@ -31,6 +31,7 @@ import {
     dateToQuarterIndex,
     generateDynamicQuarterlyPeriods,
     quarterIndexToStartDate,
+    formatDateToUtcIsoString
 } from "@/Utils/DateUtils"
 
 const GantContainer = styled(Box)<{ $isReadOnly?: boolean }>`
@@ -219,13 +220,13 @@ const GantChart = (): JSX.Element => {
                     if (isRequired) {
                         // Required milestone (DG4) - move to middle of range if out of range
                         if (middleDate) {
-                            const newDateStr = middleDate.toISOString()
+                            const newDateStr = formatDateToUtcIsoString(middleDate)
 
                             if (newDateStr !== dateValue) {
                                 milestonesToUpdate.push({
                                     key: milestone.key,
                                     label: milestone.label,
-                                    currentDate: date.toISOString(),
+                                    currentDate: formatDateToUtcIsoString(date),
                                     currentYear: year,
                                     newDate: newDateStr,
                                     reason: `Required milestone (${milestone.label}) moved to middle of range (was outside: ${year})`,
@@ -238,7 +239,7 @@ const GantChart = (): JSX.Element => {
                         milestonesToUpdate.push({
                             key: milestone.key,
                             label: milestone.label,
-                            currentDate: date.toISOString(),
+                            currentDate: formatDateToUtcIsoString(date),
                             currentYear: year,
                             newDate: null,
                             reason: `Optional milestone (${milestone.label}) removed from timeline (outside range ${startYear}-${endYear})`,
