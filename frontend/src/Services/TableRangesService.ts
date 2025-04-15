@@ -9,7 +9,6 @@ class TableRangesService extends __BaseService {
         console.log("TableRangesService - updateTableRanges called", { projectId, caseId, tableRanges })
         try {
             await this.put(`projects/${projectId}/cases/${caseId}/table-ranges`, { body: tableRanges })
-            console.log("TableRangesService - updateTableRanges completed successfully")
         } catch (error) {
             console.error("TableRangesService - updateTableRanges error", error)
             throw error
