@@ -155,7 +155,6 @@ const PROSPTab = () => {
     const handleFileChange = async (caseId: string, fileId: string) => {
         if (!projectId || !currentSharePointSiteUrl) { return }
 
-        setIsSaving(true)
         setCaseIdBeingSaved(caseId)
 
         setCaseMappings((prev) => prev.map((item) => {
