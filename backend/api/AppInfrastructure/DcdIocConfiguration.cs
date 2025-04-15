@@ -49,6 +49,7 @@ using api.Features.Stea;
 using api.Features.Videos.Get;
 using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace api.AppInfrastructure;
