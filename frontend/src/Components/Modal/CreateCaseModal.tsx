@@ -7,18 +7,16 @@ import {
     InputWrapper,
 } from "@equinor/eds-core-react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
-import {
-    Autocomplete,
-    createFilterOptions,
-    TextField,
-} from "@mui/material"
 import Grid from "@mui/material/Grid2"
+import { DatePicker } from "@mui/x-date-pickers"
+import dayjs, { Dayjs } from "dayjs"
 import {
     useState,
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
     useMemo,
+    useCallback,
 } from "react"
 import styled from "styled-components"
 
@@ -37,20 +35,8 @@ import { useModalContext } from "@/Store/ModalContext"
 import { GANTT_CHART_CONFIG } from "@/Utils/Config/constants"
 import {
     dateStringToDateUtc,
-    createDateFromYearAndQuarter,
-    createDateFromISOString,
-    getCurrentQuarterIndex,
-    quarterIndexToStartDate,
+    dateToUtcDateStringWithZeroTimePart,
 } from "@/Utils/DateUtils"
-
-interface YearQuarterOption {
-    label: string
-    value: string
-    year: number
-    quarter: number
-}
-
-const filter = createFilterOptions<YearQuarterOption>()
 
 const RequiredAsterisk = styled.span`
     color: red;
@@ -68,48 +54,26 @@ const CreateCaseModal = (): JSX.Element => {
         modalCaseId,
     } = useModalContext()
 
-    const getFullGanttYearRange = (): [number, number] => [
-        GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR,
-        GANTT_CHART_CONFIG.MAX_ALLOWED_YEAR,
-    ]
+    const minAllowedYear = GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR
+    const maxAllowedYear = GANTT_CHART_CONFIG.MAX_ALLOWED_YEAR
+    const minDate = useMemo(() => dayjs().year(minAllowedYear).month(0).date(1), [minAllowedYear])
+    const maxDate = useMemo(() => dayjs().year(maxAllowedYear).month(11).date(31), [maxAllowedYear])
 
-    const dateOptions = useMemo((): YearQuarterOption[] => {
-        const options: YearQuarterOption[] = []
-        const [minYear, maxYear] = getFullGanttYearRange()
+    const getDefaultDg4Date = useCallback(() => {
+        const today = dayjs()
 
-        for (let year = minYear; year <= maxYear; year += 1) {
-            for (let quarter = 1; quarter <= 4; quarter += 1) {
-                const date = createDateFromYearAndQuarter(year, quarter)
-
-                options.push({
-                    label: `Q${quarter} ${year}`,
-                    value: date.toISOString(),
-                    year,
-                    quarter,
-                })
-            }
+        if (today.isBefore(minDate)) {
+            return minDate
+        }
+        if (today.isAfter(maxDate)) {
+            return maxDate
         }
 
-        return options
-    }, [])
-
-    const getDefaultQuarterYearOption = (): YearQuarterOption => {
-        const currentQuarterIndex = getCurrentQuarterIndex()
-        const currentQuarterDate = quarterIndexToStartDate(currentQuarterIndex)
-
-        const year = currentQuarterDate.getFullYear()
-        const month = currentQuarterDate.getMonth()
-        const quarter = Math.floor(month / 3) + 1
-
-        const option = dateOptions.find(
-            (opt) => opt.year === year && opt.quarter === quarter,
-        )
-
-        return option as YearQuarterOption
-    }
+        return today
+    }, [minDate, maxDate])
 
     const [caseName, setCaseName] = useState<string | null>(null)
-    const [dg4Option, setDg4Option] = useState<YearQuarterOption>(getDefaultQuarterYearOption())
+    const [dg4Date, setDg4Date] = useState<Dayjs | null>(getDefaultDg4Date())
     const [description, setDescription] = useState<string>("")
     const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerWells] = useState<number>(0)
@@ -117,23 +81,10 @@ const CreateCaseModal = (): JSX.Element => {
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
     const [projectCase, setCaseItem] = useState<Components.Schemas.CaseOverviewDto>()
 
-    const dateToOption = (date: Date): YearQuarterOption => {
-        const year = date.getFullYear()
-        const month = date.getMonth()
-        const quarter = Math.floor(month / 3) + 1
-
-        const matchingOption = dateOptions.find(
-            (option) => option.year === year && option.quarter === quarter,
-        )
-
-        return matchingOption || getDefaultQuarterYearOption()
-    }
-
-    // loads data from an existing case in scenarios where the user has clicked on "edit" in the case overview tables dropdown menu
     useEffect(() => {
         const resetForm = (): void => {
             setCaseName("")
-            setDg4Option(getDefaultQuarterYearOption())
+            setDg4Date(getDefaultDg4Date())
             setDescription("")
             setProductionStrategy(0)
             setProducerWells(0)
@@ -147,7 +98,7 @@ const CreateCaseModal = (): JSX.Element => {
             if (selectedCase) {
                 setCaseItem(selectedCase)
                 setCaseName(selectedCase.name)
-                setDg4Option(dateToOption(dateStringToDateUtc(selectedCase.dg4Date)))
+                setDg4Date(dayjs(dateStringToDateUtc(selectedCase.dg4Date))) // Convert stored string back to Dayjs
                 setDescription(selectedCase.description)
                 setProductionStrategy(selectedCase.productionStrategyOverview ?? 0)
                 setProducerWells(selectedCase.producerCount ?? 0)
@@ -157,7 +108,7 @@ const CreateCaseModal = (): JSX.Element => {
                 resetForm()
             }
         }
-    }, [revisionAndProjectData, modalCaseId])
+    }, [revisionAndProjectData, modalCaseId, getDefaultDg4Date])
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
@@ -167,10 +118,8 @@ const CreateCaseModal = (): JSX.Element => {
         }
     }
 
-    const handleDG4Change = (_event: React.SyntheticEvent, newValue: YearQuarterOption | null): void => {
-        if (newValue) {
-            setDg4Option(newValue)
-        }
+    const handleDG4Change = (newValue: Dayjs | null): void => {
+        setDg4Date(newValue)
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -181,18 +130,21 @@ const CreateCaseModal = (): JSX.Element => {
                 throw new Error("No project found")
             }
 
-            if (!caseName || !dg4Option) {
+            if (!caseName || !dg4Date) {
                 throw new Error("Missing required fields")
             }
 
             setIsLoading(true)
+
+            const dg4DateForApi = dg4Date.toDate()
+            const dg4DateString = dateToUtcDateStringWithZeroTimePart(dg4DateForApi)
 
             if (caseModalEditMode && projectCase && projectCase.caseId) {
                 const newCase = { ...projectCase } as Components.Schemas.UpdateCaseDto
 
                 newCase.name = caseName
                 newCase.description = description
-                newCase.dg4Date = createDateFromISOString(dg4Option.value).toISOString()
+                newCase.dg4Date = dg4DateString
                 newCase.producerCount = producerCount
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
@@ -210,7 +162,7 @@ const CreateCaseModal = (): JSX.Element => {
                     {
                         name: caseName,
                         description,
-                        dg4Date: createDateFromISOString(dg4Option.value).toJSON(),
+                        dg4Date: dg4DateString,
                         producerCount,
                         gasInjectorCount,
                         waterInjectorCount,
@@ -226,7 +178,7 @@ const CreateCaseModal = (): JSX.Element => {
         }
     }
 
-    const disableCreateButton = (): boolean => !dg4Option || !caseName || caseName.trim() === ""
+    const disableCreateButton = (): boolean => !dg4Date || !caseName || caseName.trim() === ""
 
     const getButtonText = (): JSX.Element | string => {
         if (isLoading) { return <Progress.Dots /> }
@@ -271,28 +223,20 @@ const CreateCaseModal = (): JSX.Element => {
                             ),
                         }}
                         >
-                            <Autocomplete
-                                id="dg4-date-selector"
-                                options={dateOptions}
-                                value={dg4Option}
+                            <DatePicker
+                                value={dg4Date}
                                 onChange={handleDG4Change}
-                                filterOptions={(options, params): YearQuarterOption[] => {
-                                    const filtered = filter(options, params)
-
-                                    return filtered
+                                minDate={minDate}
+                                maxDate={maxDate}
+                                slotProps={{
+                                    textField: {
+                                        size: "small",
+                                        fullWidth: true,
+                                        required: true, // Mark the text field as required
+                                        placeholder: "Select DG4 date",
+                                    },
                                 }}
-                                isOptionEqualToValue={(option, value): boolean => option.year === value.year && option.quarter === value.quarter}
-                                getOptionLabel={(option): string => option.label}
-                                renderInput={(params): JSX.Element => (
-                                    <TextField
-                                        {...params}
-                                        placeholder="Select a date"
-                                        fullWidth
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                )}
-                                disableClearable
+                                format="DD MMM YYYY"
                             />
                         </InputWrapper>
                     </FormSection>

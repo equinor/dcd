@@ -28,9 +28,9 @@ export const DEFAULT_PRODUCTION_PROFILES_YEARS: [number, number] = [2020, 2030]
 
 // Gantt chart configuration
 export const GANTT_CHART_CONFIG = {
-    MAX_VISIBLE_RANGE_YEARS: 50,
+    MAX_VISIBLE_RANGE_YEARS: 20,
     MIN_ALLOWED_YEAR: 2000,
-    MAX_ALLOWED_YEAR: 2150,
+    MAX_ALLOWED_YEAR: 2100,
 }
 
 interface ProjectClassification {

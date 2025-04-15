@@ -1,7 +1,9 @@
 import { Icon, Typography } from "@equinor/eds-core-react"
-import { add, info_circle } from "@equinor/eds-icons"
 import {
-    Box, Button, Slider,
+    add, tune, close,
+} from "@equinor/eds-icons"
+import {
+    Box, Button, Tooltip,
 } from "@mui/material"
 import Grid from "@mui/material/Grid2"
 import {
@@ -15,8 +17,9 @@ import styled from "styled-components"
 
 import { CaseMilestoneDate, CASE_MILESTONE_DATES } from "../CaseScheduleTab"
 
-import MileStoneEntry from "./MileStoneEntry"
+import MilestoneEntry from "./MileStoneEntry"
 import RangeChangeConfirmModal, { MilestoneToRemove, MilestoneToMove } from "./RangeChangeConfirmModal"
+import TimelineRangeSlider from "./TimelineRangeSlider"
 
 import CaseScheduleTabSkeleton from "@/Components/LoadingSkeletons/CaseScheduleTabSkeleton"
 import { useCaseApiData } from "@/Hooks"
@@ -30,26 +33,9 @@ import {
     quarterIndexToStartDate,
 } from "@/Utils/DateUtils"
 
-const Header = styled(Box)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 46px;
-`
-
 const GantContainer = styled(Box)<{ $isReadOnly?: boolean }>`
   width: 100%;
   padding-bottom: ${({ $isReadOnly }): string => ($isReadOnly ? "10px" : "20px")};
-`
-
-const RangeSliderContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-  padding: 8px 24px;
-  border: 1px solid #eaeaea;
-  border-radius: 4px;
-  background-color: #fafafa;
 `
 
 const HeaderContainer = styled(Box)<{ $isReadOnly?: boolean }>`
@@ -62,8 +48,14 @@ const HeaderContainer = styled(Box)<{ $isReadOnly?: boolean }>`
   gap: 12px;
 `
 
+const ActionButtonGroup = styled(Box)`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+`
+
 const EntryChips = styled(Box)`
-  margin-top: 26px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -77,6 +69,36 @@ const CompactGrid = styled(Grid)<{ $isReadOnly?: boolean }>`
   gap: ${({ $isReadOnly }): string => ($isReadOnly ? "2px" : "0")};
 `
 
+const ScheduleHeader = styled(Box)`
+    margin-bottom: 24px;
+    padding: 0 20px;
+`
+
+const ScheduleHeaderTexts = styled(Box)`
+    p {
+        line-height: 1.5;
+    }
+`
+
+const calculateConstrainedRange = (
+    newStart: number,
+    newEnd: number,
+    currentEnd: number,
+    maxRange: number,
+): [number, number] => {
+    const range = newEnd - newStart
+
+    if (range > maxRange) {
+        if (newEnd !== currentEnd) {
+            return [newEnd - maxRange, newEnd]
+        }
+
+        return [newStart, newStart + maxRange]
+    }
+
+    return [newStart, newEnd]
+}
+
 const GantChart = (): JSX.Element => {
     const { apiData } = useCaseApiData()
     const { updateMilestoneDate, updateWholeCase, isLoading } = useCaseMutation()
@@ -84,8 +106,8 @@ const GantChart = (): JSX.Element => {
 
     const currentYear = new Date().getFullYear()
 
-    const [rangeStartYear, setRangeStartYear] = useState(currentYear - 20)
-    const [rangeEndYear, setRangeEndYear] = useState(currentYear + 40)
+    const [rangeStartYear, setRangeStartYear] = useState(currentYear - 5)
+    const [rangeEndYear, setRangeEndYear] = useState(currentYear + 15)
 
     const [visualSliderValues, setVisualSliderValues] = useState<[number, number]>([rangeStartYear, rangeEndYear])
 
@@ -94,6 +116,8 @@ const GantChart = (): JSX.Element => {
     const [pendingEndYear, setPendingEndYear] = useState<number | null>(null)
     const [removeMilestones, setRemoveMilestones] = useState<MilestoneToRemove[]>([])
     const [moveMilestones, setMoveMilestones] = useState<MilestoneToMove[]>([])
+
+    const [showRangeSlider, setShowRangeSlider] = useState(false)
 
     const initialCenteringDoneRef = useRef(false)
 
@@ -107,7 +131,6 @@ const GantChart = (): JSX.Element => {
         }
     }, [rangeEndYear, rangeStartYear])
 
-    // Adjust the range on initial load to center around DG4 date
     useEffect(() => {
         if (initialCenteringDoneRef.current || !apiData?.case?.dg4Date) {
             return
@@ -116,12 +139,10 @@ const GantChart = (): JSX.Element => {
         const dg4Date = dateStringToDateUtc(String(apiData.case.dg4Date))
         const dg4Year = dg4Date.getFullYear()
 
-        // Protection against extreme years (e.g., year 9999)
         const reasonableMinYear = currentYear - 100
         const reasonableMaxYear = currentYear + 100
         const safeYear = Math.max(reasonableMinYear, Math.min(dg4Year, reasonableMaxYear))
 
-        // Use half the MAX_RANGE_YEARS to ensure DG4 is visible
         const halfRange = Math.floor(MAX_RANGE_YEARS / 2)
 
         const newStartYear = Math.max(GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR, safeYear - halfRange)
@@ -239,7 +260,7 @@ const GantChart = (): JSX.Element => {
 
             updateWholeCase(Newcase)
         }
-    }, [apiData, updateMilestoneDate])
+    }, [apiData, updateWholeCase])
 
     const checkForOutOfRangeMilestones = (startYear: number, endYear: number): {
         toRemove: MilestoneToRemove[];
@@ -309,54 +330,32 @@ const GantChart = (): JSX.Element => {
         setMoveMilestones([])
     }
 
-    const handleSliderDrag = (_event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]): void => {
+    const handleSliderDrag = useCallback((_event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]): void => {
         if (isLoading) { return }
-
         const [newStart, newEnd] = newValue as number[]
+        const currentEndValue = visualSliderValues[1]
 
-        const range = newEnd - newStart
-        let visualStartYear = newStart
-        let visualEndYear = newEnd
+        const [constrainedStart, constrainedEnd] = calculateConstrainedRange(
+            newStart,
+            newEnd,
+            currentEndValue,
+            MAX_RANGE_YEARS,
+        )
 
-        if (range > MAX_RANGE_YEARS) {
-            const currentEnd = visualSliderValues[1]
+        setVisualSliderValues([constrainedStart, constrainedEnd])
+    }, [isLoading, MAX_RANGE_YEARS, visualSliderValues])
 
-            if (newEnd !== currentEnd) {
-                // User is dragging the end handle
-                visualStartYear = newEnd - MAX_RANGE_YEARS
-                visualEndYear = newEnd
-            } else {
-                // User is dragging the start handle
-                visualStartYear = newStart
-                visualEndYear = newStart + MAX_RANGE_YEARS
-            }
-        }
-
-        setVisualSliderValues([visualStartYear, visualEndYear])
-    }
-
-    const handleSliderCommit = (_event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]): void => {
+    const handleSliderCommit = useCallback((_event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]): void => {
         if (isLoading) { return }
-
         const [newStart, newEnd] = newValue as number[]
+        const currentEndValue = rangeEndYear // Use actual rangeEndYear for commit logic
 
-        // Enforce the maximum 50-year range
-        const range = newEnd - newStart
-        let finalStartYear = newStart
-        let finalEndYear = newEnd
-
-        if (range > MAX_RANGE_YEARS) {
-            // If the range would exceed MAX_RANGE_YEARS, adjust both ends to maintain the last movement direction
-            if (newEnd !== rangeEndYear) {
-                // User is dragging the end handle
-                finalStartYear = newEnd - MAX_RANGE_YEARS
-                finalEndYear = newEnd
-            } else {
-                // User is dragging the start handle
-                finalStartYear = newStart
-                finalEndYear = newStart + MAX_RANGE_YEARS
-            }
-        }
+        const [finalStartYear, finalEndYear] = calculateConstrainedRange(
+            newStart,
+            newEnd,
+            currentEndValue,
+            MAX_RANGE_YEARS,
+        )
 
         const { toRemove, toMove } = checkForOutOfRangeMilestones(finalStartYear, finalEndYear)
 
@@ -366,14 +365,18 @@ const GantChart = (): JSX.Element => {
             setRemoveMilestones(toRemove)
             setMoveMilestones(toMove)
             setShowConfirmModal(true)
-
             setVisualSliderValues([finalStartYear, finalEndYear])
         } else {
             applyRangeChange(finalStartYear, finalEndYear)
         }
-    }
+    }, [
+        isLoading,
+        MAX_RANGE_YEARS,
+        rangeEndYear, // Add rangeEndYear dependency
+        checkForOutOfRangeMilestones,
+        applyRangeChange,
+    ])
 
-    // Shared data for all entry components - dynamic range based on slider values
     const quarterlyPeriods = useMemo((): ReturnType<typeof generateDynamicQuarterlyPeriods> => {
         const fixedReferenceDate = new Date()
 
@@ -384,13 +387,19 @@ const GantChart = (): JSX.Element => {
         return generateDynamicQuarterlyPeriods(fixedReferenceDate, totalYears)
     }, [rangeStartYear, rangeEndYear])
 
-    const handleMilestoneDateChange = useCallback((dateKey: string, newQuarterIndex: number): void => {
+    const handleMilestoneSliderChange = useCallback((dateKey: string, newQuarterIndex: number): void => {
         if (!apiData || !apiData.case) { return }
 
         const newDate = quarterIndexToStartDate(newQuarterIndex, rangeStartYear)
 
         updateMilestoneDate(dateKey, newDate)
     }, [apiData, updateMilestoneDate, rangeStartYear])
+
+    const handleMilestoneDateChange = useCallback((dateKey: string, newDate: Date | null): void => {
+        if (!apiData || !apiData.case) { return }
+
+        updateMilestoneDate(dateKey, newDate)
+    }, [apiData, updateMilestoneDate])
 
     const handleClearMilestone = useCallback((dateKey: string): void => {
         if (!apiData || !apiData.case || !canEdit()) { return }
@@ -415,32 +424,47 @@ const GantChart = (): JSX.Element => {
         updateMilestoneDate(dateKey, newDate)
     }, [apiData, updateMilestoneDate, rangeStartYear, rangeEndYear])
 
-    const milestoneDates = useMemo((): Record<string, number> => {
-        if (!apiData?.case) { return {} }
+    const { existingMilestonesMap, missingMilestones } = useMemo(() => {
+        if (!apiData?.case) {
+            return { existingMilestonesMap: new Map(), missingMilestones: [] }
+        }
 
-        const result: Record<string, number> = {}
+        const existingMap = new Map<string, {
+            key: string;
+            label: string;
+            required?: boolean;
+            quarterIndex: number;
+            dateObject: Date;
+        }>()
 
-        // Map each milestone key to its quarter index
+        const foundKeys = new Set<string>()
+
         CASE_MILESTONE_DATES.forEach((milestone: CaseMilestoneDate) => {
             const dateValue = apiData.case[milestone.key as keyof typeof apiData.case]
 
             if (dateValue) {
-                const date = dateStringToDateUtc(String(dateValue))
-                const quarterIndex = dateToQuarterIndex(date, rangeStartYear)
+                try {
+                    const date = dateStringToDateUtc(String(dateValue))
+                    const quarterIndex = dateToQuarterIndex(date, rangeStartYear)
 
-                if (quarterIndex !== undefined) {
-                    result[milestone.key] = quarterIndex
+                    if (quarterIndex !== undefined) {
+                        existingMap.set(milestone.key, {
+                            ...milestone,
+                            quarterIndex,
+                            dateObject: date,
+                        })
+                        foundKeys.add(milestone.key)
+                    }
+                } catch (error) {
+                    console.error(`Error processing date for milestone ${milestone.key}:`, dateValue, error)
                 }
             }
         })
 
-        return result
-    }, [apiData, rangeStartYear])
+        const missing = CASE_MILESTONE_DATES.filter((milestone: CaseMilestoneDate) => !foundKeys.has(milestone.key))
 
-    const missingMilestones = useMemo(
-        (): CaseMilestoneDate[] => CASE_MILESTONE_DATES.filter((milestone: CaseMilestoneDate) => milestoneDates[milestone.key] === undefined),
-        [milestoneDates],
-    )
+        return { existingMilestonesMap: existingMap, missingMilestones: missing }
+    }, [apiData, rangeStartYear])
 
     const isReadOnly = !canEdit()
 
@@ -450,76 +474,84 @@ const GantChart = (): JSX.Element => {
 
     return (
         <GantContainer $isReadOnly={isReadOnly}>
-            {canEdit() && (
-                <RangeSliderContainer>
-                    <Header>
-                        <Icon data={info_circle} size={18} />
-                        <Typography>
-                            Adjust Timeline Range (Max 50 Years)
-                        </Typography>
-                    </Header>
-
-                    <Slider
-                        value={visualSliderValues}
-                        onChange={handleSliderDrag}
-                        onChangeCommitted={handleSliderCommit}
-                        min={GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR}
-                        max={GANTT_CHART_CONFIG.MAX_ALLOWED_YEAR}
-                        step={1}
-                        disabled={isLoading}
-                        marks={[
-                            { value: GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR, label: `${GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR}` },
-                            { value: currentYear, label: `${currentYear}` },
-                            { value: GANTT_CHART_CONFIG.MAX_ALLOWED_YEAR, label: `${GANTT_CHART_CONFIG.MAX_ALLOWED_YEAR}` },
-                        ]}
-                        valueLabelDisplay="on"
-                        getAriaValueText={(value): string => `${value}`}
-                        valueLabelFormat={(value): string => `${value}`}
-                    />
-                </RangeSliderContainer>
+            {showRangeSlider && canEdit() && (
+                <TimelineRangeSlider
+                    visualSliderValues={visualSliderValues}
+                    minAllowedYear={GANTT_CHART_CONFIG.MIN_ALLOWED_YEAR}
+                    maxAllowedYear={GANTT_CHART_CONFIG.MAX_ALLOWED_YEAR}
+                    currentYear={currentYear}
+                    isLoading={isLoading}
+                    maxRangeYears={MAX_RANGE_YEARS}
+                    onSliderDrag={handleSliderDrag}
+                    onSliderCommit={handleSliderCommit}
+                />
             )}
+
+            <ScheduleHeader>
+                <ScheduleHeaderTexts>
+                    <Typography variant="h2">Milestone Schedule</Typography>
+                    <Typography variant="ingress">
+                        Visualize and adjust key project milestones. Use the date pickers for specific dates or the sliders for quarterly adjustments.
+                    </Typography>
+                </ScheduleHeaderTexts>
+            </ScheduleHeader>
 
             <HeaderContainer $isReadOnly={isReadOnly}>
                 {canEdit() && missingMilestones.length > 0 && (
                     <EntryChips>
                         {missingMilestones.map((milestone: CaseMilestoneDate): JSX.Element => (
+                            <Tooltip key={milestone.key} title={`Add ${milestone.label} milestone to the timeline`}>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    onClick={(): void => handleAddMilestone(milestone.key)}
+                                    disabled={isLoading}
+                                    startIcon={<Icon data={add} size={16} />}
+                                >
+                                    {milestone.label}
+                                </Button>
+                            </Tooltip>
+                        ))}
+                    </EntryChips>
+                )}
+
+                {canEdit() && (
+                    <ActionButtonGroup>
+                        <Tooltip title={showRangeSlider ? "Close timeline adjuster" : "Adjust the visible timeline range"}>
                             <Button
-                                key={milestone.key}
                                 variant="contained"
                                 color="primary"
                                 size="small"
-                                onClick={(): void => handleAddMilestone(milestone.key)}
-                                disabled={isLoading}
-                                startIcon={<Icon data={add} size={16} />}
+                                onClick={() => setShowRangeSlider(!showRangeSlider)}
+                                startIcon={<Icon data={showRangeSlider ? close : tune} size={16} />}
                             >
-                                {milestone.label}
+                                Adjust Timeline
                             </Button>
-                        ))}
-                    </EntryChips>
+                        </Tooltip>
+                    </ActionButtonGroup>
                 )}
             </HeaderContainer>
 
             <CompactGrid container spacing={0} $isReadOnly={isReadOnly}>
-                {CASE_MILESTONE_DATES.map((milestone: CaseMilestoneDate): JSX.Element | null => {
-                    const quarterIndex = milestoneDates[milestone.key]
-
-                    if (quarterIndex === undefined) { return null }
-
-                    return (
-                        <Grid size={{ xs: 12 }} key={milestone.key}>
-                            <MileStoneEntry
-                                title={milestone.label}
-                                value={quarterIndex}
-                                onChange={(newValue: number): void => handleMilestoneDateChange(milestone.key, newValue)}
-                                onClear={(): void => handleClearMilestone(milestone.key)}
-                                isRequired={milestone.required}
-                                periodsData={quarterlyPeriods}
-                                disabled={isLoading}
-                                readOnly={isReadOnly}
-                            />
-                        </Grid>
-                    )
-                })}
+                {Array.from(existingMilestonesMap.values()).map((milestoneData) => (
+                    <Grid size={{ xs: 12 }} key={milestoneData.key}>
+                        <MilestoneEntry
+                            title={milestoneData.label}
+                            value={milestoneData.quarterIndex}
+                            dateValue={milestoneData.dateObject}
+                            rangeStartYear={rangeStartYear}
+                            rangeEndYear={rangeEndYear}
+                            onSliderChange={(newValue: number): void => handleMilestoneSliderChange(milestoneData.key, newValue)}
+                            onDateChange={(newDate: Date | null): void => handleMilestoneDateChange(milestoneData.key, newDate)}
+                            onClear={(): void => handleClearMilestone(milestoneData.key)}
+                            isRequired={milestoneData.required}
+                            periodsData={quarterlyPeriods}
+                            disabled={isLoading}
+                            readOnly={isReadOnly}
+                        />
+                    </Grid>
+                ))}
             </CompactGrid>
 
             <RangeChangeConfirmModal

@@ -135,8 +135,8 @@ export const formatFullDate = (dateString: string | undefined | null) => {
 
 // Configurable time ranges for Gantt chart (in years)
 export const GANTT_CONFIG = {
-    YEARS_BEFORE_DG4: 20, // Show 20 years in the past
-    YEARS_AFTER_DG4: 40, // Show 40 years in the future
+    YEARS_BEFORE_DG4: 9, // Show 5 years in the past
+    YEARS_AFTER_DG4: 10, // Show 15 years in the future
     DEFAULT_DG4_YEAR: new Date().getFullYear(), // Use current year as default
 }
 
@@ -192,7 +192,7 @@ export const generateDynamicQuarterlyPeriods = (referenceDate?: Date | null, cus
 /**
  * Converts a date to a quarter period index based on a fixed timeline
  * @param date - Date to convert to quarter index
- * @param startYear - The start year of the timeline (defaults to current year - YEARS_BEFORE_DG4)
+ * @param startYear - The start year of the timeline
  * @returns Quarter index (0-based)
  */
 export const dateToQuarterIndex = (date: Date, startYear: number): number => {

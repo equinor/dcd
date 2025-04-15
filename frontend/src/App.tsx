@@ -1,4 +1,6 @@
 import { ThemeProvider, createTheme } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { FC } from "react"
@@ -52,15 +54,17 @@ const App: FC = () => {
         <QueryClientProvider client={queryClient}>
             <FeatureContextProvider>
                 <ThemeProvider theme={theme}>
-                    <ReactQueryDevtools />
-                    <ProjectContextProvider>
-                        <EditQueueProvider>
-                            <ModalContextProvider>
-                                <Styles />
-                                <AppRouter />
-                            </ModalContextProvider>
-                        </EditQueueProvider>
-                    </ProjectContextProvider>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <ReactQueryDevtools />
+                        <ProjectContextProvider>
+                            <EditQueueProvider>
+                                <ModalContextProvider>
+                                    <Styles />
+                                    <AppRouter />
+                                </ModalContextProvider>
+                            </EditQueueProvider>
+                        </ProjectContextProvider>
+                    </LocalizationProvider>
                 </ThemeProvider>
             </FeatureContextProvider>
         </QueryClientProvider>

@@ -1,12 +1,22 @@
+import { Icon } from "@equinor/eds-core-react"
+import { calendar } from "@equinor/eds-icons"
 import {
+    Box,
     Slider,
+    Typography,
 } from "@mui/material"
-import { useState, useEffect } from "react"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import dayjs, { Dayjs } from "dayjs"
+import {
+    useState, useEffect, useCallback, useMemo,
+} from "react"
 import styled from "styled-components"
 
 import BaseGantEntry, { getDisplayText } from "./BaseGantEntry"
 
-export interface MileStoneEntryProps {
+import { dateToQuarterIndex } from "@/Utils/DateUtils"
+
+export interface MilestoneEntryProps {
     title: string;
     value: number;
     periodsData: {
@@ -15,7 +25,11 @@ export interface MileStoneEntryProps {
         quarter: number;
         year: number;
     }[];
-    onChange: (newValue: number) => void;
+    dateValue: Date | undefined;
+    rangeStartYear: number;
+    rangeEndYear: number;
+    onSliderChange: (newValue: number) => void;
+    onDateChange: (newDate: Date | null) => void;
     onClear?: () => void;
     isRequired?: boolean;
     disabled?: boolean;
@@ -60,21 +74,63 @@ const StyledSlider = styled(Slider)<{ $readOnly?: boolean }>`
   ` : "")}
 `
 
-const MileStoneEntry = ({
+const DatePickerContainer = styled(Box)`
+  width: 160px;
+  
+  & .MuiInputBase-root {
+    height: 40px;
+  }
+`
+
+const ReadOnlyDateDisplay = styled(Box)`
+  display: flex;
+  align-items: center;
+  padding: 8px ;
+  gap: 8px;
+  color: #333;
+  background-color: #edf3f1;
+  border-radius: 4px;
+  border: 1px solid #dcdcdc;
+  
+  & .calendar-icon {
+    color: #007079;
+  }
+  
+  & .date-text {
+    font-weight: 500;
+  }
+`
+
+const MilestoneEntry = ({
     title,
     value,
     periodsData,
-    onChange,
+    dateValue,
+    rangeStartYear,
+    rangeEndYear,
+    onSliderChange,
+    onDateChange,
     onClear,
     isRequired = false,
     disabled = false,
     readOnly = false,
-}: MileStoneEntryProps): JSX.Element => {
+}: MilestoneEntryProps): JSX.Element => {
     const [localValue, setLocalValue] = useState<number>(value)
 
+    // Update local value when prop value changes
     useEffect(() => {
         setLocalValue(value)
     }, [value])
+
+    const { minDate, maxDate } = useMemo(() => {
+        const startDate = dayjs().year(rangeStartYear).month(0).date(1)
+        const endDate = dayjs().year(rangeEndYear).month(11).date(31)
+
+        return {
+            minDate: startDate,
+            maxDate: endDate,
+        }
+    }, [rangeStartYear, rangeEndYear])
 
     const handleDragChange = (_event: Event, newValue: number | number[]): void => {
         if (!readOnly) {
@@ -84,11 +140,63 @@ const MileStoneEntry = ({
 
     const handleChangeCommitted = (_event: React.SyntheticEvent | Event, newValue: number | number[]): void => {
         if (!readOnly) {
-            onChange(newValue as number)
+            onSliderChange(newValue as number)
         }
     }
 
+    const handleDateChange = useCallback((newDate: Dayjs | null) => {
+        if (!readOnly) {
+            if (newDate) {
+                const jsDate = newDate.toDate()
+
+                const dateQuarterIndex = dateToQuarterIndex(jsDate, rangeStartYear)
+
+                if (dateQuarterIndex !== undefined && dateQuarterIndex !== localValue) {
+                    setLocalValue(dateQuarterIndex)
+                    onSliderChange(dateQuarterIndex)
+                }
+
+                onDateChange(jsDate)
+            } else if (!isRequired) {
+                onDateChange(null)
+            }
+        }
+    }, [isRequired, onDateChange, readOnly, rangeStartYear, localValue, onSliderChange])
+
     const getValueText = (val: number): string => getDisplayText(periodsData[val])
+
+    const formattedDate = useMemo(() => {
+        if (!dateValue) { return "" }
+
+        return dayjs(dateValue).format("DD MMM YYYY")
+    }, [dateValue])
+
+    const leftControls = readOnly ? (
+        <ReadOnlyDateDisplay>
+            <Icon data={calendar} size={18} className="calendar-icon" />
+            <Typography variant="body2" className="date-text">
+                {formattedDate}
+            </Typography>
+        </ReadOnlyDateDisplay>
+    ) : (
+        <DatePickerContainer>
+            <DatePicker
+                disabled={disabled}
+                value={dateValue ? dayjs(dateValue) : null}
+                onChange={handleDateChange}
+                slotProps={{
+                    textField: {
+                        size: "small",
+                        fullWidth: true,
+                        required: isRequired,
+                    },
+                }}
+                format="DD MMM YYYY"
+                minDate={minDate}
+                maxDate={maxDate}
+            />
+        </DatePickerContainer>
+    )
 
     return (
         <BaseGantEntry
@@ -97,6 +205,7 @@ const MileStoneEntry = ({
             isRequired={isRequired}
             disabled={disabled || readOnly}
             readOnly={readOnly}
+            leftControls={leftControls}
         >
             <StyledSlider
                 $readOnly={readOnly}
@@ -118,4 +227,4 @@ const MileStoneEntry = ({
     )
 }
 
-export default MileStoneEntry
+export default MilestoneEntry
