@@ -81,11 +81,13 @@ const TextDisplay = styled(Typography)`
 `
 
 const FeedbackIndicator = ({ status }: { status: FeedbackStatus }) => {
-
     if (status === "success") {
-        return (<>
-            <span style={{ marginLeft: "8px" }}>Case has been updated </span><span style={{ color: "#4BB748", marginLeft: "8px" }}>✓</span>
-        </>)
+        return (
+            <>
+                <span style={{ marginLeft: "8px" }}>Case has been updated </span>
+                <span style={{ color: "#4BB748", marginLeft: "8px" }}>✓</span>
+            </>
+        )
     }
 
     if (status === "error") {
@@ -157,8 +159,34 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
             onSharePointFileSelected(fileId)
         }
 
-        if (!fileId || !sharepointSiteUrl) { return }
+        if (!fileId || !sharepointSiteUrl) {
+            try {
+                const importPromise = (async () => {
+                    setIsSaving(true)
 
+                    const fileName = ""
+
+                    await importFromSharePoint(
+                        projectId,
+                        caseId,
+                        "",
+                        fileName,
+                        sharepointSiteUrl,
+                    )
+
+                    return true
+                })()
+
+                await withFeedback(importPromise)
+            } catch (error: any) {
+                console.error("[SharePointFileSelector] error while refreshing file data", error)
+                const errorMessage = error.message || "Failed to refresh file data. The server might be experiencing issues."
+
+                setSnackBarMessage(errorMessage)
+            } finally {
+                setIsSaving(false)
+            }
+        }
     }
 
     const handleRefreshFile = async () => {
@@ -242,9 +270,9 @@ const SharePointFileSelector: React.FC<SharePointFileSelectorProps> = ({
                     {canEdit() && (
                         <ActionButton
                             onClick={handleRefreshFile}
-                            disabled={isDisabled}
+                            disabled={isDisabled || !selectedSharePointFileId}
                         >
-                            {isLoading ? <DotProgress /> : !selectedSharePointFileId ? "Remove file" : "Import"}
+                            {isLoading ? <DotProgress /> : "Import"}
                         </ActionButton>
                     )}
                 </SharePointAction>

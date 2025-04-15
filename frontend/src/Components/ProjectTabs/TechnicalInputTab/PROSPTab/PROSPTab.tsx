@@ -169,56 +169,57 @@ const PROSPTab = () => {
             return item
         }))
 
-        try {
-            const fileName = getFileNameById(fileId, sharePointFiles) || ""
-            const newProject = await importFromSharePoint(
-                projectId,
-                caseId,
-                fileId,
-                fileName,
-                currentSharePointSiteUrl,
-            )
+        if (!fileId) {
+            setIsSaving(true)
+            try {
+                const fileName = getFileNameById(fileId, sharePointFiles) || ""
+                const newProject = await importFromSharePoint(
+                    projectId,
+                    caseId,
+                    fileId,
+                    fileName,
+                    currentSharePointSiteUrl,
+                )
 
-            addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
+                addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
 
-            setCaseMappings((prev) => prev.map((item) => {
-                if (item.caseId === caseId) {
-                    return {
-                        ...item,
-                        sharePointFileId: fileId || null,
-                        sharePointFileName: getFileNameById(fileId, sharePointFiles),
+                setCaseMappings((prev) => prev.map((item) => {
+                    if (item.caseId === caseId) {
+                        return {
+                            ...item,
+                            sharePointFileId: fileId || null,
+                            sharePointFileName: getFileNameById(fileId, sharePointFiles),
+                        }
                     }
-                }
 
-                return item
-            }))
+                    return item
+                }))
 
-            setCaseIdBeingSaved(null)
-            setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
-        } catch (error: unknown) {
-            setCaseIdBeingSaved(null)
-            setCaseMappings((prev) => prev.map((item) => {
-                if (item.caseId === caseId) {
-                    // Revert to the original values
-                    const originalMapping = cases.find((c) => c.caseId === caseId)
+                setSnackBarMessage(`Successfully updated file selection to ${fileName}`)
+            } catch (error: any) {
+                console.error("[PROSPTab] error while submitting file change", error)
 
-                    return {
-                        caseId,
-                        sharePointFileId: originalMapping?.sharepointFileId || null,
-                        sharePointFileName: originalMapping?.sharepointFileName || null,
+                setCaseMappings((prev) => prev.map((item) => {
+                    if (item.caseId === caseId) {
+                        // Revert to the original values
+                        const originalMapping = cases.find((c) => c.caseId === caseId)
+
+                        return {
+                            caseId,
+                            sharePointFileId: originalMapping?.sharepointFileId || null,
+                            sharePointFileName: originalMapping?.sharepointFileName || null,
+                        }
                     }
-                }
 
-                return item
-            }))
+                    return item
+                }))
 
-            if (error instanceof Error) {
                 const errorMessage = error.message || "Failed to update file selection. Please try again."
 
                 setSnackBarMessage(errorMessage)
+            } finally {
+                setIsSaving(false)
             }
-        } finally {
-            setIsSaving(false)
         }
     }
 

@@ -40,6 +40,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
 }) => {
     const [isChanging, setIsChanging] = useState(false)
     const { isLoading: isRefreshing, feedbackStatus, withFeedback } = useFeedbackStatus()
+    const [tempSharePointFileStatus, setTempSharePointFileStatus] = useState<SharePointFileStatus | null>(null)
 
     const isDisabled = disabled || isChanging
 
@@ -49,6 +50,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
         if (value === newValue) { return }
 
         setIsChanging(true)
+        setTempSharePointFileStatus(SharePointFileStatus.IMPORTABLE)
 
         try {
             await onChange(caseItem.caseId, newValue)
@@ -64,12 +66,14 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
 
         try {
             await withFeedback(onRefresh(caseItem.caseId, value))
+            setTempSharePointFileStatus(null)
         } catch (error) {
             console.error("[SharePointFileDropdown] Error refreshing file", error)
         }
     }
 
     const selectedOptionText = value ? options[value] || "" : ""
+    const effectiveSharePointFileStatus = tempSharePointFileStatus ?? sharePointFileStatus
 
     return (
         <Container>
@@ -96,57 +100,52 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
                     </StyledSelect>
                 )}
             </MiddleColumn>
-
             <RightColumn>
-                {sharePointFileStatus === SharePointFileStatus.IMPORTING && (
-                    <>
-                        <ActionButton
-                            isLoading
-                            feedbackStatus={feedbackStatus}
-                            onClick={() => { }}
-                            disabled
-                        />
-                        <Typography>
-                            Importing...
-                        </Typography>
-                    </>
-                )}
-                {sharePointFileStatus === SharePointFileStatus.NO_FILE_SELECTED && (
-                    <ActionButton
-                        isLoading={isRefreshing}
-                        feedbackStatus={feedbackStatus}
-                        onClick={handleRefresh}
-                        disabled={isDisabled || !value}
-                    />
-                )}
-
-                {sharePointFileStatus === SharePointFileStatus.IMPORTABLE && (
-                    <>
-                        <ActionButton
-                            isLoading={isRefreshing}
-                            feedbackStatus={feedbackStatus}
-                            onClick={handleRefresh}
-                            disabled={isDisabled || !value}
-                        />
-                        <Typography>
-                            Changes found
-                        </Typography>
-                    </>
-                )}
-
-                {sharePointFileStatus === SharePointFileStatus.UNCHANGED_IN_SHAREPOINT && (
-                    <>
-                        <ActionButton
-                            isLoading={isRefreshing}
-                            feedbackStatus={feedbackStatus}
-                            onClick={() => { }}
-                            disabled
-                        />
-                        <Typography>
-                            No changes found
-                        </Typography>
-                    </>
-                )}
+                {{
+                    [SharePointFileStatus.IMPORTING]:
+    <>
+        <ActionButton
+            isLoading
+            feedbackStatus={feedbackStatus}
+            onClick={() => { }}
+            disabled
+        />
+        <Typography>
+            Importing...
+        </Typography>
+    </>,
+                    [SharePointFileStatus.NO_FILE_SELECTED]:
+    <ActionButton
+        isLoading={isRefreshing}
+        feedbackStatus={feedbackStatus}
+        onClick={handleRefresh}
+        disabled={isDisabled || !value}
+    />,
+                    [SharePointFileStatus.IMPORTABLE]:
+    <>
+        <ActionButton
+            isLoading={isRefreshing}
+            feedbackStatus={feedbackStatus}
+            onClick={handleRefresh}
+            disabled={isDisabled || !value}
+        />
+        <Typography>
+            Changes found
+        </Typography>
+    </>,
+                    [SharePointFileStatus.UNCHANGED_IN_SHAREPOINT]:
+    <>
+        <ActionButton
+            isLoading={isRefreshing}
+            feedbackStatus={feedbackStatus}
+            onClick={() => { }}
+            disabled
+        />
+        <Typography>
+            No changes found
+        </Typography>
+    </>,
+                }[effectiveSharePointFileStatus]}
             </RightColumn>
         </Container>
     )
