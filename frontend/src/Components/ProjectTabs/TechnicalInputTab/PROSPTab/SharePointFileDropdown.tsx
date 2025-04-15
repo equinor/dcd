@@ -52,8 +52,6 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
         setIsChanging(true)
         setTempSharePointFileStatus(SharePointFileStatus.IMPORTABLE)
 
-        console.log(caseItem.sharepointUpdatedTimestampUtc)
-
         try {
             await onChange(caseItem.caseId, newValue)
         } catch (error) {
