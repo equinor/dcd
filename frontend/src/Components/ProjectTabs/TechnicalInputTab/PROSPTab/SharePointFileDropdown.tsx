@@ -68,7 +68,7 @@ const SharePointFileDropdown: React.FC<SharePointFileDropdownProps> = ({
 
         try {
             await withFeedback(onRefresh(caseItem.caseId, value))
-            setTempSharePointFileStatus(null) // Reset temp state to original status
+            setTempSharePointFileStatus(null)
         } catch (error) {
             console.error("[SharePointFileDropdown] Error refreshing file", error)
         }
