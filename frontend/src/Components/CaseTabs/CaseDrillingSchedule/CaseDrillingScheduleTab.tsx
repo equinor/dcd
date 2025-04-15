@@ -21,15 +21,16 @@ import {
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { useDataFetch, useCaseApiData, useCanUserEdit } from "@/Hooks"
+import {
+    useDataFetch, useCaseApiData, useCanUserEdit, useTableRanges,
+} from "@/Hooks"
 import { useAppNavigation } from "@/Hooks/useNavigate"
 import { CampaignType, WellCategory } from "@/Models/enums"
 import { GetDrillingCampaignsService } from "@/Services/DrillingCampaignsService"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { DEFAULT_DRILLING_SCHEDULE_YEARS } from "@/Utils/Config/constants"
-import { getYearFromDateString } from "@/Utils/DateUtils"
-import { calculateTableYears } from "@/Utils/TableUtils"
+// import { getYearFromDateString } from "@/Utils/DateUtils"
+// import { calculateTableYears } from "@/Utils/TableUtils"
 
 const InputGroup = styled.div`
     display: flex;
@@ -47,10 +48,10 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
     const { apiData } = useCaseApiData()
     const queryClient = useQueryClient()
     const { setSnackBarMessage, isSaving, setIsSaving } = useAppStore()
+    const { tableRanges, updateDrillingScheduleYears } = useTableRanges()
 
-    const [startYear, setStartYear] = useState<number>(DEFAULT_DRILLING_SCHEDULE_YEARS[0])
-    const [endYear, setEndYear] = useState<number>(DEFAULT_DRILLING_SCHEDULE_YEARS[1])
-    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_DRILLING_SCHEDULE_YEARS)
+    const [startYear, setStartYear] = useState<number>(0)
+    const [endYear, setEndYear] = useState<number>(0)
     const isSmallScreen = useMediaQuery("(max-width: 768px)")
 
     const canUserEdit = useMemo(() => canEdit(), [canEdit, activeTabCase, editMode])
@@ -70,27 +71,27 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
     const wells = revisionAndProjectData?.commonProjectAndRevisionData.wells
 
     useEffect(() => {
-        if (activeTabCase === 3 && apiData) {
-            const explorationDrillingSchedule = apiData.explorationCampaigns.flatMap((ew) => ew.campaignWells) ?? []
-            const developmentDrillingSchedule = apiData.developmentCampaigns.flatMap((ew) => ew.campaignWells) ?? []
-            const profiles = [...explorationDrillingSchedule, ...developmentDrillingSchedule]
-
-            const dg4Year = getYearFromDateString(apiData.case.dg4Date)
-            const years = calculateTableYears(profiles, dg4Year)
-
-            if (years) {
-                const [firstYear, lastYear] = years
-
-                setStartYear(firstYear)
-                setEndYear(lastYear)
-                setTableYears([firstYear, lastYear])
-            } else {
-                setStartYear(DEFAULT_DRILLING_SCHEDULE_YEARS[0])
-                setEndYear(DEFAULT_DRILLING_SCHEDULE_YEARS[1])
-                setTableYears(DEFAULT_DRILLING_SCHEDULE_YEARS)
+        if (activeTabCase === 3 && apiData && tableRanges) {
+            if (tableRanges.drillingScheduleYears && tableRanges.drillingScheduleYears.length >= 2) {
+                setStartYear(tableRanges.drillingScheduleYears[0])
+                setEndYear(tableRanges.drillingScheduleYears[1])
             }
+
+            // // Otherwise, calculate based on data
+            // const explorationDrillingSchedule = apiData.explorationCampaigns.flatMap((ew) => ew.campaignWells) ?? []
+            // const developmentDrillingSchedule = apiData.developmentCampaigns.flatMap((ew) => ew.campaignWells) ?? []
+            // const profiles = [...explorationDrillingSchedule, ...developmentDrillingSchedule]
+
+            // const dg4Year = getYearFromDateString(apiData.case.dg4Date)
+            // const defaultYears: [number, number] = [
+            //     tableRanges.drillingScheduleYears[0],
+            //     tableRanges.drillingScheduleYears[tableRanges.drillingScheduleYears.length - 1],
+            // ]
+            // const years = calculateTableYears(profiles, dg4Year, defaultYears)
+
+            // const [firstYear, lastYear] = years
         }
-    }, [activeTabCase, apiData])
+    }, [activeTabCase, apiData, tableRanges])
 
     const sumWellsForWellCategory = (category: WellCategory): number => {
         if (!apiData) { return 0 }
@@ -150,8 +151,14 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
     const developmentWellsData = developmentCampaigns?.flatMap((x) => x.campaignWells)
     const explorationWellsData = explorationCampaigns?.flatMap((x) => x.campaignWells)
 
-    const handleTableYearsClick = (): void => {
-        setTableYears([startYear, endYear])
+    const handleTableYearsClick = async (pickedStartYear: number, pickedEndYear: number): Promise<void> => {
+        try {
+            await updateDrillingScheduleYears(pickedStartYear, pickedEndYear)
+            setStartYear(pickedStartYear)
+            setEndYear(pickedEndYear)
+        } catch (error) {
+            console.error("CaseDrillingScheduleTab - Error updating drilling schedule years:", error)
+        }
     }
 
     const createCampaign = async (campaignType: CampaignType): Promise<void> => {
@@ -253,8 +260,6 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
                             </Grid>
                         </Grid>
                         <DateRangePicker
-                            setStartYear={setStartYear}
-                            setEndYear={setEndYear}
                             startYear={startYear}
                             endYear={endYear}
                             handleTableYearsClick={handleTableYearsClick}
@@ -280,7 +285,7 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
-                    tableYears={tableYears}
+                    tableYears={[startYear, endYear]}
                     title="Exploration"
                 />
             ))}
@@ -288,7 +293,7 @@ const CaseDrillingScheduleTab = (): React.ReactNode => {
                 <Campaign
                     key={campaign.campaignId}
                     campaign={campaign}
-                    tableYears={tableYears}
+                    tableYears={[startYear, endYear]}
                     title="Development"
                 />
             ))}

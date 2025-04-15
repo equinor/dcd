@@ -16,7 +16,7 @@ import {
 import { useCaseStore } from "@/Store/CaseStore"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { formatCurrencyUnit } from "@/Utils/FormatingUtils"
-import { SetTableYearsFromProfiles, mergeTimeseriesList } from "@/Utils/TableUtils"
+import { mergeTimeseriesList, setSummaryTableYearsFromProfiles } from "@/Utils/TableUtils"
 
 const CaseSummaryTab = (): React.ReactNode => {
     const { activeTabCase } = useCaseStore()
@@ -24,9 +24,9 @@ const CaseSummaryTab = (): React.ReactNode => {
     const { apiData } = useCaseApiData()
     const { updateNpvOverride, updateBreakEvenOverride } = useCaseMutation()
 
-    const [, setStartYear] = useState<number>(2020)
-    const [, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const DEFAULT_SUMMARY_YEARS = [2023, 2033] as [number, number]
+
+    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_SUMMARY_YEARS)
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
@@ -115,7 +115,7 @@ const CaseSummaryTab = (): React.ReactNode => {
         if (activeTabCase === 7 && apiData) {
             const caseData = apiData?.case
 
-            SetTableYearsFromProfiles(
+            setSummaryTableYearsFromProfiles(
                 [
                     handleTotalExplorationCost(),
                     handleDrilling(),
@@ -135,9 +135,8 @@ const CaseSummaryTab = (): React.ReactNode => {
                     apiData.onshorePowerSupplyCostProfile,
                 ],
                 getYearFromDateString(caseData.dg4Date),
-                setStartYear,
-                setEndYear,
                 setTableYears,
+                DEFAULT_SUMMARY_YEARS,
             )
             setYearRangeSetFromProfiles(true)
         }

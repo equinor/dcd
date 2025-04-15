@@ -12,15 +12,14 @@ import SwitchableDropdownInput from "@/Components/Input/SwitchableDropdownInput"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import DateRangePicker from "@/Components/Input/TableDateRangePicker"
 import CaseProductionProfilesTabSkeleton from "@/Components/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { useCaseApiData, useDataFetch } from "@/Hooks"
+import { useCaseApiData, useDataFetch, useTableRanges } from "@/Hooks"
 import { useDrainageStrategyMutation, useCaseMutation } from "@/Hooks/Mutations"
 import { PhysUnit } from "@/Models/enums"
 import { useAppStore } from "@/Store/AppStore"
 import { useCaseStore } from "@/Store/CaseStore"
-import { DEFAULT_PRODUCTION_PROFILES_YEARS } from "@/Utils/Config/constants"
 import { getYearFromDateString } from "@/Utils/DateUtils"
 import { formatNumberForView, roundToDecimals } from "@/Utils/FormatingUtils"
-import { calculateTableYears } from "@/Utils/TableUtils"
+// import { calculateTableYears } from "@/Utils/TableUtils"
 
 const defaultAxesData = [
     {
@@ -45,7 +44,7 @@ const defaultAxesData = [
         position: "left",
         nice: true,
         label: {
-            formatter: (params: any) => formatNumberForView(roundToDecimals(params.value, 4)),
+            formatter: (params: { value: number }): string => formatNumberForView(roundToDecimals(params.value, 4)),
         },
         gridLine: {
             style: [
@@ -62,12 +61,16 @@ const defaultAxesData = [
     },
 ]
 
-const CaseProductionProfilesTab = () => {
+// Helper to check if a profile has values
+const hasProfileValues = (profile: any): boolean => profile && "values" in profile && Array.isArray(profile.values) && profile.values.length > 0
+
+const CaseProductionProfilesTab = (): React.ReactNode => {
     const { editMode } = useAppStore()
     const { activeTabCase } = useCaseStore()
-    const [startYear, setStartYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
-    const [endYear, setEndYear] = useState<number>(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
-    const [tableYears, setTableYears] = useState<[number, number]>(DEFAULT_PRODUCTION_PROFILES_YEARS)
+    const { tableRanges, updateProductionProfilesYears } = useTableRanges()
+
+    const [startYear, setStartYear] = useState<number>(0)
+    const [endYear, setEndYear] = useState<number>(0)
     const revisionAndProjectData = useDataFetch()
     const {
         updateGasSolution,
@@ -109,47 +112,48 @@ const CaseProductionProfilesTab = () => {
     const { apiData } = useCaseApiData()
 
     useEffect(() => {
-        if (apiData && activeTabCase === 1) {
-            const profiles = [
-                apiData.drainageStrategy,
-                apiData.productionProfileOil,
-                apiData.additionalProductionProfileOil,
-                apiData.productionProfileGas,
-                apiData.additionalProductionProfileGas,
-                apiData.productionProfileWater,
-                apiData.productionProfileWaterInjection,
-                apiData.productionProfileNgl,
-                apiData.productionProfileNglOverride,
-                apiData.condensateProduction,
-                apiData.condensateProductionOverride,
-                apiData.fuelFlaringAndLosses,
-                apiData.fuelFlaringAndLossesOverride,
-                apiData.netSalesGas,
-                apiData.netSalesGasOverride,
-                apiData.totalExportedVolumes,
-                apiData.totalExportedVolumesOverride,
-                apiData.importedElectricity,
-                apiData.importedElectricityOverride,
-                apiData.deferredOilProduction,
-                apiData.deferredGasProduction,
-            ]
-
-            const dg4Year = getYearFromDateString(apiData.case.dg4Date)
-            const years = calculateTableYears(profiles, dg4Year)
-
-            if (years) {
-                const [firstYear, lastYear] = years
-
-                setStartYear(firstYear)
-                setEndYear(lastYear)
-                setTableYears([firstYear, lastYear])
-            } else {
-                setStartYear(DEFAULT_PRODUCTION_PROFILES_YEARS[0])
-                setEndYear(DEFAULT_PRODUCTION_PROFILES_YEARS[1])
-                setTableYears(DEFAULT_PRODUCTION_PROFILES_YEARS)
+        if (apiData && activeTabCase === 1 && tableRanges) {
+            if (tableRanges.productionProfilesYears && tableRanges.productionProfilesYears.length >= 2) {
+                setStartYear(tableRanges.productionProfilesYears[0])
+                setEndYear(tableRanges.productionProfilesYears[1])
             }
+
+            // // Fall back to calculating based on profiles if needed
+            // const profiles = [
+            //     apiData.drainageStrategy,
+            //     apiData.productionProfileOil,
+            //     apiData.additionalProductionProfileOil,
+            //     apiData.productionProfileGas,
+            //     apiData.additionalProductionProfileGas,
+            //     apiData.productionProfileWater,
+            //     apiData.productionProfileWaterInjection,
+            //     apiData.productionProfileNgl,
+            //     apiData.productionProfileNglOverride,
+            //     apiData.condensateProduction,
+            //     apiData.condensateProductionOverride,
+            //     apiData.fuelFlaringAndLosses,
+            //     apiData.fuelFlaringAndLossesOverride,
+            //     apiData.netSalesGas,
+            //     apiData.netSalesGasOverride,
+            //     apiData.totalExportedVolumes,
+            //     apiData.totalExportedVolumesOverride,
+            //     apiData.importedElectricity,
+            //     apiData.importedElectricityOverride,
+            //     apiData.deferredOilProduction,
+            //     apiData.deferredGasProduction,
+            // ]
+
+            // const dg4Year = getYearFromDateString(apiData.case.dg4Date)
+
+            // // Define initial years
+            // let yearRange: [number, number] = [dg4Year - 5, dg4Year + 25]
+
+            // // Calculate years based on profile data if available
+            // if (profiles.some((p) => hasProfileValues(p))) {
+            //     yearRange = calculateTableYears(profiles, dg4Year, yearRange)
+            // }
         }
-    }, [apiData, activeTabCase])
+    }, [apiData, activeTabCase, tableRanges])
 
     if (activeTabCase !== 1) { return null }
 
@@ -166,16 +170,22 @@ const CaseProductionProfilesTab = () => {
     const waterProductionData = apiData.productionProfileWater
     const waterInjectionData = apiData.productionProfileWaterInjection
 
-    const handleTableYearsClick = () => {
-        setTableYears([startYear, endYear])
+    const handleTableYearsClick = async (pickedStartYear: number, pickedEndYear: number): Promise<void> => {
+        try {
+            await updateProductionProfilesYears(pickedStartYear, pickedEndYear)
+            setStartYear(pickedStartYear)
+            setEndYear(pickedEndYear)
+        } catch (error) {
+            console.error("CaseProductionProfilesTab - Error updating production profiles years:", error)
+        }
     }
 
-    const getProductionProfilesChartData = () => {
+    const getProductionProfilesChartData = (): object[] => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
 
-        for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
+        for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 oilProduction: setValueToCorrespondingYear(oilProductionData, i, getYearFromDateString(caseData.dg4Date)),
@@ -189,12 +199,12 @@ const CaseProductionProfilesTab = () => {
         return dataArray
     }
 
-    const injectionProfilesChartData = () => {
+    const injectionProfilesChartData = (): object[] => {
         const dataArray: object[] = []
 
         if (caseData.dg4Date === undefined) { return dataArray }
 
-        for (let i = tableYears[0]; i <= tableYears[1]; i += 1) {
+        for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 waterInjection: setValueToCorrespondingYear(waterInjectionData, i, getYearFromDateString(caseData.dg4Date)),
@@ -334,8 +344,6 @@ const CaseProductionProfilesTab = () => {
             </Grid>
 
             <DateRangePicker
-                setStartYear={setStartYear}
-                setEndYear={setEndYear}
                 startYear={startYear}
                 endYear={endYear}
                 handleTableYearsClick={handleTableYearsClick}
@@ -375,7 +383,7 @@ const CaseProductionProfilesTab = () => {
             <Grid size={12} style={{ width: "calc(100%+  16px)" }}>
                 <CaseProductionProfiles
                     apiData={apiData}
-                    tableYears={tableYears}
+                    tableYears={[startYear, endYear]}
                     alignedGridsRef={gridRef}
                 />
             </Grid>

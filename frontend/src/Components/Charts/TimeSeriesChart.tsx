@@ -42,10 +42,6 @@ export const TimeSeriesChart = ({
         },
     }
 
-    const tooltipRenderer = (params: any) => ({
-        content: `${params.title}: ${formatNumberForView(params.yValue)}`,
-    })
-
     const defaultAxes = [
         {
             type: "category",
@@ -78,8 +74,9 @@ export const TimeSeriesChart = ({
             ...separateProfileObjects(barProfiles, barNames, "year"),
             ...(lineChart ? [lineChart] : []),
         ],
+        // Simplify tooltip configuration to avoid incompatible properties
         tooltip: {
-            renderer: tooltipRenderer,
+            enabled: true,
         },
         axes: axesData || defaultAxes,
         legend: { position: "bottom", spacing: 40 },

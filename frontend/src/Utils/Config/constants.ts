@@ -17,15 +17,6 @@ export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number
     "Year-by-year CO2 intensity": { min: 0, max: 1_000_000 },
 }
 
-// Default year ranges for various components
-export const DEFAULT_CO2_EMISSIONS_YEARS: [number, number] = [2020, 2030]
-export const DEFAULT_DRILLING_SCHEDULE_YEARS: [number, number] = [2020, 2030]
-export const DEFAULT_CASE_COST_YEARS: [number, number] = [2023, 2033]
-export const DEFAULT_PRODUCTION_PROFILE_YEARS: [number, number] = [2020, 2030]
-export const DEFAULT_EXPLORATION_COST_YEARS: [number, number] = [2020, 2030]
-export const DEFAULT_TABLE_UTILS_YEARS: [number, number] = [2020, 2030]
-export const DEFAULT_PRODUCTION_PROFILES_YEARS: [number, number] = [2020, 2030]
-
 // Gantt chart configuration
 export const GANTT_CHART_CONFIG = {
     MAX_VISIBLE_RANGE_YEARS: 20,

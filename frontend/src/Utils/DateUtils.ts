@@ -1,6 +1,20 @@
 export const defaultDg4Date = "2030-01-01T00:00:00Z"
 
 /**
+ * Converts a Date object to UTC ISO string format 'YYYY-MM-DDT00:00:00Z'
+ * Used primarily for API requests and consistent date formatting
+ * @param date - Date object to convert
+ * @returns Formatted UTC date string
+ */
+export const formatDateToUtcIsoString = (date: Date): string => {
+    const year = date.getUTCFullYear()
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+    const day = String(date.getUTCDate()).padStart(2, "0")
+
+    return `${year}-${month}-${day}T00:00:00Z`
+}
+
+/**
  * Converts a UTC date string to a Date object
  * Handles various UTC date string formats and ensures proper conversion
  * @param dateString - UTC date string to convert
@@ -70,14 +84,14 @@ export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
     }
-    
+
     if (!date) {
         return undefined
     }
-    
+
     const year = date.getUTCFullYear()
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
-    
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+
     return `${year}-${month}`
 }
 
@@ -148,9 +162,9 @@ export const formatFullDate = (dateString: string | undefined | null) => {
 
 // Configurable time ranges for Gantt chart (in years)
 export const GANTT_CONFIG = {
-    YEARS_BEFORE_DG4: 9, // Show 5 years in the past
-    YEARS_AFTER_DG4: 10, // Show 15 years in the future
-    DEFAULT_DG4_YEAR: new Date().getFullYear(), // Use current year as default
+    YEARS_BEFORE_DG4: 9,
+    YEARS_AFTER_DG4: 10,
+    DEFAULT_DG4_YEAR: new Date().getFullYear(),
 }
 
 interface QuarterPeriod {
@@ -307,17 +321,3 @@ export const createDateFromYearAndQuarter = (year: number, quarter: number): Dat
  * @returns Date object from the ISO string
  */
 export const createDateFromISOString = (isoString: string): Date => dateStringToDateUtc(isoString)
-
-/**
- * Converts a Date object to UTC ISO string format 'YYYY-MM-DDT00:00:00Z'
- * Used primarily for API requests and consistent date formatting
- * @param date - Date object to convert
- * @returns Formatted UTC date string
- */
-export const formatDateToUtcIsoString = (date: Date): string => {
-    const year = date.getUTCFullYear()
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
-    const day = String(date.getUTCDate()).padStart(2, '0')
-    
-    return `${year}-${month}-${day}T00:00:00Z`
-}

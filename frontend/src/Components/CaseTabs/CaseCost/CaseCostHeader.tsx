@@ -12,30 +12,22 @@ import { Currency } from "@/Models/enums"
 
 interface HeaderProps {
     startYear: number;
-    setStartYear: (startYear: number) => void;
     endYear: number;
-    setEndYear: (endYear: number) => void;
-    setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseOverviewDto;
-    surfData: Components.Schemas.SurfDto
+    surfData: Components.Schemas.SurfDto;
+    handleTableYearsClick: (pickedStartYear: number, pickedEndYear: number) => Promise<void>;
 }
 
 const Header: React.FC<HeaderProps> = ({
     startYear,
-    setStartYear,
     endYear,
-    setEndYear,
-    setTableYears,
     caseData,
     surfData,
+    handleTableYearsClick,
 }) => {
     const revisionAndProjectData = useDataFetch()
 
-    const handleTableYearsClick = () => {
-        setTableYears([startYear, endYear])
-    }
-
-    const datePickerValue = (() => {
+    const datePickerValue = ((): string => {
         if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Nok) {
             return "MNOK"
         } if (revisionAndProjectData?.commonProjectAndRevisionData.currency === Currency.Usd) {
@@ -82,8 +74,6 @@ const Header: React.FC<HeaderProps> = ({
             <DateRangePicker
                 startYear={startYear}
                 endYear={endYear}
-                setStartYear={setStartYear}
-                setEndYear={setEndYear}
                 handleTableYearsClick={handleTableYearsClick}
                 labelText="Currency"
                 labelValue={datePickerValue}
